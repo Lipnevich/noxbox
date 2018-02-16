@@ -1,0 +1,26 @@
+Before you start processing crypto transactions
+
+1. use payed plan for Firebase for external api connection
+2. sign up block.io, generate pinKey, get apiKey for currency
+3. firebase functions:config:set keys.wallet_pin="YOUR_PIN_KEY" keys.wallet_api="YOUR_API_KEY"
+4. use payed plan for block.io for web hooks activation (or test api key)
+5. activate notifications for balance changes for all your addresses via https://block.io/docs/notifications/nodejs
+6. test balance via https://console.firebase.google.com/project/YOUR_PROJECT_KEY/functions/list
+
+Before you start use Google Plus login
+1. register you ~/.android/debug.keystore fingerprint SHA1 on your Firebase console project settings page
+   debug.keystore without passwords exists in project
+
+
+npm install block_io
+npm install q
+npm install request
+npm install bigdecimal
+
+firebase deploy --only functions
+
+run I18nizer class for creating multi language site
+
+firebase deploy --only hosting
+
+

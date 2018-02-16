@@ -1,0 +1,188 @@
+package by.nicolay.lipnevich.noxbox.pages;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.model.Request;
+import by.nicolay.lipnevich.noxbox.model.RequestType;
+import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.tools.Firebase;
+
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
+import static java.lang.System.currentTimeMillis;
+
+/**
+ * Created by nicolay.lipnevich on 22/06/2017.
+ */
+
+public class HistoryAdapter extends BaseAdapter {
+
+    Context ctx;
+    LayoutInflater inflater;
+    List<Noxbox> noxboxes;
+
+    public HistoryAdapter(Context context, List<Noxbox> noxboxes) {
+        this.ctx = context;
+        this.noxboxes = noxboxes;
+        this.inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getCount() {
+        return noxboxes.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return noxboxes.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, final View convertView, ViewGroup parent) {
+        final View view = convertView != null ? convertView : inflater.inflate(R.layout.history_item, parent, false);
+
+        final Noxbox noxbox = (Noxbox) getItem(position);
+        if(noxbox.getRate() == null) noxbox.setRate(true);
+
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(noxbox.getTimeCompleted()));
+        String time = new SimpleDateFormat("HH:mm").format(new Date(noxbox.getTimeCompleted()));
+        ((TextView) view.findViewById(R.id.dateText)).setText(date);
+        ((TextView) view.findViewById(R.id.timeText)).setText(time);
+        ((TextView) view.findViewById(R.id.priceText)).setText(noxbox.getPrice());
+        ((TextView) view.findViewById(R.id.performerName)).setText(getOppositeProfile(noxbox).getName());
+
+        MapView mapView = (MapView) view.findViewById(R.id.map);
+        mapView.onCreate(null);
+        mapView.onResume();
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                MapsInitializer.initialize(view.getContext());
+
+                GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+                        .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
+                        .position(noxbox.getPosition().toLatLng(), 48, 48)
+                        .anchor(0.5f, 1)
+                        .zIndex(1000);
+                GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
+                marker.setDimensions(960, 960);
+
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
+            }
+        });
+
+        Glide.with(view.getContext())
+                .load(getOppositeProfile(noxbox).getPhoto())
+                .apply(RequestOptions.circleCropTransform())
+                .into((ImageView) view.findViewById(R.id.performerImage));
+
+        boolean isLiked = isLiked(noxbox);
+
+        final ImageView rateBox = (ImageView) view.findViewById(R.id.rateBox);
+        showLike(rateBox, isLiked);
+        if(isLiked) {
+            rateBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ctx, R.style.NoxboxAlertDialogStyle);
+                    builder.setTitle(ctx.getResources().getString(R.string.dislikePrompt));
+                    builder.setPositiveButton(ctx.getResources().getString(R.string.dislike),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    v.setOnClickListener(null);
+                                    showLike((ImageView) v, false);
+                                    Firebase.sendRequest(new Request().setType(RequestType.dislike)
+                                            .setNoxbox(new Noxbox().setId(noxbox.getId())));
+                                    Firebase.createHistory(dislike(noxbox));
+                                }
+                            });
+                    builder.setNegativeButton(android.R.string.cancel, null);
+                    builder.show();
+                }
+            });
+        }
+        return view;
+    }
+
+    private Profile getOppositeProfile(Noxbox noxbox) {
+        if(noxbox.getPerformers().get(getProfile().getId()) != null) {
+            return noxbox.getPayers().values().iterator().next();
+        } else {
+            return noxbox.getPerformers().values().iterator().next();
+        }
+    }
+
+    private boolean isLiked(Noxbox noxbox) {
+        for(Profile payer : noxbox.getPayers().values()) {
+            if(payer.getId().equals(getProfile().getId()) &&
+                    payer.getTimeDisliked() != null) {
+                return false;
+            }
+        }
+
+        for(Profile performer : noxbox.getPerformers().values()) {
+            if(performer.getId().equals(getProfile().getId()) &&
+                    performer.getTimeDisliked() != null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    private Noxbox dislike(Noxbox noxbox) {
+        Profile payer = noxbox.getPayers().get(getProfile().getId());
+        if(payer != null) {
+            payer.setTimeDisliked(currentTimeMillis());
+            return noxbox;
+        }
+
+        Profile performer = noxbox.getPerformers().get(getProfile().getId());
+        if(performer != null) {
+            performer.setTimeDisliked(currentTimeMillis());
+            return noxbox;
+        }
+
+        return noxbox;
+    }
+
+    private void showLike(ImageView view, boolean isLiked) {
+        if(isLiked) {
+            view.setImageResource(R.drawable.like);
+        } else {
+            view.setImageResource(R.drawable.dislike);
+        }
+    }
+
+}

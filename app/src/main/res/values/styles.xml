@@ -1,0 +1,42 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar.TranslucentStatus">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+
+        <item name="android:buttonStyle">@style/ButtonTheme</item>
+
+        <item name="material_drawer_background">@color/secondary</item>
+        <item name="material_drawer_primary_text">@color/primary</item>
+        <item name="material_drawer_hint_text">@color/primary</item>
+        <item name="material_drawer_divider">@color/divider</item>
+        <item name="material_drawer_selected">@color/secondary</item>
+        <item name="material_drawer_selected_text">@color/primary</item>
+        <item name="material_drawer_header_selection_text">@color/primary</item>
+        <item name="android:windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="NoActionBar" parent="@style/AppTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="ButtonTheme" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@layout/button</item>
+        <item name="android:textColor">@color/secondary</item>
+    </style>
+
+    <style name="NoxboxAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/secondary</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">@color/secondary</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/primary</item>
+        <!--<item name="android:windowTitleStyle">@style/MyTitleTextStyle</item>-->
+    </style>
+
+</resources>

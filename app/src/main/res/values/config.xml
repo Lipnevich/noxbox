@@ -1,0 +1,20 @@
+<resources>
+    <integer name="timer_in_seconds" translatable="false">8</integer>
+
+    <integer name="radius_in_kilometers">10</integer>
+
+    <!--used for google map-->
+    <string name="google_maps_key" translatable="false">
+        AIzaSyAHjXWdZSYG8Wz7EG5D5R4p61X77VFUi5g
+    </string>
+
+    <!--used for path finding in http get requests to directions google api-->
+    <string name="google_maps_server_key" translatable="false">
+        AIzaSyAZGVVUasvDETFaNpWug0p9IfUzcsRlFIY
+    </string>
+
+    <!--update functions wallet_api key for switching to other crypto currency-->
+    <string name="crypto_currency" translatable="false">
+        BTC (TEST)
+    </string>
+</resources>

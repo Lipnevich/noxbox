@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="$language">
+
+<head>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113876909-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-113876909-1');
+  </script>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript" >
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter47695864 = new Ya.Metrika({
+                    id:47695864,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true,
+                    webvisor:true
+                });
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+</script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/47695864" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <!-- /Yandex.Metrika counter -->
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="$description">
+  <meta name="author" content="Nicolay Lipnevich">
+
+  <title>$description</title>
+  <link rel="icon" href="img/logo.png">
+  <meta property="og:image" content="img/logo.png" />
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom fonts for this template -->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet' type='text/css'>
+
+  <!-- Custom styles for this template -->
+  <link href="css/agency.css" rel="stylesheet">
+  <link href="timer/timer.min.css" rel="stylesheet">
+
+</head>
+
+
+<body id="page-top">
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand shadowed js-scroll-trigger" href="#page-top">
+      <!--<img class="logo img-fluid" src="img/nb_logo.png" alt="">-->
+      Noxbox</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav shadowed text-uppercase ml-auto">
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#about">$about</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#ico">$ico_menu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#timeline">$timeline</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#product">$product</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="#team">$team</a>
+        </li>
+        <li class="nav-item">
+          <div class="dropdown" id="i18nList">
+            <div class="dropdown-toggle nav-link" data-toggle="dropdown">
+              $language<span class="caret"/>
+            </div>
+            <ul class="dropdown-menu hadowed dropdown-menu-left">$i18n
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="masthead">
+  <div class="container">
+    <div class="intro-text">
+      <div class="intro-lead-in shadowed"><br/><br/><br/><br/><br/>$welcome</div>
+      <div class="intro-heading shadowed text-center">$coming</div>
+      <div id="timer1" class="row"></div>
+        <script src="timer/timer.min.js"></script>
+        <script>
+          new MegaTimer("1", {"periods":{seconds:"$seconds",minutes:"$minutes",hours:"$hours",days:"$days"},"view":[1,1,1,1],"type":{"currentType":"1","params":{"usertime":false,"utc":1519869600000}},"design":{"type":"plate","params":{"round":"10","background":"solid","background-color":"#eee","effect":"flipchart","space":"2","separator-margin":"20","number-font-family":{"family":"Comfortaa"},"number-font-size":"60","number-font-color":"#000","padding":"12","separator-on":false,"separator-text":":","text-on":true,"text-font-family":{"family":"Comfortaa"},"text-font-size":"20","text-font-color":"#ffffff"}},"designId":2,"theme":"white"}).run();
+        </script>
+      </div>
+      <div class="btn-group whitepaper">
+        <a target="_blank" class="btn btn-lg btn-primary" href="$document">
+          White Paper
+        </a>
+      </div>
+      <h5 class="subheading shadowed">$howToBuy </h5>
+      <div class="btn-group">
+        <a target="_blank" class="btn btn-lg btn-secondary" href="desk.pdf">
+          <i class="fa fa-tv"></i> Desktop
+        </a>
+      </div>
+      <div class="btn-group">
+        <a target="_blank" class="btn btn-lg btn-secondary" href="ios.pdf">
+          <i class="fa fa-apple"></i> Apple
+        </a>
+      </div>
+      <div class="btn-group">
+        <a target="_blank" class="btn btn-lg btn-secondary" href="android.pdf">
+          <i class="fa fa-android"></i> Android
+        </a>
+      </div>
+      <br/>
+      <br/>
+      <br/>
+ </div>
+</header>
+
+<!-- About -->
+<section id="about">
+  <div class="container">
+    <div class="embed-responsive embed-responsive-16by9">
+      <iframe class="embed-responsive-item" src="$video" allowfullscreen></iframe>
+    </div>
+    <br/><br/><br/><br/>
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">Noxbox</h2>
+        <p class="text-muted">$Noxbox</p>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <img class="rounded-circle img-fluid" src="img/global.jpg" alt="">
+        <h4 class="service-heading">$globality</h4>
+        <p class="text-muted">$globality_desc</p>
+      </div>
+      <div class="col-md-4">
+        <img class="img-fluid" src="img/likes.jpg" alt="">
+        <h4 class="service-heading">$ratings</h4>
+        <p class="text-muted">$ratings_desc</p>
+      </div>
+      <div class="col-md-4">
+        <img class="rounded-circle img-fluid" src="img/bitcoin.jpg" alt="">
+        <h4 class="service-heading">$bitcoin_payments</h4>
+        <p class="text-muted">$bitcoin_payments_desc</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ico" class="bg-light">
+  <div class="container">
+    <div class="col-lg-12 text-center">
+      <h2 class="section-heading">$ico_structure</h2>
+      <p class="text-muted">$token_distribution</p>
+      <br>
+    </div>
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="gradient1">
+          <h3>20%</h3>
+          <b>$first_ico_round</b>
+        </div><br>
+        <p align="right">$first_ico_round_desc</p><br>
+      </div>
+      <div class="col-lg-3">
+        <div class="gradient2">
+          <h3>20%</h3>
+          <b>$second_ico_round</b>
+        </div><br>
+        <p align="right">$second_ico_round_desc</p><br>
+      </div>
+      <div class="col-lg-3">
+        <div class="gradient3">
+          <h3>20%</h3>
+          <b>$final_ico_round</b>
+        </div><br>
+        <p align="right">$final_ico_round_desc</p><br>
+      </div>
+      <div class="col-lg-3">
+        <div class="gradient4">
+          <h3>40%</h3>
+          <b>$token_for_team</b>
+        </div><br>
+        <p align="right">$token_for_team_desc</p><br>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-wrapper">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$ico_details</h2>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$nbx</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">$nbx_desc</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$tiker</div>
+        <div class="col-sm-12 col-md-8 col-lg-8"><b>$tiker_desc</b></div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$purpose</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">$purpose_desc</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-lg-4">$token_id</div>
+        <div class="col-sm-12 col-lg-8"><wrapitplease>GB3uRxpNQDRMxoGMDPT2XBhaXFphU2BaiQmnBMHXP6ns</wrapitplease></div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$total_emission</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">$total_emission_desc</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$init_price</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">$init_price_desc</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$marketplace</div>
+        <div class="col-sm-12 col-md-8 col-lg-8"><a target="_blank" href="https://chrome.google.com/webstore/detail/wavesliteapp/kfmcaklajknfekomaflnhkjjkcjabogm">Waves DEX</a></div>
+      </div>
+      <div class="row" style="padding-top:18px">
+        <div class="col-sm-12 col-md-4 col-lg-4">$payments</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">BTC, WAVES, ETH, LTC, ZCASH, USD, EURO</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-light">
+  <div class="container">
+    <div class="col-lg-12 text-center">
+      <h2 class="section-heading">$funds_distribution</h2><br/>
+    </div>
+    <div class="row">
+      <div class="com-sm-12 col-md-8 col-lg-8 text-center">
+        <img src="img/pie.png" style="max-width: 60%">
+      </div>
+      <div class="com-sm-12 col-md-4 col-lg-4">
+        <br/><br/>
+        $funds_distribution_desc
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section id="timeline">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$timeline</h2>
+        <p class="text-muted">$noxbox_history</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="timeline">
+          <li>
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="img/about/connect.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>$december2016</h4>
+                <h5 class="subheading">$idea</h5>
+              </div>
+              <div class="timeline-body">
+                <p class="text-muted">$idea_desc</p>
+              </div>
+            </div>
+          </li>
+          <li class="timeline-inverted">
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="img/about/payment.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>$september2017</h4>
+                <h5 class="subheading">$bitcoin_decision</h5>
+              </div>
+              <div class="timeline-body">
+                <p class="text-muted">$bitcoin_decision_desc</p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="img/about/ico.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>$ico_date</h4>
+                <h5 class="subheading">$ico</h5>
+              </div>
+              <div class="timeline-body">
+                <p class="text-muted">$ico_desc</p>
+              </div>
+            </div>
+          </li>
+          <li class="timeline-inverted">
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="img/about/globe.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>$launch_date</h4>
+                <h5 class="subheading">$launch</h5>
+              </div>
+              <div class="timeline-body">
+                <p class="text-muted">$launch_desc</p>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="img/about/city.jpg" alt="">
+            </div>
+            <div class="timeline-panel">
+              <div class="timeline-heading">
+                <h4>$completion_date</h4>
+                <h5 class="subheading">$completion_desc</h5>
+              </div>
+            </div>
+          </li>
+          <li class="timeline-inverted">
+            <div class="timeline-image">
+              <img class="rounded-circle img-fluid" src="img/about/join.jpg" alt="">
+            </div>
+          </li>
+        </ul>
+        <div class="centered">
+          <br>
+          <p class="text-muted">$join_us</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Product -->
+<section id="product" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <h2 class="section-heading">$product</h2>
+        <p>$product_desc</p>
+        <br/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 text-center">
+        <img class="mobile" class="team-member" src="img/mobile.png" />
+        <br/>
+        <br/>
+      </div>
+      <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 text-left" >
+        <p class="list-item">
+          $mobile_application
+          <a target="_blank" href="https://play.google.com/store/apps/details?id=by.nicolay.lipnevich.noxbox.payer.massage">$noxbox_massage</a>
+           $noxbox_massage_desc</p>
+        <p class="list-item">$mobile_application
+          <a target="_blank" href="https://play.google.com/store/apps/details?id=by.nicolay.lipnevich.noxbox.performer.massage">$noxbox_masseur</a>
+           $noxbox_masseur_desc
+        </p>
+        <p class="list-item">$noxbox_logic</p>
+        <p class="list-item">$bitcoin_wallet_desc <a target="_blank" href="https://block.io">block.io</a>
+        </p>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-6">
+        <a target="_blank" href='https://play.google.com/store/apps/details?id=by.nicolay.lipnevich.noxbox.payer.massage&utm_campaign=Noxbox&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+          <img width="240px" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+        $noxbox_massage
+      </div>
+      <div class="col-md-6">
+        <a target="_blank" href='https://play.google.com/store/apps/details?id=by.nicolay.lipnevich.noxbox.performer.massage&utm_campaign=Noxbox&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
+          <img width="240px" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+        $noxbox_masseur
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section id="team">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$our_team</h2>
+        <p class="text-muted">$our_team_desc</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/me.jpg" alt="">
+          <h4>$Nicolay_Lipnevich</h4>
+          <p class="text-muted">$Nicolay_Lipnevich_desc</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank"  href="https://www.facebook.com/lipnevich">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/wife.jpg" alt="">
+          <h4>$Marina_Lipnevich</h4>
+          <p class="text-muted">$Marina_Lipnevich_desc</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://www.facebook.com/marina.lipnevich">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/dim.jpg" alt="">
+          <h4>$Dmitry_Markevich</h4>
+          <p class="text-muted">$Dmitry_Markevich_desc</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="team-member">
+        <img class="mx-auto rounded-circle" src="img/team/al.jpg" alt="">
+        <h4>$Alexandr_Karpovich</h4>
+        <p class="text-muted">$Alexandr_Karpovich_desc</p>
+        <ul class="list-inline social-buttons">
+          <li class="list-inline-item">
+            <a target="_blank" href="https://www.facebook.com/alexander.karpovich.56">
+              <i class="fa fa-facebook"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <p class="large text-muted">$noxbox_desc</p>
+      </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$advisers</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/vi.jpg" alt="">
+          <h4>$Victor_Scherb</h4>
+          <p class="text-muted">$Victor_Scherb_desc1
+            <a target="_blank" href="https://osmand.net">OsmAnd</a>
+            $Victor_Scherb_desc2
+          </p>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/si.jpg" alt="">
+          <h4>$Stanislav_Lozichny</h4>
+          <p class="text-muted">$Stanislav_Lozichny_desc</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="listing" class="bg-light">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-md-3">
+        <a href="https://icodaily.net">
+          <img class="img-fluid" src="img/listing/ico_daily.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="https://coindelite.com/ico-list.php">
+          <img class="img-fluid" src="img/listing/coindelite.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a href="https://www.list-ico.com/ico/noxbox/">
+          <img class="img-fluid" src="img/listing/listico.png"/>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <span class="copyright">Copyright &copy; Noxbox 2018</span>
+      </div>
+      <div class="col-md-3">
+        <a target="_blank" href="TermsAndConditions.html">Terms and Conditions</a>
+      </div>
+      <div class="col-md-3">
+        <ul class="list-inline social-buttons">
+          <li class="list-inline-item">
+            <a target="_blank" href="https://www.facebook.com/noxbox.io/">
+              <i class="fa fa-facebook"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="$telegramchat">
+              <i class="fa fa-telegram"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://twitter.com/noxboxio">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <a href="mailto:info@noxbox.io">info@noxbox.io</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Plugin JavaScript -->
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Contact form JavaScript -->
+<script src="js/jqBootstrapValidation.js"></script>
+<script src="js/contact_me.js"></script>
+
+<!-- Custom scripts for this template -->
+<script src="js/agency.js"></script>
+
+</body>
+
+</html>

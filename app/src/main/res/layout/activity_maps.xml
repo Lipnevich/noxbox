@@ -1,0 +1,138 @@
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/map_layout"
+    android:windowNoTitle="true"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mapId"
+        android:name="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <Button
+            android:id="@+id/requestButton"
+            android:text="@string/requestText"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|fill_horizontal"
+            android:layout_margin="15dp"
+            android:drawable="@layout/button"
+            android:background="@color/primary"
+            android:textSize="24sp"
+            android:visibility="gone"
+        />
+
+        <Button
+            android:id="@+id/goOnlineButton"
+            android:text="@string/goOnlineText"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|fill_horizontal"
+            android:layout_margin="15dp"
+            android:drawable="@layout/button"
+            android:background="@color/primary"
+            android:textSize="24sp"
+            android:visibility="gone"
+        />
+
+        <Button
+            android:id="@+id/goOfflineButton"
+            android:text="@string/goOfflineText"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|fill_horizontal"
+            android:layout_margin="15dp"
+            android:drawable="@layout/button"
+            android:background="@color/divider"
+            android:textSize="24sp"
+            android:visibility="gone"
+        />
+
+        <Button
+            android:id="@+id/acceptButton"
+            android:text="@string/acceptText"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|fill_horizontal"
+            android:layout_margin="15dp"
+            android:drawable="@layout/button"
+            android:background="@color/primary"
+            android:textSize="24sp"
+            android:visibility="gone"
+        />
+
+        <Button
+            android:id="@+id/completeButton"
+            android:text="@string/completeText"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|fill_horizontal"
+            android:layout_margin="15dp"
+            android:drawable="@layout/button"
+            android:background="@color/primary"
+            android:textSize="24sp"
+            android:visibility="gone"
+        />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:text="@string/cancelText"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom|fill_horizontal"
+            android:layout_margin="15dp"
+            android:drawable="@layout/button"
+            android:background="@color/primary"
+            android:textSize="24sp"
+            android:visibility="gone"
+        />
+
+        <ImageView
+            android:id="@+id/pointerImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginBottom ="24dp"
+            android:src="@drawable/pointer"
+            android:visibility="gone"/>
+
+
+        <ImageView
+            android:id="@+id/menuImage"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="start|top"
+            android:src="@drawable/menu"
+            android:layout_margin="4dp"
+            />
+
+        <ImageView
+            android:id="@+id/pathImage"
+            android:layout_width="48dp"
+            android:layout_height="64dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom ="64dp"
+            android:layout_marginRight ="12dp"
+            android:src="@drawable/path"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/message"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/send_message"
+            android:layout_gravity="bottom|center"
+            android:inputType="textCapSentences|textAutoCorrect"
+            android:imeOptions="actionSend"
+            android:background="@color/secondary"
+            android:visibility="gone"
+        />
+
+    </fragment>
+
+</android.support.v4.widget.DrawerLayout>

@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply from: "constants.gradle"
+
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.3"
+    useLibrary  'org.apache.http.legacy'
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 31
+        versionName "alpha"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'libs/jackson-core-asl-1.9.13.jar'
+        exclude 'libs/jackson-mapper-asl-1.9.13.jar'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/DEPENDENCIES'
+    }
+
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile('com.mikepenz:materialdrawer:5.9.1@aar') { transitive = true }
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:support-vector-drawable:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.google.android.gms:play-services:10.2.4'
+    compile 'com.google.firebase:firebase-core:10.2.4'
+    compile 'com.firebase:geofire-android:2.1.1'
+    compile 'com.firebaseui:firebase-ui-auth:1.2.0'
+    compile 'com.google.firebase:firebase-auth:10.2.4'
+    compile 'pub.devrel:easypermissions:0.2.1'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.github.bumptech.glide:glide:4.0.0-RC1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'
+}
+
+apply plugin: 'com.google.gms.google-services'
