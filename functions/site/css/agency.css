@@ -431,7 +431,7 @@ wrapitplease {
 }
 
 .logos {
-  line-height: 120px;
+  line-height: 140px;
 }
 
 header.masthead .socials {
@@ -447,4 +447,37 @@ header.masthead .socials a {
   display: block;
   font-size: 36px;
   text-align: center;
+}
+
+.modal-header {
+    border-bottom: 0px;
+}
+
+.modal-header .close {
+    color: white;
+    text-shadow: 0 0px;
+}
+
+.modal-footer {
+    border-top: 0px;
+    text-align: left;
+    justify-content: flex-start;
+}
+
+.modal-footer .btn-primary {
+    line-height: 50px;
+    font-size: 22px;
+    padding-left: 24px;
+    padding-right: 24px;
+    background-color: #2ECC71 !important;
+    border-color: white !important;
+}
+
+.modal-content {
+    color: white;
+    background-color: #3498DB;
+}
+
+.modal-dialog {
+    margin: 150px auto;
 }
