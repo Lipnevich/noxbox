@@ -24,7 +24,7 @@ exports.balance = functions.database.ref('/requests/{userID}/balance').onCreate(
 exports.refund = functions.database.ref('/requests/{userID}/refund').onCreate(event => {
     return noxbox.getWallet(event.data.val()).then(
            wallet.getBalance).then(
-           noxbox.checkPositiveBalance).then(
+           noxbox.isEnoughMoney).then(
            wallet.refund).then(
            noxbox.updateBalance).then(
            noxbox.notifyBalanceUpdated, noxbox.logError).then(
@@ -33,6 +33,7 @@ exports.refund = functions.database.ref('/requests/{userID}/refund').onCreate(ev
 
 exports.request = functions.database.ref('/requests/{userId}/request').onCreate(event => {
     return noxbox.getWallet(event.data.val()).then(
+           wallet.getBalance).then(
            noxbox.getPrice).then(
            noxbox.isEnoughMoney).then(
            noxbox.getPayerProfile).then(
@@ -69,7 +70,6 @@ exports.complete = functions.database.ref('/requests/{userId}/complete').onCreat
            wallet.pay).then(
            // TODO (nli) create fee in performers wallet
            noxbox.storePriceWithoutFee).then(
-           noxbox.f).then(
            noxbox.notifyPayerBalanceUpdated).then(
            noxbox.likePerformer).then(
            noxbox.likePayer, noxbox.logError).then(

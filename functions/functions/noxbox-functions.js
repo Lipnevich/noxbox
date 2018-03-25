@@ -90,19 +90,6 @@ exports.getWallet = function (request) {
     return deferred.promise;
 }
 
-exports.checkPositiveBalance = function (request) {
-    var deferred = Q.defer();
-
-    if(!request.wallet.availableMoney ||
-        new math.BigDecimal(request.wallet.availableMoney).compareTo(new math.BigDecimal(0)) < 0) {
-        request.error = 'No money available';
-        deferred.reject(request);
-    }
-    deferred.resolve(request);
-
-    return deferred.promise;
-}
-
 exports.getPrice = function (request) {
     var deferred = Q.defer();
 
@@ -120,8 +107,10 @@ exports.getPrice = function (request) {
 
 exports.isEnoughMoney = function (request) {
     var deferred = Q.defer();
-    if(new math.BigDecimal(request.wallet.availableMoney)
-        .compareTo(new math.BigDecimal(request.price)) < 0) {
+
+    if(!request.wallet.availableMoney ||
+        new math.BigDecimal(request.wallet.availableMoney).compareTo(new math.BigDecimal(0)) < 0) {
+        console.log(request.wallet.availableMoney);
         request.error = 'No money available';
         deferred.reject(request);
     }
@@ -138,9 +127,11 @@ exports.getPayerProfile = function (request) {
 
         request.payer = {
             'id' : payer.id,
-            'name' : payer.name,
-            'photo' : payer.photo
+            'name' : payer.name
         };
+        if(payer.photo) {
+            request.payer.photo = payer.photo;
+        }
         if(rating) {
             request.payer.rating = rating;
         }
@@ -194,10 +185,12 @@ exports.getPerformerProfile = function (request) {
         request.performer = {
             'id' : performer.id,
             'name' : performer.name,
-            'photo' : performer.photo,
             'position' : request.performer.position,
             'travelMode' : performer.travelMode
         };
+        if(performer.photo) {
+            request.performer.photo = performer.photo;
+        }
         if(rating) {
             request.performer.rating = rating;
         }

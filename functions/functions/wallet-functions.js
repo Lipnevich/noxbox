@@ -28,13 +28,19 @@ exports.create = function (request) {
 exports.getBalance = function (request) {
     var deferred = Q.defer();
 
-    Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
-        request.wallet.balance = '' + new math.BigDecimal(balance.balance).divide(decimals);
-        request.wallet.availableMoneyWithoutFee = '' + new math.BigDecimal(request.wallet.balance)
-                 .subtract(new math.BigDecimal('0.001'));
-        console.log('Current balance is ' + request.wallet.balance + ' for profile ' + request.id);
+    if(!request.wallet.address) {
+        request.wallet.balance = '0';
+        request.wallet.availableMoneyWithoutFee = '0';
         deferred.resolve(request);
-    });
+    } else {
+        Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
+            request.wallet.balance = '' + new math.BigDecimal(balance.balance).divide(decimals);
+            request.wallet.availableMoneyWithoutFee = '' + new math.BigDecimal(request.wallet.balance)
+                     .subtract(new math.BigDecimal('0.001'));
+            console.log('Current balance is ' + request.wallet.balance + ' for profile ' + request.id);
+            deferred.resolve(request);
+        });
+    }
 
     return deferred.promise;
 }
@@ -78,6 +84,7 @@ exports.refund = function (request) {
 exports.pay = function (request) {
     var deferred = Q.defer();
 
+    if(!request.wallet) request.wallet = {};
     request.wallet.priceWithoutFee = '' + new math.BigDecimal(request.noxbox.price)
              .subtract(new math.BigDecimal('0.001'));
 
