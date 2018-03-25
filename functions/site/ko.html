@@ -61,6 +61,8 @@
   <!-- Custom styles for this template -->
   <link href="css/agency.css" rel="stylesheet">
   <link href="timer/timer.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/component.css" />
+  <link rel="stylesheet" type="text/css" href="css/custom-bars.css" />
 
 </head>
 
@@ -95,7 +97,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
   <div class="container">
     <a class="navbar-brand shadowed js-scroll-trigger" href="#page-top">
-      <!--<img class="logo img-fluid" src="img/nb_logo.png" alt="">-->
+      <img class="logo img-fluid" src="img/logo.png" alt="">
       Noxbox</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <i class="fa fa-bars"></i>
@@ -112,25 +114,10 @@
           <a class="nav-link js-scroll-trigger" href="#timeline">로드맵</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#product">데모</a>
+          <a class="nav-link js-scroll-trigger" href="#product">생성물</a>
         </li>
         <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#team">팀</a>
-        </li>
-        <li class="nav-item">
-          <div class="dropdown" id="i18nList">
-            <div class="dropdown-toggle nav-link" data-toggle="dropdown">
-              한국어<span class="caret"/>
-            </div>
-            <ul class="dropdown-menu hadowed dropdown-menu-left">
-				<li class='nav-item'><a class='nav-link js-scroll-trigger' href='index.html'>English</a></li>
-				<li class='nav-item'><a class='nav-link js-scroll-trigger' href='id.html'>Indonesia</a></li>
-				<li class='nav-item'><a class='nav-link js-scroll-trigger' href='ja.html'>日本語</a></li>
-				<li class='nav-item'><a class='nav-link js-scroll-trigger' href='ko.html'>한국어</a></li>
-				<li class='nav-item'><a class='nav-link js-scroll-trigger' href='zh.html'>中国</a></li>
-				<li class='nav-item'><a class='nav-link js-scroll-trigger' href='ru.html'>Русский</a></li>
-            </ul>
-          </div>
         </li>
       </ul>
     </div>
@@ -141,51 +128,74 @@
 <header class="masthead">
   <div class="container">
     <!--Socials-->
-    <div class="row">
-      <div class="col-lg-10 col-md-9 col-sm-10">
-        <div class="socials">
-          <ul class="list-inline social-buttons">
-            <li class="list-inline-item">
-              <a target="_blank" href="https://twitter.com/noxboxio">
-                <i class="fa fa-twitter"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://www.facebook.com/noxbox.io/">
-                <i class="fa fa-facebook"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://t.me/noxboxico">
-                <i class="fa fa-telegram"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://github.com/Lipnevich/noxbox">
-                <i class="fa fa-github"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://bitcointalk.org/index.php?topic=2971918">
-                <i class="fa fa-bitcoin"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
+    <div class="row justify-content-end socials">
+      <div class="col-lg-4">
+        <ul class="list-inline ">
+          <li class="list-inline-item">
+            <a target="_blank" href="https://twitter.com/noxboxio">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://facebook.com/noxbox.io/">
+              <i class="fa fa-facebook"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://t.me/noxboxico">
+              <i class="fa fa-telegram"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://github.com/Lipnevich/noxbox">
+              <i class="fa fa-github"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://bitcointalk.org/index.php?topic=2971918">
+              <i class="fa fa-bitcoin"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a href="index.html"><img class="img-fluid" width="32px" src="img/lang/us.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="id.html"><img class="img-fluid" width="32px" src="img/lang/id.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="ja.html"><img class="img-fluid" width="32px" src="img/lang/ja.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="ko.html"><img class="img-fluid" width="32px" src="img/lang/ko.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="zh.html"><img class="img-fluid" width="32px" src="img/lang/zh.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="ru.html"><img class="img-fluid" width="32px" src="img/lang/ru.svg"/></a>
+          </li>
+        </ul>
       </div>
     </div>
+    <br/>
+    <br/>
 
-    <div class="intro-text">
+    <div class="intro-text row">
+      <div class="col-md-12 col-lg-6 intro-lead-in shadowed"><b>Noxbox - 분산 서비스 플랫폼</b></div>
       <br/>
-      <br/>
-      <br/>
-      <br/>
+      <div class="col-md-12 col-lg-6 subheading shadowed">
 
-      <!--<div class="intro-lead-in shadowed"><br/><br/><br/>국경없는 세계에 오신 것을 환영합니다!</div>-->
-      <div class="intro-heading shadowed">
-        <b>Noxbox 사전 <span style="color:#F39C12">25% </span>
-          <br/><span style="color:#F39C12">할인 </span>혜택을 누리세요!</b>
-      </div>
+        <h4></h4><b><span style="color:#F39C12">Noxbox </span><span style="color:#F39C12"></span>할인 !</b></h4>
+        <br/>
+        <br/>
+
+        투자 보너스를 받으시:<br/>USD 500 이상 투자시 +10% Noxbox 보너스<br/>USD 1500 이상 투자시 +20% Noxbox 보너스<br/>USD 5000 이상 투자시 +30% Noxbox 보너스<br/><br/>각 추천 고객에 대한 보상 - 추천 고객 지불액의 10% 지급
+        <br/>
+        <br/>
 
       <div class="btn-group">
         <a target="_blank" class="btn btn-lg btn-primary"
@@ -193,6 +203,8 @@
           사다
         </a>
       </div>
+    </div>
+  </div>
       <br/>
       <br/>
 
@@ -200,15 +212,31 @@
       <div id="timer1" class="row"></div>
         <script src="timer/timer.min.js"></script>
         <script>
-          new MegaTimer("1", {"periods":{seconds:"초",minutes:"분",hours:"시",days:"일"},"view":[1,1,1,1],"type":{"currentType":"1","params":{"usertime":false,"utc":1519869600000}},"design":{"type":"plate","params":{"round":"10","background":"solid","background-color":"#eee","effect":"flipchart","space":"2","separator-margin":"20","number-font-family":{"family":"Comfortaa"},"number-font-size":"60","number-font-color":"#000","padding":"12","separator-on":false,"separator-text":":","text-on":true,"text-font-family":{"family":"Comfortaa"},"text-font-size":"20","text-font-color":"#ffffff"}},"designId":2,"theme":"white"}).run();
+          new MegaTimer("1", {"periods":{seconds:"초",minutes:"분",hours:"시",days:"일"},"view":[1,1,1,1],"type":{"currentType":"1","params":{"usertime":false,"utc":1522328340000}},"design":{"type":"plate","params":{"round":"10","background":"solid","background-color":"#eee","effect":"flipchart","space":"2","separator-margin":"20","number-font-family":{"family":"Comfortaa"},"number-font-size":"60","number-font-color":"#000","padding":"12","separator-on":false,"separator-text":":","text-on":true,"text-font-family":{"family":"Comfortaa"},"text-font-size":"20","text-font-color":"#ffffff"}},"designId":2,"theme":"white"}).run();
         </script>
       </div>
-      <div class="btn-group whitepaper">
-        <a target="_blank" class="btn btn-lg btn-primary" href="ko.pdf">
-          White Paper
-        </a>
-      </div>
 
+      <br/>
+      <br/>
+      <h5 class="subheading shadowed">555 467 /4 000 000 USD를 유치하였습니다</h5>
+      <article class="flexy-grid">
+        <div class="flexy-column">
+          <div class="progress-factor flexy-item">
+            <div class="progress-bar">
+              <div class="bar has-rotation has-colors red heat-gradient" role="progressbar" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100">
+                <div class="tooltip heat-gradient-tooltip"></div>
+                <div class="bar-face face-position roof percentage"></div>
+                <div class="bar-face face-position back percentage"></div>
+                <div class="bar-face face-position floor percentage volume-lights"></div>
+                <div class="bar-face face-position left"></div>
+                <div class="bar-face face-position right"></div>
+                <div class="bar-face face-position front percentage volume-lights shine"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <h5 class="subheading shadowed">‎‎7 306 645 /40 000 000 Noxbox가 배포되었습니다</h5>
 
       <!--<h5 class="subheading shadowed">Noxbox 토큰 구입 방법 </h5>-->
       <!--<div class="btn-group">-->
@@ -247,26 +275,121 @@
         <p class="text-muted">Noxbox 는 편리한 곳에서 적절한 가격으로 편리한 시간에 필요한 서비스를 제공하는 블록체인 서비스이다서비스 마켓은 마사지, 헤어스타일, 매니큐어, 식품 배달, 수리 및 건설 서비스, 배관공 및 기타 필요한 서비스를 포함한다.</p>
       </div>
     </div>
+    <div class="whitepaper">
+      <a target="_blank" class="btn btn-lg btn-primary" href="ko.pdf">
+        White Paper
+      </a>
+    </div>
     <div class="row text-center">
       <div class="col-md-4">
-        <img class="rounded-circle img-fluid" src="img/global.jpg" alt="">
+        <img class="rounded-circle img-fluid" width="196" src="img/global.png" alt="">
         <h4 class="service-heading">세계성</h4>
         <p class="text-muted">당신이 원하는 대로 언제든지 한 클릭으로 전 세계에서 서비스를 받고 제공 할 수있는 기능이다</p>
       </div>
       <div class="col-md-4">
         <img class="img-fluid" src="img/likes.jpg" alt="">
         <h4 class="service-heading">등급 시스템</h4>
-        <p class="text-muted">논쟁의 여지가있는 쟁점에 투표하는 사용자가 내장 된 등급 시스템은 높은 수준의 서비스와 참가자의 책임감을 보장한다.</p>
+        <p class="text-muted">블록체인에 기반한 평가 시스템이 높은 서비스 품질과 참여자들의 높은 책임감을 보장해 드립니다</p>
       </div>
       <div class="col-md-4">
-        <img class="rounded-circle img-fluid" src="img/bitcoin.jpg" alt="">
-        <h4 class="service-heading">비트코인 지불</h4>
-        <p class="text-muted">사용자에게 비트코인 지갑은 주문 서비스를 자동 지불로 생성됩니다 (자체 실행 스마트 계약을 기반으로 함)</p>
+        <img class="rounded-circle img-fluid" width="196" src="img/logo.png" alt="">
+        <h4 class="service-heading">지불</h4>
+        <p class="text-muted">NBX 토큰은 Noxbox 어플리케이션의 내부 암호화폐입니다. NBX 토큰은 제공 서비스에 대한 결제용으로 사용될 예정입니다</p>
       </div>
     </div>
   </div>
 </section>
 
+
+<!-- Process -->
+<section id="process" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">미래 서비스 세계. Noxbox 세계</h2>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-12">
+        편리한 시간에 스마트폰 (태블릿, 컴퓨터)에 설치된 Noxbox 애플리케이션을 열고 서비스 버튼 을 클릭(1 분)하면 가장 높은 등급을 가지고 있고 가장 가까운 수행자가 5-15 분 내에 도착하고 정 성적으로 서비스를 제공합니다. 지불은 암호화폐로 자동 (0 분)이며, 등급은 업데이트됩니다 (0 분).<br/><br/>서비스는 받게됐다.<br/>
+        <br/>
+        <img class="img-fluid" src="img/time.png" width="340">
+        <br/>시간이 25 분까지 단축됩니다.<br/><br/>매번 서비스마다 있을 것이다<br/><br/>참조용: 미용 서비스 시장만 예상 비용은 세계에서 연간 40,000,000 달러의 매출액입니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Investors -->
+<section id="investors" >
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">투자자 특혜</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12"><i class="investor-checkbox fa fa-briefcase"></i> 회사의 이윤은 분기마다 토큰 보유자들에게 분배됩니다</div>
+      <br/>
+      <div class="col-md-12"><i class="investor-checkbox fa fa-group"></i> Noxbox 애플리케이션에서 서비스를 제공하는 토큰 보유자들은 제공된 서비스에 대한 추가 보너스를 받습니다</div>
+      <br/>
+      <div class="col-md-12"><i class="investor-checkbox fa fa-thumbs-up"></i> Noxbox 애플리케이션에서 서비스를 제공받는 토큰 보유자들은 받은 서비스에 대한 할인을 받습니다</div>
+    </div>
+    <br/>
+    <br/>
+    <div class="row prices">
+      <div class="col-lg-12 text-center">
+        <img class="img-fluid" src="img/graph.png" alt="">
+      </div>
+      <div class="col-lg-12 text-center">
+        <br/>
+        분석 센터에 의하면 2018년 연말 기준 NBX 토큰의 가치가 1달러에 이를 것으로 예상됩니다
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Advantages -->
+<section id="advantages" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">왜 Noxbox일까요? Noxbox의 주요 장점들!</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-star"></i> 소비자의 평가가 블록체인에 저장됩니다. 예를 들면, 서비스(헤어컷을 예로 들어 봅시다)를 요청한 소비자가 불만족스러웠을 경우, 해당 소비자는 해당 서비스 제공자에 대해서 낮은 평점을 마킹하게 되며, 데이터는 블록체인에 저장됩니다. 결과적으로 평점은 숨겨지거나, 변경, 삭제되지 않습니다. Noxbox 플랫폼은 높은 평점의 서비스 수행자, 소비자들만 이용하능하게 되어, 최고의 서비스 품질을 보장해 줄 수 있게 됩니다</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-eye"></i> 얼굴인식 및 홍체 인식에 따른 서비스 제공자의 생체 인증. 본 인증 기술로 인해 사용자가 중복으로 인증하여 제공된 서비스에 대한 평점을 숨기는 일은 불가능해 집니다</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-flash"></i> 주문형 서비스. 지금 바로 서비스가 가능하며, 5-15분 내에 귀하에게 도착할 준비가 된 서비스 제공자를 앱에서 볼 수 있습니다. 귀하의 요청이나 오퍼레이터의 전화를 기다리는 일이 필요없습니다. 바로 서비스를 받을 수 있습니다</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-umbrella"></i> 결제 보증. 스마트 컨트렉트가 높은 품질의 서비스 제공를 제공하는 서비스 제공자에 대한 결제를 보증해 드립니다</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-leaf"></i> 공정한 가격. 현대 사회에서는, 서비스에 불공정한 가격이 매겨져 있는 경우가 많아, 시장 가치보다 2-3배 높은 서비스 가격을 지불할 수도 있습니다. Noxbox 플랫폼은 수요와 공급에 따라 자동으로 가격을 계산합니다. 항상 정직하고 공정한 가격으로 서비스를 받으실 수 있습니다</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-globe"></i> 국경이 없는 세계. 사용자들은 다른 나라를 여행하는 동안에도 늘 계속해서 서비스를 받으실 수 있습니다</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-child"></i> 품질 보장. Noxbox 어플리케이션 사용자들은 항상 높은 품질의 서비스를 받으실 수 있도록 품질 보장을 받으실 수 있습니다</div><br/>
+    </div>
+  </div>
+</section>
+
+<!-- Price -->
+<section id="price">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">현재 진행 중인 작업</h2>
+      </div>
+    </div>
+    <div class="row prices">
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> 거래가능 코인 목록에 Yobit, EXMO, Binance, HitBTC, LiveCoin, Poloniex, Bittrex, Bitstamp 을 추가해달라는 요청이 있었으며, 현재 처리 중에 있습니다</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> NBX 토큰의 능력을 향상시키기 위해 암호 ATM기와의 통합 작업을 진행 중에 있습니다</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> IBA 및 EPAM과의 어플리케이션 공동 개발을 위한 협상이 진행 중에 있습니다</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> Webcoin, LimburgCoin, CoffeCoin, TurtleNode과 협력에 관한 합의를 맺었습니다</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> 프로모션을 통해 저희 커뮤니티와의 소통을 이어나가고 있습니다</div>
+    </div>
+    <br/>
+    <br/>
+  </div>
+</section>
+
+<!-- ICO -->
 <section id="ico" class="bg-light">
   <div class="container">
     <div class="col-lg-12 text-center">
@@ -280,25 +403,25 @@
           <h3>20%</h3>
           <b>2018년3월</b>
         </div><br>
-        <p align="right">초기 가격으로 토큰을 제공하는 첫 라운드.토큰 판매 기간은 4 주</p><br>
+        <p align="right">1 NBX = 0.1 USD<br/>토큰을 제공하는 첫 라운드<br/>토큰 판매 기간은 4 주</p><br>
       </div>
       <div class="col-lg-3">
         <div class="gradient2">
           <h3>20%</h3>
           <b>2018년9월</b>
         </div><br>
-        <p align="right">시장 가격으로 토큰을 제공하는 두 번째 라운드. 토큰 판매 기간은 4 주. </p><br>
+        <p align="right">1 NBX = 0.6 USD<br/>토큰을 제공하는 두 번째 라운드<br/>토큰 판매 기간은 4 주 </p><br>
       </div>
       <div class="col-lg-3">
         <div class="gradient3">
-          <h3>20%</h3>
+          <h3>40%</h3>
           <b>2019년1월</b>
         </div><br>
-        <p align="right">시장 가격으로 토큰을 제공하는 최종 라운드. 토큰 판매 기간은 4 주</p><br>
+        <p align="right">1 NBX = 1 USD<br/>토큰을 제공하는 최종 라운드<br/>토큰 판매 기간은 4 주</p><br>
       </div>
       <div class="col-lg-3">
         <div class="gradient4">
-          <h3>40%</h3>
+          <h3>20%</h3>
           <b>2019년 8월</b>
         </div><br>
         <p align="right">남은 토큰은 팀 구성원들간에 분배되며 2019 년 8 월까지 사용할 수 없음</p><br>
@@ -307,7 +430,7 @@
   </div>
 </section>
 
-<section>
+<section >
   <div class="container">
     <div class="section-wrapper">
       <div class="col-lg-12 text-center">
@@ -334,12 +457,32 @@
         <div class="col-sm-12 col-md-8 col-lg-8">200 000 000 NBX. 추가 발행 가능성 없음</div>
       </div>
       <div class="row structure">
-        <div class="col-sm-12 col-md-4 col-lg-4">토큰의 초기 가격</div>
+        <div class="col-sm-12 col-md-4 col-lg-4">2018년3월가격</div>
         <div class="col-sm-12 col-md-8 col-lg-8">1 NBX = 0.1 USD</div>
       </div>
       <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">2018년9월가격</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">1 NBX = 0.6 USD</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">2019년1월가격</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">1 NBX = 1 USD</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">최소 자본 화율</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">1 000 000 USD</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">최고 자본 화율</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">4 000 000 USD</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">투자자 보호</div>
+        <div class="col-sm-12 col-md-8 col-lg-8"><b>최소 자본 화율을 도달하지 않은 경우 돈이 돌려 보내집니다</b></div>
+      </div>
+      <div class="row structure">
         <div class="col-sm-12 col-md-4 col-lg-4">토큰 판매 거래소</div>
-        <div class="col-sm-12 col-md-8 col-lg-8"><a target="_blank" href="https://chrome.google.com/webstore/detail/wavesliteapp/kfmcaklajknfekomaflnhkjjkcjabogm">Waves DEX</a></div>
+        <div class="col-sm-12 col-md-8 col-lg-8">Waves DEX</div>
       </div>
       <div class="row" style="padding-top:18px">
         <div class="col-sm-12 col-md-4 col-lg-4">지불 방법</div>
@@ -360,7 +503,7 @@
       </div>
       <div class="com-sm-12 col-md-4 col-lg-4">
         <br/><br/>
-        40 %가기술적인 판매<br/><br/>50 %가 보너스 프로그램 및 프로모션<br/><br/>10 %가 마케팅 및 홍보<br/><br/>
+        50 %가기술적인 판매<br/><br/>10 %가 보너스 프로그램 및 프로모션<br/><br/>40 %가 마케팅 및 홍보<br/><br/>
       </div>
     </div>
   </div>
@@ -460,13 +603,12 @@
   </div>
 </section>
 
-
 <!-- Product -->
 <section id="product" class="bg-light">
   <div class="container">
     <div class="row">
       <div class="col-md-12 text-center">
-        <h2 class="section-heading">데모</h2>
+        <h2 class="section-heading">생성물</h2>
         <p>이 섹션에서는 의도의 무결성을 검증 할 수 있으며응용 프로그램을 테스트 할 수 있다</p>
         <br/>
       </div>
@@ -487,7 +629,7 @@
            ,마사지를 통해 비트 코인을 얻고 자하는 계약자를 위한
         </p>
         <p class="list-item">응용 프로그램의로직은 사용자에게 수행 된 서비스의 품질을 보장하고 계약자에게 지불을 보장한다</p>
-        <p class="list-item">각 사용자에게 개인 비트코인 지갑을 만든다. 베타 테스트시 결제 플랫폼에 등록한 후에 사용할 수 있는 테스트 비트 코인이 사용된다 <a target="_blank" href="https://block.io">block.io</a>
+        <p class="list-item">각 사용자에게 개인 비트코인 지갑을 만든다. 테스트시 결제 플랫폼에 등록한 후에 사용할 수 있는 테스트 비트 코인이 사용된다 <a target="_blank" href="https://block.io">block.io</a>
         </p>
       </div>
     </div>
@@ -502,6 +644,12 @@
           <img width="240px" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
         Noxbox&nbsp;마사지사
       </div>
+    </div>
+    <div id="news"/>
+    <br/><br/><br/>
+    <div class="col-md-12 text-center">
+      <h2 class="section-heading">뉴스</h2>
+      <p>다음은 벨라루스의 봄철 첫날에 일어난 사건에 대한 이야기입니다. 엄청난 눈이 오던 날, 두 명의 아이들과 부부를 태우고 미끄러운 시골길을 달리던 차가 배수로에 빠지고 말았습니다. 엄마가 우는 아이들을 진정시키려 애쓰는 동안, 아버지는 긴급구호 서비스에 전화를 걸었습니다. 관공서에서는 전화를 받았지만, 모든 차가 출동 중인데다 날씨가 좋지 않아서 한 시간 안에는 도착하지 못할 거라는 대답을 받았습니다. 영하 20도에 이르는 기온을 생각하면, 모든 상황이 가족에게 절망적인 상황이었습니다. 기존의 방법을 통해서는 도움을 받지 못한 아빠는 새롭게 설치한 Noxbox 프로토타입 앱을 열어보기로 했습니다. 다행히, 20분 거리에 구호 서비스가 있었습니다. 구호 차량은 제시간에 정확한 장소에 도착했고, 모든 승객을 자신의 차에 태우고 따뜻한 차를 나눠준 후, 배수로에 빠진 차의 탈출을 돕기 시작했습니다. 1시간 후, 가족은 안전하게 집에 도착할 수 있었습니다. 이 사건은 암호 기반 서비스가 인명을 구한 첫번째 사례입니다! 때마침 온라인을 통해 응답하여 긴급한 도움을 제공해준 구호 차량 운전자 알렉산더씨에게 깊은 감사의 인사를 전합니다.</p>
     </div>
   </div>
 </section>
@@ -520,11 +668,16 @@
         <div class="team-member">
           <img class="mx-auto rounded-circle" src="img/team/me.jpg" alt="">
           <h4>니콜라이 립네비치</h4>
-          <p class="text-muted">눈에 불이 붙고 프로그램잉에서 20 년의 경험을 가진 저자와 개발자</p>
+          <p class="text-muted">CEO 및 설립자, 눈에 불이 붙고 프로그램잉에서 시스템 설계 분야 5년 이상 경력의 개발자</p>
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
-              <a target="_blank"  href="https://www.facebook.com/lipnevich">
+              <a target="_blank"  href="https://facebook.com/lipnevich">
                 <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a target="_blank"  href="https://www.linkedin.com/in/nicolay-lipnevich-15029239/">
+                <i class="fa fa-linkedin"></i>
               </a>
             </li>
           </ul>
@@ -534,10 +687,10 @@
         <div class="team-member">
           <img class="mx-auto rounded-circle" src="img/team/wife.jpg" alt="">
           <h4>마리나 립네치</h4>
-          <p class="text-muted">카운셀러와 동료, 테스트 분야의 지도자, 마리나라는 영감을 받은 부인</p>
+          <p class="text-muted">설립자, 테스트 분야의 지도자, 3 년의 경력을</p>
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
-              <a target="_blank" href="https://www.facebook.com/marina.lipnevich">
+              <a target="_blank" href="https://facebook.com/marina.lipnevich">
                 <i class="fa fa-facebook"></i>
               </a>
             </li>
@@ -548,22 +701,81 @@
         <div class="team-member">
           <img class="mx-auto rounded-circle" src="img/team/dim.jpg" alt="">
           <h4>디마 마르케비취</h4>
-          <p class="text-muted">마케팅 디렉터, 재무 및 성공적인 사업가</p>
+          <p class="text-muted">
+            CMO 및 설립자, 마케팅 디렉터, 재무 및 성공적인 사업가
+            <a target="_blank" href="http://www.r-h.by">Royal Hall</a>,
+            <a target="_blank" href="http://www.techct.ru">TechElectroCT</a>
+          </p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank"  href="https://www.linkedin.com/in/dmitry-markevich-35611915a/">
+                <i class="fa fa-linkedin"></i>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="team-member">
-        <img class="mx-auto rounded-circle" src="img/team/al.jpg" alt="">
-        <h4>알렉산드르 카르 포비 치</h4>
-        <p class="text-muted">4 년의 프리랜서 경력을 가진 개발자 Ethereum 똑똑한 계약</p>
-        <ul class="list-inline social-buttons">
-          <li class="list-inline-item">
-            <a target="_blank" href="https://www.facebook.com/alexander.karpovich.56">
-              <i class="fa fa-facebook"></i>
-            </a>
-          </li>
-        </ul>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/al.jpg" alt="">
+          <h4>알렉산드르 카르 포비 치</h4>
+          <p class="text-muted">4 년의 프리랜서 경력을 가진 개발자 Ethereum 똑똑한 계약</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://facebook.com/alexander.karpovich.56">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a target="_blank"  href="https://www.linkedin.com/in/alexander-karpovich-alexander-54a959a4/">
+                <i class="fa fa-linkedin"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/lu.jpg" alt="">
+          <h4>루로프 얀세비치</h4>
+          <p class="text-muted">투자자 관계 관리자</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://facebook.com/liubou.nedrashlianskaya">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/ta.jpg" alt="">
+          <h4>타티아나 차 막</h4>
+          <p class="text-muted">소셜 미디어 및 홍보 관리자 SEO</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://facebook.com/profile.php?id=100004902660295">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/se.jpg" alt="">
+          <h4>세르게이 레비</h4>
+          <p class="text-muted">2 년의 경험을 가진 웨이브 플랫폼 기능 전문가</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://twitter.com/Nobadbro">
+                <i class="fa fa-twitter"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -583,7 +795,8 @@
         <div class="team-member">
           <img class="mx-auto rounded-circle" src="img/team/vi.jpg" alt="">
           <h4>빅토르 셰르브</h4>
-          <p class="text-muted">최고 경영자
+          <p class="text-muted">
+            최고 경영자
             <a target="_blank" href="https://osmand.net">OsmAnd</a>
             비트코인을 3 년 이상 사용해 본 경험이있는
           </p>
@@ -596,7 +809,7 @@
           <p class="text-muted">기공 및 오리엔탈 마사지 학교의 창조자 및 대표</p>
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
-              <a target="_blank" href="https://www.facebook.com/maverickluck">
+              <a target="_blank" href="https://facebook.com/maverickluck">
                 <i class="fa fa-facebook"></i>
               </a>
             </li>
@@ -607,7 +820,7 @@
         <div class="team-member">
           <img class="mx-auto rounded-circle" src="img/team/vladimir.jpg" alt="">
           <h4>블라디미르 니노 프</h4>
-          <p class="text-muted">MBA, CEO 
+          <p class="text-muted">MBA, CEO Waves ICO 
             <a target="_blank" href="https://webcoin.today/">Webcoin</a>
           </p>
           <ul class="list-inline social-buttons">
@@ -623,90 +836,70 @@
   </div>
 </section>
 
-
+<!--Backlinks-->
 <section id="listing" class="bg-light">
   <div class="container">
     <div class="row logos text-center">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://foundico.com/ico/noxbox-.html">
           <img class="img-fluid" width="320px" src="img/listing/foundico.png"/>
         </a>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://icobazaar.com/v2/noxbox">
           <img class="img-fluid" width="256px" src="img/listing/icobazaar.png"/>
         </a>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://www.coingecko.com/en/ico/noxbox">
           <img class="img-fluid" width="196px" src="img/listing/coingecko.png"/>
         </a>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <a target="_blank" href="https://icobay.net/icos/Noxbox?is=active">
+          <img class="img-fluid" width="256px" src="img/listing/icobay.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
         <a target="_blank" href="https://webcoin.today/">
           <img class="img-fluid" width="128px" src="img/listing/webcoin.png"/>
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="http://icobay.net/icos/Noxbox?is=upcoming">
-          <img class="img-fluid" width="256px" src="img/listing/icobay.png"/>
+      <div class="col-md-3">
+        <a target="_blank" href="http://www.icodaddy.io/">
+          <img class="img-fluid" width="196px" src="https://www.icodaddy.io/wp-content/uploads/2018/02/icodaddy.png"/>
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://medium.com/@icocalendartoday/noxbox-ico-at-glance-a3adca9c934c">
-          <img class="img-fluid" width="196px" src="img/listing/medium.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://www.trackico.io/" target="_blank" title="TrackICO">
-          <img border="0" src="https://www.trackico.io/static/img/partner_logo_black.png"
-               alt="TrackICO - provider of information about the best ICOs"
-               width="256px">
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://cryptorated.com/ico-listing/noxbox/">
-          <img class="img-fluid" width="96px" src="img/listing/cryptorated.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://cryptocoincharts.info/ico/noxbox-nbx">
-          <img class="img-fluid" width="256px" src="img/listing/cryptocoincharts.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://www.coinschedule.com/icos/e2321/noxbox-ico.html">
           <img class="img-fluid" width="256px" src="img/listing/coinschedule.png"/>
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://www.list-ico.com/ico/noxbox/">
-          <img class="img-fluid" width="196px" src="img/listing/listico.png"/>
+      <div class="col-md-3">
+        <a target="_blank" href="https://t.me/InsideCryptoChat">
+          <img border="0" src="img/listing/inside.png" width="96px">
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://icodaily.net">
-          <img class="img-fluid" width="256px" src="img/listing/ico_daily.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://www.unlock-bc.com/project/noxbox">
-          <img class="img-fluid" width="256px" src="img/listing/unlock.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://coindelite.com/ico-detail-Noxbox">
-          <img class="img-fluid" width="96px" src="img/listing/coindelite.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://www.listico.io/ico-calendar/first-round-of-ico">
           <img class="img-fluid" width="196px" src="img/listing/list.png"/>
         </a>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-3">
+        <a target="_blank" href="https://coindelite.com/ico-detail-Noxbox">
+          <img class="img-fluid" width="96px" src="img/listing/coindelite.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
         <a target="_blank" href="https://www.cryptocompare.com/coins/nbx/overview">
           <img class="img-fluid" width="256px" src="img/listing/cryptocompare.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a target="_blank" href="https://www.trackico.io/ico/noxbox/" title="TrackICO">
+          <img border="0" src="https://www.trackico.io/static/img/partner_logo_black.png"
+               alt="TrackICO - provider of information about the best ICOs"
+               width="196px">
         </a>
       </div>
     </div>
@@ -723,10 +916,10 @@
       <div class="col-md-3">
         <a target="_blank" href="TermsAndConditions.html">Terms and Conditions</a>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <ul class="list-inline social-buttons">
           <li class="list-inline-item">
-            <a target="_blank" href="https://www.facebook.com/noxbox.io/">
+            <a target="_blank" href="https://facebook.com/noxbox.io/">
               <i class="fa fa-facebook"></i>
             </a>
           </li>
@@ -752,7 +945,7 @@
           </li>
         </ul>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <a href="mailto:info@noxbox.io">info@noxbox.io</a>
       </div>
     </div>
@@ -772,6 +965,13 @@
 
 <!-- Custom scripts for this template -->
 <script src="js/agency.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    $("#change-color .bar").hover(function(){
+        // $(this).toggleClass('active');
+        $(this).find('.front').toggleClass('shine');
+    });
+</script>
 
 <!--<script>-->
     <!--$(document).ready(function(){-->

@@ -145,7 +145,7 @@ body {
 header.masthead {
   text-align: center;
   color: white;
-  background-image: url("../img/beach.jpg");
+  background-image: url("../img/back.png");
   background-repeat: no-repeat;
   background-attachment: scroll;
   background-position: center center;
@@ -378,7 +378,7 @@ ul.social-buttons {
 }
 
 .logo {
-    width:48px;
+    width:36px;
 }
 
 .nav-link {
@@ -423,6 +423,7 @@ wrapitplease {
     border-radius: 30px;
 }
 .whitepaper {
+    text-align: center;
     padding-top:30px;
     padding-bottom:30px
 }
@@ -435,8 +436,8 @@ wrapitplease {
   line-height: 120px;
 }
 
-header.masthead .socials {
-  padding-top: 100px;
+.socials {
+  padding-top: 115px;
   text-align: right;
 }
 
@@ -481,4 +482,25 @@ header.masthead .socials a {
 
 .modal-dialog {
     margin: 150px auto;
+}
+
+.prices {
+    line-height:3em;
+}
+
+.price-checkbox {
+    color:green;
+    font-size:2em;
+}
+
+.investor-checkbox {
+    padding-top:5px;
+    color:#FF9100;
+    font-size:2em;
+}
+
+.advantages-checkbox {
+    padding-top:5px;
+    color:#3498DB;
+    font-size:2em;
 }

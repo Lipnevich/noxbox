@@ -61,6 +61,8 @@
   <!-- Custom styles for this template -->
   <link href="css/agency.css" rel="stylesheet">
   <link href="timer/timer.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/component.css" />
+  <link rel="stylesheet" type="text/css" href="css/custom-bars.css" />
 
 </head>
 
@@ -95,7 +97,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
   <div class="container">
     <a class="navbar-brand shadowed js-scroll-trigger" href="#page-top">
-      <!--<img class="logo img-fluid" src="img/nb_logo.png" alt="">-->
+      <img class="logo img-fluid" src="img/logo.png" alt="">
       Noxbox</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <i class="fa fa-bars"></i>
@@ -117,15 +119,6 @@
         <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#team">$team</a>
         </li>
-        <li class="nav-item">
-          <div class="dropdown" id="i18nList">
-            <div class="dropdown-toggle nav-link" data-toggle="dropdown">
-              $language<span class="caret"/>
-            </div>
-            <ul class="dropdown-menu hadowed dropdown-menu-left">$i18n
-            </ul>
-          </div>
-        </li>
       </ul>
     </div>
   </div>
@@ -135,51 +128,74 @@
 <header class="masthead">
   <div class="container">
     <!--Socials-->
-    <div class="row">
-      <div class="col-lg-10 col-md-9 col-sm-10">
-        <div class="socials">
-          <ul class="list-inline social-buttons">
-            <li class="list-inline-item">
-              <a target="_blank" href="https://twitter.com/noxboxio">
-                <i class="fa fa-twitter"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://www.facebook.com/noxbox.io/">
-                <i class="fa fa-facebook"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://t.me/noxboxico">
-                <i class="fa fa-telegram"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://github.com/Lipnevich/noxbox">
-                <i class="fa fa-github"></i>
-              </a>
-            </li>
-            <li class="list-inline-item">
-              <a target="_blank" href="https://bitcointalk.org/index.php?topic=2971918">
-                <i class="fa fa-bitcoin"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
+    <div class="row justify-content-end socials">
+      <div class="col-lg-4">
+        <ul class="list-inline ">
+          <li class="list-inline-item">
+            <a target="_blank" href="https://twitter.com/noxboxio">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://facebook.com/noxbox.io/">
+              <i class="fa fa-facebook"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://t.me/noxboxico">
+              <i class="fa fa-telegram"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://github.com/Lipnevich/noxbox">
+              <i class="fa fa-github"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
+            <a target="_blank" href="https://bitcointalk.org/index.php?topic=2971918">
+              <i class="fa fa-bitcoin"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <ul class="list-inline">
+          <li class="list-inline-item">
+            <a href="index.html"><img class="img-fluid" width="32px" src="img/lang/us.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="id.html"><img class="img-fluid" width="32px" src="img/lang/id.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="ja.html"><img class="img-fluid" width="32px" src="img/lang/ja.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="ko.html"><img class="img-fluid" width="32px" src="img/lang/ko.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="zh.html"><img class="img-fluid" width="32px" src="img/lang/zh.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="ru.html"><img class="img-fluid" width="32px" src="img/lang/ru.svg"/></a>
+          </li>
+        </ul>
       </div>
     </div>
+    <br/>
+    <br/>
 
-    <div class="intro-text">
+    <div class="intro-text row">
+      <div class="col-md-12 col-lg-6 intro-lead-in shadowed"><b>$first_desctiption</b></div>
       <br/>
-      <br/>
-      <br/>
-      <br/>
+      <div class="col-md-12 col-lg-6 subheading shadowed">
 
-      <!--<div class="intro-lead-in shadowed"><br/><br/><br/>$welcome</div>-->
-      <div class="intro-heading shadowed">
-        <b>$presale1<span style="color:#F39C12">$presale2</span>
-          <br/>$presale3<span style="color:#F39C12">$presale4</span>$presale5</b>
-      </div>
+        <h4></h4><b>$presale1<span style="color:#F39C12">$presale2</span>$presale3<span style="color:#F39C12">$presale4</span>$presale5</b></h4>
+        <br/>
+        <br/>
+
+        $bonus
+        <br/>
+        <br/>
 
       <div class="btn-group">
         <a target="_blank" class="btn btn-lg btn-primary"
@@ -187,6 +203,8 @@
           $purchase
         </a>
       </div>
+    </div>
+  </div>
       <br/>
       <br/>
 
@@ -194,15 +212,31 @@
       <div id="timer1" class="row"></div>
         <script src="timer/timer.min.js"></script>
         <script>
-          new MegaTimer("1", {"periods":{seconds:"$seconds",minutes:"$minutes",hours:"$hours",days:"$days"},"view":[1,1,1,1],"type":{"currentType":"1","params":{"usertime":false,"utc":1519869600000}},"design":{"type":"plate","params":{"round":"10","background":"solid","background-color":"#eee","effect":"flipchart","space":"2","separator-margin":"20","number-font-family":{"family":"Comfortaa"},"number-font-size":"60","number-font-color":"#000","padding":"12","separator-on":false,"separator-text":":","text-on":true,"text-font-family":{"family":"Comfortaa"},"text-font-size":"20","text-font-color":"#ffffff"}},"designId":2,"theme":"white"}).run();
+          new MegaTimer("1", {"periods":{seconds:"$seconds",minutes:"$minutes",hours:"$hours",days:"$days"},"view":[1,1,1,1],"type":{"currentType":"1","params":{"usertime":false,"utc":1522328340000}},"design":{"type":"plate","params":{"round":"10","background":"solid","background-color":"#eee","effect":"flipchart","space":"2","separator-margin":"20","number-font-family":{"family":"Comfortaa"},"number-font-size":"60","number-font-color":"#000","padding":"12","separator-on":false,"separator-text":":","text-on":true,"text-font-family":{"family":"Comfortaa"},"text-font-size":"20","text-font-color":"#ffffff"}},"designId":2,"theme":"white"}).run();
         </script>
       </div>
-      <div class="btn-group whitepaper">
-        <a target="_blank" class="btn btn-lg btn-primary" href="$document">
-          White Paper
-        </a>
-      </div>
 
+      <br/>
+      <br/>
+      <h5 class="subheading shadowed">555 467 $usd_raised</h5>
+      <article class="flexy-grid">
+        <div class="flexy-column">
+          <div class="progress-factor flexy-item">
+            <div class="progress-bar">
+              <div class="bar has-rotation has-colors red heat-gradient" role="progressbar" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100">
+                <div class="tooltip heat-gradient-tooltip"></div>
+                <div class="bar-face face-position roof percentage"></div>
+                <div class="bar-face face-position back percentage"></div>
+                <div class="bar-face face-position floor percentage volume-lights"></div>
+                <div class="bar-face face-position left"></div>
+                <div class="bar-face face-position right"></div>
+                <div class="bar-face face-position front percentage volume-lights shine"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <h5 class="subheading shadowed">‎‎7 306 645 $noxbox_distributed</h5>
 
       <!--<h5 class="subheading shadowed">$howToBuy </h5>-->
       <!--<div class="btn-group">-->
@@ -237,13 +271,18 @@
 
     <div class="row">
       <div class="col-lg-12 text-center">
-        <h2 class="section-heading">Noxbox</h2>
+        <h2 class="section-heading">$Noxbox_title</h2>
         <p class="text-muted">$Noxbox</p>
       </div>
     </div>
+    <div class="whitepaper">
+      <a target="_blank" class="btn btn-lg btn-primary" href="$document">
+        $whitePaper
+      </a>
+    </div>
     <div class="row text-center">
       <div class="col-md-4">
-        <img class="rounded-circle img-fluid" src="img/global.jpg" alt="">
+        <img class="rounded-circle img-fluid" width="196" src="img/global.png" alt="">
         <h4 class="service-heading">$globality</h4>
         <p class="text-muted">$globality_desc</p>
       </div>
@@ -253,7 +292,7 @@
         <p class="text-muted">$ratings_desc</p>
       </div>
       <div class="col-md-4">
-        <img class="rounded-circle img-fluid" src="img/bitcoin.jpg" alt="">
+        <img class="rounded-circle img-fluid" width="196" src="img/logo.png" alt="">
         <h4 class="service-heading">$bitcoin_payments</h4>
         <p class="text-muted">$bitcoin_payments_desc</p>
       </div>
@@ -261,6 +300,96 @@
   </div>
 </section>
 
+
+<!-- Process -->
+<section id="process" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$process_header</h2>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col-md-12">
+        $process_desc
+        <br/>
+        <img class="img-fluid" src="img/time.png" width="340">
+        $process_desc2
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Investors -->
+<section id="investors" >
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$investors_privileges</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12"><i class="investor-checkbox fa fa-briefcase"></i> $investors_privileges_desc</div>
+      <br/>
+      <div class="col-md-12"><i class="investor-checkbox fa fa-group"></i> $investors_privileges_desc2</div>
+      <br/>
+      <div class="col-md-12"><i class="investor-checkbox fa fa-thumbs-up"></i> $investors_privileges_desc3</div>
+    </div>
+    <br/>
+    <br/>
+    <div class="row prices">
+      <div class="col-lg-12 text-center">
+        <img class="img-fluid" src="img/graph.png" alt="">
+      </div>
+      <div class="col-lg-12 text-center">
+        <br/>
+        $price_chart_desc
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Advantages -->
+<section id="advantages" class="bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$advantages</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-star"></i> $advantages_rating</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-eye"></i> $advantages_biometric</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-flash"></i> $advantages_online</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-umbrella"></i> $advantages_payment</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-leaf"></i> $advantages_price</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-globe"></i> $advantages_world</div><br/><br/>
+      <div class="col-md-12"><i class="advantages-checkbox fa fa-child"></i> $advantages_quality</div><br/>
+    </div>
+  </div>
+</section>
+
+<!-- Price -->
+<section id="price">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-heading">$price_header</h2>
+      </div>
+    </div>
+    <div class="row prices">
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> $price_1</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> $price_2</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> $price_3</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> $price_4</div>
+      <div class="col-md-12"><i class="price-checkbox fa fa-check"></i> $price_5</div>
+    </div>
+    <br/>
+    <br/>
+  </div>
+</section>
+
+<!-- ICO -->
 <section id="ico" class="bg-light">
   <div class="container">
     <div class="col-lg-12 text-center">
@@ -285,14 +414,14 @@
       </div>
       <div class="col-lg-3">
         <div class="gradient3">
-          <h3>20%</h3>
+          <h3>40%</h3>
           <b>$final_ico_round</b>
         </div><br>
         <p align="right">$final_ico_round_desc</p><br>
       </div>
       <div class="col-lg-3">
         <div class="gradient4">
-          <h3>40%</h3>
+          <h3>20%</h3>
           <b>$token_for_team</b>
         </div><br>
         <p align="right">$token_for_team_desc</p><br>
@@ -301,7 +430,7 @@
   </div>
 </section>
 
-<section>
+<section >
   <div class="container">
     <div class="section-wrapper">
       <div class="col-lg-12 text-center">
@@ -332,8 +461,28 @@
         <div class="col-sm-12 col-md-8 col-lg-8">$init_price_desc</div>
       </div>
       <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$second_price</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">$second_price_desc</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$third_price</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">$third_price_desc</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$soft_cap</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">1 000 000 USD</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$hard_cap</div>
+        <div class="col-sm-12 col-md-8 col-lg-8">4 000 000 USD</div>
+      </div>
+      <div class="row structure">
+        <div class="col-sm-12 col-md-4 col-lg-4">$investors_protection</div>
+        <div class="col-sm-12 col-md-8 col-lg-8"><b>$investors_protection_desc</b></div>
+      </div>
+      <div class="row structure">
         <div class="col-sm-12 col-md-4 col-lg-4">$marketplace</div>
-        <div class="col-sm-12 col-md-8 col-lg-8"><a target="_blank" href="https://chrome.google.com/webstore/detail/wavesliteapp/kfmcaklajknfekomaflnhkjjkcjabogm">Waves DEX</a></div>
+        <div class="col-sm-12 col-md-8 col-lg-8">Waves DEX</div>
       </div>
       <div class="row" style="padding-top:18px">
         <div class="col-sm-12 col-md-4 col-lg-4">$payments</div>
@@ -454,7 +603,6 @@
   </div>
 </section>
 
-
 <!-- Product -->
 <section id="product" class="bg-light">
   <div class="container">
@@ -497,6 +645,12 @@
         $noxbox_masseur
       </div>
     </div>
+    <div id="news"/>
+    <br/><br/><br/>
+    <div class="col-md-12 text-center">
+      <h2 class="section-heading">$news</h2>
+      <p>$amaizing_story</p>
+    </div>
   </div>
 </section>
 
@@ -517,8 +671,13 @@
           <p class="text-muted">$Nicolay_Lipnevich_desc</p>
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
-              <a target="_blank"  href="https://www.facebook.com/lipnevich">
+              <a target="_blank"  href="https://facebook.com/lipnevich">
                 <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a target="_blank"  href="https://www.linkedin.com/in/nicolay-lipnevich-15029239/">
+                <i class="fa fa-linkedin"></i>
               </a>
             </li>
           </ul>
@@ -531,7 +690,7 @@
           <p class="text-muted">$Marina_Lipnevich_desc</p>
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
-              <a target="_blank" href="https://www.facebook.com/marina.lipnevich">
+              <a target="_blank" href="https://facebook.com/marina.lipnevich">
                 <i class="fa fa-facebook"></i>
               </a>
             </li>
@@ -542,22 +701,81 @@
         <div class="team-member">
           <img class="mx-auto rounded-circle" src="img/team/dim.jpg" alt="">
           <h4>$Dmitry_Markevich</h4>
-          <p class="text-muted">$Dmitry_Markevich_desc</p>
+          <p class="text-muted">
+            $Dmitry_Markevich_desc
+            <a target="_blank" href="http://www.r-h.by">Royal Hall</a>,
+            <a target="_blank" href="http://www.techct.ru">TechElectroCT</a>
+          </p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank"  href="https://www.linkedin.com/in/dmitry-markevich-35611915a/">
+                <i class="fa fa-linkedin"></i>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="team-member">
-        <img class="mx-auto rounded-circle" src="img/team/al.jpg" alt="">
-        <h4>$Alexandr_Karpovich</h4>
-        <p class="text-muted">$Alexandr_Karpovich_desc</p>
-        <ul class="list-inline social-buttons">
-          <li class="list-inline-item">
-            <a target="_blank" href="https://www.facebook.com/alexander.karpovich.56">
-              <i class="fa fa-facebook"></i>
-            </a>
-          </li>
-        </ul>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/al.jpg" alt="">
+          <h4>$Alexandr_Karpovich</h4>
+          <p class="text-muted">$Alexandr_Karpovich_desc</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://facebook.com/alexander.karpovich.56">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+            <li class="list-inline-item">
+              <a target="_blank"  href="https://www.linkedin.com/in/alexander-karpovich-alexander-54a959a4/">
+                <i class="fa fa-linkedin"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/lu.jpg" alt="">
+          <h4>$Love_Yancevich</h4>
+          <p class="text-muted">$Love_Yancevich_desc</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://facebook.com/liubou.nedrashlianskaya">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/ta.jpg" alt="">
+          <h4>$Tatiana_Shamak</h4>
+          <p class="text-muted">$Tatiana_Shamak_desc</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://facebook.com/profile.php?id=100004902660295">
+                <i class="fa fa-facebook"></i>
+              </a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="team-member">
+          <img class="mx-auto rounded-circle" src="img/team/se.jpg" alt="">
+          <h4>$Sergey_Leviy</h4>
+          <p class="text-muted">$Sergey_Leviy_desc</p>
+          <ul class="list-inline social-buttons">
+            <li class="list-inline-item">
+              <a target="_blank" href="https://twitter.com/Nobadbro">
+                <i class="fa fa-twitter"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -577,7 +795,8 @@
         <div class="team-member">
           <img class="mx-auto rounded-circle" src="img/team/vi.jpg" alt="">
           <h4>$Victor_Scherb</h4>
-          <p class="text-muted">$Victor_Scherb_desc1
+          <p class="text-muted">
+            $Victor_Scherb_desc1
             <a target="_blank" href="https://osmand.net">OsmAnd</a>
             $Victor_Scherb_desc2
           </p>
@@ -590,7 +809,7 @@
           <p class="text-muted">$Stanislav_Lozichny_desc</p>
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
-              <a target="_blank" href="https://www.facebook.com/maverickluck">
+              <a target="_blank" href="https://facebook.com/maverickluck">
                 <i class="fa fa-facebook"></i>
               </a>
             </li>
@@ -617,90 +836,70 @@
   </div>
 </section>
 
-
+<!--Backlinks-->
 <section id="listing" class="bg-light">
   <div class="container">
     <div class="row logos text-center">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://foundico.com/ico/noxbox-.html">
           <img class="img-fluid" width="320px" src="img/listing/foundico.png"/>
         </a>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://icobazaar.com/v2/noxbox">
           <img class="img-fluid" width="256px" src="img/listing/icobazaar.png"/>
         </a>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://www.coingecko.com/en/ico/noxbox">
           <img class="img-fluid" width="196px" src="img/listing/coingecko.png"/>
         </a>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
+        <a target="_blank" href="https://icobay.net/icos/Noxbox?is=active">
+          <img class="img-fluid" width="256px" src="img/listing/icobay.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
         <a target="_blank" href="https://webcoin.today/">
           <img class="img-fluid" width="128px" src="img/listing/webcoin.png"/>
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="http://icobay.net/icos/Noxbox?is=upcoming">
-          <img class="img-fluid" width="256px" src="img/listing/icobay.png"/>
+      <div class="col-md-3">
+        <a target="_blank" href="http://www.icodaddy.io/">
+          <img class="img-fluid" width="196px" src="https://www.icodaddy.io/wp-content/uploads/2018/02/icodaddy.png"/>
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://medium.com/@icocalendartoday/noxbox-ico-at-glance-a3adca9c934c">
-          <img class="img-fluid" width="196px" src="img/listing/medium.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://www.trackico.io/" target="_blank" title="TrackICO">
-          <img border="0" src="https://www.trackico.io/static/img/partner_logo_black.png"
-               alt="TrackICO - provider of information about the best ICOs"
-               width="256px">
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://cryptorated.com/ico-listing/noxbox/">
-          <img class="img-fluid" width="96px" src="img/listing/cryptorated.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://cryptocoincharts.info/ico/noxbox-nbx">
-          <img class="img-fluid" width="256px" src="img/listing/cryptocoincharts.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://www.coinschedule.com/icos/e2321/noxbox-ico.html">
           <img class="img-fluid" width="256px" src="img/listing/coinschedule.png"/>
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://www.list-ico.com/ico/noxbox/">
-          <img class="img-fluid" width="196px" src="img/listing/listico.png"/>
+      <div class="col-md-3">
+        <a target="_blank" href="https://t.me/InsideCryptoChat">
+          <img border="0" src="img/listing/inside.png" width="96px">
         </a>
       </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://icodaily.net">
-          <img class="img-fluid" width="256px" src="img/listing/ico_daily.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://www.unlock-bc.com/project/noxbox">
-          <img class="img-fluid" width="256px" src="img/listing/unlock.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
-        <a target="_blank" href="https://coindelite.com/ico-detail-Noxbox">
-          <img class="img-fluid" width="96px" src="img/listing/coindelite.png"/>
-        </a>
-      </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <a target="_blank" href="https://www.listico.io/ico-calendar/first-round-of-ico">
           <img class="img-fluid" width="196px" src="img/listing/list.png"/>
         </a>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-3">
+        <a target="_blank" href="https://coindelite.com/ico-detail-Noxbox">
+          <img class="img-fluid" width="96px" src="img/listing/coindelite.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
         <a target="_blank" href="https://www.cryptocompare.com/coins/nbx/overview">
           <img class="img-fluid" width="256px" src="img/listing/cryptocompare.png"/>
+        </a>
+      </div>
+      <div class="col-md-3">
+        <a target="_blank" href="https://www.trackico.io/ico/noxbox/" title="TrackICO">
+          <img border="0" src="https://www.trackico.io/static/img/partner_logo_black.png"
+               alt="TrackICO - provider of information about the best ICOs"
+               width="196px">
         </a>
       </div>
     </div>
@@ -717,10 +916,10 @@
       <div class="col-md-3">
         <a target="_blank" href="TermsAndConditions.html">Terms and Conditions</a>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <ul class="list-inline social-buttons">
           <li class="list-inline-item">
-            <a target="_blank" href="https://www.facebook.com/noxbox.io/">
+            <a target="_blank" href="https://facebook.com/noxbox.io/">
               <i class="fa fa-facebook"></i>
             </a>
           </li>
@@ -746,7 +945,7 @@
           </li>
         </ul>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <a href="mailto:info@noxbox.io">info@noxbox.io</a>
       </div>
     </div>
@@ -766,6 +965,13 @@
 
 <!-- Custom scripts for this template -->
 <script src="js/agency.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    $("#change-color .bar").hover(function(){
+        // $(this).toggleClass('active');
+        $(this).find('.front').toggleClass('shine');
+    });
+</script>
 
 <!--<script>-->
     <!--$(document).ready(function(){-->
