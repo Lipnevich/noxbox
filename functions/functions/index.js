@@ -13,6 +13,15 @@ exports.createWalletForNewUser = functions.database.ref('/profiles/{userId}').on
            noxbox.notifyBalanceUpdated);
 });
 
+exports.balance = functions.database.ref('/requests/{userID}/balance').onCreate(event => {
+    return noxbox.getWallet(event.data.val()).then(
+           wallet.getBalance).then(
+           noxbox.updateBalance).then(
+           noxbox.notifyBalanceUpdated, noxbox.logError).then(
+           noxbox.releaseRequest);
+});
+
+
 exports.balanceUpdatedHook = functions.https.onRequest((request, response) => {
     console.info(request.body);
     if(wallet.checkHookConfirmations(request.body.data)) {

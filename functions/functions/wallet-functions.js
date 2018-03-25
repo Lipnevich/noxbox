@@ -2,6 +2,49 @@ const functions = require('firebase-functions');
 const Q = require('q');
 const math = require("bigdecimal");
 
+const WavesAPI = require('waves-api');
+const Waves = WavesAPI.create(WavesAPI.MAINNET_CONFIG);
+
+exports.create = function (request) {
+    var deferred = Q.defer();
+
+  	const seed = Waves.Seed.create();
+  	const encrypted = seed.encrypt(functions.config().keys.seedpass);
+
+  	if(!request.wallet) request.wallet = {};
+  	request.wallet.balance = '0';
+    request.wallet.address = seed.address;
+ 	request.wallet.seed = encrypted;
+
+
+  	console.log('New address ' + seed.address + ' was created for profile ' + request.id);
+	deferred.resolve(request);
+
+    return deferred.promise;
+}
+
+exports.getBalance = function (request) {
+    var deferred = Q.defer();
+
+    Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
+        console.log(balance);
+    });
+
+    block_io.get_address_balance({'address':request.wallet.address}, function (error, data) {
+        if (error) {
+            request.error = error;
+            deferred.reject(request);
+        } else {
+            request.id = data.data.balances[0].label;
+            request.wallet.balance = data.data.available_balance;
+            console.log('Current balance is ' + request.wallet.balance + ' for profile ' + request.id);
+            deferred.resolve(request);
+        }
+    });
+
+    return deferred.promise;
+}
+
 const BlockIo = require('block_io');
 const block_io = new BlockIo({
   api_key: functions.config().keys.wallet_api,
@@ -141,97 +184,14 @@ exports.pay = function (request) {
     return deferred.promise;
 }
 
-exports.create = function (request) {
-    var deferred = Q.defer();
-
-    block_io.get_new_address({'label': request.id}, function (error, data) {
-        if(error) {
-            var exists = 'Label already exists';
-            if(('' + error).indexOf(exists, 0) >= 0) {
-                block_io.get_address_balance({'label' : request.id}, function (error, data) {
-                    if (error) {
-                        request.error = error;
-                        deferred.reject(request);
-                    } else {
-                        if(!request.wallet) request.wallet = {};
-                        request.wallet.balance = data.data.balances[0].available_balance;
-                        request.wallet.address = data.data.balances[0].address;
-                        console.log("Existing balance is " + request.wallet.balance + " for profile " + request.id);
-                        deferred.resolve(request);
-                    }
-                });
-            } else {
-                request.error = error;
-                deferred.reject(request);
-            }
-        } else {
-            request.wallet = {'balance' : '0.0', 'address' : data.data.address};
-            console.log("Address " + data.data.address + " was created for new profile " + request.id);
-            deferred.resolve(request);
-        }
-    });
-
-    return deferred.promise;
-}
-
 exports.checkHookConfirmations = function (request) {
     if(!request.confirmations) {
         console.log('Not confirmed transaction');
         return false;
-    } else if((request.is_green && (request.confirmations == 1 || request.confirmations == 2))
-            || (!request.is_green && request.confirmations == 3)) {
+    } else if((request.is_green && (request.confirmations === 1 || request.confirmations === 2))
+            || (!request.is_green && request.confirmations === 3)) {
         return true;
     }
     console.log('Already confirmed transaction');
     return false;
-}
-
-exports.getBalance = function (request) {
-    var deferred = Q.defer();
-
-    block_io.get_address_balance({'address' : request.wallet.address}, function (error, data) {
-        if (error) {
-            request.error = error;
-            deferred.reject(request);
-        } else {
-            request.id = data.data.balances[0].label;
-            request.wallet.balance = data.data.available_balance;
-            console.log("Current balance is " + request.wallet.balance + " for profile " + request.id);
-            deferred.resolve(request);
-        }
-    });
-
-    return deferred.promise;
-}
-
-// common --------------------------
-exports.getOwnerBalance = function () {
-    var deferred = Q.defer();
-
-    block_io.get_balance({}, function (error, data) {
-        if (error) {
-            request.error = error;
-            deferred.reject(request);
-        } else {
-            console.log(data);
-            deferred.resolve(data);
-        }
-    });
-
-    return deferred.promise;
-}
-
-exports.getAllAddresses = function () {
-    var deferred = Q.defer();
-
-    block_io.get_my_addresses({}, function (error, data) {
-        if (error) {
-            request.error = error;
-            deferred.reject(request);
-        } else {
-            deferred.resolve(data);
-        }
-    });
-
-    return deferred.promise;
 }
