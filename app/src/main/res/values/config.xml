@@ -15,6 +15,6 @@
 
     <!--update functions wallet_api key for switching to other crypto currency-->
     <string name="crypto_currency" translatable="false">
-        BTC (TEST)
+        Waves
     </string>
 </resources>

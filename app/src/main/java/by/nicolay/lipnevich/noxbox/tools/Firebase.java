@@ -60,9 +60,11 @@ public class Firebase {
         availablePerformers = new GeoFire(FirebaseDatabase.getInstance().getReference().child("availablePerformers").child(type.toString()));
     }
 
+    public static final int SCALE = 3;
+
     public static BigDecimal getPrice() {
         // TODO (nli) get it from db
-        return new BigDecimal(0.001).setScale(5, RoundingMode.UP);
+        return new BigDecimal("0.001").setScale(SCALE, RoundingMode.UNNECESSARY);
     }
 
     public static void sendRequest(Request request) {

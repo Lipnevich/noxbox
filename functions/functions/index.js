@@ -21,24 +21,11 @@ exports.balance = functions.database.ref('/requests/{userID}/balance').onCreate(
            noxbox.releaseRequest);
 });
 
-
-exports.balanceUpdatedHook = functions.https.onRequest((request, response) => {
-    console.info(request.body);
-    if(wallet.checkHookConfirmations(request.body.data)) {
-        return wallet.getBalance({'wallet' : { 'address' : request.body.data.address }})
-            .then(noxbox.updateBalance)
-            .then(noxbox.notifyBalanceUpdated, noxbox.logError)
-            .then(response.send.bind(response));
-    }
-    response.send("Thank you!");
-});
-
 exports.refund = functions.database.ref('/requests/{userID}/refund').onCreate(event => {
     return noxbox.getWallet(event.data.val()).then(
+           wallet.getBalance).then(
            noxbox.checkPositiveBalance).then(
-           wallet.getAvailableMoneyWithoutFee).then(
-           wallet.sendMoney).then(
-           // TODO (nli) send fee to the default label in the same time
+           wallet.refund).then(
            noxbox.updateBalance).then(
            noxbox.notifyBalanceUpdated, noxbox.logError).then(
            noxbox.releaseRequest);
@@ -76,11 +63,13 @@ exports.complete = functions.database.ref('/requests/{userId}/complete').onCreat
     // TODO (nli) check if there is enough time from accepted to completed for performing one action
     return noxbox.completeNoxbox(event.data.val()).then(
            noxbox.notifyCompleted).then(
-           wallet.getPriceWithoutFee).then(
+           noxbox.getPayerSeed).then(
+           noxbox.getPerformerAddress).then(
+           // TODO (nli) send fee to the default label in the same time
            wallet.pay).then(
            // TODO (nli) create fee in performers wallet
            noxbox.storePriceWithoutFee).then(
-           noxbox.updatePayerBalanceInTransaction).then(
+           noxbox.f).then(
            noxbox.notifyPayerBalanceUpdated).then(
            noxbox.likePerformer).then(
            noxbox.likePayer, noxbox.logError).then(

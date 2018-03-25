@@ -36,7 +36,7 @@
     <string name="massage_available">массаж доступен</string>
     <string name="massages_available">массажей доступно</string>
     <string name="massage_unavailable">Hедостаточно денег для массажа. Пожалуйста, переведите %s</string>
-    <string name="walletAddress">Ваш bitcoin кошелек</string>
+    <string name="walletAddress">Ваш кошелек</string>
     <string name="addressToRefund">Адрес на который Вы хотите перевести деньги</string>
     <string name="refund">Возврат</string>
     <string name="refundPrompt">Вы уверены что хотите вернуть Ваши деньги?</string>

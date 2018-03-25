@@ -36,7 +36,7 @@
     <string name="massage_available">massage available</string>
     <string name="massages_available">massages available</string>
     <string name="massage_unavailable">Not enough money for massage. Please send at least %s</string>
-    <string name="walletAddress">Your bitcoin wallet</string>
+    <string name="walletAddress">Your wallet</string>
     <string name="addressToRefund">Address to which you want to transfer money</string>
     <string name="refund">refund</string>
     <string name="refundPrompt">Are you sure you want to refund your money?</string>

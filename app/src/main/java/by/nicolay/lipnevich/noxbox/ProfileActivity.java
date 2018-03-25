@@ -39,6 +39,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +47,13 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
+import by.nicolay.lipnevich.noxbox.model.Request;
+import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Task;
@@ -74,6 +78,10 @@ public abstract class ProfileActivity extends AuthActivity {
             prepareForIteration();
         } else {
             popup("Low rate!");
+        }
+
+        if(new BigDecimal(Firebase.getWallet().getBalance()).compareTo(Firebase.getPrice()) <= 0) {
+            Firebase.sendRequest(new Request().setType(RequestType.balance));
         }
 
         listenMessages();

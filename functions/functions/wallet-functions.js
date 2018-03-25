@@ -4,12 +4,14 @@ const math = require("bigdecimal");
 
 const WavesAPI = require('waves-api');
 const Waves = WavesAPI.create(WavesAPI.MAINNET_CONFIG);
+const password = functions.config().keys.seedpass;
+const decimals = new math.BigDecimal('100000000');
 
 exports.create = function (request) {
     var deferred = Q.defer();
 
   	const seed = Waves.Seed.create();
-  	const encrypted = seed.encrypt(functions.config().keys.seedpass);
+  	const encrypted = seed.encrypt(password);
 
   	if(!request.wallet) request.wallet = {};
   	request.wallet.balance = '0';
@@ -27,124 +29,47 @@ exports.getBalance = function (request) {
     var deferred = Q.defer();
 
     Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
-        console.log(balance);
-    });
-
-    block_io.get_address_balance({'address':request.wallet.address}, function (error, data) {
-        if (error) {
-            request.error = error;
-            deferred.reject(request);
-        } else {
-            request.id = data.data.balances[0].label;
-            request.wallet.balance = data.data.available_balance;
-            console.log('Current balance is ' + request.wallet.balance + ' for profile ' + request.id);
-            deferred.resolve(request);
-        }
+        request.wallet.balance = '' + new math.BigDecimal(balance.balance).divide(decimals);
+        request.wallet.availableMoneyWithoutFee = '' + new math.BigDecimal(request.wallet.balance)
+                 .subtract(new math.BigDecimal('0.001'));
+        console.log('Current balance is ' + request.wallet.balance + ' for profile ' + request.id);
+        deferred.resolve(request);
     });
 
     return deferred.promise;
 }
 
-const BlockIo = require('block_io');
-const block_io = new BlockIo({
-  api_key: functions.config().keys.wallet_api,
-  version: 2
-});
-
-exports.getAvailableMoneyWithoutFee = function (request) {
+exports.refund = function (request) {
     var deferred = Q.defer();
 
-    block_io.get_network_fee_estimate({
-        'amounts': request.wallet.availableMoney,
-        'from_labels': request.id,
-        'priority': 'low',
-        'to_addresses': request.toAddress
-    }, function (error, data) {
-        if(error) {
-            request.availableMoneyWithoutFee = data.data.max_withdrawal_available;
-            if(request.availableMoneyWithoutFee) {
-                console.info('money without fee ', request.availableMoneyWithoutFee);
-                return deferred.resolve(request);
-            }
-            request.error = error;
-            return deferred.reject(request);
-        } else {
-            console.log('Network fee ' + data.data.estimated_network_fee);
-            request.availableMoneyWithoutFee = '' + (new math.BigDecimal(request.wallet.availableMoney)
-                .subtract(new math.BigDecimal(data.data.estimated_network_fee)));
-            if(new math.BigDecimal(request.availableMoneyWithoutFee)
-                .compareTo(new math.BigDecimal(0)) <= 0) {
-                request.error = 'Fee ' + data.data.estimated_network_fee
-                                                    + ' is bigger than funds ' + request.wallet.availableMoney;
-                deferred.reject(request);
-            }
-            return deferred.resolve(request);
-        }
-    });
+    const restoredPhrase = Waves.Seed.decryptSeedPhrase(request.wallet.seed, password);
+    const seed = Waves.Seed.fromExistingPhrase(restoredPhrase);
 
-    return deferred.promise;
-}
+    var refundAmount = '' + (new math.BigDecimal(request.wallet.balance)
+            .subtract(new math.BigDecimal('0.001'))).multiply(decimals);
+    console.log(refundAmount);
 
-exports.sendMoney = function (request) {
-    var deferred = Q.defer();
+    const transferData = {
+        // An arbitrary address
+        recipient: request.toAddress,
+        // ID of a token, or WAVES
+        assetId: 'WAVES',
+        // The real amount is the given number divided by 10^(precision of the token)
+        amount: refundAmount,
+        // The same rules for these two fields
+        feeAssetId: 'WAVES',
+        fee: 100000,
+        // 140 bytes of data (it's allowed to use Uint8Array here)
+        attachment: '',
+        timestamp: Date.now()
+    };
 
-    block_io.withdraw_from_labels({
-        'amounts': request.availableMoneyWithoutFee,
-        'from_labels': request.id,
-        'to_addresses': request.toAddress,
-        'priority': 'low',
-        'pin': functions.config().keys.wallet_pin
-    }, function (error, data) {
-        if(error) {
-            request.error = error;
-            deferred.reject(request);
-        } else {
-            console.log('Money was refund ' + request.availableMoneyWithoutFee + ' to address ' + request.toAddress);
-            request.wallet.balance = '' + (new math.BigDecimal(request.wallet.balance)
-                .subtract(new math.BigDecimal(request.wallet.availableMoney)));
-            deferred.resolve(request);
-        }
-    });
-
-    return deferred.promise;
-}
-
-exports.getPriceWithoutFee = function (request) {
-    var deferred = Q.defer();
-
-    var payerId;
-    for(id in request.noxbox.payers) {
-        payerId = id;
-    }
-    var performerId;
-    for(id in request.noxbox.performers) {
-        performerId = id;
-    }
-
-    block_io.get_network_fee_estimate({
-        'amounts': request.noxbox.price,
-        'from_labels': payerId,
-        'priority': 'low',
-        'to_labels': performerId
-    }, function (error, data) {
-        if(error) {
-            request.priceWithoutFee = data.data.max_withdrawal_available;
-            if(request.priceWithoutFee) {
-                console.info('price without fee ', request.priceWithoutFee);
-                return deferred.resolve(request);
-            }
-            request.error = error;
-            return deferred.reject(request);
-        } else {
-            console.log('Network fee ' + data.data.estimated_network_fee);
-            request.priceWithoutFee = '' + (new math.BigDecimal(request.noxbox.price)
-                .subtract(new math.BigDecimal(data.data.estimated_network_fee)));
-            if(new math.BigDecimal(request.priceWithoutFee).compareTo(new math.BigDecimal(0)) <= 0) {
-                request.error = 'Calculation error price is lower then fee';
-                deferred.reject(request);
-            }
-            return deferred.resolve(request);
-        }
+    Waves.API.Node.v1.assets.transfer(transferData, seed.keyPair).then((responseData) => {
+        console.log(responseData);
+        request.wallet.balance = '0';
+        request.wallet.availableMoney = '0';
+        request.wallet.availableMoneyWithoutFee = '0';
+        deferred.resolve(request);
     });
 
     return deferred.promise;
@@ -153,45 +78,34 @@ exports.getPriceWithoutFee = function (request) {
 exports.pay = function (request) {
     var deferred = Q.defer();
 
-    // TODO (nli) pay to each performer in case there is more then 1 performer in noxbox
-    var payerId;
-    for(id in request.noxbox.payers) {
-        payerId = id;
-    }
-    var performerId;
-    for(id in request.noxbox.performers) {
-        performerId = id;
-    }
+    request.wallet.priceWithoutFee = '' + new math.BigDecimal(request.noxbox.price)
+             .subtract(new math.BigDecimal('0.001'));
 
-    console.log('amount ' + request.priceWithoutFee + ' from ' + payerId + ' to ' + performerId);
+    console.log('amount ' + request.wallet.priceWithoutFee + ' from ' + request.payer.id
+            + ' to ' + request.performer.id);
 
-    block_io.withdraw_from_labels({
-        'amounts': request.priceWithoutFee,
-        'from_labels': payerId,
-        'to_labels': performerId,
-        'priority': 'low',
-        'pin': functions.config().keys.wallet_pin
-    }, function (error, data) {
-        if(error) {
-            request.error = error;
-            deferred.reject(request);
-        } else {
-            console.log('Noxbox was payed ');
-            deferred.resolve(request);
-        }
+    const restoredPhrase = Waves.Seed.decryptSeedPhrase(request.payer.seed, password);
+    const seed = Waves.Seed.fromExistingPhrase(restoredPhrase);
+
+    const transferData = {
+        // An arbitrary address
+        recipient: request.performer.address,
+        // ID of a token, or WAVES
+        assetId: 'WAVES',
+        // The real amount is the given number divided by 10^(precision of the token)
+        amount: new math.BigDecimal(request.wallet.priceWithoutFee).multiply(decimals),
+        // The same rules for these two fields
+        feeAssetId: 'WAVES',
+        fee: 100000,
+        // 140 bytes of data (it's allowed to use Uint8Array here)
+        attachment: '',
+        timestamp: Date.now()
+    };
+
+    Waves.API.Node.v1.assets.transfer(transferData, seed.keyPair).then((responseData) => {
+        console.log(responseData);
+        deferred.resolve(request);
     });
 
     return deferred.promise;
-}
-
-exports.checkHookConfirmations = function (request) {
-    if(!request.confirmations) {
-        console.log('Not confirmed transaction');
-        return false;
-    } else if((request.is_green && (request.confirmations === 1 || request.confirmations === 2))
-            || (!request.is_green && request.confirmations === 3)) {
-        return true;
-    }
-    console.log('Already confirmed transaction');
-    return false;
 }

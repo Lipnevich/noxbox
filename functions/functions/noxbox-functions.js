@@ -78,12 +78,12 @@ exports.getWallet = function (request) {
 
     db.ref('profiles').child(request.id).child('wallet').once('value').then(function(snapshot) {
         request.wallet = snapshot.val();
+        if(!request.wallet) request.wallet = {};
         request.wallet.balance = request.wallet.balance || '0';
         request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
         request.wallet.availableMoney = '' + (new math.BigDecimal(request.wallet.balance)
             .subtract(new math.BigDecimal(request.wallet.frozenMoney)));
 
-        console.log(request.wallet);
         deferred.resolve(request);
     });
 
@@ -135,6 +135,7 @@ exports.getPayerProfile = function (request) {
     db.ref('profiles').child(request.id).once('value').then(function(snapshot) {
         var payer = snapshot.val().profile;
         var rating = snapshot.val().rating;
+
         request.payer = {
             'id' : payer.id,
             'name' : payer.name,
@@ -143,6 +144,40 @@ exports.getPayerProfile = function (request) {
         if(rating) {
             request.payer.rating = rating;
         }
+        deferred.resolve(request);
+    });
+
+    return deferred.promise;
+}
+
+exports.getPayerSeed = function (request) {
+    var deferred = Q.defer();
+
+    // TODO (nli) pay to each performer in case there is more then 1 performer in noxbox
+    if(!request.payer) request.payer = {};
+    for(id in request.noxbox.payers) {
+        request.payer.id = id;
+    }
+
+    db.ref('profiles').child(request.payer.id).child("wallet").child("seed").once('value').then(function(snapshot) {
+        request.payer.seed = snapshot.val();
+        deferred.resolve(request);
+    });
+
+    return deferred.promise;
+}
+
+exports.getPerformerAddress = function (request) {
+    var deferred = Q.defer();
+
+    var performerId;
+    if(!request.performer) request.performer = {};
+    for(id in request.noxbox.performers) {
+        request.performer.id = id;
+    }
+
+    db.ref('profiles').child(request.payer.id).child("wallet").child("address").once('value').then(function(snapshot) {
+        request.performer.address = snapshot.val();
         deferred.resolve(request);
     });
 

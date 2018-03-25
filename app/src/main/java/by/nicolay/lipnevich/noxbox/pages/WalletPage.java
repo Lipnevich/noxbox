@@ -25,10 +25,11 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.SCALE;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
@@ -85,6 +86,7 @@ public class WalletPage extends AppCompatActivity {
                 }
             }
         });
+        Firebase.sendRequest(new Request().setType(RequestType.balance));
     }
 
     private void refund(String address) {
@@ -113,19 +115,19 @@ public class WalletPage extends AppCompatActivity {
         balanceLabel.setText(String.format(getResources().getString(R.string.balance), cryptoCurrency));
 
         TextView balanceView = (TextView) findViewById(R.id.balance_id);
-        balanceView.setText(balance.setScale(5, RoundingMode.DOWN).toString());
+        balanceView.setText(balance.setScale(SCALE, RoundingMode.UNNECESSARY).toString());
 
         TextView priceLabel = (TextView) findViewById(R.id.price_label_id);
         priceLabel.setText(String.format(getResources().getString(R.string.price), cryptoCurrency));
 
         TextView priceView = (TextView) findViewById(R.id.price_id);
-        priceView.setText(price.setScale(5, RoundingMode.DOWN).toString());
+        priceView.setText(price.setScale(SCALE, RoundingMode.UNNECESSARY).toString());
 
         TextView servicesDescription = (TextView) findViewById(R.id.services_description_id);
-        BigDecimal numberOfServices = balance.divide(price, 0, RoundingMode.DOWN);
+        BigDecimal numberOfServices = balance.divide(price, 0, RoundingMode.UNNECESSARY);
         if(numberOfServices.compareTo(BigDecimal.ONE) < 0) {
             servicesDescription.setText(String.format(getResources().getString(R.string.massage_unavailable),
-                    price.subtract(balance).setScale(5, RoundingMode.DOWN).toString() + " " + cryptoCurrency));
+                    price.subtract(balance).setScale(SCALE, RoundingMode.UNNECESSARY).toString() + " " + cryptoCurrency));
         } else {
             if(numberOfServices.compareTo(BigDecimal.ONE) == 0)
                 servicesDescription.setText(getResources().getString(R.string.massage_available));
