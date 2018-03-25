@@ -75,7 +75,6 @@ public class I18nizer {
         for(Map.Entry entry : sorted) {
             content = content.replaceAll("\\$" + entry.getKey(), entry.getValue().toString());
         }
-        content = content.replaceFirst("\\$i18n", listOfLanguages(languages));
 
         String name = file.getName().split("\\.")[0];
         if(name.equals("en")) {
@@ -86,15 +85,4 @@ public class I18nizer {
         Files.write(translatedFile, content.getBytes(UTF_8));
     }
 
-    private static String listOfLanguages(Map<String, String> languages) {
-        StringBuilder items = new StringBuilder();
-        for (String key : languages.keySet()) {
-            String languageShort = key;
-            if(key.equals("en")) {
-                languageShort = "index";
-            }
-            items.append("\n\t\t\t\t<li class='nav-item'><a class='nav-link js-scroll-trigger' href='" + languageShort + ".html'>" + languages.get(key) + "</a></li>");
-        }
-        return items.toString();
-    }
 }
