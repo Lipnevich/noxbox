@@ -1,6 +1,6 @@
 package by.nicolay.lipnevich.noxbox.model;
 
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.performer.massage.R;
 
 public enum RateType {
 

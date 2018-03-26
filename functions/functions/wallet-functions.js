@@ -28,14 +28,19 @@ exports.create = function (request) {
 exports.getBalance = function (request) {
     var deferred = Q.defer();
 
-    if(!request.wallet.address) {
+    if(!request.wallet || !request.wallet.address) {
         request.wallet.balance = '0';
-        request.wallet.availableMoneyWithoutFee = '0';
+        request.wallet.frozenMoney = '0';
+        request.wallet.availableMoney = '0';
+        request.wallet.availableMoneyWithoutFee = '-0.001';
         deferred.resolve(request);
     } else {
         Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
             request.wallet.balance = '' + new math.BigDecimal(balance.balance).divide(decimals);
-            request.wallet.availableMoneyWithoutFee = '' + new math.BigDecimal(request.wallet.balance)
+            request.wallet.frozenMoney = request.wallet.frozenMoney ? request.wallet.frozenMoney : '0';
+            request.wallet.availableMoney = '' + new math.BigDecimal(request.wallet.balance)
+                    .subtract(new math.BigDecimal(request.wallet.frozenMoney));
+            request.wallet.availableMoneyWithoutFee = '' + new math.BigDecimal(request.wallet.availableMoney)
                      .subtract(new math.BigDecimal('0.001'));
             console.log('Current balance is ' + request.wallet.balance + ' for profile ' + request.id);
             deferred.resolve(request);

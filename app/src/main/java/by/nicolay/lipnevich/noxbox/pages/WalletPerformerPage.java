@@ -19,7 +19,7 @@ import by.nicolay.lipnevich.noxbox.model.MessageType;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.performer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 

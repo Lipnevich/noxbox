@@ -108,9 +108,9 @@ exports.getPrice = function (request) {
 exports.isEnoughMoney = function (request) {
     var deferred = Q.defer();
 
-    if(!request.wallet.availableMoney ||
-        new math.BigDecimal(request.wallet.availableMoney).compareTo(new math.BigDecimal(0)) < 0) {
-        console.log(request.wallet.availableMoney);
+    if(!request.wallet.availableMoneyWithoutFee ||
+        new math.BigDecimal(request.wallet.availableMoneyWithoutFee).compareTo(new math.BigDecimal(0)) <= 0) {
+        console.log(request.wallet.availableMoneyWithoutFee);
         request.error = 'No money available';
         deferred.reject(request);
     }

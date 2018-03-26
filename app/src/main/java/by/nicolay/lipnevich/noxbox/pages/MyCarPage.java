@@ -14,7 +14,7 @@ import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.payer.tirefitting.Car;
 import by.nicolay.lipnevich.noxbox.payer.tirefitting.TireFittingProfile;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.performer.massage.R;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
