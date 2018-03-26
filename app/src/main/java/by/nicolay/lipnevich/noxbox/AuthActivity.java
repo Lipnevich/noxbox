@@ -65,7 +65,12 @@ public abstract class AuthActivity extends AppCompatActivity {
 
             startActivityForResult(login, SIGN_IN_REQUEST_CODE);
         } else {
-            Firebase.readProfile(processProfileTask);
+            Firebase.readPrice(new Task<Object>() {
+                @Override
+                public void execute(Object object) {
+                    Firebase.readProfile(processProfileTask);
+                }
+            });
         }
     }
 

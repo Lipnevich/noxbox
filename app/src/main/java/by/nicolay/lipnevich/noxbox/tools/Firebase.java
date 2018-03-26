@@ -50,6 +50,7 @@ public class Firebase {
     private static UserAccount userAccount;
     private static NoxboxType type;
     private static UserType userType;
+    private static BigDecimal price;
 
     public static void init(NoxboxType noxboxType, UserType userOfType) {
         type = noxboxType;
@@ -63,8 +64,24 @@ public class Firebase {
     public static final int SCALE = 3;
 
     public static BigDecimal getPrice() {
-        // TODO (nli) get it from db
-        return new BigDecimal("0.001").setScale(SCALE, RoundingMode.UNNECESSARY);
+        readPrice(null);
+        return price;
+    }
+
+    public static void readPrice(final Task<Object> task) {
+        FirebaseDatabase.getInstance().getReference().child("prices").child(type.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String value = dataSnapshot.getValue(String.class);
+                    price = new BigDecimal(value).setScale(SCALE, RoundingMode.UNNECESSARY);
+                }
+                if(task != null) {
+                    task.execute(price);
+                }
+            }
+            @Override public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
     public static void sendRequest(Request request) {

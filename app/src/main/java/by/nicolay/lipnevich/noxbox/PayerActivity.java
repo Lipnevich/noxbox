@@ -66,8 +66,8 @@ public abstract class PayerActivity extends NoxboxActivity {
         pointerImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), getPayerDrawable()));
 
         requestButton = (Button) findViewById(R.id.requestButton);
-        requestButton.setText(getResources().getText(noxboxType().getMessage())
-                + " " + Firebase.getPrice() + " " + getResources().getString(R.string.crypto_currency));
+        updatePrice();
+
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,6 +104,17 @@ public abstract class PayerActivity extends NoxboxActivity {
         messageText = (EditText) findViewById(R.id.message);
     }
 
+    public void updatePrice() {
+        if(requestButton == null) return;
+
+        if(Firebase.getPrice() == null) {
+            requestButton.setText(getResources().getText(noxboxType().getMessage()));
+        } else {
+            requestButton.setText(getResources().getText(noxboxType().getMessage())
+                    + " " + Firebase.getPrice() + " " + getResources().getString(R.string.crypto_currency));
+        }
+    }
+
     private boolean isEnoughMoney() {
         return new BigDecimal(getWallet().getBalance())
                 .compareTo(Firebase.getPrice()) >= 0;
@@ -119,6 +130,7 @@ public abstract class PayerActivity extends NoxboxActivity {
         }
 
         requestButton.setVisibility(View.VISIBLE);
+        updatePrice();
         pointerImage.setVisibility(View.VISIBLE);
 
         cancelButton.setVisibility(View.INVISIBLE);

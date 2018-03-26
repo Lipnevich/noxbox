@@ -65,9 +65,6 @@ import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
 
 public abstract class ProfileActivity extends AuthActivity {
 
-    private double MIN_RATE = 4.5;
-    protected Drawer menu;
-
     @Override
     protected void processProfile(Profile profile) {
         createMenu();
@@ -80,12 +77,15 @@ public abstract class ProfileActivity extends AuthActivity {
             popup("Low rate!");
         }
 
-        if(new BigDecimal(Firebase.getWallet().getBalance()).compareTo(Firebase.getPrice()) <= 0) {
+        if(new BigDecimal(Firebase.getWallet().getBalance()).compareTo(BigDecimal.ZERO) <= 0) {
             Firebase.sendRequest(new Request().setType(RequestType.balance));
         }
 
         listenMessages();
     }
+    private double MIN_RATE = 4.5;
+
+    protected Drawer menu;
 
     private void listenMessages() {
         Firebase.listenMessages(new Task() {
