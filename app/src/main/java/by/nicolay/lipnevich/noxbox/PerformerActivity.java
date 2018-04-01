@@ -56,6 +56,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     private Button acceptButton;
     private ImageView pathImage;
     private EditText messageText;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,10 +146,13 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
             return;
         }
 
-        final Timer timer = new Timer() {
+        if(timer != null) {
+            timer.stop();
+        }
+        timer = new Timer() {
             @Override
             protected void timeout() {
-                if(pingMessage.getNoxbox().getTimeAccepted() == null) {
+                if(tryGetNoxboxInProgress() == null || tryGetNoxboxInProgress().getTimeAccepted() == null) {
                     cancelPing(pingMessage);
                 }
             }

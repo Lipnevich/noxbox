@@ -58,7 +58,7 @@ exports.refund = function (request) {
 
     var refundAmount = '' + (new math.BigDecimal(request.wallet.balance)
             .subtract(new math.BigDecimal('0.001'))).multiply(decimals);
-    console.log(refundAmount);
+    console.log('Refund ' + (new math.BigDecimal(request.wallet.balance).subtract(new math.BigDecimal('0.001'))));
 
     const transferData = {
         // An arbitrary address
@@ -89,11 +89,11 @@ exports.refund = function (request) {
 exports.pay = function (request) {
     var deferred = Q.defer();
 
-    if(!request.wallet) request.wallet = {};
-    request.wallet.priceWithoutFee = '' + new math.BigDecimal(request.noxbox.price)
+    request.priceWithoutFee = '' + new math.BigDecimal(request.noxbox.price)
              .subtract(new math.BigDecimal('0.001'));
 
-    console.log('amount ' + request.wallet.priceWithoutFee + ' from ' + request.payer.id
+    var priceAmount = '' + (new math.BigDecimal(request.priceWithoutFee).multiply(decimals));
+    console.log('Pay price without fee ' + request.priceWithoutFee + ' from ' + request.payer.id
             + ' to ' + request.performer.id);
 
     const restoredPhrase = Waves.Seed.decryptSeedPhrase(request.payer.seed, password);
@@ -105,7 +105,7 @@ exports.pay = function (request) {
         // ID of a token, or WAVES
         assetId: 'WAVES',
         // The real amount is the given number divided by 10^(precision of the token)
-        amount: new math.BigDecimal(request.wallet.priceWithoutFee).multiply(decimals),
+        amount: priceAmount,
         // The same rules for these two fields
         feeAssetId: 'WAVES',
         fee: 100000,

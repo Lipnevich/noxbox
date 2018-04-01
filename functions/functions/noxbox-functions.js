@@ -31,14 +31,25 @@ exports.notifyPayerBalanceUpdated = function (request) {
     for(id in request.noxbox.payers) {
         payerId = id;
     }
-    var ref = db.ref('messages').child(payerId);
-    var messageId = ref.push().key;
-    ref.child(messageId).set({
-        'id' : messageId,
-        'type' : 'balanceUpdated',
-        'wallet' : request.wallet
+
+    db.ref('profiles').child(payerId).child('wallet').once('value').then(function(snapshot) {
+        request.wallet = snapshot.val();
+        if(!request.wallet) request.wallet = {};
+        request.wallet.balance = request.wallet.balance || '0';
+        request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
+        request.wallet.availableMoney = '' + (new math.BigDecimal(request.wallet.balance)
+            .subtract(new math.BigDecimal(request.wallet.frozenMoney)));
+
+        var ref = db.ref('messages').child(payerId);
+        var messageId = ref.push().key;
+        ref.child(messageId).set({
+            'id' : messageId,
+            'type' : 'balanceUpdated',
+            'wallet' : request.wallet
+        });
+
+        deferred.resolve(request);
     });
-    deferred.resolve(request);
 
     return deferred.promise;
 }

@@ -98,32 +98,32 @@ public class WalletPerformerPage extends AppCompatActivity {
         BigDecimal price = Firebase.getPrice();
         BigDecimal balance = wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO;
         BigDecimal frozenMoney = wallet.getFrozenMoney() != null ? new BigDecimal(wallet.getFrozenMoney()) : BigDecimal.ZERO;
-        balance = balance.subtract(frozenMoney).setScale(SCALE, RoundingMode.UNNECESSARY);
+        balance = balance.subtract(frozenMoney).setScale(SCALE, RoundingMode.DOWN);
 
         String cryptoCurrency = getResources().getString(R.string.crypto_currency);
 
-        TextView balanceLabel = (TextView) findViewById(R.id.balance_label_id);
+        TextView balanceLabel = findViewById(R.id.balance_label_id);
         balanceLabel.setText(String.format(getResources().getString(R.string.balance), cryptoCurrency));
 
-        TextView balanceText = (TextView) findViewById(R.id.balance_id);
-        balanceText.setText(balance.setScale(SCALE, RoundingMode.UNNECESSARY).toString());
+        TextView balanceText = findViewById(R.id.balance_id);
+        balanceText.setText(balance.setScale(SCALE, RoundingMode.DOWN).toString());
 
-        TextView frozenLabel = (TextView) findViewById(R.id.frozen_money_label_id);
+        TextView frozenLabel = findViewById(R.id.frozen_money_label_id);
         frozenLabel.setText(String.format(getResources().getString(R.string.frozen_money), cryptoCurrency));
 
-        TextView frozenText = (TextView) findViewById(R.id.frozen_money_id);
-        frozenText.setText(frozenMoney.setScale(SCALE, RoundingMode.UNNECESSARY).toString());
+        TextView frozenText = findViewById(R.id.frozen_money_id);
+        frozenText.setText(frozenMoney.setScale(SCALE, RoundingMode.DOWN).toString());
 
-        TextView priceLabel = (TextView) findViewById(R.id.current_reward_label_id);
+        TextView priceLabel = findViewById(R.id.current_reward_label_id);
         priceLabel.setText(String.format(getResources().getString(R.string.current_reward), cryptoCurrency));
 
-        TextView priceText = (TextView) findViewById(R.id.current_reward_id);
-        priceText.setText(price.setScale(SCALE, RoundingMode.UNNECESSARY).toString());
+        TextView priceText = findViewById(R.id.current_reward_id);
+        priceText.setText(price.setScale(SCALE, RoundingMode.DOWN).toString());
 
-        Button sendButton = (Button) findViewById(R.id.send_button_id);
+        Button sendButton = findViewById(R.id.send_button_id);
         sendButton.setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        EditText addressToSendEditor = (EditText) findViewById(R.id.address_to_send_id);
+        EditText addressToSendEditor = findViewById(R.id.address_to_send_id);
         addressToSendEditor.setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
     }
 

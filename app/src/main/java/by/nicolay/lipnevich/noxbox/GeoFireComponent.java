@@ -51,6 +51,7 @@ public abstract class GeoFireComponent extends MapActivity {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 String performerId = key.split(":")[0];
+                if(getProfile().getId().equals(performerId)) return;
                 TravelMode travelMode = TravelMode.valueOf(key.split(":")[1]);
                 GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), getPerformerDrawable());
                 marker.setTag(travelMode);
@@ -59,12 +60,14 @@ public abstract class GeoFireComponent extends MapActivity {
             @Override
             public void onKeyExited(String key) {
                 String performerId = key.split(":")[0];
+                if(getProfile().getId().equals(performerId)) return;
                 removeMarker(performerId);
             }
 
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
                 String performerId = key.split(":")[0];
+                if(getProfile().getId().equals(performerId)) return;
                 TravelMode travelMode = TravelMode.valueOf(key.split(":")[1]);
                 GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), getPerformerDrawable());
                 marker.setTag(travelMode);

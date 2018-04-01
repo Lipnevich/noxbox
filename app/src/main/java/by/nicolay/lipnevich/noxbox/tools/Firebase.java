@@ -74,7 +74,7 @@ public class Firebase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String value = dataSnapshot.getValue(String.class);
-                    price = new BigDecimal(value).setScale(SCALE, RoundingMode.UNNECESSARY);
+                    price = new BigDecimal(value).setScale(SCALE, RoundingMode.DOWN);
                 }
                 if(task != null) {
                     task.execute(price);
