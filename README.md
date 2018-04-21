@@ -1,6 +1,8 @@
 # Noxbox <img src="https://noxbox.io/img/logo.png" align="right" width="100">
 
-Mobile applications for performer and consumer, site and crypto payments of Noxbox platform
+Mobile applications for performer and consumer, site and crypto payments of Noxbox platform <br/>
+Site [noxbox.io][2]
+Promo [video][3]
 
 ## On board
 Google Cloud Firebase backend <br/>
@@ -35,11 +37,16 @@ Before you start use Google Maps
 1. activate Google Maps Android API and Google Maps Directions API
 2. create google_maps_key and google_maps_server_key and copy them into /config.xml
 
+## Donate us
+BTC : 36Gk11Sd7FwCCWbRMA2n8SvzYHrPAfXm7v <br/>
+ETH : 0x3e14acf74b9492e5abf02691754fda64d6283b8d <br/>
+Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73 <br/>
+
 ## License
 
 Licensed under the [Apache License 2.0][1]
 
-	Copyright (C) 2012-2018 ZXing authors, Journey Mobile
+	Copyright (C) 2018 Nicolay Lipnevich
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
@@ -55,3 +62,5 @@ Licensed under the [Apache License 2.0][1]
 
 
 [1]: http://www.apache.org/licenses/LICENSE-2.0
+[2]: https://noxbox.io/
+[3]: https://youtu.be/E_Q1wTN27jk
