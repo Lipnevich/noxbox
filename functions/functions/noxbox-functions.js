@@ -521,13 +521,25 @@ exports.notifyAccepted = function (request) {
     var deferred = Q.defer();
 
     for(payerId in request.noxbox.payers) {
-        var ref = db.ref('messages').child(payerId);
-        var messageId = ref.push().key;
+        let ref = db.ref('messages').child(payerId);
+        let messageId = ref.push().key;
         ref.child(messageId).set({
             'id' : messageId,
             'type' : 'pong',
             'noxbox' : request.noxbox
         });
+    }
+
+    deferred.resolve(request);
+    return deferred.promise;
+}
+
+exports.generateSecret = function (request) {
+    var deferred = Q.defer();
+
+    for(payerId in request.noxbox.payers) {
+        let secret = Math.random().toString(36).substring(2, 15);
+        request.noxbox.payers[payerId].secret = secret;
     }
 
     deferred.resolve(request);

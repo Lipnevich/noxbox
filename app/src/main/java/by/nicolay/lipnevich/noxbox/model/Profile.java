@@ -13,10 +13,7 @@ import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
 public class Profile implements Serializable {
 
-    private String id;
-    private String name;
-    private String email;
-    private String photo;
+    private String id, name, email, photo, secret;
     private Position position;
     private String addressToRefund;
     private Long timeDisliked;
@@ -142,6 +139,14 @@ public class Profile implements Serializable {
     public Profile setAddressToRefund(String addressToRefund) {
         this.addressToRefund = addressToRefund;
         return this;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     public Long getTimeDisliked() {

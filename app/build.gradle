@@ -55,6 +55,10 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:10.2.4'
     compile 'pub.devrel:easypermissions:0.2.1'
     compile 'de.hdodenhof:circleimageview:2.1.0'
+    // qr code
+    compile 'com.google.zxing:core:3.3.0'
+    compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+    // progress cat
     compile 'com.github.bumptech.glide:glide:4.0.0-RC1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'
 }

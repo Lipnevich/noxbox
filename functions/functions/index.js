@@ -56,6 +56,7 @@ exports.cancel = functions.database.ref('/requests/{userId}/cancel').onCreate(ev
 
 exports.accept = functions.database.ref('/requests/{userId}/accept').onCreate(event => {
     return noxbox.acceptNoxbox(event.data.val()).then(
+           noxbox.generateSecret).then(
            noxbox.notifyAccepted, noxbox.logError).then(
            noxbox.releaseRequest);
 });

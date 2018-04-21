@@ -4,7 +4,7 @@ const math = require("bigdecimal");
 
 const WavesAPI = require('waves-api');
 const Waves = WavesAPI.create(WavesAPI.MAINNET_CONFIG);
-const password = functions.config().keys.seedpass;
+const password = functions.config().keys.seedpass ? functions.config().keys.seedpass : 'Salt';
 const decimals = new math.BigDecimal('100000000');
 
 exports.create = function (request) {
@@ -33,16 +33,19 @@ exports.getBalance = function (request) {
         request.wallet.frozenMoney = '0';
         request.wallet.availableMoney = '0';
         request.wallet.availableMoneyWithoutFee = '-0.001';
+        console.log('Wallet is not created yet ' + request.wallet);
         deferred.resolve(request);
     } else {
         Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
+            console.log('Response ', balance);
             request.wallet.balance = '' + new math.BigDecimal(balance.balance).divide(decimals);
             request.wallet.frozenMoney = request.wallet.frozenMoney ? request.wallet.frozenMoney : '0';
             request.wallet.availableMoney = '' + new math.BigDecimal(request.wallet.balance)
                     .subtract(new math.BigDecimal(request.wallet.frozenMoney));
             request.wallet.availableMoneyWithoutFee = '' + new math.BigDecimal(request.wallet.availableMoney)
                      .subtract(new math.BigDecimal('0.001'));
-            console.log('Current balance is ' + request.wallet.balance + ' for profile ' + request.id);
+            console.log('Current balance is ' + request.wallet.balance + ' for profile '
+                    + request.id + ' and wallet ' + request.wallet.address);
             deferred.resolve(request);
         });
     }

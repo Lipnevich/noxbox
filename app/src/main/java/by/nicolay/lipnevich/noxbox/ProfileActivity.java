@@ -123,7 +123,6 @@ public abstract class ProfileActivity extends AuthActivity {
             account.withIcon(getProfile().getPhoto());
         }
 
-
         AccountHeader header = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.primary)
@@ -145,7 +144,7 @@ public abstract class ProfileActivity extends AuthActivity {
 
         menu.getDrawerLayout().setFitsSystemWindows(true);
 
-        ImageView menuImage = (ImageView) findViewById(R.id.menuImage);
+        ImageView menuImage = findViewById(R.id.menuImage);
         menuImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

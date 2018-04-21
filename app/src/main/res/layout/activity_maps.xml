@@ -112,6 +112,15 @@
             />
 
         <ImageView
+            android:id="@+id/showQrCode"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|top"
+            android:src="@drawable/qr"
+            android:layout_margin="14dp"
+            />
+
+        <ImageView
             android:id="@+id/pathImage"
             android:layout_width="48dp"
             android:layout_height="64dp"

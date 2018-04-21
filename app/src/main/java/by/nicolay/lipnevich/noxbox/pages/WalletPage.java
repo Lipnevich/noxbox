@@ -123,17 +123,18 @@ public class WalletPage extends AppCompatActivity {
         priceView.setText(price.setScale(SCALE, RoundingMode.DOWN).toString());
 
         TextView servicesDescription = findViewById(R.id.services_description_id);
-        BigDecimal numberOfServices = balance.divide(price, 0, RoundingMode.DOWN);
+        BigDecimal numberOfServices = balance.divide(price, SCALE, RoundingMode.DOWN);
+        TextView numberOfNoxboxes = findViewById(R.id.number_of_noxboxes);
         if(numberOfServices.compareTo(BigDecimal.ONE) < 0) {
+            numberOfNoxboxes.setText("");
             servicesDescription.setText(String.format(getResources().getString(R.string.massage_unavailable),
                     price.subtract(balance).setScale(SCALE, RoundingMode.DOWN).toString() + " " + cryptoCurrency));
+        } else if (numberOfServices.compareTo(BigDecimal.ONE) == 0) {
+            numberOfNoxboxes.setText("1");
+            servicesDescription.setText(getResources().getString(R.string.massage_available));
         } else {
-            if(numberOfServices.compareTo(BigDecimal.ONE) == 0)
-                servicesDescription.setText(getResources().getString(R.string.massage_available));
-            else
-                servicesDescription.setText(getResources().getString(R.string.massages_available));
-            TextView numberOfNoxboxes = findViewById(R.id.number_of_noxboxes);
             numberOfNoxboxes.setText(numberOfServices.toString());
+            servicesDescription.setText(getResources().getString(R.string.massages_available));
         }
 
         View.OnClickListener addressToClipboardListener = new View.OnClickListener() {

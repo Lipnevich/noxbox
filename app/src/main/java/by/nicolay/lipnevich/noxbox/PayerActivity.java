@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -27,6 +28,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.math.BigDecimal;
 import java.util.SortedMap;
@@ -56,16 +63,52 @@ public abstract class PayerActivity extends NoxboxActivity {
     private Button cancelButton;
 
     private ImageView pointerImage;
+    private ImageView showQrCode;
     private Timer timer;
     private EditText messageText;
+    private View.OnClickListener qrListener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View v) {
+            String secret = tryGetNoxboxInProgress().getPayers()
+                    .get(getProfile().getId()).getSecret();
+
+            try {
+                BitMatrix bitMatrix = new MultiFormatWriter().encode(secret,
+                        BarcodeFormat.QR_CODE,512,512);
+                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+
+                showQrCode.setImageBitmap(bitmap);
+
+                final int initialHeight = showQrCode.getHeight();
+                final int initialWidth = showQrCode.getWidth();
+
+                showQrCode.getLayoutParams().height = 512;
+                showQrCode.getLayoutParams().width = 512;
+                showQrCode.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showQrCode.getLayoutParams().height = initialHeight;
+                        showQrCode.getLayoutParams().width = initialWidth;
+                        showQrCode.setImageDrawable(getResources().getDrawable(R.drawable.qr));
+                        showQrCode.setOnClickListener(qrListener);
+                    }
+                });
+            } catch (WriterException ignore) {
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pointerImage = (ImageView) findViewById(R.id.pointerImage);
+        pointerImage = findViewById(R.id.pointerImage);
         pointerImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), getPayerDrawable()));
 
-        requestButton = (Button) findViewById(R.id.requestButton);
+        requestButton = findViewById(R.id.requestButton);
+        showQrCode = findViewById(R.id.showQrCode);
+        showQrCode.setOnClickListener(qrListener);
+
         updatePrice();
 
         requestButton.setOnClickListener(new View.OnClickListener() {
@@ -100,8 +143,8 @@ public abstract class PayerActivity extends NoxboxActivity {
             }
         });
 
-        cancelButton = (Button) findViewById(R.id.cancelButton);
-        messageText = (EditText) findViewById(R.id.message);
+        cancelButton = findViewById(R.id.cancelButton);
+        messageText = findViewById(R.id.message);
     }
 
     public void updatePrice() {
@@ -135,6 +178,7 @@ public abstract class PayerActivity extends NoxboxActivity {
 
         cancelButton.setVisibility(View.INVISIBLE);
         messageText.setVisibility(View.INVISIBLE);
+        showQrCode.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -163,6 +207,7 @@ public abstract class PayerActivity extends NoxboxActivity {
                 }
         });
         cancelButton.setVisibility(View.VISIBLE);
+        showQrCode.setVisibility(View.VISIBLE);
 
         messageText.setVisibility(View.INVISIBLE);
         messageText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
