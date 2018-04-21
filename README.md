@@ -37,11 +37,6 @@ Before you start use Google Maps
 1. activate Google Maps Android API and Google Maps Directions API
 2. create google_maps_key and google_maps_server_key and copy them into /config.xml
 
-## Donate Noxbox
-BTC : 36Gk11Sd7FwCCWbRMA2n8SvzYHrPAfXm7v <br/>
-ETH : 0x3e14acf74b9492e5abf02691754fda64d6283b8d <br/>
-Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73 <br/>
-
 ## License
 
 Licensed under the [Apache License 2.0][1]
@@ -59,6 +54,11 @@ Licensed under the [Apache License 2.0][1]
 	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 	See the License for the specific language governing permissions and
 	limitations under the License.
+
+## Donate Noxbox
+BTC : 36Gk11Sd7FwCCWbRMA2n8SvzYHrPAfXm7v <br/>
+ETH : 0x3e14acf74b9492e5abf02691754fda64d6283b8d <br/>
+Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73 <br/>
 
 
 [1]: http://www.apache.org/licenses/LICENSE-2.0
