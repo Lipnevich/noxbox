@@ -1,7 +1,7 @@
 # Noxbox <img src="https://noxbox.io/img/logo.png" align="right" width="100">
 
 Mobile applications for performer and consumer, site and crypto payments of Noxbox platform <br/>
-Site [noxbox.io][2]
+Site [noxbox.io][2] <br/>
 Promo [video][3]
 
 ## On board
@@ -37,7 +37,7 @@ Before you start use Google Maps
 1. activate Google Maps Android API and Google Maps Directions API
 2. create google_maps_key and google_maps_server_key and copy them into /config.xml
 
-## Donate us
+## Donate Noxbox
 BTC : 36Gk11Sd7FwCCWbRMA2n8SvzYHrPAfXm7v <br/>
 ETH : 0x3e14acf74b9492e5abf02691754fda64d6283b8d <br/>
 Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73 <br/>
