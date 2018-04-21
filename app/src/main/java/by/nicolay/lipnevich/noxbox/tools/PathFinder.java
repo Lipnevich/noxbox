@@ -53,6 +53,7 @@ public class PathFinder {
             JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
             List<LatLng> points = decodePoly(encodedString);
+
             return Collections.singletonMap(duration, points).entrySet().iterator().next();
         } catch (IOException | JSONException e) {
             e.printStackTrace();
