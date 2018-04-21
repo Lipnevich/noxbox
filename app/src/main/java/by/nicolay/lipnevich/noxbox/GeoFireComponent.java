@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseError;
 
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
@@ -33,7 +33,9 @@ public abstract class GeoFireComponent extends MapActivity {
     private GeoQuery geoQuery;
 
     protected void goOnline() {
-        getAvailablePerformers().setLocation(createKey(), getCurrentPosition().toGeoLocation());
+        if(getCurrentPosition() != null) {
+            getAvailablePerformers().setLocation(createKey(), getCurrentPosition().toGeoLocation());
+        }
     }
 
     protected void goOffline() {

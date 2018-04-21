@@ -16,7 +16,8 @@ exports.notifyBalanceUpdated = function (request) {
         ref.child(messageId).set({
             'id' : messageId,
             'type' : 'balanceUpdated',
-            'wallet' : request.wallet
+            'wallet' : { 'balance' : request.wallet.balance,
+                         'address' : request.wallet.address }
         });
         deferred.resolve(request);
     }
@@ -45,7 +46,9 @@ exports.notifyPayerBalanceUpdated = function (request) {
         ref.child(messageId).set({
             'id' : messageId,
             'type' : 'balanceUpdated',
-            'wallet' : request.wallet
+            'wallet' : { 'balance' : request.wallet.balance,
+                         'address' : request.wallet.address,
+                         'frozenMoney' : request.wallet.frozenMoney}
         });
 
         deferred.resolve(request);
@@ -89,7 +92,11 @@ exports.getWallet = function (request) {
 
     db.ref('profiles').child(request.id).child('wallet').once('value').then(function(snapshot) {
         request.wallet = snapshot.val();
-        if(!request.wallet) request.wallet = {};
+        if(!request.wallet) {
+            request.error = 'Wallet is not created yet';
+            deferred.reject(request);
+        }
+
         request.wallet.balance = request.wallet.balance || '0';
         request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
         request.wallet.availableMoney = '' + (new math.BigDecimal(request.wallet.balance)
@@ -116,13 +123,26 @@ exports.getPrice = function (request) {
     return deferred.promise;
 }
 
-exports.isEnoughMoney = function (request) {
+exports.isEnoughMoneyForRequest = function (request) {
+    var deferred = Q.defer();
+
+    if(!request.wallet.availableMoney ||
+        new math.BigDecimal(request.wallet.availableMoney).compareTo(new math.BigDecimal(request.price)) < 0) {
+        console.log(request.wallet.availableMoney);
+        request.error = 'No money available for request';
+        deferred.reject(request);
+    }
+    deferred.resolve(request);
+    return deferred.promise;
+}
+
+exports.isEnoughMoneyForRefund = function (request) {
     var deferred = Q.defer();
 
     if(!request.wallet.availableMoneyWithoutFee ||
         new math.BigDecimal(request.wallet.availableMoneyWithoutFee).compareTo(new math.BigDecimal(0)) <= 0) {
         console.log(request.wallet.availableMoneyWithoutFee);
-        request.error = 'No money available';
+        request.error = 'No money available for refund';
         deferred.reject(request);
     }
     deferred.resolve(request);
@@ -178,7 +198,7 @@ exports.getPerformerAddress = function (request) {
         request.performer.id = id;
     }
 
-    db.ref('profiles').child(request.payer.id).child("wallet").child("address").once('value').then(function(snapshot) {
+    db.ref('profiles').child(request.performer.id).child("wallet").child("address").once('value').then(function(snapshot)   {
         request.performer.address = snapshot.val();
         deferred.resolve(request);
     });

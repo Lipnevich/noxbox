@@ -20,7 +20,7 @@ import java.util.SortedMap;
 import by.nicolay.lipnevich.noxbox.PayerActivity;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.UserType;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.MY_CAR;

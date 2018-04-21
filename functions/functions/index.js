@@ -24,7 +24,7 @@ exports.balance = functions.database.ref('/requests/{userID}/balance').onCreate(
 exports.refund = functions.database.ref('/requests/{userID}/refund').onCreate(event => {
     return noxbox.getWallet(event.data.val()).then(
            wallet.getBalance).then(
-           noxbox.isEnoughMoney).then(
+           noxbox.isEnoughMoneyForRefund).then(
            wallet.refund).then(
            noxbox.updateBalance).then(
            noxbox.notifyBalanceUpdated, noxbox.logError).then(
@@ -35,7 +35,7 @@ exports.request = functions.database.ref('/requests/{userId}/request').onCreate(
     return noxbox.getWallet(event.data.val()).then(
            wallet.getBalance).then(
            noxbox.getPrice).then(
-           noxbox.isEnoughMoney).then(
+           noxbox.isEnoughMoneyForRequest).then(
            noxbox.getPayerProfile).then(
            noxbox.getPerformerProfile).then(
            noxbox.createNoxbox).then(

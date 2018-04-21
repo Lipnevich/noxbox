@@ -19,7 +19,7 @@ import by.nicolay.lipnevich.noxbox.model.MessageType;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
@@ -71,8 +71,7 @@ public class WalletPerformerPage extends AppCompatActivity {
             public void execute(Object object) {
                 Message message = (Message)object;
                 if(message.getType().equals(MessageType.balanceUpdated)) {
-                    Firebase.getWallet().setBalance(message.getWallet().getBalance());
-                    Firebase.getWallet().setAddress(message.getWallet().getAddress());
+                    Firebase.updateWallet(message.getWallet());
                     recalculateBalance();
                     removeMessage(message.getId());
                 }
@@ -118,7 +117,7 @@ public class WalletPerformerPage extends AppCompatActivity {
         priceLabel.setText(String.format(getResources().getString(R.string.current_reward), cryptoCurrency));
 
         TextView priceText = findViewById(R.id.current_reward_id);
-        priceText.setText(price.setScale(SCALE, RoundingMode.DOWN).toString());
+        priceText.setText(price == null ? "..." : price.setScale(SCALE, RoundingMode.DOWN).toString());
 
         Button sendButton = findViewById(R.id.send_button_id);
         sendButton.setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);

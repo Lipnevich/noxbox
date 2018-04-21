@@ -29,11 +29,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class I18nizer {
 
     public static void main(String[] args) throws IOException {
-        System.out.println(new BigDecimal(0.123456789).setScale(Firebase.SCALE, RoundingMode.DOWN));
-        System.out.println(new BigDecimal(0.123456789).setScale(Firebase.SCALE, RoundingMode.UP));
-    }
-
-    public static void main2(String[] args) throws IOException {
         Path path = Paths.get("functions/translations/template.html");
         String content = new String(Files.readAllBytes(path), UTF_8);
 

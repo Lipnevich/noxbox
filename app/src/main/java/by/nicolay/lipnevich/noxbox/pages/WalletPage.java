@@ -25,7 +25,7 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
@@ -77,8 +77,7 @@ public class WalletPage extends AppCompatActivity {
             public void execute(Object object) {
                 Message message = (Message)object;
                 if(message.getType().equals(MessageType.balanceUpdated)) {
-                    Firebase.getWallet().setBalance(message.getWallet().getBalance());
-                    Firebase.getWallet().setAddress(message.getWallet().getAddress());
+                    Firebase.updateWallet(message.getWallet());
                     recalculateBalance();
                     removeMessage(message.getId());
                 }
@@ -97,6 +96,9 @@ public class WalletPage extends AppCompatActivity {
         Firebase.sendRequest(new Request()
                 .setType(RequestType.refund)
                 .setToAddress(getProfile().getAddressToRefund()));
+
+        Firebase.getWallet().setBalance("0");
+
     }
 
     private void recalculateBalance() {

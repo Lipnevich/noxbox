@@ -74,7 +74,8 @@ public class Firebase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String value = dataSnapshot.getValue(String.class);
-                    price = new BigDecimal(value).setScale(SCALE, RoundingMode.DOWN);
+                    // TODO (nli) fee should be moved to back end
+                    price = new BigDecimal(value).subtract(new BigDecimal("0.001")).setScale(SCALE, RoundingMode.DOWN);
                 }
                 if(task != null) {
                     task.execute(price);
@@ -247,6 +248,14 @@ public class Firebase {
 
     public static Wallet getWallet() {
         return userAccount == null ? new Wallet() : userAccount.getWallet();
+    }
+
+    public static void updateWallet(Wallet wallet) {
+        if(userAccount != null) {
+            getWallet().setBalance(wallet.getBalance());
+            getWallet().setAddress(wallet.getAddress());
+            getWallet().setFrozenMoney(wallet.getFrozenMoney());
+        }
     }
 
     public static AllRates getRating() {

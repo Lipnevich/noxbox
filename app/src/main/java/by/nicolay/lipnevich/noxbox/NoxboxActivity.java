@@ -47,8 +47,7 @@ public abstract class NoxboxActivity extends GeoFireComponent {
         removeMessage(rate.getId());
     }
     private void processBalanceUpdated(Message update) {
-        Firebase.getWallet().setBalance(update.getWallet().getBalance());
-        Firebase.getWallet().setAddress(update.getWallet().getAddress());
+        Firebase.updateWallet(update.getWallet());
         removeMessage(update.getId());
     }
 

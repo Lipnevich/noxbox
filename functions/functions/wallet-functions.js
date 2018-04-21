@@ -56,9 +56,8 @@ exports.refund = function (request) {
     const restoredPhrase = Waves.Seed.decryptSeedPhrase(request.wallet.seed, password);
     const seed = Waves.Seed.fromExistingPhrase(restoredPhrase);
 
-    var refundAmount = '' + (new math.BigDecimal(request.wallet.balance)
-            .subtract(new math.BigDecimal('0.001'))).multiply(decimals);
-    console.log('Refund ' + (new math.BigDecimal(request.wallet.balance).subtract(new math.BigDecimal('0.001'))));
+    var refundAmount = '' + new math.BigDecimal(request.wallet.availableMoneyWithoutFee).multiply(decimals);
+    console.log('Refund ' + new math.BigDecimal(request.wallet.availableMoneyWithoutFee));
 
     const transferData = {
         // An arbitrary address
@@ -77,9 +76,9 @@ exports.refund = function (request) {
 
     Waves.API.Node.v1.assets.transfer(transferData, seed.keyPair).then((responseData) => {
         console.log(responseData);
-        request.wallet.balance = '0';
+        request.wallet.balance = request.wallet.frozenMoney;
         request.wallet.availableMoney = '0';
-        request.wallet.availableMoneyWithoutFee = '0';
+        request.wallet.availableMoneyWithoutFee = '-0.001';
         deferred.resolve(request);
     });
 
@@ -89,12 +88,11 @@ exports.refund = function (request) {
 exports.pay = function (request) {
     var deferred = Q.defer();
 
-    request.priceWithoutFee = '' + new math.BigDecimal(request.noxbox.price)
-             .subtract(new math.BigDecimal('0.001'));
-
-    var priceAmount = '' + (new math.BigDecimal(request.priceWithoutFee).multiply(decimals));
+    request.priceWithoutFee = '' + (new math.BigDecimal(request.noxbox.price))
+            .subtract(new math.BigDecimal('0.001'));
+    var priceAmount = '' + (new math.BigDecimal(request.priceWithoutFee)).multiply(decimals);
     console.log('Pay price without fee ' + request.priceWithoutFee + ' from ' + request.payer.id
-            + ' to ' + request.performer.id);
+                    + ' to ' + request.performer.id);
 
     const restoredPhrase = Waves.Seed.decryptSeedPhrase(request.payer.seed, password);
     const seed = Waves.Seed.fromExistingPhrase(restoredPhrase);
