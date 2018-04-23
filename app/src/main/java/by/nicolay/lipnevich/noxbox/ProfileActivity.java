@@ -17,13 +17,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -35,6 +40,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
@@ -53,6 +59,7 @@ import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
+import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
@@ -114,8 +121,7 @@ public abstract class ProfileActivity extends AuthActivity {
 
         ProfileDrawerItem account = new ProfileDrawerItem()
                 .withName(getProfile().getName())
-                .withEmail(String.format( "%.2f", calculateRating()) + " \u2605")
-                ;
+                .withEmail(String.format( "%.2f", calculateRating()) + " \u2605");
         if(getProfile().getPhoto() == null) {
             account.withIcon(ContextCompat.getDrawable(getApplicationContext(),
                     R.drawable.com_facebook_profile_picture_blank_square));
@@ -133,13 +139,19 @@ public abstract class ProfileActivity extends AuthActivity {
                 .addProfiles(account)
                 .build();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        SecondaryDrawerItem version = new SecondaryDrawerItem()
+                .withName("Version " + BuildConfig.VERSION_NAME)
+                .withEnabled(false);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         menu = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withSelectedItem(-1)
                 .withAccountHeader(header)
                 .addDrawerItems(convertToItems(getMenu()))
+                .addStickyDrawerItems(version)
+                .withStickyFooterShadow(false)
                 .build();
 
         menu.getDrawerLayout().setFitsSystemWindows(true);

@@ -39,7 +39,7 @@ import by.nicolay.lipnevich.noxbox.tools.Task;
 public abstract class AuthActivity extends AppCompatActivity {
 
     private static final String TOS_URL =
-            "https://noxbox-150813.firebaseapp.com/tos.html";
+            "https://noxbox-150813.firebaseapp.com/TermsAndConditions.html";
     private static final int SIGN_IN_REQUEST_CODE = 10110;
 
     @Override
@@ -81,7 +81,7 @@ public abstract class AuthActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Firebase.readProfile(processProfileTask);
             } else {
-                popup(getResources().getText(R.string.permission_required).toString());
+                popup(getResources().getText(R.string.permissionRequired).toString());
                 finish();
             }
         }

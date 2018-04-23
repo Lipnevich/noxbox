@@ -118,13 +118,24 @@
             android:layout_gravity="end|top"
             android:src="@drawable/qr"
             android:layout_margin="14dp"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/scanQrCode"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="end|top"
+            android:src="@drawable/scan_qr"
+            android:layout_margin="13dp"
+            android:visibility="gone"
             />
 
         <ImageView
             android:id="@+id/pathImage"
             android:layout_width="48dp"
             android:layout_height="64dp"
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:layout_marginBottom ="64dp"
             android:layout_marginRight ="12dp"
             android:src="@drawable/path"
@@ -134,7 +145,7 @@
             android:id="@+id/message"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/send_message"
+            android:hint="@string/sendMessage"
             android:layout_gravity="bottom|center"
             android:inputType="textCapSentences|textAutoCorrect"
             android:imeOptions="actionSend"

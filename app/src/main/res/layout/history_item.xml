@@ -46,8 +46,7 @@
     <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/bitcoin"
-        android:tint="@color/primary"
+        android:src="@drawable/waves"
         android:id="@+id/bitcoinImage"
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/priceText"

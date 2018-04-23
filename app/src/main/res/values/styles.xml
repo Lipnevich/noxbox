@@ -13,7 +13,7 @@
         <item name="material_drawer_background">@color/secondary</item>
         <item name="material_drawer_primary_text">@color/primary</item>
         <item name="material_drawer_hint_text">@color/primary</item>
-        <item name="material_drawer_divider">@color/divider</item>
+        <item name="material_drawer_divider">@color/secondary</item>
         <item name="material_drawer_selected">@color/secondary</item>
         <item name="material_drawer_selected_text">@color/primary</item>
         <item name="material_drawer_header_selection_text">@color/primary</item>

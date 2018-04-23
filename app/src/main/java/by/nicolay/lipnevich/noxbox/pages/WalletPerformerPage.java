@@ -102,13 +102,13 @@ public class WalletPerformerPage extends AppCompatActivity {
         String cryptoCurrency = getResources().getString(R.string.crypto_currency);
 
         TextView balanceLabel = findViewById(R.id.balance_label_id);
-        balanceLabel.setText(String.format(getResources().getString(R.string.balance), cryptoCurrency));
+        balanceLabel.setText(getResources().getString(R.string.balance));
 
         TextView balanceText = findViewById(R.id.balance_id);
         balanceText.setText(balance.setScale(SCALE, RoundingMode.DOWN).toString());
 
         TextView frozenLabel = findViewById(R.id.frozen_money_label_id);
-        frozenLabel.setText(String.format(getResources().getString(R.string.frozen_money), cryptoCurrency));
+        frozenLabel.setText(String.format(getResources().getString(R.string.frozenMoney), cryptoCurrency));
 
         TextView frozenText = findViewById(R.id.frozen_money_id);
         frozenText.setText(frozenMoney.setScale(SCALE, RoundingMode.DOWN).toString());

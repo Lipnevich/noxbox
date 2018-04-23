@@ -21,7 +21,6 @@ import java.math.RoundingMode;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.MessageType;
-import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
@@ -46,12 +45,12 @@ public class WalletPage extends AppCompatActivity {
 
         recalculateBalance();
 
-        final EditText addressToRefundEditor = (EditText) findViewById(R.id.address_to_refund_id);
+        final EditText addressToRefundEditor = findViewById(R.id.address_to_refund_id);
         if(getProfile().getAddressToRefund() != null) {
             addressToRefundEditor.setText(getProfile().getAddressToRefund());
         }
 
-        Button refundButton = (Button) findViewById(R.id.refund_button_id);
+        Button refundButton = findViewById(R.id.refund_button_id);
         refundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,18 +122,18 @@ public class WalletPage extends AppCompatActivity {
         priceView.setText(price.setScale(SCALE, RoundingMode.DOWN).toString());
 
         TextView servicesDescription = findViewById(R.id.services_description_id);
-        BigDecimal numberOfServices = balance.divide(price, SCALE, RoundingMode.DOWN);
+        BigDecimal numberOfServices = balance.divide(price, 0, RoundingMode.DOWN);
         TextView numberOfNoxboxes = findViewById(R.id.number_of_noxboxes);
         if(numberOfServices.compareTo(BigDecimal.ONE) < 0) {
             numberOfNoxboxes.setText("");
-            servicesDescription.setText(String.format(getResources().getString(R.string.massage_unavailable),
+            servicesDescription.setText(String.format(getResources().getString(R.string.serviceUnavailable),
                     price.subtract(balance).setScale(SCALE, RoundingMode.DOWN).toString() + " " + cryptoCurrency));
         } else if (numberOfServices.compareTo(BigDecimal.ONE) == 0) {
             numberOfNoxboxes.setText("1");
-            servicesDescription.setText(getResources().getString(R.string.massage_available));
+            servicesDescription.setText(getResources().getString(R.string.serviceAvailable));
         } else {
             numberOfNoxboxes.setText(numberOfServices.toString());
-            servicesDescription.setText(getResources().getString(R.string.massages_available));
+            servicesDescription.setText(getResources().getString(R.string.servicesAvailable));
         }
 
         View.OnClickListener addressToClipboardListener = new View.OnClickListener() {

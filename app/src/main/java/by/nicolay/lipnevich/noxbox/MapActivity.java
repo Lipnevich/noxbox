@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -76,7 +77,7 @@ public abstract class MapActivity extends ProfileActivity implements
 
         ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId))
                 .getMapAsync(this);
-        pathImage = (ImageView) findViewById(R.id.pathImage);
+        pathImage = findViewById(R.id.pathImage);
         connectGoogleApi();
     }
 
@@ -90,6 +91,8 @@ public abstract class MapActivity extends ProfileActivity implements
     public void onMapReady(GoogleMap readyMap) {
         googleMap = readyMap;
         visibleCurrentLocation(true);
+        // TODO (nli) night and day mode
+//        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_in_night));
         googleMap.setMaxZoomPreference(18);
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
         googleMap.getUiSettings().setTiltGesturesEnabled(false);

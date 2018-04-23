@@ -24,6 +24,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import java.util.SortedMap;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
@@ -36,6 +39,7 @@ import by.nicolay.lipnevich.noxbox.pages.WalletPerformerPage;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
+import by.nicolay.lipnevich.noxbox.tools.QRCaptureActivity;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.createHistory;
@@ -44,6 +48,7 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.like;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
 import static java.lang.System.currentTimeMillis;
@@ -55,13 +60,14 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     private Button goOfflineButton;
     private Button acceptButton;
     private ImageView pathImage;
+    private ImageView scanQr;
     private EditText messageText;
     private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        goOnlineButton = (Button) findViewById(R.id.goOnlineButton);
+        goOnlineButton = findViewById(R.id.goOnlineButton);
         goOnlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +75,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
             }
         });
 
-        goOfflineButton = (Button) findViewById(R.id.goOfflineButton);
+        goOfflineButton = findViewById(R.id.goOfflineButton);
         goOfflineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,10 +83,44 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
             }
         });
 
-        acceptButton = (Button) findViewById(R.id.acceptButton);
-        completeButton = (Button) findViewById(R.id.completeButton);
-        pathImage = (ImageView) findViewById(R.id.pathImage);
-        messageText = (EditText) findViewById(R.id.message);
+        acceptButton = findViewById(R.id.acceptButton);
+        completeButton = findViewById(R.id.completeButton);
+
+        pathImage = findViewById(R.id.pathImage);
+        scanQr = findViewById(R.id.scanQrCode);
+        scanQr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                new IntentIntegrator(PerformerActivity.this)
+                        .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
+                        .setOrientationLocked(false)
+                        .setCaptureActivity(QRCaptureActivity.class)
+                        .initiateScan();
+            }
+        });
+        messageText = findViewById(R.id.message);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if(result != null) {
+            if(result.getContents() == null) {
+                popup("Failed to recognize qr code, please try again");
+            } else {
+                // TODO (nli) check is it correct it on server, process responce, update current Noxbox
+                tryGetNoxboxInProgress().getPayers().values().iterator().next().setSecret(result.getContents());
+                updateCurrentNoxbox(tryGetNoxboxInProgress());
+                completeButton.setEnabled(isQrRecognized());
+                completeButton.setBackgroundResource(isQrRecognized() ? R.color.primary : R.color.divider);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, intent);
+        }
+    }
+
+    private boolean isQrRecognized() {
+        Profile payer = tryGetNoxboxInProgress().getPayers().values().iterator().next();
+        return payer != null && payer.getSecret() != null;
     }
 
     protected void prepareForIteration() {
@@ -115,6 +155,10 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         drawPathToNoxbox(getProfile().setPosition(getCurrentPosition()), noxbox);
 
         completeButton.setVisibility(View.VISIBLE);
+        completeButton.setEnabled(isQrRecognized());
+        completeButton.setBackgroundResource(isQrRecognized() ? R.color.primary : R.color.divider);
+
+        scanQr.setVisibility(View.VISIBLE);
         messageText.setVisibility(View.INVISIBLE);
         messageText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -188,6 +232,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         acceptButton.setVisibility(View.VISIBLE);
 
         pathImage.setVisibility(View.INVISIBLE);
+        scanQr.setVisibility(View.INVISIBLE);
         goOfflineButton.setVisibility(View.INVISIBLE);
         goOnlineButton.setVisibility(View.INVISIBLE);
         completeButton.setVisibility(View.INVISIBLE);
@@ -224,6 +269,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         goOnlineButton.setVisibility(View.VISIBLE);
 
         pathImage.setVisibility(View.INVISIBLE);
+        scanQr.setVisibility(View.INVISIBLE);
         goOfflineButton.setVisibility(View.INVISIBLE);
         acceptButton.setVisibility(View.INVISIBLE);
         completeButton.setVisibility(View.INVISIBLE);
@@ -240,6 +286,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         goOfflineButton.setVisibility(View.VISIBLE);
 
         pathImage.setVisibility(View.INVISIBLE);
+        scanQr.setVisibility(View.INVISIBLE);
         goOnlineButton.setVisibility(View.INVISIBLE);
         acceptButton.setVisibility(View.INVISIBLE);
         completeButton.setVisibility(View.INVISIBLE);
@@ -275,4 +322,5 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
 
         return menu;
     }
+
 }

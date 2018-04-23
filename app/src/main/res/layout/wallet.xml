@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:text="Your Wallet Address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
     <TextView
         android:id="@+id/services_description_id"
         android:textSize="24sp"
-        android:text="@string/massage_unavailable"
+        android:text="@string/serviceUnavailable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/primary"
@@ -130,7 +130,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:hint="@string/addressToRefund"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:layout_alignTop="@+id/refund_button_id"
             android:layout_toStartOf="@+id/refund_button_id"/>
     </RelativeLayout>

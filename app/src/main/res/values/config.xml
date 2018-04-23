@@ -1,6 +1,6 @@
 <resources>
     <integer name="timer_in_seconds" translatable="false">16</integer>
-    <integer name="radius_in_kilometers">10</integer>
+    <integer name="radius_in_kilometers">50</integer>
 
     <!--used for google map-->
     <string name="google_maps_key" translatable="false">

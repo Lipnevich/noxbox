@@ -138,7 +138,7 @@ public class MyCarPage extends AppCompatActivity {
     }
 
     private void setupActionBar() {
-        setTitle(R.string.my_car);
+        setTitle(R.string.myCar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 

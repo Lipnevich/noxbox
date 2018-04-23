@@ -14,7 +14,7 @@
     <TextView
         android:id="@+id/balance_label_id"
         android:textSize="24sp"
-        android:text="@string/your_balance"
+        android:text="@string/yourBalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -31,7 +31,7 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:text="@string/frozen_money"
+        android:text="@string/frozenMoney"
         android:textSize="24sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

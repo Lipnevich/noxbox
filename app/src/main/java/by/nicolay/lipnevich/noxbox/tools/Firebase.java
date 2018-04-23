@@ -74,8 +74,7 @@ public class Firebase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String value = dataSnapshot.getValue(String.class);
-                    // TODO (nli) fee should be moved to back end
-                    price = new BigDecimal(value).subtract(new BigDecimal("0.001")).setScale(SCALE, RoundingMode.DOWN);
+                    price = new BigDecimal(value).setScale(SCALE, RoundingMode.DOWN);
                 }
                 if(task != null) {
                     task.execute(price);

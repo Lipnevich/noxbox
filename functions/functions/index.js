@@ -70,7 +70,8 @@ exports.complete = functions.database.ref('/requests/{userId}/complete').onCreat
            // TODO (nli) send fee to the default label in the same time
            wallet.pay).then(
            // TODO (nli) create fee in performers wallet
-           noxbox.storePriceWithoutFee).then(
+           noxbox.storePriceWithoutFeeInNoxbox).then(
+           noxbox.updatePayerBalanceInTransaction).then(
            noxbox.notifyPayerBalanceUpdated).then(
            noxbox.likePerformer).then(
            noxbox.likePayer, noxbox.logError).then(

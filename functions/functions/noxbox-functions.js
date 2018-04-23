@@ -539,6 +539,7 @@ exports.generateSecret = function (request) {
 
     for(payerId in request.noxbox.payers) {
         let secret = Math.random().toString(36).substring(2, 15);
+        console.log('Secret generated ', secret);
         request.noxbox.payers[payerId].secret = secret;
     }
 
@@ -670,7 +671,7 @@ exports.likePerformer = function (request) {
     return deferred.promise;
 }
 
-exports.storePriceWithoutFee = function (request) {
+exports.storePriceWithoutFeeInNoxbox = function (request) {
     var deferred = Q.defer();
 
     db.ref('noxboxes').child(request.noxbox.type).child(request.noxbox.id)
