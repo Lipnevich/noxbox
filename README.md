@@ -24,10 +24,10 @@ Before you start processing crypto transactions
 2. Upload google functions with commands: <br/>
    npm install -g firebase-tools <br/>
    firebase login <br/>
-   npm install block_io <br/>
+   npm install waves-api <br/>
    npm install q <br/>
    npm install request <br/>
-   npm install bigdecimal <br/>
+   npm install big.js <br/>
    cd /functions/functions <br/>
    firebase deploy --only functions <br/>
 3. (optional) for improving data protection set your secret word<br/>
