@@ -5,7 +5,7 @@
     <string name="completeText">Завершить</string>
     <string name="ratingTitle">Оцените работу</string>
     <string name="requestText">Заказать</string>
-    <string name="goOnlineText">Готов к работе</string>
+    <string name="goOnlineText">Приступить к работе</string>
     <string name="goOfflineText">Сделать перерыв</string>
     <string name="acceptText">Принять</string>
     <string name="cancelText">Отменить</string>
@@ -43,7 +43,7 @@
     <string name="yes">да</string>
     <string name="no">нет</string>
     <string name="yourBalance">Ваш баланс</string>
-    <string name="frozenMoney">Замороженные деньги %s</string>
+    <string name="frozenMoney">Временно заблокированные %s</string>
     <string name="current_reward">Текущее вознаграждение за услугу %s</string>
     <string name="dislike">не нравится</string>
     <string name="dislikePrompt">Вы уверены что Вам не понравилась оказанная услуга?</string>

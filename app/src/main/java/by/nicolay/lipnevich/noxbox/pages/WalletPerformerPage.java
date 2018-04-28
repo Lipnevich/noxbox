@@ -40,12 +40,12 @@ public class WalletPerformerPage extends AppCompatActivity {
 
         recalculateBalance();
 
-        final EditText addressToSendEditor = (EditText) findViewById(R.id.address_to_send_id);
+        final EditText addressToSendEditor = findViewById(R.id.address_to_send_id);
         if(getProfile().getAddressToRefund() != null) {
             addressToSendEditor.setText(getProfile().getAddressToRefund());
         }
 
-        Button sendButton = (Button) findViewById(R.id.send_button_id);
+        Button sendButton = findViewById(R.id.send_button_id);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +102,7 @@ public class WalletPerformerPage extends AppCompatActivity {
         String cryptoCurrency = getResources().getString(R.string.crypto_currency);
 
         TextView balanceLabel = findViewById(R.id.balance_label_id);
-        balanceLabel.setText(getResources().getString(R.string.balance));
+        balanceLabel.setText(String.format(getResources().getString(R.string.balance), cryptoCurrency));
 
         TextView balanceText = findViewById(R.id.balance_id);
         balanceText.setText(balance.setScale(SCALE, RoundingMode.DOWN).toString());

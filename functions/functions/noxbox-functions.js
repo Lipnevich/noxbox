@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const math = require("bigdecimal");
+const BigDecimal = require('big.js');
 const Q = require('q');
 
 const db = admin.database();
@@ -38,8 +38,8 @@ exports.notifyPayerBalanceUpdated = function (request) {
         if(!request.wallet) request.wallet = {};
         request.wallet.balance = request.wallet.balance || '0';
         request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
-        request.wallet.availableMoney = '' + (new math.BigDecimal(request.wallet.balance)
-            .subtract(new math.BigDecimal(request.wallet.frozenMoney)));
+        request.wallet.availableMoney = '' + (new BigDecimal(request.wallet.balance)
+            .minus(new BigDecimal(request.wallet.frozenMoney)));
 
         var ref = db.ref('messages').child(payerId);
         var messageId = ref.push().key;
@@ -90,6 +90,8 @@ exports.createRating = function (request) {
 exports.getWallet = function (request) {
     var deferred = Q.defer();
 
+    console.log(request);
+
     db.ref('profiles').child(request.id).child('wallet').once('value').then(function(snapshot) {
         request.wallet = snapshot.val();
         if(!request.wallet) {
@@ -99,8 +101,8 @@ exports.getWallet = function (request) {
 
         request.wallet.balance = request.wallet.balance || '0';
         request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
-        request.wallet.availableMoney = '' + (new math.BigDecimal(request.wallet.balance)
-            .subtract(new math.BigDecimal(request.wallet.frozenMoney)));
+        request.wallet.availableMoney = '' + (new BigDecimal(request.wallet.balance)
+            .minus(new BigDecimal(request.wallet.frozenMoney)));
 
         deferred.resolve(request);
     });
@@ -126,9 +128,15 @@ exports.getPrice = function (request) {
 exports.isEnoughMoneyForRequest = function (request) {
     var deferred = Q.defer();
 
+    console.log('0.00600000000000 lte 0.002', new BigDecimal('0.00600000000000').lte(new BigDecimal('0.002')));
+    console.log('0.002 lte 0.00600000000000', new BigDecimal('0.002').lte(new BigDecimal('0.00600000000000')));
+    console.log('2 lte 1', new BigDecimal('2').lte(new BigDecimal('1')));
+    console.log('1 lte 2', new BigDecimal('1').lte(new BigDecimal('2')));
+    console.log('1 lte 1', new BigDecimal('1').lte(new BigDecimal('1')));
+    console.log(new BigDecimal(request.wallet.availableMoney).lte(new BigDecimal(request.price)));
+
     if(!request.wallet.availableMoney ||
-        new math.BigDecimal(request.wallet.availableMoney).compareTo(new math.BigDecimal(request.price)) < 0) {
-        console.log(request.wallet.availableMoney);
+        new BigDecimal(request.wallet.availableMoney).lte(new BigDecimal(request.price))) {
         request.error = 'No money available for request';
         deferred.reject(request);
     }
@@ -140,7 +148,7 @@ exports.isEnoughMoneyForRefund = function (request) {
     var deferred = Q.defer();
 
     if(!request.wallet.availableMoneyWithoutFee ||
-        new math.BigDecimal(request.wallet.availableMoneyWithoutFee).compareTo(new math.BigDecimal(0)) <= 0) {
+        new BigDecimal(request.wallet.availableMoneyWithoutFee).lteOrEqualTo(new BigDecimal(0))) {
         console.log(request.wallet.availableMoneyWithoutFee);
         request.error = 'No money available for refund';
         deferred.reject(request);
@@ -271,8 +279,8 @@ exports.pingPerformer = function (request) {
 exports.freezeMoney = function (request) {
     var deferred = Q.defer();
 
-    request.wallet.frozenMoney = '' + (new math.BigDecimal(request.wallet.frozenMoney)
-        .add(new math.BigDecimal(request.price)));
+    request.wallet.frozenMoney = '' + (new BigDecimal(request.wallet.frozenMoney)
+        .add(new BigDecimal(request.price)));
 
     db.ref('profiles/' + request.id + '/wallet').update({'frozenMoney' : request.wallet.frozenMoney});
 
@@ -296,8 +304,8 @@ exports.unfreezeMoneyInTransaction = function (request) {
             return 0;
         }
 
-        current.frozenMoney = '' + (new math.BigDecimal(current.frozenMoney)
-            .subtract(new math.BigDecimal(request.noxbox.price)));
+        current.frozenMoney = '' + (new BigDecimal(current.frozenMoney)
+            .minus(new BigDecimal(request.noxbox.price)));
         console.info('Money unfreezed', current);
         request.wallet = current;
         return current;
@@ -591,10 +599,10 @@ exports.updatePayerBalanceInTransaction = function (request) {
             return 0;
         }
 
-        current.balance = '' + (new math.BigDecimal(current.balance)
-            .subtract(new math.BigDecimal(request.noxbox.price)));
-        current.frozenMoney = '' + (new math.BigDecimal(current.frozenMoney)
-            .subtract(new math.BigDecimal(request.noxbox.price)));
+        current.balance = '' + (new BigDecimal(current.balance)
+            .minus(new BigDecimal(request.noxbox.price)));
+        current.frozenMoney = '' + (new BigDecimal(current.frozenMoney)
+            .minus(new BigDecimal(request.noxbox.price)));
 
         request.wallet = current;
         console.log('Balance was updated', current);

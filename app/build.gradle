@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
 apply from: "constants.gradle"
+apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.3"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
     useLibrary  'org.apache.http.legacy'
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 42
-        versionName "0.42"
+        targetSdkVersion 27
+        versionCode 45
+        versionName "0.45"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -40,25 +41,28 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile('com.mikepenz:materialdrawer:5.9.1@aar') { transitive = true }
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:support-v4:26.1.0'
-    compile 'com.android.support:support-vector-drawable:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.android.support:multidex:1.0.0'
-    compile 'com.google.android.gms:play-services:10.2.4'
-    compile 'com.google.firebase:firebase-core:10.2.4'
-    compile 'com.firebase:geofire-android:2.1.1'
-    compile 'com.firebaseui:firebase-ui-auth:1.2.0'
-    compile 'com.google.firebase:firebase-auth:10.2.4'
-    compile 'pub.devrel:easypermissions:0.2.1'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation('com.mikepenz:materialdrawer:5.9.1@aar') { transitive = true }
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v13:27.1.1'
+    implementation 'com.android.support:support-vector-drawable:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.android.gms:play-services-maps:15.0.0'
+    implementation 'com.google.android.gms:play-services-location:15.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.firebase:geofire-android:2.1.1'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
+    implementation 'com.google.firebase:firebase-auth:15.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
+    implementation ('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {transitive = true}
+    implementation 'pub.devrel:easypermissions:0.2.1'
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
     // qr code
-    compile 'com.github.kenglxn.QRGen:android:2.4.0'
-    compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+    implementation 'com.github.kenglxn.QRGen:android:2.4.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
     // progress cat
-    compile 'com.github.bumptech.glide:glide:4.0.0-RC1'
+    implementation 'com.github.bumptech.glide:glide:4.0.0-RC1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0-RC1'
 }
 

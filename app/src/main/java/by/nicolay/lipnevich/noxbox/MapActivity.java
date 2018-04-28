@@ -19,10 +19,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -268,7 +270,12 @@ public abstract class MapActivity extends ProfileActivity implements
     }
 
     protected void draw(Profile profile, int drawable) {
-        createMarker(profile.getId(), profile.getPosition().toLatLng(), drawable);
+        if(profile.getPosition() != null) {
+            createMarker(profile.getId(), profile.getPosition().toLatLng(), drawable);
+        } else {
+            Crashlytics.log(Log.WARN, "emptyPosition", "Empty position for profile "
+                    + profile.publicInfo());
+        }
     }
 
     public GroundOverlay createMarker(String key, LatLng latLng, int resource) {

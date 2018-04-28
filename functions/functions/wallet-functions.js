@@ -1,11 +1,11 @@
 const functions = require('firebase-functions');
 const Q = require('q');
-const math = require("bigdecimal");
+const BigDecimal = require('big.js');
 
 const WavesAPI = require('waves-api');
 const Waves = WavesAPI.create(WavesAPI.MAINNET_CONFIG);
 const password = functions.config().keys.seedpass ? functions.config().keys.seedpass : 'Salt';
-const decimals = new math.BigDecimal('100000000');
+const decimals = new BigDecimal('100000000');
 
 exports.create = function (request) {
     var deferred = Q.defer();
@@ -38,13 +38,14 @@ exports.getBalance = function (request) {
     } else {
         Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
             console.log('Response ', balance);
-            request.wallet.balance = '' + new math.BigDecimal(balance.balance).divide(decimals);
+
+            request.wallet.balance = '' + new BigDecimal(balance.balance).div(decimals);
             request.wallet.frozenMoney = request.wallet.frozenMoney ? request.wallet.frozenMoney : '0';
-            request.wallet.availableMoney = '' + new math.BigDecimal(request.wallet.balance)
-                    .subtract(new math.BigDecimal(request.wallet.frozenMoney));
-            request.wallet.availableMoneyWithoutFee = '' + new math.BigDecimal(request.wallet.availableMoney)
-                     .subtract(new math.BigDecimal('0.001'));
-            console.log('Current balance is ' + request.wallet.balance + ' for profile '
+            request.wallet.availableMoney = '' + new BigDecimal(request.wallet.balance)
+                    .minus(new BigDecimal(request.wallet.frozenMoney));
+            request.wallet.availableMoneyWithoutFee = '' + new BigDecimal(request.wallet.availableMoney)
+                     .minus(new BigDecimal('0.001'));
+            console.log('Current money available is ' + request.wallet.availableMoney + ' for profile '
                     + request.id + ' and wallet ' + request.wallet.address);
             deferred.resolve(request);
         });
@@ -59,8 +60,8 @@ exports.refund = function (request) {
     const restoredPhrase = Waves.Seed.decryptSeedPhrase(request.wallet.seed, password);
     const seed = Waves.Seed.fromExistingPhrase(restoredPhrase);
 
-    var refundAmount = '' + new math.BigDecimal(request.wallet.availableMoneyWithoutFee).multiply(decimals);
-    console.log('Refund ' + new math.BigDecimal(request.wallet.availableMoneyWithoutFee));
+    var refundAmount = '' + new BigDecimal(request.wallet.availableMoneyWithoutFee).times(decimals);
+    console.log('Refund ' + new BigDecimal(request.wallet.availableMoneyWithoutFee));
 
     const transferData = {
         // An arbitrary address
@@ -91,9 +92,9 @@ exports.refund = function (request) {
 exports.pay = function (request) {
     var deferred = Q.defer();
 
-    request.priceWithoutFee = '' + (new math.BigDecimal(request.noxbox.price))
-            .subtract(new math.BigDecimal('0.001'));
-    var priceAmount = '' + (new math.BigDecimal(request.priceWithoutFee)).multiply(decimals);
+    request.priceWithoutFee = '' + (new BigDecimal(request.noxbox.price))
+            .minus(new BigDecimal('0.001'));
+    var priceAmount = '' + (new BigDecimal(request.priceWithoutFee)).times(decimals);
     console.log('Pay price without fee ' + request.priceWithoutFee + ' from ' + request.payer.id
                     + ' to ' + request.performer.id);
 

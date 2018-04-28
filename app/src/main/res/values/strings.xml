@@ -20,12 +20,12 @@
     <string name="wisdom">Wisdom</string>
     <string name="humor">Humor</string>
     <string name="patience">Patience</string>
-    <string name="massage">Massage</string>
     <string name="logoutText">Logout</string>
     <string name="myCar">My car</string>
     <string name="payments">Payments</string>
     <string name="help">Help</string>
     <string name="settings">Settings</string>
+    <string name="massage">Massage</string>
     <string name="tirefitting">Tire fitting</string>
     <string name="sendMessage">Send message</string>
     <string name="history">History</string>
@@ -43,7 +43,7 @@
     <string name="yes">yes</string>
     <string name="no">no</string>
     <string name="yourBalance">Your balance</string>
-    <string name="frozenMoney">Frozen money %s</string>
+    <string name="frozenMoney">Temporarily blocked %s</string>
     <string name="current_reward">Current reward for service %s</string>
     <string name="dislike">dislike</string>
     <string name="dislikePrompt">Are you sure you want to dislike?</string>
@@ -51,6 +51,4 @@
     <string name="sendPrompt">Are you sure you want to send your money?</string>
     <string name="logout">Logout</string>
     <string name="logoutPrompt">Are you sure you want to logout?</string>
-
-
 </resources>

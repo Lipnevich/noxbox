@@ -10,7 +10,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/noxbox"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
             android:name=".Go"
@@ -29,6 +29,10 @@
         <activity android:name="by.nicolay.lipnevich.noxbox.tools.QRCaptureActivity"
             android:screenOrientation="portrait">
     </activity>
+
+    <meta-data
+        android:name="io.fabric.ApiKey"
+        android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"

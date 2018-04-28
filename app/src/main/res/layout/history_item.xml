@@ -66,7 +66,7 @@
     <ImageView
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:src="@drawable/com_facebook_profile_picture_blank_square"
+        android:src="@drawable/profile_picture_blank"
         android:id="@+id/performerImage"
         android:layout_below="@+id/dateImage"
         android:layout_alignParentStart="true"

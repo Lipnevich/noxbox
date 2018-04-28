@@ -64,7 +64,6 @@ public class Firebase {
     public static final int SCALE = 3;
 
     public static BigDecimal getPrice() {
-        readPrice(null);
         return price;
     }
 

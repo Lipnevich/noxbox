@@ -19,10 +19,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
@@ -35,6 +36,9 @@ import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Task;
+import io.fabric.sdk.android.Fabric;
+
+import static java.util.Collections.singletonList;
 
 public abstract class AuthActivity extends AppCompatActivity {
 
@@ -45,20 +49,21 @@ public abstract class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+        // TODO (nli) should read prices be moved to init method?
+        Firebase.init(noxboxType(), userType());
 
         login();
     }
 
     protected void login() {
-        Firebase.init(noxboxType(), userType());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent login = AuthUI.getInstance().createSignInIntentBuilder()
                     .setTheme(R.style.NoActionBar)
                     .setLogo(R.drawable.noxbox)
-                    .setProviders(Arrays.asList(
-                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                    .setAvailableProviders(singletonList(new GoogleBuilder().build()))
                     .setTosUrl(TOS_URL)
                     .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                     .build();
@@ -79,7 +84,12 @@ public abstract class AuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SIGN_IN_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Firebase.readProfile(processProfileTask);
+                Firebase.readPrice(new Task<Object>() {
+                    @Override
+                    public void execute(Object object) {
+                        Firebase.readProfile(processProfileTask);
+                    }
+                });
             } else {
                 popup(getResources().getText(R.string.permissionRequired).toString());
                 finish();
