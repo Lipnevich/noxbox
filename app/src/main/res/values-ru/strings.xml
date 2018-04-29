@@ -5,6 +5,8 @@
     <string name="completeText">Завершить</string>
     <string name="ratingTitle">Оцените работу</string>
     <string name="requestText">Заказать</string>
+    <string name="requestPushTitle">Поступил заказ</string>
+    <string name="requestPushBody">Заказчик ожидает подтверждения</string>
     <string name="goOnlineText">Приступить к работе</string>
     <string name="goOfflineText">Сделать перерыв</string>
     <string name="acceptText">Принять</string>

@@ -5,6 +5,8 @@
     <string name="completeText">Complete</string>
     <string name="ratingTitle">Rate</string>
     <string name="requestText">Request</string>
+    <string name="requestPushTitle">Request incoming</string>
+    <string name="requestPushBody">Client is requesting you now</string>
     <string name="goOnlineText">Go online</string>
     <string name="acceptText">Accept</string>
     <string name="goOfflineText">Go Offline</string>

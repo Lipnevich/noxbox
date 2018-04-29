@@ -107,5 +107,34 @@ exports.showFunctionIp = functions.https.onRequest((request, response) => {
     return http("http://www.showmyip.gr/", { 'json': true }, (err, res, body) => { return response.send(body); });
 });
 
+exports.pushNotificationTest = functions.https.onRequest((request, response) => {
+    if(request.query.key) {
+        var message = {
+            android: {
+                ttl: 1000 * 30,
+                priority: 'high',
+                notification: {
+                    titleLocKey: 'requestPushTitle',
+                    bodyLocKey: 'requestPushBody',
+                    sound: 'push',
+                    color: '#FF9100',
+                    icon: 'noxbox'
+                }
+            },
+            token: request.query.key
+        };
+
+        admin.messaging().send(message)
+          .then((response) => {
+            console.log('Successfully sent message:', response);
+          })
+          .catch((error) => {
+            console.log('Error sending message:', error);
+          });
+    }
+
+    return response.send("push was sent");
+});
+
 
 

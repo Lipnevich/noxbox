@@ -227,6 +227,10 @@ exports.getPerformerProfile = function (request) {
             'position' : request.performer.position,
             'travelMode' : performer.travelMode
         };
+
+        if(performer.androidNotificationToken) {
+            request.performerAndroidNotificationToken = performer.androidNotificationToken;
+        }
         if(performer.photo) {
             request.performer.photo = performer.photo;
         }
@@ -271,6 +275,24 @@ exports.pingPerformer = function (request) {
         'time' : new Date().getTime(),
         'noxbox' : request.noxbox
     });
+
+    if(request.performerAndroidNotificationToken) {
+        var message = {
+            android: {
+                ttl: 1000 * 30,
+                priority: 'high',
+                notification: {
+                    titleLocKey: 'requestPushTitle',
+                    bodyLocKey: 'requestPushBody',
+                    sound: 'requested',
+                }
+            },
+            token: request.performerAndroidNotificationToken
+        };
+
+        admin.messaging().send(message);
+    }
+
     deferred.resolve(request);
 
     return deferred.promise;

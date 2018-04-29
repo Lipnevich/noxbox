@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -217,6 +218,13 @@ public class Firebase {
                     if(getProfile().getName() == null) {
                         getProfile().setName(defaultName);
                     }
+
+                    String notificationToken = FirebaseInstanceId.getInstance().getToken();
+                    if(notificationToken != null && !notificationToken.equals(getProfile().getAndroidNotificationToken())) {
+                        profiles.child(getProfile().getId()).child("profile")
+                                .child("androidNotificationToken").setValue(notificationToken);
+                    }
+
                     if((user.getDisplayName() != null && !user.getDisplayName().equals(getProfile().getName())) ||
                             (user.getPhotoUrl() != null && !user.getPhotoUrl().toString().equals(getProfile().getPhoto()))) {
                         getProfile().setName(user.getDisplayName());

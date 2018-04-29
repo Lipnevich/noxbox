@@ -30,13 +30,8 @@
             android:screenOrientation="portrait">
     </activity>
 
-    <meta-data
-        android:name="io.fabric.ApiKey"
-        android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
-
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="@string/google_maps_key"/>
+    <meta-data android:name="io.fabric.ApiKey" android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key"/>
 
     </application>
 
