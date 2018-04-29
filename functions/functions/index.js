@@ -6,8 +6,8 @@ const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
 const http = require('request');
 
-exports.createWalletForNewUser = functions.database.ref('/profiles/{userId}').onCreate(event => {
-    return wallet.create({'id' : event.params.userId}).then(
+exports.createWalletForNewUser = functions.database.ref('/profiles/{userId}').onCreate((snapshot, context) => {
+    return wallet.create({'id' : context.params.userId}).then(
            noxbox.createRating).then(
            noxbox.updateBalance).then(
            noxbox.notifyBalanceUpdated);
@@ -116,9 +116,7 @@ exports.pushNotificationTest = functions.https.onRequest((request, response) => 
                 notification: {
                     titleLocKey: 'requestPushTitle',
                     bodyLocKey: 'requestPushBody',
-                    sound: 'push',
-                    color: '#FF9100',
-                    icon: 'noxbox'
+                    sound: 'push'
                 }
             },
             token: request.query.key

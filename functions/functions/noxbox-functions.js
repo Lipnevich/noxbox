@@ -128,13 +128,6 @@ exports.getPrice = function (request) {
 exports.isEnoughMoneyForRequest = function (request) {
     var deferred = Q.defer();
 
-    console.log('0.00600000000000 lte 0.002', new BigDecimal('0.00600000000000').lte(new BigDecimal('0.002')));
-    console.log('0.002 lte 0.00600000000000', new BigDecimal('0.002').lte(new BigDecimal('0.00600000000000')));
-    console.log('2 lte 1', new BigDecimal('2').lte(new BigDecimal('1')));
-    console.log('1 lte 2', new BigDecimal('1').lte(new BigDecimal('2')));
-    console.log('1 lte 1', new BigDecimal('1').lte(new BigDecimal('1')));
-    console.log(new BigDecimal(request.wallet.availableMoney).lte(new BigDecimal(request.price)));
-
     if(!request.wallet.availableMoney ||
         new BigDecimal(request.wallet.availableMoney).lte(new BigDecimal(request.price))) {
         request.error = 'No money available for request';
@@ -220,6 +213,7 @@ exports.getPerformerProfile = function (request) {
     db.ref('profiles').child(request.performer.id).once('value').then(function(snapshot) {
         var performer = snapshot.val().profile;
         var rating = snapshot.val().rating;
+        var notificationKeys = snapshot.val().notificationKeys;
 
         request.performer = {
             'id' : performer.id,
@@ -228,8 +222,8 @@ exports.getPerformerProfile = function (request) {
             'travelMode' : performer.travelMode
         };
 
-        if(performer.androidNotificationToken) {
-            request.performerAndroidNotificationToken = performer.androidNotificationToken;
+        if(notificationKeys && notificationKeys.performerAndroidKey) {
+            request.performerAndroidNotificationKey = notificationKeys.performerAndroidKey;
         }
         if(performer.photo) {
             request.performer.photo = performer.photo;
@@ -276,7 +270,7 @@ exports.pingPerformer = function (request) {
         'noxbox' : request.noxbox
     });
 
-    if(request.performerAndroidNotificationToken) {
+    if(request.performerAndroidNotificationKey) {
         var message = {
             android: {
                 ttl: 1000 * 30,
@@ -287,10 +281,14 @@ exports.pingPerformer = function (request) {
                     sound: 'requested',
                 }
             },
-            token: request.performerAndroidNotificationToken
+            token: request.performerAndroidNotificationKey
         };
 
-        admin.messaging().send(message);
+        admin.messaging().send(message).then((response) => {
+            console.log('Successfully sent message:', response);
+        }).catch((error) => {
+            console.log('Error sending message:', error);
+        });
     }
 
     deferred.resolve(request);

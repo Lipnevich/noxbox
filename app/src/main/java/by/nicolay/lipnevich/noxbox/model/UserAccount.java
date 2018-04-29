@@ -8,6 +8,7 @@ public class UserAccount implements Serializable {
     private Profile profile;
     private Wallet wallet;
     private AllRates rating;
+    private NotificationKeys notificationKeys;
 
     public String getId() {
         return id;
@@ -43,5 +44,13 @@ public class UserAccount implements Serializable {
     public UserAccount setRating(AllRates rating) {
         this.rating = rating;
         return this;
+    }
+
+    public NotificationKeys getNotificationKeys() {
+        return notificationKeys;
+    }
+
+    public void setNotificationKeys(NotificationKeys notificationKeys) {
+        this.notificationKeys = notificationKeys;
     }
 }

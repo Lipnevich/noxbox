@@ -32,6 +32,7 @@ import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.AllRates;
 import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.NotificationKeys;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
@@ -209,21 +210,9 @@ public class Firebase {
             @Override public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     userAccount = snapshot.getValue(UserAccount.class);
-                    if(getWallet() == null) {
-                        userAccount.setWallet(new Wallet().setBalance("0"));
-                    }
-                    if(getRating() == null) {
-                        userAccount.setRating(new AllRates());
-                    }
-                    if(getProfile().getName() == null) {
-                        getProfile().setName(defaultName);
-                    }
+                    setDefaultValues();
 
-                    String notificationToken = FirebaseInstanceId.getInstance().getToken();
-                    if(notificationToken != null && !notificationToken.equals(getProfile().getAndroidNotificationToken())) {
-                        profiles.child(getProfile().getId()).child("profile")
-                                .child("androidNotificationToken").setValue(notificationToken);
-                    }
+                    refreshNotificationToken();
 
                     if((user.getDisplayName() != null && !user.getDisplayName().equals(getProfile().getName())) ||
                             (user.getPhotoUrl() != null && !user.getPhotoUrl().toString().equals(getProfile().getPhoto()))) {
@@ -246,6 +235,36 @@ public class Firebase {
             }
             @Override public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    private static void setDefaultValues() {
+        if(getWallet() == null) {
+            userAccount.setWallet(new Wallet().setBalance("0"));
+        }
+        if(getRating() == null) {
+            userAccount.setRating(new AllRates());
+        }
+        if(getProfile().getName() == null) {
+            getProfile().setName(defaultName);
+        }
+        if(userAccount.getNotificationKeys() == null) {
+            userAccount.setNotificationKeys(new NotificationKeys());
+        }
+    }
+
+    private static void refreshNotificationToken() {
+        String notificationToken = FirebaseInstanceId.getInstance().getToken();
+        if(notificationToken == null) return;
+
+        if(userType.equals(UserType.payer) &&
+                !notificationToken.equals(userAccount.getNotificationKeys().getPayerAndroidKey())) {
+            profiles.child(getProfile().getId()).child("notificationKeys")
+                    .child("payerAndroidKey").setValue(notificationToken);
+        } else if (userType.equals(UserType.performer) &&
+                !notificationToken.equals(userAccount.getNotificationKeys().getPerformerAndroidKey())) {
+            profiles.child(getProfile().getId()).child("notificationKeys")
+                    .child("performerAndroidKey").setValue(notificationToken);
+        }
     }
 
     public static Profile getProfile() {
