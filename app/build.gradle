@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 49
-        versionName "0.49"
+        versionCode 50
+        versionName "0.50"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
@@ -35,30 +35,25 @@ android {
         exclude 'META-INF/DEPENDENCIES'
     }
 
-    productFlavors {
-    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation('com.mikepenz:materialdrawer:5.9.1@aar') { transitive = true }
-    implementation 'com.android.support:appcompat-v7:27.1.0'
-    implementation 'com.android.support:support-v13:27.1.0'
-    implementation 'com.android.support:support-vector-drawable:27.1.0'
-    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:customtabs:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.google.android.gms:play-services-auth:15.0.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.0'
     implementation 'com.google.android.gms:play-services-location:15.0.0'
-    implementation 'com.google.firebase:firebase-core:15.0.0'
-    implementation 'com.firebase:geofire-android:2.1.1'
-    implementation 'com.google.firebase:firebase-database:15.0.0'
     implementation 'com.google.firebase:firebase-auth:15.0.0'
-    implementation 'com.google.android.gms:play-services-auth:15.0.0'
-    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
     implementation 'com.google.firebase:firebase-messaging:15.0.0'
-    implementation ('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {transitive = true}
-    implementation 'pub.devrel:easypermissions:0.2.1'
-    implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
+    implementation 'com.firebase:geofire-android:2.1.1'
+    implementation ('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') { transitive = true }
+    implementation ('com.mikepenz:materialdrawer:5.9.1@aar') { transitive = true }
     // qr code
     implementation 'com.github.kenglxn.QRGen:android:2.4.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'

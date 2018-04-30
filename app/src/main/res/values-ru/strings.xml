@@ -53,4 +53,6 @@
     <string name="sendPrompt">Вы уверены что хотите перевести Ваши деньги?</string>
     <string name="logout">Выход</string>
     <string name="logoutPrompt">Вы уверены что хотите выйти?</string>
+    <string name="acceptPushTitle">Исполнитель в пути</string>
+    <string name="acceptPushBody">%s прибудет через %s</string>
 </resources>

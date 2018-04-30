@@ -53,4 +53,6 @@
     <string name="sendPrompt">Are you sure you want to send your money?</string>
     <string name="logout">Logout</string>
     <string name="logoutPrompt">Are you sure you want to logout?</string>
+    <string name="acceptPushTitle">Request accepted</string>
+    <string name="acceptPushBody">%s will arrive in %s</string>
 </resources>

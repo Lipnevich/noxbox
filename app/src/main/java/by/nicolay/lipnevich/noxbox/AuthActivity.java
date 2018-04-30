@@ -20,6 +20,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,11 +50,18 @@ public abstract class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        configureCrashReporting();
         // TODO (nli) should read prices be moved to init method?
         Firebase.init(noxboxType(), userType());
 
         login();
+    }
+
+    private void configureCrashReporting() {
+        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build();
+        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
 
     protected void login() {
