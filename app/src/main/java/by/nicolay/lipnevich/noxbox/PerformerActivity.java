@@ -36,7 +36,7 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.WalletPerformerPage;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.performer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.QRCaptureActivity;
@@ -247,14 +247,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         getIntent().putExtras(state);
 
         prepareForIteration();
-    }
-
-    @Override
-    protected void onStop() {
-        if(getProfile() != null && tryGetNoxboxInProgress() == null) {
-            super.goOffline();
-        }
-        super.onStop();
     }
 
     private static final String ONLINE = "Online";

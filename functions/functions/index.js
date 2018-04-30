@@ -110,17 +110,18 @@ exports.showFunctionIp = functions.https.onRequest((request, response) => {
 exports.pushNotificationTest = functions.https.onRequest((request, response) => {
     if(request.query.key) {
         var message = {
+            data: {
+                type: 'ping',
+                icon: 'https://lh3.googleusercontent.com/-zM3Lclpg7fQ/AAAAAAAAAAI/AAAAAAAAGa0/wDqyqJtdfd0/s96-c/photo.jpg'
+            },
             android: {
                 ttl: 1000 * 30,
                 priority: 'high',
-                notification: {
-                    titleLocKey: 'requestPushTitle',
-                    bodyLocKey: 'requestPushBody',
-                    sound: 'push'
-                }
             },
             token: request.query.key
         };
+
+        console.log(message);
 
         admin.messaging().send(message)
           .then((response) => {

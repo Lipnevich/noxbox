@@ -206,6 +206,7 @@ public class Firebase {
     // Profiles API
     public static void readProfile(final Task task) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         profiles.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {

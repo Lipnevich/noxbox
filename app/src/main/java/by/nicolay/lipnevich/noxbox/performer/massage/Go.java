@@ -16,7 +16,6 @@ package by.nicolay.lipnevich.noxbox.performer.massage;
 import by.nicolay.lipnevich.noxbox.PerformerActivity;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.UserType;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
 
 public class Go extends PerformerActivity {
 

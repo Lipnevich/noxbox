@@ -37,7 +37,6 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -52,7 +51,7 @@ import java.util.Map;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.performer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 

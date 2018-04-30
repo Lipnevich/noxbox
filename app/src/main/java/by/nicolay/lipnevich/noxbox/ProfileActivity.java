@@ -14,12 +14,17 @@
 package by.nicolay.lipnevich.noxbox;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -27,9 +32,10 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -54,8 +60,8 @@ import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
-import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.performer.massage.BuildConfig;
+import by.nicolay.lipnevich.noxbox.performer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Task;
@@ -85,6 +91,7 @@ public abstract class ProfileActivity extends AuthActivity {
 
         listenMessages();
     }
+
     private double MIN_RATE = 4.5;
 
     protected Drawer menu;

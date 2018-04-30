@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="by.nicolay.lipnevich.noxbox.payer.massage">
+    package="by.nicolay.lipnevich.noxbox.performer.massage">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -9,7 +9,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/noxbox"
+        android:label="@string/noxboxer"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
@@ -32,6 +32,13 @@
 
     <meta-data android:name="io.fabric.ApiKey" android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key"/>
+
+    <service
+        android:name="by.nicolay.lipnevich.noxbox.tools.MessagingService">
+        <intent-filter>
+            <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+        </intent-filter>
+    </service>
 
     </application>
 
