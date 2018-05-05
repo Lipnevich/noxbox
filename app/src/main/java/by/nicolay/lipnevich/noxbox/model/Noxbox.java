@@ -23,7 +23,6 @@ public class Noxbox implements Comparable<Noxbox> {
     private Map<String, Profile> payers = new HashMap<>();
 
     // Noxbox specific data
-    private String estimationTime;
     private Long timeRequested;
     private Long timeCompleted;
     private Long timeAccepted;
@@ -33,6 +32,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String price;
     private String priceWithoutFee;
     public NoxboxType type;
+    private String estimationTime;
 
     public String getId() {
         return id;

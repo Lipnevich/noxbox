@@ -153,14 +153,18 @@ exports.isEnoughMoneyForRefund = function (request) {
 exports.getPayerProfile = function (request) {
     var deferred = Q.defer();
 
-    db.ref('profiles').child(request.id).once('value').then(function(snapshot) {
+    db.ref('profiles').child(request.payer.id).once('value').then(function(snapshot) {
         var payer = snapshot.val().profile;
         var rating = snapshot.val().rating;
+        var notificationKeys = snapshot.val().notificationKeys;
 
         request.payer = {
             'id' : payer.id,
             'name' : payer.name
         };
+        if(notificationKeys && notificationKeys.payerAndroidKey) {
+            request.payerAndroidNotificationKey = notificationKeys.payerAndroidKey;
+        }
         if(payer.photo) {
             request.payer.photo = payer.photo;
         }
@@ -248,6 +252,7 @@ exports.createNoxbox = function (request) {
         'type' : request.noxboxType,
         'price' : '' + request.price,
         'position' : request.position,
+        'estimationTime' : request.estimationTime,
         'timeRequested' : new Date().getTime(),
         'payers' : { [request.id] : request.payer },
         'performers' : { [request.performer.id] : request.performer }
@@ -266,34 +271,68 @@ exports.pingPerformer = function (request) {
     ref.child(messageId).set({
         'id' : messageId,
         'type' : 'ping',
+        'payer' : request.payer,
+        'estimationTime' : request.estimationTime,
         'time' : new Date().getTime(),
         'noxbox' : request.noxbox
     });
 
-    if(request.performerAndroidNotificationKey) {
-        var message = {
-            android: {
-                ttl: 1000 * 30,
-                priority: 'high',
-                notification: {
-                    titleLocKey: 'requestPushTitle',
-                    bodyLocKey: 'requestPushBody',
-                    sound: 'requested',
-                }
-            },
-            token: request.performerAndroidNotificationKey
-        };
-
-        admin.messaging().send(message).then((response) => {
-            console.log('Successfully sent message:', response);
-        }).catch((error) => {
-            console.log('Error sending message:', error);
-        });
-    }
-
     deferred.resolve(request);
 
     return deferred.promise;
+}
+
+exports.sendPushNotification = function(request) {
+    return getPushToken(request).then(sendPush);
+}
+
+sendPush = function (request) {
+    var deferred = Q.defer();
+
+    if(request.push && request.push.data && request.push.token) {
+        console.log(request.push.data);
+
+        let message = {
+            data : request.push.data,
+            android : { ttl: 1000 * 30 },
+            token : request.push.token
+        }
+
+        admin.messaging().send(message).then((response) => {
+            console.log('Successfully sent message:', response);
+            deferred.resolve(request);
+        }).catch((error) => {
+            console.log('Error sending message:', error);
+            deferred.resolve(request);
+        });
+    } else {
+        deferred.resolve(request);
+    }
+
+    return deferred.promise;
+}
+
+getPushToken = function (request) {
+    var deferred = Q.defer();
+
+    if(request.push && !request.push.token) {
+        db.ref('profiles').child(request.push.to).child("notificationKeys").once('value').then(function(snapshot) {
+            var notificationKeys = snapshot.val();
+
+            if (request.push.role == 'payer' && notificationKeys && notificationKeys.payerAndroidKey) {
+                request.push.token = notificationKeys.payerAndroidKey;
+            } else if (request.push.role == 'performer' && notificationKeys && notificationKeys.performerAndroidKey) {
+                request.push.token = notificationKeys.performerAndroidKey;
+            }
+
+            deferred.resolve(request);
+        });
+    } else {
+        deferred.resolve(request);
+    }
+
+    return deferred.promise;
+
 }
 
 exports.freezeMoney = function (request) {
@@ -554,7 +593,8 @@ exports.notifyAccepted = function (request) {
         ref.child(messageId).set({
             'id' : messageId,
             'type' : 'pong',
-            'noxbox' : request.noxbox
+            'noxbox' : request.noxbox,
+            'estimationTime' : request.estimationTime
         });
     }
 

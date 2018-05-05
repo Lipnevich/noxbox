@@ -15,9 +15,9 @@ package by.nicolay.lipnevich.noxbox.model;
 
 public class Message {
 
-    private String id, story;
+    private String id, story, estimationTime;
     private Wallet wallet;
-    private Profile sender;
+    private Profile sender, performer, payer;
     private MessageType type;
     private Position position;
     private Boolean like;
@@ -103,5 +103,29 @@ public class Message {
     public Message setLike(Boolean like) {
         this.like = like;
         return this;
+    }
+
+    public Profile getPerformer() {
+        return performer;
+    }
+
+    public void setPerformer(Profile performer) {
+        this.performer = performer;
+    }
+
+    public Profile getPayer() {
+        return payer;
+    }
+
+    public void setPayer(Profile payer) {
+        this.payer = payer;
+    }
+
+    public String getEstimationTime() {
+        return estimationTime;
+    }
+
+    public void setEstimationTime(String estimationTime) {
+        this.estimationTime = estimationTime;
     }
 }

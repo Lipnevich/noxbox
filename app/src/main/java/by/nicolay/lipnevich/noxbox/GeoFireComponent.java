@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseError;
 
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
@@ -42,8 +42,10 @@ public abstract class GeoFireComponent extends MapActivity {
         getAvailablePerformers().removeLocation(createKey());
     }
 
+    public final static String delimiter = ";";
+
     private String createKey() {
-        return getProfile().getId() + ":" + getProfile().getTravelMode().toString();
+        return getProfile().getId() + delimiter + getProfile().getTravelMode().toString();
     }
 
     private void listenAvailablePerformers(GeoLocation geoLocation) {
@@ -52,25 +54,25 @@ public abstract class GeoFireComponent extends MapActivity {
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                String performerId = key.split(":")[0];
+                String performerId = key.split(delimiter)[0];
                 if(getProfile().getId().equals(performerId)) return;
-                TravelMode travelMode = TravelMode.valueOf(key.split(":")[1]);
+                TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
                 GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), getPerformerDrawable());
                 marker.setTag(travelMode);
             }
 
             @Override
             public void onKeyExited(String key) {
-                String performerId = key.split(":")[0];
+                String performerId = key.split(delimiter)[0];
                 if(getProfile().getId().equals(performerId)) return;
                 removeMarker(performerId);
             }
 
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
-                String performerId = key.split(":")[0];
+                String performerId = key.split(delimiter)[0];
                 if(getProfile().getId().equals(performerId)) return;
-                TravelMode travelMode = TravelMode.valueOf(key.split(":")[1]);
+                TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
                 GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), getPerformerDrawable());
                 marker.setTag(travelMode);
             }

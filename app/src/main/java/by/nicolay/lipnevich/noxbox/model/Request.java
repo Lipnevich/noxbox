@@ -7,10 +7,14 @@ public class Request {
     private NoxboxType noxboxType;
     private String toAddress;
     private String reason;
+    private String message;
+    private String estimationTime;
     private Position position;
     private Profile performer;
     private Profile payer;
     private Noxbox noxbox;
+    private UserType role;
+    private Push push;
 
     public String getId() {
         return id;
@@ -90,6 +94,42 @@ public class Request {
 
     public Request setNoxbox(Noxbox noxbox) {
         this.noxbox = noxbox;
+        return this;
+    }
+
+    public String getEstimationTime() {
+        return estimationTime;
+    }
+
+    public Request setEstimationTime(String estimationTime) {
+        this.estimationTime = estimationTime;
+        return this;
+    }
+
+    public Push getPush() {
+        return push;
+    }
+
+    public Request setPush(Push push) {
+        this.push = push;
+        return this;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public UserType getRole() {
+        return role;
+    }
+
+    public Request setRole(UserType role) {
+        this.role = role;
+        return this;
+    }
+
+    public Request setMessage(String message) {
+        this.message = message;
         return this;
     }
 }

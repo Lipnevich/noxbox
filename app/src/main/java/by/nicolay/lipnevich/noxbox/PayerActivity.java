@@ -39,7 +39,7 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.WalletPage;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
@@ -117,8 +117,10 @@ public abstract class PayerActivity extends NoxboxActivity {
                     drawPath(null, bestOption, getProfile().publicInfo().setPosition(getCameraPosition()));
 
                     Firebase.sendRequest(new Request()
+                        .setEstimationTime(bestOption.getEstimationTime())
                         .setType(RequestType.request)
                         .setPosition(getCameraPosition())
+                        .setPayer(getProfile().publicInfo())
                         .setPerformer(new Profile().setId(bestOption.getId()).setPosition(bestOption.getPosition())));
 
                     timer = new Timer() {
@@ -182,6 +184,9 @@ public abstract class PayerActivity extends NoxboxActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Firebase.sendRequest(new Request().setType(RequestType.cancel)
+                                        .setRole(userType())
+                                        .setPayer(getProfile().publicInfo())
+                                        .setPerformer(noxbox.getPerformers().values().iterator().next().publicInfo())
                                         .setNoxbox(new Noxbox().setId(noxbox.getId()))
                                         .setReason("Canceled by payer " + getProfile().getName()));
                                 prepareForIteration();
@@ -229,7 +234,8 @@ public abstract class PayerActivity extends NoxboxActivity {
     protected void processGnop(Message gnop) {
         // TODO (nli) retry instead
         removeMessage(gnop.getId());
-        prepareForIteration();    }
+        prepareForIteration();
+    }
 
     @Override
     protected void processMove(Message move) {

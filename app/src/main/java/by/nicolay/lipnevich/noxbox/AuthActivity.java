@@ -32,8 +32,8 @@ import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.UserType;
-import by.nicolay.lipnevich.noxbox.performer.massage.BuildConfig;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Task;
@@ -50,14 +50,13 @@ public abstract class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        configureCrashReporting();
-        // TODO (nli) should read prices be moved to init method?
+        initCrashReporting();
         Firebase.init(noxboxType(), userType());
 
         login();
     }
 
-    private void configureCrashReporting() {
+    private void initCrashReporting() {
         CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
                 .disabled(BuildConfig.DEBUG)
                 .build();
@@ -105,10 +104,10 @@ public abstract class AuthActivity extends AppCompatActivity {
         }
     }
 
-    private Task processProfileTask = new Task() {
+    private Task processProfileTask = new Task<Profile>() {
         @Override
-        public void execute(Object object) {
-            processProfile((Profile)object);
+        public void execute(Profile profile) {
+            processProfile(profile);
         }
     };
 

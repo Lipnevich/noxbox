@@ -8,7 +8,7 @@
     </string>
 
     <!--used for path finding in http get requests to directions google api-->
-    <string name="google_maps_server_key" translatable="false">
+    <string name="google_directions_key" translatable="false">
         AIzaSyAZGVVUasvDETFaNpWug0p9IfUzcsRlFIY
     </string>
 

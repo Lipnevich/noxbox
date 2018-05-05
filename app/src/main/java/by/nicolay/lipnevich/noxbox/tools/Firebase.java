@@ -87,7 +87,8 @@ public class Firebase {
 
     public static void sendRequest(Request request) {
         requests.child(getProfile().getId()).child(request.getType().toString())
-                .setValue(objectToMap(request.setId(getProfile().getId()).setNoxboxType(type)));
+                .setValue(objectToMap(request.setId(getProfile().getId()).setNoxboxType(type)
+                        .setPush(MessagingService.generatePush(request))));
     }
 
     // Messages API
@@ -204,7 +205,7 @@ public class Firebase {
     private static final String defaultName = "Unnamed person";
 
     // Profiles API
-    public static void readProfile(final Task task) {
+    public static void readProfile(final Task<Profile> task) {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         profiles.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {

@@ -33,6 +33,10 @@ public abstract class NoxboxActivity extends GeoFireComponent {
     protected void processPong(Message pong) {}
     protected void processGnop(Message gnop) {}
     protected void processMove(Message move) {}
+    private void processQr(Message qr) {
+        // TODO (nli) update ui for both users
+        removeMessage(qr.getId());
+    }
     protected void processStory(Message story) {
         popup("Message received: " + story.getStory());
         // TODO (nli) sound
@@ -57,6 +61,7 @@ public abstract class NoxboxActivity extends GeoFireComponent {
             case ping: processPing(message); break;
             case pong: processPong(message); break;
             case gnop: processGnop(message); break;
+            case qr: processQr(message); break;
             case complete:
                 if(tryGetNoxboxInProgress() != null) createHistory(tryGetNoxboxInProgress()
                         .setTimeCompleted(currentTimeMillis()));

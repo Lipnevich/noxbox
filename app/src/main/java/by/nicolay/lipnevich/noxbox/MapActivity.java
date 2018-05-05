@@ -51,7 +51,7 @@ import java.util.Map;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
@@ -217,18 +217,23 @@ public abstract class MapActivity extends ProfileActivity implements
     }
 
     protected void drawPath(final String noxboxId, final Profile performer, final Profile payer) {
+        if(performer.getPosition() == null && noxboxId != null && tryGetNoxboxInProgress() != null) {
+            performer.setPosition(tryGetNoxboxInProgress()
+                    .getPerformers().get(performer.getId()).getPosition());
+        }
+
         draw(performer, getPerformerDrawable());
         draw(payer, getPayerDrawable());
 
-        AsyncTask<Void, Void, Map.Entry<String, List<LatLng>>> asyncTask = new AsyncTask<Void, Void, Map.Entry<String, List<LatLng>>>() {
+        AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>> asyncTask = new AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>>() {
             @Override
-            protected Map.Entry<String, List<LatLng>> doInBackground(Void... params) {
+            protected Map.Entry<Integer, List<LatLng>> doInBackground(Void... params) {
                 return getPathPoints(performer.getPosition(), payer.getPosition(),
-                        performer.getTravelMode(), getResources().getString(R.string.google_maps_server_key));
+                        performer.getTravelMode(), getResources().getString(R.string.google_directions_key));
             }
 
             @Override
-            protected void onPostExecute(Map.Entry<String, List<LatLng>> responce) {
+            protected void onPostExecute(Map.Entry<Integer, List<LatLng>> responce) {
                 if(pathes.containsKey(performer.getId())) {
                     pathes.remove(performer.getId()).remove();
                 }
@@ -237,9 +242,9 @@ public abstract class MapActivity extends ProfileActivity implements
                 if(responce != null) {
                     points = responce.getValue();
                     // TODO (nli) show time on the map
-                    if(tryGetNoxboxInProgress() != null) {
+                    if(tryGetNoxboxInProgress() != null && responce.getKey() != null) {
                         Firebase.updateCurrentNoxbox(tryGetNoxboxInProgress()
-                                .setEstimationTime(responce.getKey()));
+                                .setEstimationTime(responce.getKey().toString()));
                     }
                 } else {
                     // TODO (nli) draw curve
@@ -314,7 +319,7 @@ public abstract class MapActivity extends ProfileActivity implements
             if (estimation < minEstimation) {
                 minEstimation = estimation;
                 String performerId = marker.getKey();
-                performer = new Profile().setId(performerId)
+                performer = new Profile().setId(performerId).setEstimationTime("" + estimation)
                         .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition()));
             }
         }

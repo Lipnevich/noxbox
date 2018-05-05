@@ -15,7 +15,6 @@ package by.nicolay.lipnevich.noxbox;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -36,7 +35,7 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.WalletPerformerPage;
-import by.nicolay.lipnevich.noxbox.performer.massage.R;
+import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.QRCaptureActivity;
@@ -109,6 +108,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
             } else {
                 // TODO (nli) check is it correct it on server, process responce, update current Noxbox
                 tryGetNoxboxInProgress().getPayers().values().iterator().next().setSecret(result.getContents());
+                scanQr.setVisibility(View.INVISIBLE);
                 updateCurrentNoxbox(tryGetNoxboxInProgress());
                 completeButton.setEnabled(isQrRecognized());
                 completeButton.setBackgroundResource(isQrRecognized() ? R.color.primary : R.color.divider);
@@ -129,9 +129,8 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         if(tryGetNoxboxInProgress() != null) {
             removeCurrentNoxbox();
         }
-        if(getIntent().getExtras() == null || !getIntent().getExtras().getBoolean(ONLINE)) {
-            goOffline();
-        }
+
+        goOffline();
     }
 
     @Override
@@ -145,7 +144,10 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
 
                 sendRequest(new Request()
                         .setType(RequestType.complete)
-                        .setNoxbox(new Noxbox().setId(noxbox.getId())));
+                        .setPayer(tryGetNoxboxInProgress().getPayers().values().iterator().next().publicInfo())
+                        .setPerformer(getProfile().publicInfo())
+                        .setNoxbox(new Noxbox().setPrice(tryGetNoxboxInProgress().getPrice())
+                                .setId(noxbox.getId())));
                 like();
                 createHistory(tryGetNoxboxInProgress().setTimeCompleted(currentTimeMillis()));
                 prepareForIteration();
@@ -222,8 +224,14 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
                 goOffline();
                 cleanUpMap();
 
+                String estimation = tryGetNoxboxInProgress().getEstimationTime() != null ?
+                        tryGetNoxboxInProgress().getEstimationTime() : pingMessage.getEstimationTime();
+
                 Firebase.sendRequest(new Request()
                         .setType(RequestType.accept)
+                        .setPayer(pingMessage.getPayer().publicInfo())
+                        .setPerformer(getProfile().publicInfo())
+                        .setEstimationTime(estimation)
                         .setNoxbox(new Noxbox().setId(pingMessage.getNoxbox().getId())));
                 removeMessage(pingMessage.getId());
                 processNoxbox(pingMessage.getNoxbox());
@@ -239,24 +247,18 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     }
 
     private void cancelPing(Message message) {
-        sendRequest(new Request().setType(RequestType.cancel).setNoxbox(new Noxbox().setId(message.getNoxbox().getId())));
+        sendRequest(new Request().setType(RequestType.cancel)
+                .setRole(userType())
+                .setPerformer(getProfile().publicInfo())
+                .setPayer(message.getPayer().publicInfo())
+                .setNoxbox(new Noxbox().setId(message.getNoxbox().getId())));
         removeMessage(message.getId());
-
-        Bundle state = new Bundle();
-        state.putBoolean(ONLINE, false);
-        getIntent().putExtras(state);
-
         prepareForIteration();
     }
-
-    private static final String ONLINE = "Online";
 
     @Override
     protected void goOffline() {
         super.goOffline();
-        Bundle state = new Bundle();
-        state.putBoolean(ONLINE, false);
-        getIntent().putExtras(state);
 
         goOnlineButton.setVisibility(View.VISIBLE);
 
@@ -271,10 +273,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     @Override
     protected void goOnline() {
         super.goOnline();
-        Bundle state = new Bundle();
-        state.putBoolean(ONLINE, true);
-        getIntent().putExtras(state);
-
         goOfflineButton.setVisibility(View.VISIBLE);
 
         pathImage.setVisibility(View.INVISIBLE);
@@ -286,21 +284,8 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        super.onConnected(bundle);
-        if(getIntent().getExtras() != null && getIntent().getExtras().getBoolean(ONLINE)) {
-            goOnline();
-        }
-    }
-
-    @Override
     protected void processGnop(Message gnop) {
         removeMessage(gnop.getId());
-
-        Bundle state = new Bundle();
-        state.putBoolean(ONLINE, false);
-        getIntent().putExtras(state);
-
         prepareForIteration();
     }
 

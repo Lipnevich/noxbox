@@ -6,10 +6,12 @@ public enum RequestType {
     request,
 
     accept,
+    qr,
     complete,
 
     cancel,
 
     dislike,
-    moneyBack
+    moneyBack,
+    message
 }

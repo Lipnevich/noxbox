@@ -1,5 +1,8 @@
 package by.nicolay.lipnevich.noxbox.tools;
 
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -21,7 +24,7 @@ import by.nicolay.lipnevich.noxbox.model.Position;
 
 public class PathFinder {
 
-    public static Map.Entry<String, List<LatLng>> getPathPoints(final Position performer, final Position payer,
+    public static Map.Entry<Integer, List<LatLng>> getPathPoints(final Position performer, final Position payer,
                                                                 TravelMode travelMode, String key) {
         String url = String.format(Locale.US, "https://maps.googleapis.com/maps/api/directions/json" +
                         "?origin=%f,%f&destination=%f,%f&sensor=false&mode=%s&alternatives=true&key=%s",
@@ -45,18 +48,18 @@ public class PathFinder {
             JSONObject json = new JSONObject(sb.toString());
             JSONArray routeArray = json.getJSONArray("routes");
             JSONObject routes = routeArray.getJSONObject(0);
-            String duration = (String) routes.getJSONArray("legs")
+            Integer estimation = (Integer) routes.getJSONArray("legs")
                     .getJSONObject(0)
                     .getJSONObject("duration")
-                    .get("text");
+                    .get("value");
 
             JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
             List<LatLng> points = decodePoly(encodedString);
 
-            return Collections.singletonMap(duration, points).entrySet().iterator().next();
+            return Collections.singletonMap(estimation, points).entrySet().iterator().next();
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
         }
         return null;
     }

@@ -5,10 +5,10 @@ package by.nicolay.lipnevich.noxbox.model;
  */
 public enum MessageType {
     // Payer say
-    ping,
+    ping, cancel,
 
     // Performer say
-    pong, gnop, move, complete,
+    pong, gnop, move, complete, qr,
 
     // Both say
     dislike, story,

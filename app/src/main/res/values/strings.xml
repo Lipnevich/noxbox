@@ -5,8 +5,8 @@
     <string name="completeText">Complete</string>
     <string name="ratingTitle">Rate</string>
     <string name="requestText">Request</string>
-    <string name="requestPushTitle">Request incoming</string>
-    <string name="requestPushBody">Client is requesting you now</string>
+    <string name="pingPushTitle">Request incoming</string>
+    <string name="pingPushBody">%s is requesting you. Estimation %s minutes</string>
     <string name="goOnlineText">Go online</string>
     <string name="acceptText">Accept</string>
     <string name="goOfflineText">Go Offline</string>
@@ -53,6 +53,16 @@
     <string name="sendPrompt">Are you sure you want to send your money?</string>
     <string name="logout">Logout</string>
     <string name="logoutPrompt">Are you sure you want to logout?</string>
-    <string name="acceptPushTitle">Request accepted</string>
-    <string name="acceptPushBody">%s will arrive in %s</string>
+    <string name="pongPushTitle">Request accepted</string>
+    <string name="pongPushBody">%s will arrive in %s minutes</string>
+    <string name="gnopPushTitle">Request declined</string>
+    <string name="gnopPushBody">Please try to request again</string>
+    <string name="cancelPushTitle">Request canceled</string>
+    <string name="cancelPushBody">New request will be provided soon</string>
+    <string name="completePushTitle">Payment done</string>
+    <string name="completePushBody">%s %s was transfered to perfomer</string>
+    <string name="balancePushBody">Your balance is %s %s</string>
+    <string name="balancePushTitle">Balance updated</string>
+    <string name="qrPushTitle">Performer working</string>
+    <string name="qrPushBody">%s happy to provide you a service</string>
 </resources>

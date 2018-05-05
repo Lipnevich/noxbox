@@ -13,9 +13,9 @@ import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
 public class Profile implements Serializable {
 
-    private String id, name, email, photo, secret, androidNotificationToken;
+    private String id, name, email, photo, secret;
     private Position position;
-    private String addressToRefund;
+    private String addressToRefund, estimationTime;
     private Long timeDisliked;
     private TravelMode travelMode;
 
@@ -141,6 +141,15 @@ public class Profile implements Serializable {
         return this;
     }
 
+    public String getEstimationTime() {
+        return estimationTime;
+    }
+
+    public Profile setEstimationTime(String estimationTime) {
+        this.estimationTime = estimationTime;
+        return this;
+    }
+
     public String getSecret() {
         return secret;
     }
@@ -164,14 +173,6 @@ public class Profile implements Serializable {
                 .setPosition(position).setTravelMode(travelMode);
     }
 
-    public String getAndroidNotificationToken() {
-        return androidNotificationToken;
-    }
-
-    public void setAndroidNotificationToken(String androidNotificationToken) {
-        this.androidNotificationToken = androidNotificationToken;
-    }
-
     @Exclude
     public static Profile createFrom(FirebaseUser user) {
         return new Profile()
@@ -181,4 +182,5 @@ public class Profile implements Serializable {
                 .setTravelMode(TravelMode.driving)
                 .setPhoto(user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
     }
+
 }
