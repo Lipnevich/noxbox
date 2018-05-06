@@ -10,6 +10,7 @@ public class Notice {
 
     private MessageType type;
     private Integer id;
+    private Boolean ignore;
     private String estimation, icon, name, message, price, balance;
 
     public static Notice create(Map<String, String> data) {
@@ -19,8 +20,18 @@ public class Notice {
                 .setIcon(data.get("icon"))
                 .setName(data.get("name"))
                 .setMessage(data.get("message"))
+                .setIgnore(data.get("ignore") != null ? Boolean.valueOf(data.get("ignore")) : false)
                 .setPrice(data.get("price"))
                 .setBalance(data.get("balance"));
+    }
+
+    public Boolean getIgnore() {
+        return ignore;
+    }
+
+    public Notice setIgnore(Boolean ignore) {
+        this.ignore = ignore;
+        return this;
     }
 
     public MessageType getType() {

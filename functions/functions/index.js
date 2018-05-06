@@ -52,7 +52,7 @@ exports.cancel = functions.database.ref('/requests/{userId}/cancel').onCreate(ev
            noxbox.notifyCanceled).then(
            noxbox.sendPushNotification).then(
            // TOdO (nli) pay in case more then 3 minutes gone
-           noxbox.unfreezeMoneyInTransaction).then(
+           noxbox.unfreezeMoney).then(
            noxbox.notifyPayerBalanceUpdated, noxbox.logError).then(
            noxbox.releaseRequest);
 });
@@ -76,7 +76,7 @@ exports.complete = functions.database.ref('/requests/{userId}/complete').onCreat
            wallet.pay).then(
            // TODO (nli) create fee in performers wallet
            noxbox.storePriceWithoutFeeInNoxbox).then(
-           noxbox.updatePayerBalanceInTransaction).then(
+           noxbox.updatePayerBalance).then(
            noxbox.notifyPayerBalanceUpdated).then(
            noxbox.sendPushNotification).then(
            noxbox.likePerformer).then(

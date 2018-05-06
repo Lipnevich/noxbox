@@ -79,7 +79,7 @@ public abstract class ProfileActivity extends AuthActivity {
         }
 
         if(new BigDecimal(Firebase.getWallet().getBalance()).compareTo(BigDecimal.ZERO) <= 0) {
-            Firebase.sendRequest(new Request().setType(RequestType.balance));
+            Firebase.sendRequest(new Request().setType(RequestType.balance).setRole(userType()));
         }
 
         listenMessages();

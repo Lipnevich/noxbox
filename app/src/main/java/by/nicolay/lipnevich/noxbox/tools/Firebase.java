@@ -26,7 +26,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +40,7 @@ import by.nicolay.lipnevich.noxbox.model.UserAccount;
 import by.nicolay.lipnevich.noxbox.model.UserType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
 
+import static by.nicolay.lipnevich.noxbox.tools.Numbers.scale;
 import static java.lang.reflect.Modifier.isStatic;
 
 public class Firebase {
@@ -63,8 +63,6 @@ public class Firebase {
         availablePerformers = new GeoFire(FirebaseDatabase.getInstance().getReference().child("availablePerformers").child(type.toString()));
     }
 
-    public static final int SCALE = 3;
-
     public static BigDecimal getPrice() {
         return price;
     }
@@ -75,7 +73,7 @@ public class Firebase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String value = dataSnapshot.getValue(String.class);
-                    price = new BigDecimal(value).setScale(SCALE, RoundingMode.DOWN);
+                    price = scale(value);
                 }
                 if(task != null) {
                     task.execute(price);

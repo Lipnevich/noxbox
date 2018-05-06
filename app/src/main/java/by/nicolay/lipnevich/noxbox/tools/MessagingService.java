@@ -3,6 +3,7 @@ package by.nicolay.lipnevich.noxbox.tools;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -46,15 +47,22 @@ public class MessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        createNotificationChannel();
-
         Notice notice = Notice.create(remoteMessage.getData());
+        if(notice.getIgnore()) {
+            return;
+        }
+
+        createNotificationChannel();
 
         cancelOtherNotifications(notice.getType());
 
         Builder builder = builder(notice);
 
-        getSystemService(NotificationManager.class).notify(getId(notice.getType()), builder.build());
+        getNotificationService().notify(getId(notice.getType()), builder.build());
+    }
+
+    private NotificationManager getNotificationService() {
+        return (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
     private int getId(MessageType type) {
@@ -81,13 +89,13 @@ public class MessagingService extends FirebaseMessagingService {
                 MessageType.complete));
 
         if(cancelOther.contains(type)) {
-            getSystemService(NotificationManager.class).cancelAll();
+            getNotificationService().cancelAll();
         }
     }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getSystemService(NotificationManager.class)
+            getNotificationService()
                     .createNotificationChannel(new NotificationChannel(channelId,
                             "Channel title",
                             NotificationManager.IMPORTANCE_DEFAULT));

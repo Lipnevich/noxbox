@@ -23,15 +23,17 @@ import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.MessageType;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.RequestType;
+import by.nicolay.lipnevich.noxbox.model.UserType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.SCALE;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
+import static by.nicolay.lipnevich.noxbox.tools.Numbers.format;
+import static by.nicolay.lipnevich.noxbox.tools.Numbers.scale;
 
 public class WalletPage extends AppCompatActivity {
 
@@ -82,7 +84,7 @@ public class WalletPage extends AppCompatActivity {
                 }
             }
         });
-        Firebase.sendRequest(new Request().setType(RequestType.balance));
+        Firebase.sendRequest(new Request().setType(RequestType.balance).setRole(UserType.payer));
     }
 
     private void refund(String address) {
@@ -105,7 +107,7 @@ public class WalletPage extends AppCompatActivity {
         BigDecimal price = Firebase.getPrice();
         BigDecimal balance = wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO;
         BigDecimal frozenMoney = wallet.getFrozenMoney() != null ? new BigDecimal(wallet.getFrozenMoney()) : BigDecimal.ZERO;
-        balance = balance.subtract(frozenMoney).setScale(SCALE, RoundingMode.DOWN);
+        balance = scale(balance.subtract(frozenMoney));
 
         String cryptoCurrency = getResources().getString(R.string.crypto_currency);
 
@@ -113,13 +115,13 @@ public class WalletPage extends AppCompatActivity {
         balanceLabel.setText(String.format(getResources().getString(R.string.balance), cryptoCurrency));
 
         TextView balanceText = findViewById(R.id.balance_id);
-        balanceText.setText(balance.setScale(SCALE, RoundingMode.DOWN).toString());
+        balanceText.setText(format(balance));
 
         TextView priceLabel = findViewById(R.id.price_label_id);
         priceLabel.setText(String.format(getResources().getString(R.string.price), cryptoCurrency));
 
         TextView priceView = findViewById(R.id.price_id);
-        priceView.setText(price.setScale(SCALE, RoundingMode.DOWN).toString());
+        priceView.setText(format(price));
 
         TextView servicesDescription = findViewById(R.id.services_description_id);
         BigDecimal numberOfServices = balance.divide(price, 0, RoundingMode.DOWN);
@@ -127,12 +129,12 @@ public class WalletPage extends AppCompatActivity {
         if(numberOfServices.compareTo(BigDecimal.ONE) < 0) {
             numberOfNoxboxes.setText("");
             servicesDescription.setText(String.format(getResources().getString(R.string.serviceUnavailable),
-                    price.subtract(balance).setScale(SCALE, RoundingMode.DOWN).toString() + " " + cryptoCurrency));
+                    format(price.subtract(balance)) + " " + cryptoCurrency));
         } else if (numberOfServices.compareTo(BigDecimal.ONE) == 0) {
             numberOfNoxboxes.setText("1");
             servicesDescription.setText(getResources().getString(R.string.serviceAvailable));
         } else {
-            numberOfNoxboxes.setText(numberOfServices.toString());
+            numberOfNoxboxes.setText(format(numberOfServices, 0));
             servicesDescription.setText(getResources().getString(R.string.servicesAvailable));
         }
 

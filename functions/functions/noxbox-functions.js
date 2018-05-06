@@ -100,6 +100,7 @@ exports.getWallet = function (request) {
         }
 
         request.wallet.balance = request.wallet.balance || '0';
+        request.wallet.previousBalance = request.wallet.balance;
         request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
         request.wallet.availableMoney = '' + (new BigDecimal(request.wallet.balance)
             .minus(new BigDecimal(request.wallet.frozenMoney)));
@@ -141,7 +142,7 @@ exports.isEnoughMoneyForRefund = function (request) {
     var deferred = Q.defer();
 
     if(!request.wallet.availableMoneyWithoutFee ||
-        new BigDecimal(request.wallet.availableMoneyWithoutFee).lteOrEqualTo(new BigDecimal(0))) {
+        new BigDecimal(request.wallet.availableMoneyWithoutFee).lte(new BigDecimal(0))) {
         console.log(request.wallet.availableMoneyWithoutFee);
         request.error = 'No money available for refund';
         deferred.reject(request);
@@ -290,6 +291,11 @@ sendPush = function (request) {
     var deferred = Q.defer();
 
     if(request.push && request.push.data && request.push.token) {
+        if(request.wallet && request.wallet.previousBalance == request.wallet.balance) {
+            request.push.data.ignore = 'true';
+            request.push.data.balance = request.wallet.balance;
+        }
+
         console.log(request.push.data);
 
         let message = {
@@ -338,17 +344,32 @@ getPushToken = function (request) {
 exports.freezeMoney = function (request) {
     var deferred = Q.defer();
 
-    request.wallet.frozenMoney = '' + (new BigDecimal(request.wallet.frozenMoney)
-        .add(new BigDecimal(request.price)));
+    // firebase can process transaction up to 25 times in case of issues with multi access,
+    // for the first time transaction processed with null instead of real value
+    db.ref('profiles').child(request.id).child('wallet').transaction(function(current) {
+        if(!current) {
+            return 0;
+        }
 
-    db.ref('profiles/' + request.id + '/wallet').update({'frozenMoney' : request.wallet.frozenMoney});
+        request.wallet.frozenMoney = '' + (new BigDecimal(request.wallet.frozenMoney)
+                .add(new BigDecimal(request.price)));
 
-    deferred.resolve(request);
+        current.frozenMoney = request.wallet.frozenMoney;
+        console.log('Money was frozen', current);
+        return current;
+    }, function(error, committed, snapshot) {
+        if (error || !committed) {
+            request.error = error;
+            deferred.reject(request);
+        } else {
+            deferred.resolve(request);
+        }
+    }, true);
 
     return deferred.promise;
 }
 
-exports.unfreezeMoneyInTransaction = function (request) {
+exports.unfreezeMoney = function (request) {
     var deferred = Q.defer();
 
     // TODO (nli) unfreeze for everyone in case more then 1 payer in noxbox
@@ -645,15 +666,15 @@ exports.logError = function (request) {
     return deferred.promise;
 }
 
-exports.updatePayerBalanceInTransaction = function (request) {
+exports.updatePayerBalance = function (request) {
     var deferred = Q.defer();
 
-    // firebase can process transaction up to 25 times in case of issues with multi access,
-    // for the first time transaction processed with null instead of real value
     var payerId;
     for(id in request.noxbox.payers) {
         payerId = id;
     }
+    // firebase can process transaction up to 25 times in case of issues with multi access,
+    // for the first time transaction processed with null instead of real value
     db.ref('profiles').child(payerId).child('wallet').transaction(function(current) {
         if(!current) {
             return 0;

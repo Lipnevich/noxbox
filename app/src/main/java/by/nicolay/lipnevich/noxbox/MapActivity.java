@@ -145,7 +145,8 @@ public abstract class MapActivity extends ProfileActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if(getCurrentPosition() != null && googleMap != null && tryGetNoxboxInProgress() == null) {
+        Position position = getCurrentPosition();
+        if(position != null && googleMap != null && tryGetNoxboxInProgress() == null) {
             googleMap.moveCamera(newLatLngZoom(getCurrentPosition().toLatLng(), 15));
         }
     }

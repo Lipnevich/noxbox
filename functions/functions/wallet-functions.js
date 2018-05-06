@@ -28,12 +28,13 @@ exports.create = function (request) {
 exports.getBalance = function (request) {
     var deferred = Q.defer();
 
-    if(!request.wallet || !request.wallet.address) {
+    if(!request.wallet.address) {
         request.wallet.balance = '0';
         request.wallet.frozenMoney = '0';
         request.wallet.availableMoney = '0';
         request.wallet.availableMoneyWithoutFee = '-0.001';
         console.log('Wallet is not created yet ' + request.wallet);
+
         deferred.resolve(request);
     } else {
         Waves.API.Node.v1.addresses.balance(request.wallet.address).then((balance) => {
@@ -47,6 +48,7 @@ exports.getBalance = function (request) {
                      .minus(new BigDecimal('0.001'));
             console.log('Current money available is ' + request.wallet.availableMoney + ' for profile '
                     + request.id + ' and wallet ' + request.wallet.address);
+
             deferred.resolve(request);
         });
     }
