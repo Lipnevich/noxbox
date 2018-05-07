@@ -13,7 +13,7 @@ public class Numbers {
     }
 
     public static String format(BigDecimal number, int scale) {
-        return String.format(Locale.getDefault(), "%f", scale(number, scale));
+        return String.format(Locale.getDefault(), "%." + scale +  "f", scale(number, scale));
     }
 
     public static BigDecimal scale(String number) {

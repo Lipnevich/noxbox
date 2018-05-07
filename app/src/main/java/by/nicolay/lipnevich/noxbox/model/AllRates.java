@@ -8,6 +8,9 @@ public class AllRates {
     private Rating received;
     private Rating sent;
 
+    private Long notResponded;
+    private Long canceled;
+
     public AllRates() {
         Rating zeroRating = new Rating().setDislikes(0l).setLikes(0l);
         this.received = zeroRating;
@@ -31,4 +34,23 @@ public class AllRates {
         this.sent = sent;
         return this;
     }
+
+    public Long getNotResponded() {
+        return notResponded;
+    }
+
+    public AllRates setNotResponded(Long notResponded) {
+        this.notResponded = notResponded;
+        return this;
+    }
+
+    public Long getCanceled() {
+        return canceled;
+    }
+
+    public AllRates setCanceled(Long canceled) {
+        this.canceled = canceled;
+        return this;
+    }
+
 }

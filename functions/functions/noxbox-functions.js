@@ -291,9 +291,12 @@ sendPush = function (request) {
     var deferred = Q.defer();
 
     if(request.push && request.push.data && request.push.token) {
+        if(request.wallet) {
+            request.push.data.balance = request.wallet.balance;
+        }
+
         if(request.wallet && request.wallet.previousBalance == request.wallet.balance) {
             request.push.data.ignore = 'true';
-            request.push.data.balance = request.wallet.balance;
         }
 
         console.log(request.push.data);

@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.util.SortedMap;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.MessageType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
@@ -44,15 +45,17 @@ import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
 
-public abstract class PayerActivity extends NoxboxActivity {
+public abstract class PayerActivity extends ChatActivity {
 
     private Button requestButton;
     private Button cancelButton;
@@ -95,6 +98,7 @@ public abstract class PayerActivity extends NoxboxActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         pointerImage = findViewById(R.id.pointerImage);
         pointerImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), getPayerDrawable()));
 
@@ -204,7 +208,9 @@ public abstract class PayerActivity extends NoxboxActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    Firebase.addPayerMessage(getProfile().getId(), v.getText().toString());
+
+                    addMessage(sendMessageForNoxbox(new Message()
+                            .setType(MessageType.story).setStory(v.getText().toString())));
                     v.setText("");
 
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);

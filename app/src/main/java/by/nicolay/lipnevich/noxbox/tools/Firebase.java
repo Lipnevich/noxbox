@@ -67,7 +67,7 @@ public class Firebase {
         return price;
     }
 
-    public static void readPrice(final Task<Object> task) {
+    public static void readPrice(final Task<BigDecimal> task) {
         FirebaseDatabase.getInstance().getReference().child("prices").child(type.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -85,41 +85,40 @@ public class Firebase {
 
     public static void sendRequest(Request request) {
         requests.child(getProfile().getId()).child(request.getType().toString())
-                .setValue(objectToMap(request.setId(getProfile().getId()).setNoxboxType(type)
+                .setValue(objectToMap(request.setId(getProfile().getId())
+                        .setNoxboxType(type)
+                        .setRole(userType)
                         .setPush(MessagingService.generatePush(request))));
     }
 
     // Messages API
     public static Message sendMessage(String profileId, Message message) {
+        // messages move and story allowed only
         String messageKey = messages.child(profileId).push().getKey();
         messages.child(profileId).child(messageKey).updateChildren(objectToMap(message
                 .setId(messageKey).setSender(getProfile().publicInfo()).setTime(System.currentTimeMillis())));
         return message;
     }
 
-    public static void sendMessageForEveryoneExceptMe(Message message) {
+    public static Message sendMessageForNoxbox(Message message) {
         Noxbox noxbox = currentNoxboxes().get(type.toString());
         for(Profile payer : noxbox.getPayers().values()) {
             if(!payer.getId().equals(getProfile().getId())) {
-                sendMessage(payer.getId(), message);
+                message = sendMessage(payer.getId(), message);
             }
         }
         for(Profile performer : noxbox.getPerformers().values()) {
             if(!performer.getId().equals(getProfile().getId())) {
-                sendMessage(performer.getId(), message);
+                message = sendMessage(performer.getId(), message);
             }
         }
+        // since it is only one message we need any one for local chat history
+        return message;
     }
 
-    public static void addPayerMessage(String payerId, String message) {
-        Noxbox noxbox = currentNoxboxes().get(type.toString());
-        noxbox.getPayers().get(payerId).getMessages().add(message);
-        updateCurrentNoxbox(noxbox);
-    }
-
-    public static void addPerformerMessage(String performerId, String message) {
-        Noxbox noxbox = currentNoxboxes().get(type.toString());
-        noxbox.getPerformers().get(performerId).getMessages().add(message);
+    public static void addMessage(Message message) {
+        Noxbox noxbox = tryGetNoxboxInProgress();
+        noxbox.getChat().put(message.getId(), message.setWasRead(false));
         updateCurrentNoxbox(noxbox);
     }
 

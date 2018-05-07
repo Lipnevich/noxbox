@@ -15,13 +15,9 @@ package by.nicolay.lipnevich.noxbox;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -60,7 +56,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     private Button acceptButton;
     private ImageView pathImage;
     private ImageView scanQr;
-    private EditText messageText;
     private Timer timer;
 
     @Override
@@ -97,7 +92,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
                         .initiateScan();
             }
         });
-        messageText = findViewById(R.id.message);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -161,17 +155,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         completeButton.setBackgroundResource(isQrRecognized() ? R.color.primary : R.color.divider);
 
         scanQr.setVisibility(View.VISIBLE);
-        messageText.setVisibility(View.INVISIBLE);
-        messageText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    Firebase.addPerformerMessage(getProfile().getId(), v.getText().toString());
-                    return true;
-                }
-                return false;
-            }
-        });
 
         acceptButton.setVisibility(View.INVISIBLE);
         goOfflineButton.setVisibility(View.INVISIBLE);
@@ -248,7 +231,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
 
     private void cancelPing(Message message) {
         sendRequest(new Request().setType(RequestType.cancel)
-                .setRole(userType())
                 .setPerformer(getProfile().publicInfo())
                 .setPayer(message.getPayer().publicInfo())
                 .setNoxbox(new Noxbox().setId(message.getNoxbox().getId())));
@@ -267,7 +249,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         goOfflineButton.setVisibility(View.INVISIBLE);
         acceptButton.setVisibility(View.INVISIBLE);
         completeButton.setVisibility(View.INVISIBLE);
-        messageText.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -280,7 +261,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         goOnlineButton.setVisibility(View.INVISIBLE);
         acceptButton.setVisibility(View.INVISIBLE);
         completeButton.setVisibility(View.INVISIBLE);
-        messageText.setVisibility(View.INVISIBLE);
     }
 
     @Override

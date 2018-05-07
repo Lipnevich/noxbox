@@ -16,6 +16,7 @@ package by.nicolay.lipnevich.noxbox.model;
 public class Message {
 
     private String id, story, estimationTime;
+    private Boolean wasRead;
     private Wallet wallet;
     private Profile sender, performer, payer;
     private MessageType type;
@@ -127,5 +128,14 @@ public class Message {
 
     public void setEstimationTime(String estimationTime) {
         this.estimationTime = estimationTime;
+    }
+
+    public Boolean getWasRead() {
+        return wasRead;
+    }
+
+    public Message setWasRead(Boolean wasRead) {
+        this.wasRead = wasRead;
+        return this;
     }
 }

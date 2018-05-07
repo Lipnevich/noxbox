@@ -28,10 +28,10 @@ import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import static by.nicolay.lipnevich.noxbox.model.MessageType.move;
 import static by.nicolay.lipnevich.noxbox.model.Position.from;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForEveryoneExceptMe;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 
-public abstract class PerformerLocationActivity extends NoxboxActivity {
+public abstract class PerformerLocationActivity extends ChatActivity {
 
     private LocationListener locationListener = new LocationListener() {
         @Override
@@ -42,7 +42,7 @@ public abstract class PerformerLocationActivity extends NoxboxActivity {
             if(noxbox != null) {
                 noxbox.getPerformers().put(getProfile().getId(), getProfile().publicInfo());
                 Firebase.updateCurrentNoxbox(noxbox);
-                sendMessageForEveryoneExceptMe(new Message().setType(move));
+                sendMessageForNoxbox(new Message().setType(move));
             }
         }
 

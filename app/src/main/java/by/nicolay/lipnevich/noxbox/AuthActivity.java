@@ -25,6 +25,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
@@ -77,9 +78,9 @@ public abstract class AuthActivity extends AppCompatActivity {
 
             startActivityForResult(login, SIGN_IN_REQUEST_CODE);
         } else {
-            Firebase.readPrice(new Task<Object>() {
+            Firebase.readPrice(new Task<BigDecimal>() {
                 @Override
-                public void execute(Object object) {
+                public void execute(BigDecimal price) {
                     Firebase.readProfile(processProfileTask);
                 }
             });
@@ -91,9 +92,9 @@ public abstract class AuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SIGN_IN_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Firebase.readPrice(new Task<Object>() {
+                Firebase.readPrice(new Task<BigDecimal>() {
                     @Override
-                    public void execute(Object object) {
+                    public void execute(BigDecimal price) {
                         Firebase.readProfile(processProfileTask);
                     }
                 });
@@ -119,11 +120,12 @@ public abstract class AuthActivity extends AppCompatActivity {
     protected abstract UserType userType();
     protected abstract int getPerformerDrawable();
     protected abstract int getPayerDrawable();
-    protected abstract void goOnline();
     protected abstract void processProfile(Profile profile);
-    protected abstract void prepareForIteration();
+    protected abstract void goOnline();
     protected abstract void processMessage(Message message);
+
     protected abstract void processNoxbox(Noxbox noxbox);
+    protected abstract void prepareForIteration();
     protected abstract Map<String, IntentAndKey> getMenu();
 
 }

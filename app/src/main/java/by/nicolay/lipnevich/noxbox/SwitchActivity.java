@@ -13,11 +13,7 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import by.nicolay.lipnevich.noxbox.model.Message;
-import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.createHistory;
@@ -27,13 +23,13 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static java.lang.System.currentTimeMillis;
 
-public abstract class NoxboxActivity extends GeoFireComponent {
+public abstract class SwitchActivity extends GeoFireComponent {
 
     protected void processPing(Message ping) {}
     protected void processPong(Message pong) {}
     protected void processGnop(Message gnop) {}
     protected void processMove(Message move) {}
-    private void processQr(Message qr) {
+    protected void processQr(Message qr) {
         // TODO (nli) update ui for both users
         removeMessage(qr.getId());
     }
@@ -76,9 +72,4 @@ public abstract class NoxboxActivity extends GeoFireComponent {
         }
     }
 
-    protected Map<String, Profile> map(String id, Profile profile) {
-        Map<String, Profile> map = new HashMap<>();
-        map.put(id, profile);
-        return map;
-    }
 }

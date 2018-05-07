@@ -22,7 +22,7 @@ public class Notice {
                 .setMessage(data.get("message"))
                 .setIgnore(data.get("ignore") != null ? Boolean.valueOf(data.get("ignore")) : false)
                 .setPrice(data.get("price"))
-                .setBalance(data.get("balance"));
+                .setBalance(data.get("balance") != null ? data.get("balance") : "0");
     }
 
     public Boolean getIgnore() {

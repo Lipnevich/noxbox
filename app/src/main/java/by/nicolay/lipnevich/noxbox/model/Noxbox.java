@@ -21,6 +21,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String id;
     private Map<String, Profile> performers = new HashMap<>();
     private Map<String, Profile> payers = new HashMap<>();
+    private Map<String, Message> chat = new HashMap<>();
 
     // Noxbox specific data
     private Long timeRequested;
@@ -31,7 +32,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private Boolean rate;
     private String price;
     private String priceWithoutFee;
-    public NoxboxType type;
+    private NoxboxType type;
     private String estimationTime;
 
     public String getId() {
@@ -167,6 +168,15 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setPriceWithoutFee(String priceWithoutFee) {
         this.priceWithoutFee = priceWithoutFee;
+        return this;
+    }
+
+    public Map<String, Message> getChat() {
+        return chat;
+    }
+
+    public Noxbox setChat(Map<String, Message> chat) {
+        this.chat = chat;
         return this;
     }
 }

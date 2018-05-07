@@ -4,9 +4,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.tools.TravelMode;
@@ -27,9 +25,6 @@ public class Profile implements Serializable {
 
     // payer
     private Map<String, Noxbox> noxboxesForPayer = new HashMap<>();
-
-    // communication during iteration
-    private List<String> messages = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -120,15 +115,6 @@ public class Profile implements Serializable {
 
     public Profile setEmail(String email) {
         this.email = email;
-        return this;
-    }
-
-    public List<String> getMessages() {
-        return messages;
-    }
-
-    public Profile setMessages(List<String> messages) {
-        this.messages = messages;
         return this;
     }
 
