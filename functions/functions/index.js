@@ -113,8 +113,4 @@ exports.showFunctionIp = functions.https.onRequest((request, response) => {
     return http("http://www.showmyip.gr/", { 'json': true }, (err, res, body) => { return response.send(body); });
 });
 
-exports.push = functions.database.ref('/requests/{userId}/push').onCreate(event => {
-    return noxbox.sendPushNotification(event.val()).then(noxbox.releaseRequest);
-});
-
 

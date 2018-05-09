@@ -1,7 +1,12 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.renderscript.Allocation;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,18 +18,27 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.UserType;
+import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.TimeLog;
 
+import static android.graphics.Bitmap.createBitmap;
+import static android.graphics.Bitmap.createScaledBitmap;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getUserType;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
+import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
 
 public class ChatPage extends AppCompatActivity {
 
@@ -50,49 +64,26 @@ public class ChatPage extends AppCompatActivity {
         final DisplayMetrics screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
 
-//        Glide.with(getApplicationContext())
-//            .asBitmap()
-//            .load(R.drawable.chat_theme)
-//            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
-//            .into(new SimpleTarget<Bitmap>() {
-//                @Override
-//                public void onResourceReady(Bitmap picture, Transition<? super Bitmap> transition) {
-//                    double koef = screen.heightPixels / screen.widthPixels;
-//                    if(koef > 1) {
-//                        // it is PHONE since height is bigger than width
-//                        int width = (int) (picture.getHeight() / koef);
-//
-//                        Bitmap phone = Bitmap.createBitmap(picture, picture
-//                                .getWidth() - width, 0, width, picture.getHeight());
-//                        getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), phone));
-//                    } else {
-//                        // it is TABLET or square shaped device :)
-//                        int height = (int) (picture.getWidth() * koef);
-//                        Bitmap tabletBitmap = Bitmap.createBitmap(picture, picture
-//                                .getWidth() - width, 0, width, picture.getHeight());
-//                        Drawable drawable = new BitmapDrawable(getResources(), picture);
-//                        getWindow().setBackgroundDrawable(drawable);
-//                    }
-//
-//
-//
-//                    int height = 0;
-//                    double k = 0;
-//                    if(picture.getHeight() > screen.heightPixels) {
-//                        height = screen.heightPixels;
-//                        k = height / picture.getHeight();
-//                    }
-//                    picture.getWidth();
-//
-//
-////                    phoneSize.widthPixels;
-//
-//
-////                    Bitmap croppedBitmap = Bitmap.createBitmap(realImageSize, x, y, width, height);
-//                    Drawable drawable = new BitmapDrawable(getResources(), picture);
-//                    getWindow().setBackgroundDrawable(drawable);
-//                }
-//        });
+        Glide.with(getApplicationContext())
+            .asBitmap()
+            .load(R.drawable.view)
+            .apply(diskCacheStrategyOf(BuildConfig.DEBUG ? DiskCacheStrategy.NONE : DiskCacheStrategy.RESOURCE))
+            .into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(Bitmap picture, Transition<? super Bitmap> transition) {
+                    double koef = ((double)screen.heightPixels) / ((double)screen.widthPixels);
+                    int width = width(picture, koef);
+                    int height = height(picture, width, koef);
+                    Bitmap background;
+                    if(koef > 1) {
+                        // vertical layout
+                        background = blur(0, resize(screen, right(picture, width, height)));
+                    } else {
+                        // horizontal layout
+                        background = blur(0, resize(screen, left(picture, width, height)));
+                    }
+                    getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
+        }});
 
         initMessages();
         initMessages();
@@ -120,6 +111,55 @@ public class ChatPage extends AppCompatActivity {
         });
     }
 
+    private int height(Bitmap picture, int width, double koef) {
+        int height = (int)(width * koef);
+        if(picture.getHeight() < height) {
+            height = picture.getHeight();
+        }
+        return height;
+    }
+
+    private int width(Bitmap picture, double koef) {
+        int width = (int)(picture.getHeight() / koef);
+        if(picture.getWidth() < width) {
+            width = picture.getWidth();
+        }
+        return width;
+    }
+
+    private Bitmap resize(DisplayMetrics screen, Bitmap picture) {
+        return createScaledBitmap(picture, screen.widthPixels, screen.heightPixels, false);
+    }
+
+    private Bitmap blur(int blurRadius, Bitmap picture) {
+        if(blurRadius == 0) return picture;
+
+        RenderScript rs = RenderScript.create(getApplicationContext());
+
+        Allocation in = Allocation.createFromBitmap(rs, picture,
+                Allocation.MipmapControl.MIPMAP_NONE,
+                Allocation.USAGE_SCRIPT);
+
+        Allocation out = Allocation.createTyped(rs, in.getType());
+        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, out.getElement());
+        blur.setRadius(blurRadius);
+        blur.setInput(in);
+        blur.forEach(out);
+
+        out.copyTo(picture);
+        rs.destroy();
+
+        return picture;
+    }
+
+    private Bitmap right(Bitmap picture, int width, int height) {
+        return createBitmap(picture, picture.getWidth() - width, 0, width, height);
+    }
+
+    private Bitmap left(Bitmap picture, int width, int height) {
+        return createBitmap(picture, 0, picture.getHeight() - height, width, height);
+    }
+
     private void send() {
         if(TextUtils.isEmpty(text.getText().toString().trim())) return;
 
@@ -130,14 +170,9 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private List<Message> initMessages() {
-        messages.add(new Message().setStory("Hello Nicolay!").setSender(getInterlocutor()).setTime(System.currentTimeMillis()));
-        messages.add(new Message().setStory("Very long message here, it is the longest known message! Piu!").setSender(getInterlocutor()).setTime(System.currentTimeMillis()));
-        messages.add(new Message().setStory("Piu!").setSender(getInterlocutor()).setTime(System.currentTimeMillis()));
-        messages.add(new Message().setStory("Piu!").setSender(getInterlocutor()).setTime(System.currentTimeMillis()));
-        messages.add(new Message().setStory("Nice to meet you Marina!").setSender(getProfile()).setTime(System.currentTimeMillis()));
-        messages.add(new Message().setStory("Very very long message here, yup, it is the longest known message! Pau!").setSender(getProfile()).setTime(System.currentTimeMillis()));
-        messages.add(new Message().setStory("Pau!").setSender(getProfile()).setTime(System.currentTimeMillis()));
-        messages.add(new Message().setStory("Pau!").setSender(getProfile()).setTime(System.currentTimeMillis()));
+        if(tryGetNoxboxInProgress() != null) {
+            messages.addAll(tryGetNoxboxInProgress().getChat().);
+        }
 
         return messages;
     }
