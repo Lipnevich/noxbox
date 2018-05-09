@@ -171,7 +171,7 @@ public class ChatPage extends AppCompatActivity {
 
     private List<Message> initMessages() {
         if(tryGetNoxboxInProgress() != null) {
-            messages.addAll(tryGetNoxboxInProgress().getChat().);
+            messages.addAll(tryGetNoxboxInProgress().getChat().values());
         }
 
         return messages;
