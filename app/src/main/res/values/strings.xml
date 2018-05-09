@@ -49,7 +49,7 @@
     <string name="current_reward">Current reward for service %s</string>
     <string name="dislike">dislike</string>
     <string name="dislikePrompt">Are you sure you want to dislike?</string>
-    <string name="send">Send</string>
+    <string name="send">Отправить</string>
     <string name="sendPrompt">Are you sure you want to send your money?</string>
     <string name="logout">Logout</string>
     <string name="logoutPrompt">Are you sure you want to logout?</string>
@@ -65,4 +65,5 @@
     <string name="balancePushTitle">Balance updated</string>
     <string name="qrPushTitle">Performer working</string>
     <string name="qrPushBody">%s happy to provide you a service</string>
+    <string name="enterMessage">Type a message...</string>
 </resources>

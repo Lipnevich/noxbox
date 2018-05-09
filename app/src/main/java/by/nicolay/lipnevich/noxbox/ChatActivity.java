@@ -13,7 +13,7 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -21,7 +21,9 @@ import android.widget.ImageView;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.pages.ChatPage;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.tools.PageCodes;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
@@ -32,41 +34,36 @@ public abstract class ChatActivity extends SwitchActivity {
     private ImageView chatIcon;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getChatIcon().setVisibility(View.VISIBLE);
-    }
-
-    @Override
     protected void processNoxbox(Noxbox noxbox) {
         super.processNoxbox(noxbox);
 
         getChatIcon().setVisibility(View.VISIBLE);
         if(hasNewMessages(noxbox)) {
-            //update button with
+            //TODO (nli) update button with
         }
-        //open full screen chat
+        // TODO (nli) open full screen chat activity
     }
 
     protected ImageView getChatIcon() {
         if(chatIcon == null) {
-            int size = 196;
             chatIcon = new ImageView(this);
             chatIcon.setImageResource(R.drawable.chat);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(size, size,
-                    Gravity.END | Gravity.CENTER_VERTICAL);
-            params.setMarginEnd(40);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(170, 190,
+                    Gravity.END | Gravity.TOP);
+            params.setMargins(0, 30, 44, 0);
             chatIcon.setLayoutParams(params);
-            chatIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popup("Bu!");
-                }
-            });
 
             FrameLayout layout = findViewById(R.id.frame_layout);
             layout.addView(chatIcon);
         }
+
+        chatIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getApplicationContext(), ChatPage.class),
+                        PageCodes.CHAT.getCode());
+            }
+        });
 
         return chatIcon;
     }
@@ -92,6 +89,6 @@ public abstract class ChatActivity extends SwitchActivity {
     @Override
     protected void prepareForIteration() {
         super.prepareForIteration();
-        // button disappear
+        getChatIcon().setVisibility(View.GONE);
     }
 }

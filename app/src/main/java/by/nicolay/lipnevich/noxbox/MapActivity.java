@@ -160,6 +160,7 @@ public abstract class MapActivity extends ProfileActivity implements
     @Override
     protected void onResume() {
         googleApiClient.connect();
+        scaleMarkers();
         super.onResume();
     }
 
@@ -191,11 +192,15 @@ public abstract class MapActivity extends ProfileActivity implements
                 it.remove();
             }
         }
-
     }
 
     private float getScaledSize() {
-        return (float) Math.pow(2, 22 - Math.max(googleMap.getCameraPosition().zoom, 11));
+        if(googleMap != null && googleMap.getCameraPosition() != null) {
+            return (float) Math.pow(2, 22 - Math.max(googleMap.getCameraPosition().zoom, 11));
+        } else {
+            return 128;
+        }
+
     }
 
     protected int getEstimationInMinutes(Position from, Position to, TravelMode travelMode) {
@@ -285,7 +290,7 @@ public abstract class MapActivity extends ProfileActivity implements
 
     public GroundOverlay createMarker(String key, LatLng latLng, int resource) {
         GroundOverlay marker = markers.get(key);
-        if (marker == null) {
+        if (marker == null && googleMap != null) {
             GroundOverlayOptions newarkMap = new GroundOverlayOptions()
                     .image(BitmapDescriptorFactory.fromResource(resource))
                     .position(latLng, 48, 48)

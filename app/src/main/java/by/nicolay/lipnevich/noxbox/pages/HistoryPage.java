@@ -40,7 +40,7 @@ public class HistoryPage extends AppCompatActivity {
                 .apply(RequestOptions.overrideOf(size, size))
                 .into((ImageView) findViewById(R.id.progressView));
 
-        ListView listView = findViewById(R.id.listView);
+        ListView listView = findViewById(R.id.historyView);
         historyAdapter = new HistoryAdapter(HistoryPage.this, historyItems);
         listView.setAdapter(historyAdapter);
 
@@ -57,7 +57,7 @@ public class HistoryPage extends AppCompatActivity {
 
                 ImageView progressView = findViewById(R.id.progressView);
                 progressView.setVisibility(View.INVISIBLE);
-                ListView listView = findViewById(R.id.listView);
+                ListView listView = findViewById(R.id.historyView);
                 listView.setVisibility(View.VISIBLE);
             }
         });

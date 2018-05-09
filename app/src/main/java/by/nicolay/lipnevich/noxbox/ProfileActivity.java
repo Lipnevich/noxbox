@@ -158,6 +158,7 @@ public abstract class ProfileActivity extends AuthActivity {
                 menu.openDrawer();
             }
         });
+        menuImage.setVisibility(View.VISIBLE);
     }
 
     private void makeProfileImageRounded() {
@@ -254,7 +255,6 @@ public abstract class ProfileActivity extends AuthActivity {
             listenMessages();
         }
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 
 }

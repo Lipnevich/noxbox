@@ -7,7 +7,8 @@ public enum PageCodes {
 
     MY_CAR(71),
     WALLET(2),
-    HISTORY(3);
+    HISTORY(3),
+    CHAT(4);
 
     private int code;
 

@@ -63,6 +63,10 @@ public class Firebase {
         availablePerformers = new GeoFire(FirebaseDatabase.getInstance().getReference().child("availablePerformers").child(type.toString()));
     }
 
+    public static UserType getUserType() {
+        return userType;
+    }
+
     public static BigDecimal getPrice() {
         return price;
     }

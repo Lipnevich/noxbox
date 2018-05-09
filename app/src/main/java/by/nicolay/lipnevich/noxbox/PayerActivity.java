@@ -103,7 +103,7 @@ public abstract class PayerActivity extends ChatActivity {
         pointerImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), getPayerDrawable()));
 
         requestButton = findViewById(R.id.requestButton);
-        showQrCode = findViewById(R.id.showQrCode);
+        showQrCode = findViewById(R.id.scanQrCode);
         showQrCode.setOnClickListener(qrListener);
 
         requestButton.setOnClickListener(new View.OnClickListener() {

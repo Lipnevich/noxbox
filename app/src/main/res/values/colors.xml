@@ -3,5 +3,8 @@
     <color name="primary">#FF9100</color>
     <color name="secondary">#fff</color>
     <color name="divider">#949191</color>
+    <color name="message">#CDFCE8</color>
+    <color name="own_message">#FFF6D9</color>
+
 
 </resources>
