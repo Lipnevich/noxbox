@@ -216,7 +216,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
                         .setPerformer(getProfile().publicInfo())
                         .setEstimationTime(estimation)
                         .setNoxbox(new Noxbox().setId(pingMessage.getNoxbox().getId())));
-                removeMessage(pingMessage.getId());
+                removeMessage(pingMessage);
                 processNoxbox(pingMessage.getNoxbox());
             }
         });
@@ -234,7 +234,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
                 .setPerformer(getProfile().publicInfo())
                 .setPayer(message.getPayer().publicInfo())
                 .setNoxbox(new Noxbox().setId(message.getNoxbox().getId())));
-        removeMessage(message.getId());
+        removeMessage(message);
         prepareForIteration();
     }
 
@@ -265,7 +265,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
 
     @Override
     protected void processGnop(Message gnop) {
-        removeMessage(gnop.getId());
+        removeMessage(gnop);
         prepareForIteration();
     }
 

@@ -113,7 +113,9 @@ public abstract class AuthActivity extends AppCompatActivity {
     };
 
     protected void popup(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if(BuildConfig.DEBUG) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     protected abstract NoxboxType noxboxType();

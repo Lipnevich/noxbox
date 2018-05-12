@@ -66,5 +66,6 @@
     <string name="qrPushTitle">Работаю</string>
     <string name="qrPushBody">%s рад оказать Вам услугу</string>
     <string name="enterMessage">Введите сообщение...</string>
+    <string name="addressInClipBoard">Адрес скопирован</string>
 
 </resources>

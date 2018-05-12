@@ -73,13 +73,13 @@ public class WalletPage extends AppCompatActivity {
             }
         });
 
-        Firebase.listenMessages(new Task<Message>() {
+        Firebase.listenAllMessages(new Task<Message>() {
             @Override
             public void execute(Message message) {
                 if(message.getType().equals(MessageType.balanceUpdated)) {
                     Firebase.updateWallet(message.getWallet());
                     recalculateBalance();
-                    removeMessage(message.getId());
+                    removeMessage(message);
                 }
             }
         });
@@ -144,7 +144,7 @@ public class WalletPage extends AppCompatActivity {
 
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 clipboard.setPrimaryClip(ClipData.newPlainText("walletAddress", getWallet().getAddress()));
-                Toast.makeText(getApplicationContext(), "Address copied to clipboard", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.addressInClipBoard), Toast.LENGTH_SHORT).show();
             }
         };
 

@@ -49,29 +49,29 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.chat_item, parent, false);
 
+        CardView card = v.findViewById(R.id.chat_card);
         if(!isOwner(position)) {
             v.setHorizontalGravity(Gravity.START);
-            CardView card = v.findViewById(R.id.chat_card);
             card.setCardBackgroundColor(parent.getResources().getColor(R.color.message));
         }
 
         Message message = messages.get(position);
+        message.setWasRead(true);
         TextView text = v.findViewById(R.id.message_id);
         text.setText(message.getStory());
         TextView time = v.findViewById(R.id.time_id);
         time.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(message.getTime())));
 
-        CardView cardView = v.findViewById(R.id.chat_card);
-        LayoutParams cardParams = (LayoutParams) cardView.getLayoutParams();
+        LayoutParams cardParams = (LayoutParams) card.getLayoutParams();
         if(position == 0) {
             cardParams.topMargin *= 5;
-            cardView.setLayoutParams(cardParams);
+            card.setLayoutParams(cardParams);
         }
 
         if(isTooLong(text)) {
             cardParams.width = 0;
             cardParams.weight = 90;
-            cardView.setLayoutParams(cardParams);
+            card.setLayoutParams(cardParams);
 
             ((LinearLayout)v.findViewById(R.id.chat_card_layout)).setOrientation(LinearLayout.VERTICAL);
 

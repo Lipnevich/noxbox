@@ -67,13 +67,13 @@ public class WalletPerformerPage extends AppCompatActivity {
             }
         });
 
-        Firebase.listenMessages(new Task<Message>() {
+        Firebase.listenAllMessages(new Task<Message>() {
             @Override
             public void execute(Message message) {
                 if(message.getType().equals(MessageType.balanceUpdated)) {
                     Firebase.updateWallet(message.getWallet());
                     recalculateBalance();
-                    removeMessage(message.getId());
+                    removeMessage(message);
                 }
             }
         });

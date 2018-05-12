@@ -31,24 +31,19 @@ public abstract class SwitchActivity extends GeoFireComponent {
     protected void processMove(Message move) {}
     protected void processQr(Message qr) {
         // TODO (nli) update ui for both users
-        removeMessage(qr.getId());
+        removeMessage(qr);
     }
-    protected void processStory(Message story) {
-        popup("Message received: " + story.getStory());
-        // TODO (nli) sound
-
-        removeMessage(story.getId());
-    }
+    protected void processStory(Message story) {}
     protected void processDislike(Message rate) {
         getRating().getReceived().setLikes(getRating().getReceived().getLikes() - 1);
         getRating().getReceived().setDislikes(getRating().getReceived().getDislikes() + 1);
 
         processProfile(getProfile());
-        removeMessage(rate.getId());
+        removeMessage(rate);
     }
     private void processBalanceUpdated(Message update) {
         Firebase.updateWallet(update.getWallet());
-        removeMessage(update.getId());
+        removeMessage(update);
     }
 
     @Override
@@ -63,7 +58,7 @@ public abstract class SwitchActivity extends GeoFireComponent {
                         .setTimeCompleted(currentTimeMillis()));
                 Firebase.like();
                 prepareForIteration();
-                removeMessage(message.getId());
+                removeMessage(message);
                 break;
             case dislike: processDislike(message); break;
             case move: processMove(message); break;

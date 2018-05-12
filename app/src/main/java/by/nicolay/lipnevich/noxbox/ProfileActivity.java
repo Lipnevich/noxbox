@@ -89,8 +89,8 @@ public abstract class ProfileActivity extends AuthActivity {
 
     protected Drawer menu;
 
-    private void listenMessages() {
-        Firebase.listenMessages(new Task<Message>() {
+    protected void listenMessages() {
+        Firebase.listenAllMessages(new Task<Message>() {
             @Override
             public void execute(Message message) {
                 processMessage(message);

@@ -93,8 +93,12 @@ exports.moneyBack = functions.database.ref('/requests/{userId}/moneyBack').onCre
            noxbox.releaseRequest);
 });
 
-// tODO (nli) request comment issue
+exports.story = functions.database.ref('/messages/{userId}/story/{messageId}/').onCreate(event => {
+    return noxbox.sendPushNotification(event.val());
+});
 
+
+// tODO (nli) request comment issue
 // TODO (nli) resolve issue with dislike, like, moneyBack for performer
 // TODO (nli) check voting results, money back in case of (votes > 10) and (moneyBack > 60%)
 // TODO (nli) in case of (votes > 24) and (no one side > 60%) dislike

@@ -66,4 +66,5 @@
     <string name="qrPushTitle">Performer working</string>
     <string name="qrPushBody">%s happy to provide you a service</string>
     <string name="enterMessage">Type a message...</string>
+    <string name="addressInClipBoard">Address copied to clipboard</string>
 </resources>

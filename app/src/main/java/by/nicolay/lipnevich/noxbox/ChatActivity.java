@@ -23,11 +23,14 @@ import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.pages.ChatPage;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.PageCodes;
 
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessage;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
+import static by.nicolay.lipnevich.noxbox.tools.PageCodes.CHAT;
 
 public abstract class ChatActivity extends SwitchActivity {
 
@@ -39,9 +42,12 @@ public abstract class ChatActivity extends SwitchActivity {
 
         getChatIcon().setVisibility(View.VISIBLE);
         if(hasNewMessages(noxbox)) {
-            //TODO (nli) update button with
+            drawNewMessageSign();
         }
-        // TODO (nli) open full screen chat activity
+    }
+
+    private void drawNewMessageSign() {
+        getChatIcon().setImageResource(R.drawable.chat_unread);
     }
 
     protected ImageView getChatIcon() {
@@ -69,7 +75,7 @@ public abstract class ChatActivity extends SwitchActivity {
     }
 
     private boolean hasNewMessages(Noxbox noxbox) {
-        if(noxbox.getChat() == null || noxbox.getChat().isEmpty()) {
+        if(noxbox == null || noxbox.getChat() == null || noxbox.getChat().isEmpty()) {
             return false;
         }
         for(Message message : noxbox.getChat().values()) {
@@ -81,14 +87,29 @@ public abstract class ChatActivity extends SwitchActivity {
     }
 
     protected void processStory(Message story) {
-        popup("Message received: " + story.getStory());
-        addMessage(story);
-        removeMessage(story.getId());
+        if(tryGetNoxboxInProgress() != null) {
+            addMessageToChat(story.setWasRead(false));
+            drawNewMessageSign();
+        }
+        removeMessage(story);
     }
 
     @Override
     protected void prepareForIteration() {
         super.prepareForIteration();
         getChatIcon().setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CHAT.getCode() && Firebase.getProfile() != null) {
+            if(hasNewMessages(tryGetNoxboxInProgress())) {
+                drawNewMessageSign();
+            } else {
+                getChatIcon().setImageResource(R.drawable.chat);
+            }
+            listenMessages();
+        }
     }
 }

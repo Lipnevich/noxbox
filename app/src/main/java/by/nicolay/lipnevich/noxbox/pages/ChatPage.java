@@ -3,6 +3,7 @@ package by.nicolay.lipnevich.noxbox.pages;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
@@ -24,20 +25,29 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.MessageType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.UserType;
 import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.tools.Task;
 import by.nicolay.lipnevich.noxbox.tools.TimeLog;
 
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getUserType;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.listenTypeMessages;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
 
 public class ChatPage extends AppCompatActivity {
@@ -71,6 +81,10 @@ public class ChatPage extends AppCompatActivity {
             .into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap picture, Transition<? super Bitmap> transition) {
+                    // here I was thinking about some cool lib for processing background images in the Android
+                    // with cropping selecting area without image collisions on all possible screens,
+                    // active on screen rotate, with resizing and even blur!
+
                     double koef = ((double)screen.heightPixels) / ((double)screen.widthPixels);
                     int width = width(picture, koef);
                     int height = height(picture, width, koef);
@@ -86,8 +100,6 @@ public class ChatPage extends AppCompatActivity {
         }});
 
         initMessages();
-        initMessages();
-//       final ChatAdapter chatAdapter = new ChatAdapter(tryGetNoxboxInProgress().getChat().values());
         chatAdapter = new ChatAdapter(screen, messages, getProfile().getId());
         chatList.setAdapter(chatAdapter);
         chatList.scrollToPosition(messages.size() - 1);
@@ -107,6 +119,16 @@ public class ChatPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 send();
+            }
+        });
+
+        listenTypeMessages(MessageType.story, new Task<Message>() {
+            @Override
+            public void execute(Message story) {
+                if(story.getType().equals(MessageType.story)) {
+                    add(story.setWasRead(true));
+                    removeMessage(story);
+                }
             }
         });
     }
@@ -163,18 +185,62 @@ public class ChatPage extends AppCompatActivity {
     private void send() {
         if(TextUtils.isEmpty(text.getText().toString().trim())) return;
 
-        messages.add(new Message().setStory(text.getText().toString()).setSender(getProfile()).setTime(System.currentTimeMillis()));
-        chatAdapter.notifyItemInserted(messages.size() - 1);
-        chatList.scrollToPosition(messages.size() - 1);
+        Message message = sendMessageForNoxbox(new Message()
+                .setType(MessageType.story)
+                .setStory(text.getText().toString()));
+
+        add(message.setWasRead(true));
         text.setText("");
     }
 
+    private void add(Message message) {
+        addMessageToChat(message.setWasRead(true));
+        messages.add(message);
+        play();
+        sort(messages);
+
+        chatAdapter.notifyItemRangeChanged(messages.size() > 1 ? messages.size() - 1 : 0,
+                messages.size() - 1);
+        chatList.scrollToPosition(messages.size() - 1);
+    }
+
+    private void play() {
+        MediaPlayer mediaPlayer = MediaPlayer.create(ChatPage.this, R.raw.message);
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(final MediaPlayer mp) {
+                mp.start();
+            }
+        });
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+            }
+        });
+
+    }
+
     private List<Message> initMessages() {
+        messages.clear();
+
         if(tryGetNoxboxInProgress() != null) {
             messages.addAll(tryGetNoxboxInProgress().getChat().values());
+            sort(messages);
         }
 
         return messages;
+    }
+
+    private void sort(List<Message> messages) {
+        Collections.sort(messages, new Comparator<Message>() {
+            @Override
+            public int compare(Message o1, Message o2) {
+                ;                    return Long.valueOf(o1.getTime())
+                        .compareTo(Long.valueOf(o2.getTime()));
+            }
+        });
     }
 
     private Profile getInterlocutor() {
@@ -191,6 +257,7 @@ public class ChatPage extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                updateCurrentNoxbox(tryGetNoxboxInProgress());
                 onBackPressed();
                 return true;
         }

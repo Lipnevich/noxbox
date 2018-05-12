@@ -53,6 +53,7 @@ import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
+import by.nicolay.lipnevich.noxbox.tools.Timer;
 import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
@@ -217,6 +218,16 @@ public abstract class MapActivity extends ProfileActivity implements
     }
 
     protected void drawPathsToAllPerformers(final Noxbox noxbox) {
+        if(googleMap == null) {
+            new Timer() {
+                @Override
+                protected void timeout() {
+                    drawPathsToAllPerformers(noxbox);
+                }
+            }.start(1);
+            return;
+        }
+
         for (Profile performer : noxbox.getPerformers().values()) {
             drawPath(noxbox.getId(), performer, new Profile().setId(noxbox.getId()).setPosition(noxbox.getPosition()));
         }
@@ -265,7 +276,7 @@ public abstract class MapActivity extends ProfileActivity implements
                         .pattern(noxboxId == null ? Arrays.asList((PatternItem) new Dot()) : null)
                         .addAll(points));
                 pathes.put(performer.getId(), polyline);
-                focus();
+                focus(performer.getId(), payer.getId());
             }
         };
         asyncTask.execute();
@@ -290,7 +301,7 @@ public abstract class MapActivity extends ProfileActivity implements
 
     public GroundOverlay createMarker(String key, LatLng latLng, int resource) {
         GroundOverlay marker = markers.get(key);
-        if (marker == null && googleMap != null) {
+        if (marker == null) {
             GroundOverlayOptions newarkMap = new GroundOverlayOptions()
                     .image(BitmapDescriptorFactory.fromResource(resource))
                     .position(latLng, 48, 48)
@@ -364,7 +375,8 @@ public abstract class MapActivity extends ProfileActivity implements
         });
     }
 
-    private void focus() {
+    private void focus(String ... array) {
+        List<String> ids = Arrays.asList(array);
         if(!pathes.isEmpty() && googleMap != null) {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (Polyline polyline : pathes.values()) {
@@ -372,8 +384,10 @@ public abstract class MapActivity extends ProfileActivity implements
                     builder.include(point);
                 }
             }
-            for(GroundOverlay marker : markers.values()) {
-                builder.include(marker.getPosition());
+            for(Map.Entry<String, GroundOverlay> marker : markers.entrySet()) {
+                if(ids.isEmpty() || ids.contains(marker.getKey())) {
+                    builder.include(marker.getValue().getPosition());
+                }
             }
             LatLngBounds bounds = builder.build();
             int padding = 64; // padding around start and end points
@@ -383,10 +397,12 @@ public abstract class MapActivity extends ProfileActivity implements
 
     @Override
     protected void prepareForIteration() {
-        visibleCurrentLocation(true);
-        cleanUpMap();
-        moveGoogleCopyrights();
-        pathImage.setVisibility(View.INVISIBLE);
+        if(googleMap != null) {
+            visibleCurrentLocation(true);
+            cleanUpMap();
+            moveGoogleCopyrights();
+            pathImage.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void moveGoogleCopyrights() {

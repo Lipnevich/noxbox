@@ -13,5 +13,4 @@ public enum RequestType {
 
     dislike,
     moneyBack,
-    message
 }

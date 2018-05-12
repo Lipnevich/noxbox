@@ -14,19 +14,12 @@
 package by.nicolay.lipnevich.noxbox;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import net.glxn.qrgen.android.QRCode;
 
@@ -34,7 +27,6 @@ import java.math.BigDecimal;
 import java.util.SortedMap;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
-import by.nicolay.lipnevich.noxbox.model.MessageType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
@@ -45,12 +37,10 @@ import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
@@ -63,9 +53,8 @@ public abstract class PayerActivity extends ChatActivity {
     private ImageView pointerImage;
     private ImageView showQrCode;
     private Timer timer;
-    private EditText messageText;
-    // TODO move this logic to separate activity
 
+    // TODO move qr logic to separate activity
     private int initialQrHeight;
     private int initialQrWidth;
 
@@ -100,10 +89,10 @@ public abstract class PayerActivity extends ChatActivity {
         super.onCreate(savedInstanceState);
 
         pointerImage = findViewById(R.id.pointerImage);
-        pointerImage.setImageBitmap(BitmapFactory.decodeResource(getResources(), getPayerDrawable()));
+        pointerImage.setImageResource(getPayerDrawable());
 
         requestButton = findViewById(R.id.requestButton);
-        showQrCode = findViewById(R.id.scanQrCode);
+        showQrCode = findViewById(R.id.showQrCode);
         showQrCode.setOnClickListener(qrListener);
 
         requestButton.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +122,7 @@ public abstract class PayerActivity extends ChatActivity {
                             // TODO (nli) retry request to next best option
                             prepareForIteration();
                         }
-                    }.start(getResources().getInteger(R.integer.timer_in_seconds) + 4);
+                    }.start(getResources().getInteger(R.integer.timer_in_seconds) * 120 / 100);
                 } else {
                     popup("No performers available");
                 }
@@ -141,7 +130,6 @@ public abstract class PayerActivity extends ChatActivity {
         });
 
         cancelButton = findViewById(R.id.cancelButton);
-        messageText = findViewById(R.id.message);
     }
 
     private boolean isEnoughMoney() {
@@ -162,7 +150,6 @@ public abstract class PayerActivity extends ChatActivity {
         pointerImage.setVisibility(View.VISIBLE);
 
         cancelButton.setVisibility(View.INVISIBLE);
-        messageText.setVisibility(View.INVISIBLE);
         showQrCode.setImageDrawable(getResources().getDrawable(R.drawable.qr));
         if(initialQrHeight != 0) {
             showQrCode.getLayoutParams().height = initialQrHeight;
@@ -203,25 +190,6 @@ public abstract class PayerActivity extends ChatActivity {
         cancelButton.setVisibility(View.VISIBLE);
         showQrCode.setVisibility(View.VISIBLE);
 
-        messageText.setVisibility(View.INVISIBLE);
-        messageText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-
-                    addMessage(sendMessageForNoxbox(new Message()
-                            .setType(MessageType.story).setStory(v.getText().toString())));
-                    v.setText("");
-
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                    return true;
-                }
-                return false;
-            }
-        });
-
         requestButton.setVisibility(View.INVISIBLE);
         pointerImage.setVisibility(View.INVISIBLE);
     }
@@ -233,13 +201,13 @@ public abstract class PayerActivity extends ChatActivity {
         }
         cleanUpMap();
         updateCurrentNoxbox(pong.getNoxbox());
-        removeMessage(pong.getId());
+        removeMessage(pong);
         processNoxbox(pong.getNoxbox());
     }
 
     protected void processGnop(Message gnop) {
         // TODO (nli) retry instead
-        removeMessage(gnop.getId());
+        removeMessage(gnop);
         prepareForIteration();
     }
 
@@ -250,8 +218,9 @@ public abstract class PayerActivity extends ChatActivity {
             noxbox.getPerformers().get(move.getSender().getId())
                     .setPosition(move.getSender().getPosition());
             updateCurrentNoxbox(noxbox);
+            drawPathsToAllPerformers(noxbox);
         }
-        removeMessage(move.getId());
+        removeMessage(move);
     }
 
     @Override

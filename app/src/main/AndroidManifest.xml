@@ -2,16 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="by.nicolay.lipnevich.noxbox.payer.massage">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/noxbox"
+        android:icon="@mipmap/ic_launcher"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".Go"
             android:theme="@style/NoActionBar">
@@ -39,6 +35,14 @@
         <intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT"/></intent-filter>
     </service>
 
+    <service android:name="by.nicolay.lipnevich.noxbox.tools.PushTokenService">
+        <intent-filter><action android:name="com.google.Firebase.INSTANCE_ID_EVENT"/></intent-filter>
+    </service>
+
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
 </manifest>

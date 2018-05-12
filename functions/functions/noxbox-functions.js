@@ -11,7 +11,7 @@ exports.notifyBalanceUpdated = function (request) {
     if(request.id == "default") {
         deferred.resolve(request);
     } else {
-        let ref = db.ref('messages').child(request.id);
+        let ref = db.ref('messages').child(request.id).child('balanceUpdated');
         var messageId = ref.push().key;
         ref.child(messageId).set({
             'id' : messageId,
@@ -41,7 +41,7 @@ exports.notifyPayerBalanceUpdated = function (request) {
         request.wallet.availableMoney = '' + (new BigDecimal(request.wallet.balance)
             .minus(new BigDecimal(request.wallet.frozenMoney)));
 
-        var ref = db.ref('messages').child(payerId);
+        var ref = db.ref('messages').child(payerId).child('balanceUpdated');
         var messageId = ref.push().key;
         ref.child(messageId).set({
             'id' : messageId,
@@ -267,7 +267,7 @@ exports.createNoxbox = function (request) {
 exports.pingPerformer = function (request) {
     var deferred = Q.defer();
 
-    let ref = db.ref('messages').child(request.performer.id);
+    let ref = db.ref('messages').child(request.performer.id).child('ping');
     var messageId = ref.push().key;
     ref.child(messageId).set({
         'id' : messageId,
@@ -412,12 +412,6 @@ exports.cancelNoxbox = function (request) {
     db.ref('noxboxes').child(request.noxboxType).child(request.noxbox.id).transaction(function(current) {
         if(!current) {
             return 0;
-        }
-
-        if(!current.timeAccepted) {
-            request.error = 'Noxbox was not accepted';
-            deferred.reject(request);
-            return current;
         }
 
         if(current.timeCompleted) {
@@ -581,7 +575,7 @@ exports.notifyCanceled = function (request) {
 
     for(performerId in request.noxbox.performers) {
         if(performerId != request.id) {
-            var ref = db.ref('messages').child(performerId);
+            var ref = db.ref('messages').child(performerId).child('gnop');
             var messageId = ref.push().key;
             ref.child(messageId).set({
                 'id' : messageId,
@@ -593,7 +587,7 @@ exports.notifyCanceled = function (request) {
 
     for(payerId in request.noxbox.payers) {
         if(payerId != request.id) {
-            var ref = db.ref('messages').child(payerId);
+            var ref = db.ref('messages').child(payerId).child('gnop');
             var messageId = ref.push().key;
             ref.child(messageId).set({
                 'id' : messageId,
@@ -612,7 +606,7 @@ exports.notifyAccepted = function (request) {
     var deferred = Q.defer();
 
     for(payerId in request.noxbox.payers) {
-        let ref = db.ref('messages').child(payerId);
+        let ref = db.ref('messages').child(payerId).child('pong');
         let messageId = ref.push().key;
         ref.child(messageId).set({
             'id' : messageId,
@@ -643,7 +637,7 @@ exports.notifyCompleted = function (request) {
     var deferred = Q.defer();
 
     for(payerId in request.noxbox.payers) {
-        var ref = db.ref('messages').child(payerId);
+        var ref = db.ref('messages').child(payerId).child('complete');
         var messageId = ref.push().key;
         ref.child(messageId).set({
             'id' : messageId,
@@ -924,7 +918,7 @@ exports.notifyDisliked = function (request) {
 }
 
 function sendDislike(to) {
-    var ref = db.ref('messages').child(to);
+    var ref = db.ref('messages').child(to).child('dislike');
     var messageId = ref.push().key;
     ref.child(messageId).set({
         'id' : messageId,

@@ -26,11 +26,13 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.AllRates;
 import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.MessageType;
 import by.nicolay.lipnevich.noxbox.model.NotificationKeys;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
@@ -53,6 +55,10 @@ public class Firebase {
     private static NoxboxType type;
     private static UserType userType;
     private static BigDecimal price;
+
+    public static boolean isOnline() {
+        return type != null && userAccount != null && profiles != null;
+    }
 
     public static void init(NoxboxType noxboxType, UserType userOfType) {
         type = noxboxType;
@@ -98,9 +104,13 @@ public class Firebase {
     // Messages API
     public static Message sendMessage(String profileId, Message message) {
         // messages move and story allowed only
-        String messageKey = messages.child(profileId).push().getKey();
-        messages.child(profileId).child(messageKey).updateChildren(objectToMap(message
-                .setId(messageKey).setSender(getProfile().publicInfo()).setTime(System.currentTimeMillis())));
+        String messageKey = messages.child(profileId).child(message.getType().name()).push().getKey();
+        messages.child(profileId).child(message.getType().name()).child(messageKey)
+                .updateChildren(objectToMap(message
+                .setId(messageKey)
+                .setSender(getProfile().publicInfo())
+                .setTime(System.currentTimeMillis())
+                .setPush(MessagingService.generatePush(message, profileId, userType))));
         return message;
     }
 
@@ -120,21 +130,43 @@ public class Firebase {
         return message;
     }
 
-    public static void addMessage(Message message) {
+    public static void addMessageToChat(Message message) {
         Noxbox noxbox = tryGetNoxboxInProgress();
-        noxbox.getChat().put(message.getId(), message.setWasRead(false));
-        updateCurrentNoxbox(noxbox);
+        if(noxbox != null) {
+            noxbox.getChat().put(message.getId(), message);
+            updateCurrentNoxbox(noxbox);
+        }
     }
 
-    public static void listenMessages(final Task task) {
+    public static void listenAllMessages(final Task<Message> task) {
         messages.child(getProfile().getId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    GenericTypeIndicator<Map<String, Map<String, Message>>> genericTypeIndicator
+                            = new GenericTypeIndicator<Map<String, Map<String, Message>>>() {};
+                    Map<String, Map<String, Message>> allMessages = dataSnapshot.getValue(genericTypeIndicator);
+                    for(Map<String, Message> typeMessages : allMessages.values()) {
+                        for(Message message : typeMessages.values()) {
+                            task.execute(message);
+                        }
+                    }
+                }
+            }
+
+            @Override public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    public static void listenTypeMessages(MessageType type, final Task<Message> task) {
+        messages.child(getProfile().getId()).child(type.name()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     GenericTypeIndicator<Map<String, Message>> genericTypeIndicator
                             = new GenericTypeIndicator<Map<String, Message>>() {};
-                    Map<String, Message> allMessages = dataSnapshot.getValue(genericTypeIndicator);
-                    for(Message message : allMessages.values()) {
+                    Map<String, Message> typeMessages = dataSnapshot.getValue(genericTypeIndicator);
+                    for(Message message : typeMessages.values()) {
                         task.execute(message);
                     }
                 }
@@ -144,8 +176,9 @@ public class Firebase {
         });
     }
 
-    public static void removeMessage(String messageKey) {
-        messages.child(getProfile().getId()).child(messageKey).removeValue();
+    public static void removeMessage(Message message) {
+        messages.child(getProfile().getId()).child(message.getType().name())
+                .child(message.getId()).removeValue();
     }
 
     // Noxboxes API
@@ -169,7 +202,7 @@ public class Firebase {
 
     public static void updateCurrentNoxbox(Noxbox noxbox) {
         currentNoxboxReference().updateChildren(objectToMap(noxbox));
-        currentNoxboxes().put(type.toString(), noxbox);
+        currentNoxboxes().put(noxbox.getType().name(), noxbox);
     }
 
     public static void removeCurrentNoxbox() {
@@ -183,7 +216,7 @@ public class Firebase {
         return noxbox;
     }
 
-    public static void loadHistory(final Task task) {
+    public static void loadHistory(final Task<Collection<Noxbox>> task) {
         getHistoryReference().limitToLast(15).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -255,7 +288,7 @@ public class Firebase {
         }
     }
 
-    private static void refreshNotificationToken() {
+    public static void refreshNotificationToken() {
         String notificationToken = FirebaseInstanceId.getInstance().getToken();
         if(notificationToken == null) return;
 

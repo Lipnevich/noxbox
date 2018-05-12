@@ -24,6 +24,7 @@ public class Message {
     private Boolean like;
     private Long time;
     private Noxbox noxbox;
+    private Push push;
 
     public String getId() {
         return id;
@@ -136,6 +137,15 @@ public class Message {
 
     public Message setWasRead(Boolean wasRead) {
         this.wasRead = wasRead;
+        return this;
+    }
+
+    public Push getPush() {
+        return push;
+    }
+
+    public Message setPush(Push push) {
+        this.push = push;
         return this;
     }
 }
