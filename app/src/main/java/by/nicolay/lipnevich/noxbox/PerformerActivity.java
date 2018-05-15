@@ -41,7 +41,6 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.createHistory;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.like;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
@@ -216,7 +215,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
                         .setPerformer(getProfile().publicInfo())
                         .setEstimationTime(estimation)
                         .setNoxbox(new Noxbox().setId(pingMessage.getNoxbox().getId())));
-                removeMessage(pingMessage);
                 processNoxbox(pingMessage.getNoxbox());
             }
         });
@@ -234,7 +232,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
                 .setPerformer(getProfile().publicInfo())
                 .setPayer(message.getPayer().publicInfo())
                 .setNoxbox(new Noxbox().setId(message.getNoxbox().getId())));
-        removeMessage(message);
         prepareForIteration();
     }
 
@@ -265,7 +262,6 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
 
     @Override
     protected void processGnop(Message gnop) {
-        removeMessage(gnop);
         prepareForIteration();
     }
 

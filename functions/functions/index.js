@@ -111,6 +111,13 @@ exports.dislike = functions.database.ref('/requests/{userId}/dislike').onCreate(
            noxbox.releaseRequest);
 });
 
+exports.info = functions.https.onRequest((request, response) => {
+    return noxbox.info({}).then(function(result){
+            response.write(JSON.stringify(result));
+            response.end();
+    });
+});
+
 exports.about = functions.https.onRequest((request, response) => { return response.send("Dedicated to my dear wife Mara"); });
 
 exports.showFunctionIp = functions.https.onRequest((request, response) => {

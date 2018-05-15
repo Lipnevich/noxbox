@@ -40,7 +40,6 @@ import by.nicolay.lipnevich.noxbox.tools.Timer;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
@@ -201,13 +200,11 @@ public abstract class PayerActivity extends ChatActivity {
         }
         cleanUpMap();
         updateCurrentNoxbox(pong.getNoxbox());
-        removeMessage(pong);
         processNoxbox(pong.getNoxbox());
     }
 
     protected void processGnop(Message gnop) {
         // TODO (nli) retry instead
-        removeMessage(gnop);
         prepareForIteration();
     }
 
@@ -220,7 +217,6 @@ public abstract class PayerActivity extends ChatActivity {
             updateCurrentNoxbox(noxbox);
             drawPathsToAllPerformers(noxbox);
         }
-        removeMessage(move);
     }
 
     @Override

@@ -31,7 +31,6 @@ import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Numbers.format;
 import static by.nicolay.lipnevich.noxbox.tools.Numbers.scale;
 
@@ -73,14 +72,11 @@ public class WalletPage extends AppCompatActivity {
             }
         });
 
-        Firebase.listenAllMessages(new Task<Message>() {
+        Firebase.listenTypeMessages(MessageType.balanceUpdated, new Task<Message>() {
             @Override
             public void execute(Message message) {
-                if(message.getType().equals(MessageType.balanceUpdated)) {
-                    Firebase.updateWallet(message.getWallet());
-                    recalculateBalance();
-                    removeMessage(message);
-                }
+                Firebase.updateWallet(message.getWallet());
+                recalculateBalance();
             }
         });
         Firebase.sendRequest(new Request().setType(RequestType.balance).setRole(UserType.payer));

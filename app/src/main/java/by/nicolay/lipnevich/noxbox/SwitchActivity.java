@@ -19,7 +19,6 @@ import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.createHistory;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getRating;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static java.lang.System.currentTimeMillis;
 
@@ -31,7 +30,6 @@ public abstract class SwitchActivity extends GeoFireComponent {
     protected void processMove(Message move) {}
     protected void processQr(Message qr) {
         // TODO (nli) update ui for both users
-        removeMessage(qr);
     }
     protected void processStory(Message story) {}
     protected void processDislike(Message rate) {
@@ -39,11 +37,9 @@ public abstract class SwitchActivity extends GeoFireComponent {
         getRating().getReceived().setDislikes(getRating().getReceived().getDislikes() + 1);
 
         processProfile(getProfile());
-        removeMessage(rate);
     }
     private void processBalanceUpdated(Message update) {
         Firebase.updateWallet(update.getWallet());
-        removeMessage(update);
     }
 
     @Override
@@ -58,7 +54,6 @@ public abstract class SwitchActivity extends GeoFireComponent {
                         .setTimeCompleted(currentTimeMillis()));
                 Firebase.like();
                 prepareForIteration();
-                removeMessage(message);
                 break;
             case dislike: processDislike(message); break;
             case move: processMove(message); break;

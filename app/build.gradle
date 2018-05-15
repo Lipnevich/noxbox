@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 63
-        versionName "0.63"
+        versionCode 64
+        versionName "0.64"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }

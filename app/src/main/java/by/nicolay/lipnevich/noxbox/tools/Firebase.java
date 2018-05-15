@@ -28,6 +28,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.AllRates;
@@ -44,6 +45,7 @@ import by.nicolay.lipnevich.noxbox.model.Wallet;
 
 import static by.nicolay.lipnevich.noxbox.tools.Numbers.scale;
 import static java.lang.reflect.Modifier.isStatic;
+import static java.util.Collections.sort;
 
 public class Firebase {
 
@@ -138,27 +140,33 @@ public class Firebase {
         }
     }
 
+    private static ValueEventListener listenerAllMessages;
+
     public static void listenAllMessages(final Task<Message> task) {
-        messages.child(getProfile().getId()).addValueEventListener(new ValueEventListener() {
+        listenerAllMessages = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     GenericTypeIndicator<Map<String, Map<String, Message>>> genericTypeIndicator
                             = new GenericTypeIndicator<Map<String, Map<String, Message>>>() {};
                     Map<String, Map<String, Message>> allMessages = dataSnapshot.getValue(genericTypeIndicator);
-                    for(Map<String, Message> typeMessages : allMessages.values()) {
-                        for(Message message : typeMessages.values()) {
-                            task.execute(message);
-                        }
+                    for(Map.Entry<String, Map<String, Message>> typeMessages : allMessages.entrySet()) {
+                        MessageType type = MessageType.valueOf(typeMessages.getKey());
+                        processTypeMessages(type, typeMessages.getValue(), task);
                     }
                 }
             }
 
             @Override public void onCancelled(DatabaseError databaseError) {}
-        });
+        };
+
+        messages.child(getProfile().getId()).addValueEventListener(listenerAllMessages);
     }
 
-    public static void listenTypeMessages(MessageType type, final Task<Message> task) {
+    public static void listenTypeMessages(final MessageType type, final Task<Message> task) {
+        if(listenerAllMessages != null) {
+            messages.child(getProfile().getId()).removeEventListener(listenerAllMessages);
+        }
         messages.child(getProfile().getId()).child(type.name()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -166,9 +174,7 @@ public class Firebase {
                     GenericTypeIndicator<Map<String, Message>> genericTypeIndicator
                             = new GenericTypeIndicator<Map<String, Message>>() {};
                     Map<String, Message> typeMessages = dataSnapshot.getValue(genericTypeIndicator);
-                    for(Message message : typeMessages.values()) {
-                        task.execute(message);
-                    }
+                    processTypeMessages(type, typeMessages, task);
                 }
             }
 
@@ -176,10 +182,30 @@ public class Firebase {
         });
     }
 
-    public static void removeMessage(Message message) {
+    private static void processTypeMessages(MessageType type, Map<String, Message> typeMessages, Task<Message> task) {
+        if(type == MessageType.move) {
+            LinkedList<Message> movements = new LinkedList<>(typeMessages.values());
+            sort(movements);
+            Message lastMove = movements.getLast();
+            task.execute(lastMove);
+            removeMessages(type);
+        } else {
+            for (Message message : typeMessages.values()) {
+                task.execute(message);
+                removeMessage(message);
+            }
+        }
+    }
+
+    private static void removeMessages(MessageType type) {
+        messages.child(getProfile().getId()).child(type.name()).removeValue();
+    }
+
+    private static void removeMessage(Message message) {
         messages.child(getProfile().getId()).child(message.getType().name())
                 .child(message.getId()).removeValue();
     }
+
 
     // Noxboxes API
     private static DatabaseReference currentNoxboxReference() {

@@ -28,7 +28,6 @@ import by.nicolay.lipnevich.noxbox.tools.PageCodes;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.CHAT;
 
@@ -91,7 +90,6 @@ public abstract class ChatActivity extends SwitchActivity {
             addMessageToChat(story.setWasRead(false));
             drawNewMessageSign();
         }
-        removeMessage(story);
     }
 
     @Override

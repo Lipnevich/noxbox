@@ -14,8 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -25,8 +25,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
@@ -44,11 +42,11 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getUserType;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.listenTypeMessages;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeMessage;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
+import static java.util.Collections.sort;
 
 public class ChatPage extends AppCompatActivity {
 
@@ -61,18 +59,28 @@ public class ChatPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         long millis = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.chat);
-
-        setTitle(getInterlocutor().getName());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TimeLog.log(millis, TimeLog.Event.onCreateChat, getApplicationContext());
+
+        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateCurrentNoxbox(tryGetNoxboxInProgress());
+                onBackPressed();
+            }
+        });
 
         chatList = findViewById(R.id.chat_list);
         chatList.setHasFixedSize(true);
-        chatList.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        chatList.setLayoutManager(manager);
 
         final DisplayMetrics screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
+
+        TextView interlocutorName = findViewById(R.id.chat_opponent_name);
+        interlocutorName.setText(getInterlocutor().getName());
 
         Glide.with(getApplicationContext())
             .asBitmap()
@@ -102,7 +110,7 @@ public class ChatPage extends AppCompatActivity {
         initMessages();
         chatAdapter = new ChatAdapter(screen, messages, getProfile().getId());
         chatList.setAdapter(chatAdapter);
-        chatList.scrollToPosition(messages.size() - 1);
+        chatList.smoothScrollToPosition(View.FOCUS_DOWN);
 
         text = findViewById(R.id.type_message);
         text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -125,10 +133,7 @@ public class ChatPage extends AppCompatActivity {
         listenTypeMessages(MessageType.story, new Task<Message>() {
             @Override
             public void execute(Message story) {
-                if(story.getType().equals(MessageType.story)) {
-                    add(story.setWasRead(true));
-                    removeMessage(story);
-                }
+                add(story.setWasRead(true));
             }
         });
     }
@@ -194,32 +199,18 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private void add(Message message) {
+        sound();
         addMessageToChat(message.setWasRead(true));
         messages.add(message);
-        play();
         sort(messages);
+        chatAdapter.notifyItemInserted(messages.indexOf(message));
 
-        chatAdapter.notifyItemRangeChanged(messages.size() > 1 ? messages.size() - 1 : 0,
-                messages.size() - 1);
         chatList.scrollToPosition(messages.size() - 1);
     }
 
-    private void play() {
+    private void sound() {
         MediaPlayer mediaPlayer = MediaPlayer.create(ChatPage.this, R.raw.message);
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(final MediaPlayer mp) {
-                mp.start();
-            }
-        });
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.stop();
-            }
-        });
-
+        mediaPlayer.start();
     }
 
     private List<Message> initMessages() {
@@ -233,16 +224,6 @@ public class ChatPage extends AppCompatActivity {
         return messages;
     }
 
-    private void sort(List<Message> messages) {
-        Collections.sort(messages, new Comparator<Message>() {
-            @Override
-            public int compare(Message o1, Message o2) {
-                ;                    return Long.valueOf(o1.getTime())
-                        .compareTo(Long.valueOf(o2.getTime()));
-            }
-        });
-    }
-
     private Profile getInterlocutor() {
         if(UserType.payer.equals(getUserType())) {
             return tryGetNoxboxInProgress().getPerformers().values().iterator().next();
@@ -251,18 +232,6 @@ public class ChatPage extends AppCompatActivity {
         } else {
             throw new IllegalArgumentException("Unknown role");
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                updateCurrentNoxbox(tryGetNoxboxInProgress());
-                onBackPressed();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 }

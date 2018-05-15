@@ -78,12 +78,7 @@ public abstract class AuthActivity extends AppCompatActivity {
 
             startActivityForResult(login, SIGN_IN_REQUEST_CODE);
         } else {
-            Firebase.readPrice(new Task<BigDecimal>() {
-                @Override
-                public void execute(BigDecimal price) {
-                    Firebase.readProfile(processProfileTask);
-                }
-            });
+            Firebase.readPrice(readProfileTask);
         }
     }
 
@@ -92,12 +87,7 @@ public abstract class AuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SIGN_IN_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Firebase.readPrice(new Task<BigDecimal>() {
-                    @Override
-                    public void execute(BigDecimal price) {
-                        Firebase.readProfile(processProfileTask);
-                    }
-                });
+                Firebase.readPrice(readProfileTask);
             } else {
                 popup(getResources().getText(R.string.permissionRequired).toString());
                 finish();
@@ -105,10 +95,17 @@ public abstract class AuthActivity extends AppCompatActivity {
         }
     }
 
-    private Task processProfileTask = new Task<Profile>() {
+    private final Task processProfileTask = new Task<Profile>() {
         @Override
         public void execute(Profile profile) {
             processProfile(profile);
+        }
+    };
+
+    private final Task readProfileTask = new Task<BigDecimal>() {
+        @Override
+        public void execute(BigDecimal price) {
+            Firebase.readProfile(processProfileTask);
         }
     };
 

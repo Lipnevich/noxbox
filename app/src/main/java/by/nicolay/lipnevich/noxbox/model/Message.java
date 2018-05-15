@@ -13,7 +13,7 @@
  */
 package by.nicolay.lipnevich.noxbox.model;
 
-public class Message {
+public class Message implements Comparable<Message> {
 
     private String id, story, estimationTime;
     private Boolean wasRead;
@@ -147,5 +147,25 @@ public class Message {
     public Message setPush(Push push) {
         this.push = push;
         return this;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return id != null ? id.equals(message.id) : message.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(Message that) {
+        return this.getTime().compareTo(that.getTime());
     }
 }

@@ -19,6 +19,7 @@
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.MyCarPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"
+                  android:theme="@style/NoActionBar"
                   android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.WalletPage"
                   android:windowSoftInputMode="adjustResize|stateHidden"/>

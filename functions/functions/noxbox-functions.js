@@ -926,5 +926,34 @@ function sendDislike(to) {
     });
 }
 
+exports.info = function () {
+    var deferred = Q.defer();
+
+    db.ref('profiles').once('value').then(function(event) {
+        let total = new BigDecimal(0);
+        let frozenTotal = new BigDecimal(0);
+        let number = 0;
+        if (event.hasChildren()) {
+            event.forEach(function(item) {
+               let balance = item.child('wallet').child('balance').val();
+               let frozenMoney = item.child('wallet').child('frozenMoney').val();
+               if(balance && balance != null) {
+                   total = total.add(new BigDecimal(balance));
+                   if(frozenMoney && frozenMoney != null) {
+                        frozenTotal = frozenTotal.add(new BigDecimal(frozenMoney));
+                   }
+                   number++;
+               }
+            });
+
+            var info = { 'members' : number, 'balance' : + total, 'frozen' : + frozenTotal  }
+            console.log(info);
+        }
+
+        deferred.resolve(info);
+    });
+
+    return deferred.promise;
+}
 
 
