@@ -14,6 +14,7 @@
 package by.nicolay.lipnevich.noxbox;
 
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -92,6 +93,7 @@ public abstract class MapActivity extends ProfileActivity implements
     @Override
     public void onMapReady(GoogleMap readyMap) {
         googleMap = readyMap;
+        scaleMarkers();
         visibleCurrentLocation(true);
         // TODO (nli) night and day mode
 //        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_in_night));
@@ -128,8 +130,14 @@ public abstract class MapActivity extends ProfileActivity implements
             // position on right bottom
             layout.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            layout.setMargins(0, 0, 0, 30);
+            layout.setMargins(0, 0, 0, dpToPx(8));
+            locationButton.setLayoutParams(layout);
         }
+    }
+
+    public static int dpToPx(int dp)
+    {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     @Override
@@ -150,6 +158,7 @@ public abstract class MapActivity extends ProfileActivity implements
         if(position != null && googleMap != null && tryGetNoxboxInProgress() == null) {
             googleMap.moveCamera(newLatLngZoom(getCurrentPosition().toLatLng(), 15));
         }
+        scaleMarkers();
     }
 
     @Override
@@ -361,12 +370,11 @@ public abstract class MapActivity extends ProfileActivity implements
 
     @Override
     protected void processNoxbox(Noxbox noxbox) {
-        pathImage.setVisibility(View.VISIBLE);
+        moveGoogleCopyrights();
 
         visibleCurrentLocation(false);
 
-        moveGoogleCopyrights();
-
+        pathImage.setVisibility(View.VISIBLE);
         pathImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -390,7 +398,7 @@ public abstract class MapActivity extends ProfileActivity implements
                 }
             }
             LatLngBounds bounds = builder.build();
-            int padding = 64; // padding around start and end points
+            int padding = dpToPx(36); // padding around start and end points
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
         }
     }
@@ -407,7 +415,7 @@ public abstract class MapActivity extends ProfileActivity implements
 
     private void moveGoogleCopyrights() {
         if(googleMap != null) {
-            googleMap.setPadding(24,96,24,210);
+            googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(7), dpToPx(70));
         }
 
     }

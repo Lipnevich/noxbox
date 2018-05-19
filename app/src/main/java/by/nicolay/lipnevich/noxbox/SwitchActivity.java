@@ -28,6 +28,7 @@ public abstract class SwitchActivity extends GeoFireComponent {
     protected void processPong(Message pong) {}
     protected void processGnop(Message gnop) {}
     protected void processMove(Message move) {}
+    protected void processSync(Message sync) {}
     protected void processQr(Message qr) {
         // TODO (nli) update ui for both users
     }
@@ -46,6 +47,7 @@ public abstract class SwitchActivity extends GeoFireComponent {
     protected void processMessage(Message message) {
         switch (message.getType()) {
             case ping: processPing(message); break;
+            case sync: processSync(message); break;
             case pong: processPong(message); break;
             case gnop: processGnop(message); break;
             case qr: processQr(message); break;
@@ -61,5 +63,6 @@ public abstract class SwitchActivity extends GeoFireComponent {
             case balanceUpdated: processBalanceUpdated(message); break;
         }
     }
+
 
 }

@@ -376,7 +376,18 @@ public class Firebase {
     }
 
     public static Noxbox tryGetNoxboxInProgress() {
-        if(getProfile() != null && currentNoxboxes() != null) {
+        if(getProfile() != null && currentNoxboxes() != null
+                && currentNoxboxes().get(type.toString()) != null
+                && currentNoxboxes().get(type.toString()).getTimeAccepted() != null) {
+            return currentNoxboxes().get(type.toString());
+        }
+        return null;
+    }
+
+    public static Noxbox tryGetNotAcceptedNoxbox() {
+        if(getProfile() != null && currentNoxboxes() != null
+                && currentNoxboxes().get(type.toString()) != null
+                && currentNoxboxes().get(type.toString()).getTimeAccepted() == null) {
             return currentNoxboxes().get(type.toString());
         }
         return null;

@@ -18,7 +18,6 @@ exports.create = function (request) {
     request.wallet.address = seed.address;
  	request.wallet.seed = encrypted;
 
-
   	console.log('New address ' + seed.address + ' was created for profile ' + request.id);
 	deferred.resolve(request);
 
@@ -86,6 +85,9 @@ exports.refund = function (request) {
         request.wallet.availableMoney = '0';
         request.wallet.availableMoneyWithoutFee = '-0.001';
         deferred.resolve(request);
+    }, (error) => {
+        request.error = error.message;
+        deferred.reject(request);
     });
 
     return deferred.promise;
@@ -121,6 +123,9 @@ exports.pay = function (request) {
     Waves.API.Node.v1.assets.transfer(transferData, seed.keyPair).then((responseData) => {
         console.log(responseData);
         deferred.resolve(request);
+    }, (error) => {
+        request.error = error.message;
+        deferred.reject(request);
     });
 
     return deferred.promise;

@@ -40,6 +40,8 @@ import by.nicolay.lipnevich.noxbox.tools.Timer;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNotAcceptedNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
@@ -60,6 +62,8 @@ public abstract class PayerActivity extends ChatActivity {
     private View.OnClickListener qrListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
+            if(tryGetNoxboxInProgress() == null) return;
+
             String secret = tryGetNoxboxInProgress().getPayers()
                     .get(getProfile().getId()).getSecret();
 
@@ -105,10 +109,9 @@ public abstract class PayerActivity extends ChatActivity {
                 if(bestOption != null) {
                     requestButton.setVisibility(View.INVISIBLE);
                     pointerImage.setVisibility(View.INVISIBLE);
-                    googleMap.setPadding(0,0,0,0);
                     drawPath(null, bestOption, getProfile().publicInfo().setPosition(getCameraPosition()));
 
-                    Firebase.sendRequest(new Request()
+                    sendRequest(new Request()
                         .setEstimationTime(bestOption.getEstimationTime())
                         .setType(RequestType.request)
                         .setPosition(getCameraPosition())
@@ -118,7 +121,7 @@ public abstract class PayerActivity extends ChatActivity {
                     timer = new Timer() {
                         @Override
                         protected void timeout() {
-                            // TODO (nli) retry request to next best option
+                            processTimeout();
                             prepareForIteration();
                         }
                     }.start(getResources().getInteger(R.integer.timer_in_seconds) * 120 / 100);
@@ -131,6 +134,21 @@ public abstract class PayerActivity extends ChatActivity {
         cancelButton = findViewById(R.id.cancelButton);
     }
 
+    private void processTimeout() {
+        Noxbox notAcceptedNoxbox = tryGetNotAcceptedNoxbox();
+        if(notAcceptedNoxbox != null) {
+            Profile performer = notAcceptedNoxbox.getPerformers().values()
+                    .iterator().next().publicInfo();
+            sendRequest(new Request()
+                    .setType(RequestType.cancel)
+                    .setNoxbox(notAcceptedNoxbox)
+                    .setPayer(getProfile().publicInfo())
+                    .setPerformer(performer)
+                    .setReason("Canceled by timeout " + getProfile().getName()));
+        }
+        removeCurrentNoxbox();
+    }
+
     private boolean isEnoughMoney() {
         return new BigDecimal(getWallet().getBalance())
                 .compareTo(Firebase.getPrice()) >= 0;
@@ -140,6 +158,8 @@ public abstract class PayerActivity extends ChatActivity {
         super.prepareForIteration();
 
         listenAvailablePerformers();
+
+        processTimeout();
 
         if(tryGetNoxboxInProgress() != null) {
             removeCurrentNoxbox();
@@ -155,7 +175,11 @@ public abstract class PayerActivity extends ChatActivity {
             showQrCode.getLayoutParams().width = initialQrWidth;
         }
         showQrCode.setVisibility(View.INVISIBLE);
+    }
 
+    @Override
+    protected void processSync(Message sync) {
+        updateCurrentNoxbox(sync.getNoxbox());
     }
 
     @Override
@@ -173,7 +197,7 @@ public abstract class PayerActivity extends ChatActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Firebase.sendRequest(new Request().setType(RequestType.cancel)
+                                sendRequest(new Request().setType(RequestType.cancel)
                                         .setRole(userType())
                                         .setPayer(getProfile().publicInfo())
                                         .setPerformer(noxbox.getPerformers().values().iterator().next().publicInfo())

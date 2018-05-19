@@ -8,8 +8,8 @@
         <item name="windowNoTitle">false</item>
         <item name="windowActionBar">true</item>
 
-        <item name="android:buttonStyle">@style/ButtonTheme</item>
-
+        <item name="android:buttonStyle">@style/MainButtonStyle</item>
+        <item name="android:indeterminateTint">@color/primary</item>
         <item name="material_drawer_background">@color/secondary</item>
         <item name="material_drawer_primary_text">@color/primary</item>
         <item name="material_drawer_hint_text">@color/primary</item>
@@ -25,9 +25,21 @@
         <item name="windowActionBar">false</item>
     </style>
 
-    <style name="ButtonTheme" parent="Widget.AppCompat.Button.Colored">
-        <item name="colorButtonNormal">@layout/button</item>
+    <style name="MainButtonStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@color/primary</item>
         <item name="android:textColor">@color/secondary</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:layout_height">54dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_margin">13dp</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="IconButtonStyle">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:visibility">gone</item>
     </style>
 
     <style name="NoxboxAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">

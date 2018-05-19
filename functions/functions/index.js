@@ -41,6 +41,7 @@ exports.request = functions.database.ref('/requests/{userId}/request').onCreate(
            noxbox.getPerformerProfile).then(
            noxbox.createNoxbox).then(
            noxbox.pingPerformer).then(
+           noxbox.syncPayer).then(
            noxbox.sendPushNotification).then(
            noxbox.freezeMoney).then(
            noxbox.notifyBalanceUpdated, noxbox.logError).then(
@@ -52,6 +53,7 @@ exports.cancel = functions.database.ref('/requests/{userId}/cancel').onCreate(ev
            noxbox.notifyCanceled).then(
            noxbox.sendPushNotification).then(
            // TOdO (nli) pay in case more then 3 minutes gone
+           noxbox.removeAvailablePerformer).then(
            noxbox.unfreezeMoney).then(
            noxbox.notifyPayerBalanceUpdated, noxbox.logError).then(
            noxbox.releaseRequest);

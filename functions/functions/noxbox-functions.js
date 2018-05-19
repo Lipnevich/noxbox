@@ -407,11 +407,20 @@ exports.unfreezeMoney = function (request) {
 exports.cancelNoxbox = function (request) {
     var deferred = Q.defer();
 
+    if(request.reason) {
+        console.info(request.reason);
+    }
     // firebase can process transaction up to 25 times in case of issues with multi access,
     // for the first time transaction processed with null instead of real value
     db.ref('noxboxes').child(request.noxboxType).child(request.noxbox.id).transaction(function(current) {
         if(!current) {
             return 0;
+        }
+
+        // timeout in case more than a single minute gone since request
+        let timeout = ((new Date().getTime() - current.timeRequested) / 1000) > 30;
+        if(!current.timeAccepted && timeout) {
+            request.acceptTimeout = true;
         }
 
         if(current.timeCompleted) {
@@ -467,6 +476,28 @@ exports.cancelNoxbox = function (request) {
 
     return deferred.promise;
 }
+
+exports.removeAvailablePerformer = function (request) {
+    var deferred = Q.defer();
+
+    if(request.acceptTimeout) {
+        db.ref('availablePerformers').child(request.noxboxType).once('value').then(function(snapshot) {
+              if(snapshot.hasChildren()) {
+                snapshot.forEach(function(item) {
+                    if(item.key.startsWith(request.performer.id)) {
+                        db.ref('availablePerformers').child(request.noxboxType)
+                            .child(item.key).remove();
+                        console.info('Performer ' + item.key + ' become not available due to timeout');
+                    }
+                });
+              }
+        });
+    }
+    deferred.resolve(request);
+
+    return deferred.promise;
+}
+
 
 exports.acceptNoxbox = function (request) {
     var deferred = Q.defer();
@@ -611,6 +642,24 @@ exports.notifyAccepted = function (request) {
         ref.child(messageId).set({
             'id' : messageId,
             'type' : 'pong',
+            'noxbox' : request.noxbox,
+            'estimationTime' : request.estimationTime
+        });
+    }
+
+    deferred.resolve(request);
+    return deferred.promise;
+}
+
+exports.syncPayer = function (request) {
+    var deferred = Q.defer();
+
+    for(payerId in request.noxbox.payers) {
+        let ref = db.ref('messages').child(payerId).child('sync');
+        let messageId = ref.push().key;
+        ref.child(messageId).set({
+            'id' : messageId,
+            'type' : 'sync',
             'noxbox' : request.noxbox,
             'estimationTime' : request.estimationTime
         });
@@ -951,6 +1000,22 @@ exports.info = function () {
         }
 
         deferred.resolve(info);
+    });
+
+    return deferred.promise;
+}
+
+exports.unfreezeAll = function () {
+    var deferred = Q.defer();
+
+    db.ref('profiles').once('value').then(function(event) {
+        if (event.hasChildren()) {
+            event.forEach(function(item) {
+                db.ref('profiles').child(item.key).child('wallet').child('frozenMoney').set('0');
+            });
+        }
+
+        deferred.resolve('all money were unfreezed');
     });
 
     return deferred.promise;

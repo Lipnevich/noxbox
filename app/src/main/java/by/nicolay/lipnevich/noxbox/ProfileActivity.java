@@ -151,7 +151,7 @@ public abstract class ProfileActivity extends AuthActivity {
 
         menu.getDrawerLayout().setFitsSystemWindows(true);
 
-        ImageView menuImage = findViewById(R.id.menuImage);
+        ImageView menuImage = findViewById(R.id.menu);
         menuImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

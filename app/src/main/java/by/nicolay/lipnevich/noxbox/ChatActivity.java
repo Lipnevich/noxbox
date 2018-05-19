@@ -14,9 +14,7 @@
 package by.nicolay.lipnevich.noxbox;
 
 import android.content.Intent;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
@@ -51,15 +49,8 @@ public abstract class ChatActivity extends SwitchActivity {
 
     protected ImageView getChatIcon() {
         if(chatIcon == null) {
-            chatIcon = new ImageView(this);
+            chatIcon = findViewById(R.id.chat);
             chatIcon.setImageResource(R.drawable.chat);
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(170, 190,
-                    Gravity.END | Gravity.TOP);
-            params.setMargins(0, 30, 44, 0);
-            chatIcon.setLayoutParams(params);
-
-            FrameLayout layout = findViewById(R.id.frame_layout);
-            layout.addView(chatIcon);
         }
 
         chatIcon.setOnClickListener(new View.OnClickListener() {

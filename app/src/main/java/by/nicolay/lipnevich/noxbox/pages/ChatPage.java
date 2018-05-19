@@ -189,6 +189,7 @@ public class ChatPage extends AppCompatActivity {
 
     private void send() {
         if(TextUtils.isEmpty(text.getText().toString().trim())) return;
+        if(tryGetNoxboxInProgress() == null) return;
 
         Message message = sendMessageForNoxbox(new Message()
                 .setType(MessageType.story)
@@ -199,6 +200,7 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private void add(Message message) {
+        if(tryGetNoxboxInProgress() == null) return;
         sound();
         addMessageToChat(message.setWasRead(true));
         messages.add(message);

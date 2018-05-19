@@ -14,5 +14,5 @@ public enum MessageType {
     dislike, story,
 
     // Server say
-    balanceUpdated,
+    balanceUpdated, sync,
 }

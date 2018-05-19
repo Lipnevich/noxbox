@@ -7,12 +7,6 @@
     android:layout_height="match_parent"
     >
 
-    <FrameLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    
-    
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapId"
         android:name="com.google.android.gms.maps.MapFragment"
@@ -22,136 +16,98 @@
 
         <Button
             android:id="@+id/requestButton"
+            style="@style/MainButtonStyle"
             android:text="@string/requestText"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|fill_horizontal"
-            android:layout_margin="15dp"
-            android:drawable="@layout/button"
-            android:background="@color/primary"
-            android:textSize="24sp"
-            android:visibility="gone"
         />
 
         <Button
             android:id="@+id/goOnlineButton"
+            style="@style/MainButtonStyle"
             android:text="@string/goOnlineText"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|fill_horizontal"
-            android:layout_margin="15dp"
-            android:drawable="@layout/button"
-            android:background="@color/primary"
-            android:textSize="24sp"
-            android:visibility="gone"
         />
 
         <Button
             android:id="@+id/goOfflineButton"
+            style="@style/MainButtonStyle"
             android:text="@string/goOfflineText"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|fill_horizontal"
-            android:layout_margin="15dp"
-            android:drawable="@layout/button"
             android:background="@color/divider"
-            android:textSize="24sp"
-            android:visibility="gone"
         />
 
         <Button
             android:id="@+id/acceptButton"
+            style="@style/MainButtonStyle"
             android:text="@string/acceptText"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|fill_horizontal"
-            android:layout_margin="15dp"
-            android:drawable="@layout/button"
-            android:background="@color/primary"
-            android:textSize="24sp"
-            android:visibility="gone"
         />
 
         <Button
             android:id="@+id/completeButton"
+            style="@style/MainButtonStyle"
             android:text="@string/completeText"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|fill_horizontal"
-            android:layout_margin="15dp"
-            android:drawable="@layout/button"
-            android:background="@color/primary"
-            android:textSize="24sp"
-            android:visibility="gone"
         />
 
         <Button
             android:id="@+id/cancelButton"
+            style="@style/MainButtonStyle"
             android:text="@string/cancelText"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_gravity="bottom|fill_horizontal"
-            android:layout_margin="15dp"
-            android:drawable="@layout/button"
-            android:background="@color/primary"
-            android:textSize="24sp"
-            android:visibility="gone"
         />
 
         <ImageView
             android:id="@+id/pointerImage"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            style="@style/IconButtonStyle"
             android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginBottom ="42dp"
+            android:layout_marginBottom="42dp"
             android:src="@drawable/pointer"
-            android:visibility="gone"/>
-
+            />
 
         <ImageView
-            android:id="@+id/menuImage"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:id="@+id/menu"
+            style="@style/IconButtonStyle"
             android:layout_gravity="start|top"
             android:src="@drawable/menu"
-            android:visibility="gone"
-            android:layout_margin="4dp"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="13dp"
             />
 
-        <ImageView
-            android:id="@+id/showQrCode"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+        <LinearLayout
             android:layout_gravity="end|top"
-            android:src="@drawable/qr"
-            android:layout_marginEnd="86dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="13dp"
-            android:visibility="gone"
-            />
+            android:layout_marginEnd="13dp"
+            >
 
-        <ImageView
-            android:id="@+id/scanQrCode"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_gravity="end|top"
-            android:src="@drawable/scan_qr"
-            android:layout_marginEnd="86dp"
-            android:layout_marginTop="13dp"
-            android:visibility="gone"
-            />
+            <ImageView
+                android:id="@+id/showQrCode"
+                style="@style/IconButtonStyle"
+                android:src="@drawable/qr"
+                />
+
+            <ImageView
+                android:id="@+id/scanQrCode"
+                style="@style/IconButtonStyle"
+                android:src="@drawable/scan_qr"
+                />
+
+            <ImageView
+                android:id="@+id/chat"
+                style="@style/IconButtonStyle"
+                android:src="@drawable/chat"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="13dp"
+                />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/pathImage"
-            android:layout_width="48dp"
-            android:layout_height="64dp"
+            style="@style/IconButtonStyle"
             android:layout_gravity="bottom|end"
-            android:layout_marginBottom ="64dp"
-            android:layout_marginRight ="12dp"
+            android:layout_marginBottom ="74dp"
+            android:layout_marginEnd ="14dp"
             android:src="@drawable/path"
-            android:visibility="gone"/>
+            />
 
     </fragment>
-
-    </FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

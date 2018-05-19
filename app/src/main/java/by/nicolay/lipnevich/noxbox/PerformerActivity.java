@@ -231,7 +231,8 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         sendRequest(new Request().setType(RequestType.cancel)
                 .setPerformer(getProfile().publicInfo())
                 .setPayer(message.getPayer().publicInfo())
-                .setNoxbox(new Noxbox().setId(message.getNoxbox().getId())));
+                .setNoxbox(new Noxbox().setId(message.getNoxbox().getId()))
+                .setReason("Canceled by performer"));
         prepareForIteration();
     }
 
