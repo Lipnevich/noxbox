@@ -94,18 +94,18 @@ exports.getWallet = function (request) {
 
     db.ref('profiles').child(request.id).child('wallet').once('value').then(function(snapshot) {
         request.wallet = snapshot.val();
-        if(!request.wallet) {
+        if(!request.wallet || !request.wallet.address) {
             request.error = 'Wallet is not created yet';
             deferred.reject(request);
+        } else {
+            request.wallet.balance = request.wallet.balance || '0';
+            request.wallet.previousBalance = request.wallet.balance;
+            request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
+            request.wallet.availableMoney = '' + (new BigDecimal(request.wallet.balance)
+                .minus(new BigDecimal(request.wallet.frozenMoney)));
+
+            deferred.resolve(request);
         }
-
-        request.wallet.balance = request.wallet.balance || '0';
-        request.wallet.previousBalance = request.wallet.balance;
-        request.wallet.frozenMoney = request.wallet.frozenMoney || '0';
-        request.wallet.availableMoney = '' + (new BigDecimal(request.wallet.balance)
-            .minus(new BigDecimal(request.wallet.frozenMoney)));
-
-        deferred.resolve(request);
     });
 
     return deferred.promise;
@@ -703,7 +703,7 @@ exports.logError = function (request) {
     var deferred = Q.defer();
 
     if(request.error) {
-        console.error(request.error);
+        console.warn(request.error);
     } else {
         console.error('Error ', request);
     }

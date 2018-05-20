@@ -120,7 +120,7 @@ exports.info = functions.https.onRequest((request, response) => {
     });
 });
 
-exports.about = functions.https.onRequest((request, response) => { return response.send("Dedicated to my dear wife Mara"); });
+exports.about = functions.https.onRequest((request, response) => { return response.send("NoxBox. Dedicated to my dear wife Mara"); });
 
 exports.showFunctionIp = functions.https.onRequest((request, response) => {
     return http("http://www.showmyip.gr/", { 'json': true }, (err, res, body) => { return response.send(body); });

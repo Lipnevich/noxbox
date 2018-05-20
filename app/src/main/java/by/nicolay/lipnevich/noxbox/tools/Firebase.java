@@ -227,6 +227,7 @@ public class Firebase {
     }
 
     public static void updateCurrentNoxbox(Noxbox noxbox) {
+        if(noxbox == null) return;
         currentNoxboxReference().updateChildren(objectToMap(noxbox));
         currentNoxboxes().put(noxbox.getType().name(), noxbox);
     }
