@@ -252,6 +252,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     @Override
     protected void goOnline() {
         super.goOnline();
+
         goOfflineButton.setVisibility(View.VISIBLE);
 
         pathImage.setVisibility(View.INVISIBLE);

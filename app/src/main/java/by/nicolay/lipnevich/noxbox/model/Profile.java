@@ -12,6 +12,7 @@ import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 public class Profile implements Serializable {
 
     private String id, name, email, photo, secret;
+    private Acceptance acceptance;
     private Position position;
     private String addressToRefund, estimationTime;
     private Long timeDisliked;
@@ -164,9 +165,18 @@ public class Profile implements Serializable {
         return new Profile()
                 .setId(user.getUid())
                 .setEmail(user.getEmail())
+                .setAcceptance(new Acceptance(user))
                 .setName(user.getDisplayName())
                 .setTravelMode(TravelMode.driving)
                 .setPhoto(user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
     }
 
+    public Acceptance getAcceptance() {
+        return acceptance;
+    }
+
+    public Profile setAcceptance(Acceptance acceptance) {
+        this.acceptance = acceptance;
+        return this;
+    }
 }

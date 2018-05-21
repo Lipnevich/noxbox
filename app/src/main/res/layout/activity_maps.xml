@@ -68,6 +68,15 @@
             android:layout_marginTop="13dp"
             />
 
+        <ImageView
+            android:id="@+id/check"
+            style="@style/IconButtonStyle"
+            android:layout_gravity="start|top"
+            android:src="@drawable/check"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="84dp"
+            />
+
         <LinearLayout
             android:layout_gravity="end|top"
             android:layout_width="wrap_content"

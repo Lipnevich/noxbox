@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 66
-        versionName "0.66"
+        versionCode 67
+        versionName "0.67"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
     }
@@ -49,6 +49,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:15.0.2'
     implementation 'com.google.firebase:firebase-database:15.0.1'
     implementation 'com.google.firebase:firebase-messaging:15.0.2'
+    implementation 'com.google.firebase:firebase-ml-vision:15.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:3.3.1'
     implementation 'com.firebase:geofire-android:2.1.1'
     implementation ('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') { transitive = true }

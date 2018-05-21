@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import by.nicolay.lipnevich.noxbox.model.Acceptance;
 import by.nicolay.lipnevich.noxbox.model.AllRates;
 import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.MessageType;
@@ -277,10 +278,14 @@ public class Firebase {
 
                     refreshNotificationToken();
 
-                    if((user.getDisplayName() != null && !user.getDisplayName().equals(getProfile().getName())) ||
-                            (user.getPhotoUrl() != null && !user.getPhotoUrl().toString().equals(getProfile().getPhoto()))) {
+                    if((user.getDisplayName() != null && !user.getDisplayName().equals(getProfile().getName()))) {
                         getProfile().setName(user.getDisplayName());
+                        getProfile().getAcceptance().setCorrectNameProbability(1f);
+                        updateProfile(getProfile());
+                    }
+                    if((user.getPhotoUrl() != null && !user.getPhotoUrl().toString().equals(getProfile().getPhoto()))) {
                         getProfile().setPhoto(user.getPhotoUrl().toString());
+                        getProfile().getAcceptance().setExpired(true);
                         updateProfile(getProfile());
                     }
                 } else {
@@ -306,6 +311,9 @@ public class Firebase {
         }
         if(getRating() == null) {
             userAccount.setRating(new AllRates());
+        }
+        if(getProfile().getAcceptance() == null) {
+            getProfile().setAcceptance(new Acceptance(getProfile()));
         }
         if(getProfile().getName() == null) {
             getProfile().setName(defaultName);

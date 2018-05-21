@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -27,8 +28,17 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.ml.vision.FirebaseVision;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.face.FirebaseVisionFace;
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
+import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -47,6 +57,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import by.nicolay.lipnevich.noxbox.model.Acceptance;
 import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
@@ -61,6 +72,7 @@ import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.HISTORY;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
 
@@ -82,12 +94,53 @@ public abstract class ProfileActivity extends AuthActivity {
             Firebase.sendRequest(new Request().setType(RequestType.balance).setRole(userType()));
         }
 
+        ImageView check = findViewById(R.id.check);
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkAcceptance();
+            }
+        });
+        check.setVisibility(View.VISIBLE);
+
+
         listenMessages();
     }
 
     private double MIN_RATE = 4.5;
 
     protected Drawer menu;
+
+    protected void checkAcceptance() {
+        // TODO (nli) replace it with profile activity launch
+        float minProb = getResources().getFraction(R.fraction.min_allowed_probability, 1, 1);
+        Acceptance acceptance = getProfile().getAcceptance();
+        if(acceptance.getExpired()) {
+            popup("Please wait. Your data check still in progress...");
+        } else if(!acceptance.isAccepted(minProb)) {
+            String warning = "";
+            if(acceptance.getCorrectNameProbability() < minProb) {
+                warning += "Incorrect name\n";
+            }
+            if(acceptance.getFailToRecognizeFace()) {
+                warning += "Fail to recognize face\n";
+            } else {
+                if (acceptance.getSmileProbability() < minProb) {
+                    warning += "No smile on photo\n";
+                }
+                if (acceptance.getLeftEyeOpenProbability() < minProb) {
+                    warning += "Closed left eye\n";
+                }
+                if (acceptance.getRightEyeOpenProbability() < minProb) {
+                    warning += "Closed right eye\n";
+                }
+            }
+            warning += "Please update your data on your Google account";
+            popup(warning);
+        } else {
+            popup("Your name and photo are just wonderful!");
+        }
+    }
 
     protected void listenMessages() {
         Firebase.listenAllMessages(new Task<Message>() {
@@ -164,10 +217,17 @@ public abstract class ProfileActivity extends AuthActivity {
     private void makeProfileImageRounded() {
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {
             @Override
-            public void set(ImageView imageView, Uri uri, Drawable placeholder) {
-                Glide.with(getApplicationContext()).load(uri)
+            public void set(final ImageView imageView, Uri uri, Drawable placeholder) {
+                Glide.with(getApplicationContext()).asBitmap().load(uri)
                         .apply(RequestOptions.placeholderOf(placeholder).circleCrop())
-                        .into(imageView);
+                        .into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(Bitmap resource, Transition<?
+                                                                super Bitmap> transition) {
+                                imageView.setImageBitmap(resource);
+                                checkPhoto(resource);
+                            }
+                        });
             }
 
             @Override
@@ -185,6 +245,52 @@ public abstract class ProfileActivity extends AuthActivity {
                 return placeholder(ctx);
             }
         });
+    }
+
+    private void checkPhoto(Bitmap photo) {
+        if(!getProfile().getAcceptance().getExpired()) return;
+
+        if(getProfile().getPhoto() == null) {
+            getProfile().getAcceptance().setFailToRecognizeFace(true);
+            getProfile().getAcceptance().setExpired(false);
+            updateProfile(getProfile());
+            return;
+        }
+
+        FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
+                .getVisionFaceDetector(new FirebaseVisionFaceDetectorOptions.Builder()
+                        .setModeType(FirebaseVisionFaceDetectorOptions.ACCURATE_MODE)
+                        .setClassificationType(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
+                        .setMinFaceSize(0.6f)
+                        .setTrackingEnabled(false)
+                        .build());
+
+        detector.detectInImage(FirebaseVisionImage.fromBitmap(photo))
+                .addOnSuccessListener(
+                        new OnSuccessListener<List<FirebaseVisionFace>>() {
+                            @Override
+                            public void onSuccess(List<FirebaseVisionFace> faces) {
+                                getProfile().getAcceptance().setExpired(false);
+                                if(faces.size() != 1) {
+                                    getProfile().getAcceptance().setFailToRecognizeFace(true);
+                                } else {
+                                    FirebaseVisionFace face = faces.get(0);
+                                    getProfile().getAcceptance().setSmileProbability(face.getSmilingProbability());
+                                    getProfile().getAcceptance().setRightEyeOpenProbability(face.getRightEyeOpenProbability());
+                                    getProfile().getAcceptance().setLeftEyeOpenProbability(face.getLeftEyeOpenProbability());
+                                }
+                                updateProfile(getProfile());
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                getProfile().getAcceptance().setExpired(false);
+                                getProfile().getAcceptance().setFailToRecognizeFace(true);
+                                updateProfile(getProfile());
+                            }
+                        });
     }
 
     private IDrawerItem[] convertToItems(Map<String, IntentAndKey> menu) {
