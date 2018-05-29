@@ -10,21 +10,22 @@ public class Notice {
 
     private MessageType type;
     private Integer id;
-    private Boolean ignore = false;
     private Boolean local = false;
-    private String estimation, icon, name, message, price, balance;
+    private String estimation, icon, name, message, price, balance, previousBalance;
 
     public static Notice create(Map<String, String> data) {
+        if(data.get("type") == null) return new Notice();
+
         return new Notice()
                 .setType(MessageType.valueOf(data.get("type")))
                 .setEstimation(data.get("estimation"))
                 .setIcon(data.get("icon"))
                 .setName(data.get("name"))
                 .setMessage(data.get("message"))
-                .setIgnore(data.get("ignore") != null ? Boolean.valueOf(data.get("ignore")) : false)
                 .setLocal(data.get("local") != null ? Boolean.valueOf(data.get("local")) : false)
                 .setPrice(data.get("price"))
-                .setBalance(data.get("balance") != null ? data.get("balance") : "0");
+                .setBalance(data.get("balance") != null ? data.get("balance") : "0")
+                .setPreviousBalance(data.get("previousBalance") != null ? data.get("previousBalance") : "0");
     }
 
     public static Notice create(Message message) {
@@ -34,17 +35,12 @@ public class Notice {
                 .setIcon(message.getSender().getPhoto())
                 .setName(message.getSender().getName())
                 .setMessage(message.getStory())
-                .setIgnore(false)
                 .setLocal(true);
     }
 
     public Boolean getIgnore() {
-        return ignore;
-    }
-
-    public Notice setIgnore(Boolean ignore) {
-        this.ignore = ignore;
-        return this;
+        return getType() == null ||
+                (getType() == MessageType.balanceUpdated && balance != null && balance.equals(previousBalance));
     }
 
     public MessageType getType() {
@@ -125,6 +121,15 @@ public class Notice {
 
     public Notice setLocal(Boolean local) {
         this.local = local;
+        return this;
+    }
+
+    public String getPreviousBalance() {
+        return previousBalance;
+    }
+
+    public Notice setPreviousBalance(String previousBalance) {
+        this.previousBalance = previousBalance;
         return this;
     }
 }

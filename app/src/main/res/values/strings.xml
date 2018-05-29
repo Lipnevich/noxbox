@@ -60,11 +60,13 @@
     <string name="cancelPushTitle">Request canceled</string>
     <string name="cancelPushBody">New request will be provided soon</string>
     <string name="completePushTitle">Payment done</string>
-    <string name="completePushBody">%s %s was transfered to perfomer</string>
+    <string name="completePushBody">%s %s was transfered to performer</string>
     <string name="balancePushBody">Your balance is %s %s</string>
     <string name="balancePushTitle">Balance updated</string>
     <string name="qrPushTitle">Performer working</string>
     <string name="qrPushBody">%s happy to provide you a service</string>
     <string name="enterMessage">Type a message...</string>
     <string name="addressInClipBoard">Address copied to clipboard</string>
+    <string name="chat">Chat</string>
+    <string name="googleLogin">Sign in with Google</string>
 </resources>

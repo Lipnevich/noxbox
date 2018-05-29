@@ -42,6 +42,8 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.like;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNotAcceptedNoxbox;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
@@ -112,17 +114,22 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     }
 
     private boolean isQrRecognized() {
-        Profile payer = tryGetNoxboxInProgress().getPayers().values().iterator().next();
-        return payer != null && payer.getSecret() != null;
+        // TODO (nli) check qr via request
+        return true;
     }
 
     protected void prepareForIteration() {
         super.prepareForIteration();
 
+        Noxbox notAcceptednoxbox = tryGetNotAcceptedNoxbox();
+        if(notAcceptednoxbox != null) {
+            processRequest(notAcceptednoxbox);
+            return;
+        }
+
         if(tryGetNoxboxInProgress() != null) {
             removeCurrentNoxbox();
         }
-
         goOffline();
     }
 
@@ -160,38 +167,43 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         goOnlineButton.setVisibility(View.INVISIBLE);
     }
 
-    protected Noxbox tryGetNoxboxInProgress() {
-        if(getProfile() != null && getProfile().getNoxboxesForPerformer() != null) {
-            return getProfile().getNoxboxesForPerformer().get(noxboxType().toString());
-        }
-        return null;
+    protected void processPing(final Message pingMessage) {
+        pingMessage.getNoxbox().setEstimationTime(pingMessage.getEstimationTime());
+        processRequest(pingMessage.getNoxbox());
     }
 
-    protected void processPing(final Message pingMessage) {
-
-        if(tryGetNoxboxInProgress() != null || System.currentTimeMillis() - pingMessage.getTime() > getResources().getInteger(R.integer.timer_in_seconds) * 1000) {
-            cancelPing(pingMessage);
+    protected void processRequest(final Noxbox noxbox) {
+        if(tryGetNoxboxInProgress() != null) {
+            cancelPing(tryGetNoxboxInProgress());
             return;
         }
 
+        int remainSecondToAccept = remainSecondToAccept(noxbox);
+        if(remainSecondToAccept < 1) {
+            removeCurrentNoxbox();
+            prepareForIteration();
+            return;
+        }
+
+        updateCurrentNoxbox(noxbox);
         if(timer != null) {
             timer.stop();
         }
         timer = new Timer() {
             @Override
             protected void timeout() {
-                if(tryGetNoxboxInProgress() == null || tryGetNoxboxInProgress().getTimeAccepted() == null) {
-                    cancelPing(pingMessage);
+                if(tryGetNotAcceptedNoxbox() != null) {
+                    cancelPing(noxbox);
                 }
             }
-        }.start(getResources().getInteger(R.integer.timer_in_seconds));
+        }.start(remainSecondToAccept);
 
-        for(Profile payer : pingMessage.getNoxbox().getPayers().values()) {
+        for(Profile payer : noxbox.getPayers().values()) {
             Position performerPosition = getCurrentPosition() != null ? getCurrentPosition() :
-                    pingMessage.getNoxbox().getPerformers().get(getProfile().getId()).getPosition();
+                    noxbox.getPerformers().get(getProfile().getId()).getPosition();
 
             drawPath(null, getProfile().setPosition(performerPosition),
-                    new Profile().setId(payer.getId()).setPosition(pingMessage.getNoxbox().getPosition()));
+                    new Profile().setId(payer.getId()).setPosition(noxbox.getPosition()));
         }
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -199,23 +211,22 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
             public void onClick(View v) {
                 acceptButton.setVisibility(View.INVISIBLE);
                 getProfile().getNoxboxesForPerformer().put(noxboxType().toString(),
-                        pingMessage.getNoxbox().setTimeAccepted(System.currentTimeMillis()));
+                        noxbox.setTimeAccepted(System.currentTimeMillis()));
                 updateProfile(new Profile().setNoxboxesForPerformer(getProfile().getNoxboxesForPerformer())
                         .setId(getProfile().getId()));
                 timer.stop();
                 goOffline();
                 cleanUpMap();
 
-                String estimation = tryGetNoxboxInProgress().getEstimationTime() != null ?
-                        tryGetNoxboxInProgress().getEstimationTime() : pingMessage.getEstimationTime();
+                String estimation = tryGetNoxboxInProgress().getEstimationTime();
 
                 Firebase.sendRequest(new Request()
                         .setType(RequestType.accept)
-                        .setPayer(pingMessage.getPayer().publicInfo())
+                        .setPayer(tryGetNoxboxInProgress().getPayers().values().iterator().next().publicInfo())
                         .setPerformer(getProfile().publicInfo())
                         .setEstimationTime(estimation)
-                        .setNoxbox(new Noxbox().setId(pingMessage.getNoxbox().getId())));
-                processNoxbox(pingMessage.getNoxbox());
+                        .setNoxbox(new Noxbox().setId(tryGetNoxboxInProgress().getId())));
+                processNoxbox(tryGetNoxboxInProgress());
             }
         });
         acceptButton.setVisibility(View.VISIBLE);
@@ -227,11 +238,18 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         completeButton.setVisibility(View.INVISIBLE);
     }
 
-    private void cancelPing(Message message) {
+    private int remainSecondToAccept(Noxbox noxbox) {
+        if(noxbox == null) return 0;
+        int allowedTimeForAccept = getResources().getInteger(R.integer.timer_in_seconds);
+        int secondsAfterRequestPassed = (int) ((System.currentTimeMillis() - noxbox.getTimeRequested()) / 1000);
+        return allowedTimeForAccept - secondsAfterRequestPassed;
+    }
+
+    private void cancelPing(Noxbox noxbox) {
         sendRequest(new Request().setType(RequestType.cancel)
                 .setPerformer(getProfile().publicInfo())
-                .setPayer(message.getPayer().publicInfo())
-                .setNoxbox(new Noxbox().setId(message.getNoxbox().getId()))
+                .setPayer(noxbox.getPayers().values().iterator().next().publicInfo())
+                .setNoxbox(new Noxbox().setId(noxbox.getId()))
                 .setReason("Canceled by performer"));
         prepareForIteration();
     }

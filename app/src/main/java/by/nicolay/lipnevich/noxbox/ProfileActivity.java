@@ -328,7 +328,8 @@ public abstract class ProfileActivity extends AuthActivity {
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                                                        finish();
+                                                        // TODO (nli) start activity for result
+                                                        login();
                                                     }
                                                 });
                                     }

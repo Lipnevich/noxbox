@@ -156,7 +156,7 @@ public abstract class MapActivity extends ProfileActivity implements
     public void onConnected(@Nullable Bundle bundle) {
         Position position = getCurrentPosition();
         if(position != null && googleMap != null && tryGetNoxboxInProgress() == null) {
-            googleMap.moveCamera(newLatLngZoom(getCurrentPosition().toLatLng(), 15));
+            googleMap.moveCamera(newLatLngZoom(position.toLatLng(), 15));
         }
         scaleMarkers();
     }

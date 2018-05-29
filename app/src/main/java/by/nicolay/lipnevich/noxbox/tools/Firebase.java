@@ -402,7 +402,6 @@ public class Firebase {
         return null;
     }
 
-    // TODO (nli) move all methods for it to current class
     public static GeoFire getAvailablePerformers() {
         return availablePerformers;
     }

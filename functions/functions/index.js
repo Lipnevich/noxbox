@@ -8,8 +8,11 @@ const http = require('request');
 
 exports.createWalletForNewUser = functions.database.ref('/profiles/{userId}').onCreate((snapshot, context) => {
     return wallet.create({'id' : context.params.userId}).then(
-           noxbox.createRating).then(
            noxbox.updateBalance).then(
+           noxbox.getRewardWallet).then(
+           wallet.tryToReward).then(
+           noxbox.updateTransferWallets).then(
+           noxbox.createRating).then(
            noxbox.notifyBalanceUpdated);
 });
 
@@ -27,8 +30,9 @@ exports.refund = functions.database.ref('/requests/{userID}/refund').onCreate(ev
            wallet.getBalance).then(
            noxbox.isEnoughMoneyForRefund).then(
            wallet.refund).then(
-           noxbox.updateBalance).then(
-           noxbox.notifyBalanceUpdated, noxbox.logError).then(
+           noxbox.updateTransferWallets).then(
+           noxbox.notifyBalanceUpdated).then(
+           noxbox.sendPushNotification, noxbox.logError).then(
            noxbox.releaseRequest);
 });
 
@@ -74,11 +78,10 @@ exports.complete = functions.database.ref('/requests/{userId}/complete').onCreat
            noxbox.notifyCompleted).then(
            noxbox.getPayerSeed).then(
            noxbox.getPerformerAddress).then(
-           // TODO (nli) send fee to the default label in the same time
            wallet.pay).then(
-           // TODO (nli) create fee in performers wallet
+           noxbox.updateTransferWallets).then(
+           // TODO (nli) send fee to the noxbox address
            noxbox.storePriceWithoutFeeInNoxbox).then(
-           noxbox.updatePayerBalance).then(
            noxbox.notifyPayerBalanceUpdated).then(
            noxbox.sendPushNotification).then(
            noxbox.likePerformer).then(

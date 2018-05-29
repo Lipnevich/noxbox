@@ -36,12 +36,14 @@ public class WalletPerformerPage extends AppCompatActivity {
 
         setContentView(R.layout.wallet_performer);
         setTitle(R.string.wallet);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         recalculateBalance();
 
         final EditText addressToSendEditor = findViewById(R.id.address_to_send_id);
-        if(getProfile().getAddressToRefund() != null) {
+        if(getProfile() != null && getProfile().getAddressToRefund() != null) {
             addressToSendEditor.setText(getProfile().getAddressToRefund());
         }
 
@@ -77,7 +79,7 @@ public class WalletPerformerPage extends AppCompatActivity {
     }
 
     private void refund(String address) {
-        if(TextUtils.isEmpty(address)) return;
+        if(TextUtils.isEmpty(address) || getProfile() == null) return;
 
         if(!address.equals(getProfile().getAddressToRefund())) {
             Firebase.updateProfile(getProfile().setAddressToRefund(address));

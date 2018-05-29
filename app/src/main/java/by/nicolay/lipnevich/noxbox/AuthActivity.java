@@ -16,16 +16,15 @@ package by.nicolay.lipnevich.noxbox;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Window;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
@@ -40,12 +39,10 @@ import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 import io.fabric.sdk.android.Fabric;
 
-import static java.util.Collections.singletonList;
-
 public abstract class AuthActivity extends AppCompatActivity {
 
-    private static final String TOS_URL =
-            "https://noxbox-150813.firebaseapp.com/TermsAndConditions.html";
+    private static final String TERMS_URL = "https://noxbox-150813.firebaseapp.com/TermsAndConditions.html";
+    private static final String PRIVACY_URL = "https://noxbox.io/NoxBoxPrivacyPolicy.pdf";
     private static final int SIGN_IN_REQUEST_CODE = 10110;
 
     @Override
@@ -65,14 +62,15 @@ public abstract class AuthActivity extends AppCompatActivity {
     }
 
     protected void login() {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Intent login = AuthUI.getInstance().createSignInIntentBuilder()
-                    .setTheme(R.style.NoActionBar)
+                    .setTheme(R.style.LoginTheme)
                     .setLogo(R.drawable.noxbox)
-                    .setAvailableProviders(singletonList(new GoogleBuilder().build()))
-                    .setTosUrl(TOS_URL)
+                    .setAvailableProviders(Arrays.asList(
+                            new AuthUI.IdpConfig.GoogleBuilder().build(),
+                            new AuthUI.IdpConfig.PhoneBuilder().build()))
+                    .setTosUrl(TERMS_URL)
+                    .setPrivacyPolicyUrl(PRIVACY_URL)
                     .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                     .build();
 
@@ -90,7 +88,6 @@ public abstract class AuthActivity extends AppCompatActivity {
                 Firebase.readPrice(readProfileTask);
             } else {
                 popup(getResources().getText(R.string.permissionRequired).toString());
-                finish();
             }
         }
     }

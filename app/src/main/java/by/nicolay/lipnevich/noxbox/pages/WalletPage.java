@@ -42,12 +42,14 @@ public class WalletPage extends AppCompatActivity {
 
         setContentView(R.layout.wallet);
         setTitle(R.string.wallet);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         recalculateBalance();
 
         final EditText addressToRefundEditor = findViewById(R.id.address_to_refund_id);
-        if(getProfile().getAddressToRefund() != null) {
+        if(getProfile() != null && getProfile().getAddressToRefund() != null) {
             addressToRefundEditor.setText(getProfile().getAddressToRefund());
         }
 
@@ -84,6 +86,7 @@ public class WalletPage extends AppCompatActivity {
 
     private void refund(String address) {
         if(TextUtils.isEmpty(address)) return;
+        if(getProfile() == null) return;
 
         if(!address.equals(getProfile().getAddressToRefund())) {
             Firebase.updateProfile(getProfile().setAddressToRefund(address));
@@ -95,6 +98,7 @@ public class WalletPage extends AppCompatActivity {
 
         Firebase.getWallet().setBalance("0");
 
+        recalculateBalance();
     }
 
     private void recalculateBalance() {
@@ -139,6 +143,8 @@ public class WalletPage extends AppCompatActivity {
                 if(getWallet().getAddress() == null) return;
 
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                if(clipboard == null) return;
+
                 clipboard.setPrimaryClip(ClipData.newPlainText("walletAddress", getWallet().getAddress()));
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.addressInClipBoard), Toast.LENGTH_SHORT).show();
             }

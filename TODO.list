@@ -1,18 +1,18 @@
-GDPR policies
-menu -> profile -> remove personal data
+Bugs
+start geo in app
+chat (and wallet) delete messages
+
+Monitoring
+performance monitoring
 
 UI
 application launching  -> background -> login -> rules -> agreemance -> map request
-color ratings
+ratings in color
 
-Secuirity
-face recognition for user profile
+Policy
+send personal data
+remove personal data in profile menu
+
+Security
+acceptance update photo
 check qr with double push
-
-Monitoring
-Performance Monitoring
-
-Bugs
-no push for request
-start geo in app
-char (and wallet) delete messages

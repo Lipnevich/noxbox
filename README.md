@@ -32,6 +32,10 @@ Before you start processing crypto transactions
    firebase deploy --only functions <br/>
 3. (optional) for improving data protection set your secret word<br/>
    firebase functions:config:set keys.seedpass="Your Secret Word For user's seed encryption"
+4. (optional) account with wallet for rewards
+   firebase functions:config:set keys.rewardaccout="NoxBox Admin Account"
+
+   const password = functions.config().keys.seedpass ? functions.config().keys.seedpass : 'Salt';
 
 Before you start use Google Maps
 1. activate Google Maps Android API and Google Maps Directions API

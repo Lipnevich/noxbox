@@ -29,7 +29,6 @@ import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.model.Message;
 import by.nicolay.lipnevich.noxbox.model.MessageType;
-import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.UserType;
 import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
 import by.nicolay.lipnevich.noxbox.payer.massage.R;
@@ -80,7 +79,7 @@ public class ChatPage extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(screen);
 
         TextView interlocutorName = findViewById(R.id.chat_opponent_name);
-        interlocutorName.setText(getInterlocutor().getName());
+        interlocutorName.setText(getInterlocutorName());
 
         Glide.with(getApplicationContext())
             .asBitmap()
@@ -226,11 +225,14 @@ public class ChatPage extends AppCompatActivity {
         return messages;
     }
 
-    private Profile getInterlocutor() {
+    private String getInterlocutorName() {
+        if(tryGetNoxboxInProgress() == null) {
+            return getResources().getString(R.string.chat);
+        }
         if(UserType.payer.equals(getUserType())) {
-            return tryGetNoxboxInProgress().getPerformers().values().iterator().next();
+            return tryGetNoxboxInProgress().getPerformers().values().iterator().next().getName();
         } else if (UserType.performer.equals(getUserType())) {
-            return tryGetNoxboxInProgress().getPayers().values().iterator().next();
+            return tryGetNoxboxInProgress().getPayers().values().iterator().next().getName();
         } else {
             throw new IllegalArgumentException("Unknown role");
         }

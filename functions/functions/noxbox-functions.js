@@ -3,24 +3,21 @@ const admin = require('firebase-admin');
 const BigDecimal = require('big.js');
 const Q = require('q');
 
+const rewardAccount = functions.config().keys.rewardaccount;
 const db = admin.database();
 
 exports.notifyBalanceUpdated = function (request) {
     var deferred = Q.defer();
 
-    if(request.id == "default") {
-        deferred.resolve(request);
-    } else {
-        let ref = db.ref('messages').child(request.id).child('balanceUpdated');
-        var messageId = ref.push().key;
-        ref.child(messageId).set({
-            'id' : messageId,
-            'type' : 'balanceUpdated',
-            'wallet' : { 'balance' : request.wallet.balance,
-                         'address' : request.wallet.address }
-        });
-        deferred.resolve(request);
-    }
+    let ref = db.ref('messages').child(request.id).child('balanceUpdated');
+    var messageId = ref.push().key;
+    ref.child(messageId).set({
+        'id' : messageId,
+        'type' : 'balanceUpdated',
+        'wallet' : { 'balance' : request.wallet.balance,
+                     'address' : request.wallet.address }
+    });
+    deferred.resolve(request);
 
     return deferred.promise;
 }
@@ -107,6 +104,27 @@ exports.getWallet = function (request) {
             deferred.resolve(request);
         }
     });
+
+    return deferred.promise;
+}
+
+exports.getRewardWallet = function (request) {
+    var deferred = Q.defer();
+
+    request.reward = {};
+    console.log('Reward account ' + rewardAccount);
+    if(!rewardAccount) {
+        deferred.resolve(request);
+    } else {
+        db.ref('profiles').child(rewardAccount).child('wallet').child('seed').once('value').then(function(snapshot) {
+            request.reward.payerId = rewardAccount;
+            request.reward.seed = snapshot.val();
+            if(!request.reward.seed) {
+                console.log('Reward account is not exists ' + rewardAccount);
+            }
+            deferred.resolve(request);
+        });
+    }
 
     return deferred.promise;
 }
@@ -216,28 +234,33 @@ exports.getPerformerProfile = function (request) {
     var deferred = Q.defer();
 
     db.ref('profiles').child(request.performer.id).once('value').then(function(snapshot) {
-        var performer = snapshot.val().profile;
-        var rating = snapshot.val().rating;
-        var notificationKeys = snapshot.val().notificationKeys;
+        if(!snapshot.val()) {
+            request.error = 'Performer does not exists ' + request.performer.id;
+            deferred.reject(request);
+        } else {
+            var performer = snapshot.val().profile;
+            var rating = snapshot.val().rating;
+            var notificationKeys = snapshot.val().notificationKeys;
 
-        request.performer = {
-            'id' : performer.id,
-            'name' : performer.name,
-            'position' : request.performer.position,
-            'travelMode' : performer.travelMode
-        };
+            request.performer = {
+                'id' : performer.id,
+                'name' : performer.name,
+                'position' : request.performer.position,
+                'travelMode' : performer.travelMode
+            };
 
-        if(notificationKeys && notificationKeys.performerAndroidKey) {
-            request.performerAndroidNotificationKey = notificationKeys.performerAndroidKey;
-        }
-        if(performer.photo) {
-            request.performer.photo = performer.photo;
-        }
-        if(rating) {
-            request.performer.rating = rating;
-        }
+            if(notificationKeys && notificationKeys.performerAndroidKey) {
+                request.performerAndroidNotificationKey = notificationKeys.performerAndroidKey;
+            }
+            if(performer.photo) {
+                request.performer.photo = performer.photo;
+            }
+            if(rating) {
+                request.performer.rating = rating;
+            }
 
-        deferred.resolve(request);
+            deferred.resolve(request);
+        }
     });
 
     return deferred.promise;
@@ -293,10 +316,7 @@ sendPush = function (request) {
     if(request.push && request.push.data && request.push.token) {
         if(request.wallet) {
             request.push.data.balance = request.wallet.balance;
-        }
-
-        if(request.wallet && request.wallet.previousBalance == request.wallet.balance) {
-            request.push.data.ignore = 'true';
+            request.push.data.previousBalance = request.wallet.previousBalance;
         }
 
         console.log(request.push.data);
@@ -308,7 +328,7 @@ sendPush = function (request) {
         }
 
         admin.messaging().send(message).then((response) => {
-            console.log('Successfully sent message:', response);
+            console.log('Successfully push:', response);
             deferred.resolve(request);
         }).catch((error) => {
             console.log('Error sending message:', error);
@@ -712,39 +732,81 @@ exports.logError = function (request) {
     return deferred.promise;
 }
 
-exports.updatePayerBalance = function (request) {
+exports.updateTransferWallets = function (request) {
+    return updatePayerBalance(request).then(updateReceiverBalance);
+}
+
+updatePayerBalance = function (request) {
     var deferred = Q.defer();
 
-    var payerId;
-    for(id in request.noxbox.payers) {
-        payerId = id;
+    if(!request.transfer.payerId) {
+        deferred.resolve(request);
+    } else {
+        // firebase can process transaction up to 25 times in case of issues with multi access,
+        // for the first time transaction processed with null instead of real value
+        db.ref('profiles').child(request.transfer.payerId).child('wallet').transaction(function(current) {
+            if(!current) {
+                return 0;
+            }
+
+            current.balance = '' + (new BigDecimal(current.balance || '0')
+                .minus(new BigDecimal(request.transfer.amount || '0')));
+            if(request.transfer.unfreeze) {
+                current.frozenMoney = '' + (new BigDecimal(current.frozenMoney || '0')
+                    .minus(new BigDecimal(request.transfer.amount || '0')));
+            }
+
+            if(request.transfer.payerId == request.id) {
+                request.wallet = current;
+            }
+            return current;
+        }, function(error, committed, snapshot) {
+            if (error || !committed) {
+                request.error = error;
+                deferred.reject(request);
+            } else {
+                deferred.resolve(request);
+            }
+        }, true);
     }
-    // firebase can process transaction up to 25 times in case of issues with multi access,
-    // for the first time transaction processed with null instead of real value
-    db.ref('profiles').child(payerId).child('wallet').transaction(function(current) {
-        if(!current) {
-            return 0;
-        }
-
-        current.balance = '' + (new BigDecimal(current.balance)
-            .minus(new BigDecimal(request.noxbox.price)));
-        current.frozenMoney = '' + (new BigDecimal(current.frozenMoney)
-            .minus(new BigDecimal(request.noxbox.price)));
-
-        request.wallet = current;
-        console.log('Balance was updated', current);
-        return current;
-    }, function(error, committed, snapshot) {
-        if (error || !committed) {
-            request.error = error;
-            deferred.reject(request);
-        } else {
-            deferred.resolve(request);
-        }
-    }, true);
 
     return deferred.promise;
 }
+
+updateReceiverBalance = function (request) {
+    var deferred = Q.defer();
+
+    if(!request.transfer.receiverId) {
+        deferred.resolve(request);
+    } else {
+        // firebase can process transaction up to 25 times in case of issues with multi access,
+        // for the first time transaction processed with null instead of real value
+        db.ref('profiles').child(request.transfer.receiverId).child('wallet').transaction(function(current) {
+            if(!current) {
+                return 0;
+            }
+
+            current.balance = '' + (new BigDecimal(current.balance || '0')
+                .add(new BigDecimal(request.transfer.amount || '0')));
+            current.frozenMoney = current.frozenMoney || '0';
+
+            if(request.transfer.receiverId == request.id) {
+                request.wallet = current;
+            }
+            return current;
+        }, function(error, committed, snapshot) {
+            if (error || !committed) {
+                request.error = error;
+                deferred.reject(request);
+            } else {
+                deferred.resolve(request);
+            }
+        }, true);
+    }
+
+    return deferred.promise;
+}
+
 
 exports.likePayer = function (request) {
     var deferred = Q.defer();

@@ -67,5 +67,7 @@
     <string name="qrPushBody">%s рад оказать Вам услугу</string>
     <string name="enterMessage">Введите сообщение...</string>
     <string name="addressInClipBoard">Адрес скопирован</string>
+    <string name="chat">Чат</string>
+    <string name="googleLogin">Войдите через аккаунт Google</string>
 
 </resources>
