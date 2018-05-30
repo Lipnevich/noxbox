@@ -44,7 +44,6 @@
     <string name="no">нет</string>
     <string name="yourBalance">Ваш баланс</string>
     <string name="frozenMoney">Временно заблокированные %s</string>
-    <string name="current_reward">Текущее вознаграждение за услугу %s</string>
     <string name="dislike">не нравится</string>
     <string name="dislikePrompt">Вы уверены что Вам не понравилась оказанная услуга?</string>
     <string name="send">Отправить</string>
@@ -68,6 +67,5 @@
     <string name="enterMessage">Введите сообщение...</string>
     <string name="addressInClipBoard">Адрес скопирован</string>
     <string name="chat">Чат</string>
-    <string name="googleLogin">Войдите через аккаунт Google</string>
 
 </resources>
