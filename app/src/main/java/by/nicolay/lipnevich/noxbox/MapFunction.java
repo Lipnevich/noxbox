@@ -52,16 +52,15 @@ import java.util.Map;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.Timer;
-import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 
-public abstract class MapActivity extends ProfileActivity implements
+public abstract class MapFunction extends ProfileFunction implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 
@@ -110,6 +109,7 @@ public abstract class MapActivity extends ProfileActivity implements
     }
 
     protected void visibleCurrentLocation(boolean visible) {
+        // TODO (nli) launch gps and ask permissions after button pressed only
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
@@ -208,7 +208,7 @@ public abstract class MapActivity extends ProfileActivity implements
         if(googleMap != null && googleMap.getCameraPosition() != null) {
             return (float) Math.pow(2, 22 - Math.max(googleMap.getCameraPosition().zoom, 11));
         } else {
-            return 128;
+            return 0;
         }
 
     }
@@ -222,34 +222,18 @@ public abstract class MapActivity extends ProfileActivity implements
 
     @Override public void onConnectionSuspended(int i) {}
 
-    protected void drawPathToNoxbox(Profile performer, final Noxbox noxbox) {
-        drawPath(noxbox.getId(), performer, new Profile().setId(noxbox.getId()).setPosition(noxbox.getPosition()));
-    }
-
-    protected void drawPathsToAllPerformers(final Noxbox noxbox) {
-        if(googleMap == null) {
-            new Timer() {
-                @Override
-                protected void timeout() {
-                    drawPathsToAllPerformers(noxbox);
-                }
-            }.start(1);
-            return;
-        }
-
-        for (Profile performer : noxbox.getPerformers().values()) {
-            drawPath(noxbox.getId(), performer, new Profile().setId(noxbox.getId()).setPosition(noxbox.getPosition()));
-        }
+    protected void drawPathToNoxbox(final Noxbox noxbox) {
+        drawPath(noxbox.getId(), noxbox.getPerformer(), new Profile().setId(noxbox.getId()).setPosition(noxbox.getPosition()));
     }
 
     protected void drawPath(final String noxboxId, final Profile performer, final Profile payer) {
         if(performer.getPosition() == null && noxboxId != null && tryGetNoxboxInProgress() != null) {
-            performer.setPosition(tryGetNoxboxInProgress()
-                    .getPerformers().get(performer.getId()).getPosition());
+            performer.setPosition(tryGetNoxboxInProgress().getPerformer().getPosition());
         }
 
-        draw(performer, getPerformerDrawable());
-        draw(payer, getPayerDrawable());
+        // TODO (nli) use icon for noxbox type
+        draw(performer, R.drawable.masseur);
+        draw(payer, R.drawable.pointer);
 
         AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>> asyncTask = new AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>>() {
             @Override
@@ -331,9 +315,9 @@ public abstract class MapActivity extends ProfileActivity implements
         }
     }
 
-    protected Profile chooseBestOptionPerformer() {
+    protected Noxbox chooseBestOptionPerformer() {
         int minEstimation = Integer.MAX_VALUE;
-        Profile performer = null;
+        Noxbox noxbox = null;
         // TODO (nli) hide performers from black list
         for (Map.Entry<String, GroundOverlay> marker : markers.entrySet()) {
             if(marker.getValue().getTag() == null) {
@@ -345,11 +329,13 @@ public abstract class MapActivity extends ProfileActivity implements
             if (estimation < minEstimation) {
                 minEstimation = estimation;
                 String performerId = marker.getKey();
-                performer = new Profile().setId(performerId).setEstimationTime("" + estimation)
-                        .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition()));
+                noxbox = new Noxbox().setEstimationTime("" + estimation)
+                        .setPosition(getCameraPosition())
+                        .setPayer(getProfile().publicInfo()).setPerformer(new Profile().setId(performerId)
+                        .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition())));
             }
         }
-        return performer;
+        return noxbox;
     }
 
     protected void cleanUpMap() {
@@ -417,8 +403,6 @@ public abstract class MapActivity extends ProfileActivity implements
         if(googleMap != null) {
             googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(7), dpToPx(70));
         }
-
     }
-
 
 }

@@ -5,21 +5,23 @@ package by.nicolay.lipnevich.noxbox.model;
  */
 public class NotificationKeys {
 
-    private String performerAndroidKey, payerAndroidKey;
+    private String android, ios;
 
-    public String getPayerAndroidKey() {
-        return payerAndroidKey;
+    public String getAndroid() {
+        return android;
     }
 
-    public void setPayerAndroidKey(String payerAndroidKey) {
-        this.payerAndroidKey = payerAndroidKey;
+    public NotificationKeys setAndroid(String android) {
+        this.android = android;
+        return this;
     }
 
-    public String getPerformerAndroidKey() {
-        return performerAndroidKey;
+    public String getIos() {
+        return ios;
     }
 
-    public void setPerformerAndroidKey(String performerAndroidKey) {
-        this.performerAndroidKey = performerAndroidKey;
+    public NotificationKeys setIos(String ios) {
+        this.ios = ios;
+        return this;
     }
 }

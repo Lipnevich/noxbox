@@ -1,24 +1,22 @@
 package by.nicolay.lipnevich.noxbox.model;
 
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.R;
 
 public enum NoxboxType {
 
-    // activities
-    massage(R.string.massage, R.drawable.masseur),
-    tirefitting(R.string.tirefitting, R.drawable.masseur);
+    massage(R.string.massage, R.drawable.masseur);
 
-    private int message;
+    private int name;
     private final int image;
 
-    NoxboxType(int message, int image) {
+    NoxboxType(int name, int image) {
 
-        this.message = message;
+        this.name = name;
         this.image = image;
     }
 
-    public int getMessage() {
-        return message;
+    public int getName() {
+        return name;
     }
 
     public int getImage() {

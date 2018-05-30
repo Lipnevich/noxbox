@@ -24,17 +24,12 @@ import android.widget.ImageView;
 import net.glxn.qrgen.android.QRCode;
 
 import java.math.BigDecimal;
-import java.util.SortedMap;
 
-import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.WalletPage;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
@@ -44,9 +39,8 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNotAcceptedNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
 
-public abstract class PayerActivity extends ChatActivity {
+public class PayerFunction extends PerformerFunction {
 
     private Button requestButton;
     private Button cancelButton;
@@ -64,8 +58,7 @@ public abstract class PayerActivity extends ChatActivity {
         public void onClick(final View v) {
             if(tryGetNoxboxInProgress() == null) return;
 
-            String secret = tryGetNoxboxInProgress().getPayers()
-                    .get(getProfile().getId()).getSecret();
+            String secret = tryGetNoxboxInProgress().getPayer().getSecret();
 
             final int size = 512;
             showQrCode.setImageBitmap(QRCode.from(secret).withSize(size, size).bitmap());
@@ -92,8 +85,6 @@ public abstract class PayerActivity extends ChatActivity {
         super.onCreate(savedInstanceState);
 
         pointerImage = findViewById(R.id.pointerImage);
-        pointerImage.setImageResource(getPayerDrawable());
-
         requestButton = findViewById(R.id.requestButton);
         showQrCode = findViewById(R.id.showQrCode);
         showQrCode.setOnClickListener(qrListener);
@@ -101,22 +92,18 @@ public abstract class PayerActivity extends ChatActivity {
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isEnoughMoney()) {
-                    startActivityForResult(new Intent(getApplicationContext(), WalletPage.class), WALLET.getCode());
-                    return;
-                }
-                final Profile bestOption = chooseBestOptionPerformer();
+                final Noxbox bestOption = chooseBestOptionPerformer();
                 if(bestOption != null) {
+                    if(!isEnoughMoney(bestOption.getPrice())) {
+                        startActivityForResult(new Intent(getApplicationContext(), WalletPage.class), WalletPage.CODE);
+                        return;
+                    }
+
                     requestButton.setVisibility(View.INVISIBLE);
                     pointerImage.setVisibility(View.INVISIBLE);
-                    drawPath(null, bestOption, getProfile().publicInfo().setPosition(getCameraPosition()));
+                    drawPath(null, bestOption.getPerformer(), getProfile().publicInfo().setPosition(getCameraPosition()));
 
-                    sendRequest(new Request()
-                        .setEstimationTime(bestOption.getEstimationTime())
-                        .setType(RequestType.request)
-                        .setPosition(getCameraPosition())
-                        .setPayer(getProfile().publicInfo())
-                        .setPerformer(new Profile().setId(bestOption.getId()).setPosition(bestOption.getPosition())));
+                    sendRequest(new Request().setType(EventType.request).setNoxbox(bestOption));
 
                     timer = new Timer() {
                         @Override
@@ -137,21 +124,17 @@ public abstract class PayerActivity extends ChatActivity {
     private void processTimeout() {
         Noxbox notAcceptedNoxbox = tryGetNotAcceptedNoxbox();
         if(notAcceptedNoxbox != null) {
-            Profile performer = notAcceptedNoxbox.getPerformers().values()
-                    .iterator().next().publicInfo();
             sendRequest(new Request()
-                    .setType(RequestType.cancel)
+                    .setType(EventType.payerCancel)
                     .setNoxbox(notAcceptedNoxbox)
-                    .setPayer(getProfile().publicInfo())
-                    .setPerformer(performer)
-                    .setReason("Canceled by timeout " + getProfile().getName()));
+                    .setMessage("Canceled by timeout " + getProfile().getName()));
         }
         removeCurrentNoxbox();
     }
 
-    private boolean isEnoughMoney() {
+    private boolean isEnoughMoney(String price) {
         return new BigDecimal(getWallet().getBalance())
-                .compareTo(Firebase.getPrice()) >= 0;
+                .compareTo(new BigDecimal(price)) >= 0;
     }
 
     public void prepareForIteration() {
@@ -178,7 +161,7 @@ public abstract class PayerActivity extends ChatActivity {
     }
 
     @Override
-    protected void processSync(Message sync) {
+    protected void processSync(Event sync) {
         updateCurrentNoxbox(sync.getNoxbox());
     }
 
@@ -186,23 +169,19 @@ public abstract class PayerActivity extends ChatActivity {
     public void processNoxbox(final Noxbox noxbox) {
         super.processNoxbox(noxbox);
         stopListenAvailablePerformers();
-        drawPathsToAllPerformers(noxbox);
+        drawPathToNoxbox(noxbox);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(PayerActivity.this, R.style.NoxboxAlertDialogStyle);
+                AlertDialog.Builder builder = new AlertDialog.Builder(PayerFunction.this, R.style.NoxboxAlertDialogStyle);
                 builder.setTitle(getResources().getString(R.string.cancelPrompt));
                 builder.setPositiveButton(getResources().getString(R.string.yes),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                sendRequest(new Request().setType(RequestType.cancel)
-                                        .setRole(userType())
-                                        .setPayer(getProfile().publicInfo())
-                                        .setPerformer(noxbox.getPerformers().values().iterator().next().publicInfo())
-                                        .setNoxbox(new Noxbox().setId(noxbox.getId()))
-                                        .setReason("Canceled by payer " + getProfile().getName()));
+                                sendRequest(new Request().setType(EventType.payerCancel)
+                                        .setNoxbox(noxbox));
                                 prepareForIteration();
                             }
                         });
@@ -218,39 +197,28 @@ public abstract class PayerActivity extends ChatActivity {
     }
 
     @Override
-    protected void processPong(Message pong) {
+    protected void processAccept(Event accept) {
         if(timer != null) {
             timer.stop();
         }
         cleanUpMap();
-        updateCurrentNoxbox(pong.getNoxbox());
-        processNoxbox(pong.getNoxbox());
+        updateCurrentNoxbox(accept.getNoxbox());
+        processNoxbox(accept.getNoxbox());
     }
 
-    protected void processGnop(Message gnop) {
+    protected void processPerformerCancel(Event cancel) {
         // TODO (nli) retry instead
         prepareForIteration();
     }
 
     @Override
-    protected void processMove(Message move) {
+    protected void processMove(Event move) {
         Noxbox noxbox = tryGetNoxboxInProgress();
         if(noxbox != null) {
-            noxbox.getPerformers().get(move.getSender().getId())
-                    .setPosition(move.getSender().getPosition());
+            noxbox.getMe(move.getSender().getId()).setPosition(move.getSender().getPosition());
             updateCurrentNoxbox(noxbox);
-            drawPathsToAllPerformers(noxbox);
+            drawPathToNoxbox(noxbox);
         }
     }
 
-    @Override
-    protected SortedMap<String, IntentAndKey> getMenu() {
-        SortedMap<String, IntentAndKey> menu = super.getMenu();
-
-        menu.put(getString(R.string.wallet), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), WalletPage.class))
-                .setKey(WALLET.getCode()));
-
-        return menu;
-    }
 }

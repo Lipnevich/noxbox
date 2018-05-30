@@ -5,9 +5,10 @@ admin.initializeApp(functions.config().firebase);
 const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
 const http = require('request');
+const requests = functions.database.ref('/requests/{userID}');
 
-exports.createWalletForNewUser = functions.database.ref('/profiles/{userId}').onCreate((snapshot, context) => {
-    return wallet.create({'id' : context.params.userId}).then(
+exports.welcome = functions.auth.user().onCreate((user) => {
+    return wallet.create({'id' : user.uid}).then(
            noxbox.updateBalance).then(
            noxbox.getRewardWallet).then(
            wallet.tryToReward).then(
@@ -16,7 +17,7 @@ exports.createWalletForNewUser = functions.database.ref('/profiles/{userId}').on
            noxbox.notifyBalanceUpdated);
 });
 
-exports.balance = functions.database.ref('/requests/{userID}/balance').onCreate(event => {
+exports.balance = requests.child('balance').onCreate(event => {
     return noxbox.getWallet(event.val()).then(
            wallet.getBalance).then(
            noxbox.updateBalance).then(
@@ -25,7 +26,7 @@ exports.balance = functions.database.ref('/requests/{userID}/balance').onCreate(
            noxbox.releaseRequest);
 });
 
-exports.refund = functions.database.ref('/requests/{userID}/refund').onCreate(event => {
+exports.refund = requests.child('refund').onCreate(event => {
     return noxbox.getWallet(event.val()).then(
            wallet.getBalance).then(
            noxbox.isEnoughMoneyForRefund).then(
@@ -36,7 +37,7 @@ exports.refund = functions.database.ref('/requests/{userID}/refund').onCreate(ev
            noxbox.releaseRequest);
 });
 
-exports.request = functions.database.ref('/requests/{userId}/request').onCreate(event => {
+exports.request = requests.child('request').onCreate(event => {
     return noxbox.getWallet(event.val()).then(
            wallet.getBalance).then(
            noxbox.getPrice).then(
@@ -52,7 +53,7 @@ exports.request = functions.database.ref('/requests/{userId}/request').onCreate(
            noxbox.releaseRequest);
 });
 
-exports.cancel = functions.database.ref('/requests/{userId}/cancel').onCreate(event => {
+exports.cancel = requests.child('cancel').onCreate(event => {
     return noxbox.cancelNoxbox(event.val()).then(
            noxbox.notifyCanceled).then(
            noxbox.sendPushNotification).then(
@@ -63,7 +64,7 @@ exports.cancel = functions.database.ref('/requests/{userId}/cancel').onCreate(ev
            noxbox.releaseRequest);
 });
 
-exports.accept = functions.database.ref('/requests/{userId}/accept').onCreate(event => {
+exports.accept = requests.child('accept').onCreate(event => {
     return noxbox.acceptNoxbox(event.val()).then(
            noxbox.generateSecret).then(
            noxbox.getPayerProfile).then(
@@ -72,8 +73,7 @@ exports.accept = functions.database.ref('/requests/{userId}/accept').onCreate(ev
            noxbox.releaseRequest);
 });
 
-exports.complete = functions.database.ref('/requests/{userId}/complete').onCreate(event => {
-    // TODO (nli) check if there is enough time from accepted to completed for performing one action
+exports.complete = requests.child('complete').onCreate(event => {
     return noxbox.completeNoxbox(event.val()).then(
            noxbox.notifyCompleted).then(
            noxbox.getPayerSeed).then(
@@ -89,16 +89,7 @@ exports.complete = functions.database.ref('/requests/{userId}/complete').onCreat
            noxbox.releaseRequest);
 });
 
-exports.moneyBack = functions.database.ref('/requests/{userId}/moneyBack').onCreate(event => {
-           // TODO (nli) update noxbox with moneyBackTime (one issue available)
-    return noxbox.moneyBackNoxbox(event.val()).then(
-           // TODO (nli) create issue
-           // TODO (nli) notify Money Back
-           noxbox.notifyMoneyBack, noxbox.logError).then(
-           noxbox.releaseRequest);
-});
-
-exports.story = functions.database.ref('/messages/{userId}/story/{messageId}/').onCreate(event => {
+exports.story = requests.child('story/{eventId}').onCreate(event => {
     return noxbox.sendPushNotification(event.val());
 });
 
@@ -108,7 +99,7 @@ exports.story = functions.database.ref('/messages/{userId}/story/{messageId}/').
 // TODO (nli) check voting results, money back in case of (votes > 10) and (moneyBack > 60%)
 // TODO (nli) in case of (votes > 24) and (no one side > 60%) dislike
 
-exports.dislike = functions.database.ref('/requests/{userId}/dislike').onCreate(event => {
+exports.dislike = requests.child('dislike').onCreate(event => {
     return noxbox.dislikeNoxbox(event.val()).then(
            noxbox.blacklist).then(
            noxbox.updateRatings).then(

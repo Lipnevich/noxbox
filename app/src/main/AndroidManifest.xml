@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="by.nicolay.lipnevich.noxbox.payer.massage">
+    package="by.nicolay.lipnevich.noxbox">
 
     <application
         android:label="@string/noxbox"
@@ -9,23 +9,20 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".Go"
+            android:name=".PayerFunction"
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="by.nicolay.lipnevich.noxbox.pages.MyCarPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"
                   android:theme="@style/NoActionBar"
                   android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.WalletPage"
                   android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name="by.nicolay.lipnevich.noxbox.pages.WalletPerformerPage"
-                  android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name="by.nicolay.lipnevich.noxbox.tools.QRCaptureActivity"
+        <activity android:name="by.nicolay.lipnevich.noxbox.pages.QRCapturePage"
             android:screenOrientation="portrait">
     </activity>
 

@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,127 +32,93 @@ import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Acceptance;
 import by.nicolay.lipnevich.noxbox.model.AllRates;
-import by.nicolay.lipnevich.noxbox.model.Message;
-import by.nicolay.lipnevich.noxbox.model.MessageType;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.NotificationKeys;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.UserAccount;
-import by.nicolay.lipnevich.noxbox.model.UserType;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
 
-import static by.nicolay.lipnevich.noxbox.tools.Numbers.scale;
 import static java.lang.reflect.Modifier.isStatic;
 import static java.util.Collections.sort;
 
 public class Firebase {
 
-    private static DatabaseReference profiles;
-    private static DatabaseReference messages;
-    private static DatabaseReference requests;
-    private static GeoFire availablePerformers;
-    private static UserAccount userAccount;
-    private static NoxboxType type;
-    private static UserType userType;
-    private static BigDecimal price;
-
-    public static boolean isOnline() {
-        return type != null && userAccount != null && profiles != null;
+    static {
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
-    public static void init(NoxboxType noxboxType, UserType userOfType) {
-        type = noxboxType;
-        userType = userOfType;
-        profiles = FirebaseDatabase.getInstance().getReference().child("profiles");
-        requests = FirebaseDatabase.getInstance().getReference().child("requests");
-        messages = FirebaseDatabase.getInstance().getReference().child("messages");
-        availablePerformers = new GeoFire(FirebaseDatabase.getInstance().getReference().child("availablePerformers").child(type.toString()));
+    private static DatabaseReference profiles() {
+        return db().child("profiles");
     }
 
-    public static UserType getUserType() {
-        return userType;
+    private static DatabaseReference events() {
+        return db().child("events");
     }
 
-    public static BigDecimal getPrice() {
-        return price;
+    private static DatabaseReference requests() {
+        return db().child("requests");
     }
 
-    public static void readPrice(final Task<BigDecimal> task) {
-        FirebaseDatabase.getInstance().getReference().child("prices").child(type.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    String value = dataSnapshot.getValue(String.class);
-                    price = scale(value);
-                }
-                if(task != null) {
-                    task.execute(price);
-                }
-            }
-            @Override public void onCancelled(DatabaseError databaseError) {}
-        });
+    private static GeoFire geo;
+    public static GeoFire geo() {
+        if(geo == null) geo = new GeoFire(db().child("geo"));
+        return geo;
     }
+
+    private static DatabaseReference db() {
+        return FirebaseDatabase.getInstance().getReference();
+    }
+
+    private static UserAccount user;
 
     public static void sendRequest(Request request) {
-        requests.child(getProfile().getId()).child(request.getType().toString())
+        requests().child(getProfile().getId()).child(request.getType().toString())
                 .setValue(objectToMap(request.setId(getProfile().getId())
-                        .setNoxboxType(type)
-                        .setRole(userType)
                         .setPush(MessagingService.generatePush(request))));
     }
 
-    // Messages API
-    public static Message sendMessage(String profileId, Message message) {
-        // messages move and story allowed only
-        String messageKey = messages.child(profileId).child(message.getType().name()).push().getKey();
-        messages.child(profileId).child(message.getType().name()).child(messageKey)
-                .updateChildren(objectToMap(message
-                .setId(messageKey)
+    // Events API
+    public static Event sendEvent(String recipientId, Event event) {
+        // events move and story allowed only
+        String eventKey = events().child(recipientId).child(event.getType().name()).push().getKey();
+        events().child(recipientId).child(event.getType().name()).child(eventKey)
+                .updateChildren(objectToMap(event
+                .setId(eventKey)
                 .setSender(getProfile().publicInfo())
                 .setTime(System.currentTimeMillis())
-                .setPush(MessagingService.generatePush(message, profileId, userType))));
-        return message;
+                .setPush(MessagingService.generatePush(event, recipientId))));
+        return event;
     }
 
-    public static Message sendMessageForNoxbox(Message message) {
-        Noxbox noxbox = currentNoxboxes().get(type.toString());
-        for(Profile payer : noxbox.getPayers().values()) {
-            if(!payer.getId().equals(getProfile().getId())) {
-                message = sendMessage(payer.getId(), message);
-            }
-        }
-        for(Profile performer : noxbox.getPerformers().values()) {
-            if(!performer.getId().equals(getProfile().getId())) {
-                message = sendMessage(performer.getId(), message);
-            }
-        }
-        // since it is only one message we need any one for local chat history
-        return message;
+    public static Event sendNoxboxEvent(Event event) {
+        event = sendEvent(tryGetNoxboxInProgress().getParty(getProfile().getId()).getId(), event);
+        return event;
     }
 
-    public static void addMessageToChat(Message message) {
+    public static void addMessageToChat(Event event) {
         Noxbox noxbox = tryGetNoxboxInProgress();
         if(noxbox != null) {
-            noxbox.getChat().put(message.getId(), message);
+            noxbox.getChat().put(event.getId(), event);
             updateCurrentNoxbox(noxbox);
         }
     }
 
-    private static ValueEventListener listenerAllMessages;
+    private static ValueEventListener listenerAllEvents;
 
-    public static void listenAllMessages(final Task<Message> task) {
-        listenerAllMessages = new ValueEventListener() {
+    public static void listenAllEvents(final Task<Event> task) {
+        listenerAllEvents = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    GenericTypeIndicator<Map<String, Map<String, Message>>> genericTypeIndicator
-                            = new GenericTypeIndicator<Map<String, Map<String, Message>>>() {};
-                    Map<String, Map<String, Message>> allMessages = dataSnapshot.getValue(genericTypeIndicator);
-                    for(Map.Entry<String, Map<String, Message>> typeMessages : allMessages.entrySet()) {
-                        MessageType type = MessageType.valueOf(typeMessages.getKey());
-                        processTypeMessages(type, typeMessages.getValue(), task);
+                    GenericTypeIndicator<Map<String, Map<String, Event>>> genericTypeIndicator
+                            = new GenericTypeIndicator<Map<String, Map<String, Event>>>() {};
+                    Map<String, Map<String, Event>> allEvents = dataSnapshot.getValue(genericTypeIndicator);
+                    for(Map.Entry<String, Map<String, Event>> typeEvents : allEvents.entrySet()) {
+                        EventType type = EventType.valueOf(typeEvents.getKey());
+                        processTypeEvents(type, typeEvents.getValue(), task);
                     }
                 }
             }
@@ -161,21 +126,21 @@ public class Firebase {
             @Override public void onCancelled(DatabaseError databaseError) {}
         };
 
-        messages.child(getProfile().getId()).addValueEventListener(listenerAllMessages);
+        events().child(getProfile().getId()).addValueEventListener(listenerAllEvents);
     }
 
-    public static void listenTypeMessages(final MessageType type, final Task<Message> task) {
-        if(listenerAllMessages != null) {
-            messages.child(getProfile().getId()).removeEventListener(listenerAllMessages);
+    public static void listenTypeEvents(final EventType type, final Task<Event> task) {
+        if(listenerAllEvents != null) {
+            events().child(getProfile().getId()).removeEventListener(listenerAllEvents);
         }
-        messages.child(getProfile().getId()).child(type.name()).addValueEventListener(new ValueEventListener() {
+        events().child(getProfile().getId()).child(type.name()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    GenericTypeIndicator<Map<String, Message>> genericTypeIndicator
-                            = new GenericTypeIndicator<Map<String, Message>>() {};
-                    Map<String, Message> typeMessages = dataSnapshot.getValue(genericTypeIndicator);
-                    processTypeMessages(type, typeMessages, task);
+                    GenericTypeIndicator<Map<String, Event>> genericTypeIndicator
+                            = new GenericTypeIndicator<Map<String, Event>>() {};
+                    Map<String, Event> typeEvents = dataSnapshot.getValue(genericTypeIndicator);
+                    processTypeEvents(type, typeEvents, task);
                 }
             }
 
@@ -183,69 +148,63 @@ public class Firebase {
         });
     }
 
-    private static void processTypeMessages(MessageType type, Map<String, Message> typeMessages, Task<Message> task) {
-        if(type == MessageType.move) {
-            LinkedList<Message> movements = new LinkedList<>(typeMessages.values());
+    private static void processTypeEvents(EventType type, Map<String, Event> typeEvents, Task<Event> task) {
+        if(type == EventType.move) {
+            LinkedList<Event> movements = new LinkedList<>(typeEvents.values());
             sort(movements);
-            Message lastMove = movements.getLast();
+            Event lastMove = movements.getLast();
             task.execute(lastMove);
-            removeMessages(type);
+            removeEvents(type);
         } else {
-            for (Message message : typeMessages.values()) {
-                task.execute(message);
-                removeMessage(message);
+            for (Event event : typeEvents.values()) {
+                task.execute(event);
+                removeEvent(event);
             }
         }
     }
 
-    private static void removeMessages(MessageType type) {
-        messages.child(getProfile().getId()).child(type.name()).removeValue();
+    private static void removeEvents(EventType type) {
+        events().child(getProfile().getId()).child(type.name()).removeValue();
     }
 
-    private static void removeMessage(Message message) {
-        messages.child(getProfile().getId()).child(message.getType().name())
-                .child(message.getId()).removeValue();
+    private static void removeEvent(Event event) {
+        events().child(getProfile().getId()).child(event.getType().name())
+                .child(event.getId()).removeValue();
     }
 
 
     // Noxboxes API
     private static DatabaseReference currentNoxboxReference() {
-        if(userType.equals(UserType.payer)) {
-            return profiles.child(getProfile().getId()).child("profile").child("noxboxesForPayer").child(type.toString());
-        } else if (userType.equals(UserType.performer)) {
-            return profiles.child(getProfile().getId()).child("profile").child("noxboxesForPerformer").child(type.toString());
-        }
-        throw new IllegalArgumentException("Unknown profile type");
-    }
-
-    private static Map<String, Noxbox> currentNoxboxes() {
-        if(userType.equals(UserType.payer)) {
-            return getProfile().getNoxboxesForPayer();
-        } else if (userType.equals(UserType.performer)) {
-            return getProfile().getNoxboxesForPerformer();
-        }
-        throw new IllegalArgumentException("Unknown profile type");
+        return profiles().child(getProfile().getId()).child("profile").child("current");
     }
 
     public static void updateCurrentNoxbox(Noxbox noxbox) {
         if(noxbox == null) return;
         currentNoxboxReference().updateChildren(objectToMap(noxbox));
-        currentNoxboxes().put(noxbox.getType().name(), noxbox);
+        getProfile().setCurrent(noxbox);
     }
 
     public static void removeCurrentNoxbox() {
         currentNoxboxReference().removeValue();
-        currentNoxboxes().remove(type.toString());
+        getProfile().setCurrent(null);
     }
 
     // History API
-    public static Noxbox createHistory(Noxbox noxbox) {
-        getHistoryReference().child(noxbox.getId()).updateChildren(objectToMap(noxbox));
+    public static Noxbox persistHistory() {
+        Noxbox current = tryGetNoxboxInProgress();
+        if(current == null) return null;
+
+        like();
+        return persistHistory(current.setTimeCompleted(System.currentTimeMillis()));
+    }
+
+    public static Noxbox persistHistory(Noxbox noxbox) {
+        history().child(noxbox.getId()).updateChildren(objectToMap(noxbox));
         return noxbox;
     }
 
     public static void loadHistory(final Task<Collection<Noxbox>> task) {
-        getHistoryReference().limitToLast(15).addListenerForSingleValueEvent(new ValueEventListener() {
+        history().limitToLast(15).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -260,38 +219,37 @@ public class Firebase {
         });
     }
 
-    private static DatabaseReference getHistoryReference() {
-        return profiles.child(getProfile().getId()).child(userType.name() + "History").child(type.toString());
+    private static DatabaseReference history() {
+        return profiles().child(getProfile().getId()).child("history");
     }
 
     private static final String defaultName = "Unnamed person";
 
     // Profiles API
     public static void readProfile(final Task<Profile> task) {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        profiles.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        profiles().child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    userAccount = snapshot.getValue(UserAccount.class);
+                    user = snapshot.getValue(UserAccount.class);
                     setDefaultValues();
-
                     refreshNotificationToken();
 
-                    if((user.getDisplayName() != null && !user.getDisplayName().equals(getProfile().getName()))) {
-                        getProfile().setName(user.getDisplayName());
+                    if((firebaseUser.getDisplayName() != null &&
+                            !firebaseUser.getDisplayName().equals(getProfile().getName()))) {
+                        getProfile().setName(firebaseUser.getDisplayName());
                         getProfile().getAcceptance().setCorrectNameProbability(1f);
                         updateProfile(getProfile());
                     }
-                    if((user.getPhotoUrl() != null && !user.getPhotoUrl().toString().equals(getProfile().getPhoto()))) {
-                        getProfile().setPhoto(user.getPhotoUrl().toString());
+                    if((firebaseUser.getPhotoUrl() != null && !firebaseUser.getPhotoUrl().toString().equals(getProfile().getPhoto()))) {
+                        getProfile().setPhoto(firebaseUser.getPhotoUrl().toString());
                         getProfile().getAcceptance().setExpired(true);
                         updateProfile(getProfile());
                     }
                 } else {
                     // create new profile
-                    userAccount = new UserAccount().setId(user.getUid())
-                            .setProfile(Profile.createFrom(user))
+                    user = new UserAccount().setId(firebaseUser.getUid())
+                            .setProfile(Profile.createFrom(firebaseUser))
                             .setRating(new AllRates())
                             .setWallet(new Wallet().setBalance("0"));
                     if(getProfile().getName() == null) {
@@ -307,10 +265,10 @@ public class Firebase {
 
     private static void setDefaultValues() {
         if(getWallet() == null) {
-            userAccount.setWallet(new Wallet().setBalance("0"));
+            user.setWallet(new Wallet().setBalance("0"));
         }
         if(getRating() == null) {
-            userAccount.setRating(new AllRates());
+            user.setRating(new AllRates());
         }
         if(getProfile().getAcceptance() == null) {
             getProfile().setAcceptance(new Acceptance(getProfile()));
@@ -318,36 +276,30 @@ public class Firebase {
         if(getProfile().getName() == null) {
             getProfile().setName(defaultName);
         }
-        if(userAccount.getNotificationKeys() == null) {
-            userAccount.setNotificationKeys(new NotificationKeys());
+        if(user.getNotificationKeys() == null) {
+            user.setNotificationKeys(new NotificationKeys());
         }
     }
 
     public static void refreshNotificationToken() {
         String notificationToken = FirebaseInstanceId.getInstance().getToken();
         if(notificationToken == null) return;
-
-        if(userType.equals(UserType.payer) &&
-                !notificationToken.equals(userAccount.getNotificationKeys().getPayerAndroidKey())) {
-            profiles.child(getProfile().getId()).child("notificationKeys")
-                    .child("payerAndroidKey").setValue(notificationToken);
-        } else if (userType.equals(UserType.performer) &&
-                !notificationToken.equals(userAccount.getNotificationKeys().getPerformerAndroidKey())) {
-            profiles.child(getProfile().getId()).child("notificationKeys")
-                    .child("performerAndroidKey").setValue(notificationToken);
+        if(!notificationToken.equals(user.getNotificationKeys().getAndroid())) {
+            profiles().child(getProfile().getId()).child("notificationKeys")
+                    .child("android").setValue(notificationToken);
         }
     }
 
     public static Profile getProfile() {
-        return userAccount == null ? null : userAccount.getProfile();
+        return user == null ? null : user.getProfile();
     }
 
     public static Wallet getWallet() {
-        return userAccount == null ? new Wallet() : userAccount.getWallet();
+        return user == null ? new Wallet() : user.getWallet();
     }
 
     public static void updateWallet(Wallet wallet) {
-        if(userAccount != null) {
+        if(user != null) {
             getWallet().setBalance(wallet.getBalance());
             getWallet().setAddress(wallet.getAddress());
             getWallet().setFrozenMoney(wallet.getFrozenMoney());
@@ -355,11 +307,11 @@ public class Firebase {
     }
 
     public static AllRates getRating() {
-        return userAccount == null ? new AllRates() : userAccount.getRating();
+        return user == null ? new AllRates() : user.getRating();
     }
 
     public static void updateProfile(Profile profile) {
-        profiles.child(profile.getId()).child("profile").updateChildren(objectToMap(profile));
+        profiles().child(profile.getId()).child("profile").updateChildren(objectToMap(profile));
     }
 
     // in case of null value - does not override value
@@ -385,25 +337,19 @@ public class Firebase {
     }
 
     public static Noxbox tryGetNoxboxInProgress() {
-        if(getProfile() != null && currentNoxboxes() != null
-                && currentNoxboxes().get(type.toString()) != null
-                && currentNoxboxes().get(type.toString()).getTimeAccepted() != null) {
-            return currentNoxboxes().get(type.toString());
+        if(getProfile() != null && getProfile().getCurrent() != null
+                && getProfile().getCurrent().getTimeAccepted() != null) {
+            return getProfile().getCurrent();
         }
         return null;
     }
 
     public static Noxbox tryGetNotAcceptedNoxbox() {
-        if(getProfile() != null && currentNoxboxes() != null
-                && currentNoxboxes().get(type.toString()) != null
-                && currentNoxboxes().get(type.toString()).getTimeAccepted() == null) {
-            return currentNoxboxes().get(type.toString());
+        if(getProfile() != null && getProfile().getCurrent() != null
+                && getProfile().getCurrent().getTimeAccepted() == null) {
+            return getProfile().getCurrent();
         }
         return null;
-    }
-
-    public static GeoFire getAvailablePerformers() {
-        return availablePerformers;
     }
 
     public static void like() {

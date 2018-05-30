@@ -13,25 +13,26 @@
  */
 package by.nicolay.lipnevich.noxbox.model;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Noxbox implements Comparable<Noxbox> {
 
     private String id;
-    private Map<String, Profile> performers = new HashMap<>();
-    private Map<String, Profile> payers = new HashMap<>();
-    private Map<String, Message> chat = new HashMap<>();
+    private Profile performer;
+    private Profile payer;
+    private Map<String, Event> chat = new HashMap<>();
 
     // Noxbox specific data
     private Long timeRequested;
     private Long timeCompleted;
     private Long timeAccepted;
     private Long timeCanceled;
+
     private Position position;
-    private Boolean rate;
     private String price;
-    private String priceWithoutFee;
     private NoxboxType type;
     private String estimationTime;
 
@@ -41,33 +42,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setId(String id) {
         this.id = id;
-        return this;
-    }
-
-    public Map<String, Profile> getPerformers() {
-        return performers;
-    }
-
-    public Noxbox setPerformers(Map<String, Profile> performers) {
-        this.performers = performers;
-        return this;
-    }
-
-    public Map<String, Profile> getPayers() {
-        return payers;
-    }
-
-    public Noxbox setPayers(Map<String, Profile> payers) {
-        this.payers = payers;
-        return this;
-    }
-
-    public String getEstimationTime() {
-        return estimationTime;
-    }
-
-    public Noxbox setEstimationTime(String estimationTime) {
-        this.estimationTime = estimationTime;
         return this;
     }
 
@@ -86,15 +60,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCompleted(Long timeCompleted) {
         this.timeCompleted = timeCompleted;
-        return this;
-    }
-
-    public Boolean getRate() {
-        return rate;
-    }
-
-    public Noxbox setRate(Boolean rate) {
-        this.rate = rate;
         return this;
     }
 
@@ -162,21 +127,51 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public String getPriceWithoutFee() {
-        return priceWithoutFee;
-    }
-
-    public Noxbox setPriceWithoutFee(String priceWithoutFee) {
-        this.priceWithoutFee = priceWithoutFee;
-        return this;
-    }
-
-    public Map<String, Message> getChat() {
+    public Map<String, Event> getChat() {
         return chat;
     }
 
-    public Noxbox setChat(Map<String, Message> chat) {
+    public Noxbox setChat(Map<String, Event> chat) {
         this.chat = chat;
+        return this;
+    }
+
+    public Profile getPerformer() {
+        return performer;
+    }
+
+    public Noxbox setPerformer(Profile performer) {
+        this.performer = performer;
+        return this;
+    }
+
+    public Profile getPayer() {
+        return payer;
+    }
+
+    public Noxbox setPayer(Profile payer) {
+        this.payer = payer;
+        return this;
+    }
+
+    @Exclude
+    public Profile getParty(String myId) {
+        if(performer.getId().equals(myId)) return payer;
+        else return performer;
+    }
+
+    @Exclude
+    public Profile getMe(String myId) {
+        if(performer.getId().equals(myId)) return performer;
+        else return payer;
+    }
+
+    public String getEstimationTime() {
+        return estimationTime;
+    }
+
+    public Noxbox setEstimationTime(String estimationTime) {
+        this.estimationTime = estimationTime;
         return this;
     }
 }

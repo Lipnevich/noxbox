@@ -58,25 +58,22 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import by.nicolay.lipnevich.noxbox.model.Acceptance;
-import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
+import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.model.RequestType;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
-import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.pages.WalletPage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
-import static by.nicolay.lipnevich.noxbox.tools.PageCodes.HISTORY;
-import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
 
-public abstract class ProfileActivity extends AuthActivity {
+public abstract class ProfileFunction extends AuthFunction {
 
     @Override
     protected void processProfile(Profile profile) {
@@ -91,7 +88,7 @@ public abstract class ProfileActivity extends AuthActivity {
         }
 
         if(new BigDecimal(Firebase.getWallet().getBalance()).compareTo(BigDecimal.ZERO) <= 0) {
-            Firebase.sendRequest(new Request().setType(RequestType.balance).setRole(userType()));
+            Firebase.sendRequest(new Request().setType(EventType.balance));
         }
 
         ImageView check = findViewById(R.id.check);
@@ -104,7 +101,7 @@ public abstract class ProfileActivity extends AuthActivity {
         check.setVisibility(View.VISIBLE);
 
 
-        listenMessages();
+        listenEvents();
     }
 
     private double MIN_RATE = 4.5;
@@ -142,11 +139,11 @@ public abstract class ProfileActivity extends AuthActivity {
         }
     }
 
-    protected void listenMessages() {
-        Firebase.listenAllMessages(new Task<Message>() {
+    protected void listenEvents() {
+        Firebase.listenAllEvents(new Task<Event>() {
             @Override
-            public void execute(Message message) {
-                processMessage(message);
+            public void execute(Event event) {
+                processEvent(event);
             }
         });
     }
@@ -316,7 +313,7 @@ public abstract class ProfileActivity extends AuthActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this,
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileFunction.this,
                                 R.style.NoxboxAlertDialogStyle);
                         builder.setTitle(getResources().getString(R.string.logoutPrompt));
                         builder.setPositiveButton(getResources().getString(R.string.logout),
@@ -324,7 +321,7 @@ public abstract class ProfileActivity extends AuthActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         AuthUI.getInstance()
-                                                .signOut(ProfileActivity.this)
+                                                .signOut(ProfileFunction.this)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
@@ -349,17 +346,17 @@ public abstract class ProfileActivity extends AuthActivity {
         TreeMap<String, IntentAndKey> menu = new TreeMap<>();
         menu.put(getString(R.string.history), new IntentAndKey()
                 .setIntent(new Intent(getApplicationContext(), HistoryPage.class))
-                .setKey(HISTORY.getCode()));
-//        map.put(getString(R.string.profile), new Intent(getApplicationContext(), ProfilePage.class));
-//        map.put(getString(R.string.help), new Intent(getApplicationContext(), MyCarPage.class));
-//        map.put(getString(R.string.settings), new Intent(getApplicationContext(), MyCarPage.class));
+                .setKey(HistoryPage.CODE));
+        menu.put(getString(R.string.wallet), new IntentAndKey()
+                .setIntent(new Intent(getApplicationContext(), WalletPage.class))
+                .setKey(WalletPage.CODE));
         return menu;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == WALLET.getCode() && Firebase.getProfile() != null) {
-            listenMessages();
+        if(requestCode == WalletPage.CODE && Firebase.getProfile() != null) {
+            listenEvents();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

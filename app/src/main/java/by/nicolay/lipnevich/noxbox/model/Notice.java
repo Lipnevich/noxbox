@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Notice {
 
-    private MessageType type;
+    private EventType type;
     private Integer id;
     private Boolean local = false;
     private String estimation, icon, name, message, price, balance, previousBalance;
@@ -17,7 +17,7 @@ public class Notice {
         if(data.get("type") == null) return new Notice();
 
         return new Notice()
-                .setType(MessageType.valueOf(data.get("type")))
+                .setType(EventType.valueOf(data.get("type")))
                 .setEstimation(data.get("estimation"))
                 .setIcon(data.get("icon"))
                 .setName(data.get("name"))
@@ -28,26 +28,26 @@ public class Notice {
                 .setPreviousBalance(data.get("previousBalance") != null ? data.get("previousBalance") : "0");
     }
 
-    public static Notice create(Message message) {
+    public static Notice create(Event event) {
         return new Notice()
-                .setType(message.getType())
-                .setEstimation(message.getEstimationTime())
-                .setIcon(message.getSender().getPhoto())
-                .setName(message.getSender().getName())
-                .setMessage(message.getStory())
+                .setType(event.getType())
+                .setEstimation(event.getEstimationTime())
+                .setIcon(event.getSender().getPhoto())
+                .setName(event.getSender().getName())
+                .setMessage(event.getMessage())
                 .setLocal(true);
     }
 
     public Boolean getIgnore() {
         return getType() == null ||
-                (getType() == MessageType.balanceUpdated && balance != null && balance.equals(previousBalance));
+                (getType() == EventType.balance && balance != null && balance.equals(previousBalance));
     }
 
-    public MessageType getType() {
+    public EventType getType() {
         return type;
     }
 
-    public Notice setType(MessageType type) {
+    public Notice setType(EventType type) {
         this.type = type;
         return this;
     }

@@ -6,8 +6,6 @@ import android.support.annotation.RequiresApi;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,7 +24,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class I18nizer {
+public class SiteI18nizer {
 
     public static void main(String[] args) throws IOException {
         Path path = Paths.get("functions/translations/template.html");

@@ -23,25 +23,20 @@ import com.crashlytics.android.core.CrashlyticsCore;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 
-import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.model.UserType;
-import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 import io.fabric.sdk.android.Fabric;
 
-public abstract class AuthActivity extends AppCompatActivity {
+public abstract class AuthFunction extends AppCompatActivity {
 
-    private static final String TERMS_URL = "https://noxbox-150813.firebaseapp.com/TermsAndConditions.html";
+    private static final String TERMS_URL = "https://noxbox.io/TermsAndConditions.html";
     private static final String PRIVACY_URL = "https://noxbox.io/NoxBoxPrivacyPolicy.pdf";
     private static final int SIGN_IN_REQUEST_CODE = 10110;
 
@@ -49,8 +44,6 @@ public abstract class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initCrashReporting();
-        Firebase.init(noxboxType(), userType());
-
         login();
     }
 
@@ -76,7 +69,7 @@ public abstract class AuthActivity extends AppCompatActivity {
 
             startActivityForResult(login, SIGN_IN_REQUEST_CODE);
         } else {
-            Firebase.readPrice(readProfileTask);
+            Firebase.readProfile(processProfileTask);
         }
     }
 
@@ -85,7 +78,7 @@ public abstract class AuthActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SIGN_IN_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                Firebase.readPrice(readProfileTask);
+                Firebase.readProfile(processProfileTask);
             } else {
                 popup(getResources().getText(R.string.permissionRequired).toString());
             }
@@ -99,25 +92,13 @@ public abstract class AuthActivity extends AppCompatActivity {
         }
     };
 
-    private final Task readProfileTask = new Task<BigDecimal>() {
-        @Override
-        public void execute(BigDecimal price) {
-            Firebase.readProfile(processProfileTask);
-        }
-    };
-
     protected void popup(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    protected abstract NoxboxType noxboxType();
-    protected abstract UserType userType();
-    protected abstract int getPerformerDrawable();
-    protected abstract int getPayerDrawable();
     protected abstract void processProfile(Profile profile);
     protected abstract void goOnline();
-    protected abstract void processMessage(Message message);
-
+    protected abstract void processEvent(Event event);
     protected abstract void processNoxbox(Noxbox noxbox);
     protected abstract void prepareForIteration();
     protected abstract Map<String, IntentAndKey> getMenu();

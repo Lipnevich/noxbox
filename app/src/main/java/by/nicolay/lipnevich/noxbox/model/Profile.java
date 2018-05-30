@@ -4,10 +4,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
-import by.nicolay.lipnevich.noxbox.tools.TravelMode;
 
 public class Profile implements Serializable {
 
@@ -17,15 +13,10 @@ public class Profile implements Serializable {
     private String addressToRefund, estimationTime;
     private Long timeDisliked;
     private TravelMode travelMode;
-
     private AllRates rating;
 
-    // performer
-    private Map<String, Noxbox> noxboxesForPerformer = new HashMap<>();
+    private Noxbox current;
     private Long arriveInSeconds;
-
-    // payer
-    private Map<String, Noxbox> noxboxesForPayer = new HashMap<>();
 
     public String getId() {
         return id;
@@ -74,30 +65,12 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public Map<String, Noxbox> getNoxboxesForPerformer() {
-        return noxboxesForPerformer;
-    }
-
-    public Profile setNoxboxesForPerformer(Map<String, Noxbox> noxboxesForPerformer) {
-        this.noxboxesForPerformer = noxboxesForPerformer;
-        return this;
-    }
-
     public Long getArriveInSeconds() {
         return arriveInSeconds;
     }
 
     public Profile setArriveInSeconds(Long arriveInSeconds) {
         this.arriveInSeconds = arriveInSeconds;
-        return this;
-    }
-
-    public Map<String, Noxbox> getNoxboxesForPayer() {
-        return noxboxesForPayer;
-    }
-
-    public Profile setNoxboxesForPayer(Map<String, Noxbox> noxboxesForPayer) {
-        this.noxboxesForPayer = noxboxesForPayer;
         return this;
     }
 
@@ -177,6 +150,15 @@ public class Profile implements Serializable {
 
     public Profile setAcceptance(Acceptance acceptance) {
         this.acceptance = acceptance;
+        return this;
+    }
+
+    public Noxbox getCurrent() {
+        return current;
+    }
+
+    public Profile setCurrent(Noxbox current) {
+        this.current = current;
         return this;
     }
 }

@@ -22,34 +22,22 @@ import android.widget.ImageView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.util.SortedMap;
-
-import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Position;
-import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.model.RequestType;
-import by.nicolay.lipnevich.noxbox.pages.WalletPerformerPage;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.pages.QRCapturePage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.IntentAndKey;
-import by.nicolay.lipnevich.noxbox.tools.QRCaptureActivity;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.createHistory;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.like;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.persistHistory;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNotAcceptedNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
-import static by.nicolay.lipnevich.noxbox.tools.PageCodes.WALLET;
-import static java.lang.System.currentTimeMillis;
 
-public abstract class PerformerActivity extends PerformerLocationActivity {
+public abstract class PerformerFunction extends PerformerLocationFunction {
 
     private Button completeButton;
     private Button goOnlineButton;
@@ -86,10 +74,10 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         scanQr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                new IntentIntegrator(PerformerActivity.this)
+                new IntentIntegrator(PerformerFunction.this)
                         .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
                         .setOrientationLocked(false)
-                        .setCaptureActivity(QRCaptureActivity.class)
+                        .setCaptureActivity(QRCapturePage.class)
                         .initiateScan();
             }
         });
@@ -102,7 +90,7 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
                 popup("Failed to recognize qr code, please try again");
             } else {
                 // TODO (nli) check is it correct it on server, process responce, update current Noxbox
-                tryGetNoxboxInProgress().getPayers().values().iterator().next().setSecret(result.getContents());
+                tryGetNoxboxInProgress().getPayer().setSecret(result.getContents());
                 scanQr.setVisibility(View.INVISIBLE);
                 updateCurrentNoxbox(tryGetNoxboxInProgress());
                 completeButton.setEnabled(isQrRecognized());
@@ -121,9 +109,9 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     protected void prepareForIteration() {
         super.prepareForIteration();
 
-        Noxbox notAcceptednoxbox = tryGetNotAcceptedNoxbox();
-        if(notAcceptednoxbox != null) {
-            processRequest(notAcceptednoxbox);
+        Noxbox notAcceptedNoxbox = tryGetNotAcceptedNoxbox();
+        if(notAcceptedNoxbox != null) {
+            processRequest(notAcceptedNoxbox);
             return;
         }
 
@@ -141,20 +129,16 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
             @Override
             public void onClick(View v) {
                 completeButton.setVisibility(View.INVISIBLE);
-
                 sendRequest(new Request()
-                        .setType(RequestType.complete)
-                        .setPayer(tryGetNoxboxInProgress().getPayers().values().iterator().next().publicInfo())
-                        .setPerformer(getProfile().publicInfo())
-                        .setNoxbox(new Noxbox().setPrice(tryGetNoxboxInProgress().getPrice())
-                                .setId(noxbox.getId())));
-                like();
-                createHistory(tryGetNoxboxInProgress().setTimeCompleted(currentTimeMillis()));
+                        .setType(EventType.complete)
+                        .setNoxbox(noxbox));
+                persistHistory();
                 prepareForIteration();
             }
         });
 
-        drawPathToNoxbox(getProfile().setPosition(getCurrentPosition()), noxbox);
+        noxbox.getPerformer().setPosition(getCurrentPosition());
+        drawPathToNoxbox(noxbox);
 
         completeButton.setVisibility(View.VISIBLE);
         completeButton.setEnabled(isQrRecognized());
@@ -167,14 +151,14 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         goOnlineButton.setVisibility(View.INVISIBLE);
     }
 
-    protected void processPing(final Message pingMessage) {
-        pingMessage.getNoxbox().setEstimationTime(pingMessage.getEstimationTime());
-        processRequest(pingMessage.getNoxbox());
+    protected void processRequest(final Event request) {
+        request.getNoxbox().setEstimationTime(request.getEstimationTime());
+        processRequest(request.getNoxbox());
     }
 
     protected void processRequest(final Noxbox noxbox) {
         if(tryGetNoxboxInProgress() != null) {
-            cancelPing(tryGetNoxboxInProgress());
+            cancelRequest(tryGetNoxboxInProgress());
             return;
         }
 
@@ -193,40 +177,26 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
             @Override
             protected void timeout() {
                 if(tryGetNotAcceptedNoxbox() != null) {
-                    cancelPing(noxbox);
+                    cancelRequest(noxbox);
                 }
             }
         }.start(remainSecondToAccept);
 
-        for(Profile payer : noxbox.getPayers().values()) {
-            Position performerPosition = getCurrentPosition() != null ? getCurrentPosition() :
-                    noxbox.getPerformers().get(getProfile().getId()).getPosition();
-
-            drawPath(null, getProfile().setPosition(performerPosition),
-                    new Profile().setId(payer.getId()).setPosition(noxbox.getPosition()));
-        }
+        drawPathToNoxbox(noxbox);
 
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 acceptButton.setVisibility(View.INVISIBLE);
-                getProfile().getNoxboxesForPerformer().put(noxboxType().toString(),
-                        noxbox.setTimeAccepted(System.currentTimeMillis()));
-                updateProfile(new Profile().setNoxboxesForPerformer(getProfile().getNoxboxesForPerformer())
-                        .setId(getProfile().getId()));
+                updateCurrentNoxbox(noxbox.setTimeAccepted(System.currentTimeMillis()));
                 timer.stop();
                 goOffline();
                 cleanUpMap();
 
-                String estimation = tryGetNoxboxInProgress().getEstimationTime();
-
                 Firebase.sendRequest(new Request()
-                        .setType(RequestType.accept)
-                        .setPayer(tryGetNoxboxInProgress().getPayers().values().iterator().next().publicInfo())
-                        .setPerformer(getProfile().publicInfo())
-                        .setEstimationTime(estimation)
-                        .setNoxbox(new Noxbox().setId(tryGetNoxboxInProgress().getId())));
-                processNoxbox(tryGetNoxboxInProgress());
+                        .setType(EventType.accept)
+                        .setNoxbox(noxbox));
+                processNoxbox(noxbox);
             }
         });
         acceptButton.setVisibility(View.VISIBLE);
@@ -245,12 +215,9 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
         return allowedTimeForAccept - secondsAfterRequestPassed;
     }
 
-    private void cancelPing(Noxbox noxbox) {
-        sendRequest(new Request().setType(RequestType.cancel)
-                .setPerformer(getProfile().publicInfo())
-                .setPayer(noxbox.getPayers().values().iterator().next().publicInfo())
-                .setNoxbox(new Noxbox().setId(noxbox.getId()))
-                .setReason("Canceled by performer"));
+    private void cancelRequest(Noxbox noxbox) {
+        sendRequest(new Request().setType(EventType.performerCancel)
+                .setNoxbox(noxbox));
         prepareForIteration();
     }
 
@@ -281,19 +248,8 @@ public abstract class PerformerActivity extends PerformerLocationActivity {
     }
 
     @Override
-    protected void processGnop(Message gnop) {
+    protected void processPerformerCancel(Event performerCancel) {
         prepareForIteration();
-    }
-
-    @Override
-    protected SortedMap<String, IntentAndKey> getMenu() {
-        SortedMap<String, IntentAndKey> menu = super.getMenu();
-
-        menu.put(getString(R.string.wallet), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), WalletPerformerPage.class))
-                .setKey(WALLET.getCode()));
-
-        return menu;
     }
 
 }

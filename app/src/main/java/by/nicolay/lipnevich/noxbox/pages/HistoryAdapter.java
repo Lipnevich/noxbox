@@ -21,17 +21,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.model.RequestType;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
+import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
+import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.time;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static java.lang.System.currentTimeMillis;
 
@@ -71,23 +70,20 @@ public class HistoryAdapter extends BaseAdapter {
         final View view = convertView != null ? convertView : inflater.inflate(R.layout.history_item, parent, false);
 
         final Noxbox noxbox = (Noxbox) getItem(position);
-        if(noxbox.getRate() == null) noxbox.setRate(true);
 
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(noxbox.getTimeCompleted()));
-        String time = new SimpleDateFormat("HH:mm").format(new Date(noxbox.getTimeCompleted()));
-        ((TextView) view.findViewById(R.id.dateText)).setText(date);
-        ((TextView) view.findViewById(R.id.timeText)).setText(time);
+        ((TextView) view.findViewById(R.id.dateText)).setText(date(noxbox.getTimeCompleted()));
+        ((TextView) view.findViewById(R.id.timeText)).setText(time(noxbox.getTimeCompleted()));
         ((TextView) view.findViewById(R.id.priceText)).setText(noxbox.getPrice());
-        ((TextView) view.findViewById(R.id.performerName)).setText(getOppositeProfile(noxbox).getName());
+        ((TextView) view.findViewById(R.id.performerName)).setText(noxbox.getParty(getProfile().getId()).getName());
 
-        MapView mapView = (MapView) view.findViewById(R.id.map);
+        // TODO (nli) remove map from list, replace with address link to map
+        MapView mapView = view.findViewById(R.id.map);
         mapView.onCreate(null);
         mapView.onResume();
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 MapsInitializer.initialize(view.getContext());
-
                 GroundOverlayOptions newarkMap = new GroundOverlayOptions()
                         .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
                         .position(noxbox.getPosition().toLatLng(), 48, 48)
@@ -101,14 +97,14 @@ public class HistoryAdapter extends BaseAdapter {
         });
 
         Glide.with(view.getContext())
-                .load(getOppositeProfile(noxbox).getPhoto())
+                .load(noxbox.getParty(getProfile().getId()).getPhoto())
                 .apply(RequestOptions.circleCropTransform())
                 .into((ImageView) view.findViewById(R.id.performerImage));
 
         boolean isLiked = isLiked(noxbox);
 
-        final ImageView rateBox = (ImageView) view.findViewById(R.id.rateBox);
-        showLike(rateBox, isLiked);
+        final ImageView rateBox = view.findViewById(R.id.rateBox);
+        showRating(rateBox, isLiked);
         if(isLiked) {
             rateBox.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -120,10 +116,8 @@ public class HistoryAdapter extends BaseAdapter {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     v.setOnClickListener(null);
-                                    showLike((ImageView) v, false);
-                                    Firebase.sendRequest(new Request().setType(RequestType.dislike)
-                                            .setNoxbox(new Noxbox().setId(noxbox.getId())));
-                                    Firebase.createHistory(dislike(noxbox));
+                                    showRating((ImageView) v, false);
+                                    dislike(noxbox);
                                 }
                             });
                     builder.setNegativeButton(android.R.string.cancel, null);
@@ -134,50 +128,20 @@ public class HistoryAdapter extends BaseAdapter {
         return view;
     }
 
-    private Profile getOppositeProfile(Noxbox noxbox) {
-        if(noxbox.getPerformers().get(getProfile().getId()) != null) {
-            return noxbox.getPayers().values().iterator().next();
-        } else {
-            return noxbox.getPerformers().values().iterator().next();
-        }
-    }
-
     private boolean isLiked(Noxbox noxbox) {
-        for(Profile payer : noxbox.getPayers().values()) {
-            if(payer.getId().equals(getProfile().getId()) &&
-                    payer.getTimeDisliked() != null) {
-                return false;
-            }
-        }
-
-        for(Profile performer : noxbox.getPerformers().values()) {
-            if(performer.getId().equals(getProfile().getId()) &&
-                    performer.getTimeDisliked() != null) {
-                return false;
-            }
-        }
-
-        return true;
+        return noxbox.getParty(getProfile().getId()).getTimeDisliked() == null;
     }
 
 
-    private Noxbox dislike(Noxbox noxbox) {
-        Profile payer = noxbox.getPayers().get(getProfile().getId());
-        if(payer != null) {
-            payer.setTimeDisliked(currentTimeMillis());
-            return noxbox;
-        }
+    private void dislike(Noxbox noxbox) {
+        Firebase.sendRequest(new Request().setType(EventType.dislike)
+                .setNoxbox(new Noxbox().setId(noxbox.getId())));
 
-        Profile performer = noxbox.getPerformers().get(getProfile().getId());
-        if(performer != null) {
-            performer.setTimeDisliked(currentTimeMillis());
-            return noxbox;
-        }
-
-        return noxbox;
+        noxbox.getParty(getProfile().getId()).setTimeDisliked(currentTimeMillis());
+        Firebase.persistHistory(noxbox);
     }
 
-    private void showLike(ImageView view, boolean isLiked) {
+    private void showRating(ImageView view, boolean isLiked) {
         if(isLiked) {
             view.setImageResource(R.drawable.like);
         } else {

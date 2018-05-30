@@ -5,8 +5,8 @@
     <string name="completeText">Complete</string>
     <string name="ratingTitle">Rate</string>
     <string name="requestText">Request</string>
-    <string name="pingPushTitle">Request incoming</string>
-    <string name="pingPushBody">%s is requesting you. Estimation %s minutes</string>
+    <string name="requestPushTitle">Request incoming</string>
+    <string name="requestPushBody">%s is requesting you. Estimation %s minutes</string>
     <string name="goOnlineText">Go online</string>
     <string name="acceptText">Accept</string>
     <string name="goOfflineText">Go Offline</string>
@@ -46,19 +46,18 @@
     <string name="no">no</string>
     <string name="yourBalance">Your balance</string>
     <string name="frozenMoney">Temporarily blocked %s</string>
-    <string name="current_reward">Current reward for service %s</string>
     <string name="dislike">dislike</string>
     <string name="dislikePrompt">Are you sure you want to dislike?</string>
     <string name="send">Send</string>
     <string name="sendPrompt">Are you sure you want to send your money?</string>
     <string name="logout">Logout</string>
     <string name="logoutPrompt">Are you sure you want to logout?</string>
-    <string name="pongPushTitle">Request accepted</string>
-    <string name="pongPushBody">%s will arrive in %s minutes</string>
-    <string name="gnopPushTitle">Request declined</string>
-    <string name="gnopPushBody">Please try to request again</string>
-    <string name="cancelPushTitle">Request canceled</string>
-    <string name="cancelPushBody">New request will be provided soon</string>
+    <string name="acceptPushTitle">Request accepted</string>
+    <string name="acceptPushBody">%s will arrive in %s minutes</string>
+    <string name="performerCancelPushTitle">Request declined</string>
+    <string name="performerCancelPushBody">Please try to request again</string>
+    <string name="payerCancelPushTitle">Request canceled</string>
+    <string name="payerCancelPushBody">New request will be provided soon</string>
     <string name="completePushTitle">Payment done</string>
     <string name="completePushBody">%s %s was transfered to performer</string>
     <string name="balancePushBody">Your balance is %s %s</string>
@@ -68,5 +67,4 @@
     <string name="enterMessage">Type a message...</string>
     <string name="addressInClipBoard">Address copied to clipboard</string>
     <string name="chat">Chat</string>
-    <string name="googleLogin">Sign in with Google</string>
 </resources>

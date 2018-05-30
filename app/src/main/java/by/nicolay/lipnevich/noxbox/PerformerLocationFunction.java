@@ -21,17 +21,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 
-import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.Event;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
-import static by.nicolay.lipnevich.noxbox.model.MessageType.move;
+import static by.nicolay.lipnevich.noxbox.model.EventType.move;
 import static by.nicolay.lipnevich.noxbox.model.Position.from;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForNoxbox;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendNoxboxEvent;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 
-public abstract class PerformerLocationActivity extends ChatActivity {
+public abstract class PerformerLocationFunction extends ChatFunction {
 
     private LocationListener locationListener = new LocationListener() {
         @Override
@@ -40,9 +40,9 @@ public abstract class PerformerLocationActivity extends ChatActivity {
 
             Noxbox noxbox = tryGetNoxboxInProgress();
             if(noxbox != null) {
-                noxbox.getPerformers().put(getProfile().getId(), getProfile().publicInfo());
+                noxbox.setPerformer(getProfile().publicInfo());
                 Firebase.updateCurrentNoxbox(noxbox);
-                sendMessageForNoxbox(new Message().setType(move));
+                sendNoxboxEvent(new Event().setType(move));
             }
         }
 

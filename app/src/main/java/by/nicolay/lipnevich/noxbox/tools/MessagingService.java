@@ -12,7 +12,6 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
-import android.widget.RemoteViews;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -28,22 +27,20 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
-import by.nicolay.lipnevich.noxbox.model.Message;
-import by.nicolay.lipnevich.noxbox.model.MessageType;
+import by.nicolay.lipnevich.noxbox.BuildConfig;
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Notice;
 import by.nicolay.lipnevich.noxbox.model.Push;
-import by.nicolay.lipnevich.noxbox.model.PushData;
 import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.model.UserType;
 import by.nicolay.lipnevich.noxbox.pages.ChatPage;
-import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
-import static by.nicolay.lipnevich.noxbox.model.MessageType.balanceUpdated;
-import static by.nicolay.lipnevich.noxbox.model.MessageType.ping;
-import static by.nicolay.lipnevich.noxbox.model.MessageType.story;
+import static by.nicolay.lipnevich.noxbox.model.EventType.balance;
+import static by.nicolay.lipnevich.noxbox.model.EventType.request;
+import static by.nicolay.lipnevich.noxbox.model.EventType.story;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 
 /**
@@ -52,7 +49,7 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 
 public class MessagingService extends FirebaseMessagingService {
 
-    private final String channelId = "channel_id";
+    private final String channelId = "noxbox_channel";
     private Context context;
 
     public MessagingService() {
@@ -94,28 +91,28 @@ public class MessagingService extends FirebaseMessagingService {
         return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    private int getId(MessageType type) {
+    private int getId(EventType type) {
         switch (type) {
-            case ping:
+            case request:
             case move:
-            case pong:
-            case gnop:
-            case cancel:
+            case accept:
+            case performerCancel:
+            case payerCancel:
             case qr:
             case complete: return 1;
-            case balanceUpdated: return 2;
+            case balance: return 2;
             case story: return 9;
             default: return 0;
         }
     }
 
-    private void cancelOtherNotifications(MessageType type) {
-        HashSet<MessageType> cancelOther = new HashSet<>(Arrays.asList(
-                MessageType.ping,
-                MessageType.pong,
-                MessageType.gnop,
-                MessageType.cancel,
-                MessageType.complete));
+    private void cancelOtherNotifications(EventType type) {
+        HashSet<EventType> cancelOther = new HashSet<>(Arrays.asList(
+                EventType.request,
+                EventType.accept,
+                EventType.performerCancel,
+                EventType.payerCancel,
+                EventType.complete));
 
         if(cancelOther.contains(type)) {
             getNotificationService().cancelAll();
@@ -126,16 +123,12 @@ public class MessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getNotificationService()
                     .createNotificationChannel(new NotificationChannel(channelId,
-                            "Channel title",
+                            "Noxbox channel",
                             NotificationManager.IMPORTANCE_DEFAULT));
         }
     }
 
     private void notify(final Notice notice) {
-        final RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.push);
-        view.setTextViewText(R.id.title, getTitle(notice));
-        view.setTextViewText(R.id.text, getContent(notice));
-
         final Builder builder = new Builder(context, channelId)
                 .setVibrate(new long[] { 100, 500, 200, 100, 100 })
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -151,8 +144,6 @@ public class MessagingService extends FirebaseMessagingService {
             @Override
             public void execute(Bitmap icon) {
                 builder.setLargeIcon(icon);
-                view.setImageViewBitmap(R.id.image, icon);
-//                builder.setContent(view);
                 getNotificationService().notify(getId(notice.getType()), builder.build());
             }
         };
@@ -166,7 +157,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private PendingIntent getIntent(Notice notice) {
             if(notice.getType() == story && tryGetNoxboxInProgress() != null) {
-                return PendingIntent.getActivity(context, PageCodes.CHAT.getCode(),
+                return PendingIntent.getActivity(context, ChatPage.CODE,
                         new Intent(context, ChatPage.class),
                         PendingIntent.FLAG_UPDATE_CURRENT);
             }
@@ -178,15 +169,15 @@ public class MessagingService extends FirebaseMessagingService {
     private String getContent(Notice notice) {
         String cryptoCurrency = context.getResources().getString(R.string.crypto_currency);
         switch (notice.getType()) {
-            case ping: return format(R.string.pingPushBody, notice.getName(), notice.getEstimation());
+            case request: return format(R.string.requestPushBody, notice.getName(), notice.getEstimation());
             case move:
-            case pong: return format(R.string.pongPushBody, notice.getName(), notice.getEstimation());
-            case gnop: return format(R.string.gnopPushBody);
-            case cancel: return format(R.string.cancelPushBody);
+            case accept: return format(R.string.acceptPushBody, notice.getName(), notice.getEstimation());
+            case performerCancel: return format(R.string.performerCancelPushBody);
+            case payerCancel: return format(R.string.payerCancelPushBody);
             case qr: return format(R.string.qrPushBody, notice.getName());
             case story: return notice.getMessage();
             case complete: return format(R.string.completePushBody, notice.getPrice(), cryptoCurrency);
-            case balanceUpdated: return format(R.string.balancePushBody, notice.getBalance(), cryptoCurrency);
+            case balance: return format(R.string.balancePushBody, notice.getBalance(), cryptoCurrency);
             default: return "Glad to serve you!";
         }
     }
@@ -197,26 +188,26 @@ public class MessagingService extends FirebaseMessagingService {
     
     private CharSequence getTitle(Notice notice) {
         switch (notice.getType()) {
-            case ping: return format(R.string.pingPushTitle);
+            case request: return format(R.string.requestPushTitle);
             case move:
-            case pong: return format(R.string.pongPushTitle);
-            case gnop: return format(R.string.gnopPushTitle);
-            case cancel: return format(R.string.cancelPushTitle);
+            case accept: return format(R.string.acceptPushTitle);
+            case performerCancel: return format(R.string.performerCancelPushTitle);
+            case payerCancel: return format(R.string.payerCancelPushTitle);
             case qr: return format(R.string.qrPushTitle);
             case story: return notice.getName();
             case complete: return format(R.string.completePushTitle);
-            case balanceUpdated: return format(R.string.balancePushTitle);
-            default: return "Noxbox";
+            case balance: return format(R.string.balancePushTitle);
+            default: return format(R.string.noxbox);
         }    
     }
 
-    private boolean isAlertOnce(MessageType type) {
-        return type != MessageType.balanceUpdated && type != story;
+    private boolean isAlertOnce(EventType type) {
+        return type != EventType.balance && type != story;
     }
 
     private Bitmap loadIcon(Notice notice) {
         try {
-            if(notice.getType() == balanceUpdated) {
+            if(notice.getType() == balance) {
                 return Glide.with(context).asBitmap().load(R.drawable.noxbox)
                         .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                         .submit().get();
@@ -253,9 +244,9 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
 
-    private Uri getSound(MessageType type) {
+    private Uri getSound(EventType type) {
         int sound = R.raw.push;
-        if(type == ping) {
+        if(type == request) {
             sound = R.raw.requested;
         }
 
@@ -263,85 +254,41 @@ public class MessagingService extends FirebaseMessagingService {
                 + context.getResources().getResourceEntryName(sound));
     }
 
-    public static Push generatePush(Message message, String to, UserType userType) {
-        if(message.getType() == MessageType.story) {
-            Push push = new Push().setTo(to).setData(new PushData());
-            if(UserType.performer == userType) {
-                push.setRole(UserType.payer.name());
-            } else if (UserType.payer == userType) {
-                push.setRole(UserType.performer.toString());
-            }
-            push.getData().setType(MessageType.story.name())
-                    .setMessage(message.getStory())
-                    .setName(message.getSender().getName())
-                    .setIcon(message.getSender().getPhoto());
-            return push;
+    public static Push generatePush(Event event, String recipientId) {
+        if(event.getType() == EventType.story) {
+            return new Push()
+                    .setRecipientId(recipientId)
+                    .setType(event.getType().name())
+                    .setMessage(event.getMessage())
+                    .setName(event.getSender().getName())
+                    .setIcon(event.getSender().getPhoto());
         }
         return null;
     }
 
     public static Push generatePush(Request request) {
-        Push push = new Push().setData(new PushData());
+        Push push = new Push().setType(request.getType().name());
         switch (request.getType()) {
-            case request: {
-                push.setTo(request.getPerformer().getId()).setRole(UserType.performer.toString());
-                push.getData()
-                        .setType(ping.toString())
-                        .setName(request.getPayer().getName())
-                        .setIcon(request.getPayer().getPhoto())
-                        .setEstimation(request.getEstimationTime());
-                break;
-            }
-            case accept: {
-                push.setTo(request.getPayer().getId()).setRole(UserType.payer.toString());
-                push.getData()
-                        .setType(MessageType.pong.toString())
-                        .setName(request.getPerformer().getName())
-                        .setIcon(request.getPerformer().getPhoto())
-                        .setEstimation(request.getEstimationTime());
-                break;
-            }
-            case cancel: {
-                if(UserType.performer.equals(request.getRole())) {
-                    push.setTo(request.getPayer().getId()).setRole(UserType.payer.toString());
-                    push.getData()
-                        .setType(MessageType.gnop.toString())
-                        .setName(request.getPerformer().getName())
-                        .setIcon(request.getPerformer().getPhoto());
-                } else if (UserType.payer.equals(request.getRole())) {
-                    push.setTo(request.getPerformer().getId()).setRole(UserType.performer.toString());
-                    push.getData()
-                            .setType(MessageType.cancel.toString())
-                            .setName(request.getPayer().getName())
-                            .setIcon(request.getPayer().getPhoto());
-                }
-                break;
-            }
-            case complete: {
-                push.setTo(request.getPayer().getId()).setRole(UserType.payer.toString());
-                push.getData()
-                        .setType(MessageType.complete.toString())
+            case request:
+            case payerCancel:
+                return push.setRecipientId(request.getNoxbox().getPerformer().getId())
+                    .setName(request.getNoxbox().getPayer().getName())
+                    .setIcon(request.getNoxbox().getPayer().getPhoto())
+                    .setEstimation(request.getNoxbox().getEstimationTime());
+            case accept:
+            case performerCancel:
+            case complete:
+            case qr:
+                return push.setRecipientId(request.getNoxbox().getPayer().getId())
+                        .setName(request.getNoxbox().getPerformer().getName())
+                        .setIcon(request.getNoxbox().getPerformer().getPhoto())
+                        .setMessage(request.getNoxbox().getPayer().getSecret())
                         .setPrice(request.getNoxbox().getPrice())
-                        .setName(request.getPerformer().getName())
-                        .setIcon(request.getPerformer().getPhoto());
-                break;
-            }
-            case qr: {
-                push.setTo(request.getPayer().getId()).setRole(UserType.payer.toString());
-                push.getData()
-                        .setType(MessageType.story.toString())
-                        .setName(request.getPerformer().getName())
-                        .setIcon(request.getPerformer().getPhoto());
-                break;
-            }
-            case balance: {
-                push.setTo(request.getId()).setRole(request.getRole().toString());
-                push.getData().setType(MessageType.balanceUpdated.toString());
-                break;
-            }
+                        .setEstimation(request.getNoxbox().getEstimationTime());
+            case balance:
+                return push.setRecipientId(request.getId());
         }
-
-        return push;
+        return null;
     }
 
 }

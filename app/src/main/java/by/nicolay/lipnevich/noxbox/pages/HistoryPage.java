@@ -17,11 +17,13 @@ import java.util.Collections;
 import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 public class HistoryPage extends AppCompatActivity {
+
+    public static final int CODE = 1002;
 
     private HistoryAdapter historyAdapter;
     private List<Noxbox> historyItems = new ArrayList<>();
@@ -32,7 +34,9 @@ public class HistoryPage extends AppCompatActivity {
 
         setContentView(R.layout.history);
         setTitle(R.string.history);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         int size = 384;
         Glide.with(this).asGif()

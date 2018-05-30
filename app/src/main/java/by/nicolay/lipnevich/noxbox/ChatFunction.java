@@ -17,19 +17,16 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 
-import by.nicolay.lipnevich.noxbox.model.Message;
+import by.nicolay.lipnevich.noxbox.model.Event;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.pages.ChatPage;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.PageCodes;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
-import static by.nicolay.lipnevich.noxbox.tools.PageCodes.CHAT;
 
-public abstract class ChatActivity extends SwitchActivity {
+public abstract class ChatFunction extends EventFunction {
 
     private ImageView chatIcon;
 
@@ -57,7 +54,7 @@ public abstract class ChatActivity extends SwitchActivity {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(getApplicationContext(), ChatPage.class),
-                        PageCodes.CHAT.getCode());
+                        ChatPage.CODE);
             }
         });
 
@@ -68,15 +65,15 @@ public abstract class ChatActivity extends SwitchActivity {
         if(noxbox == null || noxbox.getChat() == null || noxbox.getChat().isEmpty()) {
             return false;
         }
-        for(Message message : noxbox.getChat().values()) {
-            if(!message.getSender().getId().equals(getProfile().getId()) && !message.getWasRead()) {
+        for(Event event : noxbox.getChat().values()) {
+            if(!event.getSender().getId().equals(getProfile().getId()) && !event.getWasRead()) {
                 return true;
             }
         }
         return false;
     }
 
-    protected void processStory(Message story) {
+    protected void processStory(Event story) {
         if(tryGetNoxboxInProgress() != null) {
             addMessageToChat(story.setWasRead(false));
             drawNewMessageSign();
@@ -92,13 +89,13 @@ public abstract class ChatActivity extends SwitchActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CHAT.getCode() && Firebase.getProfile() != null) {
+        if(requestCode == ChatPage.CODE && Firebase.getProfile() != null) {
             if(hasNewMessages(tryGetNoxboxInProgress())) {
                 drawNewMessageSign();
             } else {
                 getChatIcon().setImageResource(R.drawable.chat);
             }
-            listenMessages();
+            listenEvents();
         }
     }
 }

@@ -21,11 +21,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Position;
+import by.nicolay.lipnevich.noxbox.model.TravelMode;
 
 public class PathFinder {
 
     public static Map.Entry<Integer, List<LatLng>> getPathPoints(final Position performer, final Position payer,
-                                                                TravelMode travelMode, String key) {
+                                                                 TravelMode travelMode, String key) {
         String url = String.format(Locale.US, "https://maps.googleapis.com/maps/api/directions/json" +
                         "?origin=%f,%f&destination=%f,%f&sensor=false&mode=%s&alternatives=true&key=%s",
                 performer.getLatitude(),

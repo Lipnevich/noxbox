@@ -5,11 +5,12 @@ const Q = require('q');
 
 const rewardAccount = functions.config().keys.rewardaccount;
 const db = admin.database();
+const events = db.ref('events');
 
 exports.notifyBalanceUpdated = function (request) {
     var deferred = Q.defer();
 
-    let ref = db.ref('messages').child(request.id).child('balanceUpdated');
+    let ref = events.child(request.id).child('balanceUpdated');
     var messageId = ref.push().key;
     ref.child(messageId).set({
         'id' : messageId,
@@ -38,10 +39,10 @@ exports.notifyPayerBalanceUpdated = function (request) {
         request.wallet.availableMoney = '' + (new BigDecimal(request.wallet.balance)
             .minus(new BigDecimal(request.wallet.frozenMoney)));
 
-        var ref = db.ref('messages').child(payerId).child('balanceUpdated');
-        var messageId = ref.push().key;
-        ref.child(messageId).set({
-            'id' : messageId,
+        var ref = events.child(payerId).child('balanceUpdated');
+        var eventId = ref.push().key;
+        ref.child(eventId).set({
+            'id' : eventId,
             'type' : 'balanceUpdated',
             'wallet' : { 'balance' : request.wallet.balance,
                          'address' : request.wallet.address,
@@ -290,7 +291,7 @@ exports.createNoxbox = function (request) {
 exports.pingPerformer = function (request) {
     var deferred = Q.defer();
 
-    let ref = db.ref('messages').child(request.performer.id).child('ping');
+    let ref = events.child(request.performer.id).child('ping');
     var messageId = ref.push().key;
     ref.child(messageId).set({
         'id' : messageId,
@@ -626,7 +627,7 @@ exports.notifyCanceled = function (request) {
 
     for(performerId in request.noxbox.performers) {
         if(performerId != request.id) {
-            var ref = db.ref('messages').child(performerId).child('gnop');
+            var ref = events.child(performerId).child('gnop');
             var messageId = ref.push().key;
             ref.child(messageId).set({
                 'id' : messageId,
@@ -638,7 +639,7 @@ exports.notifyCanceled = function (request) {
 
     for(payerId in request.noxbox.payers) {
         if(payerId != request.id) {
-            var ref = db.ref('messages').child(payerId).child('gnop');
+            var ref = events.child(payerId).child('gnop');
             var messageId = ref.push().key;
             ref.child(messageId).set({
                 'id' : messageId,
@@ -657,10 +658,10 @@ exports.notifyAccepted = function (request) {
     var deferred = Q.defer();
 
     for(payerId in request.noxbox.payers) {
-        let ref = db.ref('messages').child(payerId).child('pong');
-        let messageId = ref.push().key;
-        ref.child(messageId).set({
-            'id' : messageId,
+        let ref = events.child(payerId).child('pong');
+        let eventId = ref.push().key;
+        ref.child(eventId).set({
+            'id' : eventId,
             'type' : 'pong',
             'noxbox' : request.noxbox,
             'estimationTime' : request.estimationTime
@@ -675,10 +676,10 @@ exports.syncPayer = function (request) {
     var deferred = Q.defer();
 
     for(payerId in request.noxbox.payers) {
-        let ref = db.ref('messages').child(payerId).child('sync');
-        let messageId = ref.push().key;
-        ref.child(messageId).set({
-            'id' : messageId,
+        let ref = events.child(payerId).child('sync');
+        let eventId = ref.push().key;
+        ref.child(eventId).set({
+            'id' : eventId,
             'type' : 'sync',
             'noxbox' : request.noxbox,
             'estimationTime' : request.estimationTime
@@ -706,7 +707,7 @@ exports.notifyCompleted = function (request) {
     var deferred = Q.defer();
 
     for(payerId in request.noxbox.payers) {
-        var ref = db.ref('messages').child(payerId).child('complete');
+        var ref = db.ref('events').child(payerId).child('complete');
         var messageId = ref.push().key;
         ref.child(messageId).set({
             'id' : messageId,
@@ -1029,7 +1030,7 @@ exports.notifyDisliked = function (request) {
 }
 
 function sendDislike(to) {
-    var ref = db.ref('messages').child(to).child('dislike');
+    var ref = db.ref('events').child(to).child('dislike');
     var messageId = ref.push().key;
     ref.child(messageId).set({
         'id' : messageId,

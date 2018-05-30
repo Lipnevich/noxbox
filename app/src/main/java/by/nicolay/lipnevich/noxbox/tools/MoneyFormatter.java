@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Locale;
 
-public class Numbers {
+public class MoneyFormatter {
 
     private static final int SCALE = 3;
 

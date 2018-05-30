@@ -13,15 +13,14 @@
  */
 package by.nicolay.lipnevich.noxbox.model;
 
-public class Message implements Comparable<Message> {
+public class Event implements Comparable<Event> {
 
-    private String id, story, estimationTime;
+    private String id, message, estimationTime;
     private Boolean wasRead;
     private Wallet wallet;
-    private Profile sender, performer, payer;
-    private MessageType type;
+    private Profile sender;
+    private EventType type;
     private Position position;
-    private Boolean like;
     private Long time;
     private Noxbox noxbox;
     private Push push;
@@ -30,16 +29,16 @@ public class Message implements Comparable<Message> {
         return id;
     }
 
-    public Message setId(String id) {
+    public Event setId(String id) {
         this.id = id;
         return this;
     }
 
-    public MessageType getType() {
+    public EventType getType() {
         return type;
     }
 
-    public Message setType(MessageType type) {
+    public Event setType(EventType type) {
         this.type = type;
         return this;
     }
@@ -48,17 +47,8 @@ public class Message implements Comparable<Message> {
         return position;
     }
 
-    public Message setPosition(Position position) {
+    public Event setPosition(Position position) {
         this.position = position;
-        return this;
-    }
-
-    public String getStory() {
-        return story;
-    }
-
-    public Message setStory(String story) {
-        this.story = story;
         return this;
     }
 
@@ -66,7 +56,7 @@ public class Message implements Comparable<Message> {
         return time;
     }
 
-    public Message setTime(Long time) {
+    public Event setTime(Long time) {
         this.time = time;
         return this;
     }
@@ -75,7 +65,7 @@ public class Message implements Comparable<Message> {
         return sender;
     }
 
-    public Message setSender(Profile sender) {
+    public Event setSender(Profile sender) {
         this.sender = sender;
         return this;
     }
@@ -84,7 +74,7 @@ public class Message implements Comparable<Message> {
         return wallet;
     }
 
-    public Message setWallet(Wallet wallet) {
+    public Event setWallet(Wallet wallet) {
         this.wallet = wallet;
         return this;
     }
@@ -93,34 +83,9 @@ public class Message implements Comparable<Message> {
         return noxbox;
     }
 
-    public Message setNoxbox(Noxbox noxbox) {
+    public Event setNoxbox(Noxbox noxbox) {
         this.noxbox = noxbox;
         return this;
-    }
-
-    public Boolean getLike() {
-        return like;
-    }
-
-    public Message setLike(Boolean like) {
-        this.like = like;
-        return this;
-    }
-
-    public Profile getPerformer() {
-        return performer;
-    }
-
-    public void setPerformer(Profile performer) {
-        this.performer = performer;
-    }
-
-    public Profile getPayer() {
-        return payer;
-    }
-
-    public void setPayer(Profile payer) {
-        this.payer = payer;
     }
 
     public String getEstimationTime() {
@@ -135,7 +100,7 @@ public class Message implements Comparable<Message> {
         return wasRead;
     }
 
-    public Message setWasRead(Boolean wasRead) {
+    public Event setWasRead(Boolean wasRead) {
         this.wasRead = wasRead;
         return this;
     }
@@ -144,18 +109,26 @@ public class Message implements Comparable<Message> {
         return push;
     }
 
-    public Message setPush(Push push) {
+    public Event setPush(Push push) {
         this.push = push;
         return this;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public Event setMessage(String message) {
+        this.message = message;
+        return this;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Message message = (Message) o;
-        return id != null ? id.equals(message.id) : message.id == null;
+        Event event = (Event) o;
+        return id != null ? id.equals(event.id) : event.id == null;
 
     }
 
@@ -165,7 +138,7 @@ public class Message implements Comparable<Message> {
     }
 
     @Override
-    public int compareTo(Message that) {
+    public int compareTo(Event that) {
         return this.getTime().compareTo(that.getTime());
     }
 }

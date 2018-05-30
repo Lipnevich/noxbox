@@ -7,9 +7,46 @@
     android:layout_alignParentStart="true">
 
 <RelativeLayout android:layout_width="fill_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:padding="15dp"
               android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/balance_label_id"
+        android:textSize="24sp"
+        android:text="@string/yourBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/balance_id"
+        android:text="0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary"
+        android:textSize="84sp"
+        android:layout_below="@id/balance_label_id"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:text="@string/frozenMoney"
+        android:textSize="24sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/frozen_money_label_id"
+        android:layout_below="@+id/balance_id"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:text="0"
+        android:textSize="48sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/frozen_money_id"
+        android:layout_below="@+id/frozen_money_label_id"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/wallet_address_title"
@@ -18,12 +55,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:layout_below="@+id/services_description_id"
+        android:layout_below="@+id/frozen_money_id"
         android:layout_centerHorizontal="true"/>
 
     <TextView
         android:textSize="14sp"
-        android:text="Your Wallet Address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/wallet_address_id"
@@ -31,7 +67,6 @@
         android:layout_centerHorizontal="true"/>
 
     <ImageView
-        android:text="Copy to Clipboard"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:src="@drawable/copy_to_clipboard"
@@ -41,98 +76,28 @@
         android:layout_below="@+id/wallet_address_id"
         android:layout_centerHorizontal="true"/>
 
-    <TextView
-        android:text="@string/balance"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/balance_label_id"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/slash_id"
-        android:layout_marginEnd="20dp"/>
-
-    <TextView
-        android:text="@string/price"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/price_label_id"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="28dp"
-        android:layout_toEndOf="@+id/slash_id"
-        />
-
-    <TextView
-        android:text="0.00101"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/price_id"
-        android:layout_below="@+id/price_label_id"
-        android:layout_alignEnd="@+id/price_label_id"
-        />
-
-    <TextView
-        android:text="0.0000"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/balance_id"
-        android:layout_below="@+id/balance_label_id"
-        android:layout_alignStart="@+id/balance_label_id"/>
-
-    <TextView
-        android:text="/"
-        android:textSize="64sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/slash_id"
-        android:layout_alignBaseline="@+id/price_id"
-        android:layout_alignBottom="@+id/price_id"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/services_description_id"
-        android:textSize="24sp"
-        android:text="@string/serviceUnavailable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primary"
-        android:layout_below="@+id/number_of_noxboxes"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/number_of_noxboxes"
-        android:text="0"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primary"
-        android:textSize="84sp"
-        android:layout_below="@+id/slash_id"
-        android:layout_centerHorizontal="true"/>
-
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/copy_to_clipboard_id"
                     android:layout_alignParentBottom="true">
         <Button
-            android:text="@string/refund"
+            android:text="@string/send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/refund_button_id"
+            android:id="@+id/send_button_id"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"/>
 
         <EditText
-            android:id="@+id/address_to_refund_id"
+            android:id="@+id/address_to_send_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:inputType="text"
             android:hint="@string/addressToRefund"
-            android:textSize="14sp"
-            android:layout_alignTop="@+id/refund_button_id"
-            android:layout_toStartOf="@+id/refund_button_id"/>
+            android:textSize="16sp"
+            android:layout_alignTop="@+id/send_button_id"
+            android:layout_toStartOf="@+id/send_button_id"/>
     </RelativeLayout>
 
 

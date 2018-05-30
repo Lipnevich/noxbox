@@ -6,34 +6,77 @@ package by.nicolay.lipnevich.noxbox.model;
 
 public class Push {
 
-    private PushData data;
-    private String to;
-    private String role;
+    private String recipientId, type, estimation, icon, name, message, price, balance;
 
-    public String getRole() {
-        return role;
+    public String getIcon() {
+        return icon;
     }
 
-    public Push setRole(String role) {
-        this.role = role;
+    public Push setIcon(String icon) {
+        this.icon = icon;
         return this;
     }
 
-    public String getTo() {
-        return to;
+    public String getType() {
+        return type;
     }
 
-    public Push setTo(String to) {
-        this.to = to;
+    public Push setType(String type) {
+        this.type = type;
         return this;
     }
 
-    public PushData getData() {
-        return data;
+    public String getEstimation() {
+        return estimation;
     }
 
-    public Push setData(PushData data) {
-        this.data = data;
+    public Push setEstimation(String estimation) {
+        this.estimation = estimation;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Push setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Push setMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public Push setPrice(String price) {
+        this.price = price;
+        return this;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public Push setBalance(String balance) {
+        this.balance = balance;
+        return this;
+    }
+
+    public String getRecipientId() {
+        return recipientId;
+    }
+
+    public Push setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
         return this;
     }
 }

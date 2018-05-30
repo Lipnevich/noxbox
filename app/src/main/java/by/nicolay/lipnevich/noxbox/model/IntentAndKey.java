@@ -1,4 +1,4 @@
-package by.nicolay.lipnevich.noxbox.tools;
+package by.nicolay.lipnevich.noxbox.model;
 
 import android.content.Intent;
 

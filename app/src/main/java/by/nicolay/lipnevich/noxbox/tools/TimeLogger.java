@@ -7,9 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
+import by.nicolay.lipnevich.noxbox.BuildConfig;
 
-public final class TimeLog {
+// TODO (nli) use Firebase Performance monitor instead
+public final class TimeLogger {
 
     public enum Event {
         inflateMessage,

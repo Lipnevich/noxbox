@@ -21,25 +21,24 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseError;
 
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
-import by.nicolay.lipnevich.noxbox.tools.TravelMode;
+import by.nicolay.lipnevich.noxbox.model.TravelMode;
 
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getAvailablePerformers;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.geo;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 
-public abstract class GeoFireComponent extends MapActivity {
+public abstract class GeoFunction extends MapFunction {
 
     private GeoQuery geoQuery;
 
     protected void goOnline() {
         if(getCurrentPosition() != null) {
-            getAvailablePerformers().setLocation(createKey(), getCurrentPosition().toGeoLocation());
+            geo().setLocation(createKey(), getCurrentPosition().toGeoLocation());
         }
     }
 
     protected void goOffline() {
-        getAvailablePerformers().removeLocation(createKey());
+        geo().removeLocation(createKey());
     }
 
     public final static String delimiter = ";";
@@ -50,14 +49,14 @@ public abstract class GeoFireComponent extends MapActivity {
 
     private void listenAvailablePerformers(GeoLocation geoLocation) {
         if(geoQuery != null) geoQuery.removeAllListeners();
-        geoQuery = getAvailablePerformers().queryAtLocation(geoLocation, getResources().getInteger(R.integer.radius_in_kilometers));
+        geoQuery = geo().queryAtLocation(geoLocation, getResources().getInteger(R.integer.radius_in_kilometers));
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 String performerId = key.split(delimiter)[0];
                 if(getProfile().getId().equals(performerId)) return;
                 TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
-                GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), getPerformerDrawable());
+                GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), R.drawable.masseur);
                 marker.setTag(travelMode);
             }
 
@@ -73,7 +72,7 @@ public abstract class GeoFireComponent extends MapActivity {
                 String performerId = key.split(delimiter)[0];
                 if(getProfile().getId().equals(performerId)) return;
                 TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
-                GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), getPerformerDrawable());
+                GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), R.drawable.masseur);
                 marker.setTag(travelMode);
             }
 
@@ -108,6 +107,8 @@ public abstract class GeoFireComponent extends MapActivity {
     protected void stopListenAvailablePerformers() {
         if(geoQuery != null) {
             geoQuery.removeAllListeners();
+        }
+        if(googleMap != null) {
             googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
                 @Override
                 public void onCameraMove() {

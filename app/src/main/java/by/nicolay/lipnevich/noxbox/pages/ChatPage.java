@@ -27,21 +27,19 @@ import com.bumptech.glide.request.transition.Transition;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.nicolay.lipnevich.noxbox.model.Message;
-import by.nicolay.lipnevich.noxbox.model.MessageType;
-import by.nicolay.lipnevich.noxbox.model.UserType;
-import by.nicolay.lipnevich.noxbox.payer.massage.BuildConfig;
-import by.nicolay.lipnevich.noxbox.payer.massage.R;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
+import by.nicolay.lipnevich.noxbox.BuildConfig;
+import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.tools.Task;
-import by.nicolay.lipnevich.noxbox.tools.TimeLog;
+import by.nicolay.lipnevich.noxbox.tools.TimeLogger;
 
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getUserType;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.listenTypeMessages;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendMessageForNoxbox;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.listenTypeEvents;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendNoxboxEvent;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
@@ -49,7 +47,9 @@ import static java.util.Collections.sort;
 
 public class ChatPage extends AppCompatActivity {
 
-    private List<Message> messages = new ArrayList<>();
+    public static final int CODE = 1001;
+
+    private List<Event> events = new ArrayList<>();
     private RecyclerView chatList;
     private TextView text;
     private ChatAdapter chatAdapter;
@@ -60,7 +60,7 @@ public class ChatPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.chat);
-        TimeLog.log(millis, TimeLog.Event.onCreateChat, getApplicationContext());
+        TimeLogger.log(millis, TimeLogger.Event.onCreateChat, getApplicationContext());
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +107,7 @@ public class ChatPage extends AppCompatActivity {
         }});
 
         initMessages();
-        chatAdapter = new ChatAdapter(screen, messages, getProfile().getId());
+        chatAdapter = new ChatAdapter(screen, events, getProfile().getId());
         chatList.setAdapter(chatAdapter);
         chatList.smoothScrollToPosition(View.FOCUS_DOWN);
 
@@ -129,9 +129,9 @@ public class ChatPage extends AppCompatActivity {
             }
         });
 
-        listenTypeMessages(MessageType.story, new Task<Message>() {
+        listenTypeEvents(EventType.story, new Task<Event>() {
             @Override
-            public void execute(Message story) {
+            public void execute(Event story) {
                 add(story.setWasRead(true));
             }
         });
@@ -190,23 +190,23 @@ public class ChatPage extends AppCompatActivity {
         if(TextUtils.isEmpty(text.getText().toString().trim())) return;
         if(tryGetNoxboxInProgress() == null) return;
 
-        Message message = sendMessageForNoxbox(new Message()
-                .setType(MessageType.story)
-                .setStory(text.getText().toString()));
+        Event event = sendNoxboxEvent(new Event()
+                .setType(EventType.story)
+                .setMessage(text.getText().toString()));
 
-        add(message.setWasRead(true));
+        add(event.setWasRead(true));
         text.setText("");
     }
 
-    private void add(Message message) {
+    private void add(Event event) {
         if(tryGetNoxboxInProgress() == null) return;
         sound();
-        addMessageToChat(message.setWasRead(true));
-        messages.add(message);
-        sort(messages);
-        chatAdapter.notifyItemInserted(messages.indexOf(message));
+        addMessageToChat(event.setWasRead(true));
+        events.add(event);
+        sort(events);
+        chatAdapter.notifyItemInserted(events.indexOf(event));
 
-        chatList.scrollToPosition(messages.size() - 1);
+        chatList.scrollToPosition(events.size() - 1);
     }
 
     private void sound() {
@@ -214,27 +214,22 @@ public class ChatPage extends AppCompatActivity {
         mediaPlayer.start();
     }
 
-    private List<Message> initMessages() {
-        messages.clear();
+    private List<Event> initMessages() {
+        events.clear();
 
         if(tryGetNoxboxInProgress() != null) {
-            messages.addAll(tryGetNoxboxInProgress().getChat().values());
-            sort(messages);
+            events.addAll(tryGetNoxboxInProgress().getChat().values());
+            sort(events);
         }
 
-        return messages;
+        return events;
     }
 
     private String getInterlocutorName() {
         if(tryGetNoxboxInProgress() == null) {
             return getResources().getString(R.string.chat);
-        }
-        if(UserType.payer.equals(getUserType())) {
-            return tryGetNoxboxInProgress().getPerformers().values().iterator().next().getName();
-        } else if (UserType.performer.equals(getUserType())) {
-            return tryGetNoxboxInProgress().getPayers().values().iterator().next().getName();
         } else {
-            throw new IllegalArgumentException("Unknown role");
+            return tryGetNoxboxInProgress().getParty(getProfile().getId()).getName();
         }
     }
 
