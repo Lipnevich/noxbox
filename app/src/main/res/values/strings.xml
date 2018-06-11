@@ -1,5 +1,5 @@
 <resources>
-    <string name="noxbox">Noxbox</string>
+    <string name="noxbox">NoxBox</string>
     <string name="noxboxer">Noxboxer</string>
     <string name="permissionRequired">Permission required</string>
     <string name="completeText">Complete</string>
@@ -67,4 +67,6 @@
     <string name="enterMessage">Type a message...</string>
     <string name="addressInClipBoard">Address copied to clipboard</string>
     <string name="chat">Chat</string>
+    <string name="googleAuth">Sign in with Google</string>
+    <string name="phoneAuth">Sign in with Phone</string>
 </resources>

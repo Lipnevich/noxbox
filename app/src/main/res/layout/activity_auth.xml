@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:layout_width="192dp"
+        android:layout_height="192dp"
+        android:layout_gravity="center"
+        android:src="@drawable/noxbox" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/noxbox"
+        android:textSize="36sp" />
+
+    <Button
+        android:id="@+id/googleAuth"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="12dp"
+        android:drawableStart="@drawable/google"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:text="@string/phoneAuth"
+        android:textSize="12sp"
+        android:enabled="false"/>
+
+    <Button
+        android:id="@+id/phoneAuth"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="12dp"
+        android:drawableStart="@drawable/phone"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:text="@string/phoneAuth"
+        android:textSize="12sp"
+        android:enabled="false"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:theme="@style/CheckBoxPrivacy" />
+
+        <TextView
+            android:id="@+id/agreementView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:autoLink="web"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</LinearLayout>
