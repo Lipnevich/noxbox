@@ -106,7 +106,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
         return true;
     }
 
-    protected void prepareForIteration() {
+    public void prepareForIteration() {
         super.prepareForIteration();
 
         Noxbox notAcceptedNoxbox = tryGetNotAcceptedNoxbox();
@@ -235,7 +235,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
     }
 
     @Override
-    protected void goOnline() {
+    public void goOnline() {
         super.goOnline();
 
         goOfflineButton.setVisibility(View.VISIBLE);

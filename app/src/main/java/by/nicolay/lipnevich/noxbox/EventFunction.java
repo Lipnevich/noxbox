@@ -43,7 +43,7 @@ public abstract class EventFunction extends GeoFunction {
     }
 
     @Override
-    protected void processEvent(Event event) {
+    public void processEvent(Event event) {
         switch (event.getType()) {
             case request: processRequest(event); break;
             case sync: processSync(event); break;

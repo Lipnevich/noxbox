@@ -31,7 +31,7 @@ public abstract class ChatFunction extends EventFunction {
     private ImageView chatIcon;
 
     @Override
-    protected void processNoxbox(Noxbox noxbox) {
+    public void processNoxbox(Noxbox noxbox) {
         super.processNoxbox(noxbox);
 
         getChatIcon().setVisibility(View.VISIBLE);
@@ -81,7 +81,7 @@ public abstract class ChatFunction extends EventFunction {
     }
 
     @Override
-    protected void prepareForIteration() {
+    public void prepareForIteration() {
         super.prepareForIteration();
         getChatIcon().setVisibility(View.GONE);
     }

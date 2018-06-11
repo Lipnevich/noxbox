@@ -52,7 +52,7 @@ public abstract class PerformerLocationFunction extends ChatFunction {
     };
 
     @Override
-    protected void processNoxbox(Noxbox noxbox) {
+    public void processNoxbox(Noxbox noxbox) {
         super.processNoxbox(noxbox);
         if(ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -65,7 +65,7 @@ public abstract class PerformerLocationFunction extends ChatFunction {
     }
 
     @Override
-    protected void prepareForIteration() {
+    public void prepareForIteration() {
         super.prepareForIteration();
         if(tryGetNoxboxInProgress() != null &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED) {

@@ -355,7 +355,7 @@ public abstract class MapFunction extends ProfileFunction implements
     }
 
     @Override
-    protected void processNoxbox(Noxbox noxbox) {
+    public void processNoxbox(Noxbox noxbox) {
         moveGoogleCopyrights();
 
         visibleCurrentLocation(false);
@@ -390,7 +390,7 @@ public abstract class MapFunction extends ProfileFunction implements
     }
 
     @Override
-    protected void prepareForIteration() {
+    public void prepareForIteration() {
         if(googleMap != null) {
             visibleCurrentLocation(true);
             cleanUpMap();

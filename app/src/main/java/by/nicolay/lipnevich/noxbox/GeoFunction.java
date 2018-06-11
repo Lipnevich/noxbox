@@ -31,7 +31,7 @@ public abstract class GeoFunction extends MapFunction {
 
     private GeoQuery geoQuery;
 
-    protected void goOnline() {
+    public void goOnline() {
         if(getCurrentPosition() != null) {
             geo().setLocation(createKey(), getCurrentPosition().toGeoLocation());
         }
