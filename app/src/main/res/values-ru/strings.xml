@@ -1,5 +1,5 @@
 <resources>
-    <string name="noxbox">Noxbox</string>
+    <string name="noxbox">NoxBox</string>
     <string name="noxboxer">Noxboxer</string>
     <string name="permissionRequired">Необходимо разрешение</string>
     <string name="completeText">Завершить</string>
@@ -67,5 +67,6 @@
     <string name="enterMessage">Введите сообщение...</string>
     <string name="addressInClipBoard">Адрес скопирован</string>
     <string name="chat">Чат</string>
-
+    <string name="googleAuth">Войти через аккаунт Google</string>
+    <string name="phoneAuth">Войти по номеру телефона</string>
 </resources>

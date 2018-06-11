@@ -20,11 +20,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -64,6 +67,7 @@ import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.Request;
+import by.nicolay.lipnevich.noxbox.pages.AuthPage;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
 import by.nicolay.lipnevich.noxbox.pages.WalletPage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
@@ -73,9 +77,26 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 
-public abstract class ProfileFunction extends AuthFunction {
+public abstract class ProfileFunction extends AppCompatActivity implements ProcessApi{
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    private final Task processProfileTask = new Task<Profile>() {
+        @Override
+        public void execute(Profile profile) {
+            processProfile(profile);
+        }
+    };
+
+    protected void popup(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+
     protected void processProfile(Profile profile) {
         createMenu();
 
@@ -326,7 +347,7 @@ public abstract class ProfileFunction extends AuthFunction {
                                                     @Override
                                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
                                                         // TODO (nli) start activity for result
-                                                        login();
+                                                        startActivity(new Intent(ProfileFunction.this, AuthPage.class));
                                                     }
                                                 });
                                     }
@@ -341,7 +362,6 @@ public abstract class ProfileFunction extends AuthFunction {
         return items.toArray(new IDrawerItem[menu.size()]);
     }
 
-    @Override
     protected SortedMap<String, IntentAndKey> getMenu() {
         TreeMap<String, IntentAndKey> menu = new TreeMap<>();
         menu.put(getString(R.string.history), new IntentAndKey()
