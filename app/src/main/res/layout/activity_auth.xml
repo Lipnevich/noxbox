@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="@drawable/login_background">
 
     <Space
         android:layout_width="match_parent"
@@ -19,20 +20,27 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:layout_gravity="center"
         android:text="@string/noxbox"
-        android:textSize="36sp" />
+        android:textSize="36sp"
+        android:textColor="@color/secondary"/>
 
     <Button
         android:id="@+id/googleAuth"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="12dp"
-        android:drawableStart="@drawable/google"
+        android:drawableStart="@drawable/ic_google"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:text="@string/phoneAuth"
-        android:textSize="12sp"
+        android:text="@string/googleAuth"
+        android:textSize="14sp"
+        android:textColor="#444"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:visibility="visible"
+        android:background="@drawable/auth_button_corners"
         android:enabled="false"/>
 
     <Button
@@ -44,19 +52,26 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
         android:text="@string/phoneAuth"
-        android:textSize="12sp"
+        android:textSize="14sp"
+        android:textColor="#444"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        android:visibility="visible"
+        android:background="@drawable/auth_button_corners"
         android:enabled="false"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_margin="6dp">
 
         <CheckBox
             android:id="@+id/checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="top"
+            android:buttonTint="@color/primary"
             />
 
         <TextView
@@ -65,9 +80,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
-            android:autoLink="web"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textColor="@color/secondary"
+            android:autoLink="web"/>
 
     </LinearLayout>
+
 
 </LinearLayout>
