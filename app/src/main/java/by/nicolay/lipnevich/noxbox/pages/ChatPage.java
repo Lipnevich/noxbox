@@ -37,10 +37,10 @@ import by.nicolay.lipnevich.noxbox.tools.TimeLogger;
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.listenTypeEvents;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendNoxboxEvent;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
 import static java.util.Collections.sort;
@@ -65,7 +65,7 @@ public class ChatPage extends AppCompatActivity {
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateCurrentNoxbox(tryGetNoxboxInProgress());
+                updateCurrentNoxbox(getCurrentNoxbox());
                 onBackPressed();
             }
         });
@@ -188,7 +188,7 @@ public class ChatPage extends AppCompatActivity {
 
     private void send() {
         if(TextUtils.isEmpty(text.getText().toString().trim())) return;
-        if(tryGetNoxboxInProgress() == null) return;
+        if(getCurrentNoxbox() == null) return;
 
         Event event = sendNoxboxEvent(new Event()
                 .setType(EventType.story)
@@ -199,7 +199,7 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private void add(Event event) {
-        if(tryGetNoxboxInProgress() == null) return;
+        if(getCurrentNoxbox() == null) return;
         sound();
         addMessageToChat(event.setWasRead(true));
         events.add(event);
@@ -217,8 +217,8 @@ public class ChatPage extends AppCompatActivity {
     private List<Event> initMessages() {
         events.clear();
 
-        if(tryGetNoxboxInProgress() != null) {
-            events.addAll(tryGetNoxboxInProgress().getChat().values());
+        if(getCurrentNoxbox() != null) {
+            events.addAll(getCurrentNoxbox().getChat().values());
             sort(events);
         }
 
@@ -226,10 +226,10 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private String getInterlocutorName() {
-        if(tryGetNoxboxInProgress() == null) {
+        if(getCurrentNoxbox() == null) {
             return getResources().getString(R.string.chat);
         } else {
-            return tryGetNoxboxInProgress().getParty(getProfile().getId()).getName();
+            return getCurrentNoxbox().getParty(getProfile().getId()).getName();
         }
     }
 

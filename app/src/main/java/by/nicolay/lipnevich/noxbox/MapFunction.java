@@ -50,17 +50,18 @@ import java.util.List;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.NoxboxStatus;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 
-public abstract class MapFunction extends ProfileFunction implements
+public class MapFunction extends MenuFunction implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 
@@ -77,10 +78,17 @@ public abstract class MapFunction extends ProfileFunction implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId))
-                .getMapAsync(this);
+        ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId)).getMapAsync(this);
         pathImage = findViewById(R.id.pathImage);
         connectGoogleApi();
+    }
+
+    @Override
+    protected void draw() {
+        NoxboxStatus status = NoxboxStatus.getStatus(getProfile());
+        switch (status) {
+            default: // TODO (vlad) fragment for status
+        }
     }
 
     private void connectGoogleApi() {
@@ -155,7 +163,7 @@ public abstract class MapFunction extends ProfileFunction implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Position position = getCurrentPosition();
-        if(position != null && googleMap != null && tryGetNoxboxInProgress() == null) {
+        if(position != null && googleMap != null && getCurrentNoxbox() == null) {
             googleMap.moveCamera(newLatLngZoom(position.toLatLng(), 15));
         }
         scaleMarkers();
@@ -227,8 +235,8 @@ public abstract class MapFunction extends ProfileFunction implements
     }
 
     protected void drawPath(final String noxboxId, final Profile performer, final Profile payer) {
-        if(performer.getPosition() == null && noxboxId != null && tryGetNoxboxInProgress() != null) {
-            performer.setPosition(tryGetNoxboxInProgress().getPerformer().getPosition());
+        if(performer.getPosition() == null && noxboxId != null && getCurrentNoxbox() != null) {
+            performer.setPosition(getCurrentNoxbox().getPerformer().getPosition());
         }
 
         // TODO (nli) use icon for noxbox type
@@ -252,8 +260,8 @@ public abstract class MapFunction extends ProfileFunction implements
                 if(responce != null) {
                     points = responce.getValue();
                     // TODO (nli) show time on the map
-                    if(tryGetNoxboxInProgress() != null && responce.getKey() != null) {
-                        Firebase.updateCurrentNoxbox(tryGetNoxboxInProgress()
+                    if(getCurrentNoxbox() != null && responce.getKey() != null) {
+                        Firebase.updateCurrentNoxbox(getCurrentNoxbox()
                                 .setEstimationTime(responce.getKey().toString()));
                     }
                 } else {
@@ -354,7 +362,6 @@ public abstract class MapFunction extends ProfileFunction implements
         }
     }
 
-    @Override
     public void processNoxbox(Noxbox noxbox) {
         moveGoogleCopyrights();
 
@@ -389,7 +396,6 @@ public abstract class MapFunction extends ProfileFunction implements
         }
     }
 
-    @Override
     public void prepareForIteration() {
         if(googleMap != null) {
             visibleCurrentLocation(true);

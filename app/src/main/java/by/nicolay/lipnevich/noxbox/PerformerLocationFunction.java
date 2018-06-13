@@ -27,9 +27,9 @@ import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.model.EventType.move;
 import static by.nicolay.lipnevich.noxbox.model.Position.from;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendNoxboxEvent;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 
 public abstract class PerformerLocationFunction extends ChatFunction {
 
@@ -38,7 +38,7 @@ public abstract class PerformerLocationFunction extends ChatFunction {
         public void onLocationChanged(Location location) {
             getProfile().setPosition(from(location));
 
-            Noxbox noxbox = tryGetNoxboxInProgress();
+            Noxbox noxbox = getProfile().getCurrent();
             if(noxbox != null) {
                 noxbox.setPerformer(getProfile().publicInfo());
                 Firebase.updateCurrentNoxbox(noxbox);
@@ -67,7 +67,7 @@ public abstract class PerformerLocationFunction extends ChatFunction {
     @Override
     public void prepareForIteration() {
         super.prepareForIteration();
-        if(tryGetNoxboxInProgress() != null &&
+        if(getCurrentNoxbox() != null &&
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED) {
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 locationManager.removeUpdates(locationListener);

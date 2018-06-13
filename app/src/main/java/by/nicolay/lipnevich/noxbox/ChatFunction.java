@@ -23,8 +23,8 @@ import by.nicolay.lipnevich.noxbox.pages.ChatPage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 
 public abstract class ChatFunction extends EventFunction {
 
@@ -74,7 +74,7 @@ public abstract class ChatFunction extends EventFunction {
     }
 
     protected void processStory(Event story) {
-        if(tryGetNoxboxInProgress() != null) {
+        if(getCurrentNoxbox() != null) {
             addMessageToChat(story.setWasRead(false));
             drawNewMessageSign();
         }
@@ -90,12 +90,12 @@ public abstract class ChatFunction extends EventFunction {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == ChatPage.CODE && Firebase.getProfile() != null) {
-            if(hasNewMessages(tryGetNoxboxInProgress())) {
+            if(hasNewMessages(getCurrentNoxbox())) {
                 drawNewMessageSign();
             } else {
                 getChatIcon().setImageResource(R.drawable.chat);
             }
-            listenEvents();
+//            listenEvents();
         }
     }
 }

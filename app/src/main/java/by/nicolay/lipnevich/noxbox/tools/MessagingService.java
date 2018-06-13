@@ -41,7 +41,7 @@ import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIB
 import static by.nicolay.lipnevich.noxbox.model.EventType.balance;
 import static by.nicolay.lipnevich.noxbox.model.EventType.request;
 import static by.nicolay.lipnevich.noxbox.model.EventType.story;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -156,7 +156,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private PendingIntent getIntent(Notice notice) {
-            if(notice.getType() == story && tryGetNoxboxInProgress() != null) {
+            if(notice.getType() == story && getProfile().getCurrent() != null) {
                 return PendingIntent.getActivity(context, ChatPage.CODE,
                         new Intent(context, ChatPage.class),
                         PendingIntent.FLAG_UPDATE_CURRENT);

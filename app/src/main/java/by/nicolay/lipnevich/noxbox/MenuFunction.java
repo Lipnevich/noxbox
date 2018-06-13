@@ -61,7 +61,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import by.nicolay.lipnevich.noxbox.model.Acceptance;
-import by.nicolay.lipnevich.noxbox.model.Event;
 import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.model.Profile;
@@ -74,37 +73,34 @@ import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.readProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 
-public abstract class ProfileFunction extends AppCompatActivity implements ProcessApi{
+public abstract class MenuFunction extends AppCompatActivity {
+
+    private float MIN_RATE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MIN_RATE = getResources().getFraction(R.fraction.min_allowed_probability, 1, 1);
 
+        readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                processProfile(profile);
+            }
+        });
     }
-
-    private final Task processProfileTask = new Task<Profile>() {
-        @Override
-        public void execute(Profile profile) {
-            processProfile(profile);
-        }
-    };
 
     protected void popup(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-
     protected void processProfile(Profile profile) {
         createMenu();
 
-        if(tryGetNoxboxInProgress() != null) {
-            processNoxbox(tryGetNoxboxInProgress());
-        } else if(calculateRating() >= MIN_RATE) {
-            prepareForIteration();
-        } else {
+        if(calculateRating() <= MIN_RATE) {
             popup("Low rate!");
         }
 
@@ -121,11 +117,8 @@ public abstract class ProfileFunction extends AppCompatActivity implements Proce
         });
         check.setVisibility(View.VISIBLE);
 
-
-        listenEvents();
+//        listenEvents();
     }
-
-    private double MIN_RATE = 4.5;
 
     protected Drawer menu;
 
@@ -160,17 +153,7 @@ public abstract class ProfileFunction extends AppCompatActivity implements Proce
         }
     }
 
-    protected void listenEvents() {
-        Firebase.listenAllEvents(new Task<Event>() {
-            @Override
-            public void execute(Event event) {
-                processEvent(event);
-            }
-        });
-    }
-
     private Double calculateRating() {
-        // likes more then 90%
         Rating rating = Firebase.getRating().getReceived();
 
         if(rating == null || (rating.getLikes().equals(0l)
@@ -334,7 +317,7 @@ public abstract class ProfileFunction extends AppCompatActivity implements Proce
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileFunction.this,
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MenuFunction.this,
                                 R.style.NoxboxAlertDialogStyle);
                         builder.setTitle(getResources().getString(R.string.logoutPrompt));
                         builder.setPositiveButton(getResources().getString(R.string.logout),
@@ -342,12 +325,12 @@ public abstract class ProfileFunction extends AppCompatActivity implements Proce
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         AuthUI.getInstance()
-                                                .signOut(ProfileFunction.this)
+                                                .signOut(MenuFunction.this)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
                                                         // TODO (nli) start activity for result
-                                                        startActivity(new Intent(ProfileFunction.this, AuthPage.class));
+                                                        startActivity(new Intent(MenuFunction.this, AuthPage.class));
                                                     }
                                                 });
                                     }
@@ -376,9 +359,11 @@ public abstract class ProfileFunction extends AppCompatActivity implements Proce
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == WalletPage.CODE && Firebase.getProfile() != null) {
-            listenEvents();
+            draw();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+    protected abstract void draw();
 
 }

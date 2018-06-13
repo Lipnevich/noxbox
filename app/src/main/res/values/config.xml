@@ -4,6 +4,7 @@
     <integer name="radius_in_kilometers">50</integer>
 
     <fraction name="min_allowed_probability">50%</fraction>
+    <fraction name="min_rate">90%</fraction>
 
     <!--used for google map-->
     <string name="google_maps_key" translatable="false">

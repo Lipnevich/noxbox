@@ -15,8 +15,8 @@ package by.nicolay.lipnevich.noxbox;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -29,18 +29,16 @@ import by.nicolay.lipnevich.noxbox.model.Event;
 import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.pages.WalletPage;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNotAcceptedNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 
-public class PayerFunction extends PerformerFunction {
+public class PayerFunction extends FragmentActivity {
 
     private Button requestButton;
     private Button cancelButton;
@@ -56,9 +54,9 @@ public class PayerFunction extends PerformerFunction {
     private View.OnClickListener qrListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-            if(tryGetNoxboxInProgress() == null) return;
+            if(getCurrentNoxbox() == null) return;
 
-            String secret = tryGetNoxboxInProgress().getPayer().getSecret();
+            String secret = getCurrentNoxbox().getPayer().getSecret();
 
             final int size = 512;
             showQrCode.setImageBitmap(QRCode.from(secret).withSize(size, size).bitmap());
@@ -92,29 +90,29 @@ public class PayerFunction extends PerformerFunction {
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Noxbox bestOption = chooseBestOptionPerformer();
-                if(bestOption != null) {
-                    if(!isEnoughMoney(bestOption.getPrice())) {
-                        startActivityForResult(new Intent(getApplicationContext(), WalletPage.class), WalletPage.CODE);
-                        return;
-                    }
-
-                    requestButton.setVisibility(View.INVISIBLE);
-                    pointerImage.setVisibility(View.INVISIBLE);
-                    drawPath(null, bestOption.getPerformer(), getProfile().publicInfo().setPosition(getCameraPosition()));
-
-                    sendRequest(new Request().setType(EventType.request).setNoxbox(bestOption));
-
-                    timer = new Timer() {
-                        @Override
-                        protected void timeout() {
-                            processTimeout();
-                            prepareForIteration();
-                        }
-                    }.start(getResources().getInteger(R.integer.timer_in_seconds) * 120 / 100);
-                } else {
-                    popup("No performers available");
-                }
+//                final Noxbox bestOption = chooseBestOptionPerformer();
+//                if(bestOption != null) {
+//                    if(!isEnoughMoney(bestOption.getPrice())) {
+//                        startActivityForResult(new Intent(getApplicationContext(), WalletPage.class), WalletPage.CODE);
+//                        return;
+//                    }
+//
+//                    requestButton.setVisibility(View.INVISIBLE);
+//                    pointerImage.setVisibility(View.INVISIBLE);
+//                    drawPath(null, bestOption.getPerformer(), getProfile().publicInfo().setPosition(getCameraPosition()));
+//
+//                    sendRequest(new Request().setType(EventType.request).setNoxbox(bestOption));
+//
+//                    timer = new Timer() {
+//                        @Override
+//                        protected void timeout() {
+//                            processTimeout();
+//                            prepareForIteration();
+//                        }
+//                    }.start(getResources().getInteger(R.integer.timer_in_seconds) * 120 / 100);
+//                } else {
+//                    popup("No performers available");
+//                }
             }
         });
 
@@ -122,11 +120,11 @@ public class PayerFunction extends PerformerFunction {
     }
 
     private void processTimeout() {
-        Noxbox notAcceptedNoxbox = tryGetNotAcceptedNoxbox();
-        if(notAcceptedNoxbox != null) {
+        Noxbox currentNoxbox = getCurrentNoxbox();
+        if(currentNoxbox != null && currentNoxbox.getTimeAccepted() == null) {
             sendRequest(new Request()
                     .setType(EventType.payerCancel)
-                    .setNoxbox(notAcceptedNoxbox)
+                    .setNoxbox(currentNoxbox)
                     .setMessage("Canceled by timeout " + getProfile().getName()));
         }
         removeCurrentNoxbox();
@@ -138,13 +136,9 @@ public class PayerFunction extends PerformerFunction {
     }
 
     public void prepareForIteration() {
-        super.prepareForIteration();
-
-        listenAvailablePerformers();
-
         processTimeout();
 
-        if(tryGetNoxboxInProgress() != null) {
+        if(getCurrentNoxbox() != null) {
             removeCurrentNoxbox();
         }
 
@@ -160,16 +154,13 @@ public class PayerFunction extends PerformerFunction {
         showQrCode.setVisibility(View.INVISIBLE);
     }
 
-    @Override
     protected void processSync(Event sync) {
         updateCurrentNoxbox(sync.getNoxbox());
     }
 
-    @Override
     public void processNoxbox(final Noxbox noxbox) {
-        super.processNoxbox(noxbox);
-        stopListenAvailablePerformers();
-        drawPathToNoxbox(noxbox);
+//        stopListenAvailablePerformers();
+//        drawPathToNoxbox(noxbox);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,12 +187,11 @@ public class PayerFunction extends PerformerFunction {
         pointerImage.setVisibility(View.INVISIBLE);
     }
 
-    @Override
     protected void processAccept(Event accept) {
         if(timer != null) {
             timer.stop();
         }
-        cleanUpMap();
+//        cleanUpMap();
         updateCurrentNoxbox(accept.getNoxbox());
         processNoxbox(accept.getNoxbox());
     }
@@ -211,13 +201,12 @@ public class PayerFunction extends PerformerFunction {
         prepareForIteration();
     }
 
-    @Override
     protected void processMove(Event move) {
-        Noxbox noxbox = tryGetNoxboxInProgress();
+        Noxbox noxbox = getCurrentNoxbox();
         if(noxbox != null) {
             noxbox.getMe(move.getSender().getId()).setPosition(move.getSender().getPosition());
             updateCurrentNoxbox(noxbox);
-            drawPathToNoxbox(noxbox);
+//            drawPathToNoxbox(noxbox);
         }
     }
 

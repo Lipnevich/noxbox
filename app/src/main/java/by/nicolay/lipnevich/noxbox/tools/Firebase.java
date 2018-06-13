@@ -94,12 +94,12 @@ public class Firebase {
     }
 
     public static Event sendNoxboxEvent(Event event) {
-        event = sendEvent(tryGetNoxboxInProgress().getParty(getProfile().getId()).getId(), event);
+        event = sendEvent(getProfile().getCurrent().getParty(getProfile().getId()).getId(), event);
         return event;
     }
 
     public static void addMessageToChat(Event event) {
-        Noxbox noxbox = tryGetNoxboxInProgress();
+        Noxbox noxbox = getProfile().getCurrent();
         if(noxbox != null) {
             noxbox.getChat().put(event.getId(), event);
             updateCurrentNoxbox(noxbox);
@@ -191,7 +191,7 @@ public class Firebase {
 
     // History API
     public static Noxbox persistHistory() {
-        Noxbox current = tryGetNoxboxInProgress();
+        Noxbox current = getProfile().getCurrent();
         if(current == null) return null;
 
         like();
@@ -294,6 +294,10 @@ public class Firebase {
         return user == null ? null : user.getProfile();
     }
 
+    public static Noxbox getCurrentNoxbox() {
+        return getProfile() == null ? null : getProfile().getCurrent();
+    }
+
     public static Wallet getWallet() {
         return user == null ? new Wallet() : user.getWallet();
     }
@@ -334,22 +338,6 @@ public class Firebase {
             clazz = clazz.getSuperclass();
         }
         return params;
-    }
-
-    public static Noxbox tryGetNoxboxInProgress() {
-        if(getProfile() != null && getProfile().getCurrent() != null
-                && getProfile().getCurrent().getTimeAccepted() != null) {
-            return getProfile().getCurrent();
-        }
-        return null;
-    }
-
-    public static Noxbox tryGetNotAcceptedNoxbox() {
-        if(getProfile() != null && getProfile().getCurrent() != null
-                && getProfile().getCurrent().getTimeAccepted() == null) {
-            return getProfile().getCurrent();
-        }
-        return null;
     }
 
     public static void like() {

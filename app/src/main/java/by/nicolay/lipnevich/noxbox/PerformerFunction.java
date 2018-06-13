@@ -30,11 +30,10 @@ import by.nicolay.lipnevich.noxbox.pages.QRCapturePage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
+import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.persistHistory;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNotAcceptedNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.tryGetNoxboxInProgress;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 
 public abstract class PerformerFunction extends PerformerLocationFunction {
@@ -90,9 +89,9 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
                 popup("Failed to recognize qr code, please try again");
             } else {
                 // TODO (nli) check is it correct it on server, process responce, update current Noxbox
-                tryGetNoxboxInProgress().getPayer().setSecret(result.getContents());
+                getCurrentNoxbox().getPayer().setSecret(result.getContents());
                 scanQr.setVisibility(View.INVISIBLE);
-                updateCurrentNoxbox(tryGetNoxboxInProgress());
+                updateCurrentNoxbox(getCurrentNoxbox());
                 completeButton.setEnabled(isQrRecognized());
                 completeButton.setBackgroundResource(isQrRecognized() ? R.color.primary : R.color.divider);
             }
@@ -109,14 +108,13 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
     public void prepareForIteration() {
         super.prepareForIteration();
 
-        Noxbox notAcceptedNoxbox = tryGetNotAcceptedNoxbox();
-        if(notAcceptedNoxbox != null) {
-            processRequest(notAcceptedNoxbox);
-            return;
-        }
-
-        if(tryGetNoxboxInProgress() != null) {
-            removeCurrentNoxbox();
+        Noxbox currentNoxbox = getCurrentNoxbox();
+        if(currentNoxbox != null) {
+            if(currentNoxbox.getTimeAccepted() == null) {
+                processRequest(currentNoxbox);
+            } else {
+                removeCurrentNoxbox();
+            }
         }
         goOffline();
     }
@@ -157,8 +155,8 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
     }
 
     protected void processRequest(final Noxbox noxbox) {
-        if(tryGetNoxboxInProgress() != null) {
-            cancelRequest(tryGetNoxboxInProgress());
+        if(getCurrentNoxbox() != null) {
+            cancelRequest(getCurrentNoxbox());
             return;
         }
 
@@ -176,7 +174,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
         timer = new Timer() {
             @Override
             protected void timeout() {
-                if(tryGetNotAcceptedNoxbox() != null) {
+                if(getCurrentNoxbox().getTimeAccepted() == null) {
                     cancelRequest(noxbox);
                 }
             }

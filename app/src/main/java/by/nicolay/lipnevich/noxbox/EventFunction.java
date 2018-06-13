@@ -42,7 +42,6 @@ public abstract class EventFunction extends GeoFunction {
         Firebase.updateWallet(update.getWallet());
     }
 
-    @Override
     public void processEvent(Event event) {
         switch (event.getType()) {
             case request: processRequest(event); break;
