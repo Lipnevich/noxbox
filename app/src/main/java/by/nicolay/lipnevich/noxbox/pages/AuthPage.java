@@ -1,7 +1,6 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -40,6 +39,7 @@ public class AuthPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initCrashReporting();
         login();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_auth);
         ((CheckBox)findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -88,7 +88,7 @@ public class AuthPage extends AppCompatActivity {
 
     private void login() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            startActivity(new Intent(this, PayerFunction.class));
+            startActivity(new Intent(AuthPage.this, PayerFunction.class));
         }
     }
 
@@ -103,7 +103,6 @@ public class AuthPage extends AppCompatActivity {
             }
         }, spanTxt.length() - "Term of services".length(), spanTxt.length(), 0);
         spanTxt.append(" and");
-        spanTxt.setSpan(new ForegroundColorSpan(Color.BLACK), 32, spanTxt.length(), 0);
         spanTxt.append(" Privacy Policy");
         spanTxt.setSpan(new ClickableSpan() {
             @Override
