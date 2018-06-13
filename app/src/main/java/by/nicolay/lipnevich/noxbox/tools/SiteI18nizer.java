@@ -28,6 +28,7 @@ public class SiteI18nizer {
 
     public static void main(String[] args) throws IOException {
         Path path = Paths.get("functions/translations/template.html");
+
         String content = new String(Files.readAllBytes(path), UTF_8);
 
         File[] translations = new File("functions/translations").listFiles();
