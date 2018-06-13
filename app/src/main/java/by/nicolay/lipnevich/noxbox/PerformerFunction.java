@@ -27,6 +27,7 @@ import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.pages.QRCapturePage;
+import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 
@@ -86,7 +87,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if(result != null) {
             if(result.getContents() == null) {
-                popup("Failed to recognize qr code, please try again");
+                DebugMessage.popup(this,"Failed to recognize qr code, please try again");
             } else {
                 // TODO (nli) check is it correct it on server, process responce, update current Noxbox
                 getCurrentNoxbox().getPayer().setSecret(result.getContents());

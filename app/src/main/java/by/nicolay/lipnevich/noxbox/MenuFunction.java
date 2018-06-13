@@ -69,9 +69,11 @@ import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.pages.AuthPage;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
 import by.nicolay.lipnevich.noxbox.pages.WalletPage;
+import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
+import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.readProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
@@ -93,15 +95,11 @@ public abstract class MenuFunction extends AppCompatActivity {
         });
     }
 
-    protected void popup(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
     protected void processProfile(Profile profile) {
         createMenu();
 
         if(calculateRating() <= MIN_RATE) {
-            popup("Low rate!");
+            popup(this,"Low rate!");
         }
 
         if(new BigDecimal(Firebase.getWallet().getBalance()).compareTo(BigDecimal.ZERO) <= 0) {
@@ -127,7 +125,7 @@ public abstract class MenuFunction extends AppCompatActivity {
         float minProb = getResources().getFraction(R.fraction.min_allowed_probability, 1, 1);
         Acceptance acceptance = getProfile().getAcceptance();
         if(acceptance.getExpired()) {
-            popup("Please wait. Your data check still in progress...");
+            popup(this,"Please wait. Your data check still in progress...");
         } else if(!acceptance.isAccepted(minProb)) {
             String warning = "";
             if(acceptance.getCorrectNameProbability() < minProb) {
@@ -147,9 +145,9 @@ public abstract class MenuFunction extends AppCompatActivity {
                 }
             }
             warning += "Please update your data on your Google account";
-            popup(warning);
+            popup(this,warning);
         } else {
-            popup("Your name and photo are just wonderful!");
+            popup(this,"Your name and photo are just wonderful!");
         }
     }
 

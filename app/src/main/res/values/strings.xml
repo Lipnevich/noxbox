@@ -69,4 +69,5 @@
     <string name="chat">Chat</string>
     <string name="googleAuth">Sign in with Google</string>
     <string name="phoneAuth">Sign in with Phone</string>
+    <string name="isOnline">No network connection</string>
 </resources>

@@ -1,6 +1,8 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,24 +26,26 @@ import java.util.Arrays;
 import by.nicolay.lipnevich.noxbox.BuildConfig;
 import by.nicolay.lipnevich.noxbox.PayerFunction;
 import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.tools.FragmentManager;
 import io.fabric.sdk.android.Fabric;
+
+import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 
 public class AuthPage extends AppCompatActivity {
 
     private static final String TERMS_URL = "https://noxbox.io/TermsAndConditions.html";
     private static final String PRIVACY_URL = "https://noxbox.io/NoxBoxPrivacyPolicy.pdf";
 
-    private static final int GOOGLE_REQEUST_CODE = 11011;
-    private static final int PHONE_REQEUST_CODE = 11010;
+    private static final int REQEUST_CODE = 11011;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initCrashReporting();
         login();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_auth);
-        ((CheckBox)findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 findViewById(R.id.googleAuth).setEnabled(isChecked);
@@ -52,25 +56,29 @@ public class AuthPage extends AppCompatActivity {
         findViewById(R.id.googleAuth).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
-                        .setTheme(R.style.LoginTheme)
-                        .setAvailableProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.GoogleBuilder().build()))
-                        .build();
-                startActivityForResult(intent, GOOGLE_REQEUST_CODE);
+                startAuth(new AuthUI.IdpConfig.GoogleBuilder());
             }
         });
         findViewById(R.id.phoneAuth).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
-                        .setTheme(R.style.LoginTheme)
-                        .setAvailableProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.PhoneBuilder().build()))
-                        .build();
-                startActivityForResult(intent, PHONE_REQEUST_CODE);
+                startAuth(new AuthUI.IdpConfig.PhoneBuilder());
             }
         });
+    }
+
+    private void startAuth(AuthUI.IdpConfig.Builder provider) {
+        if(isOnline()){
+            Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
+                    .setTheme(R.style.LoginTheme)
+                    .setAvailableProviders(Arrays.asList(
+                            provider.build()))
+                    .build();
+            startActivityForResult(intent, REQEUST_CODE);
+        }else{
+            popup(this,"No internet");
+            FragmentManager.createFragment(this, new WarningFragmemt(), R.id.messageContainer);
+        }
     }
 
     private void initCrashReporting() {
@@ -118,6 +126,12 @@ public class AuthPage extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
 }
