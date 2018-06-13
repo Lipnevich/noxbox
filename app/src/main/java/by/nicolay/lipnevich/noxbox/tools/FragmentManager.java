@@ -6,6 +6,7 @@ import android.app.Fragment;
 
 public class FragmentManager {
 
+
     public static void createFragment(Activity activity, Fragment fragment, int layout){
         activity.getFragmentManager().beginTransaction().add(layout,fragment).commit();
     }
