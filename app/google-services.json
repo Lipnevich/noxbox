@@ -1,0 +1,179 @@
+{
+  "project_info": {
+    "project_number": "400430766185",
+    "firebase_url": "https://noxbox-150813.firebaseio.com",
+    "project_id": "noxbox-150813",
+    "storage_bucket": "noxbox-150813.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400430766185:android:c02bb76195c1735c",
+        "android_client_info": {
+          "package_name": "by.nicolay.lipnevich.noxbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400430766185-btlojdciglv48dpo6j06b00d2pdvq5oi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "by.nicolay.lipnevich.noxbox",
+            "certificate_hash": "a0a48a416c6de7c530a3ba6b889114d39d64683b"
+          }
+        },
+        {
+          "client_id": "400430766185-p13cfb9v0h8k4ng7tb2t9r6t7hntumu5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "by.nicolay.lipnevich.noxbox",
+            "certificate_hash": "e9a1ea9051b038ae44f02caa21dfa07fc5da3c6c"
+          }
+        },
+        {
+          "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI2-Wg-3HWzy9rbzagu4ef8sikzoa7Xac"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400430766185:android:6ed8ca7a52371c59",
+        "android_client_info": {
+          "package_name": "by.nicolay.lipnevich.noxbox.payer.massage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400430766185-kqf4bi1nocviu4h5sbfb3e9m7kpelroi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "by.nicolay.lipnevich.noxbox.payer.massage",
+            "certificate_hash": "e9a1ea9051b038ae44f02caa21dfa07fc5da3c6c"
+          }
+        },
+        {
+          "client_id": "400430766185-90gkti6j7mu1bfao828q9h6q42novv5o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "by.nicolay.lipnevich.noxbox.payer.massage",
+            "certificate_hash": "a0a48a416c6de7c530a3ba6b889114d39d64683b"
+          }
+        },
+        {
+          "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI2-Wg-3HWzy9rbzagu4ef8sikzoa7Xac"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400430766185:android:feab3e80ea186f26",
+        "android_client_info": {
+          "package_name": "by.nicolay.lipnevich.noxbox.performer.massage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400430766185-c2vh9282jngdt7v3efdbo5bfrugnqpic.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "by.nicolay.lipnevich.noxbox.performer.massage",
+            "certificate_hash": "e9a1ea9051b038ae44f02caa21dfa07fc5da3c6c"
+          }
+        },
+        {
+          "client_id": "400430766185-64paqvd38aang82t2albimc393ldk93t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "by.nicolay.lipnevich.noxbox.performer.massage",
+            "certificate_hash": "a0a48a416c6de7c530a3ba6b889114d39d64683b"
+          }
+        },
+        {
+          "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI2-Wg-3HWzy9rbzagu4ef8sikzoa7Xac"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400430766185-jf53fqjkkfajr46oievhtt1cfjfuj7s5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
