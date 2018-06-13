@@ -61,7 +61,7 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 
-public class MapFunction extends MenuFunction implements
+public class MapActivity extends MenuActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 

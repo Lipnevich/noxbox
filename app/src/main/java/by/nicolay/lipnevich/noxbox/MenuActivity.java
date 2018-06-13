@@ -27,7 +27,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -69,7 +68,6 @@ import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.pages.AuthPage;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
 import by.nicolay.lipnevich.noxbox.pages.WalletPage;
-import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
@@ -78,7 +76,7 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.readProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 
-public abstract class MenuFunction extends AppCompatActivity {
+public abstract class MenuActivity extends AppCompatActivity {
 
     private float MIN_RATE;
 
@@ -315,7 +313,7 @@ public abstract class MenuFunction extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MenuFunction.this,
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this,
                                 R.style.NoxboxAlertDialogStyle);
                         builder.setTitle(getResources().getString(R.string.logoutPrompt));
                         builder.setPositiveButton(getResources().getString(R.string.logout),
@@ -323,12 +321,12 @@ public abstract class MenuFunction extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         AuthUI.getInstance()
-                                                .signOut(MenuFunction.this)
+                                                .signOut(MenuActivity.this)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
                                                         // TODO (nli) start activity for result
-                                                        startActivity(new Intent(MenuFunction.this, AuthPage.class));
+                                                        startActivity(new Intent(MenuActivity.this, AuthPage.class));
                                                     }
                                                 });
                                     }
