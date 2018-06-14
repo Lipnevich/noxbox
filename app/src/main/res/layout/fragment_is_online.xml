@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:padding="6dp"
         android:gravity="center_horizontal"
-        android:text="@string/isOnline"
+        android:text="@string/isOffline"
         android:textSize="16sp"
         android:textColor="@color/secondary"/>
 </LinearLayout>
