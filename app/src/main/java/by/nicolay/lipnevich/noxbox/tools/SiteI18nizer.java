@@ -65,7 +65,7 @@ public class SiteI18nizer {
         Properties properties = new Properties();
         properties.load(new FileInputStream(file));
 
-        List<Map.Entry <String, String>> sorted = new ArrayList(properties.entrySet());
+        ArrayList<Map.Entry <String, String>> sorted = new ArrayList(properties.entrySet());
         Collections.sort(sorted, new Comparator<Map.Entry <String, String>>() {
             @Override
             public int compare(Map.Entry <String, String> o, Map.Entry <String, String> o1) {

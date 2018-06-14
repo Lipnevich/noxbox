@@ -36,7 +36,7 @@ public class AuthPage extends AppCompatActivity {
     private static final String TERMS_URL = "https://noxbox.io/TermsAndConditions.html";
     private static final String PRIVACY_URL = "https://noxbox.io/NoxBoxPrivacyPolicy.pdf";
 
-    private static final int REQEUST_CODE = 11011;
+    private static final int REQUEST_CODE = 11011;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class AuthPage extends AppCompatActivity {
                     .setTheme(R.style.LoginTheme)
                     .setAvailableProviders(Arrays.asList(provider.build()))
                     .build();
-            startActivityForResult(intent, REQEUST_CODE);
+            startActivityForResult(intent, REQUEST_CODE);
         }else{
             popup(this,"No internet");
             FragmentManager.createFragment(this, new WarningFragmemt(), R.id.messageContainer);
@@ -109,8 +109,8 @@ public class AuthPage extends AppCompatActivity {
                 openLink(TERMS_URL);
             }
         }, spanTxt.length() - "Term of services".length(), spanTxt.length(), 0);
-        spanTxt.append(" and");
-        spanTxt.append(" Privacy Policy");
+        spanTxt.append(" and ");
+        spanTxt.append("Privacy Policy");
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
