@@ -71,6 +71,7 @@ public class AuthPage extends AppCompatActivity {
         if(isOnline()){
             Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
                     .setTheme(R.style.LoginTheme)
+                    .setIsSmartLockEnabled(false)
                     .setAvailableProviders(Arrays.asList(provider.build()))
                     .build();
             startActivityForResult(intent, REQUEST_CODE);
