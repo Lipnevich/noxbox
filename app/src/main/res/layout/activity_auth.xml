@@ -39,12 +39,13 @@
 
         <Button
             style="@style/Widget.AppCompat.Button.Colored"
+            android:background="@drawable/auth_button_corners"
             android:id="@+id/googleAuth"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:drawableStart="@drawable/ic_google"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="16dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="16dp"
             android:textSize="14dp"
             android:enabled="false"
             android:text="@string/googleAuth"
