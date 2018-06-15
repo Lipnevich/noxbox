@@ -7,7 +7,7 @@ import android.app.Fragment;
 public class FragmentManager {
 
     public static void createFragment(Activity activity, Fragment fragment, int layout){
-        activity.getFragmentManager().beginTransaction().add(layout,fragment).commit();
+        activity.getFragmentManager().beginTransaction().replace(layout,fragment).commit();
     }
 
     public static void removeFragment(Activity activity,Fragment fragment){

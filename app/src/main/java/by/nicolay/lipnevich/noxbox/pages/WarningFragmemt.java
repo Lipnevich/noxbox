@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import by.nicolay.lipnevich.noxbox.R;
 
 public class WarningFragmemt extends Fragment {
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

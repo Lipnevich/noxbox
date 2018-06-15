@@ -70,4 +70,10 @@
     <string name="googleAuth">Sign in with Google</string>
     <string name="phoneAuth">Sign in with Phone</string>
     <string name="isOffline">No network connection</string>
+    <!--line agreement-->
+    <string name="iAgreeToThe">I agree to the </string>
+    <string name="termOfServices">Term of services</string>
+    <string name="and">and</string>
+    <string name="privacyPolicy">Privacy Policy</string>
+
 </resources>

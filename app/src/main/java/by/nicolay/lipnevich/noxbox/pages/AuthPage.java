@@ -1,7 +1,10 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +15,7 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -26,7 +30,6 @@ import java.util.Arrays;
 import by.nicolay.lipnevich.noxbox.BuildConfig;
 import by.nicolay.lipnevich.noxbox.MapActivity;
 import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.tools.FragmentManager;
 import io.fabric.sdk.android.Fabric;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
@@ -38,6 +41,8 @@ public class AuthPage extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 11011;
 
+    private BroadcastReceiver br = new NetworkReceiver(this);
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,9 +53,21 @@ public class AuthPage extends AppCompatActivity {
         ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                findViewById(R.id.googleAuth).setEnabled(isChecked);
-                findViewById(R.id.phoneAuth).setEnabled(isChecked);
+
+                if (isChecked) {
+                    findViewById(R.id.googleAuth).setEnabled(isChecked);
+                    findViewById(R.id.phoneAuth).setEnabled(isChecked);
+                    ((Button) findViewById(R.id.googleAuth)).setTextColor(getResources().getColor(R.color.secondary));
+                    ((Button) findViewById(R.id.phoneAuth)).setTextColor(getResources().getColor(R.color.secondary));
+                } else {
+                    findViewById(R.id.googleAuth).setEnabled(isChecked);
+                    findViewById(R.id.phoneAuth).setEnabled(isChecked);
+                    ((Button) findViewById(R.id.googleAuth)).setTextColor(getResources().getColor(R.color.google_text));
+                    ((Button) findViewById(R.id.phoneAuth)).setTextColor(getResources().getColor(R.color.google_text));
+                }
+
             }
+
         });
         createMultipleLinks((TextView) findViewById(R.id.agreementView));
         findViewById(R.id.googleAuth).setOnClickListener(new View.OnClickListener() {
@@ -65,19 +82,20 @@ public class AuthPage extends AppCompatActivity {
                 startAuth(new AuthUI.IdpConfig.PhoneBuilder());
             }
         });
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(br, filter);
     }
 
     private void startAuth(AuthUI.IdpConfig.Builder provider) {
-        if(isOnline()){
+        if (isOnline()) {
             Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
                     .setTheme(R.style.LoginTheme)
                     .setIsSmartLockEnabled(false)
                     .setAvailableProviders(Arrays.asList(provider.build()))
                     .build();
             startActivityForResult(intent, REQUEST_CODE);
-        }else{
-            popup(this,"No internet");
-            FragmentManager.createFragment(this, new WarningFragmemt(), R.id.messageContainer);
+        } else {
+            popup(this, "No internet");
         }
     }
 
@@ -99,25 +117,24 @@ public class AuthPage extends AppCompatActivity {
             startActivity(new Intent(AuthPage.this, MapActivity.class));
         }
     }
-
     private void createMultipleLinks(TextView textView) {
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(
-                "I agree to the ");
-        spanTxt.append("Term of services");
+                getResources().getString(R.string.iAgreeToThe).concat(" "));
+        spanTxt.append(getResources().getString(R.string.termOfServices));
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 openLink(TERMS_URL);
             }
-        }, spanTxt.length() - "Term of services".length(), spanTxt.length(), 0);
-        spanTxt.append(" and ");
-        spanTxt.append("Privacy Policy");
+        }, spanTxt.length() - getResources().getString(R.string.termOfServices).length(), spanTxt.length(), 0);
+        spanTxt.append(" ".concat(getResources().getString(R.string.and).concat(" ")));
+        spanTxt.append(getResources().getString(R.string.privacyPolicy));
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 openLink(PRIVACY_URL);
             }
-        }, spanTxt.length() - " Privacy Policy".length(), spanTxt.length(), 0);
+        }, spanTxt.length() - getResources().getString(R.string.privacyPolicy).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
@@ -134,4 +151,20 @@ public class AuthPage extends AppCompatActivity {
         return cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            popup(this, "LANDSCAPE");
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            popup(this, "PORTRAIT");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(br);
+        super.onDestroy();
+    }
 }

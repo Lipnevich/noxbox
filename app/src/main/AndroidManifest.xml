@@ -10,7 +10,8 @@
 
         <activity
             android:name=".pages.AuthPage"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/NoActionBar"
+            android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -39,7 +40,11 @@
     <service android:name="by.nicolay.lipnevich.noxbox.tools.PushTokenService">
         <intent-filter><action android:name="com.google.Firebase.INSTANCE_ID_EVENT"/></intent-filter>
     </service>
-
+        <receiver android:name=".pages.NetworkReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
