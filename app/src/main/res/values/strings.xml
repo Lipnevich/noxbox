@@ -75,5 +75,7 @@
     <string name="termOfServices">Term of services</string>
     <string name="and">and</string>
     <string name="privacyPolicy">Privacy Policy</string>
+    <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
+    <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
 
 </resources>

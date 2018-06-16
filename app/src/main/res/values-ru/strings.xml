@@ -75,4 +75,6 @@
     <string name="termOfServices">Правилами пользования</string>
     <string name="and">и</string>
     <string name="privacyPolicy">Политикой конфиденциальности</string>
+    <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
+    <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
 </resources>
