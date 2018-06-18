@@ -36,7 +36,7 @@ public class NetworkReceiver extends BroadcastReceiver {
                 if(fragment == null){
                     fragment = new WarningFragmemt();
                 }
-                FragmentManager.createFragment(activity,fragment, R.id.messageContainer);
+                FragmentManager.createFragmentOnTop(activity,fragment, R.id.messageContainer);
             }
         }
     }

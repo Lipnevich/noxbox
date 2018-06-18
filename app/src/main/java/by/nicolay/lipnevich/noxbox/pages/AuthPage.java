@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -52,15 +50,11 @@ public class AuthPage extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-                    findViewById(R.id.googleAuth).setEnabled(isChecked);
-                    findViewById(R.id.phoneAuth).setEnabled(isChecked);
-                    ((Button) findViewById(R.id.googleAuth)).setTextColor(getResources().getColor(R.color.secondary));
-                    ((Button) findViewById(R.id.phoneAuth)).setTextColor(getResources().getColor(R.color.secondary));
+                    ((TextView) findViewById(R.id.textGoogleAuth)).setTextColor(getResources().getColor(R.color.secondary));
+                    ((TextView) findViewById(R.id.textPhoneAuth)).setTextColor(getResources().getColor(R.color.secondary));
                 } else {
-                    findViewById(R.id.googleAuth).setEnabled(isChecked);
-                    findViewById(R.id.phoneAuth).setEnabled(isChecked);
-                    ((Button) findViewById(R.id.googleAuth)).setTextColor(getResources().getColor(R.color.google_text));
-                    ((Button) findViewById(R.id.phoneAuth)).setTextColor(getResources().getColor(R.color.google_text));
+                    ((TextView) findViewById(R.id.textGoogleAuth)).setTextColor(getResources().getColor(R.color.google_text));
+                    ((TextView) findViewById(R.id.textPhoneAuth)).setTextColor(getResources().getColor(R.color.google_text));
                 }
 
             }
@@ -82,7 +76,7 @@ public class AuthPage extends AppCompatActivity {
     }
 
     private void startAuth(AuthUI.IdpConfig.Builder provider) {
-        if (isOnline()) {
+        if (isOnline() && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
             Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
                     .setTheme(R.style.LoginTheme)
                     .setIsSmartLockEnabled(false)
@@ -112,6 +106,7 @@ public class AuthPage extends AppCompatActivity {
             startActivity(new Intent(AuthPage.this, MapActivity.class));
         }
     }
+
     private void createMultipleLinks(TextView textView) {
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(
                 getResources().getString(R.string.iAgreeToThe).concat(" "));
@@ -147,16 +142,6 @@ public class AuthPage extends AppCompatActivity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            popup(this, "LANDSCAPE");
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            popup(this, "PORTRAIT");
-        }
-    }
-
-    @Override
     protected void onResume() {
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         super.onResume();
@@ -167,4 +152,5 @@ public class AuthPage extends AppCompatActivity {
         unregisterReceiver(networkReceiver);
         super.onPause();
     }
+
 }
