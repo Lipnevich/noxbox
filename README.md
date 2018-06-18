@@ -30,6 +30,7 @@ Before you start processing crypto transactions
    npm install big.js <br/>
    cd /functions/functions <br/>
    firebase deploy --only functions <br/>
+   firebase deploy --only hosting <br/>
 3. (optional) for improving data protection set your secret word<br/>
    firebase functions:config:set keys.seedpass="Your Secret Word For user's seed encryption"
 4. (optional) account with wallet for rewards

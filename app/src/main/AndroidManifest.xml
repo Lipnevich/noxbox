@@ -27,19 +27,20 @@
                   android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.QRCapturePage"
             android:screenOrientation="portrait">
-    </activity>
+        </activity>
 
-    <meta-data android:name="io.fabric.ApiKey" android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
-    <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key"/>
-    <meta-data android:name="com.google.firebase.ml.vision.DEPENDENCIES" android:value="face" />
+        <meta-data android:name="io.fabric.ApiKey" android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key"/>
+        <meta-data android:name="com.google.firebase.ml.vision.DEPENDENCIES" android:value="face" />
 
-    <service android:name="by.nicolay.lipnevich.noxbox.tools.MessagingService">
-        <intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT"/></intent-filter>
-    </service>
+        <service android:name="by.nicolay.lipnevich.noxbox.tools.MessagingService">
+            <intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT"/></intent-filter>
+        </service>
 
-    <service android:name="by.nicolay.lipnevich.noxbox.tools.PushTokenService">
-        <intent-filter><action android:name="com.google.Firebase.INSTANCE_ID_EVENT"/></intent-filter>
-    </service>
+        <service android:name="by.nicolay.lipnevich.noxbox.tools.PushTokenService">
+            <intent-filter><action android:name="com.google.Firebase.INSTANCE_ID_EVENT"/></intent-filter>
+        </service>
+
         <receiver android:name=".pages.NetworkReceiver" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -51,6 +52,5 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-
 
 </manifest>

@@ -36,12 +36,9 @@ import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 
 public class AuthPage extends AppCompatActivity {
 
-    private static final String TERMS_URL = "https://noxbox.io/TermsAndConditions.html";
-    private static final String PRIVACY_URL = "https://noxbox.io/NoxBoxPrivacyPolicy.pdf";
-
     private static final int REQUEST_CODE = 11011;
 
-    private BroadcastReceiver br = new NetworkReceiver(this);
+    private BroadcastReceiver networkReceiver = new NetworkReceiver(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,8 +79,6 @@ public class AuthPage extends AppCompatActivity {
                 startAuth(new AuthUI.IdpConfig.PhoneBuilder());
             }
         });
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(br, filter);
     }
 
     private void startAuth(AuthUI.IdpConfig.Builder provider) {
@@ -124,7 +119,7 @@ public class AuthPage extends AppCompatActivity {
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                openLink(TERMS_URL);
+                openLink(getResources().getString(R.string.termsOfServiceLink));
             }
         }, spanTxt.length() - getResources().getString(R.string.termOfServices).length(), spanTxt.length(), 0);
         spanTxt.append(" ".concat(getResources().getString(R.string.and).concat(" ")));
@@ -132,7 +127,7 @@ public class AuthPage extends AppCompatActivity {
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                openLink(PRIVACY_URL);
+                openLink(getResources().getString(R.string.privacyPolicyLink));
             }
         }, spanTxt.length() - getResources().getString(R.string.privacyPolicy).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -151,7 +146,6 @@ public class AuthPage extends AppCompatActivity {
         return cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -163,8 +157,14 @@ public class AuthPage extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        unregisterReceiver(br);
-        super.onDestroy();
+    protected void onResume() {
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(networkReceiver);
+        super.onPause();
     }
 }

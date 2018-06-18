@@ -20,6 +20,9 @@ public class NetworkReceiver extends BroadcastReceiver {
         this.activity = activity;
     }
 
+    public NetworkReceiver() {
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         ConnectivityManager connectivityManager
@@ -28,9 +31,7 @@ public class NetworkReceiver extends BroadcastReceiver {
             NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             if (wifi.isConnectedOrConnecting() || mobile.isConnectedOrConnecting()) {
-                if (fragment != null) {
-                    FragmentManager.removeFragment(activity, fragment);
-                }
+                FragmentManager.removeFragment(activity, fragment);
             } else {
                 if(fragment == null){
                     fragment = new WarningFragmemt();
