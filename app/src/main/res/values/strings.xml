@@ -67,8 +67,6 @@
     <string name="enterMessage">Type a message...</string>
     <string name="addressInClipBoard">Address copied to clipboard</string>
     <string name="chat">Chat</string>
-    <string name="googleAuth">Sign in with Google</string>
-    <string name="phoneAuth">Sign in with Phone</string>
     <string name="isOffline">No network connection</string>
     <!--line agreement-->
     <string name="iAgreeToThe">I agree to the </string>

@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.NoxboxStatus;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
@@ -76,20 +75,14 @@ public class MapActivity extends MenuActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+
 
         ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId)).getMapAsync(this);
         pathImage = findViewById(R.id.pathImage);
         connectGoogleApi();
     }
 
-    @Override
-    protected void draw() {
-        NoxboxStatus status = NoxboxStatus.getStatus(getProfile());
-        switch (status) {
-            default: // TODO (vlad) fragment for status
-        }
-    }
+
 
     private void connectGoogleApi() {
         googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
@@ -114,6 +107,7 @@ public class MapActivity extends MenuActivity implements
                 scaleMarkers();
             }
         });
+        draw();
     }
 
     protected void visibleCurrentLocation(boolean visible) {
@@ -240,8 +234,8 @@ public class MapActivity extends MenuActivity implements
         }
 
         // TODO (nli) use icon for noxbox type
-        draw(performer, R.drawable.masseur);
-        draw(payer, R.drawable.pointer);
+        drawIcon(performer, R.drawable.masseur);
+        drawIcon(payer, R.drawable.pointer);
 
         AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>> asyncTask = new AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>>() {
             @Override
@@ -291,7 +285,7 @@ public class MapActivity extends MenuActivity implements
         return Position.from(latLng);
     }
 
-    protected void draw(Profile profile, int drawable) {
+    protected void drawIcon(Profile profile, int drawable) {
         if(profile.getPosition() != null) {
             createMarker(profile.getId(), profile.getPosition().toLatLng(), drawable);
         } else {

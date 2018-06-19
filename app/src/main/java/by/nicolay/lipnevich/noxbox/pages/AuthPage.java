@@ -26,7 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.Arrays;
 
 import by.nicolay.lipnevich.noxbox.BuildConfig;
-import by.nicolay.lipnevich.noxbox.MapActivity;
+import by.nicolay.lipnevich.noxbox.MenuActivity;
 import by.nicolay.lipnevich.noxbox.R;
 import io.fabric.sdk.android.Fabric;
 
@@ -78,7 +78,6 @@ public class AuthPage extends AppCompatActivity {
     private void startAuth(AuthUI.IdpConfig.Builder provider) {
         if (isOnline() && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
             Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
-                    .setTheme(R.style.LoginTheme)
                     .setIsSmartLockEnabled(false)
                     .setAvailableProviders(Arrays.asList(provider.build()))
                     .build();
@@ -103,7 +102,7 @@ public class AuthPage extends AppCompatActivity {
 
     private void login() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            startActivity(new Intent(AuthPage.this, MapActivity.class));
+            startActivity(new Intent(AuthPage.this, MenuActivity.class));
         }
     }
 

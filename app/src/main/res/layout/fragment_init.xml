@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/pointerImage"
+        style="@style/IconButtonStyle"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:layout_marginBottom="42dp"
+        android:src="@drawable/pointer" />
+</android.support.constraint.ConstraintLayout>

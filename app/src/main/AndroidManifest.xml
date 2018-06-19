@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="by.nicolay.lipnevich.noxbox.MapActivity"
+        <activity android:name="by.nicolay.lipnevich.noxbox.MenuActivity"
                   android:theme="@style/NoActionBar"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"
@@ -40,7 +40,7 @@
             <intent-filter><action android:name="com.google.Firebase.INSTANCE_ID_EVENT"/></intent-filter>
         </service>
 
-        <receiver android:name=".pages.NetworkReceiver" android:enabled="false">
+        <receiver android:name=".pages.NetworkReceiver" android:enabled="false" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>

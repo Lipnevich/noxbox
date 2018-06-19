@@ -62,13 +62,16 @@ import java.util.TreeMap;
 import by.nicolay.lipnevich.noxbox.model.Acceptance;
 import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
+import by.nicolay.lipnevich.noxbox.model.NoxboxStatus;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.pages.AuthPage;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
+import by.nicolay.lipnevich.noxbox.pages.InitFragment;
 import by.nicolay.lipnevich.noxbox.pages.WalletPage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
+import by.nicolay.lipnevich.noxbox.tools.FragmentManager;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
@@ -76,13 +79,14 @@ import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.readProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 
-public abstract class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends AppCompatActivity {
 
     private float MIN_RATE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
         MIN_RATE = getResources().getFraction(R.fraction.min_allowed_probability, 1, 1);
 
         readProfile(new Task<Profile>() {
@@ -91,6 +95,7 @@ public abstract class MenuActivity extends AppCompatActivity {
                 processProfile(profile);
             }
         });
+
     }
 
     protected void processProfile(Profile profile) {
@@ -112,7 +117,7 @@ public abstract class MenuActivity extends AppCompatActivity {
             }
         });
         check.setVisibility(View.VISIBLE);
-
+        draw();
 //        listenEvents();
     }
 
@@ -360,6 +365,14 @@ public abstract class MenuActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected abstract void draw();
-
+    protected void draw() {
+        popup(this,"draw();");
+        NoxboxStatus status = NoxboxStatus.getStatus(getProfile());
+        switch (status) {
+            case empty: {
+                FragmentManager.createFragment(this, new InitFragment(),R.id.map_layout);
+            }
+            default: // TODO (vlad) fragment for status
+        }
+    }
 }
