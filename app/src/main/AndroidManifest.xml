@@ -10,8 +10,7 @@
 
         <activity
             android:name=".pages.AuthPage"
-            android:theme="@style/NoActionBar"
-            android:configChanges="orientation|screenSize|keyboardHidden">
+            android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -41,7 +40,7 @@
             <intent-filter><action android:name="com.google.Firebase.INSTANCE_ID_EVENT"/></intent-filter>
         </service>
 
-        <receiver android:name=".pages.NetworkReceiver" >
+        <receiver android:name=".pages.NetworkReceiver" android:enabled="false">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>

@@ -1,6 +1,8 @@
 package by.nicolay.lipnevich.noxbox.model;
 
 public enum TravelMode {
+
+    none(0),
     // 45 km/h
     driving(45000 / 60),
     // 15 km/h
