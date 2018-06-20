@@ -24,7 +24,7 @@ public class InitMarkerFragment implements GoogleMap.OnMarkerClickListener, Goog
 
     public void draw() {
         Noxbox noxbox = new Noxbox();
-        noxbox.setPosition(new Position().setLongitude(27.34).setLongitude(53.52));
+        noxbox.setPosition(new Position().setLongitude(27.34).setLatitude(53.52));
         noxbox.setType(NoxboxType.sportCompanion);
         createMarker(noxbox);
         googleMap.setOnMarkerClickListener(this);
