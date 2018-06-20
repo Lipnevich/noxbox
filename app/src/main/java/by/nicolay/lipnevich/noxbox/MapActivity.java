@@ -52,7 +52,7 @@ import by.nicolay.lipnevich.noxbox.model.NoxboxStatus;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.pages.InitFragment;
+import by.nicolay.lipnevich.noxbox.pages.InitMarkerFragment;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
@@ -69,7 +69,7 @@ public class MapActivity extends MenuActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-
+    private Map<String, GroundOverlay> markers = new HashMap<>();
     private Map<String, Polyline> pathes = new HashMap<>();
     private ImageView pathImage;
 
@@ -287,7 +287,7 @@ public class MapActivity extends MenuActivity implements
 
     protected void drawIcon(Profile profile, int drawable) {
         if (profile.getPosition() != null) {
-            createMarker(profile.getId(), profile.getPosition().toLatLng(), drawable);
+            draw();//createMarker(profile.getId(), profile.getPosition().toLatLng(), drawable);
         } else {
             Crashlytics.log(Log.WARN, "emptyPosition", "Empty position for profile "
                     + profile.publicInfo());
@@ -391,8 +391,7 @@ public class MapActivity extends MenuActivity implements
         NoxboxStatus status = NoxboxStatus.getStatus(getProfile());
         switch (status) {
             case empty: {
-                //FragmentManager.createFragment(this, new InitFragment(),R.id.buttonContainer);
-                new InitFragment(googleMap).draw();
+                new InitMarkerFragment(googleMap,markers).draw();
             }
             default: // TODO (vlad) fragment for status
         }
