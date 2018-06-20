@@ -62,24 +62,22 @@ import java.util.TreeMap;
 import by.nicolay.lipnevich.noxbox.model.Acceptance;
 import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
-import by.nicolay.lipnevich.noxbox.model.NoxboxStatus;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.pages.AuthPage;
 import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
-import by.nicolay.lipnevich.noxbox.pages.InitFragment;
 import by.nicolay.lipnevich.noxbox.pages.WalletPage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.FragmentManager;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.readProfile;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
-
-public class MenuActivity extends AppCompatActivity {
+//onMapReady вызываем draw и в зависимости от статуса отрисовывать
+//
+public abstract class MenuActivity extends AppCompatActivity {
 
     private float MIN_RATE;
 
@@ -109,14 +107,14 @@ public class MenuActivity extends AppCompatActivity {
             Firebase.sendRequest(new Request().setType(EventType.balance));
         }
 
-        ImageView check = findViewById(R.id.check);
+        /*ImageView check = findViewById(R.id.check);
         check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkAcceptance();
             }
         });
-        check.setVisibility(View.VISIBLE);
+        check.setVisibility(View.VISIBLE);*/
         draw();
 //        listenEvents();
     }
@@ -365,14 +363,5 @@ public class MenuActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected void draw() {
-        popup(this,"draw();");
-        NoxboxStatus status = NoxboxStatus.getStatus(getProfile());
-        switch (status) {
-            case empty: {
-                FragmentManager.createFragment(this, new InitFragment(),R.id.map_layout);
-            }
-            default: // TODO (vlad) fragment for status
-        }
-    }
+    protected abstract void draw();
 }

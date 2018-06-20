@@ -16,16 +16,6 @@
         android:id="@+id/mapId"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"/>
 
-
-
-        <ImageView
-            android:id="@+id/menu"
-            style="@style/IconButtonStyle"
-            android:layout_gravity="start|top"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="13dp"
-            android:src="@drawable/menu" />
-    </fragment>
 </android.support.v4.widget.DrawerLayout>

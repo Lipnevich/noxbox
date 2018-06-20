@@ -16,7 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="by.nicolay.lipnevich.noxbox.MenuActivity"
+        <activity android:name="by.nicolay.lipnevich.noxbox.MapActivity"
                   android:theme="@style/NoActionBar"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"

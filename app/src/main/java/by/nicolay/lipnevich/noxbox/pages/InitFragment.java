@@ -1,25 +1,54 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
-import android.app.Fragment;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-import by.nicolay.lipnevich.noxbox.R;
+import java.util.HashMap;
+import java.util.Map;
 
-public class InitFragment extends Fragment {
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.Position;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_init,container,false);
+public class InitFragment {
+
+    private Map<String, GroundOverlay> markers = new HashMap<>();
+    private GoogleMap googleMap;
+
+    public InitFragment(GoogleMap googleMap) {
+        this.googleMap = googleMap;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void draw() {
+        Noxbox noxbox = new Noxbox().setPosition(new Position().setLatitude(53.2).setLongitude(47.1)).setId();
+        createMarker(noxbox);
+    }
+    public void clear(){
+        googleMap.clear();
+    }
+
+
+    public void createMarker(Noxbox noxbox) {
+      googleMap.addMarker(new MarkerOptions());
+       /* GroundOverlay marker = markers.get(key);
+        if (marker == null) {
+            GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+                    .image(BitmapDescriptorFactory.fromResource(resource))
+                    .position(latLng, 48, 48)
+                    .anchor(0.5f, 1)
+                    .zIndex(10);
+            marker = googleMap.addGroundOverlay(newarkMap);
+            marker.setDimensions(getScaledSize(), getScaledSize());
+            markers.put(key, marker);
+        }
+        marker.setPosition(latLng);
+        return marker;*/
+    }
+
+    public void removeMarker(String key) {
+        GroundOverlay marker = markers.remove(key);
+        if (marker != null) {
+            marker.remove();
+        }
     }
 }

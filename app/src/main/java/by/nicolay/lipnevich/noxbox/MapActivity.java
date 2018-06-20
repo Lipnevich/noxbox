@@ -32,10 +32,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PatternItem;
@@ -50,11 +48,14 @@ import java.util.List;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.NoxboxStatus;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
+import by.nicolay.lipnevich.noxbox.pages.InitFragment;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
+import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
@@ -68,20 +69,17 @@ public class MapActivity extends MenuActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-    private Map<String, GroundOverlay> markers = new HashMap<>();
+
     private Map<String, Polyline> pathes = new HashMap<>();
     private ImageView pathImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId)).getMapAsync(this);
         pathImage = findViewById(R.id.pathImage);
         connectGoogleApi();
     }
-
 
 
     private void connectGoogleApi() {
@@ -116,11 +114,11 @@ public class MapActivity extends MenuActivity implements
             // Permission to access the location is missing.
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
-            if(googleMap != null) {
+            if (googleMap != null) {
                 googleMap.setMyLocationEnabled(visible);
             }
 
-            if(!visible) {
+            if (!visible) {
                 return;
             }
             // Access to the location has been granted to the app.
@@ -137,8 +135,7 @@ public class MapActivity extends MenuActivity implements
         }
     }
 
-    public static int dpToPx(int dp)
-    {
+    public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
@@ -157,16 +154,17 @@ public class MapActivity extends MenuActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Position position = getCurrentPosition();
-        if(position != null && googleMap != null && getCurrentNoxbox() == null) {
+        if (position != null && googleMap != null && getCurrentNoxbox() == null) {
             googleMap.moveCamera(newLatLngZoom(position.toLatLng(), 15));
         }
         scaleMarkers();
     }
 
+
     @Override
-    protected void onStop() {
+    protected void onPause() {
         googleApiClient.disconnect();
-        super.onStop();
+        super.onPause();
     }
 
     @Override
@@ -178,7 +176,7 @@ public class MapActivity extends MenuActivity implements
 
     protected Position getCurrentPosition() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if(googleApiClient.isConnected()) {
+            if (googleApiClient.isConnected()) {
                 return Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient));
             } else {
                 googleApiClient.connect();
@@ -189,7 +187,7 @@ public class MapActivity extends MenuActivity implements
 
     protected void scaleMarkers() {
         float size = getScaledSize();
-        for(GroundOverlay marker : markers.values()) {
+        for (GroundOverlay marker : markers.values()) {
             marker.setDimensions(size, size);
         }
     }
@@ -207,7 +205,7 @@ public class MapActivity extends MenuActivity implements
     }
 
     private float getScaledSize() {
-        if(googleMap != null && googleMap.getCameraPosition() != null) {
+        if (googleMap != null && googleMap.getCameraPosition() != null) {
             return (float) Math.pow(2, 22 - Math.max(googleMap.getCameraPosition().zoom, 11));
         } else {
             return 0;
@@ -222,14 +220,16 @@ public class MapActivity extends MenuActivity implements
         return estimationInMinutes > 0 ? estimationInMinutes : 1;
     }
 
-    @Override public void onConnectionSuspended(int i) {}
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
 
     protected void drawPathToNoxbox(final Noxbox noxbox) {
         drawPath(noxbox.getId(), noxbox.getPerformer(), new Profile().setId(noxbox.getId()).setPosition(noxbox.getPosition()));
     }
 
     protected void drawPath(final String noxboxId, final Profile performer, final Profile payer) {
-        if(performer.getPosition() == null && noxboxId != null && getCurrentNoxbox() != null) {
+        if (performer.getPosition() == null && noxboxId != null && getCurrentNoxbox() != null) {
             performer.setPosition(getCurrentNoxbox().getPerformer().getPosition());
         }
 
@@ -246,15 +246,15 @@ public class MapActivity extends MenuActivity implements
 
             @Override
             protected void onPostExecute(Map.Entry<Integer, List<LatLng>> responce) {
-                if(pathes.containsKey(performer.getId())) {
+                if (pathes.containsKey(performer.getId())) {
                     pathes.remove(performer.getId()).remove();
                 }
 
                 List<LatLng> points;
-                if(responce != null) {
+                if (responce != null) {
                     points = responce.getValue();
                     // TODO (nli) show time on the map
-                    if(getCurrentNoxbox() != null && responce.getKey() != null) {
+                    if (getCurrentNoxbox() != null && responce.getKey() != null) {
                         Firebase.updateCurrentNoxbox(getCurrentNoxbox()
                                 .setEstimationTime(responce.getKey().toString()));
                     }
@@ -279,14 +279,14 @@ public class MapActivity extends MenuActivity implements
 
     public Position getCameraPosition() {
         LatLng latLng = googleMap.getCameraPosition().target;
-        if(latLng == null) {
+        if (latLng == null) {
             throw new RuntimeException("Null camera position");
         }
         return Position.from(latLng);
     }
 
     protected void drawIcon(Profile profile, int drawable) {
-        if(profile.getPosition() != null) {
+        if (profile.getPosition() != null) {
             createMarker(profile.getId(), profile.getPosition().toLatLng(), drawable);
         } else {
             Crashlytics.log(Log.WARN, "emptyPosition", "Empty position for profile "
@@ -294,35 +294,14 @@ public class MapActivity extends MenuActivity implements
         }
     }
 
-    public GroundOverlay createMarker(String key, LatLng latLng, int resource) {
-        GroundOverlay marker = markers.get(key);
-        if (marker == null) {
-            GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                    .image(BitmapDescriptorFactory.fromResource(resource))
-                    .position(latLng, 48, 48)
-                    .anchor(0.5f, 1)
-                    .zIndex(10);
-            marker = googleMap.addGroundOverlay(newarkMap);
-            marker.setDimensions(getScaledSize(), getScaledSize());
-            markers.put(key, marker);
-        }
-        marker.setPosition(latLng);
-        return marker;
-    }
 
-    public void removeMarker(String key) {
-        GroundOverlay marker = markers.remove(key);
-        if (marker != null) {
-            marker.remove();
-        }
-    }
 
     protected Noxbox chooseBestOptionPerformer() {
         int minEstimation = Integer.MAX_VALUE;
         Noxbox noxbox = null;
         // TODO (nli) hide performers from black list
         for (Map.Entry<String, GroundOverlay> marker : markers.entrySet()) {
-            if(marker.getValue().getTag() == null) {
+            if (marker.getValue().getTag() == null) {
                 continue;
             }
             TravelMode travelMode = TravelMode.valueOf(marker.getValue().getTag().toString());
@@ -334,7 +313,7 @@ public class MapActivity extends MenuActivity implements
                 noxbox = new Noxbox().setEstimationTime("" + estimation)
                         .setPosition(getCameraPosition())
                         .setPayer(getProfile().publicInfo()).setPerformer(new Profile().setId(performerId)
-                        .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition())));
+                                .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition())));
             }
         }
         return noxbox;
@@ -365,22 +344,22 @@ public class MapActivity extends MenuActivity implements
         pathImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               focus();
+                focus();
             }
         });
     }
 
-    private void focus(String ... array) {
+    private void focus(String... array) {
         List<String> ids = Arrays.asList(array);
-        if(!pathes.isEmpty() && googleMap != null) {
+        if (!pathes.isEmpty() && googleMap != null) {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (Polyline polyline : pathes.values()) {
                 for (LatLng point : polyline.getPoints()) {
                     builder.include(point);
                 }
             }
-            for(Map.Entry<String, GroundOverlay> marker : markers.entrySet()) {
-                if(ids.isEmpty() || ids.contains(marker.getKey())) {
+            for (Map.Entry<String, GroundOverlay> marker : markers.entrySet()) {
+                if (ids.isEmpty() || ids.contains(marker.getKey())) {
                     builder.include(marker.getValue().getPosition());
                 }
             }
@@ -391,7 +370,7 @@ public class MapActivity extends MenuActivity implements
     }
 
     public void prepareForIteration() {
-        if(googleMap != null) {
+        if (googleMap != null) {
             visibleCurrentLocation(true);
             cleanUpMap();
             moveGoogleCopyrights();
@@ -400,9 +379,24 @@ public class MapActivity extends MenuActivity implements
     }
 
     private void moveGoogleCopyrights() {
-        if(googleMap != null) {
+        if (googleMap != null) {
             googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(7), dpToPx(70));
         }
     }
+
+    @Override
+    protected void draw() {
+        if (googleMap == null || getProfile() == null) return;
+        popup(this,"draw();");
+        NoxboxStatus status = NoxboxStatus.getStatus(getProfile());
+        switch (status) {
+            case empty: {
+                //FragmentManager.createFragment(this, new InitFragment(),R.id.buttonContainer);
+                new InitFragment(googleMap).draw();
+            }
+            default: // TODO (vlad) fragment for status
+        }
+    }
+
 
 }
