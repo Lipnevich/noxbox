@@ -6,22 +6,23 @@ import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Position;
 
-public class InitMarkerFragment implements GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
+public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
-    private Map<String, GroundOverlay> markers;
+    private Map<String, GroundOverlay> markers = new HashMap<>();
     private GoogleMap googleMap;
 
-    public InitMarkerFragment(GoogleMap googleMap, Map markers) {
+    public InitialFragment(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        this.markers = markers;
     }
 
+    @Override
     public void draw() {
         Noxbox noxbox = new Noxbox();
         noxbox.setPosition(new Position().setLongitude(27.34).setLatitude(53.52));
@@ -30,6 +31,7 @@ public class InitMarkerFragment implements GoogleMap.OnMarkerClickListener, Goog
         googleMap.setOnMarkerClickListener(this);
     }
 
+    @Override
     public void clear() {
         googleMap.clear();
     }

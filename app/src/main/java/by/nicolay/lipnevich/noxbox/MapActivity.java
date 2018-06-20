@@ -48,11 +48,11 @@ import java.util.List;
 import java.util.Map;
 
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.NoxboxStatus;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.pages.InitMarkerFragment;
+import by.nicolay.lipnevich.noxbox.pages.Fragment;
+import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
@@ -384,17 +384,34 @@ public class MapActivity extends MenuActivity implements
         }
     }
 
+    private Fragment currentFragment;
+
     @Override
     protected void draw() {
         if (googleMap == null || getProfile() == null) return;
-        popup(this,"draw();");
-        NoxboxStatus status = NoxboxStatus.getStatus(getProfile());
-        switch (status) {
-            case empty: {
-                new InitMarkerFragment(googleMap,markers).draw();
-            }
-            default: // TODO (vlad) fragment for status
+
+        Fragment newFragment = getFragment();
+        popup(this, newFragment.getClass().getName());
+        if(newFragment != currentFragment) {
+            currentFragment.clear();
+            currentFragment = newFragment;
         }
+        currentFragment.draw();
+    }
+
+    public Fragment getFragment() {
+        Noxbox current = getProfile().getCurrent();
+        if(current == null) return new InitialFragment(googleMap);
+//    created,
+//    requesting,
+//    accepting,
+//    moving,
+//    watching,
+//    performing,
+//    enjoying,
+//    completed;
+
+        return new InitialFragment(googleMap);
     }
 
 
