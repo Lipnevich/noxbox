@@ -13,25 +13,9 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import android.support.v4.app.FragmentActivity;
-
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.DatabaseError;
-
-import by.nicolay.lipnevich.noxbox.tools.Timer;
-import by.nicolay.lipnevich.noxbox.model.TravelMode;
-
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.geo;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-
 public abstract class GeoFunction extends MapActivity {
 
-    private GeoQuery geoQuery;
+   /* private GeoQuery geoQuery;
 
     public void goOnline() {
         if(getCurrentPosition() != null) {
@@ -119,5 +103,5 @@ public abstract class GeoFunction extends MapActivity {
             });
         }
     }
-
+*/
 }

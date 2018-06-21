@@ -13,22 +13,9 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import android.content.Intent;
-import android.view.View;
-import android.widget.ImageView;
-
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.pages.ChatPage;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-
 public abstract class ChatFunction extends EventFunction {
 
-    private ImageView chatIcon;
+   /* private ImageView chatIcon;
 
     @Override
     public void processNoxbox(Noxbox noxbox) {
@@ -97,5 +84,5 @@ public abstract class ChatFunction extends EventFunction {
             }
 //            listenEvents();
         }
-    }
+    }*/
 }

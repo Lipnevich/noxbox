@@ -13,33 +13,9 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.model.EventType;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.pages.QRCapturePage;
-import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.Timer;
-
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.persistHistory;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
-
 public abstract class PerformerFunction extends PerformerLocationFunction {
 
-    private Button completeButton;
+    /*private Button completeButton;
     private Button goOnlineButton;
     private Button goOfflineButton;
     private Button acceptButton;
@@ -249,6 +225,6 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
     @Override
     protected void processPerformerCancel(Event performerCancel) {
         prepareForIteration();
-    }
+    }*/
 
 }

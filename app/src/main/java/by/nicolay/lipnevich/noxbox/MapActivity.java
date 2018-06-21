@@ -98,6 +98,7 @@ public class MapActivity extends MenuActivity implements
         googleMap.setMaxZoomPreference(18);
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
         googleMap.getUiSettings().setTiltGesturesEnabled(false);
+        //TODO (vlad) disabled while user don't give permission googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveGoogleCopyrights();
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -392,16 +393,16 @@ public class MapActivity extends MenuActivity implements
 
         Fragment newFragment = getFragment();
         popup(this, newFragment.getClass().getName());
-        if(newFragment != currentFragment) {
+        if(newFragment != currentFragment && currentFragment != null) {
             currentFragment.clear();
-            currentFragment = newFragment;
         }
+        currentFragment = newFragment;
         currentFragment.draw();
     }
 
     public Fragment getFragment() {
         Noxbox current = getProfile().getCurrent();
-        if(current == null) return new InitialFragment(googleMap);
+        if(current == null) return new InitialFragment(googleMap,this);
 //    created,
 //    requesting,
 //    accepting,
@@ -411,7 +412,7 @@ public class MapActivity extends MenuActivity implements
 //    enjoying,
 //    completed;
 
-        return new InitialFragment(googleMap);
+        return new InitialFragment(googleMap,this);
     }
 
 

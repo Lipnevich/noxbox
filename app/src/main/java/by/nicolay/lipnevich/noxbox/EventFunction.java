@@ -13,14 +13,8 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getRating;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.persistHistory;
-
 public abstract class EventFunction extends GeoFunction {
+/*
 
     protected void processRequest(Event request) {}
     protected void processAccept(Event accept) {}
@@ -61,5 +55,6 @@ public abstract class EventFunction extends GeoFunction {
         }
     }
 
+*/
 
 }

@@ -1,35 +1,51 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
+import android.app.Activity;
+
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import by.nicolay.lipnevich.noxbox.model.AllRates;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Position;
+import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.model.Rating;
+import by.nicolay.lipnevich.noxbox.model.TravelMode;
+import by.nicolay.lipnevich.noxbox.tools.Firebase;
+import by.nicolay.lipnevich.noxbox.tools.MarkerCreator;
 
 public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
 
-    private Map<String, GroundOverlay> markers = new HashMap<>();
+    private Map<String, Marker> markers = new HashMap<>();
     private GoogleMap googleMap;
+    private Activity activity;
 
-    public InitialFragment(GoogleMap googleMap) {
+    public InitialFragment(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
+        this.activity = activity;
     }
 
     @Override
     public void draw() {
         Noxbox noxbox = new Noxbox();
-        noxbox.setPosition(new Position().setLongitude(27.34).setLatitude(53.52));
+        noxbox.setPerformer(new Profile()
+                .setTravelMode(TravelMode.none)
+                .setRating(new AllRates().setReceived(new Rating().setLikes(100L))));
+        noxbox.getPerformer().setId("1231");
+        noxbox.setId("12311");
+        noxbox.setPayer(Firebase.getProfile());
+        noxbox.setEstimationTime("500");
+        noxbox.setPrice("25");
+        noxbox.setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         noxbox.setType(NoxboxType.sportCompanion);
         createMarker(noxbox);
         googleMap.setOnMarkerClickListener(this);
     }
+
 
     @Override
     public void clear() {
@@ -38,16 +54,25 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
 
 
     public void createMarker(Noxbox noxbox) {
+        Profile profile = Firebase.getProfile();
         if (markers.get(noxbox.getId()) == null) {
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .title(noxbox.getType().name())
-                    .snippet("Description for noxbox type")
-                    .position(noxbox.getPosition().toLatLng())
-                    .icon(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
-                    .anchor(0.5f, 1f));
-            marker.setTag(noxbox);
-            // markers.put(noxbox.getId(), ...);
+            markers.put(noxbox.getId(), MarkerCreator.createCustomMarker(noxbox, profile, googleMap, activity));
         }
+    }
+
+
+       /* CircleOptions circleOptions = new CircleOptions()
+                    .center(noxbox.getPosition().toLatLng())
+                    .radius(50000)
+                    .fillColor(Color.BLUE);
+            if(false){
+                circleOptions.strokeColor(Color.RED);
+            }else if(false){
+                circleOptions.strokeColor(Color.YELLOW);
+            }else{
+                circleOptions.strokeColor(Color.GREEN);
+            }
+            googleMap.addCircle(circleOptions);*/
 
 
        /* GroundOverlay marker = markers.get(key);
@@ -63,10 +88,10 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         }
         marker.setPosition(latLng);
         return marker;*/
-    }
+
 
     public void removeMarker(String key) {
-        GroundOverlay marker = markers.remove(key);
+        Marker marker = markers.remove(key);
         if (marker != null) {
             marker.remove();
         }

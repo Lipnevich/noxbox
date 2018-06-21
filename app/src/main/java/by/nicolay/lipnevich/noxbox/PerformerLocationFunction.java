@@ -13,27 +13,9 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-
-import static by.nicolay.lipnevich.noxbox.model.EventType.move;
-import static by.nicolay.lipnevich.noxbox.model.Position.from;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendNoxboxEvent;
-
 public abstract class PerformerLocationFunction extends ChatFunction {
 
-    private LocationListener locationListener = new LocationListener() {
+    /*private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             getProfile().setPosition(from(location));
@@ -73,5 +55,5 @@ public abstract class PerformerLocationFunction extends ChatFunction {
                 locationManager.removeUpdates(locationListener);
         }
     }
-
+*/
 }
