@@ -20,6 +20,7 @@ public class MarkerCreator {
     //provide googleMap,noxbox,profile
    /* public static Bitmap createCustomMarker() {
 
+
     }*/
     public static Marker createCustomMarker(Noxbox noxbox, Profile profile, GoogleMap googleMap,Activity activity){
         if (noxbox.getPayer().getId().equals(profile.getId())) {
