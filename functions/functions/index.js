@@ -114,6 +114,20 @@ exports.info = functions.https.onRequest((request, response) => {
     });
 });
 
+exports.availables = (req, res) => {
+
+  admin.database().ref('geo').once('value').then(function(allServices) {
+    	var json = [];
+
+    	allServices.forEach(function(service) {
+          	json.push({ key : service.key, latitude : service.val().l[0], longitude : service.val().l[1] });
+  		});
+
+    	res.status(200).send('availables_callback(' + JSON.stringify(json) + ')');
+  	});
+
+}
+
 exports.about = functions.https.onRequest((request, response) => { return response.send("NoxBox. Dedicated to my dear wife Mara"); });
 
 exports.showFunctionIp = functions.https.onRequest((request, response) => {
