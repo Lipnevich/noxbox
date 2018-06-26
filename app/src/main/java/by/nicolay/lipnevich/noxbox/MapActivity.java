@@ -13,8 +13,12 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -52,9 +56,12 @@ import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.pages.Fragment;
+import by.nicolay.lipnevich.noxbox.pages.GpsReceiver;
 import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
+import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
+import static by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage.messageOnClickListener;
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
@@ -72,6 +79,9 @@ public class MapActivity extends MenuActivity implements
     private Map<String, GroundOverlay> markers = new HashMap<>();
     private Map<String, Polyline> pathes = new HashMap<>();
     private ImageView pathImage;
+    private ImageView locationButton;
+    private BroadcastReceiver gpsReceiver = new GpsReceiver();
+    private boolean isRegistre = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +108,6 @@ public class MapActivity extends MenuActivity implements
         googleMap.setMaxZoomPreference(18);
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
         googleMap.getUiSettings().setTiltGesturesEnabled(false);
-        //TODO (vlad) disabled while user don't give permission googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveGoogleCopyrights();
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -111,12 +120,32 @@ public class MapActivity extends MenuActivity implements
 
     protected void visibleCurrentLocation(boolean visible) {
         // TODO (nli) launch gps and ask permissions after button pressed only
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             // Permission to access the location is missing.
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            locationButton = findViewById(R.id.locationButton);
+            locationButton.setVisibility(View.VISIBLE);
+            locationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityCompat.requestPermissions(MapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                }
+            });
         } else {
             if (googleMap != null) {
+                if (locationButton != null) {
+                    locationButton.setVisibility(View.INVISIBLE);
+                }
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
                 googleMap.setMyLocationEnabled(visible);
+                if (!isGpsEnabled()) {
+                    ConfirmationMessage.messageWithAction(findViewById(R.id.mapId), "Включить gps?", messageOnClickListener);
+                }
+                registerReceiver(gpsReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+                isRegistre = true;
+
             }
 
             if (!visible) {
@@ -134,6 +163,11 @@ public class MapActivity extends MenuActivity implements
             layout.setMargins(0, 0, 0, dpToPx(8));
             locationButton.setLayoutParams(layout);
         }
+    }
+
+    protected boolean isGpsEnabled() {
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public static int dpToPx(int dp) {
@@ -164,6 +198,9 @@ public class MapActivity extends MenuActivity implements
 
     @Override
     protected void onPause() {
+        if (isRegistre) {
+            unregisterReceiver(gpsReceiver);
+        }
         googleApiClient.disconnect();
         super.onPause();
     }
@@ -296,7 +333,6 @@ public class MapActivity extends MenuActivity implements
     }
 
 
-
     protected Noxbox chooseBestOptionPerformer() {
         int minEstimation = Integer.MAX_VALUE;
         Noxbox noxbox = null;
@@ -393,7 +429,7 @@ public class MapActivity extends MenuActivity implements
 
         Fragment newFragment = getFragment();
         popup(this, newFragment.getClass().getName());
-        if(newFragment != currentFragment && currentFragment != null) {
+        if (newFragment != currentFragment && currentFragment != null) {
             currentFragment.clear();
         }
         currentFragment = newFragment;
@@ -402,7 +438,7 @@ public class MapActivity extends MenuActivity implements
 
     public Fragment getFragment() {
         Noxbox current = getProfile().getCurrent();
-        if(current == null) return new InitialFragment(googleMap,this);
+        if (current == null) return new InitialFragment(googleMap, this);
 //    created,
 //    requesting,
 //    accepting,
@@ -412,7 +448,7 @@ public class MapActivity extends MenuActivity implements
 //    enjoying,
 //    completed;
 
-        return new InitialFragment(googleMap,this);
+        return new InitialFragment(googleMap, this);
     }
 
 
