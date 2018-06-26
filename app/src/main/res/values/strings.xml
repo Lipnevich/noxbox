@@ -27,7 +27,21 @@
     <string name="payments">Payments</string>
     <string name="help">Help</string>
     <string name="settings">Settings</string>
+    <!--NoxboxType's-->
     <string name="massage">Massage</string>
+    <string name="sportCompanion">Sport Companion</string>
+    <string name="haircut">Haircut</string>
+    <string name="dinner">Dinner</string>
+    <string name="plumber">Plumber</string>
+    <string name="manicure">Manicure</string>
+    <string name="sportCoach">Sport coach</string>
+    <string name="computerRepairMan">Computer repair</string>
+    <string name="houseWife">House wife</string>
+    <string name="nanny">Nanny</string>
+    <string name="dogWalker">Dog walker</string>
+    <string name="homeTeacher">Home teacher</string>
+    <string name="husbandForHour">Husband for hour</string>
+
     <string name="tirefitting">Tire fitting</string>
     <string name="sendMessage">Send message</string>
     <string name="history">History</string>

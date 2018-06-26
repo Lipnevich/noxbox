@@ -20,7 +20,21 @@
     <string name="wisdom">Мудрость</string>
     <string name="humor">Юмор</string>
     <string name="patience">Терпение</string>
+    <!--NoxboxType-->
     <string name="massage">Массаж</string>
+    <string name="sportCompanion">Напарник по спорту</string>
+    <string name="haircut">Парикмахер</string>
+    <string name="dinner">Приготовление пищи</string>
+    <string name="plumber">Сантехник</string>
+    <string name="manicure">Маникюр</string>
+    <string name="sportCoach">Тренер по спорту</string>
+    <string name="computerRepairMan">Ремонт компьютера</string>
+    <string name="houseWife">Домохозяйка</string>
+    <string name="nanny">Няня</string>
+    <string name="dogWalker">Выгул собак</string>
+    <string name="homeTeacher">Репетитор</string>
+    <string name="husbandForHour">Муж на час</string>
+
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
     <string name="payments">Оплата</string>
