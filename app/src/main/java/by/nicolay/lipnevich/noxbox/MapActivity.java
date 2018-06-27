@@ -13,9 +13,7 @@
  */
 package by.nicolay.lipnevich.noxbox;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.LocationManager;
@@ -56,12 +54,10 @@ import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.pages.Fragment;
-import by.nicolay.lipnevich.noxbox.pages.GpsReceiver;
 import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
-import static by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage.messageOnClickListener;
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
@@ -80,8 +76,6 @@ public class MapActivity extends MenuActivity implements
     private Map<String, Polyline> pathes = new HashMap<>();
     private ImageView pathImage;
     private ImageView locationButton;
-    private BroadcastReceiver gpsReceiver = new GpsReceiver();
-    private boolean isRegistre = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,10 +112,14 @@ public class MapActivity extends MenuActivity implements
         draw();
     }
 
+    protected boolean checkLocationPermission() {
+        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED;
+    }
+
     protected void visibleCurrentLocation(boolean visible) {
         // TODO (nli) launch gps and ask permissions after button pressed only
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (checkLocationPermission()) {
             // Permission to access the location is missing.
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
             locationButton = findViewById(R.id.locationButton);
@@ -134,19 +132,11 @@ public class MapActivity extends MenuActivity implements
                 }
             });
         } else {
-            if (googleMap != null) {
-                if (locationButton != null) {
-                    locationButton.setVisibility(View.INVISIBLE);
-                }
-                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-                googleMap.setMyLocationEnabled(visible);
-                if (!isGpsEnabled()) {
-                    ConfirmationMessage.messageWithAction(findViewById(R.id.mapId), "Включить gps?", messageOnClickListener);
-                }
-                registerReceiver(gpsReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
-                isRegistre = true;
-
+            if (locationButton != null) {
+                locationButton.setVisibility(View.INVISIBLE);
             }
+            googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
             if (!visible) {
                 return;
@@ -166,8 +156,8 @@ public class MapActivity extends MenuActivity implements
     }
 
     protected boolean isGpsEnabled() {
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     public static int dpToPx(int dp) {
@@ -198,15 +188,17 @@ public class MapActivity extends MenuActivity implements
 
     @Override
     protected void onPause() {
-        if (isRegistre) {
-            unregisterReceiver(gpsReceiver);
-        }
         googleApiClient.disconnect();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
+        if (!checkLocationPermission()) {
+            if (!isGpsEnabled()) {
+                ConfirmationMessage.messageGps(this);
+            }
+        }
         googleApiClient.connect();
         scaleMarkers();
         super.onResume();

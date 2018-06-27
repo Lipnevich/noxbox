@@ -1,10 +1,6 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,22 +9,17 @@ import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 
-import by.nicolay.lipnevich.noxbox.BuildConfig;
 import by.nicolay.lipnevich.noxbox.MapActivity;
 import by.nicolay.lipnevich.noxbox.R;
-import io.fabric.sdk.android.Fabric;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 
@@ -36,14 +27,10 @@ public class AuthPage extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 11011;
 
-    private BroadcastReceiver networkReceiver = new NetworkReceiver(this);
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initCrashReporting();
         login();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_auth);
         ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -76,7 +63,7 @@ public class AuthPage extends AppCompatActivity {
     }
 
     private void startAuth(AuthUI.IdpConfig.Builder provider) {
-        if (isOnline() && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
+        if (NetworkReceiver.isOnline(this) && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
             Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
                     .setIsSmartLockEnabled(false)
                     .setAvailableProviders(Arrays.asList(provider.build()))
@@ -85,13 +72,6 @@ public class AuthPage extends AppCompatActivity {
         } else {
             popup(this, "No internet");
         }
-    }
-
-    private void initCrashReporting() {
-        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
-                .disabled(BuildConfig.DEBUG)
-                .build();
-        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
 
     @Override
@@ -132,24 +112,6 @@ public class AuthPage extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
-    }
-
-    private boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm != null && cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnectedOrConnecting();
-    }
-
-    @Override
-    protected void onResume() {
-        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(networkReceiver);
-        super.onPause();
     }
 
 }

@@ -82,6 +82,7 @@
     <string name="addressInClipBoard">Address copied to clipboard</string>
     <string name="chat">Chat</string>
     <string name="isOffline">No network connection</string>
+    <string name="isGps">No GPS signal</string>
     <!--line agreement-->
     <string name="iAgreeToThe">I agree to the </string>
     <string name="termOfServices">Term of services</string>
@@ -89,5 +90,5 @@
     <string name="privacyPolicy">Privacy Policy</string>
     <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
-
+    <string name="enable">Connect</string>
 </resources>

@@ -3,6 +3,7 @@
     package="by.nicolay.lipnevich.noxbox">
 
     <application
+        android:name="App"
         android:label="@string/noxbox"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="false"
@@ -39,18 +40,6 @@
         <service android:name="by.nicolay.lipnevich.noxbox.tools.PushTokenService">
             <intent-filter><action android:name="com.google.Firebase.INSTANCE_ID_EVENT"/></intent-filter>
         </service>
-
-        <receiver android:name=".pages.NetworkReceiver" android:enabled="false" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".pages.GpsReceiver">
-            <intent-filter>
-                <action android:name="android.location.PROVIDERS_CHANGED" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET"/>
