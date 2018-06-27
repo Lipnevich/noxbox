@@ -5,7 +5,37 @@ const Q = require('q');
 
 const rewardAccount = functions.config().keys.rewardaccount;
 const db = admin.database();
-const events = db.ref('events');
+const users = db.ref('users')
+
+exports.init = function (request) {
+    var deferred = Q.defer();
+
+    request.profile = {};
+    request.profile.uid = request.uid;
+    request.profile.email = request.email;
+    request.profile.travelMode = 'walking';
+    if(request.photoUrl) request.profile.photoUrl = user.photoUrl;
+    if(request.displayName) request.profile.displayName = user.displayName;
+
+    request.rating = {};
+    request.rating.received = {};
+    request.rating.received.liked = 0;
+    request.rating.received.dislikes = 0;
+    request.rating.sent = {};
+    request.rating.sent.liked = 0;
+    request.rating.sent.dislikes = 0;
+    request.rating.notResponded = 0;
+    request.rating.canceled = 0;
+
+    users.child(request.uid).set({
+        'profile' : request.profile,
+        'wallet' : request.wallet,
+        'rating' : request.rating;
+    });
+    deferred.resolve(request);
+
+    return deferred.promise;
+}
 
 exports.notifyBalanceUpdated = function (request) {
     var deferred = Q.defer();
@@ -117,7 +147,7 @@ exports.getRewardWallet = function (request) {
     if(!rewardAccount) {
         deferred.resolve(request);
     } else {
-        db.ref('profiles').child(rewardAccount).child('wallet').child('seed').once('value').then(function(snapshot) {
+        users.child(rewardAccount).child('wallet').child('seed').once('value').then(function(snapshot) {
             request.reward.payerId = rewardAccount;
             request.reward.seed = snapshot.val();
             if(!request.reward.seed) {

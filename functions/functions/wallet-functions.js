@@ -20,7 +20,7 @@ exports.create = function (request) {
     request.wallet.address = seed.address;
  	request.wallet.seed = encrypted;
 
-  	console.log('New address ' + seed.address + ' was created for profile ' + request.id);
+  	console.log('New address ' + seed.address + ' was created for profile ' + request.uid);
 	deferred.resolve(request);
 
     return deferred.promise;
@@ -78,7 +78,7 @@ exports.tryToReward = function (request) {
     request.transfer = {};
     request.transfer.payerId = request.reward.payerId;
     request.transfer.from = request.reward.seed;
-    request.transfer.receiverId = request.id;
+    request.transfer.receiverId = request.uid;
     request.transfer.to = request.wallet.address;
     request.transfer.amount = '' + rewardAmount;
     request.transfer.optional = true;

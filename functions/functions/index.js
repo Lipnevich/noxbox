@@ -8,8 +8,8 @@ const http = require('request');
 const requests = functions.database.ref('/requests/{userID}');
 
 exports.welcome = functions.auth.user().onCreate((user) => {
-    return wallet.create({'id' : user.uid}).then(
-           noxbox.updateBalance).then(
+    return wallet.create(user).then(
+           noxbox.init).then(
            noxbox.getRewardWallet).then(
            wallet.tryToReward).then(
            noxbox.updateTransferWallets).then(
