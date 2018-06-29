@@ -53,4 +53,6 @@ public class UserAccount implements Serializable {
     public void setNotificationKeys(NotificationKeys notificationKeys) {
         this.notificationKeys = notificationKeys;
     }
+
+
 }

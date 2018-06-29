@@ -58,7 +58,9 @@ import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.pages.ConstructorNoxboxPage;
 import by.nicolay.lipnevich.noxbox.pages.Fragment;
 import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
+import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
+import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
@@ -454,6 +456,7 @@ public class MapActivity extends MenuActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        DebugMessage.popup(this, State.getUserAccount().getProfile().getCurrent().getType().toString());
         draw();
     }
 }

@@ -25,6 +25,8 @@ import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
+import by.nicolay.lipnevich.noxbox.model.UserAccount;
+import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
@@ -43,7 +45,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noxbox_constructor);
         init();
-        draw(Firebase.getProfile().getCurrent());
+        draw();
     }
 
     private void init() {
@@ -52,6 +54,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         payment = getResources().getString(R.string.selectionField);
         travelMode = getResources().getString(R.string.travelMode);
         Firebase.getProfile().setCurrent(new Noxbox());
+        State.setUserAccount(new UserAccount().setProfile(Firebase.getProfile()));
         ((EditText) findViewById(R.id.inputWaves)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -109,18 +112,19 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
     }
 
 
-    protected void createLongDialog(List<Integer> list) {
+    protected void createLongDialog(final List<NoxboxType> list) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(ConstructorNoxboxPage.this);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ConstructorNoxboxPage.this, android.R.layout.select_dialog_singlechoice);
-        for (int element : list) {
-            arrayAdapter.add(getResources().getString(element));
+        for (NoxboxType element : list) {
+            arrayAdapter.add(getResources().getString(element.getName()));
         }
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 type = arrayAdapter.getItem(which).concat("\u2BC6").toLowerCase();
-                draw(Firebase.getProfile().getCurrent());
+                State.getUserAccount().getProfile().getCurrent().setType(list.get(which));
+                draw();
             }
         });
         builderSingle.show();
@@ -139,48 +143,48 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
 
                 switch (item.getItemId()) {
                     case R.id.supply: {
-                        Firebase.getProfile().getCurrent().setRole(MarketRole.supply);
-                        Firebase.getProfile().getCurrent().setPerformer(Firebase.getProfile());
+                        State.getUserAccount().getProfile().getCurrent().setRole(MarketRole.supply);
+                        State.getUserAccount().getProfile().getCurrent().setPerformer(State.getUserAccount().getProfile());
                         way = getResources().getString(R.string.supply).concat("\u2BC6");
                         payment = getResources().getString(R.string.earn);
                         ((EditText) findViewById(R.id.inputWaves)).setHint(R.string.earn);
                         break;
                     }
                     case R.id.demand: {
-                        Firebase.getProfile().getCurrent().setRole(MarketRole.demand);
-                        Firebase.getProfile().getCurrent().setPayer(Firebase.getProfile());
+                        State.getUserAccount().getProfile().getCurrent().setRole(MarketRole.demand);
+                        State.getUserAccount().getProfile().getCurrent().setPerformer(State.getUserAccount().getProfile());
                         way = getResources().getString(R.string.demand).concat("\u2BC6");
                         payment = getResources().getString(R.string.spend);
                         ((EditText) findViewById(R.id.inputWaves)).setHint(R.string.spend);
                         break;
                     }
                     case R.id.none: {
-                        Firebase.getProfile().setTravelMode(TravelMode.none);
+                        State.getUserAccount().getProfile().setTravelMode(TravelMode.none);
                         travelMode = getResources().getString(R.string.stayNone).concat("\u2BC6");
                         break;
                     }
                     case R.id.car: {
-                        Firebase.getProfile().setTravelMode(TravelMode.driving);
+                        State.getUserAccount().getProfile().setTravelMode(TravelMode.driving);
                         travelMode = getResources().getString(R.string.onCar).concat("\u2BC6");
                         break;
                     }
                     case R.id.bike: {
-                        Firebase.getProfile().setTravelMode(TravelMode.bicycling);
+                        State.getUserAccount().getProfile().setTravelMode(TravelMode.bicycling);
                         travelMode = getResources().getString(R.string.onBike).concat("\u2BC6");
                         break;
                     }
                     case R.id.transit: {
-                        Firebase.getProfile().setTravelMode(TravelMode.transit);
+                        State.getUserAccount().getProfile().setTravelMode(TravelMode.transit);
                         travelMode = getResources().getString(R.string.onTransit).concat("\u2BC6");
                         break;
                     }
                     case R.id.walk: {
-                        Firebase.getProfile().setTravelMode(TravelMode.walking);
+                        State.getUserAccount().getProfile().setTravelMode(TravelMode.walking);
                         travelMode = getResources().getString(R.string.beWalk).concat("\u2BC6");
                         break;
                     }
                 }
-                draw(Firebase.getProfile().getCurrent());
+                draw();
                 return true;
             }
         });
@@ -191,10 +195,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         return Collections.singletonList(noxbox);
     }*/
 
-    private void draw(Noxbox noxbox) {
+    private void draw() {
         createContractPartOne((TextView) findViewById(R.id.contractPartOne));
         createContractPartTwo((TextView) findViewById(R.id.contractPartTwo));
-
     }
 
 

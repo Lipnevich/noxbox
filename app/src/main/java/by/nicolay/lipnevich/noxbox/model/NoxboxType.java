@@ -38,21 +38,21 @@ public enum NoxboxType {
         return image;
     }
 
-    public static List<Integer> getAll() {
-        return new ArrayList<Integer>() {{
-            add(massage.name);
-            add(haircut.name);
-            add(dinner.name);
-            add(plumber.name);
-            add(sportCompanion.name);
-            add(manicure.name);
-            add(sportCoach.name);
-            add(computerRepairMan.name);
-            add(husbandForHour.name);
-            add(houseWife.name);
-            add(nanny.name);
-            add(dogWalker.name);
-            add(homeTeacher.name);
+    public static List<NoxboxType> getAll() {
+        return new ArrayList<NoxboxType>() {{
+            add(massage);
+            add(haircut);
+            add(dinner);
+            add(plumber);
+            add(sportCompanion);
+            add(manicure);
+            add(sportCoach);
+            add(computerRepairMan);
+            add(husbandForHour);
+            add(houseWife);
+            add(nanny);
+            add(dogWalker);
+            add(homeTeacher);
         }};
     }
 }
