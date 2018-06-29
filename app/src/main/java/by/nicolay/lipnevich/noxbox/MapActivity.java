@@ -71,7 +71,7 @@ public class MapActivity extends MenuActivity implements
         GoogleApiClient.ConnectionCallbacks {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 911;
-    private static final int ON_ACTIVITY_RESULT_RQUEST_CODE = 922;
+    public static final int ON_ACTIVITY_RESULT_RQUEST_CODE = 922;
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Map<String, GroundOverlay> markers = new HashMap<>();
@@ -451,5 +451,9 @@ public class MapActivity extends MenuActivity implements
         return new InitialFragment(googleMap, this);
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        draw();
+    }
 }

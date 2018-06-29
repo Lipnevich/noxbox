@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.Gravity;
@@ -23,7 +25,10 @@ import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
+import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
+
+import static by.nicolay.lipnevich.noxbox.MapActivity.ON_ACTIVITY_RESULT_RQUEST_CODE;
 
 public class ConstructorNoxboxPage extends AppCompatActivity {
 
@@ -31,6 +36,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
     protected String type;
     protected String payment;// for EditText hint
     protected String travelMode;
+    protected double wavesSum;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +52,25 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         payment = getResources().getString(R.string.selectionField);
         travelMode = getResources().getString(R.string.travelMode);
         Firebase.getProfile().setCurrent(new Noxbox());
+        ((EditText) findViewById(R.id.inputWaves)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    wavesSum = Double.parseDouble(s.toString());
+                    Firebase.getProfile().getCurrent().setPrice(s.toString());
+                } catch (Exception e) {
+                    DebugMessage.popup(ConstructorNoxboxPage.this, e.getMessage());
+                }
+            }
+        });
     }
 
 
@@ -167,12 +192,34 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
     }*/
 
     private void draw(Noxbox noxbox) {
-
         createContractPartOne((TextView) findViewById(R.id.contractPartOne));
         createContractPartTwo((TextView) findViewById(R.id.contractPartTwo));
+
     }
 
-    private void backToMap() {
-    }
 
+    public void backToMapActivity(View view) {
+        if (Firebase.getProfile().getCurrent() != null) {
+            if (wavesSum != 0) {
+                if (!way.equals(getResources().getString(R.string.selectionField))) {
+                    if (!type.equals(getResources().getString(R.string.selectionField))) {
+                        if (!travelMode.equals(getResources().getString(R.string.travelMode))) {
+                            setResult(ON_ACTIVITY_RESULT_RQUEST_CODE);
+                            finish();
+                        } else {
+                            DebugMessage.popup(this, "TravelMode not selected");
+                        }
+                    } else {
+                        DebugMessage.popup(this, "NoxboxType not selected");
+                    }
+                } else {
+                    DebugMessage.popup(this, "Role not selected");
+                }
+            } else {
+                DebugMessage.popup(this, "Price not entered");
+            }
+        } else {
+            DebugMessage.popup(this, "Noxbox is not exist");
+        }
+    }
 }

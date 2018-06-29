@@ -55,7 +55,7 @@
             android:weightSum="2">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/add"
                 style="Widget.AppCompat.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
@@ -63,10 +63,11 @@
                 android:layout_weight="1"
                 android:enabled="true"
                 android:text="Добавить"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:onClick="backToMapActivity"/>
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/remove"
                 style="Widget.AppCompat.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
