@@ -34,6 +34,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private Position position;
     private String price;
     private NoxboxType type;
+    private MarketRole role;
     private String estimationTime;
 
     public String getId() {
@@ -173,5 +174,13 @@ public class Noxbox implements Comparable<Noxbox> {
     public Noxbox setEstimationTime(String estimationTime) {
         this.estimationTime = estimationTime;
         return this;
+    }
+
+    public MarketRole getRole() {
+        return role;
+    }
+
+    public void setRole(MarketRole role) {
+        this.role = role;
     }
 }

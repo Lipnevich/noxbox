@@ -14,12 +14,14 @@
 package by.nicolay.lipnevich.noxbox;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -53,12 +55,12 @@ import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
+import by.nicolay.lipnevich.noxbox.pages.ConstructorNoxboxPage;
 import by.nicolay.lipnevich.noxbox.pages.Fragment;
 import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
-import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
@@ -69,7 +71,7 @@ public class MapActivity extends MenuActivity implements
         GoogleApiClient.ConnectionCallbacks {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 911;
-
+    private static final int ON_ACTIVITY_RESULT_RQUEST_CODE = 922;
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Map<String, GroundOverlay> markers = new HashMap<>();
@@ -137,7 +139,14 @@ public class MapActivity extends MenuActivity implements
             }
             googleMap.setMyLocationEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
+            FloatingActionButton noxboxConstructorButton = findViewById(R.id.noxboxConstructorButton);
+            noxboxConstructorButton.setVisibility(View.VISIBLE);
+            noxboxConstructorButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivityForResult(new Intent(MapActivity.this, ConstructorNoxboxPage.class),ON_ACTIVITY_RESULT_RQUEST_CODE);
+                }
+            });
             if (!visible) {
                 return;
             }
@@ -420,7 +429,6 @@ public class MapActivity extends MenuActivity implements
         if (googleMap == null || getProfile() == null) return;
 
         Fragment newFragment = getFragment();
-        popup(this, newFragment.getClass().getName());
         if (newFragment != currentFragment && currentFragment != null) {
             currentFragment.clear();
         }

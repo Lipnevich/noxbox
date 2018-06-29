@@ -19,6 +19,8 @@
         </activity>
         <activity android:name="by.nicolay.lipnevich.noxbox.MapActivity"
                   android:theme="@style/NoActionBar"/>
+        <activity android:name=".pages.ConstructorNoxboxPage"
+            android:theme="@style/NoActionBar"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"
                   android:theme="@style/NoActionBar"

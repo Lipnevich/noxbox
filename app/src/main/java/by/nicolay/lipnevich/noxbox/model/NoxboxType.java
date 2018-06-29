@@ -1,5 +1,8 @@
 package by.nicolay.lipnevich.noxbox.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import by.nicolay.lipnevich.noxbox.R;
 
 public enum NoxboxType {
@@ -16,7 +19,7 @@ public enum NoxboxType {
     houseWife(R.string.houseWife, R.drawable.housewife),
     nanny(R.string.nanny, R.drawable.nanny),
     dogWalker(R.string.dogWalker, R.drawable.dog_walker),
-    homeTeacher(R.string.homeTeacher,R.drawable.home_teacher);
+    homeTeacher(R.string.homeTeacher, R.drawable.home_teacher);
 
     private int name;
     private final int image;
@@ -33,5 +36,23 @@ public enum NoxboxType {
 
     public int getImage() {
         return image;
+    }
+
+    public static List<Integer> getAll() {
+        return new ArrayList<Integer>() {{
+            add(massage.name);
+            add(haircut.name);
+            add(dinner.name);
+            add(plumber.name);
+            add(sportCompanion.name);
+            add(manicure.name);
+            add(sportCoach.name);
+            add(computerRepairMan.name);
+            add(husbandForHour.name);
+            add(houseWife.name);
+            add(nanny.name);
+            add(dogWalker.name);
+            add(homeTeacher.name);
+        }};
     }
 }

@@ -91,4 +91,20 @@
     <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
     <string name="enable">Включить</string>
+    <!--contract-->
+    <string name="selectionField">выбрать⯆</string>
+    <string name="i">Я</string>
+    <string name="want">хочу</string>
+    <string name="supply">предоставить</string>
+    <string name="demand">получить</string>
+    <string name="service">услугу</string>
+    <string name="earn">заработав</string>
+    <string name="spend">потратив</string>
+    <string name="stayNone">Жду по выбранному адресу</string>
+    <string name="beWalk">Приду сам пешком</string>
+    <string name="onBike">Приеду сам на велосипеде</string>
+    <string name="onCar">Приеду сам на машине</string>
+    <string name="onTransit">Приеду сам на общественном транспорте</string>
+    <string name="travelMode">Способ перемещения⯆</string>
+
 </resources>

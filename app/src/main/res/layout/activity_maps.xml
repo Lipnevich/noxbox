@@ -106,5 +106,14 @@
         android:src="@drawable/my_location"
         android:visibility="gone" />
 
-
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/noxboxConstructorButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            android:src="@drawable/add"/>
 </fragment>

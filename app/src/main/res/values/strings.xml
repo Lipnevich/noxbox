@@ -91,4 +91,20 @@
     <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
     <string name="enable">Connect</string>
+    <!--contract-->
+    <string name="selectionField">select⯆</string>
+    <string name="i">I</string>
+    <string name="want">want</string>
+    <string name="supply">supply</string>
+    <string name="demand">demand</string>
+    <string name="service">service</string>
+    <string name="earn">earn</string>
+    <string name="spend">to spend</string>
+    <string name="stayNone">I\'m waiting for the selected address</string>
+    <string name="beWalk">I will come myself on foot</string>
+    <string name="onBike">I\'ll come myself by bike</string>
+    <string name="onCar">I\'ll come myself by car</string>
+    <string name="onTransit">I\'ll come myself by public transport</string>
+    <string name="travelMode">The way of moving⯆</string>
+
 </resources>
