@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.R;
@@ -27,6 +28,7 @@ import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.model.UserAccount;
 import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.tools.ArrayAdapterWithIcon;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
@@ -113,11 +115,14 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
 
 
     protected void createLongDialog(final List<NoxboxType> list) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(ConstructorNoxboxPage.this);
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(ConstructorNoxboxPage.this, android.R.layout.select_dialog_singlechoice);
+        List<String> strings = new ArrayList<String>();
+        List<Integer> images = new ArrayList<Integer>();
         for (NoxboxType element : list) {
-            arrayAdapter.add(getResources().getString(element.getName()));
+            strings.add(getResources().getString(element.getName()));
+            images.add(element.getImage());
         }
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(ConstructorNoxboxPage.this);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapterWithIcon(ConstructorNoxboxPage.this, strings, images);
 
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
@@ -184,6 +189,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
                         break;
                     }
                 }
+
                 draw();
                 return true;
             }
