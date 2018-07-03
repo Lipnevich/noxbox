@@ -21,6 +21,12 @@
                   android:theme="@style/NoActionBar"/>
         <activity android:name=".pages.ConstructorNoxboxPage"
             android:theme="@style/NoActionBar"/>
+        <activity
+            android:name=".pages.TypeListPage"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"
+            android:noHistory="true"
+            android:label="Select service">
+        </activity>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"
                   android:theme="@style/NoActionBar"

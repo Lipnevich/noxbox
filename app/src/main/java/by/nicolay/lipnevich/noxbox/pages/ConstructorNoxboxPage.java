@@ -1,9 +1,9 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
-import android.content.DialogInterface;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -13,12 +13,10 @@ import android.text.style.ClickableSpan;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.R;
@@ -28,7 +26,6 @@ import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.model.UserAccount;
 import by.nicolay.lipnevich.noxbox.state.State;
-import by.nicolay.lipnevich.noxbox.tools.ArrayAdapterWithIcon;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
@@ -94,7 +91,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                createLongDialog(NoxboxType.getAll());
+                startDialogList(NoxboxType.getAll());
             }
         }, spanTxt.length() - type.length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -114,26 +111,19 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
     }
 
 
-    protected void createLongDialog(final List<NoxboxType> list) {
-        List<String> strings = new ArrayList<String>();
-        List<Integer> images = new ArrayList<Integer>();
-        for (NoxboxType element : list) {
-            strings.add(getResources().getString(element.getName()));
-            images.add(element.getImage());
+    protected void startDialogList(final List<NoxboxType> list) {
+        Intent intent = new Intent(this, TypeListPage.class);
+        //TODO need add saveInstanceState before starting dialog list activity(vlad)
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+            type = data.getStringExtra("typeName");
+            draw();
         }
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(ConstructorNoxboxPage.this);
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapterWithIcon(ConstructorNoxboxPage.this, strings, images);
-
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                type = arrayAdapter.getItem(which).concat("\u2BC6").toLowerCase();
-                State.getUserAccount().getProfile().getCurrent().setType(list.get(which));
-                draw();
-            }
-        });
-        builderSingle.show();
-
     }
 
     protected void createSimplyDialog(int menu, View textView) {
