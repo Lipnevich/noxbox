@@ -73,7 +73,7 @@
     <string name="payerCancelPushTitle">Request canceled</string>
     <string name="payerCancelPushBody">New request will be provided soon</string>
     <string name="completePushTitle">Payment done</string>
-    <string name="completePushBody">%s %s was transfered to performer</string>
+    <string name="completePushBody">%s %s was transferred to performer</string>
     <string name="balancePushBody">Your balance is %s %s</string>
     <string name="balancePushTitle">Balance updated</string>
     <string name="qrPushTitle">Performer working</string>
@@ -92,7 +92,6 @@
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
     <string name="enable">Connect</string>
     <!--contract-->
-    <string name="selectionField">select⯆</string>
     <string name="i">I</string>
     <string name="want">want</string>
     <string name="supply">supply</string>
@@ -106,5 +105,16 @@
     <string name="onCar">I\'ll come myself by car</string>
     <string name="onTransit">I\'ll come myself by public transport</string>
     <string name="travelMode">The way of moving⯆</string>
+
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+
+    <string name="daily">Daytime from 10 to 18</string>
+    <string name="nightly">Night from 18 to 10</string>
+    <string name="accurate">Set the time manually</string>
+    <string name="startTime">Beginning of working time:</string>
+    <string name="endTime">End of working hours:</string>
+
+
 
 </resources>

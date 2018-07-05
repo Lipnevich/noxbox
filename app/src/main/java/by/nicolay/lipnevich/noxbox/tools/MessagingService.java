@@ -271,18 +271,18 @@ public class MessagingService extends FirebaseMessagingService {
         switch (request.getType()) {
             case request:
             case payerCancel:
-                return push.setRecipientId(request.getNoxbox().getPerformer().getId())
-                    .setName(request.getNoxbox().getPayer().getName())
-                    .setIcon(request.getNoxbox().getPayer().getPhoto())
+                return push.setRecipientId(request.getNoxbox().getOwner().getId())
+                    .setName(request.getNoxbox().getParty().getName())
+                    .setIcon(request.getNoxbox().getParty().getPhoto())
                     .setEstimation(request.getNoxbox().getEstimationTime());
             case accept:
             case performerCancel:
             case complete:
             case qr:
-                return push.setRecipientId(request.getNoxbox().getPayer().getId())
-                        .setName(request.getNoxbox().getPerformer().getName())
-                        .setIcon(request.getNoxbox().getPerformer().getPhoto())
-                        .setMessage(request.getNoxbox().getPayer().getSecret())
+                return push.setRecipientId(request.getNoxbox().getParty().getId())
+                        .setName(request.getNoxbox().getOwner().getName())
+                        .setIcon(request.getNoxbox().getOwner().getPhoto())
+                        .setMessage(request.getNoxbox().getParty().getSecret())
                         .setPrice(request.getNoxbox().getPrice())
                         .setEstimation(request.getNoxbox().getEstimationTime());
             case balance:

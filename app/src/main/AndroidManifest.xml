@@ -19,10 +19,10 @@
         </activity>
         <activity android:name="by.nicolay.lipnevich.noxbox.MapActivity"
                   android:theme="@style/NoActionBar"/>
-        <activity android:name=".pages.ConstructorNoxboxPage"
+        <activity android:name=".constructor.ConstructorNoxboxPage"
             android:theme="@style/NoActionBar"/>
         <activity
-            android:name=".pages.TypeListPage"
+            android:name=".constructor.NoxboxTypeListPage"
             android:theme="@android:style/Theme.Holo.Light.Dialog"
             android:noHistory="true"
             android:label="Select service">

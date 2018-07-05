@@ -21,8 +21,8 @@ import java.util.Map;
 public class Noxbox implements Comparable<Noxbox> {
 
     private String id;
-    private Profile performer;
-    private Profile payer;
+    private Profile owner;
+    private Profile party;
     private Map<String, Event> chat = new HashMap<>();
 
     // Noxbox specific data
@@ -35,6 +35,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String price;
     private NoxboxType type;
     private MarketRole role;
+    private NoxboxTime noxboxTime;
     private String estimationTime;
 
     public String getId() {
@@ -137,34 +138,34 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Profile getPerformer() {
-        return performer;
+    public Profile getOwner() {
+        return owner;
     }
 
-    public Noxbox setPerformer(Profile performer) {
-        this.performer = performer;
+    public Noxbox setOwner(Profile owner) {
+        this.owner = owner;
         return this;
     }
 
-    public Profile getPayer() {
-        return payer;
+    public Profile getParty() {
+        return party;
     }
 
-    public Noxbox setPayer(Profile payer) {
-        this.payer = payer;
+    public Noxbox setParty(Profile party) {
+        this.party = party;
         return this;
     }
 
     @Exclude
-    public Profile getParty(String myId) {
-        if(performer.getId().equals(myId)) return payer;
-        else return performer;
+    public Profile getNotMe(String myId) {
+        if(owner.getId().equals(myId)) return party;
+        else return owner;
     }
 
     @Exclude
     public Profile getMe(String myId) {
-        if(performer.getId().equals(myId)) return performer;
-        else return payer;
+        if(owner.getId().equals(myId)) return owner;
+        else return party;
     }
 
     public String getEstimationTime() {
@@ -180,7 +181,29 @@ public class Noxbox implements Comparable<Noxbox> {
         return role;
     }
 
-    public void setRole(MarketRole role) {
+    public Noxbox setRole(MarketRole role) {
         this.role = role;
+        return this;
+    }
+
+    @Exclude
+    public Profile getPerformer() {
+        if(role == MarketRole.supply) return owner;
+        else return party;
+    }
+
+    @Exclude
+    public Profile getPayer() {
+        if(role == MarketRole.demand) return owner;
+        else return party;
+    }
+
+    public NoxboxTime getNoxboxTime() {
+        return noxboxTime;
+    }
+
+    public Noxbox setNoxboxTime(NoxboxTime noxboxTime) {
+        this.noxboxTime = noxboxTime;
+        return this;
     }
 }

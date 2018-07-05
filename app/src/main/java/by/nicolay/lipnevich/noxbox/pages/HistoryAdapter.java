@@ -31,7 +31,6 @@ import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.time;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
 import static java.lang.System.currentTimeMillis;
 
 /**
@@ -74,7 +73,7 @@ public class HistoryAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.dateText)).setText(date(noxbox.getTimeCompleted()));
         ((TextView) view.findViewById(R.id.timeText)).setText(time(noxbox.getTimeCompleted()));
         ((TextView) view.findViewById(R.id.priceText)).setText(noxbox.getPrice());
-        ((TextView) view.findViewById(R.id.performerName)).setText(noxbox.getParty(getProfile().getId()).getName());
+        ((TextView) view.findViewById(R.id.performerName)).setText(noxbox.getParty().getName());
 
         // TODO (nli) remove map from list, replace with address link to map
         MapView mapView = view.findViewById(R.id.map);
@@ -97,7 +96,7 @@ public class HistoryAdapter extends BaseAdapter {
         });
 
         Glide.with(view.getContext())
-                .load(noxbox.getParty(getProfile().getId()).getPhoto())
+                .load(noxbox.getParty().getPhoto())
                 .apply(RequestOptions.circleCropTransform())
                 .into((ImageView) view.findViewById(R.id.performerImage));
 
@@ -129,7 +128,7 @@ public class HistoryAdapter extends BaseAdapter {
     }
 
     private boolean isLiked(Noxbox noxbox) {
-        return noxbox.getParty(getProfile().getId()).getTimeDisliked() == null;
+        return noxbox.getParty().getTimeDisliked() == null;
     }
 
 
@@ -137,7 +136,7 @@ public class HistoryAdapter extends BaseAdapter {
         Firebase.sendRequest(new Request().setType(EventType.dislike)
                 .setNoxbox(new Noxbox().setId(noxbox.getId())));
 
-        noxbox.getParty(getProfile().getId()).setTimeDisliked(currentTimeMillis());
+        noxbox.getParty().setTimeDisliked(currentTimeMillis());
         Firebase.persistHistory(noxbox);
     }
 

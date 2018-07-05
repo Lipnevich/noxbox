@@ -51,11 +51,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import by.nicolay.lipnevich.noxbox.constructor.ConstructorNoxboxPage;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.pages.ConstructorNoxboxPage;
 import by.nicolay.lipnevich.noxbox.pages.Fragment;
 import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
 import by.nicolay.lipnevich.noxbox.state.State;
@@ -73,7 +73,7 @@ public class MapActivity extends MenuActivity implements
         GoogleApiClient.ConnectionCallbacks {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 911;
-    public static final int ON_ACTIVITY_RESULT_RQUEST_CODE = 922;
+    public static final int ON_CONSTRUCTOR_RESULT_CODE = 922;
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Map<String, GroundOverlay> markers = new HashMap<>();
@@ -146,7 +146,7 @@ public class MapActivity extends MenuActivity implements
             noxboxConstructorButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivityForResult(new Intent(MapActivity.this, ConstructorNoxboxPage.class),ON_ACTIVITY_RESULT_RQUEST_CODE);
+                    startActivityForResult(new Intent(MapActivity.this, ConstructorNoxboxPage.class), ON_CONSTRUCTOR_RESULT_CODE);
                 }
             });
             if (!visible) {
@@ -265,15 +265,7 @@ public class MapActivity extends MenuActivity implements
     public void onConnectionSuspended(int i) {
     }
 
-    protected void drawPathToNoxbox(final Noxbox noxbox) {
-        drawPath(noxbox.getId(), noxbox.getPerformer(), new Profile().setId(noxbox.getId()).setPosition(noxbox.getPosition()));
-    }
-
     protected void drawPath(final String noxboxId, final Profile performer, final Profile payer) {
-        if (performer.getPosition() == null && noxboxId != null && getCurrentNoxbox() != null) {
-            performer.setPosition(getCurrentNoxbox().getPerformer().getPosition());
-        }
-
         // TODO (nli) use icon for noxbox type
         drawIcon(performer, R.drawable.masseur);
         drawIcon(payer, R.drawable.pointer);
@@ -352,7 +344,7 @@ public class MapActivity extends MenuActivity implements
                 String performerId = marker.getKey();
                 noxbox = new Noxbox().setEstimationTime("" + estimation)
                         .setPosition(getCameraPosition())
-                        .setPayer(getProfile().publicInfo()).setPerformer(new Profile().setId(performerId)
+                        .setOwner(getProfile().publicInfo()).setParty(new Profile().setId(performerId)
                                 .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition())));
             }
         }
@@ -428,7 +420,8 @@ public class MapActivity extends MenuActivity implements
 
     @Override
     protected void draw() {
-        if (googleMap == null || getProfile() == null) return;
+        if (googleMap == null || getProfile() == null)
+            return;
 
         Fragment newFragment = getFragment();
         if (newFragment != currentFragment && currentFragment != null) {
@@ -456,7 +449,10 @@ public class MapActivity extends MenuActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        DebugMessage.popup(this, State.getUserAccount().getProfile().getCurrent().getType().toString());
-        draw();
+        if (requestCode == ON_CONSTRUCTOR_RESULT_CODE) {
+            if (Firebase.getCurrentNoxbox() != null) {
+                DebugMessage.popup(this, State.getCurrentNoxbox().getType().toString());
+            }
+        }
     }
 }

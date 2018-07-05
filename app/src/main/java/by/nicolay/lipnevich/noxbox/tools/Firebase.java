@@ -94,7 +94,7 @@ public class Firebase {
     }
 
     public static Event sendNoxboxEvent(Event event) {
-        event = sendEvent(getProfile().getCurrent().getParty(getProfile().getId()).getId(), event);
+        event = sendEvent(getProfile().getCurrent().getParty().getId(), event);
         return event;
     }
 

@@ -27,10 +27,10 @@ import com.bumptech.glide.request.transition.Transition;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.BuildConfig;
 import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 import by.nicolay.lipnevich.noxbox.tools.TimeLogger;
 
@@ -229,7 +229,7 @@ public class ChatPage extends AppCompatActivity {
         if(getCurrentNoxbox() == null) {
             return getResources().getString(R.string.chat);
         } else {
-            return getCurrentNoxbox().getParty(getProfile().getId()).getName();
+            return getCurrentNoxbox().getParty().getName();
         }
     }
 

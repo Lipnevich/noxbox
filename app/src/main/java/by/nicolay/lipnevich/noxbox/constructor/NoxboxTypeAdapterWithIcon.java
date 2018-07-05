@@ -1,4 +1,4 @@
-package by.nicolay.lipnevich.noxbox.tools;
+package by.nicolay.lipnevich.noxbox.constructor;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -13,7 +13,7 @@ import java.util.List;
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 
-public class TypeArrayAdapterWithIcon extends ArrayAdapter<NoxboxType> {
+public class NoxboxTypeAdapterWithIcon extends ArrayAdapter<NoxboxType> {
 
     private final List<NoxboxType> list;
     private final Activity activity;
@@ -23,7 +23,7 @@ public class TypeArrayAdapterWithIcon extends ArrayAdapter<NoxboxType> {
         protected ImageView flag;
     }
 
-    public TypeArrayAdapterWithIcon(Activity activity, List<NoxboxType> list) {
+    public NoxboxTypeAdapterWithIcon(Activity activity, List<NoxboxType> list) {
         super(activity,R.layout.activity_service_dialog_list, list);
         this.activity = activity;
         this.list = list;

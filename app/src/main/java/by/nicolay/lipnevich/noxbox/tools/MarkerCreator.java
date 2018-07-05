@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
@@ -19,15 +20,15 @@ import by.nicolay.lipnevich.noxbox.model.Rating;
 public class MarkerCreator {
 
     public static Marker createCustomMarker(Noxbox noxbox, Profile profile, GoogleMap googleMap, Activity activity) {
-        if (noxbox.getPayer().getId().equals(profile.getId())) {
+        if (noxbox.getRole() == MarketRole.supply) {
             //Noxbox.Perfomer
             Marker marker = googleMap.addMarker(new MarkerOptions()
                     .position(noxbox.getPosition().toLatLng())
                     .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
                             getIconBitmap(activity, noxbox.getType().getImage()),
-                            getRatingColor(noxbox.getPerformer().getRating().getReceived(), activity),
+                            getRatingColor(noxbox.getOwner().getRating().getReceived(), activity,noxbox),
                             activity.getResources().getColor(R.color.icon_background),
-                            getIconTravelModeBitmap(activity, noxbox.getPerformer().getTravelMode().getImage())
+                            getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
                     )))
                     .anchor(0.5f, 1f));
 
@@ -35,6 +36,17 @@ public class MarkerCreator {
             return marker;
         } else {
             //marker for Noxbox.Payer
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(noxbox.getPosition().toLatLng())
+                    .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
+                            getIconBitmap(activity, noxbox.getType().getImage()),
+                            getRatingColor(noxbox.getOwner().getRating().getReceived(), activity,noxbox),
+                            activity.getResources().getColor(R.color.icon_background),
+                            getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
+                    )))
+                    .anchor(0.5f, 1f));
+
+            marker.setTag(noxbox);
         }
         return null;
     }
@@ -62,7 +74,10 @@ public class MarkerCreator {
         return bmpWithBorder;
     }
 
-    private static int getRatingColor(Rating rating, Activity activity) {
+    private static int getRatingColor(Rating rating, Activity activity,Noxbox noxbox) {
+        if(TimeManager.compareTime(noxbox.getNoxboxTime().getStart(),activity)){
+            return activity.getResources().getColor(R.color.divider);
+        }
         if (rating.getLikes() >= 100) {
             return activity.getResources().getColor(R.color.top_raiting_color);
         } else if (rating.getLikes() < 100L && rating.getLikes() >= 95L) {

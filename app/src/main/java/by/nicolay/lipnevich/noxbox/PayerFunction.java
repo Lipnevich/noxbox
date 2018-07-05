@@ -204,7 +204,7 @@ public class PayerFunction extends FragmentActivity {
     protected void processMove(Event move) {
         Noxbox noxbox = getCurrentNoxbox();
         if(noxbox != null) {
-            noxbox.getMe(move.getSender().getId()).setPosition(move.getSender().getPosition());
+            noxbox.getPerformer().setPosition(move.getSender().getPosition());
             updateCurrentNoxbox(noxbox);
 //            drawPathToNoxbox(noxbox);
         }

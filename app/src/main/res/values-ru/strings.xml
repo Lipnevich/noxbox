@@ -92,7 +92,6 @@
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
     <string name="enable">Включить</string>
     <!--contract-->
-    <string name="selectionField">выбрать⯆</string>
     <string name="i">Я</string>
     <string name="want">хочу</string>
     <string name="supply">предоставить</string>
@@ -107,4 +106,12 @@
     <string name="onTransit">Приеду сам на общественном транспорте</string>
     <string name="travelMode">Способ перемещения⯆</string>
 
+    <string name="add">Добавить</string>
+    <string name="remove">Убрать</string>
+
+    <string name="daily">Дневное с 10 до 18</string>
+    <string name="nightly">Ночное с 18 до 10</string>
+    <string name="accurate">Задать время вручную</string>
+    <string name="startTime">Начало рабочего времени:</string>
+    <string name="endTime">Конец рабочего времени:</string>
 </resources>

@@ -11,7 +11,13 @@
         android:padding="24dp">
 
         <TextView
-            android:id="@+id/contractPartOne"
+            android:id="@+id/textRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="24sp" />
+        <TextView
+            android:id="@+id/textNoxboxType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -24,13 +30,14 @@
             android:weightSum="3">
 
             <EditText
-                android:id="@+id/inputWaves"
+                android:id="@+id/inputPrice"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:inputType="numberDecimal" />
 
             <TextView
-                android:id="@+id/textWaves"
+                android:id="@+id/textCurrency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -39,13 +46,21 @@
                 android:layout_weight="2"
                 android:text="Waves"
                 android:textSize="24sp" />
+
         </LinearLayout>
 
         <TextView
-            android:id="@+id/contractPartTwo"
+            android:id="@+id/textTravelMode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textTimePeriod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:textSize="24sp" />
 
         <LinearLayout
@@ -62,9 +77,9 @@
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:enabled="true"
-                android:text="Добавить"
-                android:visibility="visible"
-                android:onClick="backToMapActivity"/>
+                android:onClick="backToMapActivity"
+                android:text="@string/add"
+                android:visibility="visible" />
 
             <Button
                 android:id="@+id/remove"
@@ -74,7 +89,7 @@
                 android:layout_margin="4dp"
                 android:layout_weight="1"
                 android:enabled="true"
-                android:text="Убрать"
+                android:text="@string/remove"
                 android:visibility="visible" />
         </LinearLayout>
 
