@@ -225,7 +225,7 @@ public class MapActivity extends MenuActivity implements
         while (it.hasNext()) {
             GroundOverlay item = (GroundOverlay) it.next();
             if (Position.from(item.getPosition()).toLocation().distanceTo(getCameraPosition().toLocation())
-                    > getResources().getInteger(R.integer.radius_in_kilometers) * 1000) {
+                    > Configuration.RADIUS_IN_METERS) {
                 item.remove();
                 it.remove();
             }

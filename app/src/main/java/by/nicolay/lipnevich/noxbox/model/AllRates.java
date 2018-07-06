@@ -15,6 +15,8 @@ public class AllRates {
         Rating zeroRating = new Rating().setDislikes(0l).setLikes(0l);
         this.received = zeroRating;
         this.sent = zeroRating;
+        this.notResponded = 0l;
+        this.canceled = 0l;
     }
 
     public Rating getReceived() {

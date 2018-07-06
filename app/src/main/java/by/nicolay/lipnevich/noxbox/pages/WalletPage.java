@@ -21,6 +21,7 @@ import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import java.math.BigDecimal;
 
+import static by.nicolay.lipnevich.noxbox.Configuration.CURRENCY;
 import static by.nicolay.lipnevich.noxbox.tools.MoneyFormatter.format;
 import static by.nicolay.lipnevich.noxbox.tools.MoneyFormatter.scale;
 
@@ -73,16 +74,14 @@ public class WalletPage extends AppCompatActivity {
         BigDecimal frozenMoney = wallet.getFrozenMoney() != null ? new BigDecimal(wallet.getFrozenMoney()) : BigDecimal.ZERO;
         balance = scale(balance.subtract(frozenMoney));
 
-        String cryptoCurrency = getResources().getString(R.string.crypto_currency);
-
         TextView balanceLabel = findViewById(R.id.balance_label_id);
-        balanceLabel.setText(String.format(getResources().getString(R.string.balance), cryptoCurrency));
+        balanceLabel.setText(String.format(getResources().getString(R.string.balance), CURRENCY));
 
         TextView balanceText = findViewById(R.id.balance_id);
         balanceText.setText(format(balance));
 
         TextView frozenLabel = findViewById(R.id.frozen_money_label_id);
-        frozenLabel.setText(String.format(getResources().getString(R.string.frozenMoney), cryptoCurrency));
+        frozenLabel.setText(String.format(getResources().getString(R.string.frozenMoney), CURRENCY));
 
         TextView frozenText = findViewById(R.id.frozen_money_id);
         frozenText.setText(format(frozenMoney));

@@ -1,11 +1,4 @@
 <resources>
-
-    <integer name="timer_in_seconds" translatable="false">30</integer>
-    <integer name="radius_in_kilometers">50</integer>
-
-    <fraction name="min_allowed_probability">50%</fraction>
-    <fraction name="min_rate">90%</fraction>
-
     <!--used for google map-->
     <string name="google_maps_key" translatable="false">
         AIzaSyAHjXWdZSYG8Wz7EG5D5R4p61X77VFUi5g
@@ -14,10 +7,5 @@
     <!--used for path finding in http get requests to directions google api-->
     <string name="google_directions_key" translatable="false">
         AIzaSyAZGVVUasvDETFaNpWug0p9IfUzcsRlFIY
-    </string>
-
-    <!--update functions wallet_api key for switching to other crypto currency-->
-    <string name="crypto_currency" translatable="false">
-        Waves
     </string>
 </resources>

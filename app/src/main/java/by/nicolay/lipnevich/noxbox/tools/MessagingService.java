@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
+import static by.nicolay.lipnevich.noxbox.Configuration.CURRENCY;
 import static by.nicolay.lipnevich.noxbox.model.EventType.*;
 
 /**
@@ -158,7 +159,6 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private String getContent(Notice notice) {
-        String cryptoCurrency = context.getResources().getString(R.string.crypto_currency);
         switch (notice.getType()) {
             case request: return format(R.string.requestPushBody, notice.getName(), notice.getEstimation());
             case move:
@@ -167,8 +167,8 @@ public class MessagingService extends FirebaseMessagingService {
             case payerCancel: return format(R.string.payerCancelPushBody);
             case qr: return format(R.string.qrPushBody, notice.getName());
             case story: return notice.getMessage();
-            case complete: return format(R.string.completePushBody, notice.getPrice(), cryptoCurrency);
-            case balance: return format(R.string.balancePushBody, notice.getBalance(), cryptoCurrency);
+            case complete: return format(R.string.completePushBody, notice.getPrice(), CURRENCY);
+            case balance: return format(R.string.balancePushBody, notice.getBalance(), CURRENCY);
             default: return "Glad to serve you!";
         }
     }

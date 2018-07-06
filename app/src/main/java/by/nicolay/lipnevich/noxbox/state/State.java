@@ -22,7 +22,13 @@ public class State {
                 @Override
                 public void execute(Profile profile) {
                     State.profile = profile;
-                    if(profile.getCurrent() == null) {
+                    if (profile.getWallet() == null) {
+                        profile.setWallet(new Wallet());
+                    }
+                    if (profile.getRating() == null) {
+                        profile.setRating(new AllRates());
+                    }
+                    if (profile.getCurrent() == null) {
                         profile.setCurrent(noxbox());
                     }
                     fireProfile();
@@ -65,6 +71,7 @@ public class State {
     public static void stopListen() {
         profileTasks.clear();
         noxboxTasks.clear();
+        // TODO (nli) persist profile in firebase and bundle
     }
 
 }

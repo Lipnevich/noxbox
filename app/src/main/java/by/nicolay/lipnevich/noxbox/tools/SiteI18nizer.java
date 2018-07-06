@@ -9,13 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.TreeMap;
+import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -23,7 +17,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Created by nicolay.lipnevich on 18/12/2017.
  */
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+@RequiresApi(api = Build. VERSION_CODES.O)
 public class SiteI18nizer {
 
     public static void main(String[] args) throws IOException {

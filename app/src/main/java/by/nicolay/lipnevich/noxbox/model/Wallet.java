@@ -9,6 +9,11 @@ public class Wallet implements Serializable {
     private String address;
     private String addressToRefund;
 
+    public Wallet() {
+        this.balance = "0";
+        this.frozenMoney = "0";
+    }
+
     public String getAddress() {
         return address;
     }
