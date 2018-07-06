@@ -7,6 +7,7 @@ public class Wallet implements Serializable {
     private String balance;
     private String frozenMoney;
     private String address;
+    private String addressToRefund;
 
     public String getAddress() {
         return address;
@@ -32,6 +33,15 @@ public class Wallet implements Serializable {
 
     public Wallet setFrozenMoney(String frozenMoney) {
         this.frozenMoney = frozenMoney;
+        return this;
+    }
+
+    public String getAddressToRefund() {
+        return addressToRefund;
+    }
+
+    public Wallet setAddressToRefund(String addressToRefund) {
+        this.addressToRefund = addressToRefund;
         return this;
     }
 }

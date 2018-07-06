@@ -9,25 +9,19 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.EventType;
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.Request;
+import by.nicolay.lipnevich.noxbox.state.Firebase;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 
 import java.util.List;
-
-import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.EventType;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
 
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.time;

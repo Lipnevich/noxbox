@@ -1,6 +1,5 @@
 package by.nicolay.lipnevich.noxbox.model;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
@@ -9,13 +8,15 @@ public class Profile implements Serializable {
 
     private String id, name, email, photo, secret;
     private Acceptance acceptance;
-    private Position position;
-    private String addressToRefund, estimationTime;
-    private Long timeDisliked;
-    private TravelMode travelMode;
     private AllRates rating;
+    private Wallet wallet;
+    private NotificationKeys notificationKeys;
 
     private Noxbox current;
+
+    private Position position;
+    private Long timeDisliked;
+    private TravelMode travelMode;
     private Long arriveInSeconds;
 
     public String getId() {
@@ -92,24 +93,6 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public String getAddressToRefund() {
-        return addressToRefund;
-    }
-
-    public Profile setAddressToRefund(String addressToRefund) {
-        this.addressToRefund = addressToRefund;
-        return this;
-    }
-
-    public String getEstimationTime() {
-        return estimationTime;
-    }
-
-    public Profile setEstimationTime(String estimationTime) {
-        this.estimationTime = estimationTime;
-        return this;
-    }
-
     public String getSecret() {
         return secret;
     }
@@ -125,23 +108,6 @@ public class Profile implements Serializable {
     public Profile setTimeDisliked(Long timeDisliked) {
         this.timeDisliked = timeDisliked;
         return this;
-    }
-
-    @Exclude
-    public Profile publicInfo() {
-        return new Profile().setId(id).setName(name).setPhoto(photo).setEmail(email)
-                .setPosition(position).setTravelMode(travelMode);
-    }
-
-    @Exclude
-    public static Profile createFrom(FirebaseUser user) {
-        return new Profile()
-                .setId(user.getUid())
-                .setEmail(user.getEmail())
-                .setAcceptance(new Acceptance(user))
-                .setName(user.getDisplayName())
-                .setTravelMode(TravelMode.driving)
-                .setPhoto(user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
     }
 
     public Acceptance getAcceptance() {
@@ -161,4 +127,32 @@ public class Profile implements Serializable {
         this.current = current;
         return this;
     }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public Profile setWallet(Wallet wallet) {
+        this.wallet = wallet;
+        return this;
+    }
+
+    public NotificationKeys getNotificationKeys() {
+        if(notificationKeys == null) {
+            notificationKeys = new NotificationKeys();
+        }
+        return notificationKeys;
+    }
+
+    public Profile setNotificationKeys(NotificationKeys notificationKeys) {
+        this.notificationKeys = notificationKeys;
+        return this;
+    }
+
+    @Exclude
+    public Profile publicInfo() {
+        return new Profile().setId(id).setName(name).setPhoto(photo).setEmail(email)
+                .setPosition(position).setRating(rating).setTravelMode(travelMode);
+    }
+
 }

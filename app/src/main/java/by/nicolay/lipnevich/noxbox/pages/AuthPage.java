@@ -12,14 +12,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-
+import by.nicolay.lipnevich.noxbox.MapActivity;
+import by.nicolay.lipnevich.noxbox.R;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
-
-import by.nicolay.lipnevich.noxbox.MapActivity;
-import by.nicolay.lipnevich.noxbox.R;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 
@@ -82,7 +80,7 @@ public class AuthPage extends AppCompatActivity {
 
     private void login() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            startActivity(new Intent(AuthPage.this, MapActivity.class));
+            startActivity(new Intent(this, MapActivity.class));
         }
     }
 

@@ -7,7 +7,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
-
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.state.Firebase;
+import by.nicolay.lipnevich.noxbox.tools.Task;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -15,11 +18,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.Task;
 
 public class HistoryPage extends AppCompatActivity {
 

@@ -77,7 +77,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:enabled="true"
-                android:onClick="backToMapActivity"
+                android:onClick="postNoxbox"
                 android:text="@string/add"
                 android:visibility="visible" />
 

@@ -20,23 +20,13 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
+import by.nicolay.lipnevich.noxbox.model.*;
+import by.nicolay.lipnevich.noxbox.tools.Timer;
 import net.glxn.qrgen.android.QRCode;
 
 import java.math.BigDecimal;
 
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.model.EventType;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.tools.Timer;
-
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getWallet;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.removeCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendRequest;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
+import static by.nicolay.lipnevich.noxbox.state.Firebase.*;
 
 public class PayerFunction extends FragmentActivity {
 
@@ -54,9 +44,7 @@ public class PayerFunction extends FragmentActivity {
     private View.OnClickListener qrListener = new View.OnClickListener() {
         @Override
         public void onClick(final View v) {
-            if(getCurrentNoxbox() == null) return;
-
-            String secret = getCurrentNoxbox().getPayer().getSecret();
+            String secret = "secret";
 
             final int size = 512;
             showQrCode.setImageBitmap(QRCode.from(secret).withSize(size, size).bitmap());
@@ -119,26 +107,19 @@ public class PayerFunction extends FragmentActivity {
         cancelButton = findViewById(R.id.cancelButton);
     }
 
-    private void processTimeout() {
-        Noxbox currentNoxbox = getCurrentNoxbox();
-        if(currentNoxbox != null && currentNoxbox.getTimeAccepted() == null) {
-            sendRequest(new Request()
-                    .setType(EventType.payerCancel)
-                    .setNoxbox(currentNoxbox)
-                    .setMessage("Canceled by timeout " + getProfile().getName()));
-        }
+    private void processTimeout(Noxbox currentNoxbox) {
         removeCurrentNoxbox();
     }
 
-    private boolean isEnoughMoney(String price) {
-        return new BigDecimal(getWallet().getBalance())
-                .compareTo(new BigDecimal(price)) >= 0;
+    private boolean isEnoughMoney(Profile profile, Noxbox noxbox) {
+        return new BigDecimal(profile.getWallet().getBalance())
+                .compareTo(new BigDecimal(noxbox.getPrice())) >= 0;
     }
 
-    public void prepareForIteration() {
-        processTimeout();
+    public void prepareForIteration(Profile profile) {
+        processTimeout(profile.getCurrent());
 
-        if(getCurrentNoxbox() != null) {
+        if(profile.getCurrent() != null) {
             removeCurrentNoxbox();
         }
 
@@ -173,7 +154,6 @@ public class PayerFunction extends FragmentActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 sendRequest(new Request().setType(EventType.payerCancel)
                                         .setNoxbox(noxbox));
-                                prepareForIteration();
                             }
                         });
                 builder.setNegativeButton(R.string.no, null);
@@ -194,20 +174,6 @@ public class PayerFunction extends FragmentActivity {
 //        cleanUpMap();
         updateCurrentNoxbox(accept.getNoxbox());
         processNoxbox(accept.getNoxbox());
-    }
-
-    protected void processPerformerCancel(Event cancel) {
-        // TODO (nli) retry instead
-        prepareForIteration();
-    }
-
-    protected void processMove(Event move) {
-        Noxbox noxbox = getCurrentNoxbox();
-        if(noxbox != null) {
-            noxbox.getPerformer().setPosition(move.getSender().getPosition());
-            updateCurrentNoxbox(noxbox);
-//            drawPathToNoxbox(noxbox);
-        }
     }
 
 }

@@ -12,7 +12,10 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
-
+import by.nicolay.lipnevich.noxbox.BuildConfig;
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.*;
+import by.nicolay.lipnevich.noxbox.pages.ChatPage;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -27,21 +30,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
-import by.nicolay.lipnevich.noxbox.BuildConfig;
-import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.model.EventType;
-import by.nicolay.lipnevich.noxbox.model.Notice;
-import by.nicolay.lipnevich.noxbox.model.Push;
-import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.pages.ChatPage;
-
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
-import static by.nicolay.lipnevich.noxbox.model.EventType.balance;
-import static by.nicolay.lipnevich.noxbox.model.EventType.request;
-import static by.nicolay.lipnevich.noxbox.model.EventType.story;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
+import static by.nicolay.lipnevich.noxbox.model.EventType.*;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -156,7 +147,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private PendingIntent getIntent(Notice notice) {
-            if(notice.getType() == story && getProfile().getCurrent() != null) {
+            if(notice.getType() == story) {
                 return PendingIntent.getActivity(context, ChatPage.CODE,
                         new Intent(context, ChatPage.class),
                         PendingIntent.FLAG_UPDATE_CURRENT);

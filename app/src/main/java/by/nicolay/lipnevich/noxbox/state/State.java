@@ -1,75 +1,64 @@
 package by.nicolay.lipnevich.noxbox.state;
 
-import com.google.firebase.auth.FirebaseAuth;
+import by.nicolay.lipnevich.noxbox.model.*;
+import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import by.nicolay.lipnevich.noxbox.model.MarketRole;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
-import by.nicolay.lipnevich.noxbox.model.NoxboxType;
-import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.model.TimePeriod;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.Task;
-
 public class State {
 
     private static Profile profile;
-    private static Noxbox noxbox;
 
     private static List<Task<Profile>> profileTasks = new ArrayList<>();
     private static List<Task<Noxbox>> noxboxTasks = new ArrayList<>();
 
-    public static void listenProfile(Task<Profile> task) {
+    public static void listenProfile(final Task<Profile> task) {
         profileTasks.add(task);
         if (profile != null) {
-            task.execute(profile.setRating(profile.getRating()));
+            task.execute(profile);
         } else {
-            Firebase.readProfile(new Task<Profile>() {
+            Firebase.listenProfile(new Task<Profile>() {
                 @Override
-                public void execute(Profile object) {
-                    profile = object;
+                public void execute(Profile profile) {
+                    State.profile = profile;
+                    if(profile.getCurrent() == null) {
+                        profile.setCurrent(noxbox());
+                    }
+                    fireProfile();
                 }
             });
         }
     }
 
-    public static Profile getProfile() {
-        if (profile == null) {
-            profile = Profile.createFrom(FirebaseAuth.getInstance().getCurrentUser());
-        }
-        return profile;
-    }
-
-    public static void setProfile(Profile profile) {
-        State.profile = profile;
+    private static void fireProfile() {
         for (Task<Profile> profileTask : profileTasks) {
             profileTask.execute(profile);
         }
     }
 
-    public static Noxbox getCurrentNoxbox() {
-        if(noxbox == null){
-            noxbox = noxbox();
-        }
-        return noxbox;
-    }
-
     private static Noxbox noxbox() {
-        return new Noxbox().setOwner(getProfile().publicInfo()).setRole(MarketRole.supply).setType(NoxboxType.massage).setPrice("1").setNoxboxTime(new NoxboxTime(TimePeriod.daily));
+        return new Noxbox().setOwner(profile.publicInfo()).setRole(MarketRole.supply).setType(NoxboxType.massage).setPrice("1").setNoxboxTime(new NoxboxTime(TimePeriod.daily));
     }
 
-    public static void listenCurrentNoxbox(Task<Noxbox> task) {
+    public static void listenCurrentNoxbox(final Task<Noxbox> task) {
         noxboxTasks.add(task);
-        task.execute(getCurrentNoxbox());
+        if(profile != null) {
+            task.execute(profile.getCurrent());
+        } else {
+            // TODO (nli) read noxbox instead
+            listenProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    fireNoxbox();
+                }
+        });
+    }
     }
 
-    public static void setCurrentNoxbox(Noxbox noxbox) {
-        State.noxbox = noxbox;
+    private static void fireNoxbox() {
         for (Task<Noxbox> noxboxTask : noxboxTasks) {
-            noxboxTask.execute(noxbox);
+            noxboxTask.execute(profile.getCurrent());
         }
     }
 

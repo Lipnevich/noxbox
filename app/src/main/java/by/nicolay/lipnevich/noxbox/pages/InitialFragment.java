@@ -4,31 +4,18 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.*;
+import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
+import by.nicolay.lipnevich.noxbox.tools.MarkerCreator;
+import by.nicolay.lipnevich.noxbox.tools.TimeFormatter;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
-import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.AllRates;
-import by.nicolay.lipnevich.noxbox.model.MarketRole;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
-import by.nicolay.lipnevich.noxbox.model.NoxboxType;
-import by.nicolay.lipnevich.noxbox.model.Position;
-import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.model.Rating;
-import by.nicolay.lipnevich.noxbox.model.TimePeriod;
-import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.MarkerCreator;
-import by.nicolay.lipnevich.noxbox.tools.TimeFormatter;
 
 public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.InfoWindowAdapter {
 
@@ -43,7 +30,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
     }
 
     @Override
-    public void draw() {
+    public void draw(Profile profile) {
         Noxbox noxbox = new Noxbox();
         noxbox.setRole(MarketRole.demand);
         noxbox.setOwner(new Profile()
@@ -51,13 +38,12 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
                 .setRating(new AllRates().setReceived(new Rating().setLikes(100L))));
         noxbox.getOwner().setId("1231");
         noxbox.setId("12311");
-        noxbox.setParty(Firebase.getProfile());
         noxbox.setEstimationTime("0");
         noxbox.setPrice("25");
         noxbox.setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         noxbox.setType(NoxboxType.sportCompanion);
         noxbox.setNoxboxTime(new NoxboxTime(TimePeriod.daily));
-        createMarker(noxbox);
+        createMarker(profile, noxbox);
 
         Noxbox noxbox1 = new Noxbox();
         noxbox1.setRole(MarketRole.demand);
@@ -66,13 +52,12 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
                 .setRating(new AllRates().setReceived(new Rating().setLikes(89L))));
         noxbox1.getOwner().setId("1232");
         noxbox1.setId("12312");
-        noxbox1.setParty(Firebase.getProfile());
         noxbox1.setEstimationTime("500");
         noxbox1.setPrice("25");
         noxbox1.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         noxbox1.setType(NoxboxType.plumber);
         noxbox1.setNoxboxTime(new NoxboxTime(TimePeriod.nightly));
-        createMarker(noxbox1);
+        createMarker(profile, noxbox1);
 
         Noxbox noxbox2 = new Noxbox();
         noxbox2.setRole(MarketRole.demand);
@@ -81,7 +66,6 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
                 .setRating(new AllRates().setReceived(new Rating().setLikes(95L))));
         noxbox2.getOwner().setId("1233");
         noxbox2.setId("12313");
-        noxbox2.setParty(Firebase.getProfile());
         noxbox2.setEstimationTime("1600");
         noxbox2.setPrice("25");
         noxbox2.setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
@@ -90,7 +74,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         DateTime start = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 22, 20);
         DateTime end = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 23, 40);
         noxbox2.setNoxboxTime(new NoxboxTime(start,end));
-        createMarker(noxbox2);
+        createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
     }
 
@@ -100,8 +84,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
     }
 
 
-    public void createMarker(Noxbox noxbox) {
-        Profile profile = Firebase.getProfile();
+    public void createMarker(Profile profile, Noxbox noxbox) {
         if (markers.get(noxbox.getId()) == null) {
             markers.put(noxbox.getId(), MarkerCreator.createCustomMarker(noxbox, profile, googleMap, activity));
         }

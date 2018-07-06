@@ -20,37 +20,14 @@ import android.content.res.Resources;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.Dot;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.PatternItem;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import by.nicolay.lipnevich.noxbox.constructor.ConstructorNoxboxPage;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
@@ -60,11 +37,17 @@ import by.nicolay.lipnevich.noxbox.pages.Fragment;
 import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
 import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
-import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
+import by.nicolay.lipnevich.noxbox.tools.Task;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.*;
 
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
+import java.util.*;
+
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 
@@ -113,7 +96,12 @@ public class MapActivity extends MenuActivity implements
                 scaleMarkers();
             }
         });
-        draw();
+        State.listenProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                draw(profile);
+            }
+        });
     }
 
     protected boolean checkLocationPermission() {
@@ -190,10 +178,9 @@ public class MapActivity extends MenuActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Position position = getCurrentPosition();
-        if (position != null && googleMap != null && getCurrentNoxbox() == null) {
+        if (position != null && googleMap != null) {
             googleMap.moveCamera(newLatLngZoom(position.toLatLng(), 15));
         }
-        scaleMarkers();
     }
 
 
@@ -265,46 +252,40 @@ public class MapActivity extends MenuActivity implements
     public void onConnectionSuspended(int i) {
     }
 
-    protected void drawPath(final String noxboxId, final Profile performer, final Profile payer) {
+    protected void drawPath(final Noxbox noxbox) {
         // TODO (nli) use icon for noxbox type
-        drawIcon(performer, R.drawable.masseur);
-        drawIcon(payer, R.drawable.pointer);
 
         AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>> asyncTask = new AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>>() {
             @Override
             protected Map.Entry<Integer, List<LatLng>> doInBackground(Void... params) {
-                return getPathPoints(performer.getPosition(), payer.getPosition(),
-                        performer.getTravelMode(), getResources().getString(R.string.google_directions_key));
+                return getPathPoints(noxbox.getPerformer().getPosition(), noxbox.getPayer().getPosition(),
+                        noxbox.getPerformer().getTravelMode(), getResources().getString(R.string.google_directions_key));
             }
 
             @Override
             protected void onPostExecute(Map.Entry<Integer, List<LatLng>> responce) {
-                if (pathes.containsKey(performer.getId())) {
-                    pathes.remove(performer.getId()).remove();
+                if (pathes.containsKey(noxbox.getPerformer().getId())) {
+                    pathes.remove(noxbox.getPerformer().getId()).remove();
                 }
 
                 List<LatLng> points;
                 if (responce != null) {
                     points = responce.getValue();
                     // TODO (nli) show time on the map
-                    if (getCurrentNoxbox() != null && responce.getKey() != null) {
-                        Firebase.updateCurrentNoxbox(getCurrentNoxbox()
-                                .setEstimationTime(responce.getKey().toString()));
-                    }
                 } else {
                     // TODO (nli) draw curve
                     points = new ArrayList<>();
-                    points.add(new LatLng(performer.getPosition().getLatitude(), performer.getPosition().getLongitude()));
-                    points.add(new LatLng(payer.getPosition().getLatitude(), payer.getPosition().getLongitude()));
+                    points.add(new LatLng(noxbox.getPerformer().getPosition().getLatitude(), noxbox.getPerformer().getPosition().getLongitude()));
+                    points.add(new LatLng(noxbox.getPayer().getPosition().getLatitude(), noxbox.getPayer().getPosition().getLongitude()));
                 }
 
                 Polyline polyline = googleMap.addPolyline(new PolylineOptions()
                         .color(ContextCompat.getColor(getApplicationContext(), R.color.primary))
                         .width(11)
-                        .pattern(noxboxId == null ? Arrays.asList((PatternItem) new Dot()) : null)
+                        .pattern(Arrays.asList((PatternItem) new Dot()))
                         .addAll(points));
-                pathes.put(performer.getId(), polyline);
-                focus(performer.getId(), payer.getId());
+                pathes.put(noxbox.getPerformer().getId(), polyline);
+                focus(noxbox.getPerformer().getId(), noxbox.getPayer().getId());
             }
         };
         asyncTask.execute();
@@ -318,17 +299,7 @@ public class MapActivity extends MenuActivity implements
         return Position.from(latLng);
     }
 
-    protected void drawIcon(Profile profile, int drawable) {
-        if (profile.getPosition() != null) {
-            draw();//createMarker(profile.getId(), profile.getPosition().toLatLng(), drawable);
-        } else {
-            Crashlytics.log(Log.WARN, "emptyPosition", "Empty position for profile "
-                    + profile.publicInfo());
-        }
-    }
-
-
-    protected Noxbox chooseBestOptionPerformer() {
+    protected Noxbox chooseBestOptionPerformer(Profile profile) {
         int minEstimation = Integer.MAX_VALUE;
         Noxbox noxbox = null;
         // TODO (nli) hide performers from black list
@@ -344,7 +315,7 @@ public class MapActivity extends MenuActivity implements
                 String performerId = marker.getKey();
                 noxbox = new Noxbox().setEstimationTime("" + estimation)
                         .setPosition(getCameraPosition())
-                        .setOwner(getProfile().publicInfo()).setParty(new Profile().setId(performerId)
+                        .setOwner(profile.publicInfo()).setParty(new Profile().setId(performerId)
                                 .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition())));
             }
         }
@@ -418,22 +389,17 @@ public class MapActivity extends MenuActivity implements
 
     private Fragment currentFragment;
 
-    @Override
-    protected void draw() {
-        if (googleMap == null || getProfile() == null)
-            return;
-
-        Fragment newFragment = getFragment();
+    private void draw(@NonNull Profile profile) {
+        Fragment newFragment = getFragment(profile);
         if (newFragment != currentFragment && currentFragment != null) {
             currentFragment.clear();
         }
         currentFragment = newFragment;
-        currentFragment.draw();
+        currentFragment.draw(profile);
     }
 
-    public Fragment getFragment() {
-        Noxbox current = getProfile().getCurrent();
-        if (current == null) return new InitialFragment(googleMap, this);
+    public Fragment getFragment(Profile profile) {
+        if (profile.getCurrent() == null) return new InitialFragment(googleMap, this);
 //    created,
 //    requesting,
 //    accepting,
@@ -446,13 +412,4 @@ public class MapActivity extends MenuActivity implements
         return new InitialFragment(googleMap, this);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ON_CONSTRUCTOR_RESULT_CODE) {
-            if (Firebase.getCurrentNoxbox() != null) {
-                DebugMessage.popup(this, State.getCurrentNoxbox().getType().toString());
-            }
-        }
-    }
 }

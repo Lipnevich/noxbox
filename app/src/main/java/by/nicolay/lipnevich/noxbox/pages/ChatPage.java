@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +19,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
-
+import by.nicolay.lipnevich.noxbox.BuildConfig;
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.tools.Task;
+import by.nicolay.lipnevich.noxbox.tools.TimeLogger;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -27,21 +34,8 @@ import com.bumptech.glide.request.transition.Transition;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.nicolay.lipnevich.noxbox.BuildConfig;
-import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.Event;
-import by.nicolay.lipnevich.noxbox.model.EventType;
-import by.nicolay.lipnevich.noxbox.tools.Task;
-import by.nicolay.lipnevich.noxbox.tools.TimeLogger;
-
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.addMessageToChat;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getCurrentNoxbox;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.listenTypeEvents;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.sendNoxboxEvent;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateCurrentNoxbox;
 import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
 import static java.util.Collections.sort;
 
@@ -62,14 +56,6 @@ public class ChatPage extends AppCompatActivity {
         setContentView(R.layout.chat);
         TimeLogger.log(millis, TimeLogger.Event.onCreateChat, getApplicationContext());
 
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateCurrentNoxbox(getCurrentNoxbox());
-                onBackPressed();
-            }
-        });
-
         chatList = findViewById(R.id.chat_list);
         chatList.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -77,9 +63,6 @@ public class ChatPage extends AppCompatActivity {
 
         final DisplayMetrics screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
-
-        TextView interlocutorName = findViewById(R.id.chat_opponent_name);
-        interlocutorName.setText(getInterlocutorName());
 
         Glide.with(getApplicationContext())
             .asBitmap()
@@ -106,8 +89,23 @@ public class ChatPage extends AppCompatActivity {
                     getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
         }});
 
-        initMessages();
-        chatAdapter = new ChatAdapter(screen, events, getProfile().getId());
+        State.listenProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                draw(profile);
+            }
+        });
+    }
+
+    private void draw(final Profile profile) {
+        final DisplayMetrics screen = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(screen);
+
+        TextView interlocutorName = findViewById(R.id.chat_opponent_name);
+        interlocutorName.setText(getInterlocutorName(profile));
+
+        initMessages(profile);
+        chatAdapter = new ChatAdapter(screen, events, profile.getId());
         chatList.setAdapter(chatAdapter);
         chatList.smoothScrollToPosition(View.FOCUS_DOWN);
 
@@ -116,7 +114,7 @@ public class ChatPage extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    send();
+                    send(profile);
                     return true;
                 }
                 return false;
@@ -125,14 +123,7 @@ public class ChatPage extends AppCompatActivity {
         findViewById(R.id.send_message).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                send();
-            }
-        });
-
-        listenTypeEvents(EventType.story, new Task<Event>() {
-            @Override
-            public void execute(Event story) {
-                add(story.setWasRead(true));
+                send(profile);
             }
         });
     }
@@ -186,22 +177,14 @@ public class ChatPage extends AppCompatActivity {
         return createBitmap(picture, 0, picture.getHeight() - height, width, height);
     }
 
-    private void send() {
+    private void send(Profile profile) {
         if(TextUtils.isEmpty(text.getText().toString().trim())) return;
-        if(getCurrentNoxbox() == null) return;
-
-        Event event = sendNoxboxEvent(new Event()
-                .setType(EventType.story)
-                .setMessage(text.getText().toString()));
-
-        add(event.setWasRead(true));
+        add(new Event().setWasRead(true));
         text.setText("");
     }
 
     private void add(Event event) {
-        if(getCurrentNoxbox() == null) return;
         sound();
-        addMessageToChat(event.setWasRead(true));
         events.add(event);
         sort(events);
         chatAdapter.notifyItemInserted(events.indexOf(event));
@@ -214,23 +197,19 @@ public class ChatPage extends AppCompatActivity {
         mediaPlayer.start();
     }
 
-    private List<Event> initMessages() {
+    private List<Event> initMessages(Profile profile) {
         events.clear();
 
-        if(getCurrentNoxbox() != null) {
-            events.addAll(getCurrentNoxbox().getChat().values());
+        if(profile.getCurrent() != null) {
+            events.addAll(profile.getCurrent().getChat().values());
             sort(events);
         }
 
         return events;
     }
 
-    private String getInterlocutorName() {
-        if(getCurrentNoxbox() == null) {
-            return getResources().getString(R.string.chat);
-        } else {
-            return getCurrentNoxbox().getParty().getName();
-        }
+    private String getInterlocutorName(@NonNull Profile profile) {
+        return profile.getCurrent().getNotMe(profile.getId()).getName();
     }
 
 }

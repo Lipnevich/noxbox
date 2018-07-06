@@ -27,7 +27,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-
+import by.nicolay.lipnevich.noxbox.model.*;
+import by.nicolay.lipnevich.noxbox.pages.AuthPage;
+import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
+import by.nicolay.lipnevich.noxbox.pages.WalletPage;
+import by.nicolay.lipnevich.noxbox.state.Firebase;
+import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.tools.Task;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -53,28 +59,10 @@ import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
-import by.nicolay.lipnevich.noxbox.model.Acceptance;
-import by.nicolay.lipnevich.noxbox.model.EventType;
-import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
-import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.model.Rating;
-import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.pages.AuthPage;
-import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
-import by.nicolay.lipnevich.noxbox.pages.WalletPage;
-import by.nicolay.lipnevich.noxbox.tools.Firebase;
-import by.nicolay.lipnevich.noxbox.tools.Task;
-
+import static by.nicolay.lipnevich.noxbox.state.Firebase.updateProfile;
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.getProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.readProfile;
-import static by.nicolay.lipnevich.noxbox.tools.Firebase.updateProfile;
 //onMapReady вызываем draw и в зависимости от статуса отрисовывать
 //
 public abstract class MenuActivity extends AppCompatActivity {
@@ -87,44 +75,35 @@ public abstract class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_maps);
         MIN_RATE = getResources().getFraction(R.fraction.min_allowed_probability, 1, 1);
 
-        readProfile(new Task<Profile>() {
+        State.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                processProfile(profile);
+                draw(profile);
             }
         });
 
     }
 
-    protected void processProfile(Profile profile) {
-        createMenu();
+    private void draw(Profile profile) {
+        createMenu(profile);
 
-        if(calculateRating() <= MIN_RATE) {
+        if(calculateRating(profile) <= MIN_RATE) {
             popup(this,"Low rate!");
         }
 
-        if(new BigDecimal(Firebase.getWallet().getBalance()).compareTo(BigDecimal.ZERO) <= 0) {
+        if(new BigDecimal(profile.getWallet().getBalance()).compareTo(BigDecimal.ZERO) <= 0) {
             Firebase.sendRequest(new Request().setType(EventType.balance));
         }
 
-        /*ImageView check = findViewById(R.id.check);
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkAcceptance();
-            }
-        });
-        check.setVisibility(View.VISIBLE);*/
-        draw();
-//        listenEvents();
+        draw(profile);
     }
 
     protected Drawer menu;
 
-    protected void checkAcceptance() {
+    protected void checkAcceptance(Profile profile) {
         // TODO (nli) replace it with profile activity launch
         float minProb = getResources().getFraction(R.fraction.min_allowed_probability, 1, 1);
-        Acceptance acceptance = getProfile().getAcceptance();
+        Acceptance acceptance = profile.getAcceptance();
         if(acceptance.getExpired()) {
             popup(this,"Please wait. Your data check still in progress...");
         } else if(!acceptance.isAccepted(minProb)) {
@@ -152,8 +131,8 @@ public abstract class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private Double calculateRating() {
-        Rating rating = Firebase.getRating().getReceived();
+    private Double calculateRating(Profile profile) {
+        Rating rating = profile.getRating().getReceived();
 
         if(rating == null || (rating.getLikes().equals(0l)
                 && rating.getDislikes().equals(0l))) return 5.0;
@@ -164,17 +143,17 @@ public abstract class MenuActivity extends AppCompatActivity {
         return (double) (rating.getLikes() * 5) / (rating.getLikes() + rating.getDislikes());
     }
 
-    protected void createMenu() {
+    protected void createMenu(Profile profile) {
         makeProfileImageRounded();
 
         ProfileDrawerItem account = new ProfileDrawerItem()
-                .withName(getProfile().getName())
-                .withEmail(String.format( "%.2f", calculateRating()) + " \u2605");
-        if(getProfile().getPhoto() == null) {
+                .withName(profile.getName())
+                .withEmail(String.format( "%.2f", calculateRating(profile)) + " \u2605");
+        if(profile.getPhoto() == null) {
             account.withIcon(ContextCompat.getDrawable(getApplicationContext(),
                     R.drawable.profile_picture_blank));
         } else {
-            account.withIcon(getProfile().getPhoto());
+            account.withIcon(profile.getPhoto());
         }
 
         AccountHeader header = new AccountHeaderBuilder()
@@ -222,10 +201,8 @@ public abstract class MenuActivity extends AppCompatActivity {
                         .apply(RequestOptions.placeholderOf(placeholder).circleCrop())
                         .into(new SimpleTarget<Bitmap>() {
                             @Override
-                            public void onResourceReady(Bitmap resource, Transition<?
-                                                                super Bitmap> transition) {
+                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                                 imageView.setImageBitmap(resource);
-                                checkPhoto(resource);
                             }
                         });
             }
@@ -247,13 +224,12 @@ public abstract class MenuActivity extends AppCompatActivity {
         });
     }
 
-    private void checkPhoto(Bitmap photo) {
-        if(!getProfile().getAcceptance().getExpired()) return;
+    private void checkPhoto(final Profile profile, Bitmap photo) {
+        if(!profile.getAcceptance().getExpired()) return;
 
-        if(getProfile().getPhoto() == null) {
-            getProfile().getAcceptance().setFailToRecognizeFace(true);
-            getProfile().getAcceptance().setExpired(false);
-            updateProfile(getProfile());
+        if(profile.getPhoto() == null) {
+            profile.getAcceptance().setFailToRecognizeFace(true);
+            profile.getAcceptance().setExpired(false);
             return;
         }
 
@@ -270,25 +246,25 @@ public abstract class MenuActivity extends AppCompatActivity {
                         new OnSuccessListener<List<FirebaseVisionFace>>() {
                             @Override
                             public void onSuccess(List<FirebaseVisionFace> faces) {
-                                getProfile().getAcceptance().setExpired(false);
+                                profile.getAcceptance().setExpired(false);
                                 if(faces.size() != 1) {
-                                    getProfile().getAcceptance().setFailToRecognizeFace(true);
+                                    profile.getAcceptance().setFailToRecognizeFace(true);
                                 } else {
                                     FirebaseVisionFace face = faces.get(0);
-                                    getProfile().getAcceptance().setSmileProbability(face.getSmilingProbability());
-                                    getProfile().getAcceptance().setRightEyeOpenProbability(face.getRightEyeOpenProbability());
-                                    getProfile().getAcceptance().setLeftEyeOpenProbability(face.getLeftEyeOpenProbability());
+                                    profile.getAcceptance().setSmileProbability(face.getSmilingProbability());
+                                    profile.getAcceptance().setRightEyeOpenProbability(face.getRightEyeOpenProbability());
+                                    profile.getAcceptance().setLeftEyeOpenProbability(face.getLeftEyeOpenProbability());
                                 }
-                                updateProfile(getProfile());
+                                updateProfile(profile);
                             }
                         })
                 .addOnFailureListener(
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                getProfile().getAcceptance().setExpired(false);
-                                getProfile().getAcceptance().setFailToRecognizeFace(true);
-                                updateProfile(getProfile());
+                                profile.getAcceptance().setExpired(false);
+                                profile.getAcceptance().setFailToRecognizeFace(true);
+                                updateProfile(profile);
                             }
                         });
     }
@@ -356,12 +332,16 @@ public abstract class MenuActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == WalletPage.CODE && Firebase.getProfile() != null) {
-            draw();
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        if(requestCode == WalletPage.CODE) {
+            State.listenProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    draw(profile);
+                }
+            });
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected abstract void draw();
 }
