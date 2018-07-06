@@ -105,16 +105,14 @@
     <string name="onCar">I\'ll come myself by car</string>
     <string name="onTransit">I\'ll come myself by public transport</string>
     <string name="travelMode">The way of moving⯆</string>
-
     <string name="add">Add</string>
     <string name="remove">Remove</string>
-
     <string name="daily">Daytime from 10 to 18</string>
     <string name="nightly">Night from 18 to 10</string>
     <string name="accurate">Set the time manually</string>
     <string name="startTime">Beginning of working time:</string>
     <string name="endTime">End of working hours:</string>
-
-
-
+    <string name="selectService">Select service</string>
+    <string name="wantToEarn">want to earn</string>
+    <string name="readyToPay">ready to pay</string>
 </resources>

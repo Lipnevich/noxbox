@@ -19,6 +19,11 @@ import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import org.joda.time.DateTime;
+
+import java.util.Calendar;
+
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Profile;
@@ -27,9 +32,6 @@ import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
-import org.joda.time.DateTime;
-
-import java.util.Calendar;
 
 public class ConstructorNoxboxPage extends AppCompatActivity {
 
@@ -56,16 +58,17 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
     private void draw(@NonNull Profile profile) {
         drawRole(profile);
         drawType(profile);
+        drawPayment(profile);
         drawPrice(profile);
         drawTravelMode(profile);
         drawTimePicker(profile);
     }
 
     private void drawRole(final Profile profile) {
+        ((TextView)findViewById(R.id.textProfile)).setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
         final TextView textView = findViewById(R.id.textRole);
         SpannableStringBuilder spanTxt =
-                new SpannableStringBuilder(getResources().getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
-        spanTxt.append(getResources().getString(profile.getCurrent().getRole().getName()));
+                new SpannableStringBuilder(getResources().getString(profile.getCurrent().getRole().getName()));
         spanTxt.append(ARROW);
         spanTxt.setSpan(new ClickableSpan() {
             @Override
@@ -92,7 +95,13 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
-
+    private void drawPayment(Profile profile){
+        if(profile.getCurrent().getRole() == MarketRole.supply){
+            ((TextView)findViewById(R.id.textPayment)).setText(R.string.wantToEarn);
+        }else{
+            ((TextView)findViewById(R.id.textPayment)).setText(R.string.readyToPay);
+        }
+    }
     private TextWatcher listener;
 
     private void drawPrice(final Profile profile) {
@@ -109,7 +118,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    profile.getCurrent().setPrice(s.toString());
+                        profile.getCurrent().setPrice(s.toString());
                 }
             };
             priceInput.addTextChangedListener(listener);

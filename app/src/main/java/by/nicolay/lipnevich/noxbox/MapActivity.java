@@ -22,12 +22,33 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PatternItem;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import by.nicolay.lipnevich.noxbox.constructor.ConstructorNoxboxPage;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
@@ -38,15 +59,6 @@ import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
 import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.*;
-
-import java.util.*;
 
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
@@ -56,7 +68,6 @@ public class MapActivity extends MenuActivity implements
         GoogleApiClient.ConnectionCallbacks {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 911;
-    public static final int ON_CONSTRUCTOR_RESULT_CODE = 922;
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Map<String, GroundOverlay> markers = new HashMap<>();
@@ -129,14 +140,6 @@ public class MapActivity extends MenuActivity implements
             }
             googleMap.setMyLocationEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            FloatingActionButton noxboxConstructorButton = findViewById(R.id.noxboxConstructorButton);
-            noxboxConstructorButton.setVisibility(View.VISIBLE);
-            noxboxConstructorButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivityForResult(new Intent(MapActivity.this, ConstructorNoxboxPage.class), ON_CONSTRUCTOR_RESULT_CODE);
-                }
-            });
             if (!visible) {
                 return;
             }
@@ -152,6 +155,13 @@ public class MapActivity extends MenuActivity implements
             layout.setMargins(0, 0, 0, dpToPx(8));
             locationButton.setLayoutParams(layout);
         }
+
+        findViewById(R.id.noxboxConstructorButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MapActivity.this, ConstructorNoxboxPage.class));
+            }
+        });
     }
 
     protected boolean isGpsEnabled() {
@@ -383,7 +393,7 @@ public class MapActivity extends MenuActivity implements
 
     private void moveGoogleCopyrights() {
         if (googleMap != null) {
-            googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(7), dpToPx(70));
+            googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(292), dpToPx(70));
         }
     }
 
