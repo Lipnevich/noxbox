@@ -106,7 +106,8 @@
     <string name="onTransit">Приеду сам на общественном транспорте</string>
     <string name="travelMode">Способ перемещения⯆</string>
     <string name="add">Опубликовать</string>
-    <string name="remove">Убрать</string>
+    <string name="remove">Удалить</string>
+    <string name="cancel">Отмена</string>
     <string name="daily">Дневное с 10 до 18</string>
     <string name="nightly">Ночное с 18 до 10</string>
     <string name="accurate">Задать время вручную</string>
@@ -115,4 +116,21 @@
     <string name="selectService">Выбрать услугу</string>
     <string name="wantToEarn">хочу заработать</string>
     <string name="readyToPay">готов заплатить</string>
+
+    <!--Service description-->
+    <string name="massageDescription">45 минут сеанс массажа</string>
+    <string name="dogWalkingDescription">40 минут выгул собаки</string>
+    <string name="haircutDescription">30 минут стрижка</string>
+    <string name="manicureDescription">45 минут сеанс маникюра</string>
+    <string name="computerRepairDescription">2 часа ремонт компьютера</string>
+    <string name="dinnerDescription">1 час приготовление пищи</string>
+    <string name="houseWifeDescription">1 час уборка квартиры </string>
+    <string name="nannyDescription">4 часа присмотр за ребёнком</string>
+    <string name="homeTeacherDescription">1 час репетитор английского</string>
+    <string name="husbandForHourDescription">10 минут муж на час</string>
+    <string name="plumberDescription">10 минут профилактика трубопровода</string>
+    <string name="sportCompanionDescription">1 час тренировка в зале</string>
+    <string name="sportCoachDescription">1 час тренировка с тренером</string>
+
+    <string name="trackLocation">Отслеживать местоположение</string>
 </resources>

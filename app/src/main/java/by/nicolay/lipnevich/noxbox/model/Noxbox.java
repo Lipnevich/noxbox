@@ -26,6 +26,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private Map<String, Event> chat = new HashMap<>();
 
     // Noxbox specific data
+    private Long timeCreated;
     private Long timeRequested;
     private Long timeCompleted;
     private Long timeAccepted;
@@ -35,7 +36,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String price;
     private NoxboxType type;
     private MarketRole role;
-    private NoxboxTime noxboxTime;
+    private WorkSchedule workSchedule;
     private String estimationTime;
 
     public String getId() {
@@ -198,12 +199,21 @@ public class Noxbox implements Comparable<Noxbox> {
         else return party;
     }
 
-    public NoxboxTime getNoxboxTime() {
-        return noxboxTime;
+    public WorkSchedule getWorkSchedule() {
+        return workSchedule;
     }
 
-    public Noxbox setNoxboxTime(NoxboxTime noxboxTime) {
-        this.noxboxTime = noxboxTime;
+    public Noxbox setWorkSchedule(WorkSchedule workSchedule) {
+        this.workSchedule = workSchedule;
+        return this;
+    }
+
+    public Long getTimeCreated() {
+        return timeCreated;
+    }
+
+    public Noxbox setTimeCreated(Long timeCreated) {
+        this.timeCreated = timeCreated;
         return this;
     }
 }

@@ -75,7 +75,7 @@ public class MarkerCreator {
     }
 
     private static int getRatingColor(Rating rating, Activity activity,Noxbox noxbox) {
-        if(TimeManager.compareTime(noxbox.getNoxboxTime().getStart(),activity)){
+        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)){
             return activity.getResources().getColor(R.color.divider);
         }
         if (rating.getLikes() >= 100) {

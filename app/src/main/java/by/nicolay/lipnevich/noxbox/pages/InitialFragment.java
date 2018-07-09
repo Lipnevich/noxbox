@@ -4,18 +4,27 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.*;
+import by.nicolay.lipnevich.noxbox.model.AllRates;
+import by.nicolay.lipnevich.noxbox.model.MarketRole;
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.NoxboxType;
+import by.nicolay.lipnevich.noxbox.model.Position;
+import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.model.Rating;
+import by.nicolay.lipnevich.noxbox.model.TimePeriod;
+import by.nicolay.lipnevich.noxbox.model.TravelMode;
+import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.MarkerCreator;
 import by.nicolay.lipnevich.noxbox.tools.TimeFormatter;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
-import org.joda.time.DateTime;
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.InfoWindowAdapter {
 
@@ -42,7 +51,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox.setPrice("25");
         noxbox.setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         noxbox.setType(NoxboxType.sportCompanion);
-        noxbox.setNoxboxTime(new NoxboxTime(TimePeriod.daily));
+        noxbox.setWorkSchedule(new WorkSchedule(TimePeriod.daily));
         createMarker(profile, noxbox);
 
         Noxbox noxbox1 = new Noxbox();
@@ -56,7 +65,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox1.setPrice("25");
         noxbox1.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         noxbox1.setType(NoxboxType.plumber);
-        noxbox1.setNoxboxTime(new NoxboxTime(TimePeriod.nightly));
+        noxbox1.setWorkSchedule(new WorkSchedule(TimePeriod.nightly));
         createMarker(profile, noxbox1);
 
         Noxbox noxbox2 = new Noxbox();
@@ -70,10 +79,11 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox2.setPrice("25");
         noxbox2.setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
         noxbox2.setType(NoxboxType.haircut);
-        Calendar calendar = Calendar.getInstance();
-        DateTime start = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 22, 20);
-        DateTime end = new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 23, 40);
-        noxbox2.setNoxboxTime(new NoxboxTime(start,end));
+        int startHour = 22;
+        int startMinute = 20;
+        int endHour = 23;
+        int endMinute = 40;
+        noxbox2.setWorkSchedule(new WorkSchedule(startHour,startMinute,endHour,endMinute));
         createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
     }

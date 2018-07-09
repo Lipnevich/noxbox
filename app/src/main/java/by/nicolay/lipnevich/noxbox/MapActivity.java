@@ -60,6 +60,7 @@ import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
+import static by.nicolay.lipnevich.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 
@@ -67,7 +68,6 @@ public class MapActivity extends MenuActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 911;
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Map<String, GroundOverlay> markers = new HashMap<>();

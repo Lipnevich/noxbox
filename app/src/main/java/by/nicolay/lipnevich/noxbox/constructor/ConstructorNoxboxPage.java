@@ -2,9 +2,12 @@ package by.nicolay.lipnevich.noxbox.constructor;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -15,12 +18,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
-import org.joda.time.DateTime;
 
 import java.util.Calendar;
 
@@ -30,18 +34,49 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TimePeriod;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.state.State;
-import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
+
+import static by.nicolay.lipnevich.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 
 public class ConstructorNoxboxPage extends AppCompatActivity {
 
     private static final String ARROW = "\uD83E\uDC93";
     protected double price;
+    private Button cancelOrRemove;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noxbox_constructor);
+        cancelOrRemove = findViewById(R.id.closeOrRemove);
+        cancelOrRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelNoxboxConstructor();
+            }
+        });
+        if(checkLocationPermission()){
+            ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(checkLocationPermission() && isChecked){
+                        ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                LOCATION_PERMISSION_REQUEST_CODE);
+                    }
+                }
+
+            });
+        }else{
+            ((CheckBox) findViewById(R.id.checkbox)).setChecked(true);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == LOCATION_PERMISSION_REQUEST_CODE){
+            ((CheckBox) findViewById(R.id.checkbox)).setChecked(true);
+        }
     }
 
     @Override
@@ -49,23 +84,51 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         super.onResume();
         State.listenProfile(new Task<Profile>() {
             @Override
-            public void execute(Profile profile) {
-                draw(profile);
+            public void execute(final Profile profile) {
+                if (profile.getCurrent() != null){
+                    cancelOrRemove.setText(R.string.remove);
+                    cancelOrRemove.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            removeNoxbox(profile);
+                        }
+                    });
+                }
+                    draw(profile);
             }
         });
+
+    }
+    protected boolean checkLocationPermission() {
+        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED;
     }
 
-    private void draw(@NonNull Profile profile) {
+    private void draw(@NonNull final Profile profile) {
+        findViewById(R.id.publish).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postNoxbox(profile);
+            }
+        });
+        if (profile.getCurrent() != null) {
+
+        } else {
+
+        }
         drawRole(profile);
         drawType(profile);
         drawPayment(profile);
         drawPrice(profile);
         drawTravelMode(profile);
-        drawTimePicker(profile);
+        drawTimePickerStart(profile);
+        if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
+            drawTimePickerEnd(profile);
+        }
     }
 
     private void drawRole(final Profile profile) {
-        ((TextView)findViewById(R.id.textProfile)).setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
+        ((TextView) findViewById(R.id.textProfile)).setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
         final TextView textView = findViewById(R.id.textRole);
         SpannableStringBuilder spanTxt =
                 new SpannableStringBuilder(getResources().getString(profile.getCurrent().getRole().getName()));
@@ -95,18 +158,20 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
-    private void drawPayment(Profile profile){
-        if(profile.getCurrent().getRole() == MarketRole.supply){
-            ((TextView)findViewById(R.id.textPayment)).setText(R.string.wantToEarn);
-        }else{
-            ((TextView)findViewById(R.id.textPayment)).setText(R.string.readyToPay);
+
+    private void drawPayment(Profile profile) {
+        if (profile.getCurrent().getRole() == MarketRole.supply) {
+            ((TextView) findViewById(R.id.textPayment)).setText(R.string.wantToEarn);
+        } else {
+            ((TextView) findViewById(R.id.textPayment)).setText(R.string.readyToPay);
         }
     }
+
     private TextWatcher listener;
 
     private void drawPrice(final Profile profile) {
         EditText priceInput = findViewById(R.id.inputPrice);
-        if(listener == null) {
+        if (listener == null) {
             listener = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -118,7 +183,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                        profile.getCurrent().setPrice(s.toString());
+                    profile.getCurrent().setPrice(s.toString());
                 }
             };
             priceInput.addTextChangedListener(listener);
@@ -140,25 +205,44 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
 
-    private void drawTimePicker(final Profile profile) {
-        final TextView textView = findViewById(R.id.textTimePeriod);
+    private void drawTimePickerStart(final Profile profile) {
+        final TextView textStart = findViewById(R.id.textTimeStart);
         String result;
-        if (profile.getCurrent().getNoxboxTime().getPeriod() == TimePeriod.accurate) {
-            result = profile.getCurrent().getNoxboxTime().getTimeAsString();
+        if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
+            result = profile.getCurrent().getWorkSchedule().getStartInHours() + ":" + profile.getCurrent().getWorkSchedule().getStartInMinutes();
         } else {
-            result = getResources().getString(profile.getCurrent().getNoxboxTime().getPeriod().getName());
+            result = getResources().getString(profile.getCurrent().getWorkSchedule().getPeriod().getName());
         }
-        DebugMessage.popup(ConstructorNoxboxPage.this,result);
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(result);
         spanTxt.append(ARROW);
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                createTimePeriodList(profile, textView);
+                createTimePeriodList(profile, textStart);
             }
         }, spanTxt.length() - result.concat(ARROW).length(), spanTxt.length(), 0);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        textStart.setMovementMethod(LinkMovementMethod.getInstance());
+        textStart.setText(spanTxt, TextView.BufferType.SPANNABLE);
+    }
+
+    private void drawTimePickerEnd(final Profile profile) {
+        final TextView textStart = findViewById(R.id.textTimeEnd);
+        String result;
+        if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
+            result = profile.getCurrent().getWorkSchedule().getEndInHours() + ":" + profile.getCurrent().getWorkSchedule().getEndInMinutes();
+        } else {
+            result = getResources().getString(profile.getCurrent().getWorkSchedule().getPeriod().getName());
+        }
+        SpannableStringBuilder spanTxt = new SpannableStringBuilder(result);
+        spanTxt.append(ARROW);
+        spanTxt.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                createTimePeriodList(profile, textStart);
+            }
+        }, spanTxt.length() - result.concat(ARROW).length(), spanTxt.length(), 0);
+        textStart.setMovementMethod(LinkMovementMethod.getInstance());
+        textStart.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
 
 
@@ -205,10 +289,10 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() != 1) {
-                    profile.getCurrent().getNoxboxTime().setPeriod(TimePeriod.byId(item.getItemId()));
+                    profile.getCurrent().getWorkSchedule().setPeriod(TimePeriod.byId(item.getItemId()));
                 } else {
                     displayStartTimeDialog(profile);
-                    profile.getCurrent().getNoxboxTime().setPeriod(TimePeriod.byId(item.getItemId()));
+                    profile.getCurrent().getWorkSchedule().setPeriod(TimePeriod.byId(item.getItemId()));
                 }
                 draw(profile);
                 return true;
@@ -222,8 +306,11 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                profile.getCurrent().getNoxboxTime().setStart(new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute));
-                displayEndTimeDialog(profile);
+                profile.getCurrent().getWorkSchedule().setStartInHours(hourOfDay);
+                profile.getCurrent().getWorkSchedule().setStartInMinutes(minute);
+                profile.getCurrent().getWorkSchedule().setEndInHours(hourOfDay + 1);
+                profile.getCurrent().getWorkSchedule().setEndInMinutes(minute);
+                draw(profile);
             }
         };
         TimePickerDialog timePickerDialog = new TimePickerDialog(ConstructorNoxboxPage.this,
@@ -236,12 +323,12 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         timePickerDialog.show();
     }
 
-    private void displayEndTimeDialog(final Profile profile) {
+    /*private void displayEndTimeDialog(final Profile profile) {
         final Calendar calendar = Calendar.getInstance();
         TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                profile.getCurrent().getNoxboxTime().setEnd(new DateTime(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), hourOfDay, minute));
+
                 draw(profile);
             }
         };
@@ -253,9 +340,19 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         timePickerDialog.setTitle(getResources().getString(R.string.endTime));
         timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         timePickerDialog.show();
+    }*/
+
+    public void postNoxbox(Profile profile) {
+        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
+        finish();
     }
 
-    public void postNoxbox(View view) {
+    public void removeNoxbox(Profile profile) {
+        //profile.removeNoxbox();
+        draw(profile);
+    }
+
+    private void cancelNoxboxConstructor() {
         finish();
     }
 

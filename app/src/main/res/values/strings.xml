@@ -107,6 +107,7 @@
     <string name="travelMode">The way of moving⯆</string>
     <string name="add">Add</string>
     <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
     <string name="daily">Daytime from 10 to 18</string>
     <string name="nightly">Night from 18 to 10</string>
     <string name="accurate">Set the time manually</string>
@@ -115,4 +116,21 @@
     <string name="selectService">Select service</string>
     <string name="wantToEarn">want to earn</string>
     <string name="readyToPay">ready to pay</string>
+
+    <!--Service description-->Description
+    <string name="massageDescription">45 minutes of massage</string>
+    <string name="dogWalkingDescription">40 minutes of dog walking</string>
+    <string name="haircutDescription">30 minutes haircut</string>
+    <string name="manicureDescription">45 minutes manicure session</string>
+    <string name="computerRepairDescription">2 hours computer repair</string>
+    <string name="cookingDescription">1 hour cooking</string>
+    <string name="houseWifeDescription">1 hour apartment cleaning</string>
+    <string name="nannyDescription">4 hours childcare</string>
+    <string name="homeTeacherDescription">1 hour English tutor</string>
+    <string name="husbandForHourDescription">10 minutes the husband for an hour</string>
+    <string name="plumberDescription">10 minutes pipeline prevention</string>
+    <string name="sportCompanionDescription">1 hour training in a hall</string>
+    <string name="sportCoachDescription">1 hour training with a coach</string>
+
+    <string name="trackLocation">Track location</string>
 </resources>
