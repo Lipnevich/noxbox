@@ -49,34 +49,6 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noxbox_constructor);
         cancelOrRemove = findViewById(R.id.closeOrRemove);
-        cancelOrRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelNoxboxConstructor();
-            }
-        });
-        if(checkLocationPermission()){
-            ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(checkLocationPermission() && isChecked){
-                        ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                LOCATION_PERMISSION_REQUEST_CODE);
-                    }
-                }
-
-            });
-        }else{
-            ((CheckBox) findViewById(R.id.checkbox)).setChecked(true);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == LOCATION_PERMISSION_REQUEST_CODE){
-            ((CheckBox) findViewById(R.id.checkbox)).setChecked(true);
-        }
     }
 
     @Override
@@ -85,7 +57,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         State.listenProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
-                if (profile.getCurrent() != null){
+                if (profile.getCurrent() != null) {
                     cancelOrRemove.setText(R.string.remove);
                     cancelOrRemove.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -93,12 +65,21 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
                             removeNoxbox(profile);
                         }
                     });
+                } else {
+                    cancelOrRemove.setText(R.string.cancel);
+                    cancelOrRemove.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            cancelNoxboxConstructor();
+                        }
+                    });
                 }
-                    draw(profile);
+                draw(profile);
             }
         });
 
     }
+
     protected boolean checkLocationPermission() {
         return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED;
@@ -117,6 +98,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         drawPayment(profile);
         drawPrice(profile);
         drawTravelMode(profile);
+        drawCheckTrackLocation(profile);
         drawTimePickerStart(profile);
         if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
             drawTimePickerEnd(profile);
@@ -154,8 +136,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
-    private void drawTypeDescription(Profile profile){
-        ((TextView) findViewById(R.id.textTypeDescription)).setText("(".concat(getResources().getString(R.string.description)).concat(getResources().getString(profile.getCurrent().getType().getDescription())).concat(")"));
+
+    private void drawTypeDescription(Profile profile) {
+        ((TextView) findViewById(R.id.textTypeDescription)).setText("(".concat(getResources().getString(R.string.description)).concat(" ").concat(getResources().getString(profile.getCurrent().getType().getDescription())).concat(")"));
     }
 
     private void drawPayment(Profile profile) {
@@ -202,6 +185,30 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         }, spanTxt.length() - getResources().getString(profile.getCurrent().getOwner().getTravelMode().getName()).concat((ARROW)).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+    }
+
+    private void drawCheckTrackLocation(Profile profile) {
+        if (profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
+            CheckBox checkBox = findViewById(R.id.checkbox);
+            findViewById(R.id.checkboxLayout).setVisibility(View.VISIBLE);
+            if (checkLocationPermission()) {
+                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (checkLocationPermission() && isChecked) {
+                            ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                    LOCATION_PERMISSION_REQUEST_CODE);
+                        }
+                    }
+
+                });
+            } else {
+                checkBox.setChecked(true);
+                checkBox.setEnabled(false);
+            }
+        } else {
+            findViewById(R.id.checkboxLayout).setVisibility(View.GONE);
+        }
     }
 
     private void drawTimePickerStart(final Profile profile) {
@@ -322,25 +329,6 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         timePickerDialog.show();
     }
 
-    /*private void displayEndTimeDialog(final Profile profile) {
-        final Calendar calendar = Calendar.getInstance();
-        TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-                draw(profile);
-            }
-        };
-        TimePickerDialog timePickerDialog = new TimePickerDialog(ConstructorNoxboxPage.this,
-                android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
-                myTimeListener, calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                true);
-        timePickerDialog.setTitle(getResources().getString(R.string.endTime));
-        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        timePickerDialog.show();
-    }*/
-
     public void postNoxbox(Profile profile) {
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
         finish();
@@ -355,4 +343,17 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (checkLocationPermission()) {
+                ((CheckBox) findViewById(R.id.checkbox)).setChecked(false);
+                ((CheckBox) findViewById(R.id.checkbox)).setEnabled(true);
+                return;
+            }
+            ((CheckBox) findViewById(R.id.checkbox)).setChecked(true);
+            ((CheckBox) findViewById(R.id.checkbox)).setEnabled(false);
+        }
+    }
 }

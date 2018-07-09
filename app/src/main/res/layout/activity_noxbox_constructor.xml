@@ -87,9 +87,11 @@
                 android:textSize="24sp" />
 
             <LinearLayout
+                android:id="@+id/checkboxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <CheckBox
                     android:id="@+id/checkbox"
@@ -97,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/primary"
                     android:checked="false"
-                    android:gravity="top|start" />
+                    android:gravity="top|start"/>
 
                 <TextView
                     android:id="@+id/agreementView"

@@ -20,7 +20,8 @@
         <activity android:name="by.nicolay.lipnevich.noxbox.MapActivity"
                   android:theme="@style/NoActionBar"/>
         <activity android:name=".constructor.ConstructorNoxboxPage"
-           android:parentActivityName=".MapActivity"/>
+            android:parentActivityName=".MapActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".constructor.NoxboxTypeListPage"
             android:theme="@android:style/Theme.Holo.Light.Dialog"
