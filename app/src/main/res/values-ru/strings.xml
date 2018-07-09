@@ -133,4 +133,5 @@
     <string name="sportCoachDescription">1 час тренировка с тренером</string>
 
     <string name="trackLocation">Отслеживать местоположение</string>
+    <string name="description">описание:</string>
 </resources>

@@ -111,13 +111,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
                 postNoxbox(profile);
             }
         });
-        if (profile.getCurrent() != null) {
-
-        } else {
-
-        }
         drawRole(profile);
         drawType(profile);
+        drawTypeDescription(profile);
         drawPayment(profile);
         drawPrice(profile);
         drawTravelMode(profile);
@@ -157,6 +153,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         }, spanTxt.length() - (getResources().getString(profile.getCurrent().getType().getName()).concat(ARROW)).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+    }
+    private void drawTypeDescription(Profile profile){
+        ((TextView) findViewById(R.id.textTypeDescription)).setText("(".concat(getResources().getString(R.string.description)).concat(getResources().getString(profile.getCurrent().getType().getDescription())).concat(")"));
     }
 
     private void drawPayment(Profile profile) {

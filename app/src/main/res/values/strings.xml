@@ -133,4 +133,5 @@
     <string name="sportCoachDescription">1 hour training with a coach</string>
 
     <string name="trackLocation">Track location</string>
+    <string name="description">description:</string>
 </resources>

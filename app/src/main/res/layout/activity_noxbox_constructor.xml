@@ -38,6 +38,11 @@
                 android:drawableEnd="@drawable/arrow"
                 android:gravity="center_vertical"
                 android:textSize="24sp" />
+            <TextView
+                android:id="@+id/textTypeDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"/>
 
             <TextView
                 android:id="@+id/textPayment"
