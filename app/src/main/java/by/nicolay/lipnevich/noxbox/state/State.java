@@ -44,7 +44,7 @@ public class State {
     }
 
     private static Noxbox noxbox() {
-        return new Noxbox().setOwner(profile.publicInfo()).setRole(MarketRole.supply).setType(NoxboxType.massage).setPrice("1").setNoxboxTime(new NoxboxTime(TimePeriod.daily));
+        return new Noxbox().setOwner(profile.publicInfo()).setRole(MarketRole.supply).setType(NoxboxType.massage).setPrice("1").setWorkSchedule(new  WorkSchedule(TimePeriod.daily));
     }
 
     public static void listenCurrentNoxbox(final Task<Noxbox> task) {

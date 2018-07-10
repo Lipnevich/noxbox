@@ -123,7 +123,7 @@
     <string name="haircutDescription">30 minutes haircut</string>
     <string name="manicureDescription">45 minutes manicure session</string>
     <string name="computerRepairDescription">2 hours computer repair</string>
-    <string name="cookingDescription">1 hour cooking</string>
+    <string name="dinnerDescription">1 hour cooking</string>
     <string name="houseWifeDescription">1 hour apartment cleaning</string>
     <string name="nannyDescription">4 hours childcare</string>
     <string name="homeTeacherDescription">1 hour English tutor</string>

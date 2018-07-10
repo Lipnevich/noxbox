@@ -29,7 +29,7 @@ public class WalletPage extends AppCompatActivity {
 
     public static final int CODE = 1003;
 
-    EditText addressToSendEditor;
+    private EditText addressToSendEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
