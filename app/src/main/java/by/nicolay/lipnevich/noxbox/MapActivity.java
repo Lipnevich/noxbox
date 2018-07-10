@@ -100,6 +100,7 @@ public class MapActivity extends MenuActivity implements
         googleMap.setMaxZoomPreference(18);
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
         googleMap.getUiSettings().setTiltGesturesEnabled(false);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveGoogleCopyrights();
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -121,12 +122,11 @@ public class MapActivity extends MenuActivity implements
     }
 
     protected void visibleCurrentLocation(boolean visible) {
+        locationButton = findViewById(R.id.locationButton);
         // TODO (nli) launch gps and ask permissions after button pressed only
         if (checkLocationPermission()) {
             // Permission to access the location is missing.
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            locationButton = findViewById(R.id.locationButton);
-            locationButton.setVisibility(View.VISIBLE);
             locationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -135,11 +135,17 @@ public class MapActivity extends MenuActivity implements
                 }
             });
         } else {
-            if (locationButton != null) {
-                locationButton.setVisibility(View.INVISIBLE);
-            }
             googleMap.setMyLocationEnabled(true);
-            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+            locationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (checkLocationPermission()) {
+                        return;
+                    }
+                    getMyPosition();
+                }
+            });
+            //googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             if (!visible) {
                 return;
             }
@@ -155,13 +161,19 @@ public class MapActivity extends MenuActivity implements
             layout.setMargins(0, 0, 0, dpToPx(8));
             locationButton.setLayoutParams(layout);
         }
-
         findViewById(R.id.noxboxConstructorButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MapActivity.this, ConstructorNoxboxPage.class));
             }
         });
+    }
+
+    private void getMyPosition() {
+        Position position = getCurrentPosition();
+        if (position != null && googleMap != null) {
+            googleMap.moveCamera(newLatLngZoom(position.toLatLng(), 15));
+        }
     }
 
     protected boolean isGpsEnabled() {
@@ -187,10 +199,7 @@ public class MapActivity extends MenuActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Position position = getCurrentPosition();
-        if (position != null && googleMap != null) {
-            googleMap.moveCamera(newLatLngZoom(position.toLatLng(), 15));
-        }
+        getMyPosition();
     }
 
 
@@ -349,8 +358,6 @@ public class MapActivity extends MenuActivity implements
     }
 
     public void processNoxbox(Noxbox noxbox) {
-        moveGoogleCopyrights();
-
         visibleCurrentLocation(false);
 
         pathImage.setVisibility(View.VISIBLE);
@@ -386,15 +393,12 @@ public class MapActivity extends MenuActivity implements
         if (googleMap != null) {
             visibleCurrentLocation(true);
             cleanUpMap();
-            moveGoogleCopyrights();
             pathImage.setVisibility(View.INVISIBLE);
         }
     }
 
     private void moveGoogleCopyrights() {
-        if (googleMap != null) {
-            googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(292), dpToPx(70));
-        }
+        //googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(270), dpToPx(10));
     }
 
     private Fragment currentFragment;

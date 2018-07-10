@@ -40,7 +40,7 @@ import static by.nicolay.lipnevich.noxbox.Configuration.LOCATION_PERMISSION_REQU
 
 public class ConstructorNoxboxPage extends AppCompatActivity {
 
-    private static final String ARROW = "\uD83E\uDC93";
+
     protected double price;
     private Button cancelOrRemove;
 
@@ -110,35 +110,45 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         final TextView textView = findViewById(R.id.textRole);
         SpannableStringBuilder spanTxt =
                 new SpannableStringBuilder(getResources().getString(profile.getCurrent().getRole().getName()));
-        spanTxt.append(ARROW);
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 createRoleList(profile, textView);
             }
-        }, spanTxt.length() - getResources().getString(profile.getCurrent().getRole().getName()).concat(ARROW).length(), spanTxt.length(), 0);
-        spanTxt.append(" ".concat(getResources().getString(R.string.service)).concat(" "));
+        }, spanTxt.length() - getResources().getString(profile.getCurrent().getRole().getName()).length(), spanTxt.length(), 0);
+        spanTxt.append("\n".concat(getResources().getString(R.string.service)).concat(" "));
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        findViewById(R.id.arrowRole).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createRoleList(profile, textView);
+            }
+        });
     }
 
     private void drawType(Profile profile) {
         final TextView textView = findViewById(R.id.textNoxboxType);
         SpannableStringBuilder spanTxt =
-                new SpannableStringBuilder(getResources().getString(profile.getCurrent().getType().getName()));
-        spanTxt.append(ARROW);
+                new SpannableStringBuilder(getResources().getString(profile.getCurrent().getType().getName()).toLowerCase());
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 startDialogList();
             }
-        }, spanTxt.length() - (getResources().getString(profile.getCurrent().getType().getName()).concat(ARROW)).length(), spanTxt.length(), 0);
+        }, spanTxt.length() - (getResources().getString(profile.getCurrent().getType().getName())).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        findViewById(R.id.arrowNoxboxType).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDialogList();
+            }
+        });
     }
 
     private void drawTypeDescription(Profile profile) {
-        ((TextView) findViewById(R.id.textTypeDescription)).setText("(".concat(getResources().getString(R.string.description)).concat(" ").concat(getResources().getString(profile.getCurrent().getType().getDescription())).concat(")"));
+        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDescription()).concat("."));
     }
 
     private void drawPayment(Profile profile) {
@@ -176,15 +186,20 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
     private void drawTravelMode(final Profile profile) {
         final TextView textView = findViewById(R.id.textTravelMode);
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(getResources().getString(profile.getCurrent().getOwner().getTravelMode().getName()));
-        spanTxt.append(ARROW);
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 createTravelModeList(profile, textView);
             }
-        }, spanTxt.length() - getResources().getString(profile.getCurrent().getOwner().getTravelMode().getName()).concat((ARROW)).length(), spanTxt.length(), 0);
+        }, spanTxt.length() - getResources().getString(profile.getCurrent().getOwner().getTravelMode().getName()).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        findViewById(R.id.arrowTravelMode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createTravelModeList(profile, textView);
+            }
+        });
     }
 
     private void drawCheckTrackLocation(Profile profile) {
@@ -204,7 +219,6 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
                 });
             } else {
                 checkBox.setChecked(true);
-                checkBox.setEnabled(false);
             }
         } else {
             findViewById(R.id.checkboxLayout).setVisibility(View.GONE);
@@ -220,33 +234,39 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
             result = getResources().getString(profile.getCurrent().getWorkSchedule().getPeriod().getName());
         }
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(result);
-        spanTxt.append(ARROW);
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 createTimePeriodList(profile, textStart);
             }
-        }, spanTxt.length() - result.concat(ARROW).length(), spanTxt.length(), 0);
+        }, spanTxt.length() - result.length(), spanTxt.length(), 0);
+        textStart.setText(getResources().getString(R.string.time).concat(spanTxt.toString()));
         textStart.setMovementMethod(LinkMovementMethod.getInstance());
         textStart.setText(spanTxt, TextView.BufferType.SPANNABLE);
+
+        findViewById(R.id.arrowTimePeriod).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createTimePeriodList(profile, textStart);
+            }
+        });
     }
 
     private void drawTimePickerEnd(final Profile profile) {
         final TextView textStart = findViewById(R.id.textTimeEnd);
         String result;
         if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
-            result = profile.getCurrent().getWorkSchedule().getEndInHours() + ":" + profile.getCurrent().getWorkSchedule().getEndInMinutes();
+            result = profile.getCurrent().getWorkSchedule().getEndInHours() + ":" + profile.getCurrent().getWorkSchedule().getEndInMinutes() + "-";
         } else {
             result = getResources().getString(profile.getCurrent().getWorkSchedule().getPeriod().getName());
         }
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(result);
-        spanTxt.append(ARROW);
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 createTimePeriodList(profile, textStart);
             }
-        }, spanTxt.length() - result.concat(ARROW).length(), spanTxt.length(), 0);
+        }, spanTxt.length() - result.length(), spanTxt.length(), 0);
         textStart.setMovementMethod(LinkMovementMethod.getInstance());
         textStart.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
@@ -269,7 +289,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
                 return true;
             }
         });
+
         popup.show();
+
     }
 
     private void createTravelModeList(final Profile profile, TextView textView) {
@@ -335,7 +357,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
     }
 
     public void removeNoxbox(Profile profile) {
-        //profile.removeNoxbox();
+        profile.getCurrent().setTimeCreated(null);
         draw(profile);
     }
 
@@ -349,11 +371,10 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {
                 ((CheckBox) findViewById(R.id.checkbox)).setChecked(false);
-                ((CheckBox) findViewById(R.id.checkbox)).setEnabled(true);
                 return;
             }
             ((CheckBox) findViewById(R.id.checkbox)).setChecked(true);
-            ((CheckBox) findViewById(R.id.checkbox)).setEnabled(false);
         }
     }
+
 }

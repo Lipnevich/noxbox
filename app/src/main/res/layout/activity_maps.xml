@@ -98,13 +98,13 @@
         android:layout_width="38dp"
         android:layout_height="38dp"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="80dp"
-        android:layout_marginStart="18dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="16dp"
         android:background="@drawable/my_location_corners"
         android:elevation="2dp"
         android:padding="8dp"
         android:src="@drawable/my_location"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/noxboxConstructorButton"

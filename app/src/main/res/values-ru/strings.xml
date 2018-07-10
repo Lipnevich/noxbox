@@ -108,9 +108,10 @@
     <string name="add">Опубликовать</string>
     <string name="remove">Удалить</string>
     <string name="cancel">Отмена</string>
-    <string name="daily">Дневное с 10 до 18</string>
-    <string name="nightly">Ночное с 18 до 10</string>
-    <string name="accurate">Задать время вручную</string>
+    <string name="daily">дневное с 10 до 18</string>
+    <string name="nightly">ночное с 18 до 10</string>
+    <string name="accurate">задать время вручную</string>
+    <string name="time">Время</string>
     <string name="startTime">Начало рабочего времени:</string>
     <string name="endTime">Конец рабочего времени:</string>
     <string name="selectService">Выбрать услугу</string>
@@ -132,6 +133,5 @@
     <string name="sportCompanionDescription">1 час тренировка в зале</string>
     <string name="sportCoachDescription">1 час тренировка с тренером</string>
 
-    <string name="trackLocation">Отслеживать местоположение</string>
-    <string name="description">описание:</string>
+    <string name="trackLocation">Показывать местоположение</string>
 </resources>
