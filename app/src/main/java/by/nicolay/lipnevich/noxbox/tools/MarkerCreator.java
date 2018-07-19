@@ -75,9 +75,9 @@ public class MarkerCreator {
     }
 
     private static int getRatingColor(Rating rating, Activity activity,Noxbox noxbox) {
-        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)){
-            return activity.getResources().getColor(R.color.divider);
-        }
+//        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartTime(),activity)){
+//            return activity.getResources().getColor(R.color.divider);
+//        }
         if (rating.getLikes() >= 100) {
             return activity.getResources().getColor(R.color.top_raiting_color);
         } else if (rating.getLikes() < 100L && rating.getLikes() >= 95L) {

@@ -1,6 +1,5 @@
 package by.nicolay.lipnevich.noxbox.constructor;
 
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,27 +17,29 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-import java.util.Calendar;
+import java.lang.reflect.Field;
 
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
+import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.model.TimePeriod;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 
-public class ConstructorNoxboxPage extends AppCompatActivity {
+public class ConstructorNoxboxPage extends AppCompatActivity{
 
 
     protected double price;
@@ -98,11 +99,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         drawPayment(profile);
         drawPrice(profile);
         drawTravelMode(profile);
-        drawCheckTrackLocation(profile);
-        drawTimePickerStart(profile);
-        if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
-            drawTimePickerEnd(profile);
-        }
+        drawNoxboxTimeSwitch(profile);
     }
 
     private void drawRole(final Profile profile) {
@@ -116,7 +113,6 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
                 createRoleList(profile, textView);
             }
         }, spanTxt.length() - getResources().getString(profile.getCurrent().getRole().getName()).length(), spanTxt.length(), 0);
-        spanTxt.append("\n".concat(getResources().getString(R.string.service)).concat(" "));
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
         findViewById(R.id.arrowRole).setOnClickListener(new View.OnClickListener() {
@@ -202,76 +198,6 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         });
     }
 
-    private void drawCheckTrackLocation(Profile profile) {
-        if (profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
-            CheckBox checkBox = findViewById(R.id.checkbox);
-            findViewById(R.id.checkboxLayout).setVisibility(View.VISIBLE);
-            if (checkLocationPermission()) {
-                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (checkLocationPermission() && isChecked) {
-                            ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                    LOCATION_PERMISSION_REQUEST_CODE);
-                        }
-                    }
-
-                });
-            } else {
-                checkBox.setChecked(true);
-            }
-        } else {
-            findViewById(R.id.checkboxLayout).setVisibility(View.GONE);
-        }
-    }
-
-    private void drawTimePickerStart(final Profile profile) {
-        final TextView textStart = findViewById(R.id.textTimeStart);
-        String result;
-        if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
-            result = profile.getCurrent().getWorkSchedule().getStartInHours() + ":" + profile.getCurrent().getWorkSchedule().getStartInMinutes();
-        } else {
-            result = getResources().getString(profile.getCurrent().getWorkSchedule().getPeriod().getName());
-        }
-        SpannableStringBuilder spanTxt = new SpannableStringBuilder(result);
-        spanTxt.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                createTimePeriodList(profile, textStart);
-            }
-        }, spanTxt.length() - result.length(), spanTxt.length(), 0);
-        textStart.setText(getResources().getString(R.string.time).concat(spanTxt.toString()));
-        textStart.setMovementMethod(LinkMovementMethod.getInstance());
-        textStart.setText(spanTxt, TextView.BufferType.SPANNABLE);
-
-        findViewById(R.id.arrowTimePeriod).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createTimePeriodList(profile, textStart);
-            }
-        });
-    }
-
-    private void drawTimePickerEnd(final Profile profile) {
-        final TextView textStart = findViewById(R.id.textTimeEnd);
-        String result;
-        if (profile.getCurrent().getWorkSchedule().getPeriod() == TimePeriod.accurate) {
-            result = profile.getCurrent().getWorkSchedule().getEndInHours() + ":" + profile.getCurrent().getWorkSchedule().getEndInMinutes() + "-";
-        } else {
-            result = getResources().getString(profile.getCurrent().getWorkSchedule().getPeriod().getName());
-        }
-        SpannableStringBuilder spanTxt = new SpannableStringBuilder(result);
-        spanTxt.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                createTimePeriodList(profile, textStart);
-            }
-        }, spanTxt.length() - result.length(), spanTxt.length(), 0);
-        textStart.setMovementMethod(LinkMovementMethod.getInstance());
-        textStart.setText(spanTxt, TextView.BufferType.SPANNABLE);
-    }
-
-
     protected void startDialogList() {
         Intent intent = new Intent(this, NoxboxTypeListPage.class);
         startActivity(intent);
@@ -302,25 +228,8 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 profile.getCurrent().getOwner().setTravelMode(TravelMode.byId(item.getItemId()));
-                draw(profile);
-                return true;
-            }
-        });
-        popup.show();
-    }
-
-    private void createTimePeriodList(final Profile profile, TextView textView) {
-        final PopupMenu popup = new PopupMenu(ConstructorNoxboxPage.this, textView, Gravity.CENTER_HORIZONTAL);
-        for (TimePeriod element : TimePeriod.values()) {
-            popup.getMenu().add(Menu.NONE, element.getId(), Menu.NONE, element.getName());
-        }
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() != 1) {
-                    profile.getCurrent().getWorkSchedule().setPeriod(TimePeriod.byId(item.getItemId()));
-                } else {
-                    displayStartTimeDialog(profile);
-                    profile.getCurrent().getWorkSchedule().setPeriod(TimePeriod.byId(item.getItemId()));
+                if(profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
+                    ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                 }
                 draw(profile);
                 return true;
@@ -329,26 +238,54 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
         popup.show();
     }
 
-    private void displayStartTimeDialog(final Profile profile) {
-        final Calendar calendar = Calendar.getInstance();
-        TimePickerDialog.OnTimeSetListener myTimeListener = new TimePickerDialog.OnTimeSetListener() {
+    private Spinner timeSelectFrom;
+    private Spinner timeSelectTo;
+    private void drawNoxboxTimeSwitch(final Profile profile) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(ConstructorNoxboxPage.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        timeSelectFrom = findViewById(R.id.timeFromView);
+        timeSelectFrom.setAdapter(adapter);
+        timeSelectFrom.setSelection(profile.getCurrent().getWorkSchedule().getStartTime().getId());
+        setHeightForDropdownList(timeSelectFrom);
+        timeSelectFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                profile.getCurrent().getWorkSchedule().setStartInHours(hourOfDay);
-                profile.getCurrent().getWorkSchedule().setStartInMinutes(minute);
-                profile.getCurrent().getWorkSchedule().setEndInHours(hourOfDay + 1);
-                profile.getCurrent().getWorkSchedule().setEndInMinutes(minute);
-                draw(profile);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                profile.getCurrent().getWorkSchedule().setStartTime(NoxboxTime.byId(position));
             }
-        };
-        TimePickerDialog timePickerDialog = new TimePickerDialog(ConstructorNoxboxPage.this,
-                android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
-                myTimeListener, calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE),
-                true);
-        timePickerDialog.setTitle(getResources().getString(R.string.startTime));
-        timePickerDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        timePickerDialog.show();
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+
+        timeSelectTo = findViewById(R.id.timeToView);
+        timeSelectTo.setAdapter(adapter);
+        timeSelectTo.setSelection(profile.getCurrent().getWorkSchedule().getEndTime().getId());
+        setHeightForDropdownList(timeSelectTo);
+        timeSelectTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                profile.getCurrent().getWorkSchedule().setEndTime(NoxboxTime.byId(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+    }
+
+    private void setHeightForDropdownList(Spinner spinner){
+        try {
+            Field popup = Spinner.class.getDeclaredField("mPopup");
+            popup.setAccessible(true);
+
+            android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(spinner);
+
+            popupWindow.setHeight(500);
+        }
+        catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+            DebugMessage.popup(this,e.getMessage());
+        }
     }
 
     public void postNoxbox(Profile profile) {
@@ -358,7 +295,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity {
 
     public void removeNoxbox(Profile profile) {
         profile.getCurrent().setTimeCreated(null);
-        draw(profile);
+        finish();
     }
 
     private void cancelNoxboxConstructor() {

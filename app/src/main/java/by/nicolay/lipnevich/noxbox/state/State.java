@@ -1,10 +1,16 @@
 package by.nicolay.lipnevich.noxbox.state;
 
-import by.nicolay.lipnevich.noxbox.model.*;
-import by.nicolay.lipnevich.noxbox.tools.Task;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import by.nicolay.lipnevich.noxbox.model.AllRates;
+import by.nicolay.lipnevich.noxbox.model.MarketRole;
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.NoxboxType;
+import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.model.Wallet;
+import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
+import by.nicolay.lipnevich.noxbox.tools.Task;
 
 public class State {
 
@@ -44,7 +50,12 @@ public class State {
     }
 
     private static Noxbox noxbox() {
-        return new Noxbox().setOwner(profile.publicInfo()).setRole(MarketRole.supply).setType(NoxboxType.massage).setPrice("1").setWorkSchedule(new  WorkSchedule(TimePeriod.daily));
+        return new Noxbox()
+                .setOwner(profile.publicInfo())
+                .setRole(MarketRole.supply)
+                .setType(NoxboxType.massage)
+                .setPrice("1")
+                .setWorkSchedule(new WorkSchedule());
     }
 
     public static void listenCurrentNoxbox(final Task<Noxbox> task) {

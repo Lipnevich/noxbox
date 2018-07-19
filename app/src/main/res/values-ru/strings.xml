@@ -99,24 +99,24 @@
     <string name="service">услугу</string>
     <string name="earn">заработав</string>
     <string name="spend">потратив</string>
-    <string name="stayNone">Жду по выбранному адресу</string>
-    <string name="beWalk">Приду сам пешком</string>
-    <string name="onBike">Приеду сам на велосипеде</string>
-    <string name="onCar">Приеду сам на машине</string>
-    <string name="onTransit">Приеду сам на общественном транспорте</string>
-    <string name="travelMode">Способ перемещения⯆</string>
+    <string name="stayNone">жду по выбранному адресу</string>
+    <string name="beWalk">приду пешком</string>
+    <string name="onBike">приеду на велосипеде</string>
+    <string name="onCar">приеду на машине</string>
+    <string name="onTransit">приеду на общественном транспорте</string>
+    <string name="travelMode">Способ перемещения</string>
     <string name="add">Опубликовать</string>
     <string name="remove">Удалить</string>
     <string name="cancel">Отмена</string>
     <string name="daily">дневное с 10 до 18</string>
     <string name="nightly">ночное с 18 до 10</string>
     <string name="accurate">задать время вручную</string>
-    <string name="time">Время</string>
+    <string name="serviceDeliveryTime">Время оказания услуги</string>
     <string name="startTime">Начало рабочего времени:</string>
     <string name="endTime">Конец рабочего времени:</string>
     <string name="selectService">Выбрать услугу</string>
-    <string name="wantToEarn">хочу заработать</string>
-    <string name="readyToPay">готов заплатить</string>
+    <string name="wantToEarn">Хочу заработать</string>
+    <string name="readyToPay">Готов заплатить</string>
 
     <!--Service description-->
     <string name="massageDescription">45 минут сеанс массажа</string>
@@ -134,4 +134,8 @@
     <string name="sportCoachDescription">1 час тренировка с тренером</string>
 
     <string name="trackLocation">Показывать местоположение</string>
+
+    <string name="from">от</string>
+    <string name="to">по</string>
+
 </resources>

@@ -15,11 +15,11 @@ import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.AllRates;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
-import by.nicolay.lipnevich.noxbox.model.TimePeriod;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
@@ -51,7 +51,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox.setPrice("25");
         noxbox.setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         noxbox.setType(NoxboxType.sportCompanion);
-        noxbox.setWorkSchedule(new WorkSchedule(TimePeriod.daily));
+        noxbox.setWorkSchedule(new WorkSchedule());
         createMarker(profile, noxbox);
 
         Noxbox noxbox1 = new Noxbox();
@@ -65,7 +65,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox1.setPrice("25");
         noxbox1.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         noxbox1.setType(NoxboxType.plumber);
-        noxbox1.setWorkSchedule(new WorkSchedule(TimePeriod.nightly));
+        noxbox1.setWorkSchedule(new WorkSchedule());
         createMarker(profile, noxbox1);
 
         Noxbox noxbox2 = new Noxbox();
@@ -79,11 +79,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox2.setPrice("25");
         noxbox2.setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
         noxbox2.setType(NoxboxType.haircut);
-        int startHour = 22;
-        int startMinute = 20;
-        int endHour = 23;
-        int endMinute = 40;
-        noxbox2.setWorkSchedule(new WorkSchedule(startHour,startMinute,endHour,endMinute));
+        noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._43,NoxboxTime._49));
         createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
     }
