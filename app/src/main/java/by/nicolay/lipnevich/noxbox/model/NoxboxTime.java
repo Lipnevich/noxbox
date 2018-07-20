@@ -2,8 +2,8 @@ package by.nicolay.lipnevich.noxbox.model;
 
 public enum NoxboxTime {
 
-    _0(0, 24, 0),
-    _1(1, 24, 30),
+    _0(0, 0, 0),
+    _1(1, 0, 30),
     _2(2, 1, 0),
     _3(3, 1, 30),
     _4(4, 2, 0),

@@ -115,8 +115,7 @@
     <string name="startTime">Начало рабочего времени:</string>
     <string name="endTime">Конец рабочего времени:</string>
     <string name="selectService">Выбрать услугу</string>
-    <string name="wantToEarn">Хочу заработать</string>
-    <string name="readyToPay">Готов заплатить</string>
+    <string name="priceService">Стоимость 30 минут услуги</string>
 
     <!--Service description-->
     <string name="massageDescription">45 минут сеанс массажа</string>

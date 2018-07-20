@@ -20,7 +20,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -96,7 +95,6 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         drawRole(profile);
         drawType(profile);
         drawTypeDescription(profile);
-        drawPayment(profile);
         drawPrice(profile);
         drawTravelMode(profile);
         drawNoxboxTimeSwitch(profile);
@@ -147,20 +145,13 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDescription()).concat("."));
     }
 
-    private void drawPayment(Profile profile) {
-        if (profile.getCurrent().getRole() == MarketRole.supply) {
-            ((TextView) findViewById(R.id.textPayment)).setText(R.string.wantToEarn);
-        } else {
-            ((TextView) findViewById(R.id.textPayment)).setText(R.string.readyToPay);
-        }
-    }
 
-    private TextWatcher listener;
+    private TextWatcher changeCountOfMoneyListener;
 
     private void drawPrice(final Profile profile) {
         EditText priceInput = findViewById(R.id.inputPrice);
-        if (listener == null) {
-            listener = new TextWatcher() {
+        if (changeCountOfMoneyListener == null) {
+            changeCountOfMoneyListener = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
@@ -174,7 +165,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
                     profile.getCurrent().setPrice(s.toString());
                 }
             };
-            priceInput.addTextChangedListener(listener);
+            priceInput.addTextChangedListener(changeCountOfMoneyListener);
         }
         priceInput.setText(profile.getCurrent().getPrice());
     }
@@ -307,9 +298,15 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {
+                State.listenProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        profile.getCurrent().getOwner().setTravelMode(TravelMode.none);
+                        draw(profile);
+                    }
+                });
                 return;
             }
-            // todo (nli) select traveling type to waiting in case no permission
         }
     }
 

@@ -115,8 +115,7 @@
     <string name="startTime">Beginning of working time:</string>
     <string name="endTime">End of working hours:</string>
     <string name="selectService">Select service</string>
-    <string name="wantToEarn">Want to earn</string>
-    <string name="readyToPay">Ready to pay</string>
+    <string name="priceService">Price 30 minutes services</string>
 
     <!--Service description-->Description
     <string name="massageDescription">45 minutes of massage</string>
