@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
+import by.nicolay.lipnevich.noxbox.Configuration;
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
@@ -49,6 +50,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noxbox_constructor);
         cancelOrRemove = findViewById(R.id.closeOrRemove);
+        TextView textCurrency = findViewById(R.id.textCurrency);
+        String currency = Configuration.CURRENCY + ".";
+        textCurrency.setText(currency);
     }
 
     @Override
@@ -231,13 +235,11 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         popup.show();
     }
 
-    private Spinner timeSelectFrom;
-    private Spinner timeSelectTo;
     private void drawNoxboxTimeSwitch(final Profile profile) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(ConstructorNoxboxPage.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        timeSelectFrom = findViewById(R.id.timeFromView);
+        Spinner timeSelectFrom = findViewById(R.id.timeFromView);
         timeSelectFrom.setAdapter(adapter);
         timeSelectFrom.setSelection(profile.getCurrent().getWorkSchedule().getStartTime().getId());
         setHeightForDropdownList(timeSelectFrom);
@@ -252,7 +254,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         });
 
 
-        timeSelectTo = findViewById(R.id.timeToView);
+        Spinner timeSelectTo = findViewById(R.id.timeToView);
         timeSelectTo.setAdapter(adapter);
         timeSelectTo.setSelection(profile.getCurrent().getWorkSchedule().getEndTime().getId());
         setHeightForDropdownList(timeSelectTo);
@@ -307,7 +309,6 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
                         draw(profile);
                     }
                 });
-                return;
             }
         }
     }
