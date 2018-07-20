@@ -52,7 +52,7 @@ public class WalletPage extends AppCompatActivity {
 //        if(getProfile() != null && getProfile().getAddressToRefund() != null) {
 //            addressToSendEditor.setText(getProfile().getAddressToRefund());
 //        }
-        // TODO (nli) send waves request instead
+        // TODO (nli) send request to blockchain directly instead
         Firebase.sendRequest(new Request().setType(EventType.balance));
     }
 
