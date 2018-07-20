@@ -8,7 +8,7 @@
     <color name="black">#000</color>
     <color name="google_text">#444</color>
     <color name="icon_background">#6491d0</color>
-    <color name="top_raiting_color">#00ff4c</color>
-    <color name="middle_raiting_color">#eaff7e</color>
-    <color name="low_raiting_color">#ff5e00</color>
+    <color name="top_rating_color">#00ff4c</color>
+    <color name="middle_rating_color">#eaff7e</color>
+    <color name="low_rating_color">#ff5e00</color>
 </resources>

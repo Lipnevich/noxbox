@@ -307,10 +307,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {
-                ((CheckBox) findViewById(R.id.checkbox)).setChecked(false);
                 return;
             }
-            ((CheckBox) findViewById(R.id.checkbox)).setChecked(true);
+            // todo (nli) select traveling type to waiting in case no permission
         }
     }
 

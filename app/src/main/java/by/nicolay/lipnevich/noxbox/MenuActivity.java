@@ -65,8 +65,7 @@ import java.util.*;
 import static by.nicolay.lipnevich.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
 import static by.nicolay.lipnevich.noxbox.state.Firebase.updateProfile;
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
-//onMapReady вызываем draw и в зависимости от статуса отрисовывать
-//
+
 public abstract class MenuActivity extends AppCompatActivity {
 
     @Override
@@ -85,7 +84,7 @@ public abstract class MenuActivity extends AppCompatActivity {
     private void draw(Profile profile) {
         createMenu(profile);
 
-        if(calculateRating(profile) <= MIN_RATE_IN_PERCENTAGE) {
+        if(ratingInPercentage(profile.getRating()) <= MIN_RATE_IN_PERCENTAGE) {
             popup(this,"Low rate!");
         }
     }
@@ -123,16 +122,15 @@ public abstract class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private int calculateRating(Profile profile) {
-        Rating rating = profile.getRating().getReceived();
+    private int ratingInPercentage(Rating rating) {
+        int likes = rating.getReceivedLikes();
+        int dislikes = rating.getReceivedDislikes();
 
-        if(rating.getLikes().equals(0L) && rating.getDislikes().equals(0L)) return 100;
+        if(likes == 0 && dislikes == 0) return 100;
+        if(likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
+        if(likes == 0 && dislikes > 1) return 0;
 
-        popup(this, "" + (5 & 2));
-        if(rating.getLikes() < 10L & rating.getDislikes().equals(1L)) return MIN_RATE_IN_PERCENTAGE;
-        if(rating.getLikes().equals(0L) && rating.getDislikes() > 1L) return 0;
-
-        return (int) ((rating.getLikes() / (rating.getLikes() + rating.getDislikes())) * 100);
+        return (likes / (likes + dislikes)) * 100;
     }
 
     protected void createMenu(Profile profile) {
@@ -140,7 +138,7 @@ public abstract class MenuActivity extends AppCompatActivity {
 
         ProfileDrawerItem account = new ProfileDrawerItem()
                 .withName(profile.getName())
-                .withEmail(calculateRating(profile) + " %");
+                .withEmail(ratingInPercentage(profile.getRating()) + " %");
         if(profile.getPhoto() == null) {
             account.withIcon(ContextCompat.getDrawable(getApplicationContext(),
                     R.drawable.profile_picture_blank));

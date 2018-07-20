@@ -8,7 +8,7 @@ public class Profile implements Serializable {
 
     private String id, name, email, photo, secret;
     private Acceptance acceptance;
-    private AllRates rating;
+    private Rating rating;
     private Wallet wallet;
     private NotificationKeys notificationKeys;
 
@@ -47,12 +47,12 @@ public class Profile implements Serializable {
     }
 
     @Exclude
-    public AllRates getRating() {
+    public Rating getRating() {
         return rating;
     }
 
     @Exclude
-    public Profile setRating(AllRates rating) {
+    public Profile setRating(Rating rating) {
         this.rating = rating;
         return this;
     }

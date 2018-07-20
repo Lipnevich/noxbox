@@ -5,48 +5,45 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Noxbox;
+import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.model.Rating;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.MarketRole;
-import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.model.Rating;
-
 public class MarkerCreator {
 
     public static Marker createCustomMarker(Noxbox noxbox, Profile profile, GoogleMap googleMap, Activity activity) {
-        if (noxbox.getRole() == MarketRole.supply) {
-            //Noxbox.Perfomer
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(noxbox.getPosition().toLatLng())
-                    .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
-                            getIconBitmap(activity, noxbox.getType().getImage()),
-                            getRatingColor(noxbox.getOwner().getRating().getReceived(), activity,noxbox),
-                            activity.getResources().getColor(R.color.icon_background),
-                            getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
-                    )))
-                    .anchor(0.5f, 1f));
+        switch (noxbox.getRole()) {
+            case supply:
+                Marker marker = googleMap.addMarker(new MarkerOptions()
+                        .position(noxbox.getPosition().toLatLng())
+                        .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
+                                getIconBitmap(activity, noxbox.getType().getImage()),
+                                getRatingColor(noxbox.getOwner().getRating(), activity,noxbox),
+                                activity.getResources().getColor(R.color.icon_background),
+                                getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
+                )))
+                .anchor(0.5f, 1f));
 
-            marker.setTag(noxbox);
-            return marker;
-        } else {
-            //marker for Noxbox.Payer
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(noxbox.getPosition().toLatLng())
-                    .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
-                            getIconBitmap(activity, noxbox.getType().getImage()),
-                            getRatingColor(noxbox.getOwner().getRating().getReceived(), activity,noxbox),
-                            activity.getResources().getColor(R.color.icon_background),
-                            getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
-                    )))
-                    .anchor(0.5f, 1f));
+                marker.setTag(noxbox);
+                return marker;
+            case demand:
+                Marker demand = googleMap.addMarker(new MarkerOptions()
+                        .position(noxbox.getPosition().toLatLng())
+                        .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
+                                getIconBitmap(activity, noxbox.getType().getImage()),
+                                getRatingColor(noxbox.getOwner().getRating(), activity,noxbox),
+                                activity.getResources().getColor(R.color.icon_background),
+                                getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
+                        )))
+                        .anchor(0.5f, 1f));
 
-            marker.setTag(noxbox);
+                demand.setTag(noxbox);
+                return demand;
         }
         return null;
     }
@@ -75,15 +72,15 @@ public class MarkerCreator {
     }
 
     private static int getRatingColor(Rating rating, Activity activity,Noxbox noxbox) {
-//        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartTime(),activity)){
+//        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)){
 //            return activity.getResources().getColor(R.color.divider);
 //        }
-        if (rating.getLikes() >= 100) {
-            return activity.getResources().getColor(R.color.top_raiting_color);
-        } else if (rating.getLikes() < 100L && rating.getLikes() >= 95L) {
-            return activity.getResources().getColor(R.color.middle_raiting_color);
+        if (rating.getReceivedLikes() >= 100) {
+            return activity.getResources().getColor(R.color.top_rating_color);
+        } else if (rating.getReceivedLikes() < 100L && rating.getReceivedLikes() >= 95L) {
+            return activity.getResources().getColor(R.color.middle_rating_color);
         } else {
-            return activity.getResources().getColor(R.color.low_raiting_color);
+            return activity.getResources().getColor(R.color.low_rating_color);
         }
     }
 

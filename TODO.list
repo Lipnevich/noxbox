@@ -1,18 +1,20 @@
-Bugs
-start geo in app
-chat (and wallet) delete messages
-
-Monitoring
-performance monitoring
-
-UI
-application launching  -> background -> login -> rules -> agreemance -> map request
-ratings in color
-
 Policy
 send personal data
 remove personal data in profile menu
 
 Security
-acceptance update photo
+profile photo acceptance on server function
 check qr with double push
+
+Migration
+1. create script for wallets migration
+2. use FireStore as database
+3. update site with new link to app and description
+4. move old apps to hidden beta
+5. run wallets migration script
+6. move new app to public beta
+7. send notifications to all old apps users with new app link
+8. delete google maps links from cloud console
+9. delete apps from firebase console
+10. update firebase json
+

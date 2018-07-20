@@ -4,15 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.AllRates;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
@@ -25,6 +17,11 @@ import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.MarkerCreator;
 import by.nicolay.lipnevich.noxbox.tools.TimeFormatter;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.InfoWindowAdapter {
 
@@ -44,7 +41,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox.setRole(MarketRole.demand);
         noxbox.setOwner(new Profile()
                 .setTravelMode(TravelMode.none)
-                .setRating(new AllRates().setReceived(new Rating().setLikes(100L))));
+                .setRating(new Rating().setReceivedLikes(100)));
         noxbox.getOwner().setId("1231");
         noxbox.setId("12311");
         noxbox.setEstimationTime("0");
@@ -58,7 +55,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox1.setRole(MarketRole.demand);
         noxbox1.setOwner(new Profile()
                 .setTravelMode(TravelMode.driving)
-                .setRating(new AllRates().setReceived(new Rating().setLikes(89L))));
+                .setRating(new Rating().setReceivedLikes(100).setReceivedDislikes(3)));
         noxbox1.getOwner().setId("1232");
         noxbox1.setId("12312");
         noxbox1.setEstimationTime("500");
@@ -72,7 +69,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox2.setRole(MarketRole.demand);
         noxbox2.setOwner(new Profile()
                 .setTravelMode(TravelMode.walking)
-                .setRating(new AllRates().setReceived(new Rating().setLikes(95L))));
+                .setRating(new Rating().setReceivedLikes(100).setReceivedDislikes(9)));
         noxbox2.getOwner().setId("1233");
         noxbox2.setId("12313");
         noxbox2.setEstimationTime("1600");

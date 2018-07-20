@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.lang.System.currentTimeMillis;
 import static java.lang.reflect.Modifier.isStatic;
 
 public class Firebase {
@@ -178,7 +179,12 @@ public class Firebase {
     }
 
     public static void like() {
-        getProfile().getRating().getReceived().setLikes(getProfile().getRating().getReceived().getLikes() + 1);
-        getProfile().getRating().getSent().setLikes(getProfile().getRating().getSent().getLikes() + 1);
+        getProfile().getRating().setReceivedLikes(getProfile().getRating().getReceivedLikes() + 1);
+        getProfile().getRating().setSentLikes(getProfile().getRating().getSentLikes() + 1);
+    }
+
+    public static void dislikeNoxbox(String profileId, Noxbox noxbox) {
+        noxbox.getNotMe(profileId).setTimeDisliked(currentTimeMillis());
+        // TODO (nli) update history
     }
 }

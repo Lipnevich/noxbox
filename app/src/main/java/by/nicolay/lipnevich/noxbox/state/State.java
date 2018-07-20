@@ -3,11 +3,11 @@ package by.nicolay.lipnevich.noxbox.state;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.nicolay.lipnevich.noxbox.model.AllRates;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
 import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
 import by.nicolay.lipnevich.noxbox.tools.Task;
@@ -32,7 +32,7 @@ public class State {
                         profile.setWallet(new Wallet());
                     }
                     if (profile.getRating() == null) {
-                        profile.setRating(new AllRates());
+                        profile.setRating(new Rating());
                     }
                     if (profile.getCurrent() == null) {
                         profile.setCurrent(noxbox());

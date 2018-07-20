@@ -10,10 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
-import by.nicolay.lipnevich.noxbox.model.Request;
-import by.nicolay.lipnevich.noxbox.state.Firebase;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.*;
@@ -23,9 +20,9 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 
 import java.util.List;
 
+import static by.nicolay.lipnevich.noxbox.state.Firebase.dislikeNoxbox;
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.time;
-import static java.lang.System.currentTimeMillis;
 
 /**
  * Created by nicolay.lipnevich on 22/06/2017.
@@ -35,10 +32,12 @@ public class HistoryAdapter extends BaseAdapter {
 
     Context ctx;
     LayoutInflater inflater;
+    private String profileId;
     List<Noxbox> noxboxes;
 
-    public HistoryAdapter(Context context, List<Noxbox> noxboxes) {
+    public HistoryAdapter(Context context, String profileId, List<Noxbox> noxboxes) {
         this.ctx = context;
+        this.profileId = profileId;
         this.noxboxes = noxboxes;
         this.inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -110,7 +109,7 @@ public class HistoryAdapter extends BaseAdapter {
                                 public void onClick(DialogInterface dialog, int which) {
                                     v.setOnClickListener(null);
                                     showRating((ImageView) v, false);
-                                    dislike(noxbox);
+                                    dislikeNoxbox(profileId, noxbox);
                                 }
                             });
                     builder.setNegativeButton(android.R.string.cancel, null);
@@ -123,15 +122,6 @@ public class HistoryAdapter extends BaseAdapter {
 
     private boolean isLiked(Noxbox noxbox) {
         return noxbox.getParty().getTimeDisliked() == null;
-    }
-
-
-    private void dislike(Noxbox noxbox) {
-        Firebase.sendRequest(new Request().setType(EventType.dislike)
-                .setNoxbox(new Noxbox().setId(noxbox.getId())));
-
-        noxbox.getParty().setTimeDisliked(currentTimeMillis());
-        Firebase.persistHistory(noxbox);
     }
 
     private void showRating(ImageView view, boolean isLiked) {

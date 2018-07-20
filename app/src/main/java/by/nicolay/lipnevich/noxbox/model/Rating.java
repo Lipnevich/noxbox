@@ -1,31 +1,71 @@
 package by.nicolay.lipnevich.noxbox.model;
 
-import java.io.Serializable;
+/**
+ * Created by nicolay.lipnevich on 11/10/2017.
+ */
+public class Rating {
 
-public class Rating implements Serializable {
+    private Integer receivedLikes = 0;
+    private Integer receivedDislikes = 0;
+    private Integer sentLikes = 0;
+    private Integer sentDislikes = 0;
+    private Integer notResponded = 0;
+    private Integer canceled = 0;
 
-    private Long likes;
-    private Long dislikes;
-
-    public Long getLikes() {
-        return likes;
+    public Rating() {
     }
 
-    public Rating setLikes(Long likes) {
-        this.likes = likes;
+    public Integer getReceivedLikes() {
+        return receivedLikes;
+    }
+
+    public Rating setReceivedLikes(Integer receivedLikes) {
+        this.receivedLikes = receivedLikes;
         return this;
     }
 
-    public Long getDislikes() {
-        return dislikes;
+    public Integer getReceivedDislikes() {
+        return receivedDislikes;
     }
 
-    public Rating setDislikes(Long dislikes) {
-        this.dislikes = dislikes;
+    public Rating setReceivedDislikes(Integer receivedDislikes) {
+        this.receivedDislikes = receivedDislikes;
         return this;
     }
 
-    public static Rating of(Long likes) {
-        return new Rating().setLikes(likes).setDislikes(0l);
+    public Integer getSentLikes() {
+        return sentLikes;
+    }
+
+    public Rating setSentLikes(Integer sentLikes) {
+        this.sentLikes = sentLikes;
+        return this;
+    }
+
+    public Integer getSentDislikes() {
+        return sentDislikes;
+    }
+
+    public Rating setSentDislikes(Integer sentDislikes) {
+        this.sentDislikes = sentDislikes;
+        return this;
+    }
+
+    public Integer getNotResponded() {
+        return notResponded;
+    }
+
+    public Rating setNotResponded(Integer notResponded) {
+        this.notResponded = notResponded;
+        return this;
+    }
+
+    public Integer getCanceled() {
+        return canceled;
+    }
+
+    public Rating setCanceled(Integer canceled) {
+        this.canceled = canceled;
+        return this;
     }
 }
