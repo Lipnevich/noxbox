@@ -135,7 +135,7 @@
 
     <string name="trackLocation">Track location</string>
 
-    <string name="from">from</string>
-    <string name="to">to</string>
+    <string name="from">from </string>
+    <string name="to">to </string>
 
 </resources>

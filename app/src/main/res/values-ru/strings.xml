@@ -135,7 +135,7 @@
 
     <string name="trackLocation">Показывать местоположение</string>
 
-    <string name="from">от</string>
-    <string name="to">по</string>
+    <string name="from">с </string>
+    <string name="to">по </string>
 
 </resources>
