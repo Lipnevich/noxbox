@@ -220,7 +220,9 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
             public boolean onMenuItemClick(MenuItem item) {
                 profile.getCurrent().getOwner().setTravelMode(TravelMode.byId(item.getItemId()));
                 if(profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
-                    ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                    if(checkLocationPermission()){
+                        ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                    }
                 }
                 draw(profile);
                 return true;
