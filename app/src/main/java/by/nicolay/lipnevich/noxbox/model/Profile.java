@@ -13,6 +13,7 @@ public class Profile implements Serializable {
     private NotificationKeys notificationKeys;
 
     private Noxbox current;
+    private Noxbox viewed;
 
     private Position position;
     private Long timeDisliked;
@@ -155,4 +156,12 @@ public class Profile implements Serializable {
                 .setPosition(position).setRating(rating).setTravelMode(travelMode);
     }
 
+    public Noxbox getViewed() {
+        return viewed;
+    }
+
+    public Profile setViewed(Noxbox viewed) {
+        this.viewed = viewed;
+        return this;
+    }
 }

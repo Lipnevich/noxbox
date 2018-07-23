@@ -1,10 +1,15 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
 import android.app.Activity;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import by.nicolay.lipnevich.noxbox.R;
+import android.content.Intent;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import by.nicolay.lipnevich.noxbox.detailed.DetailedNoxboxPage;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
@@ -14,16 +19,11 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
-import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
+import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.MarkerCreator;
-import by.nicolay.lipnevich.noxbox.tools.TimeFormatter;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
+import by.nicolay.lipnevich.noxbox.tools.Task;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.InfoWindowAdapter {
+public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListener {
 
     private Map<String, Marker> markers = new HashMap<>();
     private GoogleMap googleMap;
@@ -32,7 +32,6 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
     public InitialFragment(GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        this.googleMap.setInfoWindowAdapter(this);
     }
 
     @Override
@@ -101,39 +100,14 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        Noxbox noxbox = (Noxbox) marker.getTag();
-        //popup(this, noxbox.getType().name());
+    public boolean onMarkerClick(final Marker marker) {
+        State.listenProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                profile.setViewed((Noxbox)marker.getTag());
+                activity.startActivity(new Intent(activity, DetailedNoxboxPage.class));
+            }
+        });
         return false;
-    }
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Noxbox noxbox = (Noxbox) marker.getTag();
-        //popup(this, noxbox.getType().name());
-    }
-
-    @Override
-    public View getInfoWindow(Marker marker) {
-        return null;
-    }
-
-    @Override
-    public View getInfoContents(Marker marker) {
-        View infoLayout = null;
-        Noxbox noxbox = null;
-        try {
-            noxbox = (Noxbox) marker.getTag();
-            infoLayout = activity.getLayoutInflater().inflate(R.layout.custom_info_window, null);
-            ((ImageView)infoLayout.findViewById(R.id.typeImage)).setBackground(activity.getDrawable(noxbox.getType().getImage()));
-            ((TextView)infoLayout.findViewById(R.id.typeText)).setText(noxbox.getType().getName());
-            ((TextView)infoLayout.findViewById(R.id.moneyText)).setText(noxbox.getPrice());
-            ((TextView)infoLayout.findViewById(R.id.timeText)).setText(TimeFormatter.getTime(noxbox.getEstimationTime()));
-
-        } catch (Exception ex) {
-            DebugMessage.popup(activity, "inflate error!");
-        }
-
-        return infoLayout;
     }
 }
