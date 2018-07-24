@@ -1,17 +1,16 @@
 package by.nicolay.lipnevich.noxbox.detailed;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import by.nicolay.lipnevich.noxbox.R;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class NoxboxIconBehavior extends CoordinatorLayout.Behavior<CircleImageView> {
+public class NoxboxIconBehavior extends CoordinatorLayout.Behavior<ImageView> {
 
 
     private Context mContext;
@@ -60,12 +59,12 @@ public class NoxboxIconBehavior extends CoordinatorLayout.Behavior<CircleImageVi
     }
 
     @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, CircleImageView child, View dependency) {
+    public boolean layoutDependsOn(CoordinatorLayout parent, ImageView child, View dependency) {
         return dependency instanceof Toolbar;
     }
 
     @Override
-    public boolean onDependentViewChanged(CoordinatorLayout parent, CircleImageView child, View dependency) {
+    public boolean onDependentViewChanged(CoordinatorLayout parent, ImageView child, View dependency) {
         maybeInitProperties(child, dependency);
 
         final int maxScrollDistance = (int) (mStartToolbarPosition);
@@ -103,8 +102,7 @@ public class NoxboxIconBehavior extends CoordinatorLayout.Behavior<CircleImageVi
         return true;
     }
 
-    @SuppressLint("PrivateResource")
-    private void maybeInitProperties(CircleImageView child, View dependency) {
+    private void maybeInitProperties(ImageView child, View dependency) {
         if (mStartYPosition == 0)
             mStartYPosition = (int) (dependency.getY());
 

@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.state.State;
@@ -56,10 +59,16 @@ public class DetailedNoxboxPage extends AppCompatActivity implements AppBarLayou
 
     private void draw(Profile profile){
         DebugMessage.popup(this,getResources().getString(profile.getViewed().getType().getName()));
-        //drawTypeIcon(profile);
+        drawTypeIcon(profile);
     }
     private void drawTypeIcon(Profile profile){
-        mTypeImageView.setImageResource(profile.getViewed().getType().getImage());
+        Glide.with(getApplicationContext())
+                .asBitmap()
+                //.load(profile.getViewed().getType().getImage())
+                .load(R.drawable.cat)
+                .apply(RequestOptions.circleCropTransform())
+                .into(mTypeImageView);
+
     }
 
     private void init() {
@@ -68,13 +77,21 @@ public class DetailedNoxboxPage extends AppCompatActivity implements AppBarLayou
         mAppBarLayout   = (AppBarLayout) findViewById(R.id.appBarLayout);
         mTypeImageView   = (ImageView) findViewById(R.id.typeImageView);
 
+
+
         //TODO need find background picture for all types..
         mBackImageTypeView   = (ImageView) findViewById(R.id.backgroundImageTypeView);
 
-        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+                findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO processing of acceptance of service..
+                State.listenProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        profile.setCurrent(profile.getViewed());
+                        finish();
+                    }
+                });
             }
         });
         findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
