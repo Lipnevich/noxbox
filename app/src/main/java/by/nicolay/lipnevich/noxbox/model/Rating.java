@@ -1,5 +1,9 @@
 package by.nicolay.lipnevich.noxbox.model;
 
+import com.google.firebase.database.Exclude;
+
+import static by.nicolay.lipnevich.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
+
 /**
  * Created by nicolay.lipnevich on 11/10/2017.
  */
@@ -67,5 +71,16 @@ public class Rating {
     public Rating setCanceled(Integer canceled) {
         this.canceled = canceled;
         return this;
+    }
+    @Exclude
+    public int toPercentage() {
+        int likes = this.receivedLikes;
+        int dislikes = this.receivedDislikes;
+
+        if(likes == 0 && dislikes == 0) return 100;
+        if(likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
+        if(likes == 0 && dislikes > 1) return 0;
+
+        return (likes / (likes + dislikes)) * 100;
     }
 }

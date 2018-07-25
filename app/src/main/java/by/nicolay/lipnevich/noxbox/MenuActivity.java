@@ -27,15 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-import by.nicolay.lipnevich.noxbox.model.Acceptance;
-import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
-import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.model.Rating;
-import by.nicolay.lipnevich.noxbox.pages.AuthPage;
-import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
-import by.nicolay.lipnevich.noxbox.pages.WalletPage;
-import by.nicolay.lipnevich.noxbox.state.State;
-import by.nicolay.lipnevich.noxbox.tools.Task;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -60,7 +52,20 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import by.nicolay.lipnevich.noxbox.model.Acceptance;
+import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
+import by.nicolay.lipnevich.noxbox.model.Profile;
+import by.nicolay.lipnevich.noxbox.pages.AuthPage;
+import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
+import by.nicolay.lipnevich.noxbox.pages.WalletPage;
+import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
 import static by.nicolay.lipnevich.noxbox.state.Firebase.updateProfile;
@@ -84,7 +89,7 @@ public abstract class MenuActivity extends AppCompatActivity {
     private void draw(Profile profile) {
         createMenu(profile);
 
-        if(ratingInPercentage(profile.getRating()) <= MIN_RATE_IN_PERCENTAGE) {
+        if(profile.getRating().toPercentage() <= MIN_RATE_IN_PERCENTAGE) {
             popup(this,"Low rate!");
         }
     }
@@ -122,23 +127,14 @@ public abstract class MenuActivity extends AppCompatActivity {
         }
     }
 
-    private int ratingInPercentage(Rating rating) {
-        int likes = rating.getReceivedLikes();
-        int dislikes = rating.getReceivedDislikes();
 
-        if(likes == 0 && dislikes == 0) return 100;
-        if(likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
-        if(likes == 0 && dislikes > 1) return 0;
-
-        return (likes / (likes + dislikes)) * 100;
-    }
 
     protected void createMenu(Profile profile) {
         makeProfileImageRounded();
 
         ProfileDrawerItem account = new ProfileDrawerItem()
                 .withName(profile.getName())
-                .withEmail(ratingInPercentage(profile.getRating()) + " %");
+                .withEmail(profile.getRating().toPercentage() + " %");
         if(profile.getPhoto() == null) {
             account.withIcon(ContextCompat.getDrawable(getApplicationContext(),
                     R.drawable.profile_picture_blank));
