@@ -2,6 +2,9 @@ package by.nicolay.lipnevich.noxbox.model;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static by.nicolay.lipnevich.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
 
 /**
@@ -15,6 +18,8 @@ public class Rating {
     private Integer sentDislikes = 0;
     private Integer notResponded = 0;
     private Integer canceled = 0;
+
+    private Map<String, Comment> comments = new HashMap<>();
 
     public Rating() {
     }
@@ -72,14 +77,24 @@ public class Rating {
         this.canceled = canceled;
         return this;
     }
+
+    public Map<String, Comment> getComments() {
+        return comments;
+    }
+
+    public Rating setComments(Map<String, Comment> comments) {
+        this.comments = comments;
+        return this;
+    }
+
     @Exclude
     public int toPercentage() {
         int likes = this.receivedLikes;
         int dislikes = this.receivedDislikes;
 
-        if(likes == 0 && dislikes == 0) return 100;
-        if(likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
-        if(likes == 0 && dislikes > 1) return 0;
+        if (likes == 0 && dislikes == 0) return 100;
+        if (likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
+        if (likes == 0 && dislikes > 1) return 0;
 
         return (likes / (likes + dislikes)) * 100;
     }
