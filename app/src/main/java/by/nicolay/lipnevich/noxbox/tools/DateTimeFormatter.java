@@ -20,4 +20,9 @@ public class DateTimeFormatter {
         return formatter.format(new Date(number));
     }
 
+    public static String getDateFromLongAsString(Long time){
+        Date d = new Date(time * 1000);
+        return d.toString();
+    }
+
 }

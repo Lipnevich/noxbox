@@ -3,6 +3,8 @@ package by.nicolay.lipnevich.noxbox.detailed;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -13,7 +15,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Comment;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
@@ -81,10 +87,21 @@ public class DetailedNoxboxPage extends AppCompatActivity {
                 //.load(profile.getViewed().getType().getImage())
                 .load(R.drawable.cat)
                 .apply(RequestOptions.circleCropTransform())
-                .into((ImageView)findViewById(R.id.ratingImage));
+                .into((ImageView)findViewById(R.id.ratingTitleImage));
         ((TextView)findViewById(R.id.ratingTitle)).setText("Rating");
         ((TextView)findViewById(R.id.rating))
                 .setText("Rating in percentage = " + rating.toPercentage() + ";" + "likes = " + rating.getReceivedLikes() + ";" + "dislikes = " + rating.getReceivedLikes());
+
+        List<Comment> comments = new ArrayList<>();
+        comments.add(rating.getComments().get("0"));
+        comments.add(rating.getComments().get("1"));
+        comments.add(rating.getComments().get("2"));
+
+        RecyclerView recyclerView = findViewById(R.id.listComments);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new CommentAdapter(comments));
+
         //TODO (vl) draw comment be here
     }
 

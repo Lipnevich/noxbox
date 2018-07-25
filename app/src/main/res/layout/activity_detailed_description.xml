@@ -72,46 +72,47 @@
                         android:id="@+id/typeImage"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="24dp" />
 
                     <TextView
                         android:id="@+id/descriptionTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_weight="4"
                         android:gravity="center"
                         android:textColor="@color/secondary"
-                        android:textSize="18sp"
-                        android:layout_weight="4"/>
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
                         android:src="@drawable/arrow"
-                        android:tint="@color/secondary"/>
+                        android:tint="@color/secondary" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/descriptionLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="8dp"
                         app:contentPadding="8dp">
 
-                    <TextView
-                        android:id="@+id/description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:lineSpacingExtra="8dp"
-                        android:padding="@dimen/materialize_typography_headline"
-                        android:textColor="@color/google_text"
-                        android:textSize="18sp" />
+                        <TextView
+                            android:id="@+id/description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|center_horizontal"
+                            android:lineSpacingExtra="8dp"
+                            android:padding="@dimen/materialize_typography_headline"
+                            android:textColor="@color/google_text"
+                            android:textSize="18sp" />
                     </android.support.v7.widget.CardView>
                 </LinearLayout>
             </LinearLayout>
@@ -132,52 +133,65 @@
                     android:textColor="@color/secondary">
 
                     <ImageView
-                        android:id="@+id/ratingImage"
+                        android:id="@+id/ratingTitleImage"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="24dp" />
 
                     <TextView
                         android:id="@+id/ratingTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_weight="4"
                         android:gravity="center"
                         android:textColor="@color/secondary"
-                        android:textSize="18sp"
-                        android:layout_weight="4"/>
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
                         android:src="@drawable/arrow"
-                        android:tint="@color/secondary"/>
+                        android:tint="@color/secondary" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/ratingLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:textColor="@android:color/white"
+                    android:padding="8dp"
                     android:visibility="gone">
 
-                    <android.support.v7.widget.CardView
+
+                    <ImageView
+                        android:id="@+id/ratingImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:textColor="@color/google_text"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="8dp"
-                        app:contentPadding="8dp">
-                        <TextView
-                            android:id="@+id/rating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|center_horizontal"
-                            android:textColor="@color/google_text"
-                            android:textSize="18sp"/>
+                        android:orientation="vertical">
 
-                    </android.support.v7.widget.CardView>
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/listComments"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -201,25 +215,25 @@
                         android:id="@+id/availableTimeImage"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="24dp" />
 
                     <TextView
                         android:id="@+id/availableTimeTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_weight="4"
                         android:gravity="center"
                         android:textColor="@color/secondary"
-                        android:textSize="18sp"
-                        android:layout_weight="4"/>
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
                         android:src="@drawable/arrow"
-                        android:tint="@color/secondary"/>
+                        android:tint="@color/secondary" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -235,21 +249,22 @@
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="8dp"
                         app:contentPadding="8dp">
+
                         <TextView
                             android:id="@+id/availableTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical|center_horizontal"
                             android:textColor="@color/google_text"
-                            android:textSize="18sp"/>
+                            android:textSize="18sp" />
 
                     </android.support.v7.widget.CardView>
                 </LinearLayout>
 
             </LinearLayout>
             <!--*******************************AVAILABLE TIME END***************************************-->
-            
-            
+
+
             <!--*******************************PRICE START***************************************-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -268,25 +283,25 @@
                         android:id="@+id/priceImage"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginStart="24dp"
-                        android:layout_gravity="center_vertical"/>
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="24dp" />
 
                     <TextView
                         android:id="@+id/priceTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:layout_weight="4"
                         android:gravity="center"
                         android:textColor="@color/secondary"
-                        android:textSize="18sp"
-                        android:layout_weight="4"/>
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
                         android:src="@drawable/arrow"
-                        android:tint="@color/secondary"/>
+                        android:tint="@color/secondary" />
                 </LinearLayout>
 
                 <LinearLayout
