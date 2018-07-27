@@ -72,7 +72,7 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         createMarker(profile, noxbox1);
 
         Noxbox noxbox2 = new Noxbox();
-        noxbox2.setRole(MarketRole.demand);
+        noxbox2.setRole(MarketRole.supply);
         noxbox2.setOwner(new Profile()
                 .setTravelMode(TravelMode.walking)
                 .setRating(new Rating().setReceivedLikes(100).setReceivedDislikes(9)));
@@ -81,11 +81,11 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox2.setEstimationTime("1600");
         noxbox2.setPrice("25");
         noxbox2.setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
-        noxbox2.setType(NoxboxType.haircut);
+        noxbox2.setType(NoxboxType.musician);
         noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._43,NoxboxTime._49));
-        noxbox2.getOwner().getRating().getComments().put("0",new Comment("0","Очень занятный молодой человек, и годный парикмахер!",System.currentTimeMillis(),true));
-        noxbox2.getOwner().getRating().getComments().put("1",new Comment("1","Добротный парикмахер!",System.currentTimeMillis(),true));
-        noxbox2.getOwner().getRating().getComments().put("2",new Comment("2","Слишком высокий! пришлось стоять во время стрижки...",System.currentTimeMillis(),false));
+        noxbox2.getOwner().getRating().getComments().put("0",new Comment("0","Очень занятный молодой человек, и годный музыкант!",System.currentTimeMillis(),true));
+        noxbox2.getOwner().getRating().getComments().put("1",new Comment("1","Духовная и творческая личность!",System.currentTimeMillis(),true));
+        noxbox2.getOwner().getRating().getComments().put("2",new Comment("2","Безжалостный музыкант! Всю ночь у костра бренчал, да ещё и песни дьвольские не пел, а рычал!!!",System.currentTimeMillis(),false));
         createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
     }

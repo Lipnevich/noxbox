@@ -34,6 +34,7 @@
     <string name="dogWalker">Выгул собак</string>
     <string name="homeTeacher">Репетитор</string>
     <string name="husbandForHour">Муж на час</string>
+    <string name="musician">Музыкант</string>
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
@@ -46,6 +47,7 @@
     <string name="wallet">Кошелек</string>
     <string name="balance">Баланс %s</string>
     <string name="price">Цена %s</string>
+    <string name="priceTxt">Цена</string>
     <string name="serviceAvailable">услуга доступена</string>
     <string name="servicesAvailable">услуг доступно</string>
     <string name="serviceUnavailable">Hедостаточно денег для услуги. Пожалуйста, переведите %s</string>
@@ -131,46 +133,15 @@
     <string name="plumberDescription">10 минут профилактика трубопровода</string>
     <string name="sportCompanionDescription">1 час тренировка в зале</string>
     <string name="sportCoachDescription">1 час тренировка с тренером</string>
+    <string name="musicianDescription">1 час игры на гитаре</string>
 
     <string name="trackLocation">Показывать местоположение</string>
 
     <string name="from">с </string>
     <string name="to">по </string>
 
-    <string name="testText">
-        У лукоморья дуб зелёный;
-Златая цепь на дубе том:
-И днём и ночью кот учёный
-Всё ходит по цепи кругом;
-Идёт направо - песнь заводит,
-Налево - сказку говорит.
-Там чудеса: там леший бродит,
-Русалка на ветвях сидит;
-Там на неведомых дорожках
-Следы невиданных зверей;
-Избушка там на курьих ножках
-Стоит без окон, без дверей;
-Там лес и дол видений полны;
-Там о заре прихлынут волны
-На брег песчаный и пустой,
-И тридцать витязей прекрасных
-Чредой из вод выходят ясных,
-И с ними дядька их морской;
-Там королевич мимоходом
-Пленяет грозного царя;
-Там в облаках перед народом
-Через леса, через моря
-Колдун несёт богатыря;
-В темнице там царевна тужит,
-А бурый волк ей верно служит;
-Там ступа с Бабою Ягой
-Идёт, бредёт сама собой,
-Там царь Кащей над златом чахнет;
-Там русский дух... там Русью пахнет!
-И там я был, и мёд я пил;
-У моря видел дуб зелёный;
-Под ним сидел, и кот учёный
-Свои мне сказки говорил.</string>
-
-
+    <string name="availableTime">Доступное время</string>
+    <string name="rating">Рейтинг</string>
+    <string name="currency">Waves</string>
+    <string name="description">Описание</string>
 </resources>
