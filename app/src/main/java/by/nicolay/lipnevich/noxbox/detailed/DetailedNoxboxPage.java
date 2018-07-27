@@ -1,6 +1,5 @@
 package by.nicolay.lipnevich.noxbox.detailed;
 
-import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -26,6 +25,8 @@ import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
 import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.Task;
+
+import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
 
 public class DetailedNoxboxPage extends AppCompatActivity {
 
@@ -80,7 +81,8 @@ public class DetailedNoxboxPage extends AppCompatActivity {
             ((TextView)findViewById(R.id.previousDescription)).setText("Хочу получить услугу:");
         }
 
-        ((TextView)findViewById(R.id.description)).setText(noxbox.getType().getDescription());
+        //((TextView)findViewById(R.id.description)).setText(noxbox.getType().getDescription());
+        ((TextView)findViewById(R.id.date)).setText("Дата регистрации услуги" +" "+date(noxbox.getTimeCreated()));
         drawDropdownElement(R.id.descriptionTitleLayout,R.id.descriptionLayout);
     }
 
@@ -88,8 +90,9 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         drawDropdownElement(R.id.ratingTitleLayout,R.id.ratingLayout);
         ((ImageView)findViewById(R.id.ratingTitleImage)).setImageResource(R.drawable.star);
         ((TextView)findViewById(R.id.ratingTitle)).setText(R.string.rating);
-        ((TextView)findViewById(R.id.rating))
-                .setText("Rating in percentage = " + rating.toPercentage() + ";" + "likes = " + rating.getReceivedLikes() + ";" + "dislikes = " + rating.getReceivedLikes());
+        ((TextView)findViewById(R.id.rating)).setText(rating.toPercentage()+"%");
+        ((TextView)findViewById(R.id.like)).setText(rating.getReceivedLikes()+" like");
+        ((TextView)findViewById(R.id.dislike)).setText(rating.getReceivedDislikes()+" dislike");
 
         List<Comment> comments = new ArrayList<>();
         comments.add(rating.getComments().get("0"));
@@ -102,17 +105,16 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         recyclerView.setAdapter(new CommentAdapter(comments));
     }
 
-    @SuppressLint("SetTextI18n")
     private void drawAvailableTime(WorkSchedule workSchedule){
         drawDropdownElement(R.id.availableTimeTitleLayout,R.id.availableTimeLayout);
         ((ImageView)findViewById(R.id.availableTimeImage)).setImageResource(R.drawable.clock_circle);
         ((TextView)findViewById(R.id.availableTimeTitle)).setText(R.string.availableTime);
+        ((TextView)findViewById(R.id.currentDate)).setText("Fri 27 GMT +3");
         ((TextView)findViewById(R.id.availableTime))
-                .setText("Available time = " + workSchedule.getStartTime().getHourOfDay() + ":"+ workSchedule.getStartTime().getMinuteOfHour() + " - "
+                .setText(workSchedule.getStartTime().getHourOfDay() + ":"+ workSchedule.getStartTime().getMinuteOfHour() + " - "
                         + workSchedule.getEndTime().getHourOfDay() + ":"+ workSchedule.getEndTime().getMinuteOfHour());
     }
 
-    @SuppressLint("SetTextI18n")
     private void drawPrice(Noxbox noxbox) {
         drawDropdownElement(R.id.priceTitleLayout,R.id.priceLayout);
         ((ImageView)findViewById(R.id.priceImage)).setImageResource(R.drawable.coin);

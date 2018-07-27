@@ -1,9 +1,6 @@
 package by.nicolay.lipnevich.noxbox.tools;
 
-import android.annotation.SuppressLint;
-
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateTimeFormatter {
@@ -23,10 +20,6 @@ public class DateTimeFormatter {
         return formatter.format(new Date(number));
     }
 
-    public static String getDateFromLongAsString(Long time){
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy");
-        Date d = new Date(time);
-        return sdf.format(d);
-    }
+
 
 }

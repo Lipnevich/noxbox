@@ -9,7 +9,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="286dp"
+        android:layout_height="342dp"
         android:fitsSystemWindows="true"
         android:theme="@style/DetailedAppBarStyle">
 
@@ -95,32 +95,67 @@
                         android:src="@drawable/arrow"
                         android:tint="@color/secondary" />
                 </LinearLayout>
-
+                <!--dropdown part-->
                 <LinearLayout
                     android:id="@+id/descriptionLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginTop="4dp"
                     android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/previousDescription"
-                        android:layout_width="wrap_content"
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:lineSpacingExtra="8dp"
-                        android:textColor="@color/google_text"
-                        android:textSize="@dimen/text_size" />
+                        app:cardCornerRadius="12dp"
+                        android:layout_margin="8dp"
+                        app:contentPadding="8dp"
+                        >
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/previousDescription"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/google_text"
+                                    android:textSize="@dimen/text_size" />
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/google_text"
+                                android:textSize="@dimen/text_size_secondary"
+                                android:text="Музыкант — это человек, умеющий играть на музыкальном инструменте. Также к представителям этой профессии относятся композиторы, вокалисты, то есть те люди, которые по роду своей деятельности прямо связаны с музыкой."/>
+                            <!--<TextView-->
+                                <!--android:id="@+id/description"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:lineSpacingExtra="8dp"-->
+                                <!--android:textColor="@color/google_text"-->
+                                <!--android:textSize="@dimen/text_size_secondary" />-->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingExtra="8dp"
+                                    android:layout_gravity="end"
+                                    android:textColor="@color/google_text"
+                                    android:textSize="@dimen/text_size_secondary" />
+                            </LinearLayout>
+                        </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/description"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:lineSpacingExtra="8dp"
-                        android:textColor="@color/text_color_secondary"
-                        android:textSize="@dimen/text_size_secondary" />
+                    </android.support.v7.widget.CardView>
+
+
+
+
                 </LinearLayout>
             </LinearLayout>
             <!--*******************************DESCRIPTION END***************************************-->
@@ -166,32 +201,94 @@
                         android:src="@drawable/arrow"
                         android:tint="@color/secondary" />
                 </LinearLayout>
-
+                <!--****************dropdown part*****************88-->
                 <LinearLayout
                     android:id="@+id/ratingLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone">
-
-                    <ImageView
-                        android:id="@+id/ratingImage"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/rating"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:textColor="@color/google_text"
-                        android:textSize="18sp" />
+                        android:orientation="horizontal"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <android.support.v7.widget.CardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardCornerRadius="24dp"
+                                android:layout_gravity="center_horizontal">
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/star"/>
+                            </android.support.v7.widget.CardView>
+                            <TextView
+                                android:id="@+id/rating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <android.support.v7.widget.CardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardCornerRadius="24dp"
+                                android:layout_gravity="center_horizontal">
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/like"/>
+                            </android.support.v7.widget.CardView>
+                            <TextView
+                                android:id="@+id/like"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+                            <android.support.v7.widget.CardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardCornerRadius="24dp"
+                                android:layout_gravity="center_horizontal">
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/dislike"/>
+                            </android.support.v7.widget.CardView>
+                            <TextView
+                                android:id="@+id/dislike"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/listComments"
                             android:layout_width="match_parent"
@@ -199,7 +296,6 @@
                             android:layout_gravity="center_horizontal" />
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
             <!--*******************************RATING END***************************************-->
 
@@ -244,23 +340,63 @@
                         android:src="@drawable/arrow"
                         android:tint="@color/secondary" />
                 </LinearLayout>
-
+                <!--*****************************dropdown part**************************88-->
                 <LinearLayout
                     android:id="@+id/availableTimeLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:textColor="@android:color/white"
+                    android:orientation="vertical"
                     android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/availableTime"
-                        android:layout_width="wrap_content"
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|center_horizontal"
-                        android:textColor="@color/google_text"
-                        android:textSize="18sp" />
+                        android:layout_margin="8dp"
+                        app:cardCornerRadius="12dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="194dp"
+                            android:orientation="vertical">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="2"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginTop="8dp"
+                                    android:textSize="@dimen/text_title"
+                                    android:textColor="@color/google_text"
+                                    android:text="Минск, Беларусь"/>
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_weight="4"
+                                android:background="#9ab7f6"
+                                android:orientation="vertical">
+                                <TextView
+                                    android:id="@+id/currentDate"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginStart="8dp"
+                                    android:textColor="@color/google_text"
+                                    android:textSize="@dimen/text_size" />
+                                <TextView
+                                    android:id="@+id/availableTime"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:layout_marginStart="8dp"
+                                    android:textColor="@color/google_text"
+                                    android:textSize="@dimen/text_title"
+                                    android:textStyle="bold"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+
 
                 </LinearLayout>
 
@@ -361,7 +497,7 @@
                                     android:id="@+id/descriptionTextInPrice"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:textColor="@color/text_color_secondary"
+                                    android:textColor="@color/google_text"
                                     android:textSize="@dimen/text_size_secondary" />
 
                                 <Space

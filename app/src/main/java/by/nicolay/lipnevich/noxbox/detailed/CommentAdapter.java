@@ -12,8 +12,7 @@ import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Comment;
-
-import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.getDateFromLongAsString;
+import by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
@@ -40,7 +39,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             holder.like.setImageResource(R.drawable.dislike);
         }
         holder.text.setText(comments.get(position).getText());
-        holder.time.setText(getDateFromLongAsString(comments.get(position).getTime()));
+        holder.time.setText(DateTimeFormatter.date(comments.get(position).getTime()));
     }
 
     @Override

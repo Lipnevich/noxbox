@@ -38,10 +38,11 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
     @Override
     public void draw(Profile profile) {
         Noxbox noxbox = new Noxbox();
+        noxbox.setTimeCreated(System.currentTimeMillis());
         noxbox.setRole(MarketRole.demand);
         noxbox.setOwner(new Profile()
                 .setTravelMode(TravelMode.none)
-                .setRating(new Rating().setReceivedLikes(100)));
+                .setRating(new Rating().setReceivedLikes(2).setReceivedDislikes(1)));
         noxbox.getOwner().setId("1231");
         noxbox.setId("12311");
         noxbox.setEstimationTime("0");
@@ -55,10 +56,11 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         createMarker(profile, noxbox);
 
         Noxbox noxbox1 = new Noxbox();
+        noxbox1.setTimeCreated(System.currentTimeMillis());
         noxbox1.setRole(MarketRole.demand);
         noxbox1.setOwner(new Profile()
                 .setTravelMode(TravelMode.driving)
-                .setRating(new Rating().setReceivedLikes(100).setReceivedDislikes(3)));
+                .setRating(new Rating().setReceivedLikes(2).setReceivedDislikes(1)));
         noxbox1.getOwner().setId("1232");
         noxbox1.setId("12312");
         noxbox1.setEstimationTime("500");
@@ -72,10 +74,11 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         createMarker(profile, noxbox1);
 
         Noxbox noxbox2 = new Noxbox();
+        noxbox2.setTimeCreated(System.currentTimeMillis());
         noxbox2.setRole(MarketRole.supply);
         noxbox2.setOwner(new Profile()
                 .setTravelMode(TravelMode.walking)
-                .setRating(new Rating().setReceivedLikes(100).setReceivedDislikes(9)));
+                .setRating(new Rating().setReceivedLikes(2).setReceivedDislikes(1)));
         noxbox2.getOwner().setId("1233");
         noxbox2.setId("12313");
         noxbox2.setEstimationTime("1600");
