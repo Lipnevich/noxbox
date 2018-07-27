@@ -374,7 +374,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="0dp"
                                 android:layout_weight="4"
-                                android:background="#9ab7f6"
+                                android:background="#6000c1d3"
                                 android:orientation="vertical">
                                 <TextView
                                     android:id="@+id/currentDate"

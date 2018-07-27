@@ -109,7 +109,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         drawDropdownElement(R.id.availableTimeTitleLayout,R.id.availableTimeLayout);
         ((ImageView)findViewById(R.id.availableTimeImage)).setImageResource(R.drawable.clock_circle);
         ((TextView)findViewById(R.id.availableTimeTitle)).setText(R.string.availableTime);
-        ((TextView)findViewById(R.id.currentDate)).setText("Fri 27 GMT +3");
+        ((TextView)findViewById(R.id.currentDate)).setText("Пт 27 GMT +3");
         ((TextView)findViewById(R.id.availableTime))
                 .setText(workSchedule.getStartTime().getHourOfDay() + ":"+ workSchedule.getStartTime().getMinuteOfHour() + " - "
                         + workSchedule.getEndTime().getHourOfDay() + ":"+ workSchedule.getEndTime().getMinuteOfHour());
