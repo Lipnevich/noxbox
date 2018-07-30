@@ -50,6 +50,10 @@
                     android:textColor="@color/secondary"
                     android:text="@string/musician"
                     android:textSize="@dimen/text_size"
+                    android:shadowColor="@color/google_text"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
                     />
                 </LinearLayout>
             </android.support.v7.widget.Toolbar>
