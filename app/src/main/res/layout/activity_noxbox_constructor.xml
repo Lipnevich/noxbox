@@ -63,7 +63,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal|top"
                             android:layout_weight="1"
-                            android:src="@drawable/arrow"
+                            android:src="@drawable/arrow_down"
                             android:visibility="visible" />
                     </LinearLayout>
 
@@ -95,7 +95,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal|top"
                             android:layout_weight="1"
-                            android:src="@drawable/arrow"
+                            android:src="@drawable/arrow_down"
                             android:visibility="visible" />
 
                     </LinearLayout>
@@ -174,7 +174,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal|top"
                             android:layout_weight="1"
-                            android:src="@drawable/arrow"
+                            android:src="@drawable/arrow_down"
                             android:visibility="visible" />
 
                     </LinearLayout>
