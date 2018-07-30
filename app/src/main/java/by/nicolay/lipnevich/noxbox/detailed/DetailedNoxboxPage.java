@@ -2,18 +2,21 @@ package by.nicolay.lipnevich.noxbox.detailed;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
+import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
 import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.Task;
@@ -31,14 +35,6 @@ import by.nicolay.lipnevich.noxbox.tools.Task;
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
 
 public class DetailedNoxboxPage extends AppCompatActivity {
-
-
-    private LinearLayout mTitleContainer;
-    private TextView mTitle;
-    private AppBarLayout mAppBarLayout;
-    private ImageView mTypeImageView;
-    private ImageView mBackImageTypeView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +54,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         drawDescription(profile.getViewed());
         drawRating(profile.getViewed().getOwner().getRating());
         drawAvailableTime(profile.getViewed().getWorkSchedule());
+        drawWaitingTime(profile.getViewed());
         drawPrice(profile.getViewed());
 
     }
@@ -68,7 +65,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final Drawable backArrow = getResources().getDrawable(R.drawable.arrow_back);
         //upArrow.setColorFilter(getResources().getColor(R.color.grey), PorterDuff.Mode.SRC_ATOP);
-        // getSupportActionBar().setHomeAsUpIndicator(backArrow);
+        //getSupportActionBar().setHomeAsUpIndicator(backArrow);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setTitle(noxbox.getType().getName());
 
@@ -77,12 +74,13 @@ public class DetailedNoxboxPage extends AppCompatActivity {
     private void drawDescription(Noxbox noxbox) {
         drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
         changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
-        ((ImageView) findViewById(R.id.typeImage)).setImageResource(R.drawable.information);
-        ((TextView) findViewById(R.id.descriptionTitle)).setText(getResources().getString(R.string.description));
+        //((TextView) findViewById(R.id.descriptionTitle)).setText(getResources().getString(R.string.description));
         if (noxbox.getRole() == MarketRole.supply) {
             ((TextView) findViewById(R.id.previousDescription)).setText("Готов предоставить услугу:");
+            ((TextView) findViewById(R.id.descriptionTitle)).setText("Предоставлю");
         } else {//TODO (vl) transfer text to xml
             ((TextView) findViewById(R.id.previousDescription)).setText("Хочу получить услугу:");
+            ((TextView) findViewById(R.id.descriptionTitle)).setText("Получу");
         }
 
         //((TextView)findViewById(R.id.description)).setText(noxbox.getType().getDescription());
@@ -93,8 +91,8 @@ public class DetailedNoxboxPage extends AppCompatActivity {
     private void drawRating(Rating rating) {
         drawDropdownElement(R.id.ratingTitleLayout, R.id.ratingLayout);
         changeArrowVector(R.id.ratingLayout, R.id.ratingArrow);
-        ((ImageView) findViewById(R.id.ratingTitleImage)).setImageResource(R.drawable.star);
-        ((TextView) findViewById(R.id.ratingTitle)).setText(R.string.rating);
+        //((TextView) findViewById(R.id.ratingTitle)).setText(R.string.rating);
+        ((TextView) findViewById(R.id.ratingTitle)).setText(rating.toPercentage() + "%");
         ((TextView) findViewById(R.id.rating)).setText(rating.toPercentage() + "%");
         ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " like");
         ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " dislike");
@@ -113,19 +111,37 @@ public class DetailedNoxboxPage extends AppCompatActivity {
     private void drawAvailableTime(WorkSchedule workSchedule) {
         drawDropdownElement(R.id.availableTimeTitleLayout, R.id.availableTimeLayout);
         changeArrowVector(R.id.availableTimeLayout, R.id.timeArrow);
-        ((ImageView) findViewById(R.id.availableTimeImage)).setImageResource(R.drawable.clock_circle);
-        ((TextView) findViewById(R.id.availableTimeTitle)).setText(R.string.availableTime);
+        //((TextView) findViewById(R.id.availableTimeTitle)).setText(R.string.availableTime);
+        LocalTime startTime = new LocalTime(workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
+        LocalTime endTime = new LocalTime(workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
+
+        String displayTime ="";
+        if (DateFormat.is24HourFormat(getApplicationContext())) {
+            displayTime = startTime.getHourOfDay() + ":" + startTime.getMinuteOfHour() + " - " + endTime.getHourOfDay() + ":" + endTime.getMinuteOfHour();
+        } else {
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("hh:mm a");
+            displayTime = fmt.print(startTime) + " - " + fmt.print(endTime);
+        }
+        ((TextView) findViewById(R.id.availableTimeTitle)).setText(displayTime);
+        ((TextView) findViewById(R.id.availableTime)).setText(displayTime);
         ((TextView) findViewById(R.id.currentDate)).setText("Пт 27 GMT +3");
-        ((TextView) findViewById(R.id.availableTime))
-                .setText(workSchedule.getStartTime().getHourOfDay() + ":" + workSchedule.getStartTime().getMinuteOfHour() + " - "
-                        + workSchedule.getEndTime().getHourOfDay() + ":" + workSchedule.getEndTime().getMinuteOfHour());
+    }
+
+    private void drawWaitingTime(Noxbox noxbox) {
+        drawDropdownElement(R.id.travelTypeTitleLayout, R.id.travelTypeLayout);
+        changeArrowVector(R.id.travelTypeLayout, R.id.travelTypeArrow);
+        ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
+        //TODO
+        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+            ((TextView) findViewById(R.id.travelTypeTitle)).setText("30 минут");
+        }
+        ((TextView) findViewById(R.id.travelTypeTitle)).setText("30 минут");
     }
 
     private void drawPrice(Noxbox noxbox) {
         drawDropdownElement(R.id.priceTitleLayout, R.id.priceLayout);
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
-        ((ImageView) findViewById(R.id.priceImage)).setImageResource(R.drawable.coin);
-        ((TextView) findViewById(R.id.priceTitle)).setText(getResources().getString(R.string.priceTxt));
+        ((TextView) findViewById(R.id.priceTitle)).setText(noxbox.getPrice());
         ((TextView) findViewById(R.id.price)).setText(noxbox.getPrice());
         ((TextView) findViewById(R.id.typeTextInPrice)).setText(noxbox.getType().getName());
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(noxbox.getType().getDescription());
