@@ -14,12 +14,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Comment;
@@ -112,7 +112,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         drawDropdownElement(R.id.availableTimeTitleLayout, R.id.availableTimeLayout);
         changeArrowVector(R.id.availableTimeLayout, R.id.timeArrow);
         //((TextView) findViewById(R.id.availableTimeTitle)).setText(R.string.availableTime);
-        LocalTime startTime = new LocalTime(workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
+        /*LocalTime startTime = new LocalTime(workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
         LocalTime endTime = new LocalTime(workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
 
         String displayTime ="";
@@ -120,8 +120,20 @@ public class DetailedNoxboxPage extends AppCompatActivity {
             displayTime = startTime.getHourOfDay() + ":" + startTime.getMinuteOfHour() + " - " + endTime.getHourOfDay() + ":" + endTime.getMinuteOfHour();
         } else {
             DateTimeFormatter fmt = DateTimeFormat.forPattern("hh:mm a");
-            displayTime = fmt.print(startTime) + " - " + fmt.print(endTime);
+            displayTime = (fmt.print(startTime) + " - " + fmt.print(endTime)).toUpperCase();
+        }*/
+
+        Date startTime = new Date(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
+        Date endTime = new Date(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
+        String displayTime = "";
+        SimpleDateFormat simpleDateFormat = null;
+        if (DateFormat.is24HourFormat(getApplicationContext())) {
+            simpleDateFormat = new SimpleDateFormat("HH:mm");
+        } else {
+            simpleDateFormat = new SimpleDateFormat("hh:mm a",Locale.ENGLISH);
         }
+
+        displayTime = simpleDateFormat.format(startTime) + " - " + simpleDateFormat.format(endTime);
         ((TextView) findViewById(R.id.availableTimeTitle)).setText(displayTime);
         ((TextView) findViewById(R.id.availableTime)).setText(displayTime);
         ((TextView) findViewById(R.id.currentDate)).setText("Пт 27 GMT +3");
@@ -131,7 +143,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         drawDropdownElement(R.id.travelTypeTitleLayout, R.id.travelTypeLayout);
         changeArrowVector(R.id.travelTypeLayout, R.id.travelTypeArrow);
         ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
-        //TODO
+
         if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
             ((TextView) findViewById(R.id.travelTypeTitle)).setText("30 минут");
         }
