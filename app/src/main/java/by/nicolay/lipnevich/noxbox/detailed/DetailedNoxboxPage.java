@@ -70,7 +70,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         //upArrow.setColorFilter(getResources().getColor(R.color.grey), PorterDuff.Mode.SRC_ATOP);
         // getSupportActionBar().setHomeAsUpIndicator(backArrow);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(noxbox.getType().getName());
+        //getSupportActionBar().setTitle(noxbox.getType().getName());
 
     }
 

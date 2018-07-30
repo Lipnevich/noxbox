@@ -113,8 +113,8 @@
 
     <!--Detailed page action bar style-->
     <style name="DetailedAppBarStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textColor">@color/secondary_detailed</item>
-        <item name="android:textColorPrimary">@color/secondary_detailed</item>
+        <!--<item name="android:textColor">@color/secondary_detailed</item>-->
+        <!--<item name="android:textColorPrimary">@color/secondary_detailed</item>-->
         <item name="android:textColorSecondary">@color/primary</item>
     </style>
 </resources>
