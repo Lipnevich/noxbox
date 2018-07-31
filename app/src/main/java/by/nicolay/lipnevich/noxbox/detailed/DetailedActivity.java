@@ -40,7 +40,7 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detailed_description);
+        setContentView(R.layout.activity_detailed);
 
         ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
@@ -64,18 +64,13 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawToolbar(Noxbox noxbox) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //final Drawable backArrow = getResources().getDrawable(R.drawable.arrow_back);
-        //upArrow.setColorFilter(getResources().getColor(R.color.grey), PorterDuff.Mode.SRC_ATOP);
-        //getSupportActionBar().setHomeAsUpIndicator(backArrow);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setTitle(noxbox.getType().getName());
-
+        getSupportActionBar().setTitle(noxbox.getType().getName());
     }
 
     private void drawDescription(Noxbox noxbox) {
         drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
         changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
-        //((TextView) findViewById(R.id.descriptionTitle)).setText(getResources().getString(R.string.description));
         if (noxbox.getRole() == MarketRole.supply) {
             ((TextView) findViewById(R.id.previousDescription)).setText("Готов предоставить услугу:");
             ((TextView) findViewById(R.id.descriptionTitle)).setText("Предоставлю");
@@ -84,7 +79,6 @@ public class DetailedActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.descriptionTitle)).setText("Получу");
         }
 
-        //((TextView)findViewById(R.id.description)).setText(noxbox.getType().getDescription());
         ((TextView) findViewById(R.id.date)).setText("Дата регистрации услуги" + " " + date(noxbox.getTimeCreated()));
 
     }
@@ -114,17 +108,6 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawAvailableTime(WorkSchedule workSchedule) {
         drawDropdownElement(R.id.availableTimeTitleLayout, R.id.availableTimeLayout);
         changeArrowVector(R.id.availableTimeLayout, R.id.timeArrow);
-        //((TextView) findViewById(R.id.availableTimeTitle)).setText(R.string.availableTime);
-        /*LocalTime startTime = new LocalTime(workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
-        LocalTime endTime = new LocalTime(workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
-
-        String displayTime ="";
-        if (DateFormat.is24HourFormat(getApplicationContext())) {
-            displayTime = startTime.getHourOfDay() + ":" + startTime.getMinuteOfHour() + " - " + endTime.getHourOfDay() + ":" + endTime.getMinuteOfHour();
-        } else {
-            DateTimeFormatter fmt = DateTimeFormat.forPattern("hh:mm a");
-            displayTime = (fmt.print(startTime) + " - " + fmt.print(endTime)).toUpperCase();
-        }*/
 
         Date startTime = new Date(0, 0, 0, workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
         Date endTime = new Date(0, 0, 0, workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
@@ -233,18 +216,7 @@ public class DetailedActivity extends AppCompatActivity {
                 });
             }
         });
-        findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProfileStorage.listenProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        profile.setViewed(null);
-                        finish();
-                    }
-                });
-            }
-        });
+
     }
 
     private void drawDropdownElement(int titleId, final int contentId) {
@@ -285,4 +257,15 @@ public class DetailedActivity extends AppCompatActivity {
         // mBackImageTypeView = (ImageView) findViewById(R.id.backgroundImageTypeView);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ProfileStorage.listenProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                profile.setViewed(null);
+                finish();
+            }
+        });
+    }
 }
