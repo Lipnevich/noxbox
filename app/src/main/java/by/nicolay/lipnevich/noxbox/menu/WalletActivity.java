@@ -1,4 +1,4 @@
-package by.nicolay.lipnevich.noxbox.pages;
+package by.nicolay.lipnevich.noxbox.menu;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -16,7 +16,7 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Request;
 import by.nicolay.lipnevich.noxbox.model.Wallet;
 import by.nicolay.lipnevich.noxbox.state.Firebase;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import java.math.BigDecimal;
@@ -25,7 +25,7 @@ import static by.nicolay.lipnevich.noxbox.Configuration.CURRENCY;
 import static by.nicolay.lipnevich.noxbox.tools.MoneyFormatter.format;
 import static by.nicolay.lipnevich.noxbox.tools.MoneyFormatter.scale;
 
-public class WalletPage extends AppCompatActivity {
+public class WalletActivity extends AppCompatActivity {
 
     public static final int CODE = 1003;
 
@@ -41,7 +41,7 @@ public class WalletPage extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 recalculateBalance(profile);
@@ -114,7 +114,7 @@ public class WalletPage extends AppCompatActivity {
                 if(TextUtils.isEmpty(addressToSendEditor.getText())) {
                     return;
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(WalletPage.this, R.style.NoxboxAlertDialogStyle);
+                AlertDialog.Builder builder = new AlertDialog.Builder(WalletActivity.this, R.style.NoxboxAlertDialogStyle);
                 builder.setTitle(getResources().getString(R.string.sendPrompt));
                 builder.setPositiveButton(getResources().getString(R.string.refund),
                         new DialogInterface.OnClickListener() {

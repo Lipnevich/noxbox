@@ -179,8 +179,8 @@ public class Firebase {
     }
 
     public static void like() {
-        getProfile().getRating().setReceivedLikes(getProfile().getRating().getReceivedLikes() + 1);
-        getProfile().getRating().setSentLikes(getProfile().getRating().getSentLikes() + 1);
+//        getProfile().getRating().setReceivedLikes(getProfile().getRating().getReceivedLikes() + 1);
+//        getProfile().getRating().setSentLikes(getProfile().getRating().getSentLikes() + 1);
     }
 
     public static void dislikeNoxbox(String profileId, Noxbox noxbox) {

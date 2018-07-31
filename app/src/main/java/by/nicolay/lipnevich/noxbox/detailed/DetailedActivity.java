@@ -30,19 +30,19 @@ import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
 import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
 
-public class DetailedNoxboxPage extends AppCompatActivity {
+public class DetailedActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_description);
 
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 init();
@@ -56,7 +56,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         drawDescription(profile.getViewed());
         drawWaitingTime(profile.getViewed());
         drawAvailableTime(profile.getViewed().getWorkSchedule());
-        drawRating(profile.getViewed().getOwner().getRating());
+        drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
     }
 
@@ -89,12 +89,14 @@ public class DetailedNoxboxPage extends AppCompatActivity {
 
     }
 
-    private void drawRating(Rating rating) {
+    private void drawRating(Noxbox viewed) {
         drawDropdownElement(R.id.ratingTitleLayout, R.id.ratingLayout);
         changeArrowVector(R.id.ratingLayout, R.id.ratingArrow);
+        Rating rating = viewed.getRole() == MarketRole.demand ?
+                viewed.getOwner().getDemandsRating().get(viewed.getType().name()) : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
         //((TextView) findViewById(R.id.ratingTitle)).setText(R.string.rating);
-        ((TextView) findViewById(R.id.ratingTitle)).setText(rating.toPercentage() + "%");
-        ((TextView) findViewById(R.id.rating)).setText(rating.toPercentage() + "%");
+        ((TextView) findViewById(R.id.ratingTitle)).setText(viewed.getOwner().ratingToPercentage() + "%");
+        ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage() + "%");
         ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " like");
         ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " dislike");
 
@@ -152,7 +154,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
 
         if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
-            State.listenProfile(new Task<Profile>() {
+            ProfileStorage.listenProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     float[] results = new float[1];
@@ -222,7 +224,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                State.listenProfile(new Task<Profile>() {
+                ProfileStorage.listenProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         profile.setCurrent(profile.getViewed());
@@ -234,7 +236,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                State.listenProfile(new Task<Profile>() {
+                ProfileStorage.listenProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         profile.setViewed(null);
@@ -276,7 +278,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
     }
 
     private void startCoordinateActivity(){
-        startActivity(new Intent(this,CoordinatePage.class));
+        startActivity(new Intent(this,CoordinateActivity.class));
     }
     private void init() {
         //TODO need find background picture for all types..

@@ -6,7 +6,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
-import by.nicolay.lipnevich.noxbox.pages.AuthPage;
+import by.nicolay.lipnevich.noxbox.pages.AuthActivity;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ import static org.hamcrest.CoreMatchers.not;
 public class AuthIntegrationTest {
 
     @Rule
-    public ActivityTestRule<AuthPage> rule = new ActivityTestRule<>(AuthPage.class);
+    public ActivityTestRule<AuthActivity> rule = new ActivityTestRule<>(AuthActivity.class);
 
     @Test
     public void testGoogleSignIn() throws Exception {

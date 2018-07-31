@@ -13,10 +13,10 @@ import com.google.android.gms.maps.model.LatLng;
 
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
-public class CoordinatePage extends AppCompatActivity implements OnMapReadyCallback {
+public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap googleMap;
 
@@ -39,7 +39,7 @@ public class CoordinatePage extends AppCompatActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(profile.getPosition().getLatitude(),profile.getPosition().getLongitude())));

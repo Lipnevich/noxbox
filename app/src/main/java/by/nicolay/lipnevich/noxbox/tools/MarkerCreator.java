@@ -23,7 +23,7 @@ public class MarkerCreator {
                         .position(noxbox.getPosition().toLatLng())
                         .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
                                 getIconBitmap(activity, noxbox.getType().getImage()),
-                                getRatingColor(noxbox.getOwner().getRating(), activity,noxbox),
+                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity,noxbox),
                                 activity.getResources().getColor(R.color.icon_background),
                                 getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
                 )))
@@ -36,7 +36,7 @@ public class MarkerCreator {
                         .position(noxbox.getPosition().toLatLng())
                         .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
                                 getIconBitmap(activity, noxbox.getType().getImage()),
-                                getRatingColor(noxbox.getOwner().getRating(), activity,noxbox),
+                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity,noxbox),
                                 activity.getResources().getColor(R.color.icon_background),
                                 getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
                         )))
@@ -71,13 +71,13 @@ public class MarkerCreator {
         return bmpWithBorder;
     }
 
-    private static int getRatingColor(Rating rating, Activity activity,Noxbox noxbox) {
+    private static int getRatingColor(int percentage, Activity activity,Noxbox noxbox) {
 //        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)){
 //            return activity.getResources().getColor(R.color.divider);
 //        }
-        if (rating.getReceivedLikes() >= 100) {
+        if (percentage == 100) {
             return activity.getResources().getColor(R.color.top_rating_color);
-        } else if (rating.getReceivedLikes() < 100L && rating.getReceivedLikes() >= 95L) {
+        } else if (percentage < 100 && percentage >= 95) {
             return activity.getResources().getColor(R.color.middle_rating_color);
         } else {
             return activity.getResources().getColor(R.color.low_rating_color);

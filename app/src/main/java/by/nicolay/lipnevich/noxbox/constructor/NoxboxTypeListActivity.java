@@ -8,22 +8,22 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class NoxboxTypeListPage extends ListActivity {
+public class NoxboxTypeListActivity extends ListActivity {
     private List<NoxboxType> typeList;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         typeList = Arrays.asList(NoxboxType.values());
-        ArrayAdapter<NoxboxType> itemArrayAdapter = new NoxboxTypeAdapterWithIcon(this, typeList);
+        ArrayAdapter<NoxboxType> itemArrayAdapter = new NoxboxTypeAdapter(this, typeList);
         setListAdapter(itemArrayAdapter);
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);

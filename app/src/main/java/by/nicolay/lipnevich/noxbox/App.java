@@ -11,7 +11,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
 import by.nicolay.lipnevich.noxbox.pages.NetworkReceiver;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import io.fabric.sdk.android.Fabric;
 
 public class App extends Application implements Application.ActivityLifecycleCallbacks {
@@ -39,7 +39,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
     @Override
     public void onActivityPaused(Activity activity) {
         unregisterReceiver(networkReceiver);
-        State.stopListen();
+        ProfileStorage.stopListen();
     }
 
     @Override

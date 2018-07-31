@@ -15,7 +15,8 @@ import android.util.Log;
 import by.nicolay.lipnevich.noxbox.BuildConfig;
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.*;
-import by.nicolay.lipnevich.noxbox.pages.ChatPage;
+import by.nicolay.lipnevich.noxbox.pages.ChatActivity;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -149,8 +150,8 @@ public class MessagingService extends FirebaseMessagingService {
 
     private PendingIntent getIntent(Notice notice) {
             if(notice.getType() == story) {
-                return PendingIntent.getActivity(context, ChatPage.CODE,
-                        new Intent(context, ChatPage.class),
+                return PendingIntent.getActivity(context, ChatActivity.CODE,
+                        new Intent(context, ChatActivity.class),
                         PendingIntent.FLAG_UPDATE_CURRENT);
             }
             return PendingIntent.getActivity(context,0, context.getPackageManager()

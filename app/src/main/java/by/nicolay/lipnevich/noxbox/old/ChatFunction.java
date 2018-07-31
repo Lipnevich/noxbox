@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package by.nicolay.lipnevich.noxbox;
+package by.nicolay.lipnevich.noxbox.old;
 
 public abstract class ChatFunction extends EventFunction {
 
@@ -40,8 +40,8 @@ public abstract class ChatFunction extends EventFunction {
         chatIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(getApplicationContext(), ChatPage.class),
-                        ChatPage.CODE);
+                startActivityForResult(new Intent(getApplicationContext(), ChatActivity.class),
+                        ChatActivity.CODE);
             }
         });
 
@@ -76,7 +76,7 @@ public abstract class ChatFunction extends EventFunction {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ChatPage.CODE && Firebase.getProfile() != null) {
+        if(requestCode == ChatActivity.CODE && Firebase.getProfile() != null) {
             if(hasNewMessages(getCurrentNoxbox())) {
                 drawNewMessageSign();
             } else {

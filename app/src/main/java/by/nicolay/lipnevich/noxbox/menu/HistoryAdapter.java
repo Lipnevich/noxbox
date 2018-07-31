@@ -1,4 +1,4 @@
-package by.nicolay.lipnevich.noxbox.pages;
+package by.nicolay.lipnevich.noxbox.menu;
 
 import android.app.AlertDialog;
 import android.content.Context;

@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 
-public class AuthPage extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE = 11011;
 

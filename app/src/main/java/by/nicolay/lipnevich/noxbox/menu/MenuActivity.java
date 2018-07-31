@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package by.nicolay.lipnevich.noxbox;
+package by.nicolay.lipnevich.noxbox.menu;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -34,13 +34,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.ml.vision.FirebaseVision;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.face.FirebaseVisionFace;
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -58,17 +51,15 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import by.nicolay.lipnevich.noxbox.model.Acceptance;
+import by.nicolay.lipnevich.noxbox.BuildConfig;
+import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.pages.AuthPage;
-import by.nicolay.lipnevich.noxbox.pages.HistoryPage;
-import by.nicolay.lipnevich.noxbox.pages.WalletPage;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.pages.AuthActivity;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
-import static by.nicolay.lipnevich.noxbox.state.Firebase.updateProfile;
 import static by.nicolay.lipnevich.noxbox.tools.DebugMessage.popup;
 
 public abstract class MenuActivity extends AppCompatActivity {
@@ -77,7 +68,7 @@ public abstract class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
@@ -89,52 +80,19 @@ public abstract class MenuActivity extends AppCompatActivity {
     private void draw(Profile profile) {
         createMenu(profile);
 
-        if(profile.getRating().toPercentage() <= MIN_RATE_IN_PERCENTAGE) {
+        if(profile.ratingToPercentage() <= MIN_RATE_IN_PERCENTAGE) {
             popup(this,"Low rate!");
         }
     }
 
     protected Drawer menu;
 
-    protected void checkAcceptance(Profile profile) {
-        // TODO (nli) replace it with profile activity launch
-        float minProb = 50;
-        Acceptance acceptance = profile.getAcceptance();
-        if(acceptance.getExpired()) {
-            popup(this,"Please wait. Your data check still in progress...");
-        } else if(!acceptance.isAccepted(minProb)) {
-            String warning = "";
-            if(acceptance.getCorrectNameProbability() < minProb) {
-                warning += "Incorrect name\n";
-            }
-            if(acceptance.getFailToRecognizeFace()) {
-                warning += "Fail to recognize face\n";
-            } else {
-                if (acceptance.getSmileProbability() < minProb) {
-                    warning += "No smile on photo\n";
-                }
-                if (acceptance.getLeftEyeOpenProbability() < minProb) {
-                    warning += "Closed left eye\n";
-                }
-                if (acceptance.getRightEyeOpenProbability() < minProb) {
-                    warning += "Closed right eye\n";
-                }
-            }
-            warning += "Please update your data on your Google account";
-            popup(this,warning);
-        } else {
-            popup(this,"Your name and photo are just wonderful!");
-        }
-    }
-
-
-
     protected void createMenu(Profile profile) {
         makeProfileImageRounded();
 
         ProfileDrawerItem account = new ProfileDrawerItem()
                 .withName(profile.getName())
-                .withEmail(profile.getRating().toPercentage() + " %");
+                .withEmail(profile.ratingToPercentage() + " %");
         if(profile.getPhoto() == null) {
             account.withIcon(ContextCompat.getDrawable(getApplicationContext(),
                     R.drawable.profile_picture_blank));
@@ -210,51 +168,6 @@ public abstract class MenuActivity extends AppCompatActivity {
         });
     }
 
-    private void checkPhoto(final Profile profile, Bitmap photo) {
-        if(!profile.getAcceptance().getExpired()) return;
-
-        if(profile.getPhoto() == null) {
-            profile.getAcceptance().setFailToRecognizeFace(true);
-            profile.getAcceptance().setExpired(false);
-            return;
-        }
-
-        FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
-                .getVisionFaceDetector(new FirebaseVisionFaceDetectorOptions.Builder()
-                        .setModeType(FirebaseVisionFaceDetectorOptions.ACCURATE_MODE)
-                        .setClassificationType(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
-                        .setMinFaceSize(0.6f)
-                        .setTrackingEnabled(false)
-                        .build());
-
-        detector.detectInImage(FirebaseVisionImage.fromBitmap(photo))
-                .addOnSuccessListener(
-                        new OnSuccessListener<List<FirebaseVisionFace>>() {
-                            @Override
-                            public void onSuccess(List<FirebaseVisionFace> faces) {
-                                profile.getAcceptance().setExpired(false);
-                                if(faces.size() != 1) {
-                                    profile.getAcceptance().setFailToRecognizeFace(true);
-                                } else {
-                                    FirebaseVisionFace face = faces.get(0);
-                                    profile.getAcceptance().setSmileProbability(face.getSmilingProbability());
-                                    profile.getAcceptance().setRightEyeOpenProbability(face.getRightEyeOpenProbability());
-                                    profile.getAcceptance().setLeftEyeOpenProbability(face.getLeftEyeOpenProbability());
-                                }
-                                updateProfile(profile);
-                            }
-                        })
-                .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                profile.getAcceptance().setExpired(false);
-                                profile.getAcceptance().setFailToRecognizeFace(true);
-                                updateProfile(profile);
-                            }
-                        });
-    }
-
     private IDrawerItem[] convertToItems(Map<String, IntentAndKey> menu) {
         List<IDrawerItem> items = new ArrayList<>();
         for(final Map.Entry<String, IntentAndKey> entry : menu.entrySet()) {
@@ -291,7 +204,7 @@ public abstract class MenuActivity extends AppCompatActivity {
                                                     @Override
                                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
                                                         // TODO (nli) start activity for result
-                                                        startActivity(new Intent(MenuActivity.this, AuthPage.class));
+                                                        startActivity(new Intent(MenuActivity.this, AuthActivity.class));
                                                     }
                                                 });
                                     }
@@ -309,18 +222,18 @@ public abstract class MenuActivity extends AppCompatActivity {
     protected SortedMap<String, IntentAndKey> getMenu() {
         TreeMap<String, IntentAndKey> menu = new TreeMap<>();
         menu.put(getString(R.string.history), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), HistoryPage.class))
-                .setKey(HistoryPage.CODE));
+                .setIntent(new Intent(getApplicationContext(), HistoryActivity.class))
+                .setKey(HistoryActivity.CODE));
         menu.put(getString(R.string.wallet), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), WalletPage.class))
-                .setKey(WalletPage.CODE));
+                .setIntent(new Intent(getApplicationContext(), WalletActivity.class))
+                .setKey(WalletActivity.CODE));
         return menu;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        if(requestCode == WalletPage.CODE) {
-            State.listenProfile(new Task<Profile>() {
+        if(requestCode == WalletActivity.CODE) {
+            ProfileStorage.listenProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     draw(profile);

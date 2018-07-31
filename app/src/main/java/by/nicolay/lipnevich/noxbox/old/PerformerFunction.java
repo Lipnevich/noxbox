@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package by.nicolay.lipnevich.noxbox;
+package by.nicolay.lipnevich.noxbox.old;
 
 public abstract class PerformerFunction extends PerformerLocationFunction {
 
@@ -53,7 +53,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
                 new IntentIntegrator(PerformerFunction.this)
                         .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES)
                         .setOrientationLocked(false)
-                        .setCaptureActivity(QRCapturePage.class)
+                        .setCaptureActivity(QRCaptureActivity.class)
                         .initiateScan();
             }
         });

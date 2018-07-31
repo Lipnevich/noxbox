@@ -10,7 +10,7 @@
     <color name="icon_background">#6491d0</color>
     <color name="top_rating_color">#00ff4c</color>
     <color name="middle_rating_color">#eaff7e</color>
-    <color name="low_rating_color">#ff5e00</color>
+    <color name="low_rating_color">#FF0000</color>
     <color name="secondary_detailed">#fffc46</color>
     <color name="text_color_secondary">#6d6a5f</color>
 </resources>

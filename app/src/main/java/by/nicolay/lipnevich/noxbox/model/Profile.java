@@ -3,12 +3,19 @@ package by.nicolay.lipnevich.noxbox.model;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import static by.nicolay.lipnevich.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
 
 public class Profile implements Serializable {
 
     private String id, name, email, photo, secret;
     private Acceptance acceptance;
-    private Rating rating;
+
+    private Map<String, Rating> suppliesRating = new HashMap<>();
+    private Map<String, Rating> demandsRating = new HashMap<>();
+
     private Wallet wallet;
     private NotificationKeys notificationKeys;
 
@@ -44,17 +51,6 @@ public class Profile implements Serializable {
 
     public Profile setName(String name) {
         this.name = name;
-        return this;
-    }
-
-    @Exclude
-    public Rating getRating() {
-        return rating;
-    }
-
-    @Exclude
-    public Profile setRating(Rating rating) {
-        this.rating = rating;
         return this;
     }
 
@@ -153,7 +149,7 @@ public class Profile implements Serializable {
     @Exclude
     public Profile publicInfo() {
         return new Profile().setId(id).setName(name).setPhoto(photo).setEmail(email)
-                .setPosition(position).setRating(rating).setTravelMode(travelMode);
+                .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode);
     }
 
     public Noxbox getViewed() {
@@ -163,5 +159,43 @@ public class Profile implements Serializable {
     public Profile setViewed(Noxbox viewed) {
         this.viewed = viewed;
         return this;
+    }
+
+    public Map<String, Rating> getDemandsRating() {
+        return demandsRating;
+    }
+
+    public Profile setDemandsRating(Map<String, Rating> demandsRating) {
+        this.demandsRating = demandsRating;
+        return this;
+    }
+
+    public Map<String, Rating> getSuppliesRating() {
+        return suppliesRating;
+    }
+
+    public Profile setSuppliesRating(Map<String, Rating> suppliesRating) {
+        this.suppliesRating = suppliesRating;
+        return this;
+    }
+
+    @Exclude
+    public int ratingToPercentage() {
+        int likes = 0;
+        int dislikes = 0;
+        for(Rating offer : suppliesRating.values()) {
+            likes += offer.getReceivedLikes();
+            dislikes += offer.getReceivedDislikes();
+        }
+        for(Rating demand : demandsRating.values()) {
+            likes += demand.getReceivedLikes();
+            dislikes += demand.getReceivedDislikes();
+        }
+
+        if (likes == 0 && dislikes == 0) return 100;
+        if (likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
+        if (likes == 0 && dislikes > 1) return 0;
+
+        return (likes / (likes + dislikes)) * 100;
     }
 }

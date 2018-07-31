@@ -16,6 +16,7 @@ public class Rating {
     private Integer receivedDislikes = 0;
     private Integer sentLikes = 0;
     private Integer sentDislikes = 0;
+
     private Integer notResponded = 0;
     private Integer canceled = 0;
 
@@ -87,15 +88,4 @@ public class Rating {
         return this;
     }
 
-    @Exclude
-    public int toPercentage() {
-        int likes = this.receivedLikes;
-        int dislikes = this.receivedDislikes;
-
-        if (likes == 0 && dislikes == 0) return 100;
-        if (likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
-        if (likes == 0 && dislikes > 1) return 0;
-
-        return (likes / (likes + dislikes)) * 100;
-    }
 }

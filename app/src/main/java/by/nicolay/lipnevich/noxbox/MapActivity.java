@@ -49,14 +49,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import by.nicolay.lipnevich.noxbox.constructor.ConstructorNoxboxPage;
+import by.nicolay.lipnevich.noxbox.constructor.ConstructorActivity;
+import by.nicolay.lipnevich.noxbox.menu.MenuActivity;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.pages.Fragment;
-import by.nicolay.lipnevich.noxbox.pages.InitialFragment;
 import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.pages.AvailableServices;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
@@ -109,7 +110,7 @@ public class MapActivity extends MenuActivity implements
                 scaleMarkers();
             }
         });
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
@@ -165,7 +166,7 @@ public class MapActivity extends MenuActivity implements
         findViewById(R.id.noxboxConstructorButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MapActivity.this, ConstructorNoxboxPage.class));
+                startActivity(new Intent(MapActivity.this, ConstructorActivity.class));
             }
         });
     }
@@ -402,19 +403,19 @@ public class MapActivity extends MenuActivity implements
         //googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(270), dpToPx(10));
     }
 
-    private Fragment currentFragment;
+    private State currentState;
 
     private void draw(@NonNull Profile profile) {
-        Fragment newFragment = getFragment(profile);
-        if (newFragment != currentFragment && currentFragment != null) {
-            currentFragment.clear();
+        State newState = getFragment(profile);
+        if (newState != currentState && currentState != null) {
+            currentState.clear();
         }
-        currentFragment = newFragment;
-        currentFragment.draw(profile);
+        currentState = newState;
+        currentState.draw(profile);
     }
 
-    public Fragment getFragment(Profile profile) {
-        if (profile.getCurrent() == null) return new InitialFragment(googleMap, this);
+    public State getFragment(Profile profile) {
+        if (profile.getCurrent() == null) return new AvailableServices(googleMap, this);
 //    created,
 //    requesting,
 //    accepting,
@@ -424,7 +425,7 @@ public class MapActivity extends MenuActivity implements
 //    enjoying,
 //    completed;
 
-        return new InitialFragment(googleMap, this);
+        return new AvailableServices(googleMap, this);
     }
 
 }

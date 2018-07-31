@@ -11,7 +11,7 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package by.nicolay.lipnevich.noxbox;
+package by.nicolay.lipnevich.noxbox.old;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -20,6 +20,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.*;
 import by.nicolay.lipnevich.noxbox.tools.Timer;
 import net.glxn.qrgen.android.QRCode;
@@ -81,7 +83,7 @@ public class PayerFunction extends FragmentActivity {
 //                final Noxbox bestOption = chooseBestOptionPerformer();
 //                if(bestOption != null) {
 //                    if(!isEnoughMoney(bestOption.getPrice())) {
-//                        startActivityForResult(new Intent(getApplicationContext(), WalletPage.class), WalletPage.CODE);
+//                        startActivityForResult(new Intent(getApplicationContext(), WalletActivity.class), WalletActivity.CODE);
 //                        return;
 //                    }
 //

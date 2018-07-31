@@ -11,7 +11,9 @@
  * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package by.nicolay.lipnevich.noxbox;
+package by.nicolay.lipnevich.noxbox.old;
+
+import by.nicolay.lipnevich.noxbox.MapActivity;
 
 public abstract class GeoFunction extends MapActivity {
 

@@ -33,13 +33,13 @@ import by.nicolay.lipnevich.noxbox.model.MarketRole;
 import by.nicolay.lipnevich.noxbox.model.NoxboxTime;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 
-public class ConstructorNoxboxPage extends AppCompatActivity{
+public class ConstructorActivity extends AppCompatActivity{
 
 
     protected double price;
@@ -58,7 +58,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
                 if (profile.getCurrent() != null) {
@@ -194,12 +194,12 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
     }
 
     protected void startDialogList() {
-        Intent intent = new Intent(this, NoxboxTypeListPage.class);
+        Intent intent = new Intent(this, NoxboxTypeListActivity.class);
         startActivity(intent);
     }
 
     protected void createRoleList(final Profile profile, View textView) {
-        final PopupMenu popup = new PopupMenu(ConstructorNoxboxPage.this, textView, Gravity.CENTER_HORIZONTAL);
+        final PopupMenu popup = new PopupMenu(ConstructorActivity.this, textView, Gravity.CENTER_HORIZONTAL);
         for (MarketRole role : MarketRole.values()) {
             popup.getMenu().add(Menu.NONE, role.getId(), Menu.NONE, role.getName());
         }
@@ -216,7 +216,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
     }
 
     private void createTravelModeList(final Profile profile, TextView textView) {
-        final PopupMenu popup = new PopupMenu(ConstructorNoxboxPage.this, textView, Gravity.CENTER_HORIZONTAL);
+        final PopupMenu popup = new PopupMenu(ConstructorActivity.this, textView, Gravity.CENTER_HORIZONTAL);
         for (TravelMode mode : TravelMode.values()) {
             popup.getMenu().add(Menu.NONE, mode.getId(), Menu.NONE, mode.getName());
         }
@@ -225,7 +225,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
                 profile.getCurrent().getOwner().setTravelMode(TravelMode.byId(item.getItemId()));
                 if(profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
                     if(checkLocationPermission()){
-                        ActivityCompat.requestPermissions(ConstructorNoxboxPage.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                        ActivityCompat.requestPermissions(ConstructorActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                     }
                 }
                 draw(profile);
@@ -236,7 +236,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
     }
 
     private void drawNoxboxTimeSwitch(final Profile profile) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(ConstructorNoxboxPage.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(ConstructorActivity.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner timeSelectFrom = findViewById(R.id.timeFromView);
@@ -302,7 +302,7 @@ public class ConstructorNoxboxPage extends AppCompatActivity{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {
-                State.listenProfile(new Task<Profile>() {
+                ProfileStorage.listenProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         profile.getCurrent().getOwner().setTravelMode(TravelMode.none);

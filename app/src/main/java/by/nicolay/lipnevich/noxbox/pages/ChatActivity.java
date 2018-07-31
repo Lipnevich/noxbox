@@ -32,16 +32,15 @@ import by.nicolay.lipnevich.noxbox.BuildConfig;
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Event;
 import by.nicolay.lipnevich.noxbox.model.Profile;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
-import by.nicolay.lipnevich.noxbox.tools.TimeLogger;
 
 import static android.graphics.Bitmap.createBitmap;
 import static android.graphics.Bitmap.createScaledBitmap;
 import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
 import static java.util.Collections.sort;
 
-public class ChatPage extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
 
     public static final int CODE = 1001;
 
@@ -56,7 +55,6 @@ public class ChatPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.chat);
-        TimeLogger.log(millis, TimeLogger.Event.onCreateChat, getApplicationContext());
 
         chatList = findViewById(R.id.chat_list);
         chatList.setHasFixedSize(true);
@@ -91,7 +89,7 @@ public class ChatPage extends AppCompatActivity {
                     getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
         }});
 
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
@@ -195,7 +193,7 @@ public class ChatPage extends AppCompatActivity {
     }
 
     private void sound() {
-        MediaPlayer mediaPlayer = MediaPlayer.create(ChatPage.this, R.raw.message);
+        MediaPlayer mediaPlayer = MediaPlayer.create(ChatActivity.this, R.raw.message);
         mediaPlayer.start();
     }
 

@@ -1,4 +1,4 @@
-package by.nicolay.lipnevich.noxbox.pages;
+package by.nicolay.lipnevich.noxbox.menu;
 
 
 import android.app.Activity;
@@ -11,7 +11,7 @@ import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.state.Firebase;
-import by.nicolay.lipnevich.noxbox.state.State;
+import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class HistoryPage extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
     public static final int CODE = 1002;
 
@@ -44,7 +44,7 @@ public class HistoryPage extends AppCompatActivity {
                 .apply(RequestOptions.overrideOf(size, size))
                 .into((ImageView) findViewById(R.id.progressView));
 
-        State.listenProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 loadHistory(profile);
@@ -54,7 +54,7 @@ public class HistoryPage extends AppCompatActivity {
 
     private void loadHistory(Profile profile) {
         ListView listView = findViewById(R.id.historyView);
-        historyAdapter = new HistoryAdapter(HistoryPage.this, profile.getId(), historyItems);
+        historyAdapter = new HistoryAdapter(HistoryActivity.this, profile.getId(), historyItems);
         listView.setAdapter(historyAdapter);
 
         Firebase.loadHistory(new Task<Collection<Noxbox>>() {

@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".pages.AuthPage"
+            android:name=".pages.AuthActivity"
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,30 +19,30 @@
         </activity>
         <activity android:name="by.nicolay.lipnevich.noxbox.MapActivity"
                   android:theme="@style/NoActionBar"/>
-        <activity android:name=".constructor.ConstructorNoxboxPage"
+        <activity android:name=".constructor.ConstructorActivity"
             android:parentActivityName=".MapActivity"
             android:windowSoftInputMode="stateHidden"/>
         <activity
-            android:name=".constructor.NoxboxTypeListPage"
+            android:name=".constructor.NoxboxTypeListActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog"
             android:noHistory="true"
             android:label="@string/selectService"/>
         <activity
-            android:name=".detailed.DetailedNoxboxPage"
+            android:name=".detailed.DetailedActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar"/>
         <activity
-            android:name=".detailed.CoordinatePage"
-            android:parentActivityName=".detailed.DetailedNoxboxPage"
+            android:name=".detailed.CoordinateActivity"
+            android:parentActivityName=".detailed.DetailedActivity"
             android:theme="@style/NoActionBar"/>
 
-        <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
-        <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"
+        <activity android:name="by.nicolay.lipnevich.noxbox.menu.HistoryActivity"/>
+        <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatActivity"
                   android:theme="@style/NoActionBar"
                   android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name="by.nicolay.lipnevich.noxbox.pages.WalletPage"
+        <activity android:name="by.nicolay.lipnevich.noxbox.menu.WalletActivity"
                   android:windowSoftInputMode="adjustResize|stateHidden"/>
-        <activity android:name="by.nicolay.lipnevich.noxbox.pages.QRCapturePage"
+        <activity android:name="by.nicolay.lipnevich.noxbox.pages.QRCaptureActivity"
             android:screenOrientation="portrait"/>
 
         <meta-data android:name="io.fabric.ApiKey" android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
