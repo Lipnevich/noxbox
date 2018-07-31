@@ -1,7 +1,7 @@
 package by.nicolay.lipnevich.noxbox.detailed;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -54,18 +54,17 @@ public class DetailedNoxboxPage extends AppCompatActivity {
     private void draw(Profile profile) {
         drawToolbar(profile.getViewed());
         drawDescription(profile.getViewed());
-        drawRating(profile.getViewed().getOwner().getRating());
-        drawAvailableTime(profile.getViewed().getWorkSchedule());
         drawWaitingTime(profile.getViewed());
+        drawAvailableTime(profile.getViewed().getWorkSchedule());
+        drawRating(profile.getViewed().getOwner().getRating());
         drawPrice(profile.getViewed());
-
     }
 
     //TODO (vl) make textView instead title
     private void drawToolbar(Noxbox noxbox) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final Drawable backArrow = getResources().getDrawable(R.drawable.arrow_back);
+        //final Drawable backArrow = getResources().getDrawable(R.drawable.arrow_back);
         //upArrow.setColorFilter(getResources().getColor(R.color.grey), PorterDuff.Mode.SRC_ATOP);
         //getSupportActionBar().setHomeAsUpIndicator(backArrow);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -157,13 +156,11 @@ public class DetailedNoxboxPage extends AppCompatActivity {
                 @Override
                 public void execute(Profile profile) {
                     float[] results = new float[1];
-                    double lat = profile.getPosition().getLatitude();
-                    double lng = profile.getPosition().getLongitude();
                     Location.distanceBetween(
                             noxbox.getPosition().getLatitude(),
                             noxbox.getPosition().getLongitude(),
-                            lat,
-                            lng, results);
+                            profile.getPosition().getLatitude(),
+                            profile.getPosition().getLongitude(), results);
                     int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
                     String timeTxt = "";
                     String distanceTxt = String.valueOf((int)results[0]/1000) + " км";
@@ -201,7 +198,12 @@ public class DetailedNoxboxPage extends AppCompatActivity {
                 }
             });
 
-
+            findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startCoordinateActivity();
+                }
+            });
 
             return;
         }
@@ -273,8 +275,12 @@ public class DetailedNoxboxPage extends AppCompatActivity {
 
     }
 
+    private void startCoordinateActivity(){
+        startActivity(new Intent(this,CoordinatePage.class));
+    }
     private void init() {
         //TODO need find background picture for all types..
         // mBackImageTypeView = (ImageView) findViewById(R.id.backgroundImageTypeView);
     }
+
 }

@@ -31,6 +31,10 @@
             android:name=".detailed.DetailedNoxboxPage"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar"/>
+        <activity
+            android:name=".detailed.CoordinatePage"
+            android:parentActivityName=".detailed.DetailedNoxboxPage"
+            android:theme="@style/NoActionBar"/>
 
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.HistoryPage"/>
         <activity android:name="by.nicolay.lipnevich.noxbox.pages.ChatPage"
