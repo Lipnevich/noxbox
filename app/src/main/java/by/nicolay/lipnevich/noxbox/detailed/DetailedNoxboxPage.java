@@ -1,7 +1,10 @@
 package by.nicolay.lipnevich.noxbox.detailed;
 
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,10 +19,8 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Comment;
@@ -40,6 +41,7 @@ public class DetailedNoxboxPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_description);
+
         State.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
@@ -123,14 +125,14 @@ public class DetailedNoxboxPage extends AppCompatActivity {
             displayTime = (fmt.print(startTime) + " - " + fmt.print(endTime)).toUpperCase();
         }*/
 
-        Date startTime = new Date(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
-        Date endTime = new Date(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
+        Date startTime = new Date(0, 0, 0, workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
+        Date endTime = new Date(0, 0, 0, workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
         String displayTime = "";
         SimpleDateFormat simpleDateFormat = null;
         if (DateFormat.is24HourFormat(getApplicationContext())) {
             simpleDateFormat = new SimpleDateFormat("HH:mm");
         } else {
-            simpleDateFormat = new SimpleDateFormat("hh:mm a",Locale.ENGLISH);
+            simpleDateFormat = new SimpleDateFormat("hh:mm a");
         }
 
         displayTime = simpleDateFormat.format(startTime) + " - " + simpleDateFormat.format(endTime);
@@ -139,15 +141,70 @@ public class DetailedNoxboxPage extends AppCompatActivity {
         ((TextView) findViewById(R.id.currentDate)).setText("Пт 27 GMT +3");
     }
 
-    private void drawWaitingTime(Noxbox noxbox) {
+    private void drawWaitingTime(final Noxbox noxbox) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ((TextView) findViewById(R.id.travelTypeTitle)).setText("No location permission");
+            return;
+        }
+
         drawDropdownElement(R.id.travelTypeTitleLayout, R.id.travelTypeLayout);
         changeArrowVector(R.id.travelTypeLayout, R.id.travelTypeArrow);
-        ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
+        ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
 
-        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
-            ((TextView) findViewById(R.id.travelTypeTitle)).setText("30 минут");
+        if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
+            State.listenProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    float[] results = new float[1];
+                    double lat = profile.getPosition().getLatitude();
+                    double lng = profile.getPosition().getLongitude();
+                    Location.distanceBetween(
+                            noxbox.getPosition().getLatitude(),
+                            noxbox.getPosition().getLongitude(),
+                            lat,
+                            lng, results);
+                    int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
+                    String timeTxt = "";
+                    String distanceTxt = String.valueOf((int)results[0]/1000) + " км";
+                    switch (minutes % 10) {
+                        case 11: {
+                            timeTxt = " минут";
+                            break;
+                        }
+                        case 1: {
+                            timeTxt = " минута";
+                            break;
+                        }
+                        case 2: {
+                            timeTxt = " минуты";
+                            break;
+                        }
+                        case 3: {
+                            timeTxt = " минуты";
+                            break;
+                        }
+                        case 4: {
+                            timeTxt = " минуты";
+                            break;
+                        }
+                        default: {
+                            timeTxt = " минут";
+                            break;
+                        }
+                    }
+                    ((TextView) findViewById(R.id.travelTypeTitle)).setText(String.valueOf(minutes) + timeTxt);
+                    //((TextView) findViewById(R.id.travelTypeTitle)).setText(String.valueOf(noxbox.getPosition().getLatitude()));
+                    ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
+                    ((TextView) findViewById(R.id.travelTime)).setText(String.valueOf(minutes) + timeTxt);
+                    ((TextView) findViewById(R.id.travelDistance)).setText(distanceTxt);
+                }
+            });
+
+
+
+            return;
         }
-        ((TextView) findViewById(R.id.travelTypeTitle)).setText("30 минут");
     }
 
     private void drawPrice(Noxbox noxbox) {

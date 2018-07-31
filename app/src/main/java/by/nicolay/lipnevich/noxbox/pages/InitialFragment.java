@@ -50,9 +50,9 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox.setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         noxbox.setType(NoxboxType.sportCompanion);
         noxbox.setWorkSchedule(new WorkSchedule());
-        noxbox.getOwner().getRating().getComments().put("0",new Comment("0","Очень занятный молодой человек, и годный напарник!",System.currentTimeMillis(),true));
-        noxbox.getOwner().getRating().getComments().put("1",new Comment("1","Добротный паренёк!",System.currentTimeMillis(),true));
-        noxbox.getOwner().getRating().getComments().put("2",new Comment("2","Выносливость бы повысить, слишком быстро выдыхается во время кросса.",System.currentTimeMillis(),false));
+        noxbox.getOwner().getRating().getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный напарник!", System.currentTimeMillis(), true));
+        noxbox.getOwner().getRating().getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
+        noxbox.getOwner().getRating().getComments().put("2", new Comment("2", "Выносливость бы повысить, слишком быстро выдыхается во время кросса.", System.currentTimeMillis(), false));
         createMarker(profile, noxbox);
 
         Noxbox noxbox1 = new Noxbox();
@@ -68,9 +68,9 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox1.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         noxbox1.setType(NoxboxType.plumber);
         noxbox1.setWorkSchedule(new WorkSchedule());
-        noxbox1.getOwner().getRating().getComments().put("0",new Comment("0","Очень занятный молодой человек, и годный сантехник!",System.currentTimeMillis(),true));
-        noxbox1.getOwner().getRating().getComments().put("1",new Comment("1","Добротный сантехник!",System.currentTimeMillis(),true));
-        noxbox1.getOwner().getRating().getComments().put("2",new Comment("2","Опоздун!!",System.currentTimeMillis(),false));
+        noxbox1.getOwner().getRating().getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный сантехник!", System.currentTimeMillis(), true));
+        noxbox1.getOwner().getRating().getComments().put("1", new Comment("1", "Добротный сантехник!", System.currentTimeMillis(), true));
+        noxbox1.getOwner().getRating().getComments().put("2", new Comment("2", "Опоздун!!", System.currentTimeMillis(), false));
         createMarker(profile, noxbox1);
 
         Noxbox noxbox2 = new Noxbox();
@@ -85,10 +85,10 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         noxbox2.setPrice("25");
         noxbox2.setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
         noxbox2.setType(NoxboxType.musician);
-        noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._43,NoxboxTime._49));
-        noxbox2.getOwner().getRating().getComments().put("0",new Comment("0","Очень занятный молодой человек, и годный музыкант!",System.currentTimeMillis(),true));
-        noxbox2.getOwner().getRating().getComments().put("1",new Comment("1","Духовная и творческая личность!",System.currentTimeMillis(),true));
-        noxbox2.getOwner().getRating().getComments().put("2",new Comment("2","Безжалостный музыкант! Всю ночь у костра бренчал, да ещё и песни дьвольские не пел, а рычал!!!",System.currentTimeMillis(),false));
+        noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._43, NoxboxTime._49));
+        noxbox2.getOwner().getRating().getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный музыкант!", System.currentTimeMillis(), true));
+        noxbox2.getOwner().getRating().getComments().put("1", new Comment("1", "Духовная и творческая личность!", System.currentTimeMillis(), true));
+        noxbox2.getOwner().getRating().getComments().put("2", new Comment("2", "Безжалостный музыкант! Всю ночь у костра бренчал, да ещё и песни дьвольские не пел, а рычал!!!", System.currentTimeMillis(), false));
         createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
     }
@@ -117,7 +117,9 @@ public class InitialFragment implements Fragment, GoogleMap.OnMarkerClickListene
         State.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                profile.setViewed((Noxbox)marker.getTag());
+                profile.setViewed((Noxbox) marker.getTag());
+                //TODO (vl) here should be sending position to current profile
+                profile.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
                 activity.startActivity(new Intent(activity, DetailedNoxboxPage.class));
             }
         });
