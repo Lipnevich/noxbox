@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -58,6 +59,18 @@ public class DetailedActivity extends AppCompatActivity {
         drawAvailableTime(profile.getViewed().getWorkSchedule());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
+        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileStorage.listenProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        profile.setCurrent(profile.getViewed());
+                        finish();
+                    }
+                });
+            }
+        });
     }
 
     //TODO (vl) make textView instead title
@@ -65,7 +78,8 @@ public class DetailedActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(noxbox.getType().getName());
+        getSupportActionBar().setTitle("Песни под гитару");
+        //getSupportActionBar().setTitle(noxbox.getType().getName());
     }
 
     private void drawDescription(Noxbox noxbox) {
@@ -74,9 +88,11 @@ public class DetailedActivity extends AppCompatActivity {
         if (noxbox.getRole() == MarketRole.supply) {
             ((TextView) findViewById(R.id.previousDescription)).setText("Готов предоставить услугу:");
             ((TextView) findViewById(R.id.descriptionTitle)).setText("Предоставлю");
+            ((Button)findViewById(R.id.acceptButton)).setText("Заказать");
         } else {//TODO (vl) transfer text to xml
             ((TextView) findViewById(R.id.previousDescription)).setText("Хочу получить услугу:");
             ((TextView) findViewById(R.id.descriptionTitle)).setText("Получу");
+            ((Button) findViewById(R.id.acceptButton)).setText("Предоставить");
         }
 
         ((TextView) findViewById(R.id.date)).setText("Дата регистрации услуги" + " " + date(noxbox.getTimeCreated()));
@@ -89,7 +105,7 @@ public class DetailedActivity extends AppCompatActivity {
         Rating rating = viewed.getRole() == MarketRole.demand ?
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name()) : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
         //((TextView) findViewById(R.id.ratingTitle)).setText(R.string.rating);
-        ((TextView) findViewById(R.id.ratingTitle)).setText(viewed.getOwner().ratingToPercentage() + "%");
+        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.rating) + " " + viewed.getOwner().ratingToPercentage() + "%");
         ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage() + "%");
         ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " like");
         ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " dislike");
@@ -197,26 +213,12 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawPrice(Noxbox noxbox) {
         drawDropdownElement(R.id.priceTitleLayout, R.id.priceLayout);
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
-        ((TextView) findViewById(R.id.priceTitle)).setText(noxbox.getPrice());
+        ((TextView) findViewById(R.id.priceTitle)).setText(getResources().getString(R.string.priceTxt) + " " + noxbox.getPrice() + " " + getResources().getString(R.string.currency));
         ((TextView) findViewById(R.id.price)).setText(noxbox.getPrice());
         ((TextView) findViewById(R.id.typeTextInPrice)).setText(noxbox.getType().getName());
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(noxbox.getType().getDescription());
         ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(noxbox.getType().getImage());
         //TODO (vl) create copyButton with lower price
-
-        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProfileStorage.listenProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        profile.setCurrent(profile.getViewed());
-                        finish();
-                    }
-                });
-            }
-        });
-
     }
 
     private void drawDropdownElement(int titleId, final int contentId) {
@@ -252,6 +254,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void startCoordinateActivity(){
         startActivity(new Intent(this,CoordinateActivity.class));
     }
+
     private void init() {
         //TODO need find background picture for all types..
         // mBackImageTypeView = (ImageView) findViewById(R.id.backgroundImageTypeView);

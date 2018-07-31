@@ -9,7 +9,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="342dp"
+        android:layout_height="292dp"
         android:fitsSystemWindows="true"
         android:theme="@style/DetailedAppBarStyle">
 
@@ -54,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
 
             <!--*******************************DESCRIPTION START***************************************-->
             <LinearLayout
@@ -562,7 +563,7 @@
             <!--*******************************PRICE START***************************************-->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -604,118 +605,127 @@
                 </LinearLayout>
 
                 <!--**************dropdown part******************8-->
-                <android.support.v7.widget.CardView
+                <LinearLayout
+                    android:id="@+id/priceLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="12dp">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                    <LinearLayout
-                        android:id="@+id/priceLayout"
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:layout_margin="8dp"
+                        app:cardCornerRadius="12dp">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:id="@+id/typeImageInPrice"
-                                    android:layout_width="42dp"
-                                    android:layout_height="42dp"
-                                    android:layout_marginStart="8dp"
-                                    android:layout_marginTop="8dp" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="3"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/typeTextInPrice"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:textColor="@color/google_text"
-                                    android:textSize="@dimen/text_size" />
-
-                                <TextView
-                                    android:id="@+id/descriptionTextInPrice"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="@color/google_text"
-                                    android:textSize="@dimen/text_size_secondary" />
-
-                                <Space
-                                    android:layout_width="8dp"
-                                    android:layout_height="8dp" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:orientation="horizontal">
 
                                 <LinearLayout
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:id="@+id/price"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:textColor="#16bed9"
-                                        android:textSize="@dimen/text_size" />
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
                                     <ImageView
-                                        android:layout_width="12dp"
-                                        android:layout_height="12dp"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_marginStart="2dp"
-                                        android:src="@drawable/currency" />
+                                        android:id="@+id/typeImageInPrice"
+                                        android:layout_width="42dp"
+                                        android:layout_height="42dp"
+                                        android:layout_marginStart="8dp"
+                                        android:layout_marginTop="8dp" />
                                 </LinearLayout>
-                                <!--<TextView-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:layout_gravity="center_horizontal"-->
-                                <!--android:layout_marginTop="10dp"-->
-                                <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
-                                <!--TODO (vl) money on users wallet-->
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="8dp"
+                                    android:layout_weight="3"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/typeTextInPrice"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:textColor="@color/google_text"
+                                        android:textSize="@dimen/text_size" />
+
+                                    <TextView
+                                        android:id="@+id/descriptionTextInPrice"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="@color/google_text"
+                                        android:textSize="@dimen/text_size_secondary" />
+
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:id="@+id/price"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:textColor="#16bed9"
+                                            android:textSize="@dimen/text_size" />
+
+                                        <ImageView
+                                            android:layout_width="12dp"
+                                            android:layout_height="12dp"
+                                            android:layout_gravity="center_vertical"
+                                            android:layout_marginStart="2dp"
+                                            android:src="@drawable/currency" />
+                                    </LinearLayout>
+                                    <!--<TextView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:layout_gravity="center_horizontal"-->
+                                    <!--android:layout_marginTop="10dp"-->
+                                    <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
+                                    <!--TODO (vl) money on users wallet-->
+                                </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/acceptButton"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/primary"
-                android:text="Заказать"
-                android:textSize="18sp"
-                android:textStyle="normal"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="visible" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <Button
+                    android:id="@+id/acceptButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/primary"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="Заказать"
+                    android:textSize="18sp"
+                    android:textStyle="normal"
+                    android:visibility="visible" />
+
+            </LinearLayout>
         </LinearLayout>
-
     </android.support.v4.widget.NestedScrollView>
-
 </android.support.design.widget.CoordinatorLayout>
