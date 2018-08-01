@@ -35,6 +35,13 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coordinate);
+        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                return;
+            }
+        });
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
     }
 
@@ -72,6 +79,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                 }
             }
         });
+
 
     }
     @Override
