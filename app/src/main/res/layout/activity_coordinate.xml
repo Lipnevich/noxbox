@@ -6,18 +6,55 @@
     android:windowNoTitle="true">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/mapId"
+        android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/back"
+            style="@style/IconButtonStyle"
+            android:layout_gravity="top|start"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/back"
+            android:visibility="visible"/>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:hint="Поиск"
+            android:focusableInTouchMode="false"
+            android:layout_marginStart="44dp"
+            android:layout_marginEnd="44dp"
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:textSize="@dimen/text_size"
+            android:elevation="10dp"/>
+        <ImageView
+            android:id="@+id/pointer"
+            style="@style/IconButtonStyle"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginBottom="28dp"
+            android:src="@drawable/pointer"
+            android:visibility="visible"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:background="@drawable/button_corner"
+            android:enabled="true"
+            android:text="Отметить место"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            android:visibility="visible" />
+    </fragment>
 
-    </android.support.v7.widget.Toolbar>
 </android.support.v4.widget.DrawerLayout>
-
-
-
