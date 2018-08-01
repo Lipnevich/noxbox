@@ -94,7 +94,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox2.setPrice("25");
         noxbox2.setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
         noxbox2.setType(NoxboxType.musician);
-        noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._43, NoxboxTime._49));
+        noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._41, NoxboxTime._47));
         createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
     }

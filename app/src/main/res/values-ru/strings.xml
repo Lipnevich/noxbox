@@ -61,6 +61,7 @@
     <string name="yourBalance">Ваш баланс</string>
     <string name="frozenMoney">Временно заблокированные %s</string>
     <string name="dislike">не нравится</string>
+    <string name="like">нравится</string>
     <string name="dislikePrompt">Вы уверены что Вам не понравилась оказанная услуга?</string>
     <string name="send">Отправить</string>
     <string name="sendPrompt">Вы уверены что хотите перевести Ваши деньги?</string>
@@ -141,7 +142,28 @@
     <string name="to">по </string>
 
     <string name="availableTime">Доступное время</string>
-    <string name="rating">Рейтинг</string>
+    <string name="myRating">Мой рейтинг</string>
     <string name="currency">Waves</string>
     <string name="description">Описание</string>
+
+    <!--detailed activity-->
+    <string name="readyToPerform">Готов исполнить услугу:</string>
+    <string name="wantToGet">Хочу получить услугу:</string>
+    <string name="get">Получу</string>
+    <string name="perform">Исполню</string>
+    <string name="order">Заказать</string>
+    <string name="proceed">Приступить</string>
+    <string name="dateRegistrationService">Дата публикации услуги</string>
+    <string name="minutes">минут</string>
+    <string name="minutes_">минуты</string>
+    <string name="minute">минута</string>
+    <string name="willPay">Оплачу</string>
+    <string name="waitThrough">Ожидаю через</string>
+    <string name="arriveVia">Прибуду через</string>
+    <string name="km">км</string>
+    <string name="travelTime">Время в пути</string>
+    <string name="distance">Расстояние</string>
+    <string name="priceClarificationBefore">Указана стоимость</string>
+    <string name="priceClarificationAfter">исполнения услуги, оплата будет рассчитываться поминутно в зависимости от действительного времени исполнения.</string>
+    <string name="ending">а</string>
 </resources>

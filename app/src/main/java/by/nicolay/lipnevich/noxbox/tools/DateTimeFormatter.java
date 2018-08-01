@@ -1,7 +1,9 @@
 package by.nicolay.lipnevich.noxbox.tools;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DateTimeFormatter {
 
@@ -20,6 +22,9 @@ public class DateTimeFormatter {
         return formatter.format(new Date(number));
     }
 
-
+    public static String format(int hour,int minute){
+        Calendar calendar = new GregorianCalendar(0,0,0,hour,minute);
+        return format(calendar.getTimeInMillis(),time);
+    }
 
 }

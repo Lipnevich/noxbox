@@ -2,6 +2,9 @@ package by.nicolay.lipnevich.noxbox.detailed;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -9,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -18,10 +21,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Comment;
@@ -30,8 +32,8 @@ import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.Rating;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.model.WorkSchedule;
 import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
+import by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.tools.DateTimeFormatter.date;
@@ -56,9 +58,9 @@ public class DetailedActivity extends AppCompatActivity {
         drawToolbar(profile.getViewed());
         drawDescription(profile.getViewed());
         drawWaitingTime(profile.getViewed());
-        drawAvailableTime(profile.getViewed().getWorkSchedule());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
+        drawButton(profile.getViewed().getRole());
         findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,16 +88,14 @@ public class DetailedActivity extends AppCompatActivity {
         drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
         changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
         if (noxbox.getRole() == MarketRole.supply) {
-            ((TextView) findViewById(R.id.previousDescription)).setText("Готов предоставить услугу:");
-            ((TextView) findViewById(R.id.descriptionTitle)).setText("Предоставлю");
-            ((Button)findViewById(R.id.acceptButton)).setText("Заказать");
+            ((TextView) findViewById(R.id.previousDescription)).setText(R.string.readyToPerform);
+            ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
         } else {//TODO (vl) transfer text to xml
-            ((TextView) findViewById(R.id.previousDescription)).setText("Хочу получить услугу:");
-            ((TextView) findViewById(R.id.descriptionTitle)).setText("Получу");
-            ((Button) findViewById(R.id.acceptButton)).setText("Предоставить");
+            ((TextView) findViewById(R.id.previousDescription)).setText(R.string.wantToGet);
+            ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
         }
 
-        ((TextView) findViewById(R.id.date)).setText("Дата регистрации услуги" + " " + date(noxbox.getTimeCreated()));
+        ((TextView) findViewById(R.id.date)).setText(getResources().getString(R.string.dateRegistrationService) + " " + date(noxbox.getTimeCreated()));
 
     }
 
@@ -104,11 +104,23 @@ public class DetailedActivity extends AppCompatActivity {
         changeArrowVector(R.id.ratingLayout, R.id.ratingArrow);
         Rating rating = viewed.getRole() == MarketRole.demand ?
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name()) : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
-        //((TextView) findViewById(R.id.ratingTitle)).setText(R.string.rating);
-        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.rating) + " " + viewed.getOwner().ratingToPercentage() + "%");
+
+        int percentage = viewed.getOwner().ratingToPercentage();
+        if (percentage >= 95) {
+            ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.GREEN);
+            ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.GREEN);
+        } else if (percentage > 90) {
+            ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.YELLOW);
+            ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.YELLOW);
+        } else {
+            ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.RED);
+            ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.RED);
+        }
+
+        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage() + "%");
         ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage() + "%");
-        ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " like");
-        ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " dislike");
+        ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " " + getResources().getString(R.string.like));
+        ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
 
         List<Comment> comments = new ArrayList<>();
         comments.add(rating.getComments().get("0"));
@@ -121,93 +133,107 @@ public class DetailedActivity extends AppCompatActivity {
         recyclerView.setAdapter(new CommentAdapter(comments));
     }
 
-    private void drawAvailableTime(WorkSchedule workSchedule) {
-        drawDropdownElement(R.id.availableTimeTitleLayout, R.id.availableTimeLayout);
-        changeArrowVector(R.id.availableTimeLayout, R.id.timeArrow);
-
-        Date startTime = new Date(0, 0, 0, workSchedule.getStartTime().getHourOfDay(), workSchedule.getStartTime().getMinuteOfHour());
-        Date endTime = new Date(0, 0, 0, workSchedule.getEndTime().getHourOfDay(), workSchedule.getEndTime().getMinuteOfHour());
-        String displayTime = "";
-        SimpleDateFormat simpleDateFormat = null;
-        if (DateFormat.is24HourFormat(getApplicationContext())) {
-            simpleDateFormat = new SimpleDateFormat("HH:mm");
-        } else {
-            simpleDateFormat = new SimpleDateFormat("hh:mm a");
-        }
-
-        displayTime = simpleDateFormat.format(startTime) + " - " + simpleDateFormat.format(endTime);
-        ((TextView) findViewById(R.id.availableTimeTitle)).setText(displayTime);
-        ((TextView) findViewById(R.id.availableTime)).setText(displayTime);
-        ((TextView) findViewById(R.id.currentDate)).setText("Пт 27 GMT +3");
-    }
-
     private void drawWaitingTime(final Noxbox noxbox) {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            ((TextView) findViewById(R.id.travelTypeTitle)).setText("No location permission");
+            ((TextView) findViewById(R.id.travelTypeTitle)).setText("No permission");
             return;
         }
 
         drawDropdownElement(R.id.travelTypeTitleLayout, R.id.travelTypeLayout);
         changeArrowVector(R.id.travelTypeLayout, R.id.travelTypeArrow);
         ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
+        ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
 
-        if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
-            ProfileStorage.listenProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    float[] results = new float[1];
-                    Location.distanceBetween(
-                            noxbox.getPosition().getLatitude(),
-                            noxbox.getPosition().getLongitude(),
-                            profile.getPosition().getLatitude(),
-                            profile.getPosition().getLongitude(), results);
-                    int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
-                    String timeTxt = "";
-                    String distanceTxt = String.valueOf((int)results[0]/1000) + " км";
-                    switch (minutes % 10) {
-                        case 11: {
-                            timeTxt = " минут";
-                            break;
-                        }
-                        case 1: {
-                            timeTxt = " минута";
-                            break;
-                        }
-                        case 2: {
-                            timeTxt = " минуты";
-                            break;
-                        }
-                        case 3: {
-                            timeTxt = " минуты";
-                            break;
-                        }
-                        case 4: {
-                            timeTxt = " минуты";
-                            break;
-                        }
-                        default: {
-                            timeTxt = " минут";
-                            break;
-                        }
+        ProfileStorage.listenProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+                List<Address> addresses;
+                String address = "";
+                String city = "";
+                try {
+                    addresses = geocoder.getFromLocation(noxbox.getPosition().getLatitude(), noxbox.getPosition().getLongitude(), 1);
+                    address = addresses.get(0).getAddressLine(0);
+                    city = addresses.get(0).getLocality();
+                } catch (Exception e) {
+                    //TODO display LatLng
+                }
+                if (address.equals("")) {
+                    if (city.equals("")) {
+                        //TODO display LatLng
+                    } else {
+                        ((TextView) findViewById(R.id.address)).setText(city);
                     }
-                    ((TextView) findViewById(R.id.travelTypeTitle)).setText(String.valueOf(minutes) + timeTxt);
-                    //((TextView) findViewById(R.id.travelTypeTitle)).setText(String.valueOf(noxbox.getPosition().getLatitude()));
-                    ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
-                    ((TextView) findViewById(R.id.travelTime)).setText(String.valueOf(minutes) + timeTxt);
-                    ((TextView) findViewById(R.id.travelDistance)).setText(distanceTxt);
+                } else {
+                    ((TextView) findViewById(R.id.address)).setText(address);
                 }
-            });
 
-            findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startCoordinateActivity();
+                float[] results = new float[1];
+
+                Location.distanceBetween(
+                        noxbox.getPosition().getLatitude(),
+                        noxbox.getPosition().getLongitude(),
+                        profile.getPosition().getLatitude(),
+                        profile.getPosition().getLongitude(),
+                        results);
+
+                int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
+                String timeTxt;
+                String distanceTxt = String.valueOf((int) results[0] / 1000) + " " + getResources().getString(R.string.km);
+                Log.e("AAAA", (int) results[0]  + " / " + noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
+                switch (minutes % 10) {
+                    case 11: {
+                        timeTxt = getResources().getString(R.string.minutes);
+                        break;
+                    }
+                    case 1: {
+                        timeTxt = getResources().getString(R.string.minute);
+                        break;
+                    }
+                    case 2: {
+                        timeTxt = getResources().getString(R.string.minutes_);
+                        break;
+                    }
+                    case 3: {
+                        timeTxt = getResources().getString(R.string.minutes_);
+                        break;
+                    }
+                    case 4: {
+                        timeTxt = getResources().getString(R.string.minutes_);
+                        break;
+                    }
+                    default: {
+                        timeTxt = getResources().getString(R.string.minutes);
+                        break;
+                    }
                 }
-            });
 
-            return;
-        }
+                String displayTime = DateTimeFormatter.format(noxbox.getWorkSchedule().getStartTime().getHourOfDay(), noxbox.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
+                        DateTimeFormatter.format(noxbox.getWorkSchedule().getEndTime().getHourOfDay(), noxbox.getWorkSchedule().getEndTime().getMinuteOfHour());
+                ((TextView) findViewById(R.id.offerTime)).setText("Время действия предложения:");
+                ((TextView) findViewById(R.id.time)).setText(displayTime);
+
+                //TODO (vl) нужно добавить сравнение текущего времени и времени оказания услуги
+                if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+                    ((TextView) findViewById(R.id.travelTypeTitle)).setText("По адресу:");
+                    ((TextView) findViewById(R.id.travelMode)).setText("Ожидаю по адресу:");
+
+                } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
+                    ((TextView) findViewById(R.id.travelTypeTitle)).setText("Через " + String.valueOf(minutes) + " " + timeTxt);
+                    ((TextView) findViewById(R.id.travelMode)).setText("Прибуду на адрес:");
+                    findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
+                    findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startCoordinateActivity();
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 
     private void drawPrice(Noxbox noxbox) {
@@ -215,10 +241,33 @@ public class DetailedActivity extends AppCompatActivity {
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
         ((TextView) findViewById(R.id.priceTitle)).setText(getResources().getString(R.string.priceTxt) + " " + noxbox.getPrice() + " " + getResources().getString(R.string.currency));
         ((TextView) findViewById(R.id.price)).setText(noxbox.getPrice());
-        ((TextView) findViewById(R.id.typeTextInPrice)).setText(noxbox.getType().getName());
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(noxbox.getType().getDescription());
+
+        String description = getResources().getString(noxbox.getType().getDescription());
+        String serviceDescription = "";
+        int countSpace = 0;
+        for(int i = 0; i<description.length();i++){
+            if(description.charAt(i)==' '){
+                countSpace++;
+                if(countSpace > 1){
+                    serviceDescription = serviceDescription.concat(getResources().getString(R.string.ending));
+                    break;
+                }
+            }
+            serviceDescription = serviceDescription.concat(String.valueOf(description.charAt(i)));
+        }
+
+        ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter));
         ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(noxbox.getType().getImage());
         //TODO (vl) create copyButton with lower price
+    }
+
+    private void drawButton(MarketRole role) {
+        if (role == MarketRole.demand) {
+            ((Button) findViewById(R.id.acceptButton)).setText(R.string.proceed);
+        } else if (role == MarketRole.supply) {
+            ((Button) findViewById(R.id.acceptButton)).setText(R.string.order);
+        }
     }
 
     private void drawDropdownElement(int titleId, final int contentId) {
@@ -251,8 +300,8 @@ public class DetailedActivity extends AppCompatActivity {
 
     }
 
-    private void startCoordinateActivity(){
-        startActivity(new Intent(this,CoordinateActivity.class));
+    private void startCoordinateActivity() {
+        startActivity(new Intent(this, CoordinateActivity.class));
     }
 
     private void init() {

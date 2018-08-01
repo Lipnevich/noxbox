@@ -64,6 +64,7 @@
     <string name="yourBalance">Your balance</string>
     <string name="frozenMoney">Temporarily blocked %s</string>
     <string name="dislike">dislike</string>
+    <string name="like">like</string>
     <string name="dislikePrompt">Are you sure you want to dislike?</string>
     <string name="send">Send</string>
     <string name="sendPrompt">Are you sure you want to send your money?</string>
@@ -142,7 +143,28 @@
     <string name="to">to </string>
 
     <string name="availableTime">Available time</string>
-    <string name="rating">Rating</string>
+    <string name="myRating">My rating</string>
     <string name="currency">Waves</string>
     <string name="description">Description</string>
+
+    <!--detailed activity-->
+    <string name="readyToPerform">Ready to perform of service:</string>
+    <string name="wantToGet">I want to get service:</string>
+    <string name="get">I get</string>
+    <string name="perform">I perform</string>
+    <string name="order">To order</string>
+    <string name="proceed">Proceed</string>
+    <string name="dateRegistrationService">Date of publication service</string>
+    <string name="minutes">minutes</string>
+    <string name="minutes_">minutes</string>
+    <string name="minute">minute</string>
+    <string name="willPay">I will pay</string>
+    <string name="waitThrough"> Wait through</string>
+    <string name="arriveVia"> I\'ll arrive via</string>
+    <string name="km">km</string>
+    <string name="travelTime">Travel time</string>
+    <string name="distance">Distance</string>
+    <string name="priceClarificationBefore">Is indicated cost</string>
+    <string name="priceClarificationAfter">performance of the service, the payment will be calculated per minute depending on the actual execution time.</string>
+    <string name="ending">s</string>
 </resources>
