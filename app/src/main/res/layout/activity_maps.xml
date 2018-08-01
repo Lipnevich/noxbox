@@ -51,6 +51,14 @@
         android:src="@drawable/menu" />
 
     <ImageView
+        android:id="@+id/exchange_rate"
+        style="@style/IconButtonStyle"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="13dp"
+        android:src="@drawable/currency" />
+
+    <ImageView
         android:id="@+id/check"
         style="@style/IconButtonStyle"
         android:layout_gravity="start|top"

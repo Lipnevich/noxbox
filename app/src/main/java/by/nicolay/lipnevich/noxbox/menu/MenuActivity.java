@@ -45,6 +45,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ import by.nicolay.lipnevich.noxbox.model.IntentAndKey;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.pages.AuthActivity;
 import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
+import by.nicolay.lipnevich.noxbox.tools.ExchangeRate;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
@@ -67,6 +69,7 @@ public abstract class MenuActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
         ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
@@ -79,6 +82,25 @@ public abstract class MenuActivity extends AppCompatActivity {
 
     private void draw(Profile profile) {
         createMenu(profile);
+
+        if(BuildConfig.DEBUG) {
+            final ExchangeRate.Currency currency = ExchangeRate.Currency.USD;
+
+            ImageView exchangeRateButton = findViewById(R.id.exchange_rate);
+            exchangeRateButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ExchangeRate.wavesTo(currency, new Task<BigDecimal>() {
+                        @Override
+                        public void execute(BigDecimal price) {
+                            popup(MenuActivity.this,
+                                    price.toString() + " " + currency.name() + " per 1 Waves ");
+                        }
+                    });
+                }
+            });
+            exchangeRateButton.setVisibility(View.VISIBLE);
+        }
 
         if(profile.ratingToPercentage() <= MIN_RATE_IN_PERCENTAGE) {
             popup(this,"Low rate!");
