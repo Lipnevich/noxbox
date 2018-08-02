@@ -1,19 +1,24 @@
 package by.nicolay.lipnevich.noxbox.detailed;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,16 +26,29 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
-import by.nicolay.lipnevich.noxbox.tools.DebugMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
-public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 
     private GoogleMap googleMap;
+    private AutoCompleteTextView searchLine;
+    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
+    private GoogleApiClient mGoogleApiClient;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +63,25 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
     }
 
+
+    private void geoLocate() {
+        String searchString = searchLine.getText().toString();
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addressesList = new ArrayList<>();
+        try {
+            addressesList = geocoder.getFromLocationName(searchString, 1);
+        } catch (IOException e) {
+            Crashlytics.logException(e);
+        }
+        if (addressesList.size() > 0) {
+            Address address = addressesList.get(0);
+
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()),15);
+        }
+
+    }
+
+
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
@@ -57,48 +94,52 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                CameraPosition cameraPosition
-                        = new CameraPosition.Builder()
-                        .target(new LatLng(profile.getViewed().getPosition().getLatitude(),profile.getViewed().getPosition().getLongitude()))
-                        .zoom(15)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                googleMap.animateCamera(cameraUpdate);
+                moveCamera(new LatLng(profile.getViewed().getPosition().getLatitude(), profile.getViewed().getPosition().getLongitude()),15);
             }
         });
-        findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY).build(CoordinateActivity.this);
-                    startActivityForResult(intent, 1);
-                } catch (GooglePlayServicesRepairableException e) {
-                    // TODO: Handle the error.
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    // TODO: Handle the error.
-                }
-            }
-        });
-
-
+        init();
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(this, data);
-                ((EditText)findViewById(R.id.search)).setText(place.getName().toString());
-                CameraPosition cameraPosition
-                        = new CameraPosition.Builder()
-                        .target(place.getLatLng())
-                        .zoom(15)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                googleMap.animateCamera(cameraUpdate);
-                return;
-            } else {
-                DebugMessage.popup(this,"Failed search address");
+
+    private void init() {
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(
+                this,
+                mGoogleApiClient,
+                new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136)),
+                null);
+
+        searchLine = ((AutoCompleteTextView) findViewById(R.id.searchInput));
+
+        searchLine.setAdapter(mPlaceAutocompleteAdapter);
+
+        searchLine.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || event.getAction() == KeyEvent.ACTION_DOWN
+                        || event.getAction() == KeyEvent.KEYCODE_ENTER) {
+                    geoLocate();
+
+                }
+
+                return false;
             }
-        }
+        });
+    }
+
+    private void moveCamera(LatLng latLng, float zoom) {
+        CameraPosition cameraPosition
+                = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(zoom)
+                .build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+        googleMap.animateCamera(cameraUpdate);
     }
 }

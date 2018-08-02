@@ -166,4 +166,11 @@
     <string name="priceClarificationBefore">Указана стоимость</string>
     <string name="priceClarificationAfter">исполнения услуги, оплата будет рассчитываться поминутно в зависимости от действительного времени исполнения.</string>
     <string name="ending">а</string>
+    <string name="byAddress">По адресу</string>
+    <string name="search">Enter your address</string>
+    <string name="choosePlace">Choose place</string>
+    <string name="validityOfTheOffer">Validity of the offer</string>
+    <string name="waitingByAddress">I\'m waiting on the address:</string>
+    <string name="across">Across</string>
+    <string name="willArriveAtTheAddress">I will arrive at the address:</string>
 </resources>

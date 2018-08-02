@@ -21,6 +21,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -152,16 +155,20 @@ public class DetailedActivity extends AppCompatActivity {
                 List<Address> addresses;
                 String address = "";
                 String city = "";
+
                 try {
                     addresses = geocoder.getFromLocation(noxbox.getPosition().getLatitude(), noxbox.getPosition().getLongitude(), 1);
                     address = addresses.get(0).getAddressLine(0);
                     city = addresses.get(0).getLocality();
-                } catch (Exception e) {
-                    //TODO display LatLng
+                } catch (IOException e) {
+                    Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
+                    ((TextView) findViewById(R.id.address)).setText(noxbox.getPosition().getLatitude() + " " + noxbox.getPosition().getLongitude());
                 }
+
+
                 if (address.equals("")) {
                     if (city.equals("")) {
-                        //TODO display LatLng
+                        ((TextView) findViewById(R.id.address)).setText(noxbox.getPosition().getLatitude() + " " + noxbox.getPosition().getLongitude());
                     } else {
                         ((TextView) findViewById(R.id.address)).setText(city);
                     }
@@ -181,7 +188,6 @@ public class DetailedActivity extends AppCompatActivity {
                 int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
                 String timeTxt;
                 String distanceTxt = String.valueOf((int) results[0] / 1000) + " " + getResources().getString(R.string.km);
-                Log.e("AAAA", (int) results[0]  + " / " + noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
                 switch (minutes % 10) {
                     case 11: {
                         timeTxt = getResources().getString(R.string.minutes);
@@ -211,17 +217,17 @@ public class DetailedActivity extends AppCompatActivity {
 
                 String displayTime = DateTimeFormatter.format(noxbox.getWorkSchedule().getStartTime().getHourOfDay(), noxbox.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
                         DateTimeFormatter.format(noxbox.getWorkSchedule().getEndTime().getHourOfDay(), noxbox.getWorkSchedule().getEndTime().getMinuteOfHour());
-                ((TextView) findViewById(R.id.offerTime)).setText("Время действия предложения:");
+                ((TextView) findViewById(R.id.offerTime)).setText(R.string.validityOfTheOffer);
                 ((TextView) findViewById(R.id.time)).setText(displayTime);
 
                 //TODO (vl) нужно добавить сравнение текущего времени и времени оказания услуги
                 if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
-                    ((TextView) findViewById(R.id.travelTypeTitle)).setText("По адресу:");
-                    ((TextView) findViewById(R.id.travelMode)).setText("Ожидаю по адресу:");
+                    ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
+                    ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
 
                 } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
-                    ((TextView) findViewById(R.id.travelTypeTitle)).setText("Через " + String.valueOf(minutes) + " " + timeTxt);
-                    ((TextView) findViewById(R.id.travelMode)).setText("Прибуду на адрес:");
+                    ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
+                    ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
                     findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
                     findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
                         @Override
