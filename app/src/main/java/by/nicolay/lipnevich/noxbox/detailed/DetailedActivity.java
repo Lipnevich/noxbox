@@ -47,7 +47,11 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {

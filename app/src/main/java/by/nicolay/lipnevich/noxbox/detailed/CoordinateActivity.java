@@ -1,7 +1,9 @@
 package by.nicolay.lipnevich.noxbox.detailed;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -11,13 +13,20 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
@@ -73,12 +83,12 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         } catch (IOException e) {
             Crashlytics.logException(e);
         }
+
         if (addressesList.size() > 0) {
             Address address = addressesList.get(0);
 
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()),15);
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), 15);
         }
-
     }
 
 
@@ -88,16 +98,37 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         this.googleMap.getUiSettings().setCompassEnabled(false);
         this.googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         this.googleMap.setMyLocationEnabled(true);
         ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                moveCamera(new LatLng(profile.getViewed().getPosition().getLatitude(), profile.getViewed().getPosition().getLongitude()),15);
+                moveCamera(new LatLng(profile.getViewed().getPosition().getLatitude(), profile.getViewed().getPosition().getLongitude()), 15);
             }
         });
+
         init();
+
+        findViewById(R.id.choosePlace).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
+                int mHeight = getApplicationContext().getResources().getDisplayMetrics().heightPixels;
+                Point x_y_points = new Point(mWidth, mHeight);
+                final LatLng latLng = googleMap.getProjection().fromScreenLocation(x_y_points);
+                //TODO (vl) more accurate address determination by center
+                ProfileStorage.listenProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        profile.getViewed().setPosition(new Position().setLongitude(latLng.longitude).setLatitude(latLng.latitude));
+                        finish();
+                        return;
+                    }
+                });
+            }
+        });
     }
 
     private void init() {
@@ -107,6 +138,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
+
         mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(
                 this,
                 mGoogleApiClient,
@@ -114,7 +146,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                 null);
 
         searchLine = ((AutoCompleteTextView) findViewById(R.id.searchInput));
-
+        searchLine.setOnItemClickListener(mAutocompleteClickListener);
         searchLine.setAdapter(mPlaceAutocompleteAdapter);
 
         searchLine.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -133,6 +165,32 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(position);
+            final String placeId = item.getPlaceId();
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient,placeId);
+            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
+            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (in != null) {
+                in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+            }
+        }
+    };
+
+    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
+        @Override
+        public void onResult(@NonNull PlaceBuffer places) {
+            if (!places.getStatus().isSuccess()) {
+                places.release();
+                return;
+            }
+            moveCamera(places.get(0).getLatLng(),15);
+            places.release();
+        }
+    };
+
     private void moveCamera(LatLng latLng, float zoom) {
         CameraPosition cameraPosition
                 = new CameraPosition.Builder()
@@ -141,5 +199,9 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                 .build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         googleMap.animateCamera(cameraUpdate);
+        hideSoftKeyboard();
+    }
+    private void hideSoftKeyboard(){
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 }
