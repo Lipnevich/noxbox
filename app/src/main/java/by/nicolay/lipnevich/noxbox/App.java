@@ -38,7 +38,11 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityPaused(Activity activity) {
-        unregisterReceiver(networkReceiver);
+        try {
+            unregisterReceiver(networkReceiver);
+        } catch (IllegalArgumentException e) {
+            Crashlytics.logException(e);
+        }
         ProfileStorage.stopListen();
     }
 

@@ -1,7 +1,6 @@
 package by.nicolay.lipnevich.noxbox.tools;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -76,7 +75,7 @@ public class ExchangeRate {
             price = BigDecimal.valueOf(json.getJSONArray("bids").getJSONObject(0)
                     .getLong("price"), currency.scale());
         } catch (IOException | JSONException e) {
-            Crashlytics.log(Log.WARN, "Fail to get exchange rate", e.getMessage());
+            Crashlytics.logException(e);
         }
         return price;
     }

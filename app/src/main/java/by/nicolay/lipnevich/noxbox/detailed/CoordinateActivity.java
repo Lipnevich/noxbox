@@ -96,8 +96,9 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 googleMap.animateCamera(cameraUpdate);
                 return;
+            } else {
+                DebugMessage.popup(this,"Failed search address");
             }
         }
-        DebugMessage.popup(this,"Failed search address");
     }
 }

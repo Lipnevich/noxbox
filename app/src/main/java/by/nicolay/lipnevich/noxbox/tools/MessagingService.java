@@ -11,11 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
-import android.util.Log;
-import by.nicolay.lipnevich.noxbox.BuildConfig;
-import by.nicolay.lipnevich.noxbox.R;
-import by.nicolay.lipnevich.noxbox.model.*;
-import by.nicolay.lipnevich.noxbox.pages.ChatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -31,10 +26,21 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
+import by.nicolay.lipnevich.noxbox.BuildConfig;
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.model.Event;
+import by.nicolay.lipnevich.noxbox.model.EventType;
+import by.nicolay.lipnevich.noxbox.model.Notice;
+import by.nicolay.lipnevich.noxbox.model.Push;
+import by.nicolay.lipnevich.noxbox.model.Request;
+import by.nicolay.lipnevich.noxbox.pages.ChatActivity;
+
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 import static by.nicolay.lipnevich.noxbox.Configuration.CURRENCY;
-import static by.nicolay.lipnevich.noxbox.model.EventType.*;
+import static by.nicolay.lipnevich.noxbox.model.EventType.balance;
+import static by.nicolay.lipnevich.noxbox.model.EventType.request;
+import static by.nicolay.lipnevich.noxbox.model.EventType.story;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -212,7 +218,7 @@ public class MessagingService extends FirebaseMessagingService {
                         .error(R.drawable.profile_picture_blank)).submit().get();
             }
         } catch (InterruptedException | ExecutionException e) {
-            Crashlytics.log(Log.WARN, "Fail to load icon for notification", e.getMessage());
+            Crashlytics.logException(e);;
         }
         return null;
     }

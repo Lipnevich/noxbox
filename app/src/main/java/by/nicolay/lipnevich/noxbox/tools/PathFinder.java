@@ -1,7 +1,5 @@
 package by.nicolay.lipnevich.noxbox.tools;
 
-import android.util.Log;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -60,7 +58,7 @@ public class PathFinder {
 
             return Collections.singletonMap(estimation, points).entrySet().iterator().next();
         } catch (IOException | JSONException e) {
-            Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
+            Crashlytics.logException(e);
         }
         return null;
     }
