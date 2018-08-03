@@ -3,7 +3,6 @@ package by.nicolay.lipnevich.noxbox.detailed;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -67,7 +67,6 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 finish();
-                return;
             }
         });
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
@@ -105,7 +104,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         ProfileStorage.listenProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                moveCamera(new LatLng(profile.getViewed().getPosition().getLatitude(), profile.getViewed().getPosition().getLongitude()), 15);
+                moveCamera(profile.getViewed().getPosition().toLatLng(), 15);
             }
         });
 
@@ -114,17 +113,17 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         findViewById(R.id.choosePlace).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int mWidth = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
-                int mHeight = getApplicationContext().getResources().getDisplayMetrics().heightPixels;
-                Point x_y_points = new Point(mWidth, mHeight);
-                final LatLng latLng = googleMap.getProjection().fromScreenLocation(x_y_points);
-                //TODO (vl) more accurate address determination by center
+
+                final LatLng latLng = googleMap.getCameraPosition().target;
+                if(latLng == null){
+                    Crashlytics.log(Log.ERROR,this.getClass().getSimpleName(),"Empty camera position on google maps");
+                    return;
+                }
                 ProfileStorage.listenProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
-                        profile.getViewed().setPosition(new Position().setLongitude(latLng.longitude).setLatitude(latLng.latitude));
+                        profile.getViewed().setPosition(Position.from(latLng));
                         finish();
-                        return;
                     }
                 });
             }
