@@ -179,6 +179,8 @@ public class Profile implements Serializable {
         return this;
     }
 
+
+
     @Exclude
     public int ratingToPercentage() {
         int likes = 0;

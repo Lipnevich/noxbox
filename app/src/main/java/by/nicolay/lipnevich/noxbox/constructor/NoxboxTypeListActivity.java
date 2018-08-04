@@ -6,13 +6,14 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+
+import java.util.Arrays;
+import java.util.List;
+
 import by.nicolay.lipnevich.noxbox.model.NoxboxType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class NoxboxTypeListActivity extends ListActivity {
     private List<NoxboxType> typeList;
@@ -23,7 +24,7 @@ public class NoxboxTypeListActivity extends ListActivity {
         typeList = Arrays.asList(NoxboxType.values());
         ArrayAdapter<NoxboxType> itemArrayAdapter = new NoxboxTypeAdapter(this, typeList);
         setListAdapter(itemArrayAdapter);
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);

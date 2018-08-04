@@ -2,13 +2,19 @@ package by.nicolay.lipnevich.noxbox.pages;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import by.nicolay.lipnevich.noxbox.R;
+import by.nicolay.lipnevich.noxbox.constructor.ConstructorActivity;
 import by.nicolay.lipnevich.noxbox.detailed.DetailedActivity;
 import by.nicolay.lipnevich.noxbox.model.Comment;
 import by.nicolay.lipnevich.noxbox.model.MarketRole;
@@ -38,7 +44,15 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
 
     @Override
     public void draw(Profile profile) {
-        Noxbox noxbox = new Noxbox();
+        activity.findViewById(R.id.noxboxConstructorButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.noxboxConstructorButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.startActivity(new Intent(activity, ConstructorActivity.class));
+            }
+        });
+
+        final Noxbox noxbox = new Noxbox();
         noxbox.setTimeCreated(System.currentTimeMillis());
         noxbox.setRole(MarketRole.demand);
         Profile owner = new Profile().setId("1231").setTravelMode(TravelMode.none);
@@ -97,11 +111,25 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._41, NoxboxTime._47));
         createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
+
+        if(profile.getPosition() != null){
+            CameraPosition cameraPosition
+                    = new CameraPosition.Builder()
+                    .target(profile.getPosition().toLatLng())
+                    .zoom(15)
+                    .build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+            googleMap.animateCamera(cameraUpdate);
+        }
+
+        //TODO тестовый нокс бокс
+        profile.setCurrent(noxbox);
     }
 
     @Override
     public void clear() {
         googleMap.clear();
+        activity.findViewById(R.id.noxboxConstructorButton).setVisibility(View.GONE);
     }
 
 
@@ -120,15 +148,15 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 profile.setViewed((Noxbox) marker.getTag());
-                //TODO (vl) here should be sending position to current profile
-                profile.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
+                profile.setPosition(Position.from(googleMap.getCameraPosition().target));
                 activity.startActivity(new Intent(activity, DetailedActivity.class));
             }
         });
         return false;
     }
+
 }

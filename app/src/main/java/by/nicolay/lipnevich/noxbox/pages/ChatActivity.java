@@ -89,7 +89,7 @@ public class ChatActivity extends AppCompatActivity {
                     getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
         }});
 
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);

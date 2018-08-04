@@ -71,7 +71,7 @@ public abstract class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_maps);
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
@@ -255,7 +255,7 @@ public abstract class MenuActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if(requestCode == WalletActivity.CODE) {
-            ProfileStorage.listenProfile(new Task<Profile>() {
+            ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     draw(profile);

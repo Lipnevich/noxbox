@@ -14,13 +14,11 @@
 package by.nicolay.lipnevich.noxbox;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -49,21 +47,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import by.nicolay.lipnevich.noxbox.constructor.ConstructorActivity;
 import by.nicolay.lipnevich.noxbox.menu.MenuActivity;
 import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Position;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 import by.nicolay.lipnevich.noxbox.model.TravelMode;
-import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.pages.AvailableServices;
+import by.nicolay.lipnevich.noxbox.pages.Requesting;
 import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
+import by.nicolay.lipnevich.noxbox.state.State;
 import by.nicolay.lipnevich.noxbox.tools.ConfirmationMessage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
 
 import static by.nicolay.lipnevich.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static by.nicolay.lipnevich.noxbox.tools.PathFinder.getPathPoints;
-import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 
 public class MapActivity extends MenuActivity implements
         OnMapReadyCallback,
@@ -110,12 +107,7 @@ public class MapActivity extends MenuActivity implements
                 scaleMarkers();
             }
         });
-        ProfileStorage.listenProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                draw(profile);
-            }
-        });
+        draw();
     }
 
     protected boolean checkLocationPermission() {
@@ -144,10 +136,16 @@ public class MapActivity extends MenuActivity implements
                     if (checkLocationPermission()) {
                         return;
                     }
-                    getMyPosition();
+                    ProfileStorage.readProfile(new Task<Profile>() {
+                        @Override
+                        public void execute(Profile profile) {
+                            profile.setPosition(getCurrentPosition());
+                            ProfileStorage.fireProfile();
+                        }
+                    });
                 }
             });
-            //googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
             if (!visible) {
                 return;
             }
@@ -162,19 +160,6 @@ public class MapActivity extends MenuActivity implements
             layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layout.setMargins(0, 0, 0, dpToPx(8));
             locationButton.setLayoutParams(layout);
-        }
-        findViewById(R.id.noxboxConstructorButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MapActivity.this, ConstructorActivity.class));
-            }
-        });
-    }
-
-    private void getMyPosition() {
-        Position position = getCurrentPosition();
-        if (position != null && googleMap != null) {
-            googleMap.moveCamera(newLatLngZoom(position.toLatLng(), 15));
         }
     }
 
@@ -194,6 +179,13 @@ public class MapActivity extends MenuActivity implements
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     visibleCurrentLocation(true);
+                    ProfileStorage.readProfile(new Task<Profile>() {
+                        @Override
+                        public void execute(Profile profile) {
+                            profile.setPosition(getCurrentPosition());
+                            ProfileStorage.fireProfile();
+                        }
+                    });
                 }
             }
         }
@@ -201,7 +193,12 @@ public class MapActivity extends MenuActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        getMyPosition();
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                profile.setPosition(getCurrentPosition());
+            }
+        });
     }
 
 
@@ -220,6 +217,7 @@ public class MapActivity extends MenuActivity implements
         }
         googleApiClient.connect();
         scaleMarkers();
+        draw();
         super.onResume();
     }
 
@@ -405,27 +403,38 @@ public class MapActivity extends MenuActivity implements
 
     private State currentState;
 
-    private void draw(@NonNull Profile profile) {
-        State newState = getFragment(profile);
-        if (newState != currentState && currentState != null) {
-            currentState.clear();
-        }
-        currentState = newState;
-        currentState.draw(profile);
+    private void draw() {
+        ProfileStorage.listenProfile(this.getClass().getName(),new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                if(googleMap == null) return;
+                State newState = getFragment(profile);
+                if (newState != currentState && currentState != null) {
+                    currentState.clear();
+                }
+                currentState = newState;
+                newState.draw(profile);
+            }
+        });
     }
 
-    public State getFragment(Profile profile) {
-        if (profile.getCurrent() == null) return new AvailableServices(googleMap, this);
-//    created,
-//    requesting,
-//    accepting,
-//    moving,
-//    watching,
-//    performing,
-//    enjoying,
-//    completed;
-
+    public State getFragment(final Profile profile) {
+        if (profile.getCurrent() == null || profile.getCurrent().getTimeCreated() == null) {
+            return new AvailableServices(googleMap, this);
+        }
+        //    created,
+        //    requesting,
+        //    accepting,
+        //    moving,
+        //    watching,
+        //    performing,
+        //    enjoying,
+        //    completed;
+        if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() == null && profile.getCurrent().getTimeCanceled() == null) {
+            return new Requesting(googleMap, this);
+        }
         return new AvailableServices(googleMap, this);
     }
-
 }
+
+

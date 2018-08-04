@@ -58,7 +58,7 @@ public class ConstructorActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
                 if (profile.getCurrent() != null) {
@@ -302,7 +302,7 @@ public class ConstructorActivity extends AppCompatActivity{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {
-                ProfileStorage.listenProfile(new Task<Profile>() {
+                ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         profile.getCurrent().getOwner().setTravelMode(TravelMode.none);

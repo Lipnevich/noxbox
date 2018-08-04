@@ -101,7 +101,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         this.googleMap.getUiSettings().setCompassEnabled(false);
         this.googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         this.googleMap.setMyLocationEnabled(true);
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 moveCamera(profile.getViewed().getPosition().toLatLng(), 15);
@@ -119,7 +119,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                     Crashlytics.log(Log.ERROR,this.getClass().getSimpleName(),"Empty camera position on google maps");
                     return;
                 }
-                ProfileStorage.listenProfile(new Task<Profile>() {
+                ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         profile.getViewed().setPosition(Position.from(latLng));
@@ -200,6 +200,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         googleMap.animateCamera(cameraUpdate);
         hideSoftKeyboard();
     }
+
     private void hideSoftKeyboard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }

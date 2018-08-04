@@ -32,8 +32,19 @@
 
     <Button
         android:id="@+id/cancelButton"
-        style="@style/MainButtonStyle"
-        android:text="@string/cancelText" />
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="54dp"
+        android:layout_marginStart="54dp"
+        android:background="@drawable/button_corner"
+        android:enabled="true"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        android:text="@string/cancelText"
+        />
 
     <ImageView
         android:id="@+id/pointerImage"
@@ -123,5 +134,5 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/add"
-        android:visibility="visible" />
+        android:visibility="gone" />
 </fragment>

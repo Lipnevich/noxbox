@@ -52,7 +52,7 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 init();
@@ -68,18 +68,6 @@ public class DetailedActivity extends AppCompatActivity {
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
         drawButton(profile.getViewed().getRole());
-        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProfileStorage.listenProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        profile.setCurrent(profile.getViewed());
-                        finish();
-                    }
-                });
-            }
-        });
     }
 
     //TODO (vl) make textView instead title
@@ -152,7 +140,7 @@ public class DetailedActivity extends AppCompatActivity {
         ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
         ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
 
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
@@ -278,6 +266,20 @@ public class DetailedActivity extends AppCompatActivity {
         } else if (role == MarketRole.supply) {
             ((Button) findViewById(R.id.acceptButton)).setText(R.string.order);
         }
+
+        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileStorage.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        profile.setCurrent(profile.getViewed());
+                        profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+                        finish();
+                    }
+                });
+            }
+        });
     }
 
     private void drawDropdownElement(int titleId, final int contentId) {
@@ -312,6 +314,7 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void startCoordinateActivity() {
         startActivity(new Intent(this, CoordinateActivity.class));
+
     }
 
     private void init() {
@@ -322,7 +325,7 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 profile.setViewed(null);

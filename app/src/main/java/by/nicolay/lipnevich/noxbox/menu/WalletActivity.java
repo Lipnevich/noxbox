@@ -9,7 +9,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.math.BigDecimal;
+
 import by.nicolay.lipnevich.noxbox.R;
 import by.nicolay.lipnevich.noxbox.model.EventType;
 import by.nicolay.lipnevich.noxbox.model.Profile;
@@ -18,8 +25,6 @@ import by.nicolay.lipnevich.noxbox.model.Wallet;
 import by.nicolay.lipnevich.noxbox.state.Firebase;
 import by.nicolay.lipnevich.noxbox.state.ProfileStorage;
 import by.nicolay.lipnevich.noxbox.tools.Task;
-
-import java.math.BigDecimal;
 
 import static by.nicolay.lipnevich.noxbox.Configuration.CURRENCY;
 import static by.nicolay.lipnevich.noxbox.tools.MoneyFormatter.format;
@@ -41,7 +46,7 @@ public class WalletActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        ProfileStorage.listenProfile(new Task<Profile>() {
+        ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 recalculateBalance(profile);
