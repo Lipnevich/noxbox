@@ -40,12 +40,14 @@ public class Requesting implements State {
             }
         });
         moveCamera(profile.getCurrent().getPosition().toLatLng(),17);
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
     }
 
     @Override
     public void clear() {
         googleMap.clear();
         activity.findViewById(R.id.cancelButton).setVisibility(View.GONE);
+        googleMap.getUiSettings().setScrollGesturesEnabled(true);
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
