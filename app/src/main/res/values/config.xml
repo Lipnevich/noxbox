@@ -1,11 +1,11 @@
 <resources>
     <!--used for google map-->
     <string name="google_maps_key" translatable="false">
-        AIzaSyAHjXWdZSYG8Wz7EG5D5R4p61X77VFUi5g
+        AIzaSyBQ0cNnA8vGwCBCvnPu2ERTnB7ZOhxUvgI
     </string>
 
     <!--used for path finding in http get requests to directions google api-->
     <string name="google_directions_key" translatable="false">
-        AIzaSyAZGVVUasvDETFaNpWug0p9IfUzcsRlFIY
+        AIzaSyArShVxHFrGDuU_mTVMddB1ToPTsMjjrb0
     </string>
 </resources>
