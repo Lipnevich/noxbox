@@ -117,7 +117,6 @@ public class MapActivity extends MenuActivity implements
 
     protected void visibleCurrentLocation(boolean visible) {
         locationButton = findViewById(R.id.locationButton);
-        // TODO (nli) launch gps and ask permissions after button pressed only
         if (checkLocationPermission()) {
             // Permission to access the location is missing.
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -420,7 +419,7 @@ public class MapActivity extends MenuActivity implements
 
     public State getFragment(final Profile profile) {
         if (profile.getCurrent() == null || profile.getCurrent().getTimeCreated() == null) {
-            return new AvailableServices(googleMap, this);
+            return new AvailableServices(googleMap,googleApiClient, this);
         }
         //    created,
         //    requesting,
@@ -433,7 +432,7 @@ public class MapActivity extends MenuActivity implements
         if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() == null && profile.getCurrent().getTimeCanceled() == null) {
             return new Requesting(googleMap, this);
         }
-        return new AvailableServices(googleMap, this);
+        return new AvailableServices(googleMap,googleApiClient, this);
     }
 }
 

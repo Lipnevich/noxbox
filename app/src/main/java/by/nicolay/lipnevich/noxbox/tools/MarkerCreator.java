@@ -1,19 +1,14 @@
 package by.nicolay.lipnevich.noxbox.tools;
 
-import android.animation.IntEvaluator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -22,7 +17,15 @@ import by.nicolay.lipnevich.noxbox.model.Noxbox;
 import by.nicolay.lipnevich.noxbox.model.Profile;
 
 public class MarkerCreator {
-    public static int bitmapCenter;
+
+    public static Marker createPositionMarker(Profile profile, LatLng position, GoogleMap googleMap){
+        Marker marker = googleMap.addMarker(new MarkerOptions()
+                .position(position)
+                .icon(BitmapDescriptorFactory.fromResource(profile.getTravelMode().getImage()))
+                .anchor(0.5f, 1f));
+        return marker;
+    }
+
     public static Marker createCustomMarker(Noxbox noxbox, Profile profile, GoogleMap googleMap, Activity activity) {
         switch (noxbox.getRole()) {
             case supply:
@@ -100,35 +103,26 @@ public class MarkerCreator {
     }
 
 
-    public static void addPulsatingEffect(GoogleMap googleMap, Profile profile,Activity activity){
-//        MapRipple mapRipple = new MapRipple(googleMap, profile.getPosition().toLatLng(), activity)
-//                .withNumberOfRipples(3)
-//                .withFillColor(R.color.primary)
-//                .withStrokeColor(R.color.secondary)
-//                .withStrokewidth(10)      // 10dp
-//                .withDistance(2000)      // 2000 metres radius
-//                .withRippleDuration(12000)    //12000ms
-//                .withTransparency(0.5f);
-//        mapRipple.startRippleMapAnimation();
-        final Circle circle = googleMap.addCircle(new CircleOptions().center(profile.getCurrent().getPosition().toLatLng())
-                .strokeWidth(12)
-                .strokeColor(Color.GREEN)
-                .radius(250));
-
-        ValueAnimator valueAnimator = new ValueAnimator();
-        valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        valueAnimator.setRepeatMode(ValueAnimator.RESTART);  /* PULSE */
-        valueAnimator.setIntValues(0, 250);
-        valueAnimator.setDuration(1000);
-        valueAnimator.setEvaluator(new IntEvaluator());
-        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                float animatedFraction = valueAnimator.getAnimatedFraction();
-                circle.setRadius(animatedFraction * 250);
-            }
-        });
-        valueAnimator.start();
-    }
+//    public static void addPulsatingEffect(GoogleMap googleMap, Profile profile){
+//        final Circle circle = googleMap.addCircle(new CircleOptions().center(profile.getCurrent().getPosition().toLatLng())
+//                .strokeWidth(12)
+//                .strokeColor(Color.GREEN)
+//                .radius(250));
+//
+//        ValueAnimator valueAnimator = new ValueAnimator();
+//        valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
+//        valueAnimator.setRepeatMode(ValueAnimator.RESTART);  /* PULSE */
+//        valueAnimator.setIntValues(0, 250);
+//        valueAnimator.setDuration(1000);
+//        valueAnimator.setEvaluator(new IntEvaluator());
+//        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+//        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                float animatedFraction = valueAnimator.getAnimatedFraction();
+//                circle.setRadius(animatedFraction * 250);
+//            }
+//        });
+//        valueAnimator.start();
+//    }
 }

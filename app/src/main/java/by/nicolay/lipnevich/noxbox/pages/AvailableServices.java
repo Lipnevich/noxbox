@@ -1,9 +1,14 @@
 package by.nicolay.lipnevich.noxbox.pages;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,10 +40,12 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
 
     private Map<String, Marker> markers = new HashMap<>();
     private GoogleMap googleMap;
+    private GoogleApiClient googleApiClient;
     private Activity activity;
 
-    public AvailableServices(GoogleMap googleMap, final Activity activity) {
+    public AvailableServices(GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
         this.googleMap = googleMap;
+        this.googleApiClient = googleApiClient;
         this.activity = activity;
     }
 
@@ -57,11 +64,9 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox.setRole(MarketRole.demand);
         Profile owner = new Profile().setId("1231").setTravelMode(TravelMode.none);
         Rating rating = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
-
         rating.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный напарник!", System.currentTimeMillis(), true));
         rating.getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
         rating.getComments().put("2", new Comment("2", "Выносливость бы повысить, слишком быстро выдыхается во время кросса.", System.currentTimeMillis(), false));
-
         owner.getDemandsRating().put(NoxboxType.sportCompanion.name(), rating);
         noxbox.setOwner(owner);
         noxbox.setId("12311");
@@ -88,13 +93,11 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox1.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         noxbox1.setType(NoxboxType.plumber);
         noxbox1.setWorkSchedule(new WorkSchedule());
-
         createMarker(profile, noxbox1);
 
         Noxbox noxbox2 = new Noxbox();
         noxbox2.setTimeCreated(System.currentTimeMillis());
         noxbox2.setRole(MarketRole.supply);
-
         Profile owner2 = new Profile().setId("1238").setTravelMode(TravelMode.walking);
         Rating rating2 = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
         rating2.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный музыкант!", System.currentTimeMillis(), true));
@@ -102,7 +105,6 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         rating2.getComments().put("2", new Comment("2", "Безжалостный музыкант! Всю ночь у костра бренчал, да ещё и песни дьвольские не пел, а рычал!!!", System.currentTimeMillis(), false));
         owner2.getSuppliesRating().put(NoxboxType.musician.name(), rating2);
         noxbox2.setOwner(owner2);
-
         noxbox2.setId("12313");
         noxbox2.setEstimationTime("1600");
         noxbox2.setPrice("25");
@@ -112,7 +114,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         createMarker(profile, noxbox2);
         googleMap.setOnMarkerClickListener(this);
 
-        if(profile.getPosition() != null){
+        if (profile.getPosition() != null) {
             CameraPosition cameraPosition
                     = new CameraPosition.Builder()
                     .target(profile.getPosition().toLatLng())
@@ -152,7 +154,15 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
             @Override
             public void execute(Profile profile) {
                 profile.setViewed((Noxbox) marker.getTag());
-                profile.setPosition(Position.from(googleMap.getCameraPosition().target));
+                //TODO (vl) позиция камеры может быть отдаленна от настоящего местоположения,
+                //TODO (vl) таким образом, следующая строчка кода может привести к ошибочному расчёту местоположения пользователя
+                //TODO (vl) введя тем самым в заблуждение контрастирующих пользователей
+                //profile.setPosition(Position.from(googleMap.getCameraPosition().target));
+                if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    activity.startActivity(new Intent(activity, DetailedActivity.class));
+                    return;
+                }
+                profile.setPosition(Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient)));
                 activity.startActivity(new Intent(activity, DetailedActivity.class));
             }
         });

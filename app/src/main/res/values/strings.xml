@@ -174,4 +174,5 @@
     <string name="waitingByAddress">I\'m waiting on the address:</string>
     <string name="across">Across</string>
     <string name="willArriveAtTheAddress">I will arrive at the address:</string>
+    <string name="connectionWithInitiator">Идёт соединение с заказчиком, пожалуйста ожидайте</string>
 </resources>

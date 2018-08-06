@@ -30,6 +30,37 @@
         style="@style/MainButtonStyle"
         android:text="@string/completeText" />
 
+    <LinearLayout
+        android:id="@+id/blinkingInfoLayout"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="center|top"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:background="@drawable/requesting_progress_list">
+        <TextView
+            android:id="@+id/blinkingInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical|start"
+            android:text="@string/connectionWithInitiator"
+            android:textColor="@color/secondary"
+            android:textSize="@dimen/text_size_secondary"
+            android:layout_weight="5">
+        </TextView>
+        <ProgressBar
+            android:id="@+id/circular_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:indeterminate="false"
+            android:progressDrawable="@drawable/circular_progress"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="match_parent"
@@ -43,8 +74,7 @@
         android:gravity="center_horizontal|center_vertical"
         android:textSize="18sp"
         android:textStyle="normal"
-        android:text="@string/cancelText"
-        />
+        android:text="@string/cancelText" />
 
     <ImageView
         android:id="@+id/pointerImage"
@@ -135,4 +165,6 @@
         android:focusable="true"
         android:src="@drawable/add"
         android:visibility="gone" />
+
+
 </fragment>
