@@ -30,6 +30,7 @@
         style="@style/MainButtonStyle"
         android:text="@string/completeText" />
 
+    <!--Requesting-->
     <LinearLayout
         android:id="@+id/blinkingInfoLayout"
         android:layout_width="match_parent"
@@ -40,24 +41,62 @@
         android:background="@drawable/requesting_progress_list">
         <TextView
             android:id="@+id/blinkingInfo"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:gravity="center_vertical|start"
             android:text="@string/connectionWithInitiator"
-            android:textColor="@color/secondary"
+            android:textColor="@color/primary"
             android:textSize="@dimen/text_size_secondary"
-            android:layout_weight="5">
+            android:layout_weight="4">
         </TextView>
-        <ProgressBar
-            android:id="@+id/circular_progress_bar"
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_centerInParent="true"
+                android:src="@drawable/close"/>
+            <ProgressBar
+                android:id="@+id/circular_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/requestTimeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="68dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:indeterminate="false"
-            android:progressDrawable="@drawable/circular_progress"
-            android:layout_weight="1"/>
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/text_size"
+            android:textColor="@color/text_color_secondary"
+            android:text="@string/travelTime"
+           />
+        <TextView
+            android:id="@+id/requestTravelTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="2dp"
+            android:textSize="@dimen/text_title_large"
+            android:textColor="@color/primary"
+            />
     </LinearLayout>
 
 
@@ -75,6 +114,7 @@
         android:textSize="18sp"
         android:textStyle="normal"
         android:text="@string/cancelText" />
+    <!--Requesting-->
 
     <ImageView
         android:id="@+id/pointerImage"
@@ -165,6 +205,5 @@
         android:focusable="true"
         android:src="@drawable/add"
         android:visibility="gone" />
-
 
 </fragment>

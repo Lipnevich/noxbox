@@ -26,6 +26,11 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="NoActionBarMap" parent="@style/AppTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
     <style name="MainButtonStyle" parent="Widget.AppCompat.Button.Colored">
         <item name="android:background">@color/primary</item>
         <item name="android:textColor">@color/secondary</item>

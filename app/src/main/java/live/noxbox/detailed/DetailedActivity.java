@@ -318,7 +318,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void init() {
-        //TODO need find background picture for all types..
+        //TODO (vl) need find background picture for all types..
         // mBackImageTypeView = (ImageView) findViewById(R.id.backgroundImageTypeView);
     }
 

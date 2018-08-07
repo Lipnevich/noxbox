@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MapActivity"
-                  android:theme="@style/NoActionBar"/>
+                  android:theme="@style/NoActionBarMap"/>
         <activity android:name=".constructor.ConstructorActivity"
             android:parentActivityName=".MapActivity"
             android:windowSoftInputMode="stateHidden"/>

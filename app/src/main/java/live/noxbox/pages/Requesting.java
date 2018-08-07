@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
-import live.noxbox.tools.TravelCalculation;
+import live.noxbox.tools.PathCalculation;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
@@ -34,8 +34,17 @@ public class Requesting implements State {
     @Override
     public void draw(final Profile profile) {
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+        activity.findViewById(R.id.requestTimeLayout).setVisibility(View.VISIBLE);
+//        activity.findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
+//        activity.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                profile.getCurrent().setTimeRequested(null);
+//                clear();
+//                fireProfile();
+//            }
+//        });
+        activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeRequested(null);
@@ -43,7 +52,7 @@ public class Requesting implements State {
                 fireProfile();
             }
         });
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        //googleMap.getUiSettings().setScrollGesturesEnabled(false);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.exchange_rate).setVisibility(View.GONE);
@@ -62,7 +71,9 @@ public class Requesting implements State {
 
         profile.getViewed().setParty(profile);
 
-        TravelCalculation.createRequestPoints(profile.getCurrent(), googleMap, activity);
+        PathCalculation.createRequestPoints(profile.getCurrent(), googleMap, activity);
+
+
     }
 
 
@@ -70,8 +81,9 @@ public class Requesting implements State {
     public void clear() {
         googleMap.clear();
         activity.findViewById(R.id.cancelButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.requestTravelTime).setVisibility(View.GONE);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.GONE);
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
+        //googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.exchange_rate).setVisibility(View.VISIBLE);
@@ -92,56 +104,6 @@ public class Requesting implements State {
         googleMap.animateCamera(cameraUpdate);
     }
 
-//    public String requestDirection(String requestUrl) throws IOException {
-//        String responseString = "";
-//        InputStream inputStream = null;
-//        HttpURLConnection httpURLConnection = null;
-//        try {
-//            URL url = new URL(requestUrl);
-//            httpURLConnection = (HttpURLConnection) url.openConnection();
-//            httpURLConnection.connect();
-//
-//            inputStream = httpURLConnection.getInputStream();
-//            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-//            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-//
-//            StringBuffer stringBuffer = new StringBuffer();
-//            String line = "";
-//            while ((line = bufferedReader.readLine()) != null) {
-//                stringBuffer.append(line);
-//            }
-//            responseString = stringBuffer.toString();
-//            bufferedReader.close();
-//            inputStreamReader.close();
-//        } catch (Exception e) {
-//            Log.e("requestDirection", e.getMessage());
-//        } finally {
-//            if (inputStream != null) {
-//                inputStream.close();
-//            }
-//            httpURLConnection.disconnect();
-//        }
-//        return responseString;
-//    }
-//
-//    public class TaskRequestDirections extends AsyncTask<String, Void, String> {
-//        @Override
-//        protected String doInBackground(String... strings) {
-//            String responseString = "";
-//            try {
-//                responseString = requestDirection(strings[0])
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            return responseString;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//            //JSOn parser
-//        }
-//    }
+
 
 }
