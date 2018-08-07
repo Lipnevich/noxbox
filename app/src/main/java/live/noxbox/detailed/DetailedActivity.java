@@ -275,6 +275,7 @@ public class DetailedActivity extends AppCompatActivity {
                     public void execute(Profile profile) {
                         profile.setCurrent(profile.getViewed());
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+                        profile.getCurrent().setParty(profile.notPublicInfo());
                         finish();
                     }
                 });

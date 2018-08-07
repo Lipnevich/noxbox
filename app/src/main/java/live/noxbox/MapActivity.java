@@ -17,7 +17,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -32,15 +31,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,7 +55,6 @@ import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
-import static live.noxbox.tools.PathFinder.getPathPoints;
 
 public class MapActivity extends MenuActivity implements
         OnMapReadyCallback,
@@ -267,47 +261,7 @@ public class MapActivity extends MenuActivity implements
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-    }
-
-    protected void drawPath(final Noxbox noxbox) {
-        // TODO (nli) use icon for noxbox type
-
-        AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>> asyncTask = new AsyncTask<Void, Void, Map.Entry<Integer, List<LatLng>>>() {
-            @Override
-            protected Map.Entry<Integer, List<LatLng>> doInBackground(Void... params) {
-                return getPathPoints(noxbox.getPerformer().getPosition(), noxbox.getPayer().getPosition(),
-                        noxbox.getPerformer().getTravelMode(), getResources().getString(R.string.google_directions_key));
-            }
-
-            @Override
-            protected void onPostExecute(Map.Entry<Integer, List<LatLng>> responce) {
-                if (pathes.containsKey(noxbox.getPerformer().getId())) {
-                    pathes.remove(noxbox.getPerformer().getId()).remove();
-                }
-
-                List<LatLng> points;
-                if (responce != null) {
-                    points = responce.getValue();
-                    // TODO (nli) show time on the map
-                } else {
-                    // TODO (nli) draw curve
-                    points = new ArrayList<>();
-                    points.add(new LatLng(noxbox.getPerformer().getPosition().getLatitude(), noxbox.getPerformer().getPosition().getLongitude()));
-                    points.add(new LatLng(noxbox.getPayer().getPosition().getLatitude(), noxbox.getPayer().getPosition().getLongitude()));
-                }
-
-                Polyline polyline = googleMap.addPolyline(new PolylineOptions()
-                        .color(ContextCompat.getColor(getApplicationContext(), R.color.primary))
-                        .width(11)
-                        .pattern(Arrays.asList((PatternItem) new Dot()))
-                        .addAll(points));
-                pathes.put(noxbox.getPerformer().getId(), polyline);
-                focus(noxbox.getPerformer().getId(), noxbox.getPayer().getId());
-            }
-        };
-        asyncTask.execute();
-    }
+    public void onConnectionSuspended(int i) { }
 
     public Position getCameraPosition() {
         LatLng latLng = googleMap.getCameraPosition().target;

@@ -15,7 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
-import live.noxbox.tools.PathCalculation;
+import live.noxbox.tools.PathFinder;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
@@ -34,16 +34,6 @@ public class Requesting implements State {
     @Override
     public void draw(final Profile profile) {
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.requestTimeLayout).setVisibility(View.VISIBLE);
-//        activity.findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
-//        activity.findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                profile.getCurrent().setTimeRequested(null);
-//                clear();
-//                fireProfile();
-//            }
-//        });
         activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,7 +42,7 @@ public class Requesting implements State {
                 fireProfile();
             }
         });
-        //googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.exchange_rate).setVisibility(View.GONE);
@@ -71,9 +61,7 @@ public class Requesting implements State {
 
         profile.getViewed().setParty(profile);
 
-        PathCalculation.createRequestPoints(profile.getCurrent(), googleMap, activity);
-
-
+        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
     }
 
 
@@ -83,7 +71,7 @@ public class Requesting implements State {
         activity.findViewById(R.id.cancelButton).setVisibility(View.GONE);
         activity.findViewById(R.id.requestTravelTime).setVisibility(View.GONE);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.GONE);
-        //googleMap.getUiSettings().setScrollGesturesEnabled(true);
+        googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.exchange_rate).setVisibility(View.VISIBLE);

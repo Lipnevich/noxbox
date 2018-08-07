@@ -1,9 +1,16 @@
 package live.noxbox.tools;
 
-import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
+import android.app.Activity;
+import android.os.AsyncTask;
+import android.view.View;
+import android.widget.TextView;
+
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,90 +18,181 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+import live.noxbox.R;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.TravelMode;
 
 public class PathFinder {
 
-    public static Map.Entry<Integer, List<LatLng>> getPathPoints(final Position performer, final Position payer,
-                                                                 TravelMode travelMode, String key) {
-        String url = String.format(Locale.US, "https://maps.googleapis.com/maps/api/directions/json" +
-                        "?origin=%f,%f&destination=%f,%f&sensor=false&mode=%s&alternatives=true&key=%s",
-                performer.getLatitude(),
-                performer.getLongitude(),
-                payer.getLatitude(),
-                payer.getLongitude(),
+
+    public static void createRequestPoints(Noxbox noxbox, GoogleMap googleMap, Activity activity) {
+        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+            MarkerCreator.createPositionMarker(noxbox.getParty(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+            MarkerCreator.createCustomMarker(noxbox, noxbox.getOwner(), googleMap, activity);
+            createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+        } else {
+            MarkerCreator.createPositionMarker(noxbox.getOwner(), noxbox.getPosition().toLatLng(), googleMap);
+            MarkerCreator.createCustomMarker(noxbox, noxbox.getParty(), googleMap, activity);
+            createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getOwner().getTravelMode(), activity, googleMap);
+        }
+
+    }
+
+    private static final String key = "AIzaSyArShVxHFrGDuU_mTVMddB1ToPTsMjjrb0";
+
+    private static void createPathBetweenPoints(Position start, Position end, TravelMode travelMode, Activity activity, GoogleMap googleMap) {
+        new ParserTask(activity, googleMap).execute(String.format(Locale.US, "https://maps.googleapis.com/maps/api/directions/json" +
+                        "?origin=%f,%f&destination=%f,%f&sensor=false&mode=%s&alternatives=false&key=%s",
+                start.getLatitude(),
+                start.getLongitude(),
+                end.getLatitude(),
+                end.getLongitude(),
                 travelMode.toString(),
-                key);
+                key));
+        // Start downloading json data from Google Directions API
 
-        try {
-            InputStream is = new URL(url).openConnection().getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+    }
+
+    private static class Path {
+        int timeInMinutes;
+        List<LatLng> points = new ArrayList<>();
+    }
+
+    private static class ParserTask extends AsyncTask<String, Integer, Path> {
+        Activity activity;
+        GoogleMap googleMap;
+
+        public ParserTask(Activity activity, GoogleMap googleMap) {
+            this.activity = activity;
+            this.googleMap = googleMap;
+        }
+
+        @Override
+        protected Path doInBackground(String... jsonData) {
+            try {
+                return parse(readUrl(jsonData[0]));
+            } catch (JSONException | IOException e) {
+                Crashlytics.logException(e);
             }
-            is.close();
-
-            JSONObject json = new JSONObject(sb.toString());
-            JSONArray routeArray = json.getJSONArray("routes");
-            JSONObject routes = routeArray.getJSONObject(0);
-            Integer estimation = (Integer) routes.getJSONArray("legs")
-                    .getJSONObject(0)
-                    .getJSONObject("duration")
-                    .get("value");
-
-            JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
-            String encodedString = overviewPolylines.getString("points");
-            List<LatLng> points = decodePoly(encodedString);
-
-            return Collections.singletonMap(estimation, points).entrySet().iterator().next();
-        } catch (IOException | JSONException e) {
-            Crashlytics.logException(e);
-        }
-        return null;
-    }
-
-    private static List<LatLng> decodePoly(String encoded) {
-
-        List<LatLng> poly = new ArrayList<LatLng>();
-        int index = 0, len = encoded.length();
-        int lat = 0, lng = 0;
-
-        while (index < len) {
-            int b, shift = 0, result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lat += dlat;
-
-            shift = 0;
-            result = 0;
-            do {
-                b = encoded.charAt(index++) - 63;
-                result |= (b & 0x1f) << shift;
-                shift += 5;
-            } while (b >= 0x20);
-            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-            lng += dlng;
-
-            LatLng p = new LatLng( (((double) lat / 1E5)),
-                    (((double) lng / 1E5) ));
-            poly.add(p);
+            return null;
         }
 
-        return poly;
-    }
+        @Override
+        protected void onPostExecute(Path path) {
+            if (path == null) return;
+            PolylineOptions polyLineOptions = new PolylineOptions();
 
+            polyLineOptions.addAll(path.points);
+            polyLineOptions.width(7);
+            polyLineOptions.color(activity.getResources().getColor(R.color.primary));
+
+            googleMap.addPolyline(polyLineOptions);
+
+
+            String timeTxt;
+            switch (path.timeInMinutes % 10) {
+                case 1:
+                    timeTxt = activity.getResources().getString(R.string.minute);
+                    break;
+
+                case 2:
+                case 3:
+                case 4:
+                    timeTxt = activity.getResources().getString(R.string.minutes_);
+                    break;
+
+                default:
+                    timeTxt = activity.getResources().getString(R.string.minutes);
+            }
+            ((TextView) activity.findViewById(R.id.requestTravelTime)).setText(path.timeInMinutes + " " + timeTxt);
+            activity.findViewById(R.id.requestTimeLayout).setVisibility(View.VISIBLE);
+
+        }
+
+        private static String readUrl(String mapsApiDirectionsUrl) throws IOException {
+            String data = "";
+            InputStream istream = null;
+            HttpURLConnection urlConnection = null;
+            BufferedReader br = null;
+            try {
+                URL url = new URL(mapsApiDirectionsUrl);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.connect();
+                istream = urlConnection.getInputStream();
+                br = new BufferedReader(new InputStreamReader(istream, "iso-8859-1"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = "";
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+                data = sb.toString();
+
+            } finally {
+                if (br != null) {
+                    br.close();
+                }
+                if (istream != null) {
+                    istream.close();
+                }
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+            }
+
+            return data;
+        }
+
+
+        private static Path parse(String response) throws JSONException {
+            Path path = new Path();
+            JSONObject route = new JSONObject(response).getJSONArray("routes").getJSONObject(0);
+
+            JSONObject overviewPolylines = route.getJSONObject("overview_polyline");
+            path.points.addAll(decodePoly(overviewPolylines.getString("points")));
+            Integer estimation = route.getJSONArray("legs").getJSONObject(0).getJSONObject("duration").getInt("value");
+            path.timeInMinutes = estimation / 60;
+
+            return path;
+        }
+
+        private static List<LatLng> decodePoly(String encoded) {
+            List<LatLng> poly = new ArrayList<LatLng>();
+            int index = 0, len = encoded.length();
+            int lat = 0, lng = 0;
+
+            while (index < len) {
+                int b, shift = 0, result = 0;
+                do {
+                    b = encoded.charAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lat += dlat;
+
+                shift = 0;
+                result = 0;
+                do {
+                    b = encoded.charAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+                lng += dlng;
+
+                LatLng p = new LatLng((((double) lat / 1E5)),
+                        (((double) lng / 1E5)));
+                poly.add(p);
+            }
+            return poly;
+        }
+
+    }
 }

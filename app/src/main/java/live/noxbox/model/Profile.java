@@ -148,6 +148,12 @@ public class Profile implements Serializable {
 
     @Exclude
     public Profile publicInfo() {
+        return new Profile().setId(id)
+                .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode);
+    }
+
+    @Exclude
+    public Profile notPublicInfo(){
         return new Profile().setId(id).setName(name).setPhoto(photo).setEmail(email)
                 .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode);
     }

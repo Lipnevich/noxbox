@@ -34,6 +34,7 @@ import java.util.Map;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
+import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
@@ -147,7 +148,8 @@ public class Firebase {
                             .setEmail(firebaseUser.getEmail())
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
-                            .setPhoto(firebaseUser.getPhotoUrl().toString());
+                            .setPhoto(firebaseUser.getPhotoUrl().toString())
+                            .setTravelMode(TravelMode.driving);
                     task.execute(profile);
                 }
             }

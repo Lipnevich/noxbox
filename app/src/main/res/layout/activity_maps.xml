@@ -47,7 +47,7 @@
             android:layout_marginStart="16dp"
             android:gravity="center_vertical|start"
             android:text="@string/connectionWithInitiator"
-            android:textColor="@color/primary"
+            android:textColor="@color/secondary"
             android:textSize="@dimen/text_size_secondary"
             android:layout_weight="4">
         </TextView>
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textSize="@dimen/text_size"
-            android:textColor="@color/text_color_secondary"
+            android:textColor="@color/google_text"
             android:text="@string/travelTime"
            />
         <TextView
@@ -95,7 +95,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="2dp"
             android:textSize="@dimen/text_title_large"
-            android:textColor="@color/primary"
+            android:textColor="@color/google_text"
             />
     </LinearLayout>
 
