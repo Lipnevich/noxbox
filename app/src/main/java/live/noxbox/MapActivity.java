@@ -47,11 +47,13 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.pages.Acceptance;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.ConfirmationMessage;
+import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -211,6 +213,32 @@ public class MapActivity extends MenuActivity implements
         googleApiClient.connect();
         scaleMarkers();
         draw();
+//        Debug acceptance >>>
+
+        if (BuildConfig.DEBUG) {
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(final Profile profile) {
+                    MapActivity.this.findViewById(R.id.debug_acceptance).setVisibility(View.VISIBLE);
+
+                    findViewById(R.id.debug_acceptance).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(profile.getCurrent() != null){
+                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.walking));
+                                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+                                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
+                                ProfileStorage.fireProfile();
+                            }else{
+                                DebugMessage.popup(MapActivity.this,"current noxbox is null");
+                            }
+
+                        }
+                    });
+                }
+            });
+        }
+
         super.onResume();
     }
 
@@ -261,7 +289,8 @@ public class MapActivity extends MenuActivity implements
     }
 
     @Override
-    public void onConnectionSuspended(int i) { }
+    public void onConnectionSuspended(int i) {
+    }
 
     public Position getCameraPosition() {
         LatLng latLng = googleMap.getCameraPosition().target;
@@ -355,10 +384,10 @@ public class MapActivity extends MenuActivity implements
     private State currentState;
 
     private void draw() {
-        ProfileStorage.listenProfile(this.getClass().getName(),new Task<Profile>() {
+        ProfileStorage.listenProfile(this.getClass().getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                if(googleMap == null) return;
+                if (googleMap == null) return;
                 State newState = getFragment(profile);
                 if (newState != currentState && currentState != null) {
                     currentState.clear();
@@ -371,7 +400,7 @@ public class MapActivity extends MenuActivity implements
 
     public State getFragment(final Profile profile) {
         if (profile.getCurrent() == null || profile.getCurrent().getTimeCreated() == null) {
-            return new AvailableServices(googleMap,googleApiClient, this);
+            return new AvailableServices(googleMap, googleApiClient, this);
         }
         //    created,
         //    requesting,
@@ -384,7 +413,10 @@ public class MapActivity extends MenuActivity implements
         if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() == null && profile.getCurrent().getTimeCanceled() == null) {
             return new Requesting(googleMap, this);
         }
-        return new AvailableServices(googleMap,googleApiClient, this);
+        if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
+            return new Acceptance(googleMap, this);
+        }
+        return new AvailableServices(googleMap, googleApiClient, this);
     }
 }
 

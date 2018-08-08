@@ -111,8 +111,8 @@ public class PathFinder {
                 default:
                     timeTxt = activity.getResources().getString(R.string.minutes);
             }
-            ((TextView) activity.findViewById(R.id.requestTravelTime)).setText(path.timeInMinutes + " " + timeTxt);
-            activity.findViewById(R.id.requestTimeLayout).setVisibility(View.VISIBLE);
+            ((TextView) activity.findViewById(R.id.travelTime)).setText(path.timeInMinutes + " " + timeTxt);
+            activity.findViewById(R.id.timeLayout).setVisibility(View.VISIBLE);
 
         }
 

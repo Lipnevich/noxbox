@@ -3,8 +3,10 @@ package live.noxbox.pages;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -15,33 +17,45 @@ import com.google.android.gms.maps.model.LatLng;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.PathFinder;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
-public class Requesting implements State {
+public class Acceptance implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
     private ObjectAnimator anim;
     private AnimationDrawable animationDrawable;
+    private ProgressBar progressBar;
 
-    public Requesting(GoogleMap googleMap, Activity activity) {
+    public Acceptance(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
     }
 
     @Override
     public void draw(final Profile profile) {
-        ((TextView)activity.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
+        ((TextView) activity.findViewById(R.id.blinkingInfo)).setText("Вашу заявку приняли, необходимо ваше подтверждение..");
+        activity.findViewById(R.id.countdownLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                profile.getCurrent().setTimeAccepted(null);
                 profile.getCurrent().setTimeRequested(null);
                 clear();
                 fireProfile();
+            }
+        });
+
+        activity.findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
             }
         });
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -61,26 +75,44 @@ public class Requesting implements State {
         animationDrawable.setExitFadeDuration(1200);
         animationDrawable.start();
 
-        profile.getViewed().setParty(profile);
-
         PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
-    }
 
+        long timeCountInMilliSeconds = 30000;
+        //progressBar = (ProgressBar) activity.findViewById(R.id.acceptCountdownTimer);
+        new CountDownTimer(timeCountInMilliSeconds, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                //progressBar.setProgress((int) (millisUntilFinished / 1000));
+                ((TextView)activity.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished/1000));
+            }
+
+            @Override
+            public void onFinish() {
+                profile.getCurrent().setTimeAccepted(null);
+                profile.getCurrent().setTimeRequested(null);
+                ProfileStorage.fireProfile();
+            }
+
+        }.start();
+    }
 
     @Override
     public void clear() {
         googleMap.clear();
-        activity.findViewById(R.id.travelTime).setVisibility(View.GONE);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.GONE);
+        activity.findViewById(R.id.timeLayout).setVisibility(View.GONE);
+        activity.findViewById(R.id.countdownLayout).setVisibility(View.GONE);
+        activity.findViewById(R.id.acceptButton).setVisibility(View.GONE);
+        ((TextView) activity.findViewById(R.id.blinkingInfo)).setText("");
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.exchange_rate).setVisibility(View.VISIBLE);
+
         if (anim != null && animationDrawable != null) {
             anim.cancel();
             animationDrawable.stop();
         }
-
     }
 
     private void moveCamera(LatLng latLng, float zoom) {
@@ -92,7 +124,4 @@ public class Requesting implements State {
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
         googleMap.animateCamera(cameraUpdate);
     }
-
-
-
 }

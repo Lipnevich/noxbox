@@ -113,7 +113,7 @@ public class PayerFunction extends FragmentActivity {
             }
         });
 
-        cancelButton = findViewById(R.id.cancelButton);
+       // cancelButton = findViewById(R.id.cancelButton);
     }
 
     private void processTimeout(Noxbox currentNoxbox) {

@@ -21,16 +21,11 @@
         android:text="@string/goOfflineText" />
 
     <Button
-        android:id="@+id/acceptButton"
-        style="@style/MainButtonStyle"
-        android:text="@string/acceptText" />
-
-    <Button
         android:id="@+id/completeButton"
         style="@style/MainButtonStyle"
         android:text="@string/completeText" />
 
-    <!--Requesting-->
+    <!--Requesting&&Acceptance-->
     <LinearLayout
         android:id="@+id/blinkingInfoLayout"
         android:layout_width="match_parent"
@@ -46,7 +41,6 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
             android:gravity="center_vertical|start"
-            android:text="@string/connectionWithInitiator"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_size_secondary"
             android:layout_weight="4">
@@ -73,7 +67,7 @@
 
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/requestTimeLayout"
+        android:id="@+id/timeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -89,7 +83,7 @@
             android:text="@string/travelTime"
            />
         <TextView
-            android:id="@+id/requestTravelTime"
+            android:id="@+id/travelTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -98,10 +92,8 @@
             android:textColor="@color/google_text"
             />
     </LinearLayout>
-
-
     <Button
-        android:id="@+id/cancelButton"
+        android:id="@+id/acceptButton"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_gravity="center_horizontal|bottom"
@@ -113,8 +105,37 @@
         android:gravity="center_horizontal|center_vertical"
         android:textSize="18sp"
         android:textStyle="normal"
-        android:text="@string/cancelText" />
-    <!--Requesting-->
+        android:text="@string/acceptText" />
+    <LinearLayout
+        android:id="@+id/countdownLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="72dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/countdownTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="2dp"
+            android:textSize="@dimen/text_title_large"
+            android:textColor="@color/google_text"/>
+        <!--<ProgressBar-->
+            <!--android:id="@+id/acceptCountdownTimer"-->
+            <!--style="?android:attr/progressBarStyleHorizontal"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:indeterminate="false"-->
+            <!--android:max="100"-->
+            <!--android:progress="100"-->
+            <!--android:progressDrawable="@drawable/acceptance_countdown_circle"-->
+            <!--android:rotation="-90" />-->
+    </LinearLayout>
+
+
+    <!--Requesting&&Acceptance-->
 
     <ImageView
         android:id="@+id/pointerImage"
@@ -138,6 +159,13 @@
         android:layout_marginEnd="13dp"
         android:layout_marginTop="13dp"
         android:src="@drawable/currency" />
+    <ImageView
+        android:id="@+id/debug_acceptance"
+        style="@style/IconButtonStyle"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="68dp"
+        android:src="@drawable/debug_acceptance"/>
 
     <ImageView
         android:id="@+id/check"
