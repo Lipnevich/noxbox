@@ -280,7 +280,6 @@ public class MessagingService extends FirebaseMessagingService {
                 return push.setRecipientId(request.getNoxbox().getParty().getId())
                         .setName(request.getNoxbox().getOwner().getName())
                         .setIcon(request.getNoxbox().getOwner().getPhoto())
-                        .setMessage(request.getNoxbox().getParty().getSecret())
                         .setPrice(request.getNoxbox().getPrice())
                         .setEstimation(request.getNoxbox().getEstimationTime());
             case balance:

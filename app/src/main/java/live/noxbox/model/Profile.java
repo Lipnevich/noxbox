@@ -10,22 +10,25 @@ import static live.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
 
 public class Profile implements Serializable {
 
-    private String id, name, email, photo, secret;
-    private Acceptance acceptance;
-
+    // read only
+    private String id;
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
-
+    private Acceptance acceptance;
     private Wallet wallet;
-    private NotificationKeys notificationKeys;
+    private Long timeDisliked;
 
+    // writable
+    private String name;
+    private String photo;
+    private NotificationKeys notificationKeys;
     private Noxbox current;
-    private Noxbox viewed;
+    private TravelMode travelMode;
 
     private Position position;
-    private Long timeDisliked;
-    private TravelMode travelMode;
+    private Noxbox viewed;
     private Long arriveInSeconds;
+
 
     public String getId() {
         return id;
@@ -79,23 +82,6 @@ public class Profile implements Serializable {
     public Profile setTravelMode(TravelMode travelMode) {
         this.travelMode = travelMode;
         return this;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Profile setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
     }
 
     public Long getTimeDisliked() {
@@ -154,7 +140,7 @@ public class Profile implements Serializable {
 
     @Exclude
     public Profile notPublicInfo(){
-        return new Profile().setId(id).setName(name).setPhoto(photo).setEmail(email)
+        return new Profile().setId(id).setName(name).setPhoto(photo)
                 .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode);
     }
 

@@ -145,7 +145,6 @@ public class Firebase {
                 } else {
                     // TODO (nli) delete it
                     profile = new Profile()
-                            .setEmail(firebaseUser.getEmail())
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
