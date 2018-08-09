@@ -14,19 +14,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import live.noxbox.R;
 import live.noxbox.model.Noxbox;
-import live.noxbox.model.Profile;
+import live.noxbox.model.TravelMode;
 
 public class MarkerCreator {
 
-    public static Marker createPositionMarker(Profile profile, LatLng position, GoogleMap googleMap){
+    public static Marker createPositionMarker(TravelMode travelMode, LatLng position, GoogleMap googleMap){
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
-                .icon(BitmapDescriptorFactory.fromResource(profile.getTravelMode().getImage()))
+                .icon(BitmapDescriptorFactory.fromResource(travelMode.getImage()))
                 .anchor(0.5f, 1f));
         return marker;
     }
 
-    public static Marker createCustomMarker(Noxbox noxbox, Profile profile, GoogleMap googleMap, Activity activity) {
+    public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Activity activity) {
         switch (noxbox.getRole()) {
             case supply:
                 Marker marker = googleMap.addMarker(new MarkerOptions()

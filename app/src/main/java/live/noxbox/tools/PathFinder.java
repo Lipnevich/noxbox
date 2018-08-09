@@ -7,8 +7,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONException;
@@ -29,18 +31,22 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.TravelMode;
 
+import static live.noxbox.MapActivity.dpToPx;
+
 public class PathFinder {
 
 
     public static void createRequestPoints(Noxbox noxbox, GoogleMap googleMap, Activity activity) {
         if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
-            MarkerCreator.createPositionMarker(noxbox.getParty(), noxbox.getParty().getPosition().toLatLng(), googleMap);
-            MarkerCreator.createCustomMarker(noxbox, noxbox.getOwner(), googleMap, activity);
+            MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
             createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include( noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(48)));
         } else {
-            MarkerCreator.createPositionMarker(noxbox.getOwner(), noxbox.getPosition().toLatLng(), googleMap);
-            MarkerCreator.createCustomMarker(noxbox, noxbox.getParty(), googleMap, activity);
-            createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getOwner().getTravelMode(), activity, googleMap);
+            MarkerCreator.createPositionMarker(noxbox.getOwner().getTravelMode(), noxbox.getPosition().toLatLng(), googleMap);
+            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
+            createPathBetweenPoints(noxbox.getPosition(), noxbox.getOwner().getPosition(), noxbox.getOwner().getTravelMode(), activity, googleMap);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getOwner().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(48)));
         }
 
     }

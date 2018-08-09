@@ -25,7 +25,7 @@
         style="@style/MainButtonStyle"
         android:text="@string/completeText" />
 
-    <!--Requesting&&Acceptance-->
+    <!--Requesting&&Accepting-->
     <LinearLayout
         android:id="@+id/blinkingInfoLayout"
         android:layout_width="match_parent"
@@ -135,7 +135,7 @@
     </LinearLayout>
 
 
-    <!--Requesting&&Acceptance-->
+    <!--Requesting&&Accepting-->
 
     <ImageView
         android:id="@+id/pointerImage"

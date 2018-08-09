@@ -9,11 +9,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
@@ -23,22 +19,23 @@ import live.noxbox.tools.PathFinder;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
-public class Acceptance implements State {
+public class Accepting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
     private ObjectAnimator anim;
     private AnimationDrawable animationDrawable;
     private ProgressBar progressBar;
+    private CountDownTimer countDownTimer;
 
-    public Acceptance(GoogleMap googleMap, Activity activity) {
+    public Accepting(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
     }
 
     @Override
     public void draw(final Profile profile) {
-        ((TextView) activity.findViewById(R.id.blinkingInfo)).setText("Вашу заявку приняли, необходимо ваше подтверждение..");
+        ((TextView) activity.findViewById(R.id.blinkingInfo)).setText(R.string.acceptingConfirmation);
         activity.findViewById(R.id.countdownLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
@@ -56,14 +53,14 @@ public class Acceptance implements State {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
+                clear();
             }
         });
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        activity.findViewById(R.id.exchange_rate).setVisibility(View.GONE);
 
-        moveCamera(profile.getCurrent().getPosition().toLatLng(), 13);
+
 
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
         anim.setDuration(15000);
@@ -79,7 +76,7 @@ public class Acceptance implements State {
 
         long timeCountInMilliSeconds = 30000;
         //progressBar = (ProgressBar) activity.findViewById(R.id.acceptCountdownTimer);
-        new CountDownTimer(timeCountInMilliSeconds, 1000) {
+        countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 //progressBar.setProgress((int) (millisUntilFinished / 1000));
@@ -107,21 +104,11 @@ public class Acceptance implements State {
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.exchange_rate).setVisibility(View.VISIBLE);
 
         if (anim != null && animationDrawable != null) {
             anim.cancel();
             animationDrawable.stop();
         }
-    }
-
-    private void moveCamera(LatLng latLng, float zoom) {
-        CameraPosition cameraPosition
-                = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(zoom)
-                .build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-        googleMap.animateCamera(cameraUpdate);
+        countDownTimer.cancel();
     }
 }

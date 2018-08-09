@@ -7,11 +7,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
@@ -49,8 +45,6 @@ public class Requesting implements State {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.exchange_rate).setVisibility(View.GONE);
 
-        moveCamera(profile.getCurrent().getPosition().toLatLng(), 13);
-
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
         anim.setDuration(15000);
         anim.setInterpolator(new DecelerateInterpolator());
@@ -80,19 +74,5 @@ public class Requesting implements State {
             anim.cancel();
             animationDrawable.stop();
         }
-
     }
-
-    private void moveCamera(LatLng latLng, float zoom) {
-        CameraPosition cameraPosition
-                = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(zoom)
-                .build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-        googleMap.animateCamera(cameraUpdate);
-    }
-
-
-
 }

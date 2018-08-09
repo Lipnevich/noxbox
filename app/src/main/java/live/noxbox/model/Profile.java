@@ -1,5 +1,6 @@
 package live.noxbox.model;
 
+import com.google.common.base.Objects;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
@@ -191,5 +192,20 @@ public class Profile implements Serializable {
         if (likes == 0 && dislikes > 1) return 0;
 
         return (likes / (likes + dislikes)) * 100;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Profile profile = (Profile) o;
+
+        return Objects.equal(id,profile.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

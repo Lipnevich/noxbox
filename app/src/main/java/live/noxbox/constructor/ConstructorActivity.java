@@ -25,6 +25,8 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.lang.reflect.Field;
 
 import live.noxbox.Configuration;
@@ -34,7 +36,6 @@ import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
-import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -279,7 +280,7 @@ public class ConstructorActivity extends AppCompatActivity{
             popupWindow.setHeight(500);
         }
         catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
-            DebugMessage.popup(this,e.getMessage());
+            Crashlytics.logException(e);
         }
     }
 

@@ -36,29 +36,26 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.pages.Acceptance;
+import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
+import live.noxbox.pages.DebugActivity;
 import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.ConfirmationMessage;
-import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 
-public class MapActivity extends MenuActivity implements
+public class MapActivity extends DebugActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 
@@ -213,31 +210,7 @@ public class MapActivity extends MenuActivity implements
         googleApiClient.connect();
         scaleMarkers();
         draw();
-//        Debug acceptance >>>
 
-        if (BuildConfig.DEBUG) {
-            ProfileStorage.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(final Profile profile) {
-                    MapActivity.this.findViewById(R.id.debug_acceptance).setVisibility(View.VISIBLE);
-
-                    findViewById(R.id.debug_acceptance).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(profile.getCurrent() != null){
-                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.walking));
-                                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                                ProfileStorage.fireProfile();
-                            }else{
-                                DebugMessage.popup(MapActivity.this,"current noxbox is null");
-                            }
-
-                        }
-                    });
-                }
-            });
-        }
 
         super.onResume();
     }
@@ -344,29 +317,13 @@ public class MapActivity extends MenuActivity implements
         pathImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                focus();
+                //focus();
             }
         });
     }
 
-    private void focus(String... array) {
-        List<String> ids = Arrays.asList(array);
-        if (!pathes.isEmpty() && googleMap != null) {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            for (Polyline polyline : pathes.values()) {
-                for (LatLng point : polyline.getPoints()) {
-                    builder.include(point);
-                }
-            }
-            for (Map.Entry<String, GroundOverlay> marker : markers.entrySet()) {
-                if (ids.isEmpty() || ids.contains(marker.getKey())) {
-                    builder.include(marker.getValue().getPosition());
-                }
-            }
-            LatLngBounds bounds = builder.build();
-            int padding = dpToPx(36); // padding around start and end points
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
-        }
+    private void focus(LatLng start, LatLng end) {
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(start).include(end).build(), dpToPx(48)));
     }
 
     public void prepareForIteration() {
@@ -394,6 +351,8 @@ public class MapActivity extends MenuActivity implements
                 }
                 currentState = newState;
                 newState.draw(profile);
+
+
             }
         });
     }
@@ -411,11 +370,12 @@ public class MapActivity extends MenuActivity implements
         //    enjoying,
         //    completed;
         if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() == null && profile.getCurrent().getTimeCanceled() == null) {
+            if (profile.equals(profile.getCurrent().getOwner())) {
+                return new Accepting(googleMap, this);
+            }
             return new Requesting(googleMap, this);
         }
-        if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
-            return new Acceptance(googleMap, this);
-        }
+
         return new AvailableServices(googleMap, googleApiClient, this);
     }
 }

@@ -45,7 +45,6 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,6 @@ import live.noxbox.model.IntentAndKey;
 import live.noxbox.model.Profile;
 import live.noxbox.pages.AuthActivity;
 import live.noxbox.state.ProfileStorage;
-import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
@@ -82,24 +80,7 @@ public abstract class MenuActivity extends AppCompatActivity {
     private void draw(Profile profile) {
         createMenu(profile);
 
-        if(BuildConfig.DEBUG) {
-            final ExchangeRate.Currency currency = ExchangeRate.Currency.USD;
 
-            ImageView exchangeRateButton = findViewById(R.id.exchange_rate);
-            exchangeRateButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ExchangeRate.wavesTo(currency, new Task<BigDecimal>() {
-                        @Override
-                        public void execute(BigDecimal price) {
-                            popup(MenuActivity.this,
-                                    price.toString() + " " + currency.name() + " per 1 Waves ");
-                        }
-                    });
-                }
-            });
-            exchangeRateButton.setVisibility(View.VISIBLE);
-        }
 
         if(profile.ratingToPercentage() <= MIN_RATE_IN_PERCENTAGE) {
             popup(this,"Low rate!");

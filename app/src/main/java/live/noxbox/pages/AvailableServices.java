@@ -124,8 +124,6 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
             googleMap.animateCamera(cameraUpdate);
         }
 
-        //TODO тестовый нокс бокс
-        profile.setCurrent(noxbox);
     }
 
     @Override
@@ -137,7 +135,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
 
     public void createMarker(Profile profile, Noxbox noxbox) {
         if (markers.get(noxbox.getId()) == null) {
-            markers.put(noxbox.getId(), MarkerCreator.createCustomMarker(noxbox, profile, googleMap, activity));
+            markers.put(noxbox.getId(), MarkerCreator.createCustomMarker(noxbox, googleMap, activity));
         }
     }
 
