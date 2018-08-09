@@ -50,19 +50,25 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
     }
 
     @Override
-    public void draw(Profile profile) {
+    public void draw(final Profile profile) {
         activity.findViewById(R.id.noxboxConstructorButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.noxboxConstructorButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
+                if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    profile.setPosition(Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient)));
+                }
+
                 activity.startActivity(new Intent(activity, ConstructorActivity.class));
+
             }
         });
 
         final Noxbox noxbox = new Noxbox();
         noxbox.setTimeCreated(System.currentTimeMillis());
         noxbox.setRole(MarketRole.demand);
-        Profile owner = new Profile().setId("1231").setTravelMode(TravelMode.none);
+        Profile owner = new Profile().setId("1231").setTravelMode(TravelMode.none).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
         Rating rating = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
         rating.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный напарник!", System.currentTimeMillis(), true));
         rating.getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
@@ -80,7 +86,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         Noxbox noxbox1 = new Noxbox();
         noxbox1.setTimeCreated(System.currentTimeMillis());
         noxbox1.setRole(MarketRole.demand);
-        Profile owner1 = new Profile().setId("1234").setTravelMode(TravelMode.driving);
+        Profile owner1 = new Profile().setId("1234").setTravelMode(TravelMode.driving).setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         Rating rating1 = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
         rating1.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный сантехник!", System.currentTimeMillis(), true));
         rating1.getComments().put("1", new Comment("1", "Добротный сантехник!", System.currentTimeMillis(), true));
@@ -98,7 +104,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         Noxbox noxbox2 = new Noxbox();
         noxbox2.setTimeCreated(System.currentTimeMillis());
         noxbox2.setRole(MarketRole.supply);
-        Profile owner2 = new Profile().setId("1238").setTravelMode(TravelMode.walking);
+        Profile owner2 = new Profile().setId("1238").setTravelMode(TravelMode.walking).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         Rating rating2 = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
         rating2.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный музыкант!", System.currentTimeMillis(), true));
         rating2.getComments().put("1", new Comment("1", "Духовная и творческая личность!", System.currentTimeMillis(), true));
@@ -152,15 +158,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
             @Override
             public void execute(Profile profile) {
                 profile.setViewed((Noxbox) marker.getTag());
-                //TODO (vl) позиция камеры может быть отдаленна от настоящего местоположения,
-                //TODO (vl) таким образом, следующая строчка кода может привести к ошибочному расчёту местоположения пользователя
-                //TODO (vl) введя тем самым в заблуждение контрастирующих пользователей
-                //profile.setPosition(Position.from(googleMap.getCameraPosition().target));
-                if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    activity.startActivity(new Intent(activity, DetailedActivity.class));
-                    return;
-                }
-                profile.setPosition(Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient)));
+                profile.setPosition(Position.from(googleMap.getCameraPosition().target));
                 activity.startActivity(new Intent(activity, DetailedActivity.class));
             }
         });

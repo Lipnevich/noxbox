@@ -33,7 +33,6 @@
             android:theme="@style/NoActionBar"/>
         <activity
             android:name=".detailed.CoordinateActivity"
-            android:parentActivityName=".detailed.DetailedActivity"
             android:theme="@style/NoActionBar"/>
 
         <activity android:name=".menu.HistoryActivity"/>

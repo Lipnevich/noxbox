@@ -3,8 +3,6 @@ package live.noxbox.detailed;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -12,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,24 +18,25 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import live.noxbox.R;
 import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
+import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.detailed.CoordinateActivity.CODE;
+import static live.noxbox.detailed.CoordinateActivity.LAT;
+import static live.noxbox.detailed.CoordinateActivity.LNG;
 import static live.noxbox.tools.DateTimeFormatter.date;
 
 public class DetailedActivity extends AppCompatActivity {
@@ -55,7 +53,6 @@ public class DetailedActivity extends AppCompatActivity {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                init();
                 draw(profile);
             }
         });
@@ -70,7 +67,6 @@ public class DetailedActivity extends AppCompatActivity {
         drawButton(profile.getViewed().getRole());
     }
 
-    //TODO (vl) make textView instead title
     private void drawToolbar(Noxbox noxbox) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -131,7 +127,6 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawWaitingTime(final Noxbox noxbox) {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            ((TextView) findViewById(R.id.travelTypeTitle)).setText("No permission");
             return;
         }
 
@@ -143,30 +138,8 @@ public class DetailedActivity extends AppCompatActivity {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-                List<Address> addresses;
-                String address = "";
-                String city = "";
+                ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(),noxbox.getPosition()));
 
-                try {
-                    addresses = geocoder.getFromLocation(noxbox.getPosition().getLatitude(), noxbox.getPosition().getLongitude(), 1);
-                    address = addresses.get(0).getAddressLine(0);
-                    city = addresses.get(0).getLocality();
-                } catch (IOException e) {
-                    Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
-                    ((TextView) findViewById(R.id.address)).setText(noxbox.getPosition().getLatitude() + " " + noxbox.getPosition().getLongitude());
-                }
-
-
-                if (address.equals("")) {
-                    if (city.equals("")) {
-                        ((TextView) findViewById(R.id.address)).setText(noxbox.getPosition().getLatitude() + " " + noxbox.getPosition().getLongitude());
-                    } else {
-                        ((TextView) findViewById(R.id.address)).setText(city);
-                    }
-                } else {
-                    ((TextView) findViewById(R.id.address)).setText(address);
-                }
 
                 float[] results = new float[1];
 
@@ -212,7 +185,6 @@ public class DetailedActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.offerTime)).setText(R.string.validityOfTheOffer);
                 ((TextView) findViewById(R.id.time)).setText(displayTime);
 
-                //TODO (vl) нужно добавить сравнение текущего времени и времени оказания услуги
                 if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
                     ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
                     ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
@@ -314,13 +286,8 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void startCoordinateActivity() {
-        startActivity(new Intent(this, CoordinateActivity.class));
+        startActivityForResult(new Intent(this, CoordinateActivity.class),CODE);
 
-    }
-
-    private void init() {
-        //TODO (vl) need find background picture for all types..
-        // mBackImageTypeView = (ImageView) findViewById(R.id.backgroundImageTypeView);
     }
 
     @Override
@@ -333,5 +300,19 @@ public class DetailedActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CODE && resultCode == RESULT_OK){
+            final Position position = new Position(data.getExtras().getFloat(LAT), data.getExtras().getFloat(LNG));
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    profile.getViewed().setPosition(position);
+                }
+            });
+        }
     }
 }

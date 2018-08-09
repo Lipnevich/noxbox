@@ -27,13 +27,11 @@ import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 
 import java.util.HashMap;
@@ -320,10 +318,6 @@ public class MapActivity extends DebugActivity implements
                 //focus();
             }
         });
-    }
-
-    private void focus(LatLng start, LatLng end) {
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(start).include(end).build(), dpToPx(48)));
     }
 
     public void prepareForIteration() {

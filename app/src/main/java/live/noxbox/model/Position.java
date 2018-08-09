@@ -12,6 +12,14 @@ public class Position implements Serializable {
     private double latitude;
     private double longitude;
 
+    public Position(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Position() {
+    }
+
     public double getLongitude() {
         return longitude;
     }
@@ -36,7 +44,7 @@ public class Position implements Serializable {
     }
 
     public static Position from(Location location) {
-        if(location == null) {
+        if (location == null) {
             return null;
         }
         return new Position().setLatitude(location.getLatitude()).setLongitude(location.getLongitude());
@@ -59,6 +67,6 @@ public class Position implements Serializable {
 
     @Override
     public String toString() {
-        return "Position[" + String.format( "%.2f", latitude) + ";" + String.format( "%.2f", longitude) + ']';
+        return "Position[" + String.format("%.2f", latitude) + ";" + String.format("%.2f", longitude) + ']';
     }
 }

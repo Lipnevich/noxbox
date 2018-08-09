@@ -48,7 +48,6 @@ public class PathFinder {
             createPathBetweenPoints(noxbox.getPosition(), noxbox.getOwner().getPosition(), noxbox.getOwner().getTravelMode(), activity, googleMap);
             googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getOwner().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(48)));
         }
-
     }
 
     private static final String key = "AIzaSyArShVxHFrGDuU_mTVMddB1ToPTsMjjrb0";

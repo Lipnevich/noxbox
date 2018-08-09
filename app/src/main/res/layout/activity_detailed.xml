@@ -282,7 +282,7 @@
                                         android:layout_height="36dp"
                                         android:layout_gravity="center"
                                         android:gravity="center"
-                                        android:text="Изменить адрес"
+                                        android:text="@string/changeAddress"
                                         android:textColor="@color/secondary"
                                         android:textSize="@dimen/text_size" />
                                 </LinearLayout>

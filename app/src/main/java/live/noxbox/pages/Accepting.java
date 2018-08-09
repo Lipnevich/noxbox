@@ -9,7 +9,11 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
@@ -38,6 +42,7 @@ public class Accepting implements State {
         ((TextView) activity.findViewById(R.id.blinkingInfo)).setText(R.string.acceptingConfirmation);
         activity.findViewById(R.id.countdownLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.timeLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,8 +96,20 @@ public class Accepting implements State {
             }
 
         }.start();
+        if(profile.equals(profile.getCurrent().getOwner())){
+            moveCamera(profile.getCurrent().getPosition().toLatLng(),12);
+        }
     }
+    private void moveCamera(LatLng latLng, float zoom) {
+        CameraPosition cameraPosition
+                = new CameraPosition.Builder()
+                .target(latLng)
+                .zoom(zoom)
+                .build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+        googleMap.animateCamera(cameraUpdate);
 
+    }
     @Override
     public void clear() {
         googleMap.clear();

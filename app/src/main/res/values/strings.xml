@@ -176,4 +176,6 @@
     <string name="willArriveAtTheAddress">I will arrive at the address:</string>
     <string name="connectionWithInitiator">Идёт соединение с заказчиком, пожалуйста ожидайте</string>
     <string name="acceptingConfirmation">Вашу заявку приняли, необходимо ваше подтверждение..</string>
+    <string name="change">изменить</string>
+    <string name="changeAddress">Изменить адрес</string>
 </resources>

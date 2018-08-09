@@ -158,14 +158,16 @@
         android:layout_gravity="end|top"
         android:layout_marginEnd="13dp"
         android:layout_marginTop="13dp"
-        android:src="@drawable/currency" />
+        android:src="@drawable/currency"
+        android:visibility="gone"/>
     <ImageView
         android:id="@+id/debug_acceptance"
         style="@style/IconButtonStyle"
         android:layout_gravity="end|top"
         android:layout_marginEnd="13dp"
         android:layout_marginTop="68dp"
-        android:src="@drawable/debug_acceptance"/>
+        android:src="@drawable/debug_acceptance"
+        />
 
     <ImageView
         android:id="@+id/check"

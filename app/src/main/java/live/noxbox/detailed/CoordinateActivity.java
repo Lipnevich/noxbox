@@ -2,6 +2,7 @@ package live.noxbox.detailed;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -42,12 +43,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
 public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+    public static final String LAT = "lat";
+    public static final String LNG = "lng";
+    public static final int CODE = 111;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -104,7 +107,12 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                moveCamera(profile.getViewed().getPosition().toLatLng(), 15);
+                if(profile.getViewed()!= null){
+                    moveCamera(profile.getViewed().getPosition().toLatLng(), 15);
+                }else{
+                    moveCamera(profile.getCurrent().getPosition().toLatLng(),15);
+                }
+
             }
         });
 
@@ -115,17 +123,15 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View v) {
 
                 final LatLng latLng = googleMap.getCameraPosition().target;
-                if(latLng == null){
-                    Crashlytics.log(Log.ERROR,this.getClass().getSimpleName(),"Empty camera position on google maps");
+                if (latLng == null) {
+                    Crashlytics.log(Log.ERROR, this.getClass().getSimpleName(), "Empty camera position on google maps");
                     return;
                 }
-                ProfileStorage.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        profile.getViewed().setPosition(Position.from(latLng));
-                        finish();
-                    }
-                });
+                Intent intent = new Intent();
+                intent.putExtra(LAT, latLng.latitude);
+                intent.putExtra(LNG, latLng.longitude);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }
@@ -169,7 +175,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(position);
             final String placeId = item.getPlaceId();
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient,placeId);
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (in != null) {
@@ -185,7 +191,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                 places.release();
                 return;
             }
-            moveCamera(places.get(0).getLatLng(),15);
+            moveCamera(places.get(0).getLatLng(), 15);
             places.release();
         }
     };
@@ -201,7 +207,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         hideSoftKeyboard();
     }
 
-    private void hideSoftKeyboard(){
+    private void hideSoftKeyboard() {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 }

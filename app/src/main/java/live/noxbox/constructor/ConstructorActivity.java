@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -31,26 +30,32 @@ import java.lang.reflect.Field;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.detailed.CoordinateActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.NoxboxTime;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
+import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.detailed.CoordinateActivity.CODE;
+import static live.noxbox.detailed.CoordinateActivity.LAT;
+import static live.noxbox.detailed.CoordinateActivity.LNG;
 
-public class ConstructorActivity extends AppCompatActivity{
+public class ConstructorActivity extends AppCompatActivity {
 
 
     protected double price;
-    private Button cancelOrRemove;
+    private TextView closeOrRemove;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noxbox_constructor);
-        cancelOrRemove = findViewById(R.id.closeOrRemove);
+        closeOrRemove = findViewById(R.id.closeOrRemove);
         TextView textCurrency = findViewById(R.id.textCurrency);
         String currency = Configuration.CURRENCY + ".";
         textCurrency.setText(currency);
@@ -63,16 +68,16 @@ public class ConstructorActivity extends AppCompatActivity{
             @Override
             public void execute(final Profile profile) {
                 if (profile.getCurrent() != null) {
-                    cancelOrRemove.setText(R.string.remove);
-                    cancelOrRemove.setOnClickListener(new View.OnClickListener() {
+                    closeOrRemove.setText(R.string.remove);
+                    closeOrRemove.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             removeNoxbox(profile);
                         }
                     });
                 } else {
-                    cancelOrRemove.setText(R.string.cancel);
-                    cancelOrRemove.setOnClickListener(new View.OnClickListener() {
+                    closeOrRemove.setText(R.string.cancel);
+                    closeOrRemove.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             cancelNoxboxConstructor();
@@ -102,6 +107,7 @@ public class ConstructorActivity extends AppCompatActivity{
         drawTypeDescription(profile);
         drawPrice(profile);
         drawTravelMode(profile);
+        drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
     }
 
@@ -194,6 +200,29 @@ public class ConstructorActivity extends AppCompatActivity{
         });
     }
 
+    private void drawAddress(Profile profile) {
+        final TextView address = findViewById(R.id.textAddress);
+        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none) {
+            profile.getCurrent().setPosition(profile.getPosition());
+            address.setText(AddressManager.provideAddressByPosition(getApplicationContext(),profile.getPosition()));
+        } else {
+            SpannableStringBuilder spanTxt =
+                    new SpannableStringBuilder(AddressManager.provideAddressByPosition(getApplicationContext(),profile.getPosition()));
+            spanTxt.append(" ");
+            spanTxt.append(getString(R.string.change));
+            spanTxt.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    ConstructorActivity.this.startActivityForResult(new Intent(ConstructorActivity.this, CoordinateActivity.class),CODE);
+                }
+            }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
+            address.setMovementMethod(LinkMovementMethod.getInstance());
+            address.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        }
+
+
+    }
+
     protected void startDialogList() {
         Intent intent = new Intent(this, NoxboxTypeListActivity.class);
         startActivity(intent);
@@ -224,8 +253,8 @@ public class ConstructorActivity extends AppCompatActivity{
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 profile.getCurrent().getOwner().setTravelMode(TravelMode.byId(item.getItemId()));
-                if(profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
-                    if(checkLocationPermission()){
+                if (profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
+                    if (checkLocationPermission()) {
                         ActivityCompat.requestPermissions(ConstructorActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                     }
                 }
@@ -251,7 +280,8 @@ public class ConstructorActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
 
@@ -266,11 +296,12 @@ public class ConstructorActivity extends AppCompatActivity{
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
     }
 
-    private void setHeightForDropdownList(Spinner spinner){
+    private void setHeightForDropdownList(Spinner spinner) {
         try {
             Field popup = Spinner.class.getDeclaredField("mPopup");
             popup.setAccessible(true);
@@ -278,8 +309,7 @@ public class ConstructorActivity extends AppCompatActivity{
             android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(spinner);
 
             popupWindow.setHeight(500);
-        }
-        catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+        } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
             Crashlytics.logException(e);
         }
     }
@@ -311,6 +341,20 @@ public class ConstructorActivity extends AppCompatActivity{
                     }
                 });
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CODE && resultCode == RESULT_OK) {
+            final Position position = new Position(data.getExtras().getFloat(LAT), data.getExtras().getFloat(LNG));
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    profile.getCurrent().setPosition(position);
+                }
+            });
         }
     }
 

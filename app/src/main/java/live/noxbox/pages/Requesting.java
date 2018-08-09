@@ -32,6 +32,7 @@ public class Requesting implements State {
     public void draw(final Profile profile) {
         ((TextView)activity.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.timeLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +67,7 @@ public class Requesting implements State {
         googleMap.clear();
         activity.findViewById(R.id.travelTime).setVisibility(View.GONE);
         activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.GONE);
+        activity.findViewById(R.id.timeLayout).setVisibility(View.GONE);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
