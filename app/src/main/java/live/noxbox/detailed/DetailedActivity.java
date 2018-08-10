@@ -34,7 +34,7 @@ import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.detailed.CoordinateActivity.CODE;
+import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
 import static live.noxbox.tools.DateTimeFormatter.date;
@@ -286,7 +286,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void startCoordinateActivity() {
-        startActivityForResult(new Intent(this, CoordinateActivity.class),CODE);
+        startActivityForResult(new Intent(this, CoordinateActivity.class),COORDINATE);
 
     }
 
@@ -305,7 +305,7 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CODE && resultCode == RESULT_OK){
+        if(requestCode == COORDINATE && resultCode == RESULT_OK){
             final Position position = new Position(data.getExtras().getFloat(LAT), data.getExtras().getFloat(LNG));
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override

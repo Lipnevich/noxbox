@@ -19,7 +19,7 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:elevation="4dp"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="14dp">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -184,6 +184,41 @@
 
                         </LinearLayout>
 
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/or"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"
+                                android:text="@string/or"
+                                android:textSize="18sp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+                                <CheckBox
+                                    android:id="@+id/isHost"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:buttonTint="@color/primary"
+                                    android:gravity="top|start" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="@string/host"
+                                    android:textSize="18sp"/>
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
                         <LinearLayout
                             android:id="@+id/addressLayout"
                             android:layout_width="match_parent"
@@ -251,13 +286,14 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
                             android:id="@+id/closeOrRemoveLayout"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="65"
+                            android:layout_weight="95"
                             android:background="@color/primary"
                             android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"
@@ -285,7 +321,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="65"
+                            android:layout_weight="95"
                             android:background="@color/primary"
                             android:clickable="true"
                             android:foreground="?android:attr/selectableItemBackground"

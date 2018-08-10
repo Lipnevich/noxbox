@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -41,7 +43,7 @@ import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
-import static live.noxbox.detailed.CoordinateActivity.CODE;
+import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
 
@@ -107,6 +109,7 @@ public class ConstructorActivity extends AppCompatActivity {
         drawTypeDescription(profile);
         drawPrice(profile);
         drawTravelMode(profile);
+        drawHost(profile);
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
     }
@@ -200,24 +203,52 @@ public class ConstructorActivity extends AppCompatActivity {
         });
     }
 
+    private void drawHost(final Profile profile) {
+        CheckBox checkBox = findViewById(R.id.isHost);
+        //at least one option should be selected travel mode or host
+        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none) {
+            checkBox.setChecked(true);
+            checkBox.setEnabled(false);
+            profile.getCurrent().getOwner().setHost(true);
+            findViewById(R.id.or).setVisibility(View.GONE);
+        } else {
+            checkBox.setEnabled(true);
+            checkBox.setChecked(profile.getCurrent().getOwner().getHost());
+            findViewById(R.id.or).setVisibility(View.VISIBLE);
+        }
+
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                profile.getCurrent().getOwner().setHost(isChecked);
+                drawAddress(profile);
+            }
+        });
+
+    }
+
     private void drawAddress(Profile profile) {
         final TextView address = findViewById(R.id.textAddress);
-        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none) {
-            profile.getCurrent().setPosition(profile.getPosition());
-            address.setText(AddressManager.provideAddressByPosition(getApplicationContext(),profile.getPosition()));
-        } else {
+
+        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none || profile.getCurrent().getOwner().getHost()) {
             SpannableStringBuilder spanTxt =
-                    new SpannableStringBuilder(AddressManager.provideAddressByPosition(getApplicationContext(),profile.getPosition()));
+                    new SpannableStringBuilder(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getPosition()));
             spanTxt.append(" ");
             spanTxt.append(getString(R.string.change));
             spanTxt.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-                    ConstructorActivity.this.startActivityForResult(new Intent(ConstructorActivity.this, CoordinateActivity.class),CODE);
+                    ConstructorActivity.this.startActivityForResult(new Intent(ConstructorActivity.this, CoordinateActivity.class), COORDINATE);
                 }
             }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
             address.setMovementMethod(LinkMovementMethod.getInstance());
             address.setText(spanTxt, TextView.BufferType.SPANNABLE);
+
+        } else {
+
+            profile.getCurrent().setPosition(profile.getPosition());
+            profile.getCurrent().getOwner().setPosition(profile.getPosition());
+            address.setText(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getPosition()) + " " + getResources().getString(R.string.change));
         }
 
 
@@ -254,9 +285,14 @@ public class ConstructorActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 profile.getCurrent().getOwner().setTravelMode(TravelMode.byId(item.getItemId()));
                 if (profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
+                    //если человек хочет двигаться путь разрешит отслеживать своё местоположение
                     if (checkLocationPermission()) {
                         ActivityCompat.requestPermissions(ConstructorActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                     }
+                }else{
+                    profile.getCurrent().getOwner().setHost(true);
+                    ((CheckBox)findViewById(R.id.isHost)).setChecked(true);
+                    ((CheckBox)findViewById(R.id.isHost)).setEnabled(false);
                 }
                 draw(profile);
                 return true;
@@ -347,8 +383,8 @@ public class ConstructorActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CODE && resultCode == RESULT_OK) {
-            final Position position = new Position(data.getExtras().getFloat(LAT), data.getExtras().getFloat(LNG));
+        if (requestCode == COORDINATE && resultCode == RESULT_OK) {
+            final Position position = new Position(data.getExtras().getDouble(LAT),data.getExtras().getDouble(LNG));
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {

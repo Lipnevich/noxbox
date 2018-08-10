@@ -50,7 +50,7 @@ import live.noxbox.tools.Task;
 public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
     public static final String LAT = "lat";
     public static final String LNG = "lng";
-    public static final int CODE = 111;
+    public static final int COORDINATE = 111;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

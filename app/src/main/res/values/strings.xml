@@ -103,7 +103,7 @@
     <string name="service">service</string>
     <string name="earn">earn</string>
     <string name="spend">to spend</string>
-    <string name="stayNone">waiting at given address</string>
+    <string name="host">waiting at given address</string>
     <string name="beWalk">foot</string>
     <string name="onBike">bike</string>
     <string name="onCar">car</string>
@@ -178,4 +178,5 @@
     <string name="acceptingConfirmation">Вашу заявку приняли, необходимо ваше подтверждение..</string>
     <string name="change">изменить</string>
     <string name="changeAddress">Изменить адрес</string>
+    <string name="or">либо</string>
 </resources>

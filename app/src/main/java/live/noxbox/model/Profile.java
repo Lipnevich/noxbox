@@ -25,6 +25,7 @@ public class Profile implements Serializable {
     private NotificationKeys notificationKeys;
     private Noxbox current;
     private TravelMode travelMode;
+    private Boolean host;
 
     private Position position;
     private Noxbox viewed;
@@ -136,7 +137,7 @@ public class Profile implements Serializable {
     @Exclude
     public Profile publicInfo() {
         return new Profile().setId(id)
-                .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode);
+                .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode).setHost(host);
     }
 
     @Exclude
@@ -207,5 +208,14 @@ public class Profile implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
+    }
+
+    public Boolean getHost() {
+        return host;
+    }
+
+    public Profile setHost(Boolean host) {
+        this.host = host;
+        return this;
     }
 }

@@ -4,7 +4,7 @@ import live.noxbox.R;
 
 public enum TravelMode {
 
-    none(1, R.string.stayNone, 0, R.drawable.home),
+    none(1, R.string.no, 0, R.drawable.home),
     // 45 km/h
     driving(2, R.string.onCar, 45000 / 60, R.drawable.car),
     // 15 km/h
