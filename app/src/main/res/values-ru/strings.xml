@@ -173,7 +173,7 @@
     <string name="waitingByAddress">Ожидаю по адресу:</string>
     <string name="across">Через</string>
     <string name="willArriveAtTheAddress">Прибуду по адресу:</string>
-    <string name="connectionWithInitiator">Идёт соединение с заказчиком, пожалуйста ожидайте</string>
+    <string name="connectionWithInitiator">Идёт соединение, пожалуйста ожидайте</string>
     <string name="acceptingConfirmation">Вашу заявку приняли, необходимо ваше подтверждение..</string>
     <string name="change">изменить</string>
     <string name="changeAddress">Изменить адрес</string>
