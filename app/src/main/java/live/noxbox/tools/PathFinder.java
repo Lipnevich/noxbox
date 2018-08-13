@@ -27,26 +27,70 @@ import java.util.List;
 import java.util.Locale;
 
 import live.noxbox.R;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.TravelMode;
 
 import static live.noxbox.MapActivity.dpToPx;
+import static live.noxbox.model.TravelMode.none;
 
 public class PathFinder {
 
 
     public static void createRequestPoints(Noxbox noxbox, GoogleMap googleMap, Activity activity) {
-        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
-            MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
-            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
-            createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include( noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(48)));
-        } else {
-            MarkerCreator.createPositionMarker(noxbox.getOwner().getTravelMode(), noxbox.getPosition().toLatLng(), googleMap);
-            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
-            createPathBetweenPoints(noxbox.getPosition(), noxbox.getOwner().getPosition(), noxbox.getOwner().getTravelMode(), activity, googleMap);
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getOwner().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(48)));
+//        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+//            MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+//            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
+//            createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+//            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include( noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+//        } else {
+//            MarkerCreator.createPositionMarker(noxbox.getOwner().getTravelMode(), noxbox.getPosition().toLatLng(), googleMap);
+//            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
+//            createPathBetweenPoints(noxbox.getPosition(), noxbox.getOwner().getPosition(), noxbox.getOwner().getTravelMode(), activity, googleMap);
+//            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getOwner().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+//        }
+        if (noxbox.getRole() == MarketRole.supply) {//исполнитель
+            if (noxbox.getOwner().getTravelMode() == none) {
+                MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+                MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
+                createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+
+            } else {
+                if (noxbox.getOwner().getHost() && !noxbox.getParty().getHost()) {
+                    MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+                    MarkerCreator.createCustomMarker(noxbox, googleMap, activity, TravelMode.none);
+                    createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+                } else {
+                    MarkerCreator.createPositionMarker(TravelMode.none, noxbox.getParty().getPosition().toLatLng(), googleMap);
+                    MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
+                    createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), TravelMode.none, activity, googleMap);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+                }
+
+            }
+
+        } else if (noxbox.getRole() == MarketRole.demand) {
+            if (noxbox.getOwner().getTravelMode() == none) {
+                MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+                MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
+                createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+            } else {
+                if (noxbox.getParty().getTravelMode() == none && noxbox.getParty().getHost()) {
+                    MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+                    MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
+                    createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+                } else {
+                    MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
+                    MarkerCreator.createCustomMarker(noxbox, googleMap, activity, TravelMode.none);
+                    createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
+                }
+            }
         }
     }
 

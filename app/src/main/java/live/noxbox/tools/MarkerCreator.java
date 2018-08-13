@@ -26,7 +26,7 @@ public class MarkerCreator {
         return marker;
     }
 
-    public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Activity activity) {
+    public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Activity activity, TravelMode travelMode) {
         switch (noxbox.getRole()) {
             case supply:
                 Marker marker = googleMap.addMarker(new MarkerOptions()
@@ -35,7 +35,7 @@ public class MarkerCreator {
                                 getIconBitmap(activity, noxbox.getType().getImage()),
                                 getRatingColor(noxbox.getOwner().ratingToPercentage(), activity,noxbox),
                                 activity.getResources().getColor(R.color.icon_background),
-                                getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
+                                getIconTravelModeBitmap(activity, travelMode.getImage())
                 )))
                 .anchor(0.5f, 1f));
 
@@ -48,7 +48,7 @@ public class MarkerCreator {
                                 getIconBitmap(activity, noxbox.getType().getImage()),
                                 getRatingColor(noxbox.getOwner().ratingToPercentage(), activity,noxbox),
                                 activity.getResources().getColor(R.color.icon_background),
-                                getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
+                                getIconTravelModeBitmap(activity, travelMode.getImage())
                         )))
                         .anchor(0.5f, 1f));
 

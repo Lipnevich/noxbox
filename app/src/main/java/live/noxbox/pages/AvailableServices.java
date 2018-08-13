@@ -81,7 +81,12 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox.setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         noxbox.setType(NoxboxType.sportCompanion);
         noxbox.setWorkSchedule(new WorkSchedule());
-        createMarker(profile, noxbox);
+        if(profile.getTravelMode() == TravelMode.none && owner.getTravelMode() == TravelMode.none
+                || profile.getTravelMode()!= TravelMode.none && owner.getTravelMode() != TravelMode.none){
+            //do not show this marker
+        }else{
+            createMarker(profile, noxbox);
+        }
 
         Noxbox noxbox1 = new Noxbox();
         noxbox1.setTimeCreated(System.currentTimeMillis());
@@ -99,7 +104,13 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox1.setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         noxbox1.setType(NoxboxType.plumber);
         noxbox1.setWorkSchedule(new WorkSchedule());
-        createMarker(profile, noxbox1);
+        if(profile.getTravelMode() == TravelMode.none && owner1.getTravelMode() == TravelMode.none
+                || profile.getTravelMode()!= TravelMode.none && owner1.getTravelMode() != TravelMode.none){
+            //do not show this marker
+        }else{
+            createMarker(profile, noxbox1);
+        }
+
 
         Noxbox noxbox2 = new Noxbox();
         noxbox2.setTimeCreated(System.currentTimeMillis());
@@ -117,14 +128,20 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox2.setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
         noxbox2.setType(NoxboxType.musician);
         noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._41, NoxboxTime._47));
-        createMarker(profile, noxbox2);
+        if(profile.getTravelMode() == TravelMode.none && owner2.getTravelMode() == TravelMode.none
+                || profile.getTravelMode()!= TravelMode.none && owner2.getTravelMode() != TravelMode.none){
+            //do not show this marker
+        }else{
+            createMarker(profile, noxbox2);
+        }
+
         googleMap.setOnMarkerClickListener(this);
 
         if (profile.getPosition() != null) {
             CameraPosition cameraPosition
                     = new CameraPosition.Builder()
                     .target(profile.getPosition().toLatLng())
-                    .zoom(15)
+                    .zoom(13)
                     .build();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
             googleMap.animateCamera(cameraUpdate);
@@ -141,7 +158,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
 
     public void createMarker(Profile profile, Noxbox noxbox) {
         if (markers.get(noxbox.getId()) == null) {
-            markers.put(noxbox.getId(), MarkerCreator.createCustomMarker(noxbox, googleMap, activity));
+            markers.put(noxbox.getId(), MarkerCreator.createCustomMarker(noxbox, googleMap, activity,noxbox.getOwner().getTravelMode()));
         }
     }
 

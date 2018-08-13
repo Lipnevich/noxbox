@@ -64,7 +64,12 @@ public class DetailedActivity extends AppCompatActivity {
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
-        drawButton(profile.getViewed().getRole());
+        if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null) {
+            findViewById(R.id.acceptButton).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
+            drawButton(profile.getViewed().getRole());
+        }
     }
 
     private void drawToolbar(Noxbox noxbox) {
@@ -138,8 +143,7 @@ public class DetailedActivity extends AppCompatActivity {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(),noxbox.getPosition()));
-
+                ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition()));
 
                 float[] results = new float[1];
 
@@ -192,17 +196,21 @@ public class DetailedActivity extends AppCompatActivity {
                 } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
                     ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
                     ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
-                    findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
-                    findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startCoordinateActivity();
-                        }
-                    });
+
+                    if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null) {
+                        findViewById(R.id.coordinatesSelect).setVisibility(View.GONE);
+                    } else {
+                        findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
+                        findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                startCoordinateActivity();
+                            }
+                        });
+                    }
                 }
             }
         });
-
 
     }
 
@@ -216,10 +224,10 @@ public class DetailedActivity extends AppCompatActivity {
         String description = getResources().getString(noxbox.getType().getDescription());
         String serviceDescription = "";
         int countSpace = 0;
-        for(int i = 0; i<description.length();i++){
-            if(description.charAt(i)==' '){
+        for (int i = 0; i < description.length(); i++) {
+            if (description.charAt(i) == ' ') {
                 countSpace++;
-                if(countSpace > 1){
+                if (countSpace > 1) {
                     serviceDescription = serviceDescription.concat(getResources().getString(R.string.ending));
                     break;
                 }
@@ -286,7 +294,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void startCoordinateActivity() {
-        startActivityForResult(new Intent(this, CoordinateActivity.class),COORDINATE);
+        startActivityForResult(new Intent(this, CoordinateActivity.class), COORDINATE);
 
     }
 
@@ -305,7 +313,7 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == COORDINATE && resultCode == RESULT_OK){
+        if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             final Position position = new Position(data.getExtras().getFloat(LAT), data.getExtras().getFloat(LNG));
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
