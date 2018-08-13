@@ -82,7 +82,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox.setType(NoxboxType.sportCompanion);
         noxbox.setWorkSchedule(new WorkSchedule());
         if(profile.getTravelMode() == TravelMode.none && owner.getTravelMode() == TravelMode.none
-                || profile.getTravelMode()!= TravelMode.none && owner.getTravelMode() != TravelMode.none){
+                || profile.getTravelMode()!= TravelMode.none && owner.getTravelMode() != TravelMode.none && !profile.getHost() && !owner.getHost()){
             //do not show this marker
         }else{
             createMarker(profile, noxbox);
@@ -105,7 +105,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox1.setType(NoxboxType.plumber);
         noxbox1.setWorkSchedule(new WorkSchedule());
         if(profile.getTravelMode() == TravelMode.none && owner1.getTravelMode() == TravelMode.none
-                || profile.getTravelMode()!= TravelMode.none && owner1.getTravelMode() != TravelMode.none){
+                || profile.getTravelMode()!= TravelMode.none && owner1.getTravelMode() != TravelMode.none && !profile.getHost() && !owner1.getHost()){
             //do not show this marker
         }else{
             createMarker(profile, noxbox1);
@@ -129,7 +129,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         noxbox2.setType(NoxboxType.musician);
         noxbox2.setWorkSchedule(new WorkSchedule(NoxboxTime._41, NoxboxTime._47));
         if(profile.getTravelMode() == TravelMode.none && owner2.getTravelMode() == TravelMode.none
-                || profile.getTravelMode()!= TravelMode.none && owner2.getTravelMode() != TravelMode.none){
+                || profile.getTravelMode()!= TravelMode.none && owner2.getTravelMode() != TravelMode.none && !profile.getHost() && !owner2.getHost()){
             //do not show this marker
         }else{
             createMarker(profile, noxbox2);
