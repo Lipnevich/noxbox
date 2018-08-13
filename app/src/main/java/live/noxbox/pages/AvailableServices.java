@@ -68,7 +68,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         final Noxbox noxbox = new Noxbox();
         noxbox.setTimeCreated(System.currentTimeMillis());
         noxbox.setRole(MarketRole.demand);
-        Profile owner = new Profile().setId("1231").setTravelMode(TravelMode.none).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
+        Profile owner = new Profile().setId("1231").setHost(true).setTravelMode(TravelMode.none).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
         Rating rating = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
         rating.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный напарник!", System.currentTimeMillis(), true));
         rating.getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
@@ -91,7 +91,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         Noxbox noxbox1 = new Noxbox();
         noxbox1.setTimeCreated(System.currentTimeMillis());
         noxbox1.setRole(MarketRole.demand);
-        Profile owner1 = new Profile().setId("1234").setTravelMode(TravelMode.driving).setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
+        Profile owner1 = new Profile().setId("1234").setHost(true).setTravelMode(TravelMode.driving).setPosition(new Position().setLongitude(27.569018).setLatitude(53.871399));
         Rating rating1 = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
         rating1.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный сантехник!", System.currentTimeMillis(), true));
         rating1.getComments().put("1", new Comment("1", "Добротный сантехник!", System.currentTimeMillis(), true));
@@ -115,7 +115,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
         Noxbox noxbox2 = new Noxbox();
         noxbox2.setTimeCreated(System.currentTimeMillis());
         noxbox2.setRole(MarketRole.supply);
-        Profile owner2 = new Profile().setId("1238").setTravelMode(TravelMode.walking).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
+        Profile owner2 = new Profile().setId("1238").setHost(false).setTravelMode(TravelMode.walking).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399));
         Rating rating2 = new Rating().setReceivedLikes(2).setReceivedDislikes(1);
         rating2.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный музыкант!", System.currentTimeMillis(), true));
         rating2.getComments().put("1", new Comment("1", "Духовная и творческая личность!", System.currentTimeMillis(), true));

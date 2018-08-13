@@ -174,9 +174,9 @@
     <string name="waitingByAddress">I\'m waiting on the address:</string>
     <string name="across">Across</string>
     <string name="willArriveAtTheAddress">I will arrive at the address:</string>
-    <string name="connectionWithInitiator">Идёт соединение с заказчиком, пожалуйста ожидайте</string>
-    <string name="acceptingConfirmation">Вашу заявку приняли, необходимо ваше подтверждение..</string>
-    <string name="change">изменить</string>
-    <string name="changeAddress">Изменить адрес</string>
-    <string name="or">либо</string>
+    <string name="connectionWithInitiator">Connecting, please wait</string>
+    <string name="acceptingConfirmation">Request incoming, please confirm..</string>
+    <string name="change">change</string>
+    <string name="changeAddress">Change address</string>
+    <string name="or">or</string>
 </resources>
