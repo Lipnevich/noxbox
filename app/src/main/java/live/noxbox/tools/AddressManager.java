@@ -23,8 +23,11 @@ public class AddressManager {
 
         try {
             addresses = geocoder.getFromLocation(position.getLatitude(), position.getLongitude(), 1);
-            address = addresses.get(0).getAddressLine(0);
-            city = addresses.get(0).getLocality();
+
+            if(addresses.size() > 0) {
+                address = addresses.get(0).getAddressLine(0);
+                city = addresses.get(0).getLocality();
+            }
         } catch (IOException e) {
             Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
             return position.getLatitude() + " " + position.getLongitude();

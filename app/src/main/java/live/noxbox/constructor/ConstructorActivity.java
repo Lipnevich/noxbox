@@ -232,7 +232,7 @@ public class ConstructorActivity extends AppCompatActivity {
 
         if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none || profile.getCurrent().getOwner().getHost()) {
             SpannableStringBuilder spanTxt =
-                    new SpannableStringBuilder(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getPosition()));
+                    new SpannableStringBuilder(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition()));
             spanTxt.append(" ");
             spanTxt.append(getString(R.string.change));
             spanTxt.setSpan(new ClickableSpan() {
@@ -245,10 +245,7 @@ public class ConstructorActivity extends AppCompatActivity {
             address.setText(spanTxt, TextView.BufferType.SPANNABLE);
 
         } else {
-
-            profile.getCurrent().setPosition(profile.getPosition());
-            profile.getCurrent().getOwner().setPosition(profile.getPosition());
-            address.setText(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getPosition()) + " " + getResources().getString(R.string.change));
+            address.setText(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition()) + " " + getResources().getString(R.string.change));
         }
 
 

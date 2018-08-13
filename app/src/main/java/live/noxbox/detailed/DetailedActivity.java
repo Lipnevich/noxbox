@@ -158,10 +158,6 @@ public class DetailedActivity extends AppCompatActivity {
                 String timeTxt;
                 String distanceTxt = String.valueOf((int) results[0] / 1000) + " " + getResources().getString(R.string.km);
                 switch (minutes % 10) {
-                    case 11: {
-                        timeTxt = getResources().getString(R.string.minutes);
-                        break;
-                    }
                     case 1: {
                         timeTxt = getResources().getString(R.string.minute);
                         break;
@@ -314,7 +310,7 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
-            final Position position = new Position(data.getExtras().getFloat(LAT), data.getExtras().getFloat(LNG));
+            final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
