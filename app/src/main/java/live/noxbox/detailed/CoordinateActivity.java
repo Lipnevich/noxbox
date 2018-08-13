@@ -203,7 +203,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
                 .zoom(zoom)
                 .build();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-        googleMap.animateCamera(cameraUpdate);
+        googleMap.moveCamera(cameraUpdate);
         hideSoftKeyboard();
     }
 
