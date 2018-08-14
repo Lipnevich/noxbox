@@ -14,11 +14,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import live.noxbox.model.Filters;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
@@ -135,6 +139,7 @@ public class Firebase {
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
                             .setHost(true)
+                            .setFilters(new Filters(true,true,150,new ArrayList<NoxboxType>(EnumSet.allOf(NoxboxType.class))))
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
                             .setTravelMode(TravelMode.driving);
                     task.execute(profile);

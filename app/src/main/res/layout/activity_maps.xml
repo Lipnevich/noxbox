@@ -168,6 +168,22 @@
         android:layout_marginTop="68dp"
         android:src="@drawable/debug_acceptance"
         />
+    <ImageView
+        android:id="@+id/debug_noxbox_example"
+        style="@style/IconButtonStyle"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="124dp"
+        android:src="@drawable/debug_acceptance"
+        />
+    <ImageView
+        android:id="@+id/debug_filter"
+        style="@style/IconButtonStyle"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="182dp"
+        android:src="@drawable/filter"
+        />
 
     <ImageView
         android:id="@+id/check"

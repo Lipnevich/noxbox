@@ -53,6 +53,7 @@ import java.util.TreeMap;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
+import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.model.IntentAndKey;
 import live.noxbox.model.Profile;
 import live.noxbox.pages.AuthActivity;
@@ -229,6 +230,9 @@ public abstract class MenuActivity extends AppCompatActivity {
         menu.put(getString(R.string.wallet), new IntentAndKey()
                 .setIntent(new Intent(getApplicationContext(), WalletActivity.class))
                 .setKey(WalletActivity.CODE));
+        menu.put("Фильтры", new IntentAndKey()
+                .setIntent(new Intent(getApplicationContext(), MapFiltersActivity.class))
+                .setKey(MapFiltersActivity.CODE));
         return menu;
     }
 

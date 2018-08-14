@@ -31,6 +31,16 @@ public class Profile implements Serializable {
     private Noxbox viewed;
     private Long arriveInSeconds;
 
+    private Filters filters;
+
+    public Filters getFilters() {
+        return filters;
+    }
+
+    public Profile setFilters(Filters filters) {
+        this.filters = filters;
+        return this;
+    }
 
     public String getId() {
         return id;

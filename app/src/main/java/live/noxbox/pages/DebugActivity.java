@@ -1,5 +1,6 @@
 package live.noxbox.pages;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -7,6 +8,7 @@ import java.math.BigDecimal;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
+import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -19,10 +21,6 @@ import live.noxbox.tools.Task;
 import static live.noxbox.tools.DebugMessage.popup;
 
 public class DebugActivity extends MenuActivity {
-
-
-
-
 
     @Override
     protected void onResume() {
@@ -50,19 +48,28 @@ public class DebugActivity extends MenuActivity {
                 @Override
                 public void execute(final Profile profile) {
                     DebugActivity.this.findViewById(R.id.debug_acceptance).setVisibility(View.VISIBLE);
+                    DebugActivity.this.findViewById(R.id.debug_filter).setVisibility(View.VISIBLE);
+
 
                     findViewById(R.id.debug_acceptance).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (profile.getCurrent() != null) {
                                 profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setId("12321"));
-                               // profile.getCurrent().getOwner().setPosition(new Position().setLongitude(27.639018).setLatitude(53.901399));
+                                // profile.getCurrent().getOwner().setPosition(new Position().setLongitude(27.639018).setLatitude(53.901399));
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "current noxbox is null");
                             }
 
+                        }
+                    });
+
+                    findViewById(R.id.debug_filter).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivityForResult(new Intent(DebugActivity.this, MapFiltersActivity.class), MapFiltersActivity.CODE);
                         }
                     });
                 }
