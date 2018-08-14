@@ -14,9 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -135,11 +133,16 @@ public class Firebase {
                     task.execute(profile);
                 } else {
                     // TODO (nli) delete it
+
+                    Map<String,Boolean> filterTypesList = new HashMap<>();
+                    for(NoxboxType type : NoxboxType.values()){
+                        filterTypesList.put(type.name(), true);
+                    }
                     profile = new Profile()
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
                             .setHost(true)
-                            .setFilters(new Filters(true,true,150,new ArrayList<NoxboxType>(EnumSet.allOf(NoxboxType.class))))
+                            .setFilters(new Filters(true,true,150,filterTypesList))
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
                             .setTravelMode(TravelMode.driving);
                     task.execute(profile);

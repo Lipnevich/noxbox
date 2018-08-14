@@ -16,9 +16,10 @@ import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
+import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 
-public class MapFiltersActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
+public class MapFiltersActivity extends AppCompatActivity {
 
     public static final int CODE = 1005;
 
@@ -27,8 +28,8 @@ public class MapFiltersActivity extends AppCompatActivity implements SeekBar.OnS
     private SeekBar price;
     private TextView priceText;
     private LinearLayout typeLayout;
-    private String[] noxboxTypes;
-    private boolean[] checkedTypes;
+    private String[] typesName;
+    private boolean[] typesChecked;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,8 +41,6 @@ public class MapFiltersActivity extends AppCompatActivity implements SeekBar.OnS
         price = findViewById(R.id.price);
         priceText = findViewById(R.id.priceText);
         typeLayout = findViewById(R.id.types);
-
-        price.setOnSeekBarChangeListener(this);
     }
 
     @Override
@@ -75,45 +74,75 @@ public class MapFiltersActivity extends AppCompatActivity implements SeekBar.OnS
             }
         });
 
-        ((SeekBar) findViewById(R.id.price)).setOnSeekBarChangeListener(this);
+        price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                profile.getFilters().setPrice(progress);
+                priceText.setText(seekBar.getProgress() + " " + getResources().getString(R.string.currency));
+            }
 
-        int i = 0;
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        typesName = new String[NoxboxType.values().length];
+        typesChecked = new boolean[NoxboxType.values().length];
         for (NoxboxType type : NoxboxType.values()) {
-            noxboxTypes[i] = getResources().getString(type.getName());
-            i++;
+            typesName[type.getId()] = getResources().getString(type.getName());
+            typesChecked[type.getId()] = profile.getFilters().getTypes().get(type.name());
         }
-        checkedTypes = new boolean[noxboxTypes.length];
 
 
         typeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MapFiltersActivity.this);
-                builder.setTitle(getResources().getString(R.string.service));
-                builder.setMultiChoiceItems(noxboxTypes, checkedTypes, new DialogInterface.OnMultiChoiceClickListener() {
+                builder.setMultiChoiceItems(typesName, typesChecked, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
+                        DebugMessage.popup(MapFiltersActivity.this, String.valueOf(which));
+                        typesChecked[which] = isChecked;
                     }
                 });
 
+                builder.setCancelable(true);
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (NoxboxType type : NoxboxType.values()) {
+                            profile.getFilters().getTypes().put(type.name(), typesChecked[type.getId()]);
+                        }
+                    }
+                });
+
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (NoxboxType type : NoxboxType.values()) {
+                            typesChecked[type.getId()] = profile.getFilters().getTypes().get(type.name());
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setNeutralButton(R.string.chooseAll, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (NoxboxType type : NoxboxType.values()) {
+                            typesChecked[type.getId()] = true;
+                            profile.getFilters().getTypes().put(type.name(), true);
+                        }
+                    }
+                });
+                AlertDialog mAlertDialog = builder.create();
+                mAlertDialog.show();
 
             }
         });
-
-
-    }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        priceText.setText(seekBar.getProgress() + " " + getResources().getString(R.string.currency));
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-    }
-
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
     }
 }

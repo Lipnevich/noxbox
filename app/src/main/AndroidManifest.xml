@@ -25,8 +25,7 @@
         <activity
             android:name=".MapActivity"
             android:theme="@style/NoActionBarMap" />
-        <activity
-            android:name=".filters.MapFiltersActivity"/>
+        <activity android:name=".filters.MapFiltersActivity" android:parentActivityName=".MapActivity"/>
         <activity
             android:name=".constructor.ConstructorActivity"
             android:parentActivityName=".MapActivity"

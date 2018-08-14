@@ -1,17 +1,17 @@
 package live.noxbox.model;
 
-import java.util.List;
+import java.util.Map;
 
 public class Filters {
 
-    private Boolean supply;
-    private Boolean demand;
+    private boolean supply;
+    private boolean demand;
     private Integer maxPrice;
-    private List<NoxboxType> types;
+    private Map<String,Boolean> types;
 
     public Filters() { }
 
-    public Filters(Boolean supply, Boolean demand, Integer price, List<NoxboxType> types) {
+    public Filters(Boolean supply, boolean demand, Integer price, Map<String,Boolean> types) {
         this.supply = supply;
         this.demand = demand;
         this.maxPrice = price;
@@ -22,7 +22,7 @@ public class Filters {
         return supply;
     }
 
-    public Filters setSupply(Boolean supply) {
+    public Filters setSupply(boolean supply) {
         this.supply = supply;
         return this;
     }
@@ -31,7 +31,7 @@ public class Filters {
         return demand;
     }
 
-    public Filters setDemand(Boolean demand) {
+    public Filters setDemand(boolean demand) {
         this.demand = demand;
         return this;
     }
@@ -45,11 +45,11 @@ public class Filters {
         return this;
     }
 
-    public List<NoxboxType> getTypes() {
+    public Map<String,Boolean> getTypes() {
         return types;
     }
 
-    public Filters setTypes(List<NoxboxType> types) {
+    public Filters setTypes(Map<String,Boolean> types) {
         this.types = types;
         return this;
     }

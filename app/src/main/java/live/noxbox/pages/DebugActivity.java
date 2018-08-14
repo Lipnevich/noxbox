@@ -69,7 +69,7 @@ public class DebugActivity extends MenuActivity {
                     findViewById(R.id.debug_filter).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startActivityForResult(new Intent(DebugActivity.this, MapFiltersActivity.class), MapFiltersActivity.CODE);
+                            startActivity(new Intent(DebugActivity.this, MapFiltersActivity.class));
                         }
                     });
                 }

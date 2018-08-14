@@ -178,4 +178,6 @@
     <string name="change">изменить</string>
     <string name="changeAddress">Изменить адрес</string>
     <string name="or">либо</string>
+    <string name="chooseAll">Choose all</string>
+    <string name="ok">ok</string>
 </resources>

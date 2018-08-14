@@ -101,7 +101,7 @@ public class DetailedActivity extends AppCompatActivity {
         Rating rating = viewed.getRole() == MarketRole.demand ?
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name()) : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
 
-        int percentage = viewed.getOwner().ratingToPercentage();
+        int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(),viewed.getType());
         if (percentage >= 95) {
             ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.GREEN);
             ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.GREEN);
@@ -113,8 +113,8 @@ public class DetailedActivity extends AppCompatActivity {
             ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.RED);
         }
 
-        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage() + "%");
-        ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage() + "%");
+        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(),viewed.getType()) + "%");
+        ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage(viewed.getRole(),viewed.getType()) + "%");
         ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " " + getResources().getString(R.string.like));
         ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
 

@@ -179,4 +179,6 @@
     <string name="change">change</string>
     <string name="changeAddress">Change address</string>
     <string name="or">or</string>
+    <string name="chooseAll">Choose all</string>
+    <string name="ok">ok</string>
 </resources>

@@ -1,7 +1,5 @@
 package live.noxbox.tools;
 
-import android.app.Activity;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,7 +17,7 @@ import live.noxbox.model.WorkSchedule;
 
 public class NoxboxExamples {
 
-    public static List<Noxbox> generateNoxboxes(Position position, int size, Activity activity) {
+    public static List<Noxbox> generateNoxboxes(Position position, int size, Profile profile) {
         List<Noxbox> noxboxes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
 
@@ -37,15 +35,16 @@ public class NoxboxExamples {
             }
 
             Rating rating = new Rating();
-            rating.setReceivedLikes(ThreadLocalRandom.current().nextInt(0, 1000));
-            rating.setReceivedDislikes(ThreadLocalRandom.current().nextInt((int)Math.ceil(rating.getReceivedLikes() / 10)));
+            rating.setReceivedLikes(ThreadLocalRandom.current().nextInt(900, 1000));
+            rating.setReceivedDislikes(ThreadLocalRandom.current().nextInt(rating.getReceivedLikes() / 10));
 
             rating.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный напарник!", System.currentTimeMillis(), true));
             rating.getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
             rating.getComments().put("2", new Comment("2", "Выносливость бы повысить, слишком быстро выдыхается во время кросса.", System.currentTimeMillis(), false));
 
             noxbox.setType(NoxboxType.values()[ThreadLocalRandom.current().nextInt(NoxboxType.values().length)]);
-            owner.getDemandsRating().put(activity.getResources().getString(noxbox.getType().getName()), rating);
+            owner.getDemandsRating().put(noxbox.getType().name(), rating);
+            owner.getSuppliesRating().put(noxbox.getType().name(), rating);
             noxbox.setOwner(owner);
             noxbox.setId("12311" + i);
             noxbox.setEstimationTime("0");
@@ -58,8 +57,23 @@ public class NoxboxExamples {
                     position.getLatitude() + ThreadLocalRandom.current().nextDouble(-delta, delta),
                     position.getLongitude() + ThreadLocalRandom.current().nextDouble(-delta, delta)));
             noxbox.setWorkSchedule(new WorkSchedule());
-            noxboxes.add(noxbox);
+
+//            Фильтрация услуг в зависимости от настроек
+            if (noxbox.getRole() == MarketRole.demand && profile.getFilters().getDemand()) {
+                if (Integer.parseInt(noxbox.getPrice()) < profile.getFilters().getPrice()) {
+                    if(profile.getFilters().getTypes().get(noxbox.getType().name())){
+                        noxboxes.add(noxbox);
+                    }
+                }
+            } else if (noxbox.getRole() == MarketRole.supply && profile.getFilters().getSupply())
+                if (Integer.parseInt(noxbox.getPrice()) < profile.getFilters().getPrice()) {
+                    if(profile.getFilters().getTypes().get(noxbox.getType().name())){
+                        noxboxes.add(noxbox);
+                    }
+                }
         }
+
+
         return noxboxes;
     }
 }

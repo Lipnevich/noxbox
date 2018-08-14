@@ -66,7 +66,7 @@ public class AvailableServices implements State, GoogleMap.OnMarkerClickListener
             @Override
             public void onClick(View v) {
                 if(noxboxes == null){
-                    noxboxes = NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 50, activity);
+                    noxboxes = NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 50,profile);
                 }
                 for (Noxbox noxbox : noxboxes) {
                     if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none

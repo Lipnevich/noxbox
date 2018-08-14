@@ -13,9 +13,10 @@ public class Profile implements Serializable {
 
     // read only
     private String id;
+
+    private Acceptance acceptance;
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
-    private Acceptance acceptance;
     private Wallet wallet;
     private Long timeDisliked;
 
@@ -133,7 +134,7 @@ public class Profile implements Serializable {
     }
 
     public NotificationKeys getNotificationKeys() {
-        if(notificationKeys == null) {
+        if (notificationKeys == null) {
             notificationKeys = new NotificationKeys();
         }
         return notificationKeys;
@@ -151,7 +152,7 @@ public class Profile implements Serializable {
     }
 
     @Exclude
-    public Profile notPublicInfo(){
+    public Profile notPublicInfo() {
         return new Profile().setId(id).setName(name).setPhoto(photo)
                 .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode);
     }
@@ -184,16 +185,34 @@ public class Profile implements Serializable {
     }
 
 
+    @Exclude
+    public int ratingToPercentage(MarketRole role, NoxboxType type) {
+        int likes = 0;
+        int dislikes = 0;
+        Rating rating = null;
+
+        if (role == MarketRole.demand) {
+            rating = demandsRating.get(type.name());
+        } else {
+            rating = suppliesRating.get(type.name());
+        }
+
+        likes = rating.getReceivedLikes();
+        dislikes = rating.getReceivedDislikes();
+        if (dislikes == 0) return 100;
+        return (likes * 100 / (likes + dislikes));
+
+    }
 
     @Exclude
     public int ratingToPercentage() {
         int likes = 0;
         int dislikes = 0;
-        for(Rating offer : suppliesRating.values()) {
+        for (Rating offer : suppliesRating.values()) {
             likes += offer.getReceivedLikes();
             dislikes += offer.getReceivedDislikes();
         }
-        for(Rating demand : demandsRating.values()) {
+        for (Rating demand : demandsRating.values()) {
             likes += demand.getReceivedLikes();
             dislikes += demand.getReceivedDislikes();
         }
@@ -202,7 +221,7 @@ public class Profile implements Serializable {
         if (likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
         if (likes == 0 && dislikes > 1) return 0;
 
-        return (likes / (likes + dislikes)) * 100;
+        return (likes * 100 / (likes + dislikes));
     }
 
     @Override
@@ -212,7 +231,7 @@ public class Profile implements Serializable {
 
         Profile profile = (Profile) o;
 
-        return Objects.equal(id,profile.id);
+        return Objects.equal(id, profile.id);
     }
 
     @Override

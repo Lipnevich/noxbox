@@ -18,6 +18,7 @@
         <item name="material_drawer_selected_text">@color/primary</item>
         <item name="material_drawer_header_selection_text">@color/primary</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:alertDialogTheme">@style/AlertDialogCustom</item>
     </style>
 
     <style name="NoActionBar" parent="@style/AppTheme">
@@ -121,5 +122,11 @@
         <!--<item name="android:textColor">@color/secondary_detailed</item>-->
         <!--<item name="android:textColorPrimary">@color/secondary_detailed</item>-->
         <item name="android:textColorSecondary">@color/primary</item>
+    </style>
+
+    <!--map filters activity style-->
+    <style name="AlertDialogCustom" parent="android:Theme.Material.Light.Dialog.Alert">
+        <item name="android:colorPrimary">@color/primary</item>
+        <item name="android:colorAccent">@color/primary</item>
     </style>
 </resources>
