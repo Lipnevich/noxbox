@@ -17,47 +17,77 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.TravelMode;
 
 public class MarkerCreator {
-
-    public static Marker createPositionMarker(TravelMode travelMode, LatLng position, GoogleMap googleMap){
+    public static Marker createPositionMarker(TravelMode travelMode, LatLng position, GoogleMap googleMap) {
         Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(position)
                 .icon(BitmapDescriptorFactory.fromResource(travelMode.getImage()))
                 .anchor(0.5f, 1f));
         return marker;
     }
-
     public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Activity activity, TravelMode travelMode) {
+        Marker marker = null;
+        MarkerOptions markerOptions = null;
         switch (noxbox.getRole()) {
             case supply:
-                Marker marker = googleMap.addMarker(new MarkerOptions()
+                markerOptions = new MarkerOptions()
                         .position(noxbox.getPosition().toLatLng())
                         .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
                                 getIconBitmap(activity, noxbox.getType().getImage()),
-                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity,noxbox),
-                                activity.getResources().getColor(R.color.icon_background),
-                                getIconTravelModeBitmap(activity, travelMode.getImage())
-                )))
-                .anchor(0.5f, 1f));
-
-                marker.setTag(noxbox);
-                return marker;
-            case demand:
-                Marker demand = googleMap.addMarker(new MarkerOptions()
-                        .position(noxbox.getPosition().toLatLng())
-                        .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
-                                getIconBitmap(activity, noxbox.getType().getImage()),
-                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity,noxbox),
+                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity, noxbox),
                                 activity.getResources().getColor(R.color.icon_background),
                                 getIconTravelModeBitmap(activity, travelMode.getImage())
                         )))
-                        .anchor(0.5f, 1f));
+                        .anchor(0.5f, 1f);
 
-                demand.setTag(noxbox);
-                return demand;
+                marker = googleMap.addMarker(markerOptions);
+
+                marker.setTag(noxbox);
+            case demand:
+                markerOptions = new MarkerOptions()
+                        .position(noxbox.getPosition().toLatLng())
+                        .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
+                                getIconBitmap(activity, noxbox.getType().getImage()),
+                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity, noxbox),
+                                activity.getResources().getColor(R.color.icon_background),
+                                getIconTravelModeBitmap(activity, travelMode.getImage())
+                        )))
+                        .anchor(0.5f, 1f);
+
+                marker = googleMap.addMarker(markerOptions);
+
+                marker.setTag(noxbox);
         }
-        return null;
+        return marker;
     }
 
+    public static MarkerOptions createCustomMarker(Noxbox noxbox, Activity activity) {
+        MarkerOptions markerOptions = null;
+        switch (noxbox.getRole()) {
+            case supply:
+                markerOptions = new MarkerOptions()
+                        .position(noxbox.getPosition().toLatLng())
+                        .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
+                                getIconBitmap(activity, noxbox.getType().getImage()),
+                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity, noxbox),
+                                activity.getResources().getColor(R.color.icon_background),
+                                getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
+                        )))
+                        .anchor(0.5f, 1f);
+
+            case demand:
+                markerOptions = new MarkerOptions()
+                        .position(noxbox.getPosition().toLatLng())
+                        .icon(BitmapDescriptorFactory.fromBitmap(drawImage(
+                                getIconBitmap(activity, noxbox.getType().getImage()),
+                                getRatingColor(noxbox.getOwner().ratingToPercentage(), activity, noxbox),
+                                activity.getResources().getColor(R.color.icon_background),
+                                getIconTravelModeBitmap(activity, noxbox.getOwner().getTravelMode().getImage())
+                        )))
+                        .anchor(0.5f, 1f);
+
+        }
+        return markerOptions;
+    }
     private static Bitmap drawImage(Bitmap bitmap, int raitingColor, int backgroundColor, Bitmap travelModeBitmap) {
         int borderSize = 12;
         int startPoint = 48;
@@ -81,7 +111,7 @@ public class MarkerCreator {
         return bmpWithBorder;
     }
 
-    private static int getRatingColor(int percentage, Activity activity,Noxbox noxbox) {
+    private static int getRatingColor(int percentage, Activity activity, Noxbox noxbox) {
 //        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)){
 //            return activity.getResources().getColor(R.color.divider);
 //        }
@@ -103,26 +133,4 @@ public class MarkerCreator {
     }
 
 
-//    public static void addPulsatingEffect(GoogleMap googleMap, Profile profile){
-//        final Circle circle = googleMap.addCircle(new CircleOptions().center(profile.getCurrent().getPosition().toLatLng())
-//                .strokeWidth(12)
-//                .strokeColor(Color.GREEN)
-//                .radius(250));
-//
-//        ValueAnimator valueAnimator = new ValueAnimator();
-//        valueAnimator.setRepeatCount(ValueAnimator.INFINITE);
-//        valueAnimator.setRepeatMode(ValueAnimator.RESTART);  /* PULSE */
-//        valueAnimator.setIntValues(0, 250);
-//        valueAnimator.setDuration(1000);
-//        valueAnimator.setEvaluator(new IntEvaluator());
-//        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-//        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                float animatedFraction = valueAnimator.getAnimatedFraction();
-//                circle.setRadius(animatedFraction * 250);
-//            }
-//        });
-//        valueAnimator.start();
-//    }
 }

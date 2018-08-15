@@ -76,8 +76,7 @@ public class DetailedActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Песни под гитару");
-        //getSupportActionBar().setTitle(noxbox.getType().getName());
+        getSupportActionBar().setTitle(noxbox.getType().getName());
     }
 
     private void drawDescription(Noxbox noxbox) {
