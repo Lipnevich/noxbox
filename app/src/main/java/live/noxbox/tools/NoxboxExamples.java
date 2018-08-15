@@ -60,14 +60,14 @@ public class NoxboxExamples {
 
 //            Фильтрация услуг в зависимости от настроек
             if (noxbox.getRole() == MarketRole.demand && profile.getFilters().getDemand()) {
-                if (Integer.parseInt(noxbox.getPrice()) < profile.getFilters().getPrice()) {
-                    if(profile.getFilters().getTypes().get(noxbox.getType().name())){
+                if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
+                    if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
                         noxboxes.add(noxbox);
                     }
                 }
             } else if (noxbox.getRole() == MarketRole.supply && profile.getFilters().getSupply())
-                if (Integer.parseInt(noxbox.getPrice()) < profile.getFilters().getPrice()) {
-                    if(profile.getFilters().getTypes().get(noxbox.getType().name())){
+                if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
+                    if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
                         noxboxes.add(noxbox);
                     }
                 }

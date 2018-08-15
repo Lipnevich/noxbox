@@ -6,12 +6,12 @@ public class Filters {
 
     private boolean supply;
     private boolean demand;
-    private Integer maxPrice;
+    private String maxPrice;
     private Map<String,Boolean> types;
 
     public Filters() { }
 
-    public Filters(Boolean supply, boolean demand, Integer price, Map<String,Boolean> types) {
+    public Filters(Boolean supply, boolean demand, String price, Map<String,Boolean> types) {
         this.supply = supply;
         this.demand = demand;
         this.maxPrice = price;
@@ -36,11 +36,11 @@ public class Filters {
         return this;
     }
 
-    public Integer getPrice() {
+    public String getPrice() {
         return maxPrice;
     }
 
-    public Filters setPrice(Integer price) {
+    public Filters setPrice(String price) {
         this.maxPrice = price;
         return this;
     }

@@ -142,7 +142,7 @@ public class Firebase {
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
                             .setHost(true)
-                            .setFilters(new Filters(true,true,150,filterTypesList))
+                            .setFilters(new Filters(true,true,"0",filterTypesList))
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
                             .setTravelMode(TravelMode.driving);
                     task.execute(profile);

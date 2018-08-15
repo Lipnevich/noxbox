@@ -181,4 +181,12 @@
     <string name="or">or</string>
     <string name="chooseAll">Choose all</string>
     <string name="ok">ok</string>
+    <string name="filters">Filters</string>
+    <string name="constructorService">Constructor of service</string>
+    <string name="filterMaxPriceText">Укажите максимальную стоимость отображаемых услуг</string>
+    <string name="filterDemandText">Данный рычаг позволяет вклоткл усулуги спроса на карте</string>
+    <string name="filterSupplyText">Данный рычаг позволяет вклоткл усулуги исполнения на карте</string>
+    <string name="noxboxType">Noxbox type</string>
+    <string name="filterTypeServiceText">Отметьте сервисы которые хотели бы видеть на карте</string>
+    <string name="max">max</string>
 </resources>
