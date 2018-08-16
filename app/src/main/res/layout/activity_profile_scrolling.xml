@@ -30,25 +30,32 @@
                 android:tint="@color/primary" />
 
             <TextView
-                android:id="@+id/travelModeName"
+                android:id="@+id/travelMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/travelModeImage"
+                android:text="@string/travelMode"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/google_text" />
 
             <TextView
-                android:id="@+id/travelModeDescription"
+                android:id="@+id/travelModeName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/travelModeName"
+                android:layout_below="@id/travelMode"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/travelModeImage"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/text_color_secondary" />
-
+            <ImageView
+                android:id="@+id/editTravelMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/edit" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -57,38 +64,45 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:visibility="gone">
+            android:padding="@dimen/activity_horizontal_margin">
 
             <ImageView
-                android:id="@+id/travelModeSecondImage"
+                android:id="@+id/hostImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:tint="@color/primary"
-                android:src="@drawable/home"/>
+                android:src="@drawable/home"
+                android:tint="@color/primary" />
 
             <TextView
-                android:id="@+id/travelModeSecondName"
+                android:id="@+id/hostName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/travelModeSecondImage"
+                android:layout_toEndOf="@id/hostImage"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="@string/work_at_home"
                 android:textColor="@color/google_text" />
 
             <TextView
-                android:id="@+id/travelModeSecondDescription"
+                android:id="@+id/hostDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/travelModeSecondName"
+                android:layout_below="@id/hostName"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                android:layout_toEndOf="@id/travelModeSecondImage"
+                android:layout_toEndOf="@id/hostImage"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:text="@string/yes"
                 android:textColor="@color/text_color_secondary" />
-
+            <ImageView
+                android:id="@+id/editHost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/edit" />
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />
@@ -132,10 +146,83 @@
                 android:textColor="@color/text_color_secondary" />
 
 
-
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />
+        <!--cetrificates-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/certificateImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:src="@drawable/certificate"
+                android:tint="@color/primary" />
+            <TextView
+                android:id="@+id/certificate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/certificateImage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="@string/certificates"
+                android:textColor="@color/google_text" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/certificatesList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:layout_below="@id/certificate"
+                android:layout_marginStart="32dp"
+                android:layout_gravity="center_horizontal" />
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+        <!--work samples-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/photoCameraImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:src="@drawable/photo_camera"
+                android:tint="@color/primary" />
+            <TextView
+                android:id="@+id/workSamples"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/photoCameraImage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="@string/workSamples"
+                android:textColor="@color/google_text" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/workSampleList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/workSamples"
+                android:padding="8dp"
+                android:layout_marginStart="32dp"
+                android:layout_gravity="center_horizontal" />
+        </RelativeLayout>
+        <include layout="@layout/item_divider" />
+
 
     </LinearLayout>
 

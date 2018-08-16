@@ -189,4 +189,7 @@
     <string name="filterTypeServiceText">Отметьте сервисы которые хотели бы видеть на карте</string>
     <string name="max">max</string>
     <string name="profile">Profile</string>
+    <string name="workSamples">Образцы работ</string>
+    <string name="certificates">Сертификаты</string>
+    <string name="work_at_home">Work at home</string>
 </resources>
