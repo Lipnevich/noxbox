@@ -57,6 +57,7 @@ import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.model.IntentAndKey;
 import live.noxbox.model.Profile;
 import live.noxbox.pages.AuthActivity;
+import live.noxbox.profile.ProfileActivity;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
@@ -230,9 +231,12 @@ public abstract class MenuActivity extends AppCompatActivity {
         menu.put(getString(R.string.wallet), new IntentAndKey()
                 .setIntent(new Intent(getApplicationContext(), WalletActivity.class))
                 .setKey(WalletActivity.CODE));
-        menu.put("Фильтры", new IntentAndKey()
+        menu.put(getString(R.string.filters), new IntentAndKey()
                 .setIntent(new Intent(getApplicationContext(), MapFiltersActivity.class))
                 .setKey(MapFiltersActivity.CODE));
+        menu.put(getString(R.string.profile), new IntentAndKey()
+                .setIntent(new Intent(getApplicationContext(), ProfileActivity.class))
+                .setKey(ProfileActivity.CODE));
         return menu;
     }
 

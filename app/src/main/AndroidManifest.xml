@@ -27,6 +27,10 @@
             android:theme="@style/NoActionBarMap" />
         <activity android:name=".filters.MapFiltersActivity" android:parentActivityName=".MapActivity"/>
         <activity
+            android:name=".profile.ProfileActivity"
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/NoActionBar"/>
+        <activity
             android:name=".constructor.ConstructorActivity"
             android:parentActivityName=".MapActivity"
             android:windowSoftInputMode="stateHidden" />

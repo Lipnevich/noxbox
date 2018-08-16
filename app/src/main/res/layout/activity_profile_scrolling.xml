@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:padding="@dimen/activity_horizontal_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_profile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/travelModeImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:tint="@color/primary" />
+
+            <TextView
+                android:id="@+id/travelModeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/travelModeImage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/google_text" />
+
+            <TextView
+                android:id="@+id/travelModeDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/travelModeName"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/travelModeImage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/travelModeLayoutSecond"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/travelModeSecondImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:tint="@color/primary"
+                android:src="@drawable/home"/>
+
+            <TextView
+                android:id="@+id/travelModeSecondName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/travelModeSecondImage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/google_text" />
+
+            <TextView
+                android:id="@+id/travelModeSecondDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/travelModeSecondName"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/travelModeSecondImage"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/aboutMeImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:src="@drawable/about_me" />
+
+            <TextView
+                android:id="@+id/tvNumber3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/aboutMeImage"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="About me"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/google_text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvNumber3"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="8dp"
+                android:layout_toEndOf="@id/aboutMeImage"
+                android:text="Home"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
+
+
+
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
