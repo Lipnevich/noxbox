@@ -6,8 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
@@ -40,6 +41,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
+import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
@@ -83,7 +85,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             @Override
             public void onClick(View v) {
                 if (noxboxes == null) {
-                    noxboxes = NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 50, profile);
+                    noxboxes = NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 150, profile);
                 }
                 googleMap.setOnMarkerClickListener(clusterManager);
                 googleMap.setOnCameraIdleListener(clusterManager);
@@ -141,15 +143,15 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     @Override
     public boolean onClusterClick(Cluster<NoxboxMarker> cluster) {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                cluster.getPosition(),
-                (float) Math.floor(googleMap.getCameraPosition().zoom + 1)),
-                300,
-                null);
-        return false;
+                cluster.getPosition(), googleMap.getCameraPosition().zoom + 3f));
+        DebugMessage.popup(activity, "CLUSTER");
+
+        return true;
     }
 
     @Override
     public boolean onClusterItemClick(final NoxboxMarker noxboxMarker) {
+        DebugMessage.popup(activity, "ITEM");
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
@@ -164,6 +166,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     private class CustomClusterRenderer extends DefaultClusterRenderer<NoxboxMarker> {
         private final IconGenerator mClusterIconGenerator = new IconGenerator(activity.getApplicationContext());
+
         public CustomClusterRenderer(Context context, GoogleMap map, ClusterManager<NoxboxMarker> clusterManager) {
             super(context, map, clusterManager);
 
@@ -177,23 +180,33 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
         @Override
         protected void onBeforeClusterRendered(Cluster<NoxboxMarker> cluster, MarkerOptions markerOptions) {
-            final Drawable clusterIcon = activity.getResources().getDrawable(R.drawable.noxbox);
-            Bitmap bitmap = ((BitmapDrawable) clusterIcon).getBitmap();
-            // Scale it to 50 x 50
-            Drawable d = new BitmapDrawable(activity.getResources(), Bitmap.createScaledBitmap(bitmap, 50, 50, true));
 
-            mClusterIconGenerator.setBackground(d);
+            int size = 70;
+            if (cluster.getSize() >= 100) {
+                size += 50;
+            } else if (cluster.getSize() >= 50) {
+                size += 30;
+            } else if (cluster.getSize() >= 20) {
+                size += 20;
+            } else if (cluster.getSize() >= 10) {
+                size += 5;
+            }
 
-//            if (cluster.getSize() < 10) {
-//                mClusterIconGenerator.setContentPadding(40, 20, 0, 0);
-//            }
-//            else {
-//                mClusterIconGenerator.setContentPadding(30, 20, 0, 0);
-//            }
+            String clusterSize = String.valueOf(cluster.getSize());
 
-            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+            Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.noxbox), size, size, true);
 
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+            Paint paint = new Paint();
+            paint.setColor(activity.getResources().getColor(R.color.secondary));
+            paint.setTextSize(size / 2);
+
+
+            Canvas canvas = new Canvas(bitmap);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+            int xPos = (int) (canvas.getWidth() - paint.measureText(clusterSize)) / 2;
+            int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+            canvas.drawText(clusterSize, xPos, yPos, paint);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(bitmap));
         }
 
         @Override
