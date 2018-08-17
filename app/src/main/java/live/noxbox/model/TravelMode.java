@@ -4,15 +4,15 @@ import live.noxbox.R;
 
 public enum TravelMode {
 
-    none(1, R.string.no, 0, R.drawable.home),
+    none(0, R.string.no, 0, R.drawable.home),
     // 45 km/h
-    driving(2, R.string.onCar, 45000 / 60, R.drawable.car),
+    driving(1, R.string.onCar, 45000 / 60, R.drawable.car),
     // 15 km/h
-    transit(3, R.string.onTransit, 15000 / 60, R.drawable.transit),
+    transit(2, R.string.onTransit, 15000 / 60, R.drawable.transit),
     // 15 km/h
-    bicycling(4, R.string.onBike, 15000 / 60, R.drawable.bike),
+    bicycling(3, R.string.onBike, 15000 / 60, R.drawable.bike),
     // 7.5 km/h
-    walking(5, R.string.beWalk, 7500 / 60, R.drawable.walk);
+    walking(4, R.string.beWalk, 7500 / 60, R.drawable.walk);
 
     // TODO (nli) use user average speed per travel mode after first usage
     private int id;

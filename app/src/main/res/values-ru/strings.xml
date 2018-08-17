@@ -168,7 +168,7 @@
     <string name="ending">а</string>
     <string name="byAddress">По адресу</string>
     <string name="search">Введите адрес</string>
-    <string name="choosePlace">Выберите место</string>
+    <string name="choosePlace">Выберете место</string>
     <string name="validityOfTheOffer">Срок действия предложения</string>
     <string name="waitingByAddress">Ожидаю по адресу:</string>
     <string name="across">Через</string>
@@ -192,4 +192,5 @@
     <string name="workSamples">Образцы работ</string>
     <string name="certificates">Сертификаты</string>
     <string name="work_at_home">Work at home</string>
+    <string name="chooseTravelMode">Выберете способ передвижения</string>
 </resources>

@@ -1,6 +1,8 @@
 package live.noxbox.profile;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -18,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,7 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
         ProfileStorage.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                ((ImageView) findViewById(R.id.travelModeImage)).setImageResource(profile.getTravelMode().getImage());
                 draw(profile);
             }
         });
@@ -68,10 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
         drawPhoto(profile);
         drawName(profile);
         drawTravelMode(profile);
-
         drawHost(profile);
-
-        drawAboutMe(profile);
         drawCertificates(profile);
         drawWorkSamples(profile);
     }
@@ -92,6 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
             Glide.with(this)
                     .asDrawable()
                     .load(profile.getPhoto())
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
                     .into((ImageView) findViewById(R.id.profileImage));
             return;
         }
@@ -102,8 +103,47 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(profile.getName());
     }
 
-    private void drawTravelMode(Profile profile) {
-        ((TextView) findViewById(R.id.travelModeName)).setText(profile.getTravelMode().getName());
+    private void drawTravelMode(final Profile profile) {
+        ((TextView) findViewById(R.id.travelModeName)).setText(profile.getTravelMode().name());
+        ((ImageView) findViewById(R.id.travelModeImage)).setImageResource(profile.getTravelMode().getImage());
+
+        findViewById(R.id.travelModeLayout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] typesList = new String[TravelMode.values().length];
+                for (TravelMode travelMode : TravelMode.values()) {
+                    typesList[travelMode.getId()] = travelMode.name();
+                }
+
+                new AlertDialog.Builder(ProfileActivity.this)
+                        .setTitle(R.string.chooseTravelMode)
+                        .setSingleChoiceItems(typesList, -1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (TravelMode.byId(which) == TravelMode.none) {
+                                    profile.setTravelMode(TravelMode.byId(which));
+                                    profile.setHost(true);
+                                    findViewById(R.id.hostLayout).setEnabled(false);
+                                    findViewById(R.id.hostEdit).setVisibility(View.GONE);
+
+                                } else {
+                                    profile.setTravelMode(TravelMode.byId(which));
+                                    findViewById(R.id.hostLayout).setEnabled(true);
+                                    findViewById(R.id.hostEdit).setVisibility(View.VISIBLE);
+                                }
+                                drawTravelMode(profile);
+                                drawHost(profile);
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create().show();
+            }
+        });
     }
 
     private void drawHost(final Profile profile) {
@@ -124,10 +164,6 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             ((TextView) findViewById(R.id.hostDescription)).setText(R.string.no);
         }
-
-    }
-
-    private void drawAboutMe(Profile profile) {
 
     }
 
@@ -187,6 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             @Override
                                             public void execute(final Profile profile) {
                                                 profile.setPhoto(uri.toString());
+                                                drawPhoto(profile);
                                             }
                                         });
                                     }

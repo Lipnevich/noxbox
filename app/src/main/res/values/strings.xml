@@ -193,4 +193,5 @@
     <string name="workSamples">Образцы работ</string>
     <string name="certificates">Сертификаты</string>
     <string name="work_at_home">Work at home</string>
+    <string name="chooseTravelMode">Выберете способ передвижения</string>
 </resources>

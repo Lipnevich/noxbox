@@ -15,6 +15,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/travelModeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -105,49 +106,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/edit" />
-        </RelativeLayout>
-
-        <include layout="@layout/item_divider" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:id="@+id/aboutMeImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:src="@drawable/about_me" />
-
-            <TextView
-                android:id="@+id/tvNumber3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/aboutMeImage"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="About me"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvNumber3"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="8dp"
-                android:layout_toEndOf="@id/aboutMeImage"
-                android:text="Home"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
-
-
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />
