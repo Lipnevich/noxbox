@@ -11,7 +11,7 @@
     <dimen name="text_size">18sp</dimen>
     <dimen name="text_size_secondary">14sp</dimen>
 
-    <!--test profile page dimen's-->
+    <!--profile page dimen's-->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
