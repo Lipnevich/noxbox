@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/hostImage"
-                android:text="@string/work_at_home"
+                android:text="@string/workAtHome"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/google_text" />
 
