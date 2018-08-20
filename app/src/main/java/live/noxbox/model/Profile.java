@@ -17,6 +17,7 @@ public class Profile implements Serializable {
     private Acceptance acceptance;
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
+    private Map<String, Portfolio> portfolio = new HashMap<>();
     private Wallet wallet;
     private Long timeDisliked;
 

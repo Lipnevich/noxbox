@@ -1,18 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/activity_horizontal_margin"
-    android:padding="@dimen/activity_horizontal_margin"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_profile">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/nameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/nameImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:src="@drawable/user" />
+
+            <TextView
+                android:id="@+id/nameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/nameImage"
+                android:text="Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
+
+            <EditText
+                android:id="@+id/editName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameText"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/nameImage"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:text="@string/travelMode"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/google_text" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
 
         <RelativeLayout
             android:id="@+id/travelModeLayout"
@@ -37,8 +74,8 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/travelModeImage"
                 android:text="@string/travelMode"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
 
             <TextView
                 android:id="@+id/travelModeName"
@@ -48,8 +85,8 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/travelModeImage"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/google_text" />
 
             <ImageView
                 android:id="@+id/editTravelMode"
@@ -57,7 +94,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/edit" />
+                android:src="@drawable/edit"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -84,8 +122,8 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/hostImage"
                 android:text="@string/workAtHome"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
 
             <TextView
                 android:id="@+id/hostDescription"
@@ -96,16 +134,16 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/hostImage"
                 android:text="@string/yes"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/google_text" />
 
-            <ImageView
-                android:id="@+id/hostEdit"
+            <Switch
+                android:id="@+id/switchHost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/edit" />
+                android:visibility="gone" />
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />
@@ -134,8 +172,8 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/certificateImage"
                 android:text="@string/certificates"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/certificatesList"
@@ -172,8 +210,8 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/photoCameraImage"
                 android:text="@string/workSamples"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/text_color_secondary" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/workSampleList"
@@ -190,4 +228,4 @@
 
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>
