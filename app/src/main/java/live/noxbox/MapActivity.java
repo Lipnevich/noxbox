@@ -71,8 +71,8 @@ public class MapActivity extends DebugActivity implements
         ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId)).getMapAsync(this);
         pathImage = findViewById(R.id.pathImage);
         connectGoogleApi();
-    }
 
+    }
 
     private void connectGoogleApi() {
         googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)

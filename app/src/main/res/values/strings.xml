@@ -194,4 +194,8 @@
     <string name="certificates">Certificates</string>
     <string name="workAtHome">Work at home</string>
     <string name="chooseTravelMode">Way of travel</string>
+    <string name="uploadingProgressTitle">Uploading image %d%%</string>
+    <string name="uploadingProgressBody">%d seconds left</string>
+    <string name="name">Name</string>
+    <string name="uploadingStarted">Uploading started</string>
 </resources>

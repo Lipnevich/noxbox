@@ -64,19 +64,23 @@ public class MessagingService extends FirebaseMessagingService {
 
         Notice notice = Notice.create(remoteMessage.getData());
 
-        if(notice.getIgnore()) return;
+        if (notice.getIgnore()) return;
 
         showPushNotification(notice);
     }
 
     public void showPushNotification(Notice notice) {
-        if(inForeground()) return;
+        // if(inForeground()) return;
 
         createChannel();
 
         cancelOtherNotifications(notice.getType());
 
-        notify(notice);
+        if (notice.getProgress() != null && notice.getProgress() == 100) {
+            getNotificationService().cancel(getId(notice.getType()));
+        } else {
+            notify(notice);
+        }
     }
 
     private boolean inForeground() {
@@ -86,9 +90,10 @@ public class MessagingService extends FirebaseMessagingService {
                 || appProcessInfo.importance == IMPORTANCE_VISIBLE);
     }
 
-    private NotificationManager getNotificationService() {
+    public NotificationManager getNotificationService() {
         return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
+
 
     private int getId(EventType type) {
         switch (type) {
@@ -98,10 +103,16 @@ public class MessagingService extends FirebaseMessagingService {
             case performerCancel:
             case payerCancel:
             case qr:
-            case complete: return 1;
-            case balance: return 2;
-            case story: return 9;
-            default: return 0;
+            case complete:
+                return 1;
+            case balance:
+                return 2;
+            case story:
+                return 9;
+            case uploadingProgress:
+                return 10;
+            default:
+                return 0;
         }
     }
 
@@ -113,7 +124,7 @@ public class MessagingService extends FirebaseMessagingService {
                 EventType.payerCancel,
                 EventType.complete));
 
-        if(cancelOther.contains(type)) {
+        if (cancelOther.contains(type)) {
             getNotificationService().cancelAll();
         }
     }
@@ -128,16 +139,26 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     private void notify(final Notice notice) {
+
         final Builder builder = new Builder(context, channelId)
-                .setVibrate(new long[] { 100, 500, 200, 100, 100 })
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setSound(getSound(notice.getType()))
+                .setVibrate(null)
+                .setSound(null)
                 .setContentTitle(getTitle(notice))
                 .setContentText(getContent(notice))
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(getContent(notice)))
                 .setAutoCancel(!BuildConfig.DEBUG)
                 .setOnlyAlertOnce(isAlertOnce(notice.getType()))
                 .setContentIntent(getIntent(notice));
+
+        switch (notice.getType()) {
+            case uploadingProgress: {
+                break;
+            }
+            default: builder.setVibrate(new long[]{100, 500, 200, 100, 100}).setSound(getSound(notice.getType()));
+        }
+
+        setProgress(builder, notice);
 
         Task<Bitmap> iconLoading = new Task<Bitmap>() {
             @Override
@@ -147,56 +168,91 @@ public class MessagingService extends FirebaseMessagingService {
             }
         };
 
-        if(notice.getLocal() != null && notice.getLocal()) {
+        if (notice.getLocal() != null && notice.getLocal()) {
             loadIconAsync(notice, iconLoading);
         } else {
             iconLoading.execute(loadIcon(notice));
         }
     }
 
+    private void setProgress(Builder builder, Notice notice) {
+        if (notice.getProgress() != null) {
+            builder.setProgress(100, notice.getProgress(), false);
+        }
+    }
+
     private PendingIntent getIntent(Notice notice) {
-            if(notice.getType() == story) {
-                return PendingIntent.getActivity(context, ChatActivity.CODE,
-                        new Intent(context, ChatActivity.class),
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-            }
-            return PendingIntent.getActivity(context,0, context.getPackageManager()
-                                .getLaunchIntentForPackage(context.getPackageName()),
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+        if (notice.getType() == story) {
+            return PendingIntent.getActivity(context, ChatActivity.CODE,
+                    new Intent(context, ChatActivity.class),
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+        return PendingIntent.getActivity(context, 0, context.getPackageManager()
+                        .getLaunchIntentForPackage(context.getPackageName()),
+                PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private String getContent(Notice notice) {
         switch (notice.getType()) {
-            case request: return format(R.string.requestPushBody, notice.getName(), notice.getEstimation());
+            case request:
+                return format(R.string.requestPushBody, notice.getName(), notice.getEstimation());
             case move:
-            case accept: return format(R.string.acceptPushBody, notice.getName(), notice.getEstimation());
-            case performerCancel: return format(R.string.performerCancelPushBody);
-            case payerCancel: return format(R.string.payerCancelPushBody);
-            case qr: return format(R.string.qrPushBody, notice.getName());
-            case story: return notice.getMessage();
-            case complete: return format(R.string.completePushBody, notice.getPrice(), CURRENCY);
-            case balance: return format(R.string.balancePushBody, notice.getBalance(), CURRENCY);
-            default: return "Glad to serve you!";
+            case accept:
+                return format(R.string.acceptPushBody, notice.getName(), notice.getEstimation());
+            case performerCancel:
+                return format(R.string.performerCancelPushBody);
+            case payerCancel:
+                return format(R.string.payerCancelPushBody);
+            case qr:
+                return format(R.string.qrPushBody, notice.getName());
+            case story:
+                return notice.getMessage();
+            case complete:
+                return format(R.string.completePushBody, notice.getPrice(), CURRENCY);
+            case balance:
+                return format(R.string.balancePushBody, notice.getBalance(), CURRENCY);
+            case uploadingProgress: {
+
+                if (notice.getTime() == null) {
+                    return format(R.string.uploadingStarted);
+                }
+                return format(R.string.uploadingProgressBody, notice.getTime());
+            }
+
+            default:
+                return "Glad to serve you!";
         }
     }
 
-    private String format(int resource, Object ... args) {
+
+    private String format(int resource, Object... args) {
         return String.format(context.getResources().getString(resource), args);
     }
-    
+
     private CharSequence getTitle(Notice notice) {
         switch (notice.getType()) {
-            case request: return format(R.string.requestPushTitle);
+            case request:
+                return format(R.string.requestPushTitle);
             case move:
-            case accept: return format(R.string.acceptPushTitle);
-            case performerCancel: return format(R.string.performerCancelPushTitle);
-            case payerCancel: return format(R.string.payerCancelPushTitle);
-            case qr: return format(R.string.qrPushTitle);
-            case story: return notice.getName();
-            case complete: return format(R.string.completePushTitle);
-            case balance: return format(R.string.balancePushTitle);
-            default: return format(R.string.noxbox);
-        }    
+            case accept:
+                return format(R.string.acceptPushTitle);
+            case performerCancel:
+                return format(R.string.performerCancelPushTitle);
+            case payerCancel:
+                return format(R.string.payerCancelPushTitle);
+            case qr:
+                return format(R.string.qrPushTitle);
+            case story:
+                return notice.getName();
+            case complete:
+                return format(R.string.completePushTitle);
+            case uploadingProgress:
+                return format(R.string.uploadingProgressTitle, notice.getProgress());
+            case balance:
+                return format(R.string.balancePushTitle);
+            default:
+                return format(R.string.noxbox);
+        }
     }
 
     private boolean isAlertOnce(EventType type) {
@@ -205,46 +261,47 @@ public class MessagingService extends FirebaseMessagingService {
 
     private Bitmap loadIcon(Notice notice) {
         try {
-            if(notice.getType() == balance) {
+            if (notice.getType() == balance) {
                 return Glide.with(context).asBitmap().load(R.drawable.noxbox)
                         .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                         .submit().get();
             }
-            if(notice.getIcon() != null) {
+            if (notice.getIcon() != null) {
                 return Glide.with(context).asBitmap().load(notice.getIcon())
                         .apply(new RequestOptions().transform(new RoundedCorners(49))
                                 .override(128, 128)
                                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                        .error(R.drawable.profile_picture_blank)).submit().get();
+                                .error(R.drawable.profile_picture_blank)).submit().get();
             }
         } catch (InterruptedException | ExecutionException e) {
-            Crashlytics.logException(e);;
+            Crashlytics.logException(e);
+            ;
         }
         return null;
     }
 
     private void loadIconAsync(Notice notice, final Task<Bitmap> task) {
-        if(notice.getIcon() != null) {
+        if (notice.getIcon() != null) {
             Glide.with(context).asBitmap()
                     .load(notice.getIcon())
                     .apply(new RequestOptions().transform(new RoundedCorners(49))
-                        .override(128, 128)
-                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                    .error(R.drawable.profile_picture_blank))
+                            .override(128, 128)
+                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                            .error(R.drawable.profile_picture_blank))
                     .into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, Transition<?
-                                            super Bitmap> transition) {
-                    task.execute(resource);
-                }
-            });
+                        @Override
+                        public void onResourceReady(Bitmap resource, Transition<?
+                                super Bitmap> transition) {
+                            task.execute(resource);
+                        }
+                    });
         }
     }
 
 
     private Uri getSound(EventType type) {
         int sound = R.raw.push;
-        if(type == request) {
+        if (type == request) {
             sound = R.raw.requested;
         }
 
@@ -253,7 +310,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     public static Push generatePush(Event event, String recipientId) {
-        if(event.getType() == EventType.story) {
+        if (event.getType() == EventType.story) {
             return new Push()
                     .setRecipientId(recipientId)
                     .setType(event.getType().name())
@@ -270,9 +327,9 @@ public class MessagingService extends FirebaseMessagingService {
             case request:
             case payerCancel:
                 return push.setRecipientId(request.getNoxbox().getOwner().getId())
-                    .setName(request.getNoxbox().getParty().getName())
-                    .setIcon(request.getNoxbox().getParty().getPhoto())
-                    .setEstimation(request.getNoxbox().getEstimationTime());
+                        .setName(request.getNoxbox().getParty().getName())
+                        .setIcon(request.getNoxbox().getParty().getPhoto())
+                        .setEstimation(request.getNoxbox().getEstimationTime());
             case accept:
             case performerCancel:
             case complete:

@@ -23,4 +23,7 @@ public enum EventType {
     story,
     move,
     payment,
+
+    uploadingProgress,
+
 }

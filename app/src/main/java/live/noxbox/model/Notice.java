@@ -9,12 +9,12 @@ import java.util.Map;
 public class Notice {
 
     private EventType type;
-    private Integer id;
+    private Integer id, progress,time;
     private Boolean local = false;
     private String estimation, icon, name, message, price, balance, previousBalance;
 
     public static Notice create(Map<String, String> data) {
-        if(data.get("type") == null) return new Notice();
+        if (data.get("type") == null) return new Notice();
 
         return new Notice()
                 .setType(EventType.valueOf(data.get("type")))
@@ -130,6 +130,24 @@ public class Notice {
 
     public Notice setPreviousBalance(String previousBalance) {
         this.previousBalance = previousBalance;
+        return this;
+    }
+
+    public Integer getProgress() {
+        return this.progress;
+    }
+
+    public Notice setProgress(Integer progress) {
+        this.progress = progress;
+        return this;
+    }
+
+    public Integer getTime() {
+        return time;
+    }
+
+    public Notice setTime(Integer time) {
+        this.time = time;
         return this;
     }
 }

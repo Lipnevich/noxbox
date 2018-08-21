@@ -11,17 +11,16 @@ import com.bumptech.glide.request.RequestOptions;
 
 public class ImageManager {
 
-    public static void createCircleImageFromUrl(Activity activity, String url, ImageView image){
+    public static void createCircleImageFromUrl(Activity activity, String url, ImageView image) {
         Glide.with(activity)
                 .asDrawable()
                 .load(url)
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                 .apply(RequestOptions.circleCropTransform())
-                .into(image)
-        ;
+                .into(image);
     }
 
-    public static void createCircleImageFromBitmap(Activity activity, Bitmap bitmap, ImageView image){
+    public static void createCircleImageFromBitmap(Activity activity, Bitmap bitmap, ImageView image) {
         Glide.with(activity)
                 .asDrawable()
                 .load(bitmap)

@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.crashlytics.android.Crashlytics;
@@ -20,6 +19,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import live.noxbox.model.EventType;
+import live.noxbox.model.Notice;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 
@@ -63,19 +64,25 @@ public class FirestoreReference {
                     });
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                private final long time = System.currentTimeMillis();
+
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    DialogManager.showProgress(progressDialog);
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    if (progress == 100.0){
-                        DialogManager.hideProgress(progressDialog);
+                    int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+
+                    Notice notice = new Notice().setType(EventType.uploadingProgress).setProgress(progress);
+
+                    if (progress != 0) {
+                        int passedSeconds = (int) (System.currentTimeMillis() - time) / 1000;
+                        int secPerPercent = passedSeconds / progress;
+                        int remainSeconds = (secPerPercent * (100 - progress));
+                        notice.setTime(remainSeconds);
                     }
-                    Log.d(activity.getPackageName(), "Upload is " + progress + "% done");
 
+                    MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+                    messagingService.showPushNotification(notice);
                 }
-
             });
-
 
         } catch (IOException e) {
             Crashlytics.logException(e);
