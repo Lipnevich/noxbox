@@ -50,7 +50,7 @@ public class CertificatesAdapter extends RecyclerView.Adapter<CertificatesAdapte
                     .asDrawable()
                     .load(certificateList.get(position))
                     .into(imageButton);
-            holder.certificate.setOnClickListener(new View.OnClickListener() {
+            imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     activity.zoomImageFromThumb(imageButton, imageButton.getDrawable());
