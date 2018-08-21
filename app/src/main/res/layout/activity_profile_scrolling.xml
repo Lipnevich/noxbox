@@ -43,7 +43,7 @@
                 android:layout_toEndOf="@id/nameImage"
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
-                android:text="@string/travelMode"
+                android:inputType="text"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/google_text" />
 

@@ -1,4 +1,4 @@
-package live.noxbox.constructor;
+package live.noxbox.profile;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -11,11 +11,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.model.NoxboxType;
+import live.noxbox.model.TravelMode;
 
-public class NoxboxTypeAdapter extends ArrayAdapter<NoxboxType> {
+public class TravelModeAdapter extends ArrayAdapter<TravelMode> {
 
-    private final List<NoxboxType> list;
+    private final List<TravelMode> list;
     private final Activity activity;
 
     static class ViewHolder {
@@ -23,10 +23,11 @@ public class NoxboxTypeAdapter extends ArrayAdapter<NoxboxType> {
         protected ImageView flag;
     }
 
-    public NoxboxTypeAdapter(Activity activity, List<NoxboxType> list) {
-        super(activity,R.layout.activity_dialog_list, list);
+    public TravelModeAdapter(Activity activity, List<TravelMode> list) {
+        super(activity, R.layout.activity_dialog_list, list);
         this.activity = activity;
         this.list = list;
+
     }
 
     @Override
@@ -36,7 +37,7 @@ public class NoxboxTypeAdapter extends ArrayAdapter<NoxboxType> {
         if (convertView == null) {
             LayoutInflater inflator = activity.getLayoutInflater();
             view = inflator.inflate(R.layout.activity_dialog_list, null);
-            final ViewHolder viewHolder = new ViewHolder();
+            final TravelModeAdapter.ViewHolder viewHolder = new TravelModeAdapter.ViewHolder();
             viewHolder.name = (TextView) view.findViewById(R.id.name);
             viewHolder.flag = (ImageView) view.findViewById(R.id.image);
             view.setTag(viewHolder);
@@ -44,7 +45,7 @@ public class NoxboxTypeAdapter extends ArrayAdapter<NoxboxType> {
             view = convertView;
         }
 
-        ViewHolder holder = (ViewHolder) view.getTag();
+        TravelModeAdapter.ViewHolder holder = (TravelModeAdapter.ViewHolder) view.getTag();
         holder.name.setText(list.get(position).getName());
         holder.flag.setImageDrawable(activity.getResources().getDrawable(list.get(position).getImage()));
         return view;

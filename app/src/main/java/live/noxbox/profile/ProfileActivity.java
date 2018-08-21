@@ -5,8 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -98,7 +96,7 @@ public class ProfileActivity extends FragmentActivity {
             createCircleImageFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profileImage));
             return;
         }
-        ((ImageView)findViewById(R.id.profileImage)).setImageResource(R.drawable.unknown_profile);
+        ((ImageView) findViewById(R.id.profileImage)).setImageResource(R.drawable.unknown_profile);
     }
 
     private void drawName(Profile profile) {
@@ -209,45 +207,27 @@ public class ProfileActivity extends FragmentActivity {
     }
 
     private void drawEditTravelMode(final Profile profile) {
-        setTravelModeStatus(profile);
-        findViewById(R.id.editTravelMode).setVisibility(View.VISIBLE);
 
+
+        if (profile.getTravelMode() == TravelMode.none) {
+            findViewById(R.id.hostLayout).setEnabled(false);
+            findViewById(R.id.switchHost).setEnabled(false);
+        } else {
+            findViewById(R.id.hostLayout).setEnabled(true);
+            findViewById(R.id.switchHost).setEnabled(true);
+        }
+
+        setTravelModeStatus(profile);
+
+        findViewById(R.id.editTravelMode).setVisibility(View.VISIBLE);
         findViewById(R.id.travelModeLayout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String[] typesList = new String[TravelMode.values().length];
-                for (TravelMode travelMode : TravelMode.values()) {
-                    typesList[travelMode.getId()] = travelMode.name();
-                }
-
-                new AlertDialog.Builder(ProfileActivity.this)
-                        .setTitle(R.string.chooseTravelMode)
-                        .setSingleChoiceItems(typesList, -1, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (TravelMode.byId(which) == TravelMode.none) {
-                                    profile.setTravelMode(TravelMode.byId(which));
-                                    setHostStatus(true, profile);
-                                    findViewById(R.id.hostLayout).setEnabled(false);
-                                    findViewById(R.id.switchHost).setEnabled(false);
-                                } else {
-                                    profile.setTravelMode(TravelMode.byId(which));
-                                    findViewById(R.id.hostLayout).setEnabled(true);
-                                    findViewById(R.id.switchHost).setEnabled(true);
-                                }
-                                drawEditTravelMode(profile);
-                                drawEditHost(profile);
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        }).create().show();
+                Intent intent = new Intent(ProfileActivity.this, TravelModeListActivity.class);
+                startActivityForResult(intent, TravelModeListActivity.CODE);
             }
         });
+
     }
 
     private void drawEditHost(final Profile profile) {
@@ -297,6 +277,16 @@ public class ProfileActivity extends FragmentActivity {
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 DebugMessage.popup(this, "Cancelled");
             }
+        }
+        if (requestCode == TravelModeListActivity.CODE) {
+
+                ProfileStorage.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        drawEditable(profile);
+                    }
+                });
+
         }
     }
 
@@ -416,7 +406,7 @@ public class ProfileActivity extends FragmentActivity {
                         .ofFloat(expandedImageView, View.X, startBounds.left))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImageView,
-                                        View.Y,startBounds.top))
+                                        View.Y, startBounds.top))
                         .with(ObjectAnimator
                                 .ofFloat(expandedImageView,
                                         View.SCALE_X, startScaleFinal))
@@ -445,4 +435,6 @@ public class ProfileActivity extends FragmentActivity {
             }
         });
     }
+
+
 }

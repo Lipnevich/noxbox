@@ -29,7 +29,8 @@
         <activity
             android:name=".profile.ProfileActivity"
             android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar"/>
+            android:theme="@style/NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".constructor.ConstructorActivity"
             android:parentActivityName=".MapActivity"
@@ -37,6 +38,11 @@
         <activity
             android:name=".constructor.NoxboxTypeListActivity"
             android:label="@string/selectService"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Holo.Light.Dialog" />
+        <activity
+            android:name=".profile.TravelModeListActivity"
+            android:label="@string/travelMode"
             android:noHistory="true"
             android:theme="@android:style/Theme.Holo.Light.Dialog" />
         <activity

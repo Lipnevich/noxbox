@@ -89,10 +89,11 @@
         <include layout="@layout/activity_profile_scrolling" />
 
     </LinearLayout>
+
     <ImageView
         android:id="@+id/expandedImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
 </FrameLayout>
