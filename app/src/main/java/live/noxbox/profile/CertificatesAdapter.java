@@ -1,12 +1,11 @@
 package live.noxbox.profile;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
 
@@ -18,9 +17,9 @@ import live.noxbox.tools.DebugMessage;
 public class CertificatesAdapter extends RecyclerView.Adapter<CertificatesAdapter.CertificatesViewHolder> {
 
     private List<String> certificateList;
-    private Activity activity;
+    private final ProfileActivity activity;
 
-    public CertificatesAdapter(List<String> certificateList, Activity activity) {
+    public CertificatesAdapter(List<String> certificateList, ProfileActivity activity) {
         this.certificateList = certificateList;
         this.activity = activity;
     }
@@ -34,21 +33,32 @@ public class CertificatesAdapter extends RecyclerView.Adapter<CertificatesAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CertificatesViewHolder holder, int position) {
-        if(position == certificateList.size() - 1){
-            holder.certificate.setImageResource(R.drawable.add_certeficate);
-            holder.certificate.setOnClickListener(new View.OnClickListener() {
+        final ImageButton imageButton = holder.certificate;
+
+        if (position == certificateList.size() - 1) {
+            imageButton.setImageResource(R.drawable.add_certeficate);
+            imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //TODO (vl) invite user to upload certificate
-                    DebugMessage.popup(activity,"invite user to upload certificate");
+                    DebugMessage.popup(activity, "invite user to upload certificate");
                 }
             });
-            return;
+        } else {
+
+            Glide.with(activity)
+                    .asDrawable()
+                    .load(certificateList.get(position))
+                    .into(imageButton);
+            holder.certificate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.zoomImageFromThumb(imageButton, imageButton.getDrawable());
+                }
+            });
+
         }
-        Glide.with(activity)
-                .asDrawable()
-                .load(certificateList.get(position))
-                .into(holder.certificate);
+
 
     }
 
@@ -59,7 +69,7 @@ public class CertificatesAdapter extends RecyclerView.Adapter<CertificatesAdapte
 
 
     static class CertificatesViewHolder extends RecyclerView.ViewHolder {
-        ImageView certificate;
+        ImageButton certificate;
 
 
         CertificatesViewHolder(View layout) {
