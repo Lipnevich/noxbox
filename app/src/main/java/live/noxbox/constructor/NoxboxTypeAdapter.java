@@ -24,7 +24,7 @@ public class NoxboxTypeAdapter extends ArrayAdapter<NoxboxType> {
     }
 
     public NoxboxTypeAdapter(Activity activity, List<NoxboxType> list) {
-        super(activity,R.layout.activity_dialog_list, list);
+        super(activity,R.layout.activity_list_dialog, list);
         this.activity = activity;
         this.list = list;
     }
@@ -35,7 +35,7 @@ public class NoxboxTypeAdapter extends ArrayAdapter<NoxboxType> {
 
         if (convertView == null) {
             LayoutInflater inflator = activity.getLayoutInflater();
-            view = inflator.inflate(R.layout.activity_dialog_list, null);
+            view = inflator.inflate(R.layout.activity_list_dialog, null);
             final ViewHolder viewHolder = new ViewHolder();
             viewHolder.name = (TextView) view.findViewById(R.id.name);
             viewHolder.flag = (ImageView) view.findViewById(R.id.image);

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import java.util.Arrays;
 import java.util.List;
 
+import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
@@ -21,9 +22,15 @@ public class NoxboxTypeListActivity extends ListActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         typeList = Arrays.asList(NoxboxType.values());
         ArrayAdapter<NoxboxType> itemArrayAdapter = new NoxboxTypeAdapter(this, typeList);
         setListAdapter(itemArrayAdapter);
+
+        int titleDividerId = getResources().getIdentifier("titleDivider", "id", "android");
+        View titleDivider = this.getWindow().getDecorView().findViewById(titleDividerId);
+        titleDivider.setBackgroundColor(getResources().getColor(R.color.primary));
+
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {

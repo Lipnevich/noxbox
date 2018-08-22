@@ -10,46 +10,46 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/nameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/activity_horizontal_margin">
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/nameLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="@dimen/activity_horizontal_margin">-->
 
-            <ImageView
-                android:id="@+id/nameImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:src="@drawable/user" />
+        <!--<ImageView-->
+        <!--android:id="@+id/nameImage"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginEnd="@dimen/activity_horizontal_margin"-->
+        <!--android:src="@drawable/user" />-->
 
-            <TextView
-                android:id="@+id/nameText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/nameImage"
-                android:text="@string/name"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
+        <!--<TextView-->
+        <!--android:id="@+id/nameText"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_toEndOf="@id/nameImage"-->
+        <!--android:text="@string/name"-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Small"-->
+        <!--android:textColor="@color/text_color_secondary" />-->
 
-            <EditText
-                android:id="@+id/editName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/nameText"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/nameImage"
-                android:layout_marginTop="8dp"
-                android:background="@android:color/transparent"
-                android:inputType="text"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
+        <!--<EditText-->
+        <!--android:id="@+id/editName"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/nameText"-->
+        <!--android:layout_marginStart="@dimen/activity_horizontal_margin"-->
+        <!--android:layout_toEndOf="@id/nameImage"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:background="@android:color/transparent"-->
+        <!--android:inputType="text"-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Medium"-->
+        <!--android:textColor="@color/google_text" />-->
 
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
 
-        <include layout="@layout/item_divider" />
+        <!--<include layout="@layout/item_divider" />-->
 
         <RelativeLayout
             android:id="@+id/travelModeLayout"
@@ -133,7 +133,6 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/hostImage"
-                android:text="@string/yes"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/google_text" />
 
@@ -150,11 +149,14 @@
         <!--cetrificates-->
 
         <RelativeLayout
+            android:id="@+id/certificateLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin">
 
             <ImageView
                 android:id="@+id/certificateImage"
@@ -175,6 +177,16 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/text_color_secondary" />
 
+            <ImageView
+                android:id="@+id/addCertificate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_above="@+id/certificatesList"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/add_circle"
+                android:visibility="visible" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/certificatesList"
                 android:layout_width="match_parent"
@@ -182,17 +194,20 @@
                 android:layout_below="@id/certificate"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="32dp"
-                android:padding="8dp" />
+                android:paddingStart="8dp" />
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />
         <!--work samples-->
         <RelativeLayout
+            android:id="@+id/workSampleLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:paddingStart="@dimen/activity_horizontal_margin">
 
             <ImageView
                 android:id="@+id/photoCameraImage"
@@ -213,6 +228,16 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/text_color_secondary" />
 
+            <ImageView
+                android:id="@+id/addWorkSample"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_above="@+id/workSampleList"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/add_circle"
+                android:visibility="visible" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/workSampleList"
                 android:layout_width="match_parent"
@@ -220,7 +245,7 @@
                 android:layout_below="@id/workSamples"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="32dp"
-                android:padding="8dp" />
+                android:paddingStart="8dp" />
         </RelativeLayout>
 
         <include layout="@layout/item_divider" />

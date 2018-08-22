@@ -14,13 +14,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import live.noxbox.model.Filters;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
+import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
@@ -138,13 +141,31 @@ public class Firebase {
                     for(NoxboxType type : NoxboxType.values()){
                         filterTypesList.put(type.name(), true);
                     }
+
+                    List<String> certificatesList = new ArrayList<>();
+                    certificatesList.add("https://i.pinimg.com/736x/1d/ba/a1/1dbaa1fb5b2f64e54010cf6aae72b8b1.jpg");
+                    certificatesList.add("http://4u-professional.com/assets/images/sert/gel-lak.jpg");
+                    certificatesList.add("https://www.hallyuuk.com/wp-content/uploads/2018/06/reiki-master-certificate-template-inspirational-reiki-certificate-templates-idealstalist-of-reiki-master-certificate-template.jpg");
+                    certificatesList.add("http://www.childminder.ng/blog_pics/1479134810.jpg");
+
+                    List<String> workSampleList = new ArrayList<>();
+                    workSampleList.add("http://coolmanicure.com/media/k2/items/cache/stilnyy_manikur_so_strazami_XL.jpg");
+                    workSampleList.add("http://rosdesign.com/design_materials3/img_materials3/kopf/kopf1.jpg");
+                    workSampleList.add("http://vmirevolos.ru/wp-content/uploads/2015/12/61.jpg");
+
+                    Map<String,Portfolio> portfolioMap = new HashMap<>();
+                    portfolioMap.put(NoxboxType.haircut.name(),new Portfolio(certificatesList,workSampleList));
+                    portfolioMap.put(NoxboxType.manicure.name(),new Portfolio(certificatesList,workSampleList));
+
                     profile = new Profile()
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
                             .setHost(true)
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
                             .setFilters(new Filters(true,true,"0",filterTypesList))
-                            .setTravelMode(TravelMode.driving);
+                            .setTravelMode(TravelMode.driving)
+                            .setPortfolio(portfolioMap);
+
                     task.execute(profile);
                 }
             }

@@ -129,4 +129,10 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:colorAccent">@color/primary</item>
     </style>
+
+    <!--list activity style for dialog window-->
+    <style name="DialogListActivity" parent="@android:style/Theme.Holo.Light.Dialog">
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
 </resources>

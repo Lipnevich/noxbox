@@ -57,7 +57,7 @@ public class ConstructorActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.constructorService);
-        setContentView(R.layout.activity_noxbox_constructor);
+        setContentView(R.layout.activity_constructor);
         closeOrRemove = findViewById(R.id.closeOrRemove);
         TextView textCurrency = findViewById(R.id.textCurrency);
         String currency = Configuration.CURRENCY + ".";

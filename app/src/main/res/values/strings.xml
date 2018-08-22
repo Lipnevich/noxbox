@@ -198,4 +198,7 @@
     <string name="uploadingProgressBody">%d seconds left</string>
     <string name="name">Name</string>
     <string name="uploadingStarted">Uploading started</string>
+    <string name="haveHost">have the opportunity to host</string>
+    <string name="notHaveHost">no opportunity to host</string>
+
 </resources>

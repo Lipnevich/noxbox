@@ -185,6 +185,14 @@ public class Profile implements Serializable {
         return this;
     }
 
+    public Map<String, Portfolio> getPortfolio() {
+        return portfolio;
+    }
+
+    public Profile setPortfolio(Map<String, Portfolio> portfolio) {
+        this.portfolio = portfolio;
+        return this;
+    }
 
     @Exclude
     public int ratingToPercentage(MarketRole role, NoxboxType type) {

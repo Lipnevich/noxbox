@@ -83,9 +83,8 @@ public abstract class MenuActivity extends AppCompatActivity {
         createMenu(profile);
 
 
-
-        if(profile.ratingToPercentage() <= MIN_RATE_IN_PERCENTAGE) {
-            popup(this,"Low rate!");
+        if (profile.ratingToPercentage() <= MIN_RATE_IN_PERCENTAGE) {
+            popup(this, "Low rate!");
         }
     }
 
@@ -97,7 +96,7 @@ public abstract class MenuActivity extends AppCompatActivity {
         ProfileDrawerItem account = new ProfileDrawerItem()
                 .withName(profile.getName())
                 .withEmail(profile.ratingToPercentage() + " %");
-        if(profile.getPhoto() == null) {
+        if (profile.getPhoto() == null) {
             account.withIcon(ContextCompat.getDrawable(getApplicationContext(),
                     R.drawable.profile_picture_blank));
         } else {
@@ -131,6 +130,7 @@ public abstract class MenuActivity extends AppCompatActivity {
 
         menu.getDrawerLayout().setFitsSystemWindows(true);
 
+
         ImageView menuImage = findViewById(R.id.menu);
         menuImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +151,12 @@ public abstract class MenuActivity extends AppCompatActivity {
                             @Override
                             public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
                                 imageView.setImageBitmap(resource);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
+                                    }
+                                });
                             }
                         });
             }
@@ -174,7 +180,7 @@ public abstract class MenuActivity extends AppCompatActivity {
 
     private IDrawerItem[] convertToItems(Map<String, IntentAndKey> menu) {
         List<IDrawerItem> items = new ArrayList<>();
-        for(final Map.Entry<String, IntentAndKey> entry : menu.entrySet()) {
+        for (final Map.Entry<String, IntentAndKey> entry : menu.entrySet()) {
             PrimaryDrawerItem item = new PrimaryDrawerItem()
                     .withIdentifier(entry.getKey().hashCode())
                     .withName(entry.getKey())
@@ -183,7 +189,8 @@ public abstract class MenuActivity extends AppCompatActivity {
                         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                             startActivityForResult(entry.getValue().getIntent(), entry.getValue().getKey());
                             return true;
-                    }})
+                        }
+                    })
                     .withTextColorRes(R.color.primary);
 
             items.add(item);
@@ -216,7 +223,8 @@ public abstract class MenuActivity extends AppCompatActivity {
                         builder.setNegativeButton(android.R.string.cancel, null);
                         builder.show();
                         return true;
-                    }})
+                    }
+                })
                 .withTextColorRes(R.color.primary);
         items.add(logout);
 
@@ -242,7 +250,7 @@ public abstract class MenuActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        if(requestCode == WalletActivity.CODE) {
+        if (requestCode == WalletActivity.CODE) {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
