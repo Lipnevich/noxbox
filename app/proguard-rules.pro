@@ -20,4 +20,4 @@
 -dontwarn org.shaded.apache.**
 -dontwarn org.ietf.jgss.**
 
--keep class by.nicolay.lipnevich.** { *; }
+-keep class live.noxbox.** { *; }
