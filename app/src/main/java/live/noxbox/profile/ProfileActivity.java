@@ -113,7 +113,7 @@ public class ProfileActivity extends FragmentActivity {
 
             }
         });
-        
+
         setHostStatus(profile.getTravelMode() == TravelMode.none || profile.getHost(),profile);
 
         findViewById(R.id.switchHost).setVisibility(View.GONE);
@@ -335,7 +335,7 @@ public class ProfileActivity extends FragmentActivity {
 
 
     private void setOnItemCertificateClickListener(RecyclerView recyclerView) {
-        recyclerView.addOnItemTouchListener(new CertificatesAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new CertificatesAdapter.ClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
@@ -346,7 +346,6 @@ public class ProfileActivity extends FragmentActivity {
                 SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
                 slideShowFragment.setArguments(bundle);
                 slideShowFragment.show(fragmentTransaction, "slideshow");
-                DebugMessage.popup(ProfileActivity.this,"AAAAAAAA");
             }
 
             @Override
@@ -355,7 +354,7 @@ public class ProfileActivity extends FragmentActivity {
     }
 
     private void setOnItemWorkSampleClickListener(RecyclerView recyclerView) {
-        recyclerView.addOnItemTouchListener(new WorkSamplesAdapter.RecyclerTouchListener(getApplicationContext(), recyclerView, new WorkSamplesAdapter.ClickListener() {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
@@ -366,7 +365,6 @@ public class ProfileActivity extends FragmentActivity {
                 SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
                 slideShowFragment.setArguments(bundle);
                 slideShowFragment.show(fragmentTransaction, "slideshow");
-                DebugMessage.popup(ProfileActivity.this,"BBBBBBB");
             }
 
             @Override
