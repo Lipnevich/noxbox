@@ -127,7 +127,7 @@ public class ProfileActivity extends FragmentActivity {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.certificatesList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new CertificatesAdapter(certificatesList, this));
+        recyclerView.setAdapter(new ImageListAdapter(certificatesList, this));
 
         findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,7 +146,7 @@ public class ProfileActivity extends FragmentActivity {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.workSampleList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new WorkSamplesAdapter(workSampleList, this));
+        recyclerView.setAdapter(new ImageListAdapter(workSampleList, this));
 
         findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
             @Override
