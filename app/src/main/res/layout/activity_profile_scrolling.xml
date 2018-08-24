@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -108,11 +108,9 @@
 
         <!--Noxbox Type-->
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/performerList"
+            android:id="@+id/noxboxTypeList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"/>
 
         <include layout="@layout/item_divider" />
 
@@ -120,9 +118,9 @@
             android:id="@+id/addLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:layout_marginBottom="8dp"
             android:paddingBottom="@dimen/activity_horizontal_margin"
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_horizontal_margin">
@@ -136,6 +134,7 @@
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:src="@drawable/add_circle"
                 android:tint="@color/primary" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,9 +142,9 @@
                 android:layout_toEndOf="@id/addTravelModeLayout"
                 android:text="@string/addProvidedService"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary"/>
+                android:textColor="@color/text_color_secondary" />
         </RelativeLayout>
 
     </LinearLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

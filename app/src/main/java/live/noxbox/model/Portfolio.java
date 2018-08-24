@@ -8,7 +8,6 @@ public class Portfolio {
     private List<String> certificates;
     private List<String> workSamples;
     private Rating rating;
-    private int typeId;
 
     public Portfolio() {
         certificates = new ArrayList<>();
@@ -16,11 +15,10 @@ public class Portfolio {
         rating = new Rating();
     }
 
-    public Portfolio(List<String> certificates, List<String> workSamples, Rating rating,int typeId) {
+    public Portfolio(List<String> certificates, List<String> workSamples, Rating rating) {
         this.certificates = certificates;
         this.workSamples = workSamples;
         this.rating = rating;
-        this.typeId = typeId;
     }
 
     public List<String> getCertificates() {
@@ -50,12 +48,4 @@ public class Portfolio {
         return this;
     }
 
-    public int getTypeId() {
-        return typeId;
-    }
-
-    public Portfolio setTypeId(int typeId) {
-        this.typeId = typeId;
-        return this;
-    }
 }

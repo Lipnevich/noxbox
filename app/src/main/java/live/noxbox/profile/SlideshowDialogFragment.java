@@ -61,7 +61,13 @@ public class SlideshowDialogFragment extends DialogFragment {
         v.findViewById(R.id.deleteImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DebugMessage.popup(getActivity(),"delete image with index " + currentIndex);
+//                ProfileStorage.readProfile(new Task<Profile>() {
+//                    @Override
+//                    public void execute(Profile profile) {
+//                        profile.getPortfolio().get()
+//                    }
+//                });
+                DebugMessage.popup(getActivity(), "delete image with index " + currentIndex);
             }
         });
 
@@ -83,16 +89,19 @@ public class SlideshowDialogFragment extends DialogFragment {
         }
 
         @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) { }
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
 
         @Override
-        public void onPageScrollStateChanged(int arg0) { }
+        public void onPageScrollStateChanged(int arg0) {
+        }
     };
 
     private void displayMetaInfo(int position) {
         currentIndex = position;
         lblCount.setText((position + 1) + " of " + photos.size());
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +113,8 @@ public class SlideshowDialogFragment extends DialogFragment {
 
         private LayoutInflater layoutInflater;
 
-        public ViewPagerAdapter() { }
+        public ViewPagerAdapter() {
+        }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {

@@ -2,7 +2,7 @@ package live.noxbox.model;
 
 import live.noxbox.R;
 
-public enum NoxboxType {
+public enum NoxboxType{
 
     massage(0, R.string.massage, R.drawable.masseur, R.drawable.music_back, R.string.massageDescription, 30),
     haircut(1, R.string.haircut, R.drawable.haircut, R.drawable.music_back, R.string.haircutDescription, 30),

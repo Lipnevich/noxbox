@@ -24,13 +24,17 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:theme="@style/NoActionBarMap" />
+            android:theme="@style/NoActionBarWithStatusBar" />
         <activity android:name=".filters.MapFiltersActivity" android:parentActivityName=".MapActivity"/>
         <activity
             android:name=".profile.ProfileActivity"
             android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar"
+            android:theme="@style/NoActionBarWithStatusBar"
             android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".profile.ProfilePerformerActivity"
+            android:theme="@style/NoActionBarWithStatusBar"
+            android:parentActivityName=".profile.ProfileActivity"/>
         <activity
             android:name=".constructor.ConstructorActivity"
             android:parentActivityName=".MapActivity"

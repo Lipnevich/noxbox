@@ -27,7 +27,7 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
-    <style name="NoActionBarMap" parent="@style/AppTheme">
+    <style name="NoActionBarWithStatusBar" parent="@style/AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
     </style>

@@ -164,8 +164,8 @@ public class Firebase {
                     workSampleList.add("http://vmirevolos.ru/wp-content/uploads/2015/12/61.jpg");
 
                     Map<String, Portfolio> portfolioMap = new HashMap<>();
-                    portfolioMap.put(NoxboxType.haircut.name(), new Portfolio(certificatesList, workSampleList, rating,NoxboxType.haircut.getId()));
-                    portfolioMap.put(NoxboxType.manicure.name(), new Portfolio(certificatesList, workSampleList, rating,NoxboxType.haircut.getId()));
+                    portfolioMap.put(NoxboxType.haircut.name(), new Portfolio(certificatesList, workSampleList, rating));
+                    portfolioMap.put(NoxboxType.manicure.name(), new Portfolio(certificatesList, workSampleList, rating));
 
                     profile = new Profile()
                             .setId(firebaseUser.getUid())

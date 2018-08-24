@@ -2,84 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-
-    <RelativeLayout
-        android:id="@+id/noxboxTypeLayout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_horizontal_margin">
-
-
-        <ImageView
-            android:id="@+id/noxboxTypeImage"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:tint="@color/primary" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        app:contentInsetStart="0dp">
 
         <LinearLayout
-            android:id="@+id/noxboxTypeTopLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_toEndOf="@id/noxboxTypeImage"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/serviceProvided"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
-
-            <TextView
-                android:id="@+id/noxboxTypeName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="156dp"
-            android:layout_below="@id/noxboxTypeTopLayout"
-            android:layout_marginStart="48dp"
-            android:background="@drawable/border"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <android.support.v4.widget.NestedScrollView
-                android:id="@+id/noxboxTypeListLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusable="true"
-                android:visibility="gone">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/commentsList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </android.support.v4.widget.NestedScrollView>
-
-
-            <TextView
-                android:id="@+id/commentsCleanText"
+            <ImageView
+                android:id="@+id/homeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/noComments" />
+                android:clickable="true"
+                android:padding="16dp"
+                android:src="@drawable/arrow_back" />
 
-        </FrameLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/profile"
+                android:textColor="@color/secondary"
+                android:textSize="@dimen/text_size" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/deleteSection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:padding="16dp"
+                    android:src="@drawable/delete" />
+            </RelativeLayout>
 
 
-    </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
     <!--cetrificates-->
 
     <RelativeLayout
@@ -123,14 +93,14 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/addCertificate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/add_circle"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>
 
@@ -147,12 +117,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <TextView
-                android:id="@+id/certificateCleanText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/noComments" />
         </FrameLayout>
     </RelativeLayout>
 
@@ -184,7 +148,7 @@
             android:layout_toEndOf="@id/photoCameraImage"
             android:orientation="horizontal">
 
-            <ImageButton
+            <TextView
                 android:id="@+id/workSamples"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -205,7 +169,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="16dp"
                     android:src="@drawable/add_circle"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
             </LinearLayout>
         </LinearLayout>
 
@@ -220,16 +184,39 @@
                 android:id="@+id/workSampleList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/workSampleTopLayout"
-                android:layout_marginStart="32dp"
-                android:paddingStart="8dp" />
+                android:layout_below="@id/workSampleTopLayout" />
 
-            <TextView
-                android:id="@+id/workSampleCleanText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/noComments" />
         </FrameLayout>
     </RelativeLayout>
+
+    <!--comments-->
+    <FrameLayout
+        android:id="@+id/commentsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_margin="1dp">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/commentsListLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/commentsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.v4.widget.NestedScrollView>
+
+
+        <TextView
+            android:id="@+id/commentsCleanText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/noComments" />
+
+    </FrameLayout>
 </LinearLayout>

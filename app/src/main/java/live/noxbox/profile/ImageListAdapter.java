@@ -16,9 +16,9 @@ import live.noxbox.R;
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ImageViewHolder> {
 
     private List<String> imageUrlList;
-    private final ProfileActivity activity;
+    private final ProfilePerformerActivity activity;
 
-    public ImageListAdapter(List<String> imageUrlList, ProfileActivity activity) {
+    public ImageListAdapter(List<String> imageUrlList, ProfilePerformerActivity activity) {
         this.imageUrlList = imageUrlList;
         this.activity = activity;
     }
