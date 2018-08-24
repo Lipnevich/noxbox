@@ -199,4 +199,7 @@
     <string name="uploadingStarted">Uploading started</string>
     <string name="haveHost">есть возможность принять у себя</string>
     <string name="notHaveHost">нету возможности принять у себя</string>
+    <string name="serviceProvided">Предоставляемая услуга:</string>
+    <string name="addProvidedService">Добавить предоставляемую услугу</string>
+    <string name="noComments">Комментарии отстутвуют</string>
 </resources>

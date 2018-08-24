@@ -200,5 +200,8 @@
     <string name="uploadingStarted">Uploading started</string>
     <string name="haveHost">have the opportunity to host</string>
     <string name="notHaveHost">no opportunity to host</string>
+    <string name="serviceProvided">Предоставляемая услуга:</string>
+    <string name="addProvidedService">Добавить предоставляемую услугу</string>
+    <string name="noComments">Комментарии отстутвуют</string>
 
 </resources>

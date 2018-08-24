@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,11 +16,14 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import live.noxbox.R;
-import live.noxbox.model.NoxboxType;
+import live.noxbox.constructor.NoxboxTypeListActivity;
+import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
@@ -70,8 +72,7 @@ public class ProfileActivity extends FragmentActivity {
         drawName(profile);
         drawTravelMode(profile);
         drawHost(profile);
-        drawCertificates(profile);
-        drawWorkSamples(profile);
+        drawPerformerSettings(profile);
     }
 
     private void drawPhoto(final Profile profile) {
@@ -114,48 +115,95 @@ public class ProfileActivity extends FragmentActivity {
             }
         });
 
-        setHostStatus(profile.getTravelMode() == TravelMode.none || profile.getHost(),profile);
+        setHostStatus(profile.getTravelMode() == TravelMode.none || profile.getHost(), profile);
 
         findViewById(R.id.switchHost).setVisibility(View.GONE);
     }
 
-    private List<String> certificatesList;
+//    private List<String> certificatesList;
+//
+//    private void drawSelectNoxboxType(final Profile profile) {
+//        findViewById(R.id.commentsCleanText).setVisibility(View.GONE);
+//        findViewById(R.id.noxboxTypeListLayout).setVisibility(View.VISIBLE);
+//
+//        ((ImageView) findViewById(R.id.noxboxTypeImage)).setImageResource(R.drawable.haircut);
+//        ((TextView) findViewById(R.id.noxboxTypeName)).setText(NoxboxType.haircut.getName());
+//
+//        Rating rating = profile.getPortfolio().get(NoxboxType.haircut.name()).getRating();
+//        List<Comment> comments = new ArrayList<>();
+//        comments.add(rating.getComments().get("0"));
+//        comments.add(rating.getComments().get("1"));
+//        comments.add(rating.getComments().get("2"));
+//
+//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commentsList);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//        recyclerView.setAdapter(new CommentAdapter(comments));
+//    }
 
-    private void drawCertificates(final Profile profile) {
-        certificatesList = profile.getPortfolio().get(NoxboxType.haircut.name()).getCertificates();
-        findViewById(R.id.addCertificate).setVisibility(View.GONE);
+//    private void drawCertificates(final Profile profile) {
+//        certificatesList = profile.getPortfolio().get(NoxboxType.haircut.name()).getCertificates();
+//        findViewById(R.id.addCertificate).setVisibility(View.GONE);
+//
+//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.certificatesList);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        recyclerView.setAdapter(new ImageListAdapter(certificatesList, this));
+//
+//        findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
+//
+//        setOnItemCertificateClickListener(recyclerView);
+//    }
+//
+//    private List<String> workSampleList;
+//
+//    private void drawWorkSamples(final Profile profile) {
+//        workSampleList = profile.getPortfolio().get(NoxboxType.haircut.name()).getWorkSamples();
+//
+//        findViewById(R.id.addWorkSample).setVisibility(View.GONE);
+//
+//        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.workSampleList);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+//        recyclerView.setAdapter(new ImageListAdapter(workSampleList, this));
+//
+//        findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//            }
+//        });
+//
+//        setOnItemWorkSampleClickListener(recyclerView);
+//    }
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.certificatesList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new ImageListAdapter(certificatesList, this));
 
-        findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
+    private void drawPerformerSettings(final Profile profile) {
+        findViewById(R.id.addLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.addLayout).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) { }
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, NoxboxTypeListActivity.class);
+                intent.putExtra(ProfileActivity.class.getName(), NoxboxTypeListActivity.class.getName());
+                startActivityForResult(intent, NoxboxTypeListActivity.PROFILE_CODE);
+            }
         });
 
-        setOnItemCertificateClickListener(recyclerView);
+        List<Portfolio> portfolioList = new ArrayList<>();
+        Iterator iterator = profile.getPortfolio().entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            portfolioList.add((Portfolio) entry.getValue());
+        }
+
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.performerList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(new PortfolioAdapter(portfolioList,ProfileActivity.this));
+
+
     }
-
-    private List<String> workSampleList;
-
-    private void drawWorkSamples(final Profile profile) {
-        workSampleList = profile.getPortfolio().get(NoxboxType.haircut.name()).getWorkSamples();
-
-        findViewById(R.id.addWorkSample).setVisibility(View.GONE);
-
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.workSampleList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(new ImageListAdapter(workSampleList, this));
-
-        findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { }
-        });
-
-        setOnItemWorkSampleClickListener(recyclerView);
-    }
-
 
     private void drawEditable(final Profile profile) {
         findViewById(R.id.editProfile).setOnClickListener(new View.OnClickListener() {
@@ -170,8 +218,7 @@ public class ProfileActivity extends FragmentActivity {
         drawEditName(profile);
         drawEditTravelMode(profile);
         drawEditHost(profile);
-        drawEditCertificates(profile);
-        drawEditWorkSamples(profile);
+        drawEditPerformerSettings(profile);
     }
 
     private void drawEditPhoto(final Profile profile) {
@@ -255,43 +302,47 @@ public class ProfileActivity extends FragmentActivity {
         });
     }
 
-    private void drawEditCertificates(final Profile profile) {
-        certificatesList = profile.getPortfolio().get(NoxboxType.haircut.name()).getCertificates();
-        findViewById(R.id.addCertificate).setVisibility(View.VISIBLE);
-        findViewById(R.id.addCertificate).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO (vl) invite user to upload certificate
-                DebugMessage.popup(ProfileActivity.this, "Upload work certificates");
-            }
-        });
-        findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO (vl) invite user to upload certificate
-                DebugMessage.popup(ProfileActivity.this, "Upload work certificates");
-            }
-        });
-    }
+//    private void drawEditCertificates(final Profile profile) {
+//        certificatesList = profile.getPortfolio().get(NoxboxType.haircut.name()).getCertificates();
+//        findViewById(R.id.addCertificate).setVisibility(View.VISIBLE);
+//        findViewById(R.id.addCertificate).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //TODO (vl) invite user to upload certificate
+//                DebugMessage.popup(ProfileActivity.this, "Upload work certificates");
+//            }
+//        });
+//        findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //TODO (vl) invite user to upload certificate
+//                DebugMessage.popup(ProfileActivity.this, "Upload work certificates");
+//            }
+//        });
+//    }
+//
+//    private void drawEditWorkSamples(final Profile profile) {
+//        workSampleList = profile.getPortfolio().get(NoxboxType.haircut.name()).getWorkSamples();
+//        findViewById(R.id.addWorkSample).setVisibility(View.VISIBLE);
+//        findViewById(R.id.addWorkSample).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //TODO (vl) invite user to upload work sample
+//                DebugMessage.popup(ProfileActivity.this, "Upload work sample");
+//            }
+//        });
+//        findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //TODO (vl) invite user to upload work sample
+//                DebugMessage.popup(ProfileActivity.this, "Upload work sample");
+//            }
+//        });
+//
+//    }
 
-    private void drawEditWorkSamples(final Profile profile) {
-        workSampleList = profile.getPortfolio().get(NoxboxType.haircut.name()).getWorkSamples();
-        findViewById(R.id.addWorkSample).setVisibility(View.VISIBLE);
-        findViewById(R.id.addWorkSample).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO (vl) invite user to upload work sample
-                DebugMessage.popup(ProfileActivity.this, "Upload work sample");
-            }
-        });
-        findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO (vl) invite user to upload work sample
-                DebugMessage.popup(ProfileActivity.this, "Upload work sample");
-            }
-        });
-
+    private void drawEditPerformerSettings(final Profile profile) {
+        findViewById(R.id.addLayout).setVisibility(View.INVISIBLE);
     }
 
     private void setTravelModeStatus(Profile profile) {
@@ -331,44 +382,57 @@ public class ProfileActivity extends FragmentActivity {
             });
 
         }
+
+        if (requestCode == NoxboxTypeListActivity.PROFILE_CODE) {
+
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    draw(profile);
+                }
+            });
+
+        }
     }
 
 
-    private void setOnItemCertificateClickListener(RecyclerView recyclerView) {
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("photos", (Serializable) certificatesList);
-                bundle.putInt("position", position);
-
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
-                slideShowFragment.setArguments(bundle);
-                slideShowFragment.show(fragmentTransaction, "slideshow");
-            }
-
-            @Override
-            public void onLongClick(View view, int position) { }
-        }));
-    }
-
-    private void setOnItemWorkSampleClickListener(RecyclerView recyclerView) {
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("photos", (Serializable) workSampleList);
-                bundle.putInt("position", position);
-
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
-                slideShowFragment.setArguments(bundle);
-                slideShowFragment.show(fragmentTransaction, "slideshow");
-            }
-
-            @Override
-            public void onLongClick(View view, int position) { }
-        }));
-    }
+//    private void setOnItemCertificateClickListener(RecyclerView recyclerView) {
+//        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerClickListener() {
+//            @Override
+//            public void onClick(View view, int position) {
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("photos", (Serializable) certificatesList);
+//                bundle.putInt("position", position);
+//
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
+//                slideShowFragment.setArguments(bundle);
+//                slideShowFragment.show(fragmentTransaction, "slideshow");
+//            }
+//
+//            @Override
+//            public void onLongClick(View view, int position) {
+//            }
+//        }));
+//    }
+//
+//    private void setOnItemWorkSampleClickListener(RecyclerView recyclerView) {
+//        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerClickListener() {
+//            @Override
+//            public void onClick(View view, int position) {
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("photos", (Serializable) workSampleList);
+//                bundle.putInt("position", position);
+//
+//                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
+//                slideShowFragment.setArguments(bundle);
+//                slideShowFragment.show(fragmentTransaction, "slideshow");
+//            }
+//
+//            @Override
+//            public void onLongClick(View view, int position) {
+//            }
+//        }));
+//    }
 }

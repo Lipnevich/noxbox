@@ -19,12 +19,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
+import live.noxbox.model.Comment;
 import live.noxbox.model.Filters;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
+import live.noxbox.model.Rating;
 import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MessagingService;
@@ -129,16 +132,23 @@ public class Firebase {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         listener = new ValueEventListener() {
-            @Override public void onDataChange(@NonNull DataSnapshot snapshot) {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     profile = snapshot.getValue(Profile.class);
                     refreshNotificationToken();
                     task.execute(profile);
                 } else {
                     // TODO (nli) delete it
+                    Rating rating = new Rating();
+                    rating.setReceivedLikes(ThreadLocalRandom.current().nextInt(900, 1000));
+                    rating.setReceivedDislikes(ThreadLocalRandom.current().nextInt(rating.getReceivedLikes() / 10));
+                    rating.getComments().put("0", new Comment("0", "Очень занятный молодой человек, и годный напарник!", System.currentTimeMillis(), true));
+                    rating.getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
+                    rating.getComments().put("2", new Comment("2", "Выносливость бы повысить, слишком быстро выдыхается во время кросса.", System.currentTimeMillis(), false));
 
-                    Map<String,Boolean> filterTypesList = new HashMap<>();
-                    for(NoxboxType type : NoxboxType.values()){
+                    Map<String, Boolean> filterTypesList = new HashMap<>();
+                    for (NoxboxType type : NoxboxType.values()) {
                         filterTypesList.put(type.name(), true);
                     }
 
@@ -153,23 +163,26 @@ public class Firebase {
                     workSampleList.add("http://rosdesign.com/design_materials3/img_materials3/kopf/kopf1.jpg");
                     workSampleList.add("http://vmirevolos.ru/wp-content/uploads/2015/12/61.jpg");
 
-                    Map<String,Portfolio> portfolioMap = new HashMap<>();
-                    portfolioMap.put(NoxboxType.haircut.name(),new Portfolio(certificatesList,workSampleList));
-                    portfolioMap.put(NoxboxType.manicure.name(),new Portfolio(certificatesList,workSampleList));
+                    Map<String, Portfolio> portfolioMap = new HashMap<>();
+                    portfolioMap.put(NoxboxType.haircut.name(), new Portfolio(certificatesList, workSampleList, rating,NoxboxType.haircut.getId()));
+                    portfolioMap.put(NoxboxType.manicure.name(), new Portfolio(certificatesList, workSampleList, rating,NoxboxType.haircut.getId()));
 
                     profile = new Profile()
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
                             .setHost(true)
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
-                            .setFilters(new Filters(true,true,"0",filterTypesList))
+                            .setFilters(new Filters(true, true, "0", filterTypesList))
                             .setTravelMode(TravelMode.driving)
                             .setPortfolio(portfolioMap);
 
                     task.execute(profile);
                 }
             }
-            @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         };
 
         profiles().child(firebaseUser.getUid()).child("profile").addValueEventListener(listener);
@@ -177,8 +190,8 @@ public class Firebase {
 
     public static void refreshNotificationToken() {
         String notificationToken = FirebaseInstanceId.getInstance().getToken();
-        if(notificationToken == null || getProfile() == null) return;
-        if(!notificationToken.equals(getProfile().getNotificationKeys().getAndroid())) {
+        if (notificationToken == null || getProfile() == null) return;
+        if (!notificationToken.equals(getProfile().getNotificationKeys().getAndroid())) {
             getProfile().getNotificationKeys().setAndroid(notificationToken);
             profiles().child(getProfile().getId()).child("notificationKeys")
                     .child("android").setValue(notificationToken);
@@ -193,7 +206,7 @@ public class Firebase {
     private static Map<String, Object> objectToMap(Object object) {
         Map<String, Object> params = new HashMap<>();
         Class clazz = object.getClass();
-        while(clazz != Object.class) {
+        while (clazz != Object.class) {
             for (Field field : clazz.getDeclaredFields()) {
                 if (!isStatic(field.getModifiers())) {
                     field.setAccessible(true);
