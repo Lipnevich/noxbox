@@ -76,15 +76,16 @@ public class ProfilePerformerActivity extends AppCompatActivity {
     }
 
     private void drawComments(final Profile profile) {
-        if (profile.getPortfolio().get(type.name()).getRating().getComments().get("0") != null) {
+        Iterator iterator = profile.getPortfolio().get(type.name()).getRating().getComments().entrySet().iterator();
+        if (iterator.hasNext()) {
             findViewById(R.id.commentsCleanText).setVisibility(View.GONE);
             findViewById(R.id.commentsListLayout).setVisibility(View.VISIBLE);
 
             List<Comment> comments = new ArrayList<>();
-            Iterator iterator = profile.getPortfolio().get(type.name()).getRating().getComments().entrySet().iterator();
+
             while (iterator.hasNext()) {
-                Map.Entry pair = (Map.Entry) iterator.next();
-                comments.add((Comment) pair.getValue());
+                Map.Entry entry = (Map.Entry) iterator.next();
+                comments.add((Comment) entry.getValue());
             }
 
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commentsList);
