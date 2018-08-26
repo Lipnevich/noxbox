@@ -3,16 +3,13 @@ package live.noxbox.profile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -76,15 +73,13 @@ public class ProfilePerformerActivity extends AppCompatActivity {
     }
 
     private void drawComments(final Profile profile) {
-        Iterator iterator = profile.getPortfolio().get(type.name()).getRating().getComments().entrySet().iterator();
-        if (iterator.hasNext()) {
+
+        if (profile.getPortfolio().get(type.name()).getRating().getComments().entrySet().iterator().hasNext()) {
             findViewById(R.id.commentsCleanText).setVisibility(View.GONE);
             findViewById(R.id.commentsListLayout).setVisibility(View.VISIBLE);
 
             List<Comment> comments = new ArrayList<>();
-
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
+            for (Map.Entry entry : profile.getPortfolio().get(type.name()).getRating().getComments().entrySet()){
                 comments.add((Comment) entry.getValue());
             }
 
@@ -102,20 +97,10 @@ public class ProfilePerformerActivity extends AppCompatActivity {
 
     private void drawCertificate(final Profile profile) {
         List<String> certificateUrlList = profile.getPortfolio().get(type.name()).getCertificates();
-        if (certificateUrlList.size() >= 1
-                && certificateUrlList.get(0) != null) {
 
-            certificateList = (RecyclerView) findViewById(R.id.certificatesList);
-            certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this));
-
-            findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
-            setOnItemCertificateClickListener(certificateList, certificateUrlList);
-        }
+        certificateList = (RecyclerView) findViewById(R.id.certificatesList);
+        certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, certificateList));
 
         findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,20 +117,12 @@ public class ProfilePerformerActivity extends AppCompatActivity {
 
     private void drawWorkSample(final Profile profile) {
         List<String> workSampleUrlList = profile.getPortfolio().get(type.name()).getWorkSamples();
-        if (workSampleUrlList.size() >= 1
-                && workSampleUrlList.get(0) != null) {
 
-            workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
-            workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this));
+        workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
+        workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, workSampleList));
 
-            findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
-            setOnItemCertificateClickListener(workSampleList, workSampleUrlList);
-        }
+
         findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,27 +132,6 @@ public class ProfilePerformerActivity extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE_WORK_SAMPLE);
             }
         });
-    }
-
-
-    private <T extends String> void setOnItemCertificateClickListener(RecyclerView recyclerView, final List<T> imageUrlList) {
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("photos", (Serializable) imageUrlList);
-                bundle.putInt("position", position);
-
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
-                slideShowFragment.setArguments(bundle);
-                slideShowFragment.show(fragmentTransaction, "slideshow");
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-            }
-        }));
     }
 
     @Override

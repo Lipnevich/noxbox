@@ -1,6 +1,8 @@
 package live.noxbox.profile;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.ImageButton;
 
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.util.List;
 
 import live.noxbox.R;
@@ -17,10 +20,15 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
 
     private List<String> imageUrlList;
     private final ProfilePerformerActivity activity;
+    private RecyclerView imageList;
 
-    public ImageListAdapter(List<String> imageUrlList, ProfilePerformerActivity activity) {
+    public ImageListAdapter(List<String> imageUrlList, ProfilePerformerActivity activity, RecyclerView imageList) {
+        if (imageUrlList.size() == 0) {
+            imageUrlList.add("");
+        }
         this.imageUrlList = imageUrlList;
         this.activity = activity;
+        this.imageList = imageList;
     }
 
     @NonNull
@@ -30,8 +38,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
         return new ImageViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
+
         final ImageButton imageButton = holder.image;
 
         Glide.with(activity)
@@ -39,6 +49,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
                 .load(imageUrlList.get(position))
                 .into(imageButton);
 
+
+        if (position == imageUrlList.size() - 1 && !imageUrlList.get(0).equals("")) {
+            setOnItemCertificateClickListener(imageList, imageUrlList);
+        }
     }
 
     @Override
@@ -55,5 +69,25 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
             super(layout);
             image = layout.findViewById(R.id.image);
         }
+    }
+
+    private <T extends String> void setOnItemCertificateClickListener(RecyclerView recyclerView, final List<T> imageUrlList) {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(activity.getApplicationContext(), recyclerView, new RecyclerClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("photos", (Serializable) imageUrlList);
+                bundle.putInt("position", position);
+
+                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
+                slideShowFragment.setArguments(bundle);
+                slideShowFragment.show(fragmentTransaction, "slideshow");
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+            }
+        }));
     }
 }
