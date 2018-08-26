@@ -248,7 +248,7 @@ public class ProfileActivity extends FragmentActivity {
     }
 
     private void drawHideMenuAddingPerformer(final Profile profile) {
-        findViewById(R.id.addLayout).setVisibility(View.INVISIBLE);
+        findViewById(R.id.addLayout).setVisibility(View.GONE);
     }
 
     private void setTravelModeStatus(Profile profile) {
@@ -272,7 +272,7 @@ public class ProfileActivity extends FragmentActivity {
         if (requestCode == SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
-                    FirestoreReference.createImageReference(this, data.getData(), (ImageView) findViewById(R.id.profileImage));
+                    FirestoreReference.createImageReference(this, data.getData(), (ImageView) findViewById(R.id.profileImage),new String("photos"));
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 DebugMessage.popup(this, "Cancelled");

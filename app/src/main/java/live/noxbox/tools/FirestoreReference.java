@@ -1,7 +1,6 @@
 package live.noxbox.tools;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -26,13 +25,18 @@ import live.noxbox.state.ProfileStorage;
 
 public class FirestoreReference {
 
-    public static void createImageReference(final Activity activity, final Uri url, final ImageView image) {
-        final ProgressDialog progressDialog = new ProgressDialog(activity);
+    public static void createImageReference(final Activity activity, final Uri url, final ImageView image, final String childFolder) {
         try {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), url);
             ImageManager.createCircleImageFromBitmap(activity, bitmap, image);
 
-            final StorageReference storageRef = com.google.firebase.storage.FirebaseStorage.getInstance().getReference().child("photos").child(FirebaseAuth.getInstance().getCurrentUser().getUid() + ".jpg");
+            final StorageReference storageRef =
+                    com.google.firebase.storage.FirebaseStorage.getInstance()
+                            .getReference()
+                            .child(childFolder)
+                            .child(FirebaseAuth.getInstance()
+                                    .getCurrentUser()
+                                    .getUid() + ".jpg");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             //TODO (vl) check photo size <= 1MB or compress to lower quality
