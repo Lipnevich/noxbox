@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +78,7 @@ public class ProfilePerformerActivity extends AppCompatActivity {
             findViewById(R.id.commentsListLayout).setVisibility(View.VISIBLE);
 
             List<Comment> comments = new ArrayList<>();
-            for (Map.Entry entry : profile.getPortfolio().get(type.name()).getRating().getComments().entrySet()){
+            for (Map.Entry entry : profile.getPortfolio().get(type.name()).getRating().getComments().entrySet()) {
                 comments.add((Comment) entry.getValue());
             }
 
@@ -138,16 +137,15 @@ public class ProfilePerformerActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_IMAGE_CERTIFICATE) {
-                if (data != null) {
-                    FirestoreReference.createImageReference(this, data.getData(), (ImageView) findViewById(R.id.profileImage), "certificates");
+            if (data != null) {
+                if (requestCode == SELECT_IMAGE_CERTIFICATE) {
+                    FirestoreReference.createImageReference(this, data.getData(), "certificates", type);
                 }
-            }
-            if (requestCode == SELECT_IMAGE_WORK_SAMPLE) {
-                if (data != null) {
-                    FirestoreReference.createImageReference(this, data.getData(), (ImageView) findViewById(R.id.profileImage), "workSamples");
+                if (requestCode == SELECT_IMAGE_WORK_SAMPLE) {
+                    FirestoreReference.createImageReference(this, data.getData(), "workSamples", type);
                 }
             }
         }
     }
 }
+    

@@ -23,9 +23,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
     private RecyclerView imageList;
 
     public ImageListAdapter(List<String> imageUrlList, ProfilePerformerActivity activity, RecyclerView imageList) {
-        if (imageUrlList.size() == 0) {
-            imageUrlList.add("");
-        }
         this.imageUrlList = imageUrlList;
         this.activity = activity;
         this.imageList = imageList;
@@ -50,7 +47,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
                 .into(imageButton);
 
 
-        if (position == imageUrlList.size() - 1 && !imageUrlList.get(0).equals("")) {
+        if (position == imageUrlList.size() - 1) {
             setOnItemCertificateClickListener(imageList, imageUrlList);
         }
     }
