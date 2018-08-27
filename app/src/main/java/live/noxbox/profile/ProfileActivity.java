@@ -127,12 +127,16 @@ public class ProfileActivity extends FragmentActivity {
             }
         }
         if (typeList.size() >= 1) {
+            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.INVISIBLE);
+            findViewById(R.id.serviceProvidedText).setVisibility(View.VISIBLE);
             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.noxboxTypeList);
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recyclerView.setAdapter(new PortfolioNoxboxTypeAdapter(typeList, ProfileActivity.this));
         }else{
             ((RecyclerView) findViewById(R.id.noxboxTypeList)).setVisibility(View.GONE);
+            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.VISIBLE);
+            findViewById(R.id.serviceProvidedText).setVisibility(View.GONE);
         }
 
     }

@@ -107,10 +107,39 @@
         <include layout="@layout/item_divider" />
 
         <!--Noxbox Type-->
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/noxboxTypeList"
+        <TextView
+            android:id="@+id/serviceProvidedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/serviceProvided"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/text_color_secondary" />
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/noxboxTypeList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+            <LinearLayout
+                android:id="@+id/serviceNotProvidedLayout"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="64dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/text_color_secondary"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/serviceIsMissing" />
+            </LinearLayout>
+
+        </FrameLayout>
+
 
         <include layout="@layout/item_divider" />
 
