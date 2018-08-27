@@ -23,6 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import live.noxbox.model.Comment;
 import live.noxbox.model.Filters;
+import live.noxbox.model.ImageType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
@@ -55,8 +56,9 @@ public class Firebase {
     }
 
     private static GeoFire geo;
+
     public static GeoFire geo() {
-        if(geo == null) geo = new GeoFire(db().child("geo"));
+        if (geo == null) geo = new GeoFire(db().child("geo"));
         return geo;
     }
 
@@ -94,7 +96,7 @@ public class Firebase {
     // History API
     public static Noxbox persistHistory() {
         Noxbox current = getProfile().getCurrent();
-        if(current == null) return null;
+        if (current == null) return null;
 
         like();
         return persistHistory(current.setTimeCompleted(System.currentTimeMillis()));
@@ -111,13 +113,16 @@ public class Firebase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     GenericTypeIndicator<Map<String, Noxbox>> genericTypeIndicator
-                            = new GenericTypeIndicator<Map<String, Noxbox>>() {};
+                            = new GenericTypeIndicator<Map<String, Noxbox>>() {
+                    };
                     Map<String, Noxbox> history = dataSnapshot.getValue(genericTypeIndicator);
                     task.execute(history.values());
                 }
             }
 
-            @Override public void onCancelled(DatabaseError databaseError) {}
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
@@ -163,9 +168,17 @@ public class Firebase {
                     workSampleList.add("http://rosdesign.com/design_materials3/img_materials3/kopf/kopf1.jpg");
                     workSampleList.add("http://vmirevolos.ru/wp-content/uploads/2015/12/61.jpg");
 
+
+
+
+                    Map<String, List<String>> images = new HashMap<>();
+                    images.put(ImageType.samples.name(), new ArrayList<String>(workSampleList));
+                    images.put(ImageType.certificates.name(), new ArrayList<String>(certificatesList));
+
+
                     Map<String, Portfolio> portfolioMap = new HashMap<>();
-                    portfolioMap.put(NoxboxType.haircut.name(), new Portfolio(certificatesList, workSampleList, rating));
-                    portfolioMap.put(NoxboxType.manicure.name(), new Portfolio(certificatesList, workSampleList, rating));
+                    portfolioMap.put(NoxboxType.haircut.name(), new Portfolio(new HashMap<String, List<String>>(images)));
+                    portfolioMap.put(NoxboxType.manicure.name(), new Portfolio(new HashMap<String, List<String>>(images)));
 
                     profile = new Profile()
                             .setId(firebaseUser.getUid())

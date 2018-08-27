@@ -1,50 +1,25 @@
 package live.noxbox.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Portfolio {
+    private Map<String,List<String>> images = new HashMap<>();
 
-    private List<String> certificates;
-    private List<String> workSamples;
-    private Rating rating;
+    public Portfolio(Map<String, List<String>> images) {
+        this.images = images;
+    }
 
     public Portfolio() {
-        certificates = new ArrayList<>();
-        workSamples = new ArrayList<>();
-        rating = new Rating();
     }
 
-    public Portfolio(List<String> certificates, List<String> workSamples, Rating rating) {
-        this.certificates = certificates;
-        this.workSamples = workSamples;
-        this.rating = rating;
+    public Map<String, List<String>> getImages() {
+        return images;
     }
 
-    public List<String> getCertificates() {
-        return certificates;
-    }
-
-    public Portfolio setCertificates(List<String> certificates) {
-        this.certificates = certificates;
-        return this;
-    }
-
-    public List<String> getWorkSamples() {
-        return workSamples;
-    }
-
-    public Portfolio setWorkSamples(List<String> workSamples) {
-        this.workSamples = workSamples;
-        return this;
-    }
-
-    public Rating getRating() {
-        return rating;
-    }
-
-    public Portfolio setRating(Rating rating) {
-        this.rating = rating;
+    public Portfolio setImages(Map<String, List<String>> images) {
+        this.images = images;
         return this;
     }
 

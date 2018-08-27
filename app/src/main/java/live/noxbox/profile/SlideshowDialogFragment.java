@@ -2,6 +2,7 @@ package live.noxbox.profile;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
@@ -20,7 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.tools.DebugMessage;
+import live.noxbox.model.ImageType;
+import live.noxbox.model.NoxboxType;
+import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
+import live.noxbox.tools.DialogBuilder;
+import live.noxbox.tools.Task;
+
+import static live.noxbox.tools.ImageManager.deleteImage;
 
 public class SlideshowDialogFragment extends DialogFragment {
     private List<String> photos;
@@ -29,21 +37,26 @@ public class SlideshowDialogFragment extends DialogFragment {
     private TextView lblCount;
     private int selectedPosition = 0;
     private int currentIndex;
+    private NoxboxType type;
+    private ImageType imageType;
+
 
     static SlideshowDialogFragment newInstance() {
-        SlideshowDialogFragment f = new SlideshowDialogFragment();
-        return f;
+        return new SlideshowDialogFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
         lblCount = (TextView) v.findViewById(R.id.itemCount);
 
+
         photos = (ArrayList<String>) getArguments().getSerializable("photos");
         selectedPosition = getArguments().getInt("position");
+        type = (NoxboxType) getArguments().getSerializable("type");
+        imageType = (ImageType) getArguments().getSerializable("imageType");
 
         myViewPagerAdapter = new ViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
@@ -61,13 +74,20 @@ public class SlideshowDialogFragment extends DialogFragment {
         v.findViewById(R.id.deleteImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ProfileStorage.readProfile(new Task<Profile>() {
-//                    @Override
-//                    public void execute(Profile profile) {
-//                        profile.getPortfolio().get()
-//                    }
-//                });
-                DebugMessage.popup(getActivity(), "delete image with index " + currentIndex);
+                ProfileStorage.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(final Profile profile) {
+                        DialogBuilder.createSimpleAlertDialog(getActivity(), R.string.wantDeleteImage, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).remove(currentIndex);
+                                deleteImage(type, currentIndex, imageType);
+                                dismiss();
+                                ProfileStorage.fireProfile();
+                            }
+                        });
+                    }
+                });
             }
         });
 
@@ -80,7 +100,7 @@ public class SlideshowDialogFragment extends DialogFragment {
 
     }
 
-    //  page change listener
+
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
         @Override
@@ -108,7 +128,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
     }
 
-    //  adapter
+
     public class ViewPagerAdapter extends PagerAdapter {
 
         private LayoutInflater layoutInflater;

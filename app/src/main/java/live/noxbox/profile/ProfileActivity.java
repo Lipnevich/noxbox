@@ -26,7 +26,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DebugMessage;
-import live.noxbox.tools.FirestoreReference;
+import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.ImageManager.createCircleImageFromUrl;
@@ -276,7 +276,7 @@ public class ProfileActivity extends FragmentActivity {
         if (requestCode == SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
-                    FirestoreReference.createImageReference(this, data.getData(), (ImageView) findViewById(R.id.profileImage),new String("photos"));
+                    ImageManager.uploadPhoto(this, data.getData());
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 DebugMessage.popup(this, "Cancelled");

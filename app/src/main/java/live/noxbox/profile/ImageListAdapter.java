@@ -12,20 +12,48 @@ import android.widget.ImageButton;
 import com.bumptech.glide.Glide;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.model.ImageType;
+import live.noxbox.model.NoxboxType;
 
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ImageViewHolder> {
 
     private List<String> imageUrlList;
-    private final ProfilePerformerActivity activity;
-    private RecyclerView imageList;
+    private ProfilePerformerActivity activity;
+    private final RecyclerView imageList;
+    private final NoxboxType type;
+    private final ImageType imageType;
+    private RecyclerTouchListener recyclerTouchListener;
 
-    public ImageListAdapter(List<String> imageUrlList, ProfilePerformerActivity activity, RecyclerView imageList) {
-        this.imageUrlList = imageUrlList;
+    public ImageListAdapter(final List<String> imageUrlList, final ProfilePerformerActivity activity, final RecyclerView imageList, final ImageType imageType, final NoxboxType type) {
+        this.imageUrlList = imageUrlList == null ? new ArrayList<String>() : imageUrlList;
         this.activity = activity;
         this.imageList = imageList;
+        this.imageType = imageType;
+        this.type = type;
+
+        this.recyclerTouchListener = new RecyclerTouchListener(activity.getApplicationContext(), imageList, new RecyclerClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("photos", (Serializable) imageUrlList);
+                bundle.putInt("position", position);
+                bundle.putSerializable("type", type);
+                bundle.putSerializable("imageType", imageType);
+
+
+                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
+                slideShowFragment.setArguments(bundle);
+                slideShowFragment.show(fragmentTransaction, "slideshow");
+            }
+
+            @Override
+            public void onLongClick(View view, int position) { }
+        });
     }
 
     @NonNull
@@ -45,11 +73,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
                 .asDrawable()
                 .load(imageUrlList.get(position))
                 .into(imageButton);
-
-
-        if (position == imageUrlList.size() - 1) {
-            setOnItemCertificateClickListener(imageList, imageUrlList);
+        if (position == imageUrlList.size() - 1){
+            imageList.addOnItemTouchListener(recyclerTouchListener);
         }
+
     }
 
     @Override
@@ -68,23 +95,4 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
         }
     }
 
-    private <T extends String> void setOnItemCertificateClickListener(RecyclerView recyclerView, final List<T> imageUrlList) {
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(activity.getApplicationContext(), recyclerView, new RecyclerClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("photos", (Serializable) imageUrlList);
-                bundle.putInt("position", position);
-
-                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
-                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
-                slideShowFragment.setArguments(bundle);
-                slideShowFragment.show(fragmentTransaction, "slideshow");
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-            }
-        }));
-    }
 }

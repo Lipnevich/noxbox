@@ -204,4 +204,7 @@
     <string name="noComments">Комментарии отстутвуют</string>
     <string name="edit">Редактировать</string>
     <string name="serviceIsMissing">Услуги отстутствуют</string>
+    <string name="wantDeleteImage">Хотите удалить изображение?</string>
+    <string name="note">Внимание!</string>
+    <string name="deleteSection">Удалить раздел?</string>
 </resources>

@@ -25,10 +25,10 @@
                 android:src="@drawable/arrow_back" />
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/profile"
                 android:textColor="@color/secondary"
                 android:textSize="@dimen/text_size" />
 
@@ -188,35 +188,4 @@
 
         </FrameLayout>
     </RelativeLayout>
-
-    <!--comments-->
-    <FrameLayout
-        android:id="@+id/commentsLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_margin="1dp">
-
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/commentsListLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:focusable="true"
-            android:visibility="gone">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/commentsList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </android.support.v4.widget.NestedScrollView>
-
-
-        <TextView
-            android:id="@+id/commentsCleanText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/noComments" />
-
-    </FrameLayout>
 </LinearLayout>

@@ -1,5 +1,6 @@
 package live.noxbox.profile;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,19 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import live.noxbox.R;
-import live.noxbox.detailed.CommentAdapter;
-import live.noxbox.model.Comment;
+import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
-import live.noxbox.tools.FirestoreReference;
+import live.noxbox.tools.DialogBuilder;
+import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
+
+import static live.noxbox.tools.ImageManager.deleteFolderByType;
 
 public class ProfilePerformerActivity extends AppCompatActivity {
 
@@ -33,8 +35,8 @@ public class ProfilePerformerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         type = NoxboxType.byId(intent.getIntExtra(ProfileActivity.class.getName(), 0));
-        setTitle(type.getName());
         setContentView(R.layout.activity_profile_performer);
+        ((TextView) findViewById(R.id.title)).setText(type.getName());
     }
 
     @Override
@@ -59,47 +61,34 @@ public class ProfilePerformerActivity extends AppCompatActivity {
         findViewById(R.id.deleteSection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.getPortfolio().remove(type.name());
-                finish();
+                DialogBuilder.createSimpleAlertDialog(
+                        ProfilePerformerActivity.this,
+                        R.string.deleteSection,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                profile.getPortfolio().remove(type.name());
+                                deleteFolderByType(type);
+                                finish();
+                            }
+                        });
             }
         });
+
         if (profile.getPortfolio().get(type.name()) != null) {
-            drawComments(profile);
             drawCertificate(profile);
             drawWorkSample(profile);
         }
 
     }
 
-    private void drawComments(final Profile profile) {
-
-        if (profile.getPortfolio().get(type.name()).getRating().getComments().entrySet().iterator().hasNext()) {
-            findViewById(R.id.commentsCleanText).setVisibility(View.GONE);
-            findViewById(R.id.commentsListLayout).setVisibility(View.VISIBLE);
-
-            List<Comment> comments = new ArrayList<>();
-            for (Map.Entry entry : profile.getPortfolio().get(type.name()).getRating().getComments().entrySet()) {
-                comments.add((Comment) entry.getValue());
-            }
-
-            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commentsList);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            recyclerView.setAdapter(new CommentAdapter(comments));
-
-        } else {
-            findViewById(R.id.commentsCleanText).setVisibility(View.VISIBLE);
-            findViewById(R.id.commentsListLayout).setVisibility(View.GONE);
-        }
-    }
-
-    private RecyclerView certificateList;
-
     private void drawCertificate(final Profile profile) {
-        List<String> certificateUrlList = profile.getPortfolio().get(type.name()).getCertificates();
 
-        certificateList = (RecyclerView) findViewById(R.id.certificatesList);
+        List<String> certificateUrlList = profile.getPortfolio().get(type.name()).getImages().get(ImageType.certificates.name());
+
+        RecyclerView certificateList = (RecyclerView) findViewById(R.id.certificatesList);
         certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, certificateList));
+        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, certificateList, ImageType.certificates, type));
 
         findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,14 +101,12 @@ public class ProfilePerformerActivity extends AppCompatActivity {
         });
     }
 
-    private RecyclerView workSampleList;
-
     private void drawWorkSample(final Profile profile) {
-        List<String> workSampleUrlList = profile.getPortfolio().get(type.name()).getWorkSamples();
+        List<String> workSampleUrlList = profile.getPortfolio().get(type.name()).getImages().get(ImageType.samples.name());
 
-        workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
+        RecyclerView workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
         workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, workSampleList));
+        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, workSampleList, ImageType.samples, type));
 
 
         findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
@@ -134,16 +121,21 @@ public class ProfilePerformerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (data != null) {
-                if (requestCode == SELECT_IMAGE_CERTIFICATE) {
-                    FirestoreReference.createImageReference(this, data.getData(), "certificates", type);
-                }
-                if (requestCode == SELECT_IMAGE_WORK_SAMPLE) {
-                    FirestoreReference.createImageReference(this, data.getData(), "workSamples", type);
-                }
+                ProfileStorage.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        if (requestCode == SELECT_IMAGE_CERTIFICATE) {
+                            ImageManager.uploadImage(ProfilePerformerActivity.this, data.getData(), ImageType.certificates, type, profile.getPortfolio().get(type.name()).getImages().get(ImageType.certificates.name()).size());
+                        }
+                        if (requestCode == SELECT_IMAGE_WORK_SAMPLE) {
+                            ImageManager.uploadImage(ProfilePerformerActivity.this, data.getData(), ImageType.samples, type, profile.getPortfolio().get(type.name()).getImages().get(ImageType.samples.name()).size());
+                        }
+                    }
+                });
             }
         }
     }
