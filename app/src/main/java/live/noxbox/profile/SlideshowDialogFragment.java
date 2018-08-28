@@ -28,6 +28,10 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.profile.ImageListAdapter.IMAGE_TYPE_KEY;
+import static live.noxbox.profile.ImageListAdapter.PHOTOS_KEY;
+import static live.noxbox.profile.ImageListAdapter.POSITION_KEY;
+import static live.noxbox.profile.ImageListAdapter.TYPE_KEY;
 import static live.noxbox.tools.ImageManager.deleteImage;
 
 public class SlideshowDialogFragment extends DialogFragment {
@@ -52,11 +56,10 @@ public class SlideshowDialogFragment extends DialogFragment {
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
         lblCount = (TextView) v.findViewById(R.id.itemCount);
 
-
-        photos = (ArrayList<String>) getArguments().getSerializable("photos");
-        selectedPosition = getArguments().getInt("position");
-        type = (NoxboxType) getArguments().getSerializable("type");
-        imageType = (ImageType) getArguments().getSerializable("imageType");
+        photos = (ArrayList<String>) getArguments().getSerializable(PHOTOS_KEY);
+        selectedPosition = getArguments().getInt(POSITION_KEY);
+        type = (NoxboxType) getArguments().getSerializable(TYPE_KEY);
+        imageType = (ImageType) getArguments().getSerializable(IMAGE_TYPE_KEY);
 
         myViewPagerAdapter = new ViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);

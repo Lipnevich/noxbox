@@ -10,11 +10,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
+import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DialogBuilder;
@@ -45,6 +48,16 @@ public class ProfilePerformerActivity extends AppCompatActivity {
         ProfileStorage.listenProfile(ProfilePerformerActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
+                if (profile.getPortfolio().get(type.name()) == null) {
+                    profile.getPortfolio().put(type.name(), new Portfolio());
+                }
+                for(ImageType imageType : ImageType.values()) {
+                    Map<String, List<String>> images = profile.getPortfolio().get(type.name()).getImages();
+                    if(images.get(imageType.name()) == null) {
+                        images.put(imageType.name(), new ArrayList<String>());
+                    }
+                }
+
                 draw(profile);
             }
         });
@@ -75,10 +88,8 @@ public class ProfilePerformerActivity extends AppCompatActivity {
             }
         });
 
-        if (profile.getPortfolio().get(type.name()) != null) {
-            drawCertificate(profile);
-            drawWorkSample(profile);
-        }
+        drawCertificate(profile);
+        drawWorkSample(profile);
 
     }
 

@@ -21,28 +21,29 @@ import live.noxbox.model.NoxboxType;
 
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ImageViewHolder> {
 
+    public static final String PHOTOS_KEY = "photos";
+    public static final String POSITION_KEY = "position";
+    public static final String TYPE_KEY = "type";
+    public static final String IMAGE_TYPE_KEY = "imageType";
+
     private List<String> imageUrlList;
     private ProfilePerformerActivity activity;
     private final RecyclerView imageList;
-    private final NoxboxType type;
-    private final ImageType imageType;
     private RecyclerTouchListener recyclerTouchListener;
 
     public ImageListAdapter(final List<String> imageUrlList, final ProfilePerformerActivity activity, final RecyclerView imageList, final ImageType imageType, final NoxboxType type) {
         this.imageUrlList = imageUrlList == null ? new ArrayList<String>() : imageUrlList;
         this.activity = activity;
         this.imageList = imageList;
-        this.imageType = imageType;
-        this.type = type;
 
         this.recyclerTouchListener = new RecyclerTouchListener(activity.getApplicationContext(), imageList, new RecyclerClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("photos", (Serializable) imageUrlList);
-                bundle.putInt("position", position);
-                bundle.putSerializable("type", type);
-                bundle.putSerializable("imageType", imageType);
+                bundle.putSerializable(PHOTOS_KEY, (Serializable) imageUrlList);
+                bundle.putInt(POSITION_KEY, position);
+                bundle.putSerializable(TYPE_KEY, type);
+                bundle.putSerializable(IMAGE_TYPE_KEY, imageType);
 
 
                 FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
