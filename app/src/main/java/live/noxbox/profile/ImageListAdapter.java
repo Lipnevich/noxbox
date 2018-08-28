@@ -21,10 +21,10 @@ import live.noxbox.model.NoxboxType;
 
 public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.ImageViewHolder> {
 
-    public static final String PHOTOS_KEY = "photos";
-    public static final String POSITION_KEY = "position";
-    public static final String TYPE_KEY = "type";
-    public static final String IMAGE_TYPE_KEY = "imageType";
+    static final String PHOTOS_KEY = "photos";
+    static final String POSITION_KEY = "position";
+    static final String TYPE_KEY = "type";
+    static final String IMAGE_TYPE_KEY = "imageType";
 
     private List<String> imageUrlList;
     private ProfilePerformerActivity activity;
@@ -44,7 +44,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
                 bundle.putInt(POSITION_KEY, position);
                 bundle.putSerializable(TYPE_KEY, type);
                 bundle.putSerializable(IMAGE_TYPE_KEY, imageType);
-
 
                 FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
                 SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
