@@ -46,6 +46,7 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.DebugActivity;
+import live.noxbox.pages.Moving;
 import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
@@ -370,6 +371,9 @@ public class MapActivity extends DebugActivity implements
                 return new Accepting(googleMap, this);
             }
             return new Requesting(googleMap, this);
+        }
+        if(profile.getCurrent().getTimeAccepted() != null){
+            return new Moving(googleMap,this);
         }
 
         return new AvailableServices(googleMap, googleApiClient, this);

@@ -39,17 +39,6 @@ public class PathFinder {
 
 
     public static void createRequestPoints(Noxbox noxbox, GoogleMap googleMap, Activity activity) {
-//        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
-//            MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
-//            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
-//            createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
-//            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include( noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
-//        } else {
-//            MarkerCreator.createPositionMarker(noxbox.getOwner().getTravelMode(), noxbox.getPosition().toLatLng(), googleMap);
-//            MarkerCreator.createCustomMarker(noxbox, googleMap, activity);
-//            createPathBetweenPoints(noxbox.getPosition(), noxbox.getOwner().getPosition(), noxbox.getOwner().getTravelMode(), activity, googleMap);
-//            googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getOwner().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
-//        }
         if (noxbox.getRole() == MarketRole.supply) {//исполнитель
             if (noxbox.getOwner().getTravelMode() == none) {
                 MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);

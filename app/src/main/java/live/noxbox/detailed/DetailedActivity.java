@@ -32,6 +32,7 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
@@ -60,6 +61,7 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void draw(Profile profile) {
         drawToolbar(profile.getViewed());
+        drawOwnerProfile(profile.getViewed().getOwner());
         drawDescription(profile.getViewed());
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
@@ -70,6 +72,7 @@ public class DetailedActivity extends AppCompatActivity {
             findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
             drawButton(profile.getViewed().getRole());
         }
+
     }
 
     private void drawToolbar(Noxbox noxbox) {
@@ -79,7 +82,22 @@ public class DetailedActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(noxbox.getType().getName());
     }
 
+    private void drawOwnerProfile(Profile profile) {
+        if (profile.getViewed().getTimeAccepted() != null) {
+            findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
+            drawDropdownElement(R.id.profileTitleLayout, R.id.profileLayout);
+            ImageManager.createCircleImageFromUrl(this, profile.getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
+            ((TextView) findViewById(R.id.profileName)).setText(profile.getName());
+        } else {
+            findViewById(R.id.profileTitleLayout).setVisibility(View.GONE);
+        }
+
+    }
+
     private void drawDescription(Noxbox noxbox) {
+        if (noxbox.getTimeAccepted() != null) {
+            findViewById(R.id.profileLayout).setVisibility(View.GONE);
+        }
         drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
         changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
         if (noxbox.getRole() == MarketRole.supply) {
@@ -100,7 +118,7 @@ public class DetailedActivity extends AppCompatActivity {
         Rating rating = viewed.getRole() == MarketRole.demand ?
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name()) : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
 
-        int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(),viewed.getType());
+        int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
         if (percentage >= 95) {
             ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.GREEN);
             ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.GREEN);
@@ -112,8 +130,8 @@ public class DetailedActivity extends AppCompatActivity {
             ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.RED);
         }
 
-        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(),viewed.getType()) + "%");
-        ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage(viewed.getRole(),viewed.getType()) + "%");
+        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
+        ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
         ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " " + getResources().getString(R.string.like));
         ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
 

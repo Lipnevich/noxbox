@@ -166,7 +166,8 @@
         android:layout_gravity="end|top"
         android:layout_marginEnd="13dp"
         android:layout_marginTop="68dp"
-        android:src="@drawable/debug_acceptance"
+        android:src="@drawable/debug_accepting"
+        android:tint="@color/primary"
         />
     <ImageView
         android:id="@+id/debug_noxbox_example"
@@ -177,13 +178,21 @@
         android:src="@drawable/debug_noxbox_examples"
         />
     <ImageView
-        android:id="@+id/debug_filter"
+        android:id="@+id/debugFilter"
         style="@style/IconButtonStyle"
         android:layout_gravity="end|top"
         android:layout_marginEnd="13dp"
         android:layout_marginTop="182dp"
-        android:src="@drawable/debug_filters"
-        />
+        android:src="@drawable/debug_filter"
+        android:tint="@color/primary" />
+    <ImageView
+        android:id="@+id/debugMoving"
+        style="@style/IconButtonStyle"
+        android:layout_gravity="end|top"
+        android:layout_marginEnd="13dp"
+        android:layout_marginTop="230dp"
+        android:src="@drawable/debug_moving"
+        android:tint="@color/primary" />
 
     <ImageView
         android:id="@+id/check"

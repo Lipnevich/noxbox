@@ -38,7 +38,7 @@ public class ImageManager {
 
         if (bitmap == null) return;
 
-        createCircleImageFromBitmap(activity, bitmap, ((ImageView) activity.findViewById(R.id.profile_image)));
+        createCircleImageFromBitmap(activity, bitmap, ((ImageView) activity.findViewById(R.id.profileImage)));
 
         uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
             @Override
