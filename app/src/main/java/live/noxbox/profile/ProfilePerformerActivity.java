@@ -99,7 +99,7 @@ public class ProfilePerformerActivity extends AppCompatActivity {
 
         RecyclerView certificateList = (RecyclerView) findViewById(R.id.certificatesList);
         certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, certificateList, ImageType.certificates, type));
+        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, type));
 
         findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +117,7 @@ public class ProfilePerformerActivity extends AppCompatActivity {
 
         RecyclerView workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
         workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, workSampleList, ImageType.samples, type));
+        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, type));
 
 
         findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {

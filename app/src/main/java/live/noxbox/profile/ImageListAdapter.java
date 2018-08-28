@@ -28,32 +28,14 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
 
     private List<String> imageUrlList;
     private ProfilePerformerActivity activity;
-    private final RecyclerView imageList;
-    private RecyclerTouchListener recyclerTouchListener;
+    private final ImageType imageType;
+    private final NoxboxType type;
 
-    public ImageListAdapter(final List<String> imageUrlList, final ProfilePerformerActivity activity, final RecyclerView imageList, final ImageType imageType, final NoxboxType type) {
+    public ImageListAdapter(final List<String> imageUrlList, final ProfilePerformerActivity activity, final ImageType imageType, final NoxboxType type) {
         this.imageUrlList = imageUrlList == null ? new ArrayList<String>() : imageUrlList;
         this.activity = activity;
-        this.imageList = imageList;
-
-        this.recyclerTouchListener = new RecyclerTouchListener(activity.getApplicationContext(), imageList, new RecyclerClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(PHOTOS_KEY, (Serializable) imageUrlList);
-                bundle.putInt(POSITION_KEY, position);
-                bundle.putSerializable(TYPE_KEY, type);
-                bundle.putSerializable(IMAGE_TYPE_KEY, imageType);
-
-                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
-                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
-                slideShowFragment.setArguments(bundle);
-                slideShowFragment.show(fragmentTransaction, "slideshow");
-            }
-
-            @Override
-            public void onLongClick(View view, int position) { }
-        });
+        this.imageType = imageType;
+        this.type = type;
     }
 
     @NonNull
@@ -65,18 +47,28 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
 
 
     @Override
-    public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-
-        final ImageButton imageButton = holder.image;
+    public void onBindViewHolder(@NonNull final ImageViewHolder holder, int position) {
 
         Glide.with(activity)
                 .asDrawable()
                 .load(imageUrlList.get(position))
-                .into(imageButton);
-        if (position == imageUrlList.size() - 1){
-            imageList.addOnItemTouchListener(recyclerTouchListener);
-        }
+                .into(holder.image);
 
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(PHOTOS_KEY, (Serializable) imageUrlList);
+                bundle.putInt(POSITION_KEY, holder.getAdapterPosition());
+                bundle.putSerializable(TYPE_KEY, type);
+                bundle.putSerializable(IMAGE_TYPE_KEY, imageType);
+
+                FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+                SlideshowDialogFragment slideShowFragment = SlideshowDialogFragment.newInstance();
+                slideShowFragment.setArguments(bundle);
+                slideShowFragment.show(fragmentTransaction, imageType.name());
+            }
+        });
     }
 
     @Override
@@ -87,7 +79,6 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
 
     static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageButton image;
-
 
         ImageViewHolder(View layout) {
             super(layout);
