@@ -27,3 +27,6 @@ exports.compareWavesLibs = functions.https.onRequest((req, res) => {
     res.status(200).send('Old address ' + oldSeed.address + '<br/>New address ' + newSeed.address);
 });
 
+exports.version = functions.https.onRequest((req, res) => {
+    res.status(200).send('Version 0.1');
+});
