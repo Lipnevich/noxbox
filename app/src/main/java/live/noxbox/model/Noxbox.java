@@ -32,6 +32,9 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeAccepted;
     private Long timeCanceled;
 
+    private Long timeSupplyVerified;
+    private Long timeDemandVerified;
+
     private Position position;
     private String price;
     private NoxboxType type;
@@ -214,6 +217,24 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCreated(Long timeCreated) {
         this.timeCreated = timeCreated;
+        return this;
+    }
+
+    public Long getTimeSupplyVerified() {
+        return timeSupplyVerified;
+    }
+
+    public Noxbox setTimeSupplyVerified(Long timeSupplyVerified) {
+        this.timeSupplyVerified = timeSupplyVerified;
+        return this;
+    }
+
+    public Long getTimeDemandVerified() {
+        return timeDemandVerified;
+    }
+
+    public Noxbox setTimeDemandVerified(Long timeDemandVerified) {
+        this.timeDemandVerified = timeDemandVerified;
         return this;
     }
 }

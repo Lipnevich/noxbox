@@ -20,6 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import live.noxbox.R;
+import live.noxbox.model.MarketRole;
+import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
+import live.noxbox.tools.Task;
 
 public class SwipeButton extends RelativeLayout {
     private ImageView slidingButton;
@@ -129,18 +133,54 @@ public class SwipeButton extends RelativeLayout {
                         }
                         return true;
                     case MotionEvent.ACTION_UP:// отпускание
-                        if (active) {
-                            //TODO (vl) cancel confirmation
-                            collapseButton();
-                        } else {
-                            initialButtonWidth = slidingButton.getWidth();
-                            if (slidingButton.getX() + slidingButton.getWidth() > getWidth() * 0.85) {
-                                expandButton();
-                                //TODO (vl) accept confirmation
-                            } else {
-                                moveButtonBack();
+                        ProfileStorage.readProfile(new Task<Profile>() {
+                            @Override
+                            public void execute(Profile profile) {
+
+                                if (active) {
+                                    //TODO (vl) cancel confirmation
+                                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                                        if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                            profile.getCurrent().setTimeSupplyVerified(null);
+                                        } else {
+                                            profile.getCurrent().setTimeDemandVerified(null);
+                                        }
+                                    } else {
+                                        if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                            profile.getCurrent().setTimeSupplyVerified(null);
+                                        } else {
+                                            profile.getCurrent().setTimeDemandVerified(null);
+                                        }
+                                    }
+
+                                    collapseButton();
+                                } else {
+                                    initialButtonWidth = slidingButton.getWidth();
+                                    if (slidingButton.getX() + slidingButton.getWidth() > getWidth() * 0.85) {
+
+                                        //TODO (vl) accept confirmation
+                                        if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                                profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
+                                            } else {
+                                                profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
+                                            }
+                                        } else {
+                                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                                profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
+                                            } else {
+                                                profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
+                                            }
+                                        }
+
+                                        expandButton();
+                                    } else {
+                                        moveButtonBack();
+                                    }
+                                }
                             }
-                        }
+                        });
+
                         return true;
                     case MotionEvent.ACTION_CANCEL:
                         return true;
