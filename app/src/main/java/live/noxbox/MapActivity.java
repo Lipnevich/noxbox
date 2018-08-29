@@ -372,8 +372,8 @@ public class MapActivity extends DebugActivity implements
             }
             return new Requesting(googleMap, this);
         }
-        if(profile.getCurrent().getTimeAccepted() != null){
-            return new Moving(googleMap,this);
+        if (profile.getCurrent().getTimeAccepted() != null && profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeCanceled() == null) {
+            return new Moving(googleMap, this);
         }
 
         return new AvailableServices(googleMap, googleApiClient, this);

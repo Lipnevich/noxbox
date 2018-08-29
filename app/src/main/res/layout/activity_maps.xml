@@ -1,4 +1,5 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mapId"
     android:name="com.google.android.gms.maps.MapFragment"
     android:layout_width="match_parent"
@@ -31,20 +32,21 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_gravity="center|top"
+        android:background="@drawable/requesting_progress_list"
         android:orientation="horizontal"
-        android:visibility="gone"
-        android:background="@drawable/requesting_progress_list">
+        android:visibility="gone">
+
         <TextView
             android:id="@+id/blinkingInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
+            android:layout_weight="4"
             android:gravity="center_vertical|start"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_secondary"
-            android:layout_weight="4">
-        </TextView>
+            android:textSize="@dimen/text_size_secondary"></TextView>
+
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -54,18 +56,20 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
                 android:layout_centerInParent="true"
-                android:src="@drawable/close"/>
+                android:adjustViewBounds="true"
+                android:src="@drawable/close" />
+
             <ProgressBar
                 android:id="@+id/circular_progress_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:indeterminate="false" />
         </RelativeLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/timeLayout"
         android:layout_width="wrap_content"
@@ -74,24 +78,25 @@
         android:layout_marginTop="68dp"
         android:orientation="vertical"
         android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/google_text"
             android:text="@string/travelTime"
-           />
+            android:textColor="@color/google_text"
+            android:textSize="@dimen/text_size" />
+
         <TextView
             android:id="@+id/travelTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="2dp"
-            android:textSize="@dimen/text_title_large"
             android:textColor="@color/google_text"
-            />
+            android:textSize="@dimen/text_title_large" />
     </LinearLayout>
+
     <Button
         android:id="@+id/acceptButton"
         android:layout_width="match_parent"
@@ -103,39 +108,89 @@
         android:background="@drawable/button_corner"
         android:enabled="true"
         android:gravity="center_horizontal|center_vertical"
+        android:text="@string/acceptText"
         android:textSize="18sp"
-        android:textStyle="normal"
-        android:text="@string/acceptText" />
+        android:textStyle="normal" />
+
     <LinearLayout
         android:id="@+id/countdownLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="72dp"
         android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="72dp"
+        android:orientation="vertical"
         android:visibility="gone">
+
         <TextView
             android:id="@+id/countdownTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="2dp"
-            android:textSize="@dimen/text_title_large"
-            android:textColor="@color/google_text"/>
+            android:textColor="@color/google_text"
+            android:textSize="@dimen/text_title_large" />
         <!--<ProgressBar-->
-            <!--android:id="@+id/acceptCountdownTimer"-->
-            <!--style="?android:attr/progressBarStyleHorizontal"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:indeterminate="false"-->
-            <!--android:max="100"-->
-            <!--android:progress="100"-->
-            <!--android:progressDrawable="@drawable/acceptance_countdown_circle"-->
-            <!--android:rotation="-90" />-->
+        <!--android:id="@+id/acceptCountdownTimer"-->
+        <!--style="?android:attr/progressBarStyleHorizontal"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:indeterminate="false"-->
+        <!--android:max="100"-->
+        <!--android:progress="100"-->
+        <!--android:progressDrawable="@drawable/acceptance_countdown_circle"-->
+        <!--android:rotation="-90" />-->
     </LinearLayout>
 
 
     <!--Requesting&&Accepting-->
+
+    <!--Moving-->
+    <android.support.v7.widget.CardView
+        android:id="@+id/photoScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:animateLayoutChanges="true"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="16dp">
+
+        <ImageView
+            android:id="@+id/photoScreenImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/photoScreenTravelTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/google_text"
+            android:textSize="@dimen/text_title_large" />
+
+        <ImageButton
+            android:id="@+id/photoScreenClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_margin="8dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/close" />
+
+        <!--TODO (vl) here we add a slider to confirm the meeting-->
+        <live.noxbox.pages.SwipeButton
+            android:id="@+id/swipeButton"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp" />
+
+    </android.support.v7.widget.CardView>
+    <!--Moving-->
 
     <ImageView
         android:id="@+id/pointerImage"
@@ -153,30 +208,31 @@
         android:src="@drawable/menu" />
 
     <ImageView
-        android:id="@+id/exchange_rate"
+        android:id="@+id/exchangeRate"
         style="@style/IconButtonStyle"
         android:layout_gravity="end|top"
         android:layout_marginEnd="13dp"
         android:layout_marginTop="13dp"
         android:src="@drawable/currency"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
     <ImageView
-        android:id="@+id/debug_acceptance"
+        android:id="@+id/debugAccepting"
         style="@style/IconButtonStyle"
         android:layout_gravity="end|top"
         android:layout_marginEnd="13dp"
         android:layout_marginTop="68dp"
         android:src="@drawable/debug_accepting"
-        android:tint="@color/primary"
-        />
+        android:tint="@color/primary" />
+
     <ImageView
-        android:id="@+id/debug_noxbox_example"
+        android:id="@+id/debugNoxboxExample"
         style="@style/IconButtonStyle"
         android:layout_gravity="end|top"
         android:layout_marginEnd="13dp"
         android:layout_marginTop="124dp"
-        android:src="@drawable/debug_noxbox_examples"
-        />
+        android:src="@drawable/debug_noxbox_examples" />
+
     <ImageView
         android:id="@+id/debugFilter"
         style="@style/IconButtonStyle"
@@ -185,6 +241,7 @@
         android:layout_marginTop="182dp"
         android:src="@drawable/debug_filter"
         android:tint="@color/primary" />
+
     <ImageView
         android:id="@+id/debugMoving"
         style="@style/IconButtonStyle"

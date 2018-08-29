@@ -61,13 +61,14 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void draw(Profile profile) {
         drawToolbar(profile.getViewed());
-        drawOwnerProfile(profile.getViewed().getOwner());
+        drawOwnerProfile(profile.getViewed());
         drawDescription(profile.getViewed());
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
         if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null) {
             findViewById(R.id.acceptButton).setVisibility(View.GONE);
+            //TODO (vl) may be necessary to tell the user that he already has a registered noxbox
         } else {
             findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
             drawButton(profile.getViewed().getRole());
@@ -82,14 +83,14 @@ public class DetailedActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(noxbox.getType().getName());
     }
 
-    private void drawOwnerProfile(Profile profile) {
-        if (profile.getViewed().getTimeAccepted() != null) {
+    private void drawOwnerProfile(Noxbox noxbox) {
+        if (noxbox.getTimeAccepted() == null) {
+            findViewById(R.id.profileTitleLayout).setVisibility(View.GONE);
+        } else {
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
             drawDropdownElement(R.id.profileTitleLayout, R.id.profileLayout);
-            ImageManager.createCircleImageFromUrl(this, profile.getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
-            ((TextView) findViewById(R.id.profileName)).setText(profile.getName());
-        } else {
-            findViewById(R.id.profileTitleLayout).setVisibility(View.GONE);
+            ImageManager.createCircleImageFromUrl(this, noxbox.getOwner().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
+            ((TextView) findViewById(R.id.profileName)).setText(noxbox.getOwner().getName());
         }
 
     }

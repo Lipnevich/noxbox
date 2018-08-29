@@ -80,8 +80,8 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
             }
         });
-        activity.findViewById(R.id.debug_noxbox_example).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.debug_noxbox_example).setOnClickListener(new View.OnClickListener() {
+        activity.findViewById(R.id.debugNoxboxExample).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.debugNoxboxExample).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (noxboxes == null) {

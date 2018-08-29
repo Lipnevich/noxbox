@@ -28,7 +28,7 @@ public class DebugActivity extends MenuActivity {
         if (BuildConfig.DEBUG) {
             final ExchangeRate.Currency currency = ExchangeRate.Currency.USD;
 
-            ImageView exchangeRateButton = findViewById(R.id.exchange_rate);
+            ImageView exchangeRateButton = findViewById(R.id.exchangeRate);
             exchangeRateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -47,11 +47,12 @@ public class DebugActivity extends MenuActivity {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
-                    DebugActivity.this.findViewById(R.id.debug_acceptance).setVisibility(View.VISIBLE);
+                    DebugActivity.this.findViewById(R.id.debugAccepting).setVisibility(View.VISIBLE);
                     DebugActivity.this.findViewById(R.id.debugFilter).setVisibility(View.VISIBLE);
+                    DebugActivity.this.findViewById(R.id.debugMoving).setVisibility(View.VISIBLE);
 
 
-                    findViewById(R.id.debug_acceptance).setOnClickListener(new View.OnClickListener() {
+                    findViewById(R.id.debugAccepting).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             if (profile.getCurrent() != null) {
@@ -77,6 +78,8 @@ public class DebugActivity extends MenuActivity {
                         @Override
                         public void onClick(View v) {
                             if (profile.getCurrent() != null) {
+                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setId("12321"));
+                                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                 ProfileStorage.fireProfile();
                             } else {
