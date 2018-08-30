@@ -95,7 +95,6 @@ public class PathFinder {
                 travelMode.toString(),
                 key));
         // Start downloading json data from Google Directions API
-
     }
 
     private static class Path {

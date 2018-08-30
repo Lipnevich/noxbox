@@ -63,14 +63,14 @@ public class MapActivity extends DebugActivity implements
     private GoogleApiClient googleApiClient;
     private Map<String, GroundOverlay> markers = new HashMap<>();
     private Map<String, Polyline> pathes = new HashMap<>();
-    private ImageView pathImage;
+    private ImageView pathButton;
     private ImageView locationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId)).getMapAsync(this);
-        pathImage = findViewById(R.id.pathImage);
+        pathButton = findViewById(R.id.pathButton);
         connectGoogleApi();
 
     }
@@ -314,8 +314,8 @@ public class MapActivity extends DebugActivity implements
     public void processNoxbox(Noxbox noxbox) {
         visibleCurrentLocation(false);
 
-        pathImage.setVisibility(View.VISIBLE);
-        pathImage.setOnClickListener(new View.OnClickListener() {
+        pathButton.setVisibility(View.VISIBLE);
+        pathButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //focus();
@@ -327,7 +327,7 @@ public class MapActivity extends DebugActivity implements
         if (googleMap != null) {
             visibleCurrentLocation(true);
             cleanUpMap();
-            pathImage.setVisibility(View.INVISIBLE);
+            pathButton.setVisibility(View.INVISIBLE);
         }
     }
 

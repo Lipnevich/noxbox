@@ -212,53 +212,62 @@
         android:id="@+id/menu"
         style="@style/IconButtonStyle"
         android:layout_gravity="start|top"
-        android:layout_marginStart="13dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
         android:src="@drawable/menu" />
 
-    <ImageView
-        android:id="@+id/exchangeRate"
+    <ImageButton
+        android:id="@+id/filter"
         style="@style/IconButtonStyle"
         android:layout_gravity="end|top"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="13dp"
-        android:src="@drawable/currency"
-        android:visibility="gone" />
-
-    <ImageView
-        android:id="@+id/debugAccepting"
-        style="@style/IconButtonStyle"
-        android:layout_gravity="end|top"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="68dp"
-        android:src="@drawable/debug_accepting"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/filter"
         android:tint="@color/primary" />
 
-    <ImageView
-        android:id="@+id/debugNoxboxExample"
-        style="@style/IconButtonStyle"
-        android:layout_gravity="end|top"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="124dp"
-        android:src="@drawable/debug_noxbox_examples" />
+    <LinearLayout
+        android:id="@+id/debugLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="60dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <ImageView
-        android:id="@+id/debugFilter"
-        style="@style/IconButtonStyle"
-        android:layout_gravity="end|top"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="182dp"
-        android:src="@drawable/debug_filter"
-        android:tint="@color/primary" />
+        <ImageView
+            android:id="@+id/exchangeRate"
+            style="@style/IconButtonStyle"
+            android:src="@drawable/currency" />
 
-    <ImageView
-        android:id="@+id/debugMoving"
-        style="@style/IconButtonStyle"
-        android:layout_gravity="end|top"
-        android:layout_marginEnd="13dp"
-        android:layout_marginTop="230dp"
-        android:src="@drawable/debug_moving"
-        android:tint="@color/primary" />
+        <ImageView
+            android:id="@+id/debugNoxboxExample"
+            style="@style/IconButtonStyle"
+            android:layout_gravity="start|top"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/debug_noxbox_examples" />
+
+        <TextView
+            android:id="@+id/debugAccepting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Accepting"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_size" />
+
+        <TextView
+            android:id="@+id/debugMoving"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_marginTop="8dp"
+            android:text="Moving"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_size" />
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/check"
@@ -296,12 +305,14 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/pathImage"
+        android:id="@+id/pathButton"
         style="@style/IconButtonStyle"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="74dp"
-        android:layout_marginEnd="14dp"
-        android:src="@drawable/path" />
+        android:layout_gravity="start|bottom"
+        android:layout_marginBottom="32dp"
+        android:layout_marginStart="16dp"
+        android:elevation="2dp"
+        android:src="@drawable/path"
+        android:tint="@color/primary"/>
 
     <ImageView
         android:id="@+id/locationButton"
@@ -317,7 +328,7 @@
         android:visibility="visible" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/noxboxConstructorButton"
+        android:id="@+id/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
@@ -325,6 +336,7 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/add"
+        android:tint="@color/secondary"
         android:visibility="gone" />
 
 </fragment>

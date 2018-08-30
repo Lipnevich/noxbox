@@ -1,6 +1,5 @@
 package live.noxbox.pages;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -8,7 +7,6 @@ import java.math.BigDecimal;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
-import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -47,11 +45,7 @@ public class DebugActivity extends MenuActivity {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
-                    DebugActivity.this.findViewById(R.id.debugAccepting).setVisibility(View.VISIBLE);
-                    DebugActivity.this.findViewById(R.id.debugFilter).setVisibility(View.VISIBLE);
-                    DebugActivity.this.findViewById(R.id.debugMoving).setVisibility(View.VISIBLE);
-
-
+                    DebugActivity.this.findViewById(R.id.debugLayout).setVisibility(View.VISIBLE);
                     findViewById(R.id.debugAccepting).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -67,12 +61,7 @@ public class DebugActivity extends MenuActivity {
                         }
                     });
 
-                    findViewById(R.id.debugFilter).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(DebugActivity.this, MapFiltersActivity.class));
-                        }
-                    });
+
 
                     findViewById(R.id.debugMoving).setOnClickListener(new View.OnClickListener() {
                         @Override

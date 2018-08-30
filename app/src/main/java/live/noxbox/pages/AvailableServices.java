@@ -35,6 +35,7 @@ import java.util.Map;
 import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.detailed.DetailedActivity;
+import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -67,8 +68,15 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     @Override
     public void draw(final Profile profile) {
-        activity.findViewById(R.id.noxboxConstructorButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.noxboxConstructorButton).setOnClickListener(new View.OnClickListener() {
+        activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.startActivity(new Intent(activity, MapFiltersActivity.class));
+            }
+        });
+        activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.floatingButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
@@ -123,7 +131,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     @Override
     public void clear() {
         googleMap.clear();
-        activity.findViewById(R.id.noxboxConstructorButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.floatingButton).setVisibility(View.GONE);
     }
 
 

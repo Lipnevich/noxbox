@@ -63,7 +63,6 @@ public class Accepting implements State {
         });
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        activity.findViewById(R.id.menu).setVisibility(View.GONE);
 
 
 
@@ -120,7 +119,6 @@ public class Accepting implements State {
         ((TextView) activity.findViewById(R.id.blinkingInfo)).setText("");
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         if (anim != null && animationDrawable != null) {
             anim.cancel();

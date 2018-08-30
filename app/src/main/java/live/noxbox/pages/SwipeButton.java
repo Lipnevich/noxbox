@@ -89,8 +89,8 @@ public class SwipeButton extends RelativeLayout {
         this.slidingButton = swipeButton;
 
         disabledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.add);
-        enabledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.delete);
-
+        enabledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.yes);
+        enabledDrawable.setTint(Color.WHITE);
         slidingButton.setImageDrawable(disabledDrawable);
         slidingButton.setPadding(40, 40, 40, 40);
 
@@ -174,6 +174,7 @@ public class SwipeButton extends RelativeLayout {
                                         }
 
                                         expandButton();
+
                                     } else {
                                         moveButtonBack();
                                     }
