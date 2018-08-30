@@ -81,7 +81,7 @@ public class SwipeButton extends RelativeLayout {
 
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         centerText.setText(R.string.confirm);
-        centerText.setTextColor(Color.WHITE);
+        centerText.setTextColor(R.color.google_text);
         centerText.setPadding(35, 35, 35, 35);
         background.addView(centerText, layoutParams);
 
