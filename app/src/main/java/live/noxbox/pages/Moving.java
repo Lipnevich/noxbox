@@ -10,7 +10,6 @@ import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.PathFinder;
@@ -63,9 +62,7 @@ public class Moving implements State {
         activity.findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.getCurrent().setTimeAccepted(null);
-                profile.getCurrent().setTimeRequested(null);
-                ProfileStorage.fireProfile();
+                //TODO (vl) on click opens chat activity
             }
         });
 
