@@ -30,7 +30,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeRequested;
     private Long timeCompleted;
     private Long timeAccepted;
-    private Long timeCanceled;
+    private Long timeCanceledBySupplier;
+    private Long timeCanceledByDemander;
 
     private Long timeSupplyVerified;
     private Long timeDemandVerified;
@@ -106,12 +107,21 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Long getTimeCanceled() {
-        return timeCanceled;
+    public Long getTimeCanceledBySupplier() {
+        return timeCanceledBySupplier;
     }
 
-    public Noxbox setTimeCanceled(Long timeCanceled) {
-        this.timeCanceled = timeCanceled;
+    public Noxbox setTimeCanceledBySupplier(Long timeCanceledBySupplier) {
+        this.timeCanceledBySupplier = timeCanceledBySupplier;
+        return this;
+    }
+
+    public Long getTimeCanceledByDemander() {
+        return timeCanceledByDemander;
+    }
+
+    public Noxbox setTimeCanceledByDemander(Long timeCanceledByDemander) {
+        this.timeCanceledByDemander = timeCanceledByDemander;
         return this;
     }
 

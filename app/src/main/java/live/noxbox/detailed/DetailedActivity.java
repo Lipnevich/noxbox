@@ -71,9 +71,12 @@ public class DetailedActivity extends AppCompatActivity {
             //TODO (vl) may be necessary to tell the user that he already has a registered noxbox
         } else {
             findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
-            drawButton(profile.getViewed().getRole());
+            drawAcceptButton(profile.getViewed().getRole());
         }
 
+        if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
+            drawCancelButton(profile.getViewed());
+        }
     }
 
     private void drawToolbar(Noxbox noxbox) {
@@ -84,20 +87,22 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void drawOwnerProfile(Noxbox noxbox) {
-        if (noxbox.getTimeAccepted() == null) {
-            findViewById(R.id.profileTitleLayout).setVisibility(View.GONE);
-        } else {
+        if (noxbox.getTimeAccepted() != null) {
+            findViewById(R.id.profileTitleLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
             drawDropdownElement(R.id.profileTitleLayout, R.id.profileLayout);
             ImageManager.createCircleImageFromUrl(this, noxbox.getOwner().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
             ((TextView) findViewById(R.id.profileName)).setText(noxbox.getOwner().getName());
+        } else {
+            findViewById(R.id.profileTitleLayout).setVisibility(View.GONE);
+            findViewById(R.id.profileLayout).setVisibility(View.GONE);
         }
 
     }
 
     private void drawDescription(Noxbox noxbox) {
         if (noxbox.getTimeAccepted() != null) {
-            findViewById(R.id.profileLayout).setVisibility(View.GONE);
+            findViewById(R.id.descriptionLayout).setVisibility(View.GONE);
         }
         drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
         changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
@@ -254,7 +259,7 @@ public class DetailedActivity extends AppCompatActivity {
         //TODO (vl) create copyButton with lower price
     }
 
-    private void drawButton(MarketRole role) {
+    private void drawAcceptButton(MarketRole role) {
         if (role == MarketRole.demand) {
             ((Button) findViewById(R.id.acceptButton)).setText(R.string.proceed);
         } else if (role == MarketRole.supply) {
@@ -271,6 +276,36 @@ public class DetailedActivity extends AppCompatActivity {
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                         profile.getCurrent().setParty(profile.notPublicInfo());
                         finish();
+                    }
+                });
+            }
+        });
+    }
+
+    private void drawCancelButton(final Noxbox noxbox) {
+        findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
+
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(final Profile profile) {
+                findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (noxbox.getOwner().getId().equals(profile.getId())) {
+                            if (profile.getViewed().getRole() == MarketRole.supply) {
+                                noxbox.setTimeCanceledBySupplier(System.currentTimeMillis());
+                            } else {
+                                noxbox.setTimeCanceledByDemander(System.currentTimeMillis());
+                            }
+                        } else {
+                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                noxbox.setTimeCanceledByDemander(System.currentTimeMillis());
+                            } else {
+                                noxbox.setTimeCanceledBySupplier(System.currentTimeMillis());
+                            }
+                        }
+
                     }
                 });
             }
@@ -309,7 +344,6 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void startCoordinateActivity() {
         startActivityForResult(new Intent(this, CoordinateActivity.class), COORDINATE);
-
     }
 
     @Override

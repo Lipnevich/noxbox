@@ -152,10 +152,13 @@ public class Firebase {
                     rating.getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
                     rating.getComments().put("2", new Comment("2", "Выносливость бы повысить, слишком быстро выдыхается во время кросса.", System.currentTimeMillis(), false));
 
+                    Map<String, Rating> ratingList = new HashMap<>();
                     Map<String, Boolean> filterTypesList = new HashMap<>();
                     for (NoxboxType type : NoxboxType.values()) {
                         filterTypesList.put(type.name(), true);
+                        ratingList.put(type.name(),rating);
                     }
+
 
                     List<String> certificatesList = new ArrayList<>();
                     certificatesList.add("https://i.pinimg.com/736x/1d/ba/a1/1dbaa1fb5b2f64e54010cf6aae72b8b1.jpg");
@@ -185,6 +188,8 @@ public class Firebase {
                             .setName(firebaseUser.getDisplayName())
                             .setHost(true)
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
+                            .setDemandsRating(ratingList)
+                            .setSuppliesRating(ratingList)
                             .setFilters(new Filters(true, true, "0", filterTypesList))
                             .setTravelMode(TravelMode.driving)
                             .setPortfolio(portfolioMap);

@@ -366,13 +366,19 @@ public class MapActivity extends DebugActivity implements
         //    performing,
         //    enjoying,
         //    completed;
-        if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() == null && profile.getCurrent().getTimeCanceled() == null) {
+        if (profile.getCurrent().getTimeRequested() != null
+                && profile.getCurrent().getTimeAccepted() == null
+                && profile.getCurrent().getTimeCanceledByDemander() == null
+                && profile.getCurrent().getTimeCanceledBySupplier() == null) {
             if (profile.equals(profile.getCurrent().getOwner())) {
                 return new Accepting(googleMap, this);
             }
             return new Requesting(googleMap, this);
         }
-        if (profile.getCurrent().getTimeAccepted() != null && profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeCanceled() == null) {
+        if (profile.getCurrent().getTimeAccepted() != null
+                && profile.getCurrent().getTimeRequested() != null
+                && profile.getCurrent().getTimeCanceledByDemander() == null
+                && profile.getCurrent().getTimeCanceledBySupplier() == null) {
             return new Moving(googleMap, this);
         }
 

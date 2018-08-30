@@ -2,6 +2,7 @@ package live.noxbox.tools;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONException;
@@ -27,10 +29,13 @@ import java.util.List;
 import java.util.Locale;
 
 import live.noxbox.R;
+import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
+import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.state.ProfileStorage;
 
 import static live.noxbox.MapActivity.dpToPx;
 import static live.noxbox.model.TravelMode.none;
@@ -38,7 +43,20 @@ import static live.noxbox.model.TravelMode.none;
 public class PathFinder {
 
 
-    public static void createRequestPoints(Noxbox noxbox, GoogleMap googleMap, Activity activity) {
+    public static void createRequestPoints(final Noxbox noxbox, GoogleMap googleMap, final Activity activity) {
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                ProfileStorage.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        profile.setViewed(noxbox);
+                        activity.startActivity(new Intent(activity, DetailedActivity.class));
+                    }
+                });
+                return false;
+            }
+        });
         if (noxbox.getRole() == MarketRole.supply) {//исполнитель
             if (noxbox.getOwner().getTravelMode() == none) {
                 MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);

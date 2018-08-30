@@ -36,7 +36,7 @@ public class Moving implements State {
         activity.findViewById(R.id.pathButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DebugMessage.popup(activity,"DRAW PATH WITH PADDING");
+                DebugMessage.popup(activity,"way and points");
                 PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
             }
         });
@@ -77,6 +77,5 @@ public class Moving implements State {
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
-
     }
 }

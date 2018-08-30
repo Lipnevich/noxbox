@@ -83,6 +83,8 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     profile.getCurrent().getOwner().setPosition(Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient)));
                 }
+                profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
+                profile.getCurrent().getOwner().setName(profile.getName());
 
                 activity.startActivity(new Intent(activity, ConstructorActivity.class));
 
