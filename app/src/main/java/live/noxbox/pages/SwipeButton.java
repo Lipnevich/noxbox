@@ -138,22 +138,8 @@ public class SwipeButton extends RelativeLayout {
                             public void execute(Profile profile) {
 
                                 if (active) {
-                                    //TODO (vl) cancel confirmation
-                                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                                        if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                            profile.getCurrent().setTimeSupplyVerified(null);
-                                        } else {
-                                            profile.getCurrent().setTimeDemandVerified(null);
-                                        }
-                                    } else {
-                                        if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                            profile.getCurrent().setTimeSupplyVerified(null);
-                                        } else {
-                                            profile.getCurrent().setTimeDemandVerified(null);
-                                        }
-                                    }
-
-                                    collapseButton();
+                                    //TODO (vl) cancel operation if need
+                                    //collapseButton();
                                 } else {
                                     initialButtonWidth = slidingButton.getWidth();
                                     if (slidingButton.getX() + slidingButton.getWidth() > getWidth() * 0.85) {
@@ -231,38 +217,6 @@ public class SwipeButton extends RelativeLayout {
         });
 
         animatorSet.playTogether(positionAnimator, widthAnimator);
-        animatorSet.start();
-    }
-
-    private void collapseButton() {
-        final ValueAnimator widthAnimator = ValueAnimator.ofInt(
-                slidingButton.getWidth(),
-                initialButtonWidth);
-
-        widthAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                ViewGroup.LayoutParams params = slidingButton.getLayoutParams();
-                params.width = (Integer) widthAnimator.getAnimatedValue();
-                slidingButton.setLayoutParams(params);
-            }
-        });
-
-        widthAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                active = false;
-                slidingButton.setImageDrawable(disabledDrawable);
-            }
-        });
-
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(
-                centerText, "alpha", 1);
-
-        AnimatorSet animatorSet = new AnimatorSet();
-
-        animatorSet.playTogether(objectAnimator, widthAnimator);
         animatorSet.start();
     }
 
