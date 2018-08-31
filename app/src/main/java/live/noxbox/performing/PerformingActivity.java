@@ -2,7 +2,6 @@ package live.noxbox.performing;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -16,15 +15,21 @@ import live.noxbox.tools.Task;
 
 public class PerformingActivity extends AppCompatActivity {
 
-    private static int seconds;
-    private static boolean running = false;
+    private static final String SECONDS = "seconds";
+    private static final String RUNNING = "running";
+    private int seconds;
+    private boolean running;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        seconds = 0;
-        running = false;
         setContentView(R.layout.activity_state_performing);
+
+        if(savedInstanceState != null){
+            running = savedInstanceState.getBoolean(RUNNING);
+            seconds = savedInstanceState.getInt(SECONDS);
+        }
+
         ProfileStorage.listenProfile(PerformingActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
@@ -58,7 +63,7 @@ public class PerformingActivity extends AppCompatActivity {
     }
 
     private void drawPrice(Profile profile) {
-        ((TextView)findViewById(R.id.currency)).setText(profile.getCurrent().getPrice());
+        ((TextView) findViewById(R.id.currency)).setText(profile.getCurrent().getPrice());
     }
 
     private void drawComplete(final Profile profile) {
@@ -68,6 +73,7 @@ public class PerformingActivity extends AppCompatActivity {
                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
                 profile.getCurrent().setTimeServiceExecution(TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS));
                 running = false;
+                ProfileStorage.fireProfile();
             }
         });
     }
@@ -91,5 +97,10 @@ public class PerformingActivity extends AppCompatActivity {
         });
     }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        bundle.putInt(SECONDS, seconds);
+        bundle.putBoolean(RUNNING, running);
+    }
 }

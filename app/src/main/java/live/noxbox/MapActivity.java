@@ -383,9 +383,11 @@ public class MapActivity extends DebugActivity implements
         }
 
         if (profile.getCurrent().getTimeDemandVerified() != null &&
-                profile.getCurrent().getTimeSupplyVerified() != null) {
+                profile.getCurrent().getTimeSupplyVerified() != null &&
+                profile.getCurrent().getTimeCompleted() == null) {
             return new Performing(this);
         }
+
 
         return new AvailableServices(googleMap, googleApiClient, this);
     }

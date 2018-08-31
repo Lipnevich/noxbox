@@ -20,6 +20,7 @@
         android:layout_above="@id/timeView"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/google_text"
         android:textSize="@dimen/text_title" />
 
