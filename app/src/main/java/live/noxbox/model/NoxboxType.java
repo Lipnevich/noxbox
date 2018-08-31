@@ -18,8 +18,6 @@ public enum NoxboxType{
     dogWalker(11, R.string.dogWalker, R.drawable.dog_walker, R.drawable.music_back, R.string.dogWalkingDescription, 40),
     homeTeacher(12, R.string.homeTeacher, R.drawable.home_teacher, R.drawable.music_back, R.string.homeTeacherDescription, 60),
     musician(13, R.string.musician, R.drawable.musician, R.drawable.music_back, R.string.musicianDescription, 45);
-    //TODO (vl) please add the desired service
-    //info(14, R.string.musician, R.drawable.musician, R.drawable.music_back, R.string.musicianDescription, 45);
 
 
     private int id;

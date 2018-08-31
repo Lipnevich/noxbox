@@ -709,13 +709,6 @@
                                                 android:src="@drawable/currency" />
                                         </LinearLayout>
                                     </LinearLayout>
-                                    <!--<TextView-->
-                                    <!--android:layout_width="wrap_content"-->
-                                    <!--android:layout_height="wrap_content"-->
-                                    <!--android:layout_gravity="center_horizontal"-->
-                                    <!--android:layout_marginTop="10dp"-->
-                                    <!--android:textAppearance="?android:attr/textAppearanceMedium" />-->
-                                    <!--TODO (vl) money on users wallet-->
                                 </LinearLayout>
                             </LinearLayout>
 

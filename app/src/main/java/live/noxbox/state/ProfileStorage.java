@@ -66,7 +66,7 @@ public class ProfileStorage {
         if (profile != null) {
             task.execute(profile.getCurrent());
         } else {
-            // TODO (nli) read noxbox instead
+            //TODO (nli) read noxbox instead
             readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {

@@ -47,6 +47,7 @@ import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.DebugActivity;
 import live.noxbox.pages.Moving;
+import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
@@ -377,9 +378,13 @@ public class MapActivity extends DebugActivity implements
         }
         if (profile.getCurrent().getTimeAccepted() != null
                 && profile.getCurrent().getTimeRequested() != null
-                && profile.getCurrent().getTimeCanceledByDemander() == null
-                && profile.getCurrent().getTimeCanceledBySupplier() == null) {
+                && (profile.getCurrent().getTimeSupplyVerified() == null || profile.getCurrent().getTimeDemandVerified() == null)) {
             return new Moving(googleMap, this);
+        }
+
+        if (profile.getCurrent().getTimeDemandVerified() != null &&
+                profile.getCurrent().getTimeSupplyVerified() != null) {
+            return new Performing(this);
         }
 
         return new AvailableServices(googleMap, googleApiClient, this);

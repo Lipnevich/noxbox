@@ -66,9 +66,9 @@ public class DetailedActivity extends AppCompatActivity {
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
-        if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null) {
+        //TODO (vl) remove this from  && profile.getViewed().getId().equals(profile.getCurrent().getId())
+        if (profile.getCurrent() != null) {
             findViewById(R.id.acceptButton).setVisibility(View.GONE);
-            //TODO (vl) may be necessary to tell the user that he already has a registered noxbox
         } else {
             findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
             drawAcceptButton(profile.getViewed().getRole());
@@ -109,7 +109,7 @@ public class DetailedActivity extends AppCompatActivity {
         if (noxbox.getRole() == MarketRole.supply) {
             ((TextView) findViewById(R.id.previousDescription)).setText(R.string.readyToPerform);
             ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
-        } else {//TODO (vl) transfer text to xml
+        } else {
             ((TextView) findViewById(R.id.previousDescription)).setText(R.string.wantToGet);
             ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
         }

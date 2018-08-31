@@ -201,6 +201,11 @@
     </android.support.v7.widget.CardView>
     <!--Moving-->
 
+    <!--Performing-->
+    <!--TODO (vl) performing state locate in other activity-->
+
+    <!--Performing-->
+
     <ImageView
         android:id="@+id/pointerImage"
         style="@style/IconButtonStyle"
@@ -266,6 +271,15 @@
             android:text="Moving"
             android:textColor="@color/primary"
             android:textSize="@dimen/text_size" />
+        <TextView
+            android:id="@+id/debugPerforming"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_marginTop="8dp"
+            android:text="Performing"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
 
@@ -312,7 +326,7 @@
         android:layout_marginStart="16dp"
         android:elevation="2dp"
         android:src="@drawable/path"
-        android:tint="@color/primary"/>
+        android:tint="@color/primary" />
 
     <ImageView
         android:id="@+id/locationButton"

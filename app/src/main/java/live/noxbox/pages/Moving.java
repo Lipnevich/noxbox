@@ -9,10 +9,12 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.PathFinder;
+import live.noxbox.tools.Task;
 
 public class Moving implements State {
 
@@ -45,6 +47,7 @@ public class Moving implements State {
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO (vl) show photo another participant
                 Glide.with(activity).asDrawable().load(profile.getPhoto()).into((ImageView) activity.findViewById(R.id.photoScreenImage));
                 activity.findViewById(R.id.photoScreen).setVisibility(View.VISIBLE);
 
@@ -56,7 +59,24 @@ public class Moving implements State {
                     }
                 });
                 SwipeButton swipeButton = activity.findViewById(R.id.swipeButton);
-                swipeButton.setOnTouchListener(swipeButton.getButtonTouchListener());
+                swipeButton.setOnTouchListener(swipeButton.getButtonTouchListener(new Task<Object>() {
+                    @Override
+                    public void execute(Object object) {
+                        if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
+                            } else {
+                                profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
+                            }
+                        } else {
+                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
+                            } else {
+                                profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
+                            }
+                        }
+                    }
+                }));
             }
         });
         activity.findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
