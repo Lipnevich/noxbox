@@ -209,4 +209,5 @@
     <string name="deleteSection">Удалить раздел?</string>
     <string name="confirm">Confirm</string>
     <string name="performing">Performing</string>
+    <string name="timePassed">Прошло времени:</string>
 </resources>

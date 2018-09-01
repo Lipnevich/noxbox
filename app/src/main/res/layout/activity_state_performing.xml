@@ -1,38 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/timeView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:gravity="center_horizontal"
+        android:text="@string/currency"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/google_text"
-        android:textSize="92sp" />
+        android:textColor="@color/text_color_secondary"
+        android:textSize="32sp" />
 
     <TextView
         android:id="@+id/currency"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/timeView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/google_text"
-        android:textSize="@dimen/text_title" />
+        android:textSize="74sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="@string/timePassed"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/text_color_secondary"
+        android:textSize="32sp" />
+
+    <TextView
+        android:id="@+id/timeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/google_text"
+        android:textSize="74sp" />
 
     <Button
         android:id="@+id/complete"
+        style="@style/MainButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Complete"
-        android:textSize="@dimen/text_title"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:text="@string/completeText"
         android:visibility="visible" />
 
-</RelativeLayout>
+</LinearLayout>
 

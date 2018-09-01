@@ -36,7 +36,9 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeSupplyVerified;
     private Long timeDemandVerified;
 
-    private Long timeServiceExecution;
+    private Long timeStartPerforming;
+
+    private Long totalExecutionTimeInMinutes;
 
     private Position position;
     private String price;
@@ -250,12 +252,21 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Long getTimeServiceExecution() {
-        return timeServiceExecution;
+    public Long getTotalExecutionTimeInMinutes() {
+        return totalExecutionTimeInMinutes;
     }
 
-    public Noxbox setTimeServiceExecution(Long timeServiceExecution) {
-        this.timeServiceExecution = timeServiceExecution;
+    public Noxbox setTotalExecutionTimeInMinutes(Long totalExecutionTimeInMinutes) {
+        this.totalExecutionTimeInMinutes = totalExecutionTimeInMinutes;
+        return this;
+    }
+
+    public Long getTimeStartPerforming() {
+        return timeStartPerforming;
+    }
+
+    public Noxbox setTimeStartPerforming(Long timeStartPerforming) {
+        this.timeStartPerforming = timeStartPerforming;
         return this;
     }
 }

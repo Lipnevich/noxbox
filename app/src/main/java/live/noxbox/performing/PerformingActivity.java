@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.concurrent.TimeUnit;
-
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
@@ -68,11 +66,22 @@ public class PerformingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 cancelNotify();
                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
-                profile.getCurrent().setTimeServiceExecution(TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS));
+
+                Long totalTimeInMillis = profile.getCurrent().getTimeCompleted() - profile.getCurrent().getTimeStartPerforming();
+                Long timeInMinutes = (totalTimeInMillis / (1000 * 60)) % 60;
+
+                profile.getCurrent().setTotalExecutionTimeInMinutes(timeInMinutes);
+
                 running = false;
-                ProfileStorage.fireProfile();
+
+                finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void runTimer() {

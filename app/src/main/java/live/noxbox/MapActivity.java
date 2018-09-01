@@ -46,6 +46,7 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.DebugActivity;
+import live.noxbox.pages.Estimating;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
@@ -366,7 +367,8 @@ public class MapActivity extends DebugActivity implements
         //    watching,
         //    performing,
         //    enjoying,
-        //    completed;
+        //    completed,
+        //    estimating
         if (profile.getCurrent().getTimeRequested() != null
                 && profile.getCurrent().getTimeAccepted() == null
                 && profile.getCurrent().getTimeCanceledByDemander() == null
@@ -385,7 +387,13 @@ public class MapActivity extends DebugActivity implements
         if (profile.getCurrent().getTimeDemandVerified() != null &&
                 profile.getCurrent().getTimeSupplyVerified() != null &&
                 profile.getCurrent().getTimeCompleted() == null) {
+
+            profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
             return new Performing(this);
+        }
+
+        if (profile.getCurrent().getTimeCompleted() != null && profile.getCurrent().getTotalExecutionTimeInMinutes() != null) {
+            return new Estimating(this);
         }
 
 
