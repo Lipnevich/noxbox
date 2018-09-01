@@ -113,7 +113,6 @@ public class ConstructorActivity extends AppCompatActivity {
         drawHost(profile);
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
-        //TODO (vl) list of eligible services
     }
 
     private void drawRole(final Profile profile) {

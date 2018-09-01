@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -221,7 +222,7 @@ public class Firebase {
     }
 
     // in case of null value - does not override value
-    private static Map<String, Object> objectToMap(Object object) {
+    public static Map<String, Object> objectToMap(Object object) {
         Map<String, Object> params = new HashMap<>();
         Class clazz = object.getClass();
         while (clazz != Object.class) {
@@ -231,7 +232,19 @@ public class Firebase {
                     try {
                         Object value = field.get(object);
                         if (value != null) {
-                            params.put(field.getName(), value);
+                            if(value instanceof Map) {
+
+                                Map<String, Object> stringMap = new HashMap<>();
+                                Map map = (Map)value;
+                                Iterator<Map.Entry> iterator = map.entrySet().iterator();
+                                while (iterator.hasNext()) {
+                                    Map.Entry entry = iterator.next();
+                                    stringMap.put(entry.getKey().toString(), entry.getValue());
+                                }
+                                params.put(field.getName(), stringMap);
+                            } else {
+                                params.put(field.getName(), value);
+                            }
                         }
                     } catch (IllegalAccessException e) {
                     }

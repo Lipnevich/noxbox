@@ -256,7 +256,6 @@ public class DetailedActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter));
         ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(noxbox.getType().getImage());
-        //TODO (vl) create copyButton with lower price
     }
 
     private void drawAcceptButton(MarketRole role) {

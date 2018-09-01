@@ -12,6 +12,7 @@
 -keep class com.google.** {*; }
 -keep class com.firebase.** { *; }
 -keep class org.apache.** { *; }
+-keep class com.github.** { *; }
 -keepnames class com.fasterxml.jackson.** { *; }
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
