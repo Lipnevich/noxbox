@@ -25,18 +25,19 @@
         <activity
             android:name=".MapActivity"
             android:theme="@style/NoActionBarWithStatusBar" />
-        <activity android:name=".filters.MapFiltersActivity" android:parentActivityName=".MapActivity"/>
+        <activity
+            android:name=".filters.MapFiltersActivity"
+            android:parentActivityName=".MapActivity" />
         <activity
             android:name=".profile.ProfileActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBarWithStatusBar"
-            android:windowSoftInputMode="stateHidden"/>
-        <activity
-            android:name=".performing.PerformingActivity"/>
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".performing.PerformingActivity" />
         <activity
             android:name=".profile.ProfilePerformerActivity"
-            android:theme="@style/NoActionBarWithStatusBar"
-            android:parentActivityName=".profile.ProfileActivity"/>
+            android:parentActivityName=".profile.ProfileActivity"
+            android:theme="@style/NoActionBarWithStatusBar" />
         <activity
             android:name=".constructor.ConstructorActivity"
             android:parentActivityName=".MapActivity"
@@ -87,7 +88,6 @@
                 <action android:name="com.google.Firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

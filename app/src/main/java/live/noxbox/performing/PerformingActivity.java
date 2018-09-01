@@ -1,7 +1,13 @@
 package live.noxbox.performing;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -19,13 +25,15 @@ public class PerformingActivity extends AppCompatActivity {
     private static final String RUNNING = "running";
     private int seconds;
     private boolean running;
+    private static Builder mBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(getString(R.string.performing));
         setContentView(R.layout.activity_state_performing);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             running = savedInstanceState.getBoolean(RUNNING);
             seconds = savedInstanceState.getInt(SECONDS);
         }
@@ -40,23 +48,11 @@ public class PerformingActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
     private void draw(final Profile profile) {
         drawStart(profile);
         drawPrice(profile);
         drawComplete(profile);
     }
-
 
     private void drawStart(Profile profile) {
         running = true;
@@ -70,6 +66,7 @@ public class PerformingActivity extends AppCompatActivity {
         findViewById(R.id.complete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cancelNotify();
                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
                 profile.getCurrent().setTimeServiceExecution(TimeUnit.MILLISECONDS.convert(seconds, TimeUnit.SECONDS));
                 running = false;
@@ -77,7 +74,6 @@ public class PerformingActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void runTimer() {
         final Handler handler = new Handler();
@@ -88,10 +84,29 @@ public class PerformingActivity extends AppCompatActivity {
                 int minutes = (seconds % 3600) / 60;
                 int secs = seconds % 60;
                 String time = String.format("%d:%02d:%02d", hours, minutes, secs);
+
+                mBuilder = new Builder(PerformingActivity.this)
+                        .setSmallIcon(R.drawable.noxbox)
+                        .setContentTitle(getString(R.string.performing))
+                        .setContentText(time);
+
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(PerformingActivity.this);
+
+                stackBuilder.addParentStack(PerformingActivity.class);
+
+                stackBuilder.addNextIntent(new Intent(PerformingActivity.this, PerformingActivity.class));
+                mBuilder.setContentIntent(stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                ));
+                ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(2, mBuilder.build());
+
                 ((TextView) findViewById(R.id.timeView)).setText(time);
+
                 if (running) {
                     seconds++;
                 }
+
                 handler.postDelayed(this, 1000);
             }
         });
@@ -100,7 +115,16 @@ public class PerformingActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
+        cancelNotify();
         bundle.putInt(SECONDS, seconds);
         bundle.putBoolean(RUNNING, running);
+    }
+
+    private void cancelNotify() {
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancelAll();
+        }
     }
 }

@@ -208,4 +208,5 @@
     <string name="note">Внимание!</string>
     <string name="deleteSection">Удалить раздел?</string>
     <string name="confirm">Confirm</string>
+    <string name="performing">Performing</string>
 </resources>
