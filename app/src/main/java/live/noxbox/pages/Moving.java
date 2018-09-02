@@ -6,7 +6,9 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import live.noxbox.R;
 import live.noxbox.model.MarketRole;
@@ -15,6 +17,8 @@ import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.PathFinder;
 import live.noxbox.tools.Task;
+
+import static live.noxbox.MapActivity.dpToPx;
 
 public class Moving implements State {
 
@@ -38,8 +42,9 @@ public class Moving implements State {
         activity.findViewById(R.id.pathButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DebugMessage.popup(activity,"way and points");
-                PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
+                DebugMessage.popup(activity, "way and points");
+                // PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(profile.getCurrent().getParty().getPosition().toLatLng()).include(profile.getCurrent().getPosition().toLatLng()).build(), dpToPx(68)));
             }
         });
 

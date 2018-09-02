@@ -75,7 +75,7 @@ public class DetailedActivity extends AppCompatActivity {
         }
 
         if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
-            drawCancelButton(profile.getViewed());
+            drawCancelButton(profile);
         }
     }
 
@@ -281,32 +281,26 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
-    private void drawCancelButton(final Noxbox noxbox) {
+    private void drawCancelButton(final Profile profile) {
         findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
-
-        ProfileStorage.readProfile(new Task<Profile>() {
+        findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void execute(final Profile profile) {
-                findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            public void onClick(View v) {
 
-                        if (noxbox.getOwner().getId().equals(profile.getId())) {
-                            if (profile.getViewed().getRole() == MarketRole.supply) {
-                                noxbox.setTimeCanceledBySupplier(System.currentTimeMillis());
-                            } else {
-                                noxbox.setTimeCanceledByDemander(System.currentTimeMillis());
-                            }
-                        } else {
-                            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                noxbox.setTimeCanceledByDemander(System.currentTimeMillis());
-                            } else {
-                                noxbox.setTimeCanceledBySupplier(System.currentTimeMillis());
-                            }
-                        }
-
+                if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
+                    if (profile.getViewed().getRole() == MarketRole.supply) {
+                        profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
+                    } else {
+                        profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
                     }
-                });
+                } else {
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
+                    } else {
+                        profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
+                    }
+                }
+
             }
         });
     }
