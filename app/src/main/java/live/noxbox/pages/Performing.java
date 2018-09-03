@@ -21,7 +21,7 @@ public class Performing implements State {
     private double currency;
     private Handler handler;
     private Runnable runnable;
-    private DecimalFormat decimalFormat = new DecimalFormat("###.##");
+    private DecimalFormat decimalFormat = new DecimalFormat("###.###");
 
     public Performing(Activity activity) {
         this.activity = activity;
