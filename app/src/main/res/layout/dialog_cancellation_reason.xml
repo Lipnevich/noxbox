@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size"
+        android:textColor="@color/google_text"
+        android:gravity="start"
+        android:text="@string/cancelReason"/>
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Не хочу, не буду" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Передумал" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Переменились обстоятельства" />
+
+        <RadioButton
+            android:id="@+id/radioButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Своя" />
+
+        <EditText
+            android:id="@+id/ownReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:gravity="top|start"
+            android:hint="Please write reason"
+            android:lines="2"
+            android:maxLines="2"
+            android:minLines="2"
+            android:textColor="@color/google_text"
+            android:textSize="@dimen/text_size_secondary" />
+
+        <Button
+            android:id="@+id/send"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/button_corner"
+            android:enabled="false"
+            android:text="@string/send"
+            android:textSize="18sp"
+            android:textStyle="normal"
+            android:visibility="visible" />
+
+    </RadioGroup>
+</LinearLayout>

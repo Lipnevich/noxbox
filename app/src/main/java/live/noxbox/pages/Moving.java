@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import live.noxbox.R;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.PathFinder;
@@ -52,19 +53,48 @@ public class Moving implements State {
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO (vl) show photo another participant
-                Glide.with(activity).asDrawable().load(profile.getPhoto()).into((ImageView) activity.findViewById(R.id.photoScreenImage));
+                if (profile.getCurrent().getMe(profile.getId()).equals(profile.getCurrent().getOwner())) {
+                    Glide.with(activity).asDrawable().load(profile.getCurrent().getParty().getPhoto()).into((ImageView) activity.findViewById(R.id.photoScreenImage));
+                } else {
+                    Glide.with(activity).asDrawable().load(profile.getCurrent().getOwner().getPhoto()).into((ImageView) activity.findViewById(R.id.photoScreenImage));
+                }
                 activity.findViewById(R.id.photoScreen).setVisibility(View.VISIBLE);
 
                 activity.findViewById(R.id.photoScreenClose).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         activity.findViewById(R.id.photoScreen).setVisibility(View.GONE);
-
                     }
                 });
-                SwipeButton swipeButton = activity.findViewById(R.id.swipeButton);
-                swipeButton.setOnTouchListener(swipeButton.getButtonTouchListener(new Task<Object>() {
+
+                final SwipeButton buttonConformity = activity.findViewById(R.id.swipeButtonConformity);
+                buttonConformity.setText("Этот человек?");
+                buttonConformity.setOnTouchListener(buttonConformity.getButtonTouchListener(new Task<Object>() {
+                    @Override
+                    public void execute(Object object) {
+                        if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                profile.getCurrent().setTimeCanceledBySupplier(System.currentTimeMillis());
+                            } else {
+                                profile.getCurrent().setTimeCanceledByDemander(System.currentTimeMillis());
+                            }
+                        } else {
+                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                profile.getCurrent().setTimeCanceledBySupplier(System.currentTimeMillis());
+                            } else {
+                                profile.getCurrent().setTimeCanceledByDemander(System.currentTimeMillis());
+                            }
+                        }
+                        googleMap.clear();
+                        activity.findViewById(R.id.photoScreen).setVisibility(View.GONE);
+                        profile.setCurrent(ProfileStorage.noxbox());
+                        ProfileStorage.fireProfile();
+                    }
+                }));
+
+                final SwipeButton buttonConfirm = activity.findViewById(R.id.swipeButtonConfirm);
+                buttonConfirm.setText(activity.getResources().getString(R.string.confirm));
+                buttonConfirm.setOnTouchListener(buttonConfirm.getButtonTouchListener(new Task<Object>() {
                     @Override
                     public void execute(Object object) {
                         if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
@@ -80,12 +110,15 @@ public class Moving implements State {
                                 profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
                             }
                         }
-                        if(profile.getCurrent().getTimeDemandVerified() != null && profile.getCurrent().getTimeSupplyVerified() != null){
+                        if (profile.getCurrent().getTimeDemandVerified() != null && profile.getCurrent().getTimeSupplyVerified() != null) {
                             profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                         }
-
+                        buttonConformity.setVisibility(View.GONE);
                     }
                 }));
+
+
+
             }
         });
         activity.findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
@@ -98,6 +131,7 @@ public class Moving implements State {
         PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
     }
 
+
     @Override
     public void clear() {
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.GONE);
@@ -106,5 +140,6 @@ public class Moving implements State {
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
+
     }
 }

@@ -6,16 +6,21 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -66,7 +71,6 @@ public class DetailedActivity extends AppCompatActivity {
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
-        //TODO (vl) remove this from  && profile.getViewed().getId().equals(profile.getCurrent().getId())
         if (profile.getCurrent() != null) {
             findViewById(R.id.acceptButton).setVisibility(View.GONE);
         } else {
@@ -74,7 +78,7 @@ public class DetailedActivity extends AppCompatActivity {
             drawAcceptButton(profile.getViewed().getRole());
         }
 
-        if (profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
+        if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
             drawCancelButton(profile);
         }
     }
@@ -281,25 +285,106 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
+    private View cancellationReasonDialog;
+    private RadioButton radioButton;
+    private RadioButton radioButton2;
+    private RadioButton radioButton3;
+    private RadioButton radioButton4;
+    private String cancellationReason;
+
     private void drawCancelButton(final Profile profile) {
         findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
         findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailedActivity.this);
+                final View view = getLayoutInflater().inflate(R.layout.dialog_cancellation_reason, null);
+                radioButton = view.findViewById(R.id.radioButton);
+                radioButton2 = view.findViewById(R.id.radioButton2);
+                radioButton3 = view.findViewById(R.id.radioButton3);
+                radioButton4 = view.findViewById(R.id.radioButton4);
+                radioButton4.setChecked(true);
+                radioButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        view.findViewById(R.id.ownReason).setEnabled(false);
+                        view.findViewById(R.id.send).setEnabled(true);
+                        cancellationReason = (String) radioButton.getText();
+                    }
+                });
+                radioButton2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        view.findViewById(R.id.ownReason).setEnabled(false);
+                        view.findViewById(R.id.send).setEnabled(true);
+                        cancellationReason = (String) radioButton2.getText();
+                    }
+                });
+                radioButton3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        view.findViewById(R.id.ownReason).setEnabled(false);
+                        view.findViewById(R.id.send).setEnabled(true);
+                        cancellationReason = (String) radioButton3.getText();
 
-                if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
-                    if (profile.getViewed().getRole() == MarketRole.supply) {
-                        profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
-                    } else {
-                        profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
                     }
-                } else {
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
-                    } else {
-                        profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
+                });
+                radioButton4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        view.findViewById(R.id.ownReason).setEnabled(true);
+                        ((EditText) view.findViewById(R.id.ownReason)).addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                cancellationReason = s.toString();
+                                if (s.length() > 0) {
+                                    view.findViewById(R.id.send).setEnabled(true);
+                                    view.findViewById(R.id.send).setBackground(getDrawable(R.drawable.button_corner));
+                                } else {
+                                    view.findViewById(R.id.send).setEnabled(false);
+                                    view.findViewById(R.id.send).setBackground(getDrawable(R.drawable.button_corner_disabled));
+                                }
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                            }
+                        });
                     }
-                }
+                });
+
+                builder.setView(view);
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+                view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
+                            if (profile.getViewed().getRole() == MarketRole.supply) {
+                                profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
+                            } else {
+                                profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
+                            }
+                        } else {
+                            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                                profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
+                            } else {
+                                profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
+                            }
+                        }
+                        profile.getViewed().setCancellationReasonMessage(cancellationReason);
+                        alertDialog.cancel();
+                        profile.setCurrent(ProfileStorage.noxbox());
+                        profile.setViewed(null);
+                        finish();
+                    }
+                });
 
             }
         });
@@ -364,4 +449,6 @@ public class DetailedActivity extends AppCompatActivity {
             });
         }
     }
+
+
 }

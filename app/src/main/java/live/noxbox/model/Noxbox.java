@@ -47,6 +47,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private WorkSchedule workSchedule;
     private String estimationTime;
 
+    private String cancellationReasonMessage;
+
     public String getId() {
         return id;
     }
@@ -267,6 +269,15 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeStartPerforming(Long timeStartPerforming) {
         this.timeStartPerforming = timeStartPerforming;
+        return this;
+    }
+
+    public String getCancellationReasonMessage() {
+        return cancellationReasonMessage;
+    }
+
+    public Noxbox setCancellationReasonMessage(String cancellationReasonMessage) {
+        this.cancellationReasonMessage = cancellationReasonMessage;
         return this;
     }
 }

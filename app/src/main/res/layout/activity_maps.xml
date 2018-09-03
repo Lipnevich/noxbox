@@ -190,11 +190,20 @@
         </android.support.v7.widget.CardView>
 
         <live.noxbox.pages.SwipeButton
-            android:id="@+id/swipeButton"
+            android:id="@+id/swipeButtonConfirm"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="60dp"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="80dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp" />
+
+        <live.noxbox.pages.SwipeButton
+            android:id="@+id/swipeButtonConformity"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginStart="20dp" />
 
@@ -202,7 +211,6 @@
     <!--Moving-->
 
     <!--Performing-->
-    <!--TODO (vl) performing state locate in other activity-->
     <LinearLayout
         android:id="@+id/performingScreen"
         android:layout_width="match_parent"
@@ -248,18 +256,159 @@
             android:textColor="@color/google_text"
             android:textSize="74sp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
         <Button
             android:id="@+id/complete"
-            style="@style/MainButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="80dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/button_corner"
+            android:enabled="true"
             android:text="@string/completeText"
+            android:textSize="18sp"
+            android:textStyle="normal"
             android:visibility="visible" />
-
     </LinearLayout>
     <!--Performing-->
+
+    <!--Estimating-->
+    <android.support.v7.widget.CardView
+        android:id="@+id/estimatingScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="12dp"
+        android:animateLayoutChanges="true"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/secondary"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/finalSum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:textColor="@color/google_text"
+                android:textSize="@dimen/text_title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="center_horizontal"
+                android:text="Please rate your performer"
+                android:textColor="@color/google_text"
+                android:textSize="@dimen/text_size" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/dislike"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:clickable="true"
+                        android:src="@drawable/dislike"
+                        android:tint="@color/text_color_secondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/like"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:clickable="true"
+                        android:src="@drawable/like"
+                        android:tint="@color/text_color_secondary" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/editComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="top|start"
+                android:hint="Please write comment..."
+                android:lines="5"
+                android:maxLines="5"
+                android:minLines="5"
+                android:textColor="@color/google_text"
+                android:textSize="@dimen/text_size_secondary" />
+
+
+            <Button
+                android:id="@+id/send"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center_horizontal|bottom"
+                android:background="@drawable/button_corner"
+                android:enabled="false"
+                android:text="@string/send"
+                android:textSize="18sp"
+                android:textStyle="normal"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/estimatingScreenClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            app:cardBackgroundColor="@color/primary"
+            app:contentPadding="8dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:duplicateParentState="true"
+                android:src="@drawable/close"
+                android:tint="@color/secondary" />
+        </android.support.v7.widget.CardView>
+
+    </android.support.v7.widget.CardView>
+
+    <!--Estimating-->
 
     <ImageView
         android:id="@+id/pointerImage"

@@ -52,7 +52,7 @@ public class ProfileStorage {
         }
     }
 
-    private static Noxbox noxbox() {
+    public static Noxbox noxbox() {
         return new Noxbox()
                 .setOwner(profile.publicInfo())
                 .setRole(MarketRole.supply)

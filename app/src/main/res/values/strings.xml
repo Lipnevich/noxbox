@@ -212,5 +212,6 @@
     <string name="confirm">Confirm</string>
     <string name="performing">Performing</string>
     <string name="timePassed">Прошло времени:</string>
+    <string name="cancelReason">Причина отмены:</string>
 
 </resources>

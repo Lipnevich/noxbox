@@ -77,7 +77,6 @@ public class SwipeButton extends RelativeLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        centerText.setText(R.string.confirm);
         centerText.setTextColor(R.color.google_text);
         centerText.setPadding(35, 35, 35, 35);
         background.addView(centerText, layoutParams);
@@ -100,6 +99,17 @@ public class SwipeButton extends RelativeLayout {
         swipeButton.setBackground(ContextCompat.getDrawable(context, R.drawable.swipe_button_shape));
         swipeButton.setImageDrawable(disabledDrawable);
         addView(swipeButton, layoutParamsButton);
+    }
+
+    public void setText(String text) {
+        this.centerText.setText(text);
+    }
+
+    public String getText() {
+        if (this.centerText.getText() != null) {
+            return (String) this.centerText.getText();
+        }
+        return null;
     }
 
     public OnTouchListener getButtonTouchListener(final Task<Object> task) {

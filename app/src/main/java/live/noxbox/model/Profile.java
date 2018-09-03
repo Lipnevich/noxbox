@@ -15,6 +15,7 @@ public class Profile implements Serializable {
     private String id;
 
     private Acceptance acceptance;
+    private Map<String, Boolean> darkList = new HashMap<>();
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
     private Map<String, Portfolio> portfolio = new HashMap<>();
@@ -254,6 +255,15 @@ public class Profile implements Serializable {
 
     public Profile setHost(Boolean host) {
         this.host = host;
+        return this;
+    }
+
+    public Map<String, Boolean> getDarkList() {
+        return darkList;
+    }
+
+    public Profile setDarkList(Map<String, Boolean> darkList) {
+        this.darkList = darkList;
         return this;
     }
 }
