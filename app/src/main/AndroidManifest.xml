@@ -33,7 +33,6 @@
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBarWithStatusBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".performing.PerformingActivity" />
         <activity
             android:name=".profile.ProfilePerformerActivity"
             android:parentActivityName=".profile.ProfileActivity"

@@ -11,5 +11,6 @@ public interface Configuration {
     int NIGHT_TIME_START_IN_HOURS = 18;
     int NIGHT_TIME_EHD_IN_HOURS = 10;
     int LOCATION_PERMISSION_REQUEST_CODE = 911;
+    long MINIMUM_PAYMENT_TIME_MILLIS = 900000;
 
 }

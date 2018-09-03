@@ -388,7 +388,6 @@ public class MapActivity extends DebugActivity implements
                 profile.getCurrent().getTimeSupplyVerified() != null &&
                 profile.getCurrent().getTimeCompleted() == null) {
 
-            profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
             return new Performing(this);
         }
 

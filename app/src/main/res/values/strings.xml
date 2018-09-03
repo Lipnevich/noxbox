@@ -27,6 +27,7 @@
     <string name="payments">Payments</string>
     <string name="help">Help</string>
     <string name="settings">Settings</string>
+
     <!--NoxboxType's-->
     <string name="massage">Massage</string>
     <string name="sportCompanion">Sport Companion</string>
@@ -119,20 +120,20 @@
     <string name="startTime">Beginning of working time:</string>
     <string name="endTime">End of working hours:</string>
     <string name="selectService">Select service</string>
-    <string name="priceService">Price 30 minutes services</string>
+    <string name="priceService">Price 1 hour services</string>
 
     <!--Service description-->Description
-    <string name="massageDescription">45 minutes of massage</string>
-    <string name="dogWalkingDescription">40 minutes of dog walking</string>
-    <string name="haircutDescription">30 minutes haircut</string>
-    <string name="manicureDescription">45 minutes manicure session</string>
-    <string name="computerRepairDescription">2 hours computer repair</string>
+    <string name="massageDescription">1 hour of massage</string>
+    <string name="dogWalkingDescription">1 hour of dog walking</string>
+    <string name="haircutDescription">1 hour haircut</string>
+    <string name="manicureDescription">1 hour manicure session</string>
+    <string name="computerRepairDescription">1 hours computer repair</string>
     <string name="dinnerDescription">1 hour cooking</string>
     <string name="houseWifeDescription">1 hour apartment cleaning</string>
-    <string name="nannyDescription">4 hours childcare</string>
+    <string name="nannyDescription">1 hours childcare</string>
     <string name="homeTeacherDescription">1 hour English tutor</string>
-    <string name="husbandForHourDescription">10 minutes the husband for an hour</string>
-    <string name="plumberDescription">10 minutes pipeline prevention</string>
+    <string name="husbandForHourDescription">1 hour the husband for an hour</string>
+    <string name="plumberDescription">1 hour pipeline prevention</string>
     <string name="sportCompanionDescription">1 hour training in a hall</string>
     <string name="sportCoachDescription">1 hour training with a coach</string>
     <string name="musicianDescription">1 hour play on guitar</string>

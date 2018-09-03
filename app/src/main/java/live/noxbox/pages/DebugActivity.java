@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import java.math.BigDecimal;
 
 import live.noxbox.BuildConfig;
+import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.Position;
@@ -62,7 +63,6 @@ public class DebugActivity extends MenuActivity {
                     });
 
 
-
                     findViewById(R.id.debugMoving).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -85,6 +85,7 @@ public class DebugActivity extends MenuActivity {
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                 profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
                                 profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
+                                profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis() - (Configuration.MINIMUM_PAYMENT_TIME_MILLIS - 10000));
                                 ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "current noxbox is null");

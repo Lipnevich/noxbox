@@ -80,6 +80,10 @@ public class Moving implements State {
                                 profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
                             }
                         }
+                        if(profile.getCurrent().getTimeDemandVerified() != null && profile.getCurrent().getTimeSupplyVerified() != null){
+                            profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
+                        }
+
                     }
                 }));
             }

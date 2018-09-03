@@ -203,7 +203,62 @@
 
     <!--Performing-->
     <!--TODO (vl) performing state locate in other activity-->
+    <LinearLayout
+        android:id="@+id/performingScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/currency"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/text_color_secondary"
+            android:textSize="32sp" />
+
+        <TextView
+            android:id="@+id/currency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/google_text"
+            android:textSize="74sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/timePassed"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/text_color_secondary"
+            android:textSize="32sp" />
+
+        <TextView
+            android:id="@+id/timeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/google_text"
+            android:textSize="74sp" />
+
+        <Button
+            android:id="@+id/complete"
+            style="@style/MainButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginTop="16dp"
+            android:text="@string/completeText"
+            android:visibility="visible" />
+
+    </LinearLayout>
     <!--Performing-->
 
     <ImageView
@@ -271,6 +326,7 @@
             android:text="Moving"
             android:textColor="@color/primary"
             android:textSize="@dimen/text_size" />
+
         <TextView
             android:id="@+id/debugPerforming"
             android:layout_width="wrap_content"
