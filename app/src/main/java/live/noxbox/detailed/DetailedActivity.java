@@ -218,6 +218,14 @@ public class DetailedActivity extends AppCompatActivity {
 
                 } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
                     ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
+
+                    //for Performing state
+                    if (profile.getCurrent().getTimeDemandVerified() != null &&
+                            profile.getCurrent().getTimeSupplyVerified() != null &&
+                            profile.getCurrent().getTimeCompleted() == null) {
+                        ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.inProcess);
+                    }
+
                     ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
 
                     if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null) {
@@ -232,6 +240,8 @@ public class DetailedActivity extends AppCompatActivity {
                         });
                     }
                 }
+
+
             }
         });
 
@@ -286,10 +296,12 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private View cancellationReasonDialog;
-    private RadioButton radioButton;
-    private RadioButton radioButton2;
-    private RadioButton radioButton3;
-    private RadioButton radioButton4;
+    private RadioButton longToWait;
+    private RadioButton photoDoesNotMatch;
+    private RadioButton rudeBehavior;
+    private RadioButton substandardWork;
+    private RadioButton own;
+
     private String cancellationReason;
 
     private void drawCancelButton(final Profile profile) {
@@ -299,37 +311,46 @@ public class DetailedActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetailedActivity.this);
                 final View view = getLayoutInflater().inflate(R.layout.dialog_cancellation_reason, null);
-                radioButton = view.findViewById(R.id.radioButton);
-                radioButton2 = view.findViewById(R.id.radioButton2);
-                radioButton3 = view.findViewById(R.id.radioButton3);
-                radioButton4 = view.findViewById(R.id.radioButton4);
-                radioButton4.setChecked(true);
-                radioButton.setOnClickListener(new View.OnClickListener() {
+                longToWait = view.findViewById(R.id.longToWait);
+                photoDoesNotMatch = view.findViewById(R.id.photoDoesNotMatch);
+                rudeBehavior = view.findViewById(R.id.rudeBehavior);
+                substandardWork = view.findViewById(R.id.substandardWork);
+                own = view.findViewById(R.id.own);
+                own.setChecked(true);
+                longToWait.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         view.findViewById(R.id.ownReason).setEnabled(false);
                         view.findViewById(R.id.send).setEnabled(true);
-                        cancellationReason = (String) radioButton.getText();
+                        cancellationReason = (String) longToWait.getText();
                     }
                 });
-                radioButton2.setOnClickListener(new View.OnClickListener() {
+                photoDoesNotMatch.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         view.findViewById(R.id.ownReason).setEnabled(false);
                         view.findViewById(R.id.send).setEnabled(true);
-                        cancellationReason = (String) radioButton2.getText();
+                        cancellationReason = (String) photoDoesNotMatch.getText();
                     }
                 });
-                radioButton3.setOnClickListener(new View.OnClickListener() {
+                rudeBehavior.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         view.findViewById(R.id.ownReason).setEnabled(false);
                         view.findViewById(R.id.send).setEnabled(true);
-                        cancellationReason = (String) radioButton3.getText();
+                        cancellationReason = (String) rudeBehavior.getText();
 
                     }
                 });
-                radioButton4.setOnClickListener(new View.OnClickListener() {
+                substandardWork.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        view.findViewById(R.id.ownReason).setEnabled(false);
+                        view.findViewById(R.id.send).setEnabled(true);
+                        cancellationReason = (String) substandardWork.getText();
+                    }
+                });
+                own.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 

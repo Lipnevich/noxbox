@@ -48,6 +48,9 @@ public class Noxbox implements Comparable<Noxbox> {
     private String estimationTime;
 
     private String cancellationReasonMessage;
+    private String commentForDemand;
+    private String commentForSupply;
+
 
     public String getId() {
         return id;
@@ -278,6 +281,24 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCancellationReasonMessage(String cancellationReasonMessage) {
         this.cancellationReasonMessage = cancellationReasonMessage;
+        return this;
+    }
+
+    public String getCommentForDemand() {
+        return commentForDemand;
+    }
+
+    public Noxbox setCommentForDemand(String commentForDemand) {
+        this.commentForDemand = commentForDemand;
+        return this;
+    }
+
+    public String getCommentForSupply() {
+        return commentForSupply;
+    }
+
+    public Noxbox setCommentForSupply(String commentForSupply) {
+        this.commentForSupply = commentForSupply;
         return this;
     }
 }

@@ -31,33 +31,41 @@ public class SwipeButton extends RelativeLayout {
 
     private Drawable disabledDrawable;
     private Drawable enabledDrawable;
+    private RelativeLayout background;
 
     public SwipeButton(Context context) {
         super(context);
 
-        init(context, null, -1, -1);
+        init(context, null);
     }
 
     public SwipeButton(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        init(context, attrs, -1, -1);
+        init(context, null);
     }
 
     public SwipeButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        init(context, attrs, defStyleAttr, -1);
+        init(context, null);
     }
 
     @TargetApi(21)
     public SwipeButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs, defStyleAttr, defStyleRes);
+        init(context, null);
     }
 
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        RelativeLayout background = new RelativeLayout(context);
+    public void setEnabledDrawable(Drawable customDrawable, Context context) {
+        this.enabledDrawable = customDrawable;
+        init(getContext(), customDrawable);
+    }
+
+
+    private void init(Context context, Drawable customDrawable) {
+        removeAllViews();
+        background = new RelativeLayout(context);
 
         LayoutParams layoutParamsView = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -84,8 +92,13 @@ public class SwipeButton extends RelativeLayout {
         final ImageView swipeButton = new ImageView(context);
         this.slidingButton = swipeButton;
 
-        disabledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.add);
         enabledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.yes);
+        disabledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.yes);
+
+        if (customDrawable != null) {
+            enabledDrawable = customDrawable;
+            disabledDrawable = customDrawable;
+        }
         enabledDrawable.setTint(Color.WHITE);
         slidingButton.setImageDrawable(disabledDrawable);
         slidingButton.setPadding(40, 40, 40, 40);

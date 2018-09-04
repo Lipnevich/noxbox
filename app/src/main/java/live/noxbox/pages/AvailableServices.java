@@ -134,6 +134,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     public void clear() {
         googleMap.clear();
         activity.findViewById(R.id.floatingButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.filter).setVisibility(View.GONE);
     }
 
 

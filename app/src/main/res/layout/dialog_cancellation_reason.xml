@@ -19,28 +19,32 @@
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/longToWait"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Не хочу, не буду" />
+            android:text="@string/longToWait" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/photoDoesNotMatch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Передумал" />
+            android:text="@string/photoDoesNotMatch" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/rudeBehavior"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Переменились обстоятельства" />
-
+            android:text="@string/rudeBehavior" />
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/substandardWork"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Своя" />
+            android:text="@string/substandardWork"/>
+        <RadioButton
+            android:id="@+id/own"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/own" />
 
         <EditText
             android:id="@+id/ownReason"

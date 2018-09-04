@@ -5,12 +5,12 @@ import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import live.noxbox.R;
+import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
@@ -72,12 +72,10 @@ public class Estimating implements State {
                 comment = s.toString();
                 if (s.length() > 0) {
                     activity.findViewById(R.id.send).setEnabled(true);
-                    activity.findViewById(R.id.send).setBackgroundColor(activity.getResources().getColor(R.color.primary));
-                    ((Button) activity.findViewById(R.id.send)).setTextColor(activity.getResources().getColor(R.color.secondary));
+                    activity.findViewById(R.id.send).setBackground(activity.getDrawable(R.drawable.button_corner));
                 } else {
                     activity.findViewById(R.id.send).setEnabled(false);
-                    activity.findViewById(R.id.send).setBackgroundColor(activity.getResources().getColor(R.color.translucent));
-                    ((Button) activity.findViewById(R.id.send)).setTextColor(activity.getResources().getColor(R.color.text_color_secondary));
+                    activity.findViewById(R.id.send).setBackground(activity.getDrawable(R.drawable.button_corner_disabled));
                 }
             }
 
@@ -91,15 +89,19 @@ public class Estimating implements State {
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner() == profile.getCurrent().getMe(profile.getId())) {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        //profile.getCurrent().getParty().getDemandsRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent())
+                        profile.getCurrent().getParty().getDemandsRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent().setCommentForDemand(comment);
                     } else {
-                        //profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent())
+                        profile.getCurrent().getParty().getSuppliesRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent().setCommentForSupply(comment);
                     }
                 } else {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        //profile.getCurrent().getOwner().getDemandsRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent())
+                        profile.getCurrent().getOwner().getDemandsRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent().setCommentForDemand(comment);
                     } else {
-                        //profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent())
+                        profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent().setCommentForSupply(comment);
                     }
                 }
             }

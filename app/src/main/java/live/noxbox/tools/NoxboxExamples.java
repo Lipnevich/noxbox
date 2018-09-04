@@ -59,18 +59,20 @@ public class NoxboxExamples {
             noxbox.setWorkSchedule(new WorkSchedule());
 
 //            Фильтрация услуг в зависимости от настроек
-            if (noxbox.getRole() == MarketRole.demand && profile.getFilters().getDemand()) {
-                if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
-                    if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
-                        noxboxes.add(noxbox);
+            if (profile.getDarkList().get(noxbox.getOwner().getId()) != null && !profile.getDarkList().get(noxbox.getOwner().getId())) {//фильтр по чёрному списку
+                if (noxbox.getRole() == MarketRole.demand && profile.getFilters().getDemand()) {
+                    if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
+                        if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
+                            noxboxes.add(noxbox);
+                        }
                     }
-                }
-            } else if (noxbox.getRole() == MarketRole.supply && profile.getFilters().getSupply())
-                if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
-                    if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
-                        noxboxes.add(noxbox);
+                } else if (noxbox.getRole() == MarketRole.supply && profile.getFilters().getSupply())
+                    if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
+                        if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
+                            noxboxes.add(noxbox);
+                        }
                     }
-                }
+            }
         }
 
 

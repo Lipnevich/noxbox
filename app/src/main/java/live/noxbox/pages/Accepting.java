@@ -6,7 +6,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -29,7 +28,6 @@ public class Accepting implements State {
     private Activity activity;
     private ObjectAnimator anim;
     private AnimationDrawable animationDrawable;
-    private ProgressBar progressBar;
     private CountDownTimer countDownTimer;
 
     public Accepting(GoogleMap googleMap, Activity activity) {
@@ -58,7 +56,7 @@ public class Accepting implements State {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                clear();
+                ProfileStorage.fireProfile();
             }
         });
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
@@ -79,11 +77,9 @@ public class Accepting implements State {
         PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
 
         long timeCountInMilliSeconds = 30000;
-        //progressBar = (ProgressBar) activity.findViewById(R.id.acceptCountdownTimer);
         countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                //progressBar.setProgress((int) (millisUntilFinished / 1000));
                 ((TextView)activity.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished/1000));
             }
 

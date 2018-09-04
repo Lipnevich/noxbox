@@ -389,7 +389,7 @@ public class MapActivity extends DebugActivity implements
                 profile.getCurrent().getTimeSupplyVerified() != null &&
                 profile.getCurrent().getTimeCompleted() == null) {
 
-            return new Performing(this);
+            return new Performing(this, googleMap);
         }
 
         if (profile.getCurrent().getTimeCompleted() != null && profile.getCurrent().getTotalExecutionTimeInMinutes() != null) {

@@ -1,6 +1,7 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.ImageView;
@@ -44,7 +45,6 @@ public class Moving implements State {
             @Override
             public void onClick(View v) {
                 DebugMessage.popup(activity, "way and points");
-                // PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(profile.getCurrent().getParty().getPosition().toLatLng()).include(profile.getCurrent().getPosition().toLatLng()).build(), dpToPx(68)));
             }
         });
@@ -66,9 +66,9 @@ public class Moving implements State {
                         activity.findViewById(R.id.photoScreen).setVisibility(View.GONE);
                     }
                 });
-
                 final SwipeButton buttonConformity = activity.findViewById(R.id.swipeButtonConformity);
-                buttonConformity.setText("Этот человек?");
+                buttonConformity.setText(activity.getString(R.string.notLikeThat));
+                buttonConformity.setEnabledDrawable(activity.getDrawable(R.drawable.no), activity);
                 buttonConformity.setOnTouchListener(buttonConformity.getButtonTouchListener(new Task<Object>() {
                     @Override
                     public void execute(Object object) {
@@ -94,6 +94,7 @@ public class Moving implements State {
 
                 final SwipeButton buttonConfirm = activity.findViewById(R.id.swipeButtonConfirm);
                 buttonConfirm.setText(activity.getResources().getString(R.string.confirm));
+                buttonConfirm.setEnabledDrawable(activity.getDrawable(R.drawable.yes),activity);
                 buttonConfirm.setOnTouchListener(buttonConfirm.getButtonTouchListener(new Task<Object>() {
                     @Override
                     public void execute(Object object) {
@@ -110,13 +111,16 @@ public class Moving implements State {
                                 profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
                             }
                         }
+                        //TODO (vl) simulate accepting for both participants
+                        profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
+                        profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
                         if (profile.getCurrent().getTimeDemandVerified() != null && profile.getCurrent().getTimeSupplyVerified() != null) {
                             profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                         }
                         buttonConformity.setVisibility(View.GONE);
+                        ProfileStorage.fireProfile();
                     }
                 }));
-
 
 
             }
@@ -125,6 +129,7 @@ public class Moving implements State {
             @Override
             public void onClick(View v) {
                 //TODO (vl) on click opens chat activity
+                activity.startActivity(new Intent(activity, ChatActivity.class));
             }
         });
 
@@ -134,12 +139,16 @@ public class Moving implements State {
 
     @Override
     public void clear() {
+        googleMap.clear();
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.GONE);
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.timeLayout).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
+        if (activity.findViewById(R.id.photoScreen).getVisibility() == View.VISIBLE) {
+            activity.findViewById(R.id.photoScreen).setVisibility(View.GONE);
+        }
 
     }
 }

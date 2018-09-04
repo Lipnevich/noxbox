@@ -211,4 +211,12 @@
     <string name="performing">Performing</string>
     <string name="timePassed">Прошло времени:</string>
     <string name="cancelReason">Причина отмены:</string>
+    <string name="substandardWork">Некачественная работа</string>
+    <string name="own">Своя</string>
+    <string name="rudeBehavior">Грубое поведение</string>
+    <string name="photoDoesNotMatch">Фотография не соответствует внешности</string>
+    <string name="longToWait">Слишком долго ждать</string>
+    <string name="notLikeThat">Не похож</string>
+    <string name="confirmThatYouSeePersonFromPhoto">Подтвердите что видите человека с фотографии</string>
+    <string name="inProcess">В процессе</string>
 </resources>
