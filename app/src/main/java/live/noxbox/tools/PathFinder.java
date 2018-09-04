@@ -4,7 +4,7 @@ package live.noxbox.tools;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
@@ -43,7 +43,7 @@ import static live.noxbox.model.TravelMode.none;
 public class PathFinder {
 
 
-    public static void createRequestPoints(final Noxbox noxbox, GoogleMap googleMap, final Activity activity) {
+    public static void createRequestPoints(final Noxbox noxbox, GoogleMap googleMap, final Activity activity, LinearLayout customState) {
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -61,19 +61,19 @@ public class PathFinder {
             if (noxbox.getOwner().getTravelMode() == none) {
                 MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
                 MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
-                createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap, customState);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
 
             } else {
                 if (noxbox.getOwner().getHost() && !noxbox.getParty().getHost()) {
                     MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
                     MarkerCreator.createCustomMarker(noxbox, googleMap, activity, TravelMode.none);
-                    createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                    createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap, customState);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
                 } else {
                     MarkerCreator.createPositionMarker(TravelMode.none, noxbox.getParty().getPosition().toLatLng(), googleMap);
                     MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
-                    createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), TravelMode.none, activity, googleMap);
+                    createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), TravelMode.none, activity, googleMap, customState);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
                 }
 
@@ -83,18 +83,18 @@ public class PathFinder {
             if (noxbox.getOwner().getTravelMode() == none) {
                 MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
                 MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
-                createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap, customState);
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
             } else {
                 if (noxbox.getParty().getTravelMode() == none && noxbox.getParty().getHost()) {
                     MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
                     MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode());
-                    createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                    createPathBetweenPoints(noxbox.getPosition(), noxbox.getParty().getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap, customState);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
                 } else {
                     MarkerCreator.createPositionMarker(noxbox.getParty().getTravelMode(), noxbox.getParty().getPosition().toLatLng(), googleMap);
                     MarkerCreator.createCustomMarker(noxbox, googleMap, activity, TravelMode.none);
-                    createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap);
+                    createPathBetweenPoints(noxbox.getParty().getPosition(), noxbox.getPosition(), noxbox.getParty().getTravelMode(), activity, googleMap, customState);
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(noxbox.getParty().getPosition().toLatLng()).include(noxbox.getPosition().toLatLng()).build(), dpToPx(68)));
                 }
             }
@@ -103,8 +103,8 @@ public class PathFinder {
 
     private static final String key = "AIzaSyArShVxHFrGDuU_mTVMddB1ToPTsMjjrb0";
 
-    private static void createPathBetweenPoints(Position start, Position end, TravelMode travelMode, Activity activity, GoogleMap googleMap) {
-        new ParserTask(activity, googleMap).execute(String.format(Locale.US, "https://maps.googleapis.com/maps/api/directions/json" +
+    private static void createPathBetweenPoints(Position start, Position end, TravelMode travelMode, Activity activity, GoogleMap googleMap, LinearLayout customState) {
+        new ParserTask(activity, googleMap, customState).execute(String.format(Locale.US, "https://maps.googleapis.com/maps/api/directions/json" +
                         "?origin=%f,%f&destination=%f,%f&sensor=false&mode=%s&alternatives=false&key=%s",
                 start.getLatitude(),
                 start.getLongitude(),
@@ -123,10 +123,12 @@ public class PathFinder {
     private static class ParserTask extends AsyncTask<String, Integer, Path> {
         Activity activity;
         GoogleMap googleMap;
+        LinearLayout customState;
 
-        public ParserTask(Activity activity, GoogleMap googleMap) {
+        public ParserTask(Activity activity, GoogleMap googleMap, LinearLayout customState) {
             this.activity = activity;
             this.googleMap = googleMap;
+            this.customState = customState;
         }
 
         @Override
@@ -166,9 +168,7 @@ public class PathFinder {
                 default:
                     timeTxt = activity.getResources().getString(R.string.minutes);
             }
-            ((TextView) activity.findViewById(R.id.travelTime)).setText(path.timeInMinutes + " " + timeTxt);
-            activity.findViewById(R.id.timeLayout).setVisibility(View.VISIBLE);
-
+            ((TextView) customState.findViewById(R.id.travelTime)).setText(path.timeInMinutes + " " + timeTxt);
         }
 
         private static String readUrl(String mapsApiDirectionsUrl) throws IOException {

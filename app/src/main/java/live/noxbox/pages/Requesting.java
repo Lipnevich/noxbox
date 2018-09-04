@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +23,7 @@ public class Requesting implements State {
     private Activity activity;
     private ObjectAnimator anim;
     private AnimationDrawable animationDrawable;
+    private LinearLayout requestingView;
 
     public Requesting(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
@@ -30,10 +32,12 @@ public class Requesting implements State {
 
     @Override
     public void draw(final Profile profile) {
-        ((TextView)activity.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
-        activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.timeLayout).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
+        requestingView = activity.findViewById(R.id.container);
+        View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
+        requestingView.addView(child);
+
+        ((TextView) requestingView.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
+        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeRequested(null);
@@ -57,16 +61,13 @@ public class Requesting implements State {
 
         profile.getViewed().setParty(profile);
 
-        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
+        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, requestingView);
     }
 
 
     @Override
     public void clear() {
         googleMap.clear();
-        activity.findViewById(R.id.travelTime).setVisibility(View.GONE);
-        activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.GONE);
-        activity.findViewById(R.id.timeLayout).setVisibility(View.GONE);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.exchangeRate).setVisibility(View.VISIBLE);
@@ -74,5 +75,6 @@ public class Requesting implements State {
             anim.cancel();
             animationDrawable.stop();
         }
+        requestingView.removeAllViews();
     }
 }

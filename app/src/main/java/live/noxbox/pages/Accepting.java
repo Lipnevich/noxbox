@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -29,6 +30,7 @@ public class Accepting implements State {
     private ObjectAnimator anim;
     private AnimationDrawable animationDrawable;
     private CountDownTimer countDownTimer;
+    private LinearLayout acceptingView;
 
     public Accepting(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
@@ -37,11 +39,12 @@ public class Accepting implements State {
 
     @Override
     public void draw(final Profile profile) {
-        ((TextView) activity.findViewById(R.id.blinkingInfo)).setText(R.string.acceptingConfirmation);
-        activity.findViewById(R.id.countdownLayout).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.timeLayout).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
+        acceptingView = activity.findViewById(R.id.container);
+        View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
+        acceptingView.addView(child);
+
+        ((TextView) acceptingView.findViewById(R.id.blinkingInfo)).setText(R.string.acceptingConfirmation);
+        acceptingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(null);
@@ -51,8 +54,7 @@ public class Accepting implements State {
             }
         });
 
-        activity.findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+        acceptingView.findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
@@ -61,7 +63,6 @@ public class Accepting implements State {
         });
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-
 
 
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
@@ -74,13 +75,13 @@ public class Accepting implements State {
         animationDrawable.setExitFadeDuration(1200);
         animationDrawable.start();
 
-        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
+        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, acceptingView);
 
         long timeCountInMilliSeconds = 30000;
         countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                ((TextView)activity.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished/1000));
+                ((TextView) acceptingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
             }
 
             @Override
@@ -91,10 +92,11 @@ public class Accepting implements State {
             }
 
         }.start();
-        if(profile.equals(profile.getCurrent().getOwner())){
-            moveCamera(profile.getCurrent().getPosition().toLatLng(),12);
+        if (profile.equals(profile.getCurrent().getOwner())) {
+            moveCamera(profile.getCurrent().getPosition().toLatLng(), 12);
         }
     }
+
     private void moveCamera(LatLng latLng, float zoom) {
         CameraPosition cameraPosition
                 = new CameraPosition.Builder()
@@ -105,14 +107,10 @@ public class Accepting implements State {
         googleMap.animateCamera(cameraUpdate);
 
     }
+
     @Override
     public void clear() {
         googleMap.clear();
-        activity.findViewById(R.id.blinkingInfoLayout).setVisibility(View.GONE);
-        activity.findViewById(R.id.timeLayout).setVisibility(View.GONE);
-        activity.findViewById(R.id.countdownLayout).setVisibility(View.GONE);
-        activity.findViewById(R.id.acceptButton).setVisibility(View.GONE);
-        ((TextView) activity.findViewById(R.id.blinkingInfo)).setText("");
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
 
@@ -121,5 +119,6 @@ public class Accepting implements State {
             animationDrawable.stop();
         }
         countDownTimer.cancel();
+        acceptingView.removeAllViews();
     }
 }

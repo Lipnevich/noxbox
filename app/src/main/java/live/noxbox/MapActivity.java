@@ -39,7 +39,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -393,12 +392,8 @@ public class MapActivity extends DebugActivity implements
         }
 
         if (profile.getCurrent().getTimeCompleted() != null && profile.getCurrent().getTotalExecutionTimeInMinutes() != null) {
-            if (profile.getCurrent().getOwner().getId().equals(profile.getId()) && profile.getCurrent().getRole() == MarketRole.demand) {
-                return new Estimating(this);
-            }
-
+            return new Estimating(this);
         }
-
 
         return new AvailableServices(googleMap, googleApiClient, this);
     }

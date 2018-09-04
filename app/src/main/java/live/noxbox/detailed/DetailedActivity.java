@@ -71,12 +71,13 @@ public class DetailedActivity extends AppCompatActivity {
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
-        if (profile.getCurrent() != null) {
-            findViewById(R.id.acceptButton).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
-            drawAcceptButton(profile.getViewed().getRole());
-        }
+//        if (profile.getCurrent() != null) {
+//            findViewById(R.id.acceptButton).setVisibility(View.GONE);
+//        } else {
+//            findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
+//
+//        }
+        drawAcceptButton(profile.getViewed().getRole());
 
         if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
             drawCancelButton(profile);

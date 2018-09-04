@@ -7,6 +7,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import live.noxbox.R;
@@ -19,6 +20,7 @@ public class Estimating implements State {
 
     private Activity activity;
     private String comment;
+    private LinearLayout estimatingView;
 
     public Estimating(Activity activity) {
         this.activity = activity;
@@ -26,43 +28,49 @@ public class Estimating implements State {
 
     @Override
     public void draw(final Profile profile) {
-        activity.findViewById(R.id.estimatingScreen).setVisibility(View.VISIBLE);
-        ((TextView) activity.findViewById(R.id.finalSum)).setText(profile.getCurrent().getPrice() + activity.getResources().getString(R.string.currency));
+        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        activity.findViewById(R.id.floatingButton).setVisibility(View.GONE);
+        estimatingView = activity.findViewById(R.id.container);
+        View child = activity.getLayoutInflater().inflate(R.layout.state_estimating, null);
+        estimatingView.addView(child);
 
-        ((ImageView) activity.findViewById(R.id.like)).setOnClickListener(new View.OnClickListener() {
+        ((TextView) estimatingView.findViewById(R.id.finalSum)).setText(profile.getCurrent().getPrice() + activity.getResources().getString(R.string.currency));
+
+        ((ImageView) estimatingView.findViewById(R.id.like)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getReceivedLikes() == 0) {
-                    ((ImageView) activity.findViewById(R.id.like)).setColorFilter(Color.GREEN);
-                    ((ImageView) activity.findViewById(R.id.dislike)).setEnabled(false);
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(Color.GREEN);
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setEnabled(false);
                     profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedLikes(1);
                 } else {
-                    ((ImageView) activity.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                    ((ImageView) activity.findViewById(R.id.dislike)).setEnabled(true);
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setEnabled(true);
                     profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedLikes(0);
                 }
 
             }
         });
 
-        ((ImageView) activity.findViewById(R.id.dislike)).setOnClickListener(new View.OnClickListener() {
+        ((ImageView) estimatingView.findViewById(R.id.dislike)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getReceivedDislikes() == 0) {
-                    ((ImageView) activity.findViewById(R.id.dislike)).setColorFilter(Color.RED);
-                    ((ImageView) activity.findViewById(R.id.like)).setEnabled(false);
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(Color.RED);
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setEnabled(false);
                     profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedDislikes(1);
                     profile.getDarkList().put(profile.getCurrent().getOwner().getId(), true);
                 } else {
-                    ((ImageView) activity.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                    ((ImageView) activity.findViewById(R.id.like)).setEnabled(true);
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setEnabled(true);
                     profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedDislikes(0);
                     profile.getDarkList().put(profile.getCurrent().getOwner().getId(), false);
                 }
             }
         });
 
-        ((EditText) activity.findViewById(R.id.editComment)).addTextChangedListener(new TextWatcher() {
+        ((EditText) estimatingView.findViewById(R.id.editComment)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -71,11 +79,11 @@ public class Estimating implements State {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 comment = s.toString();
                 if (s.length() > 0) {
-                    activity.findViewById(R.id.send).setEnabled(true);
-                    activity.findViewById(R.id.send).setBackground(activity.getDrawable(R.drawable.button_corner));
+                    estimatingView.findViewById(R.id.send).setEnabled(true);
+                    estimatingView.findViewById(R.id.send).setBackground(activity.getDrawable(R.drawable.button_corner));
                 } else {
-                    activity.findViewById(R.id.send).setEnabled(false);
-                    activity.findViewById(R.id.send).setBackground(activity.getDrawable(R.drawable.button_corner_disabled));
+                    estimatingView.findViewById(R.id.send).setEnabled(false);
+                    estimatingView.findViewById(R.id.send).setBackground(activity.getDrawable(R.drawable.button_corner_disabled));
                 }
             }
 
@@ -84,7 +92,7 @@ public class Estimating implements State {
                 comment = s.toString();
             }
         });
-        activity.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
+        estimatingView.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner() == profile.getCurrent().getMe(profile.getId())) {
@@ -111,6 +119,9 @@ public class Estimating implements State {
 
     @Override
     public void clear() {
-        activity.findViewById(R.id.estimatingScreen).setVisibility(View.GONE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);
+        estimatingView.removeAllViews();
     }
 }

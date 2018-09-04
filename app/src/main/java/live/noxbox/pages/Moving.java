@@ -2,11 +2,16 @@ package live.noxbox.pages;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -26,6 +31,8 @@ public class Moving implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
+    private LinearLayout movingView;
+    private LinearLayout photoView;
 
     public Moving(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
@@ -34,12 +41,15 @@ public class Moving implements State {
 
     @Override
     public void draw(final Profile profile) {
+
+        movingView = activity.findViewById(R.id.container);
+        View childMoving = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
+        movingView.addView(childMoving);
+
         activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.timeLayout).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pathButton).setVisibility(View.VISIBLE);
-
 
         activity.findViewById(R.id.pathButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,20 +63,41 @@ public class Moving implements State {
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (profile.getCurrent().getMe(profile.getId()).equals(profile.getCurrent().getOwner())) {
-                    Glide.with(activity).asDrawable().load(profile.getCurrent().getParty().getPhoto()).into((ImageView) activity.findViewById(R.id.photoScreenImage));
-                } else {
-                    Glide.with(activity).asDrawable().load(profile.getCurrent().getOwner().getPhoto()).into((ImageView) activity.findViewById(R.id.photoScreenImage));
-                }
-                activity.findViewById(R.id.photoScreen).setVisibility(View.VISIBLE);
+                activity.findViewById(R.id.floatingButton).setVisibility(View.GONE);
+                activity.findViewById(R.id.chat).setVisibility(View.GONE);
+                activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
 
-                activity.findViewById(R.id.photoScreenClose).setOnClickListener(new View.OnClickListener() {
+                photoView = movingView.findViewById(R.id.photoContainer);
+                final View childPhoto = activity.getLayoutInflater().inflate(R.layout.state_moving_photo, null);
+                photoView.addView(childPhoto);
+
+                if (profile.getId().equals(profile.getCurrent().getOwner().getId())) {
+                    Glide.with(activity).asDrawable().load(profile.getCurrent().getParty().getPhoto()).into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            photoView.findViewById(R.id.photoScreen).setBackground(resource);
+                        }
+                    });
+                } else {
+                    Glide.with(activity).asDrawable().load(profile.getCurrent().getOwner().getPhoto()).into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            photoView.findViewById(R.id.photoScreen).setBackground(resource);
+                        }
+                    });
+                }
+                photoView.findViewById(R.id.photoScreenClose).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        activity.findViewById(R.id.photoScreen).setVisibility(View.GONE);
+                        activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);
+                        activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
+                        activity.findViewById(R.id.pathButton).setVisibility(View.VISIBLE);
+                        photoView.removeAllViews();
                     }
                 });
-                final SwipeButton buttonConformity = activity.findViewById(R.id.swipeButtonConformity);
+
+
+                final SwipeButton buttonConformity = photoView.findViewById(R.id.swipeButtonConformity);
                 buttonConformity.setText(activity.getString(R.string.notLikeThat));
                 buttonConformity.setEnabledDrawable(activity.getDrawable(R.drawable.no), activity);
                 buttonConformity.setOnTouchListener(buttonConformity.getButtonTouchListener(new Task<Object>() {
@@ -86,15 +117,16 @@ public class Moving implements State {
                             }
                         }
                         googleMap.clear();
-                        activity.findViewById(R.id.photoScreen).setVisibility(View.GONE);
+                        photoView.removeAllViews();
                         profile.setCurrent(ProfileStorage.noxbox());
                         ProfileStorage.fireProfile();
                     }
                 }));
 
-                final SwipeButton buttonConfirm = activity.findViewById(R.id.swipeButtonConfirm);
+
+                final SwipeButton buttonConfirm = photoView.findViewById(R.id.swipeButtonConfirm);
                 buttonConfirm.setText(activity.getResources().getString(R.string.confirm));
-                buttonConfirm.setEnabledDrawable(activity.getDrawable(R.drawable.yes),activity);
+                buttonConfirm.setEnabledDrawable(activity.getDrawable(R.drawable.yes), activity);
                 buttonConfirm.setOnTouchListener(buttonConfirm.getButtonTouchListener(new Task<Object>() {
                     @Override
                     public void execute(Object object) {
@@ -133,22 +165,19 @@ public class Moving implements State {
             }
         });
 
-        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity);
+        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, movingView);
     }
 
 
     @Override
     public void clear() {
         googleMap.clear();
+        movingView.removeAllViews();
+        photoView.removeAllViews();
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.GONE);
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setImageResource(R.drawable.add);
-        activity.findViewById(R.id.timeLayout).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
-        if (activity.findViewById(R.id.photoScreen).getVisibility() == View.VISIBLE) {
-            activity.findViewById(R.id.photoScreen).setVisibility(View.GONE);
-        }
-
     }
 }

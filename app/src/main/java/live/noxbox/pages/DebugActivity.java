@@ -51,7 +51,7 @@ public class DebugActivity extends MenuActivity {
                         @Override
                         public void onClick(View v) {
                             if (profile.getCurrent() != null) {
-                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setId("12321"));
+                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setId("12321").setPhoto(profile.getPhoto()));
                                 // profile.getCurrent().getOwner().setPosition(new Position().setLongitude(27.639018).setLatitude(53.901399));
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 ProfileStorage.fireProfile();
@@ -80,7 +80,7 @@ public class DebugActivity extends MenuActivity {
                         @Override
                         public void onClick(View v) {
                             if (profile.getCurrent() != null) {
-                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setId("12321"));
+                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setId("12321").setPhoto(profile.getPhoto()));
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                 profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
