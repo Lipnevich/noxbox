@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:gravity="center_horizontal"
-                    android:text="Please rate your performer"
+                    android:text="@string/pleaseRatePerformer"
                     android:textColor="@color/google_text"
                     android:textSize="@dimen/text_size" />
 
@@ -121,7 +121,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:gravity="top|start"
-                    android:hint="Please write comment..."
+                    android:hint="@string/pleaseWriteComment"
                     android:lines="5"
                     android:maxLines="5"
                     android:minLines="5"

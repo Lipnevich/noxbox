@@ -77,7 +77,7 @@ public class Accepting implements State {
 
         PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, acceptingView);
 
-        long timeCountInMilliSeconds = 30000;
+        long timeCountInMilliSeconds = 30000 - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
         countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -118,7 +118,9 @@ public class Accepting implements State {
             anim.cancel();
             animationDrawable.stop();
         }
-        countDownTimer.cancel();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
         acceptingView.removeAllViews();
     }
 }

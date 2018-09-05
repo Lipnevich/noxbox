@@ -221,5 +221,7 @@
     <string name="notLikeThat">Не похож</string>
     <string name="confirmThatYouSeePersonFromPhoto">Подтвердите что видите человека с фотографии</string>
     <string name="inProcess">В процессе</string>
+    <string name="pleaseWriteComment">Please write comment...</string>
+    <string name="pleaseRatePerformer">Please rate your performer</string>
 
 </resources>

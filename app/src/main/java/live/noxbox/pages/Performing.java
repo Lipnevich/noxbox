@@ -48,7 +48,7 @@ public class Performing implements State {
             }
         });
         performingView = activity.findViewById(R.id.container);
-        View child = activity.getLayoutInflater().inflate(R.layout.state_performing,null);
+        View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
@@ -68,8 +68,10 @@ public class Performing implements State {
                 ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
 
                 seconds++;
-                drawPrice(profile);
-                handler.postDelayed(this, 1000);
+                if (handler != null) {
+                    drawPrice(profile);
+                    handler.postDelayed(this, 1000);
+                }
             }
         };
 
@@ -81,7 +83,7 @@ public class Performing implements State {
                 System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS) {
             ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(currency));
         } else {
-            currency = currency + ((Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getMin()) / 60);
+            currency += ((Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getMin()) / 60);
             ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(currency));
         }
     }
@@ -89,6 +91,7 @@ public class Performing implements State {
     private void drawComplete(final Profile profile) {
         SwipeButton completeSwipeButton = performingView.findViewById(R.id.completeSwipeButton);
         completeSwipeButton.setText(activity.getResources().getString(R.string.completeText));
+        completeSwipeButton.setEnabledDrawable(activity.getDrawable(R.drawable.yes), activity);
         completeSwipeButton.setOnTouchListener(completeSwipeButton.getButtonTouchListener(new Task<Object>() {
             @Override
             public void execute(Object object) {
@@ -113,6 +116,7 @@ public class Performing implements State {
 
     private void stopTimer() {
         handler.removeCallbacksAndMessages(null);
+        handler = null;
     }
 
 
