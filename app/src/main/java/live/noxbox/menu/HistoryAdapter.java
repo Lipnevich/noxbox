@@ -127,7 +127,7 @@ public class HistoryAdapter extends BaseAdapter {
     }
 
     private boolean isLiked(Noxbox noxbox) {
-        return noxbox.getParty().getTimeDisliked() == null;
+        return true;//noxbox.getParty().getTimeDisliked() == null;
     }
 
     private void showRating(ImageView view, boolean isLiked) {

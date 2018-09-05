@@ -1,7 +1,6 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -40,33 +39,40 @@ public class Estimating implements State {
         ((ImageView) estimatingView.findViewById(R.id.like)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getReceivedLikes() == 0) {
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(Color.GREEN);
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setEnabled(false);
-                    profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedLikes(1);
+                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        profile.getCurrent().setTimeDemandDisliked(null);
+                    } else {
+                        profile.getCurrent().setTimeSupplyDisliked(null);
+                    }
                 } else {
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setEnabled(true);
-                    profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedLikes(0);
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        profile.getCurrent().setTimeDemandDisliked(null);
+                    } else {
+                        profile.getCurrent().setTimeSupplyDisliked(null);
+                    }
                 }
-
+                controlDisplayRate(profile);
             }
         });
 
         ((ImageView) estimatingView.findViewById(R.id.dislike)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getReceivedDislikes() == 0) {
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(Color.RED);
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setEnabled(false);
-                    profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedDislikes(1);
-                    profile.getDarkList().put(profile.getCurrent().getOwner().getId(), true);
+                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        profile.getCurrent().setTimeDemandDisliked(System.currentTimeMillis());
+                    } else {
+                        profile.getCurrent().setTimeSupplyDisliked(System.currentTimeMillis());
+                    }
                 } else {
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setEnabled(true);
-                    profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).setReceivedDislikes(0);
-                    profile.getDarkList().put(profile.getCurrent().getOwner().getId(), false);
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        profile.getCurrent().setTimeDemandDisliked(System.currentTimeMillis());
+                    } else {
+                        profile.getCurrent().setTimeSupplyDisliked(System.currentTimeMillis());
+                    }
                 }
+                controlDisplayRate(profile);
             }
         });
 
@@ -92,6 +98,7 @@ public class Estimating implements State {
                 comment = s.toString();
             }
         });
+
         estimatingView.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,13 +122,63 @@ public class Estimating implements State {
             }
         });
 
+        estimatingView.findViewById(R.id.estimatingScreenClose).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayHiddenViews();
+                estimatingView.removeAllViews();
+            }
+        });
+    }
+
+    private void controlDisplayRate(final Profile profile) {
+        if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                if (profile.getCurrent().getTimeDemandDisliked() != null) {
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                } else {
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                }
+            } else {
+                if (profile.getCurrent().getTimeSupplyDisliked() != null) {
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                } else {
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                }
+            }
+        } else {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                if (profile.getCurrent().getTimeDemandDisliked() != null) {
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                } else {
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                }
+            } else {
+                if (profile.getCurrent().getTimeSupplyDisliked() != null) {
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                } else {
+                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
+                }
+            }
+        }
     }
 
     @Override
     public void clear() {
+        displayHiddenViews();
+        estimatingView.removeAllViews();
+    }
+    private void displayHiddenViews(){
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);
-        estimatingView.removeAllViews();
     }
 }

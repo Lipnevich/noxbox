@@ -35,7 +35,6 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
-import static java.lang.System.currentTimeMillis;
 import static java.lang.reflect.Modifier.isStatic;
 
 public class Firebase {
@@ -261,7 +260,7 @@ public class Firebase {
     }
 
     public static void dislikeNoxbox(String profileId, Noxbox noxbox) {
-        noxbox.getNotMe(profileId).setTimeDisliked(currentTimeMillis());
+        //noxbox.getNotMe(profileId).setTimeDisliked(currentTimeMillis());
         // TODO (nli) update history
     }
 }

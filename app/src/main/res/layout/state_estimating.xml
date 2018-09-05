@@ -81,6 +81,7 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:clickable="true"
+                            android:focusable="true"
                             android:src="@drawable/dislike"
                             android:tint="@color/text_color_secondary" />
                     </LinearLayout>
@@ -97,8 +98,8 @@
                             android:layout_height="48dp"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:clickable="true"
-                            android:src="@drawable/like"
-                            android:tint="@color/text_color_secondary" />
+                            android:focusable="true"
+                            android:src="@drawable/like" />
                     </LinearLayout>
 
 

@@ -51,6 +51,9 @@ public class Noxbox implements Comparable<Noxbox> {
     private String commentForDemand;
     private String commentForSupply;
 
+    private Long timeDemandDisliked;
+    private Long timeSupplyDisliked;
+
 
     public String getId() {
         return id;
@@ -299,6 +302,24 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCommentForSupply(String commentForSupply) {
         this.commentForSupply = commentForSupply;
+        return this;
+    }
+
+    public Long getTimeDemandDisliked() {
+        return timeDemandDisliked;
+    }
+
+    public Noxbox setTimeDemandDisliked(Long timeDemandDisliked) {
+        this.timeDemandDisliked = timeDemandDisliked;
+        return this;
+    }
+
+    public Long getTimeSupplyDisliked() {
+        return timeSupplyDisliked;
+    }
+
+    public Noxbox setTimeSupplyDisliked(Long timeSupplyDisliked) {
+        this.timeSupplyDisliked = timeSupplyDisliked;
         return this;
     }
 }

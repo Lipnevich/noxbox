@@ -20,7 +20,6 @@ public class Profile implements Serializable {
     private Map<String, Rating> demandsRating = new HashMap<>();
     private Map<String, Portfolio> portfolio = new HashMap<>();
     private Wallet wallet;
-    private Long timeDisliked;
 
     // writable
     private String name;
@@ -96,15 +95,6 @@ public class Profile implements Serializable {
 
     public Profile setTravelMode(TravelMode travelMode) {
         this.travelMode = travelMode;
-        return this;
-    }
-
-    public Long getTimeDisliked() {
-        return timeDisliked;
-    }
-
-    public Profile setTimeDisliked(Long timeDisliked) {
-        this.timeDisliked = timeDisliked;
         return this;
     }
 
