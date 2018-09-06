@@ -100,18 +100,18 @@
                 android:id="@+id/successfullyLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="12dp"
                 android:layout_below="@+id/rateLayout"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
                 android:visibility="gone">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size"
                     android:text="@string/commentSuccessfullySent"
-                    />
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_size" />
             </LinearLayout>
 
 

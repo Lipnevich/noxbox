@@ -51,9 +51,27 @@ public class Noxbox implements Comparable<Noxbox> {
     private String commentForDemand;
     private String commentForSupply;
 
-    private Long timeDemandDisliked;
-    private Long timeSupplyDisliked;
+    private Long timeOwnerDisliked;
+    private Long timePartyDisliked;
 
+    public void clean() {
+        estimationTime = null;
+        cancellationReasonMessage = null;
+        commentForDemand = null;
+        commentForSupply = null;
+        timeCreated = null;
+        timeRequested = null;
+        timeCompleted = null;
+        timeAccepted = null;
+        timeCanceledBySupplier = null;
+        timeCanceledByDemander = null;
+        timeSupplyVerified = null;
+        timeDemandVerified = null;
+        timeStartPerforming = null;
+        totalExecutionTimeInMinutes = null;
+        timeOwnerDisliked = null;
+        timePartyDisliked = null;
+    }
 
     public String getId() {
         return id;
@@ -184,13 +202,13 @@ public class Noxbox implements Comparable<Noxbox> {
 
     @Exclude
     public Profile getNotMe(String myId) {
-        if(owner.getId().equals(myId)) return party;
+        if (owner.getId().equals(myId)) return party;
         else return owner;
     }
 
     @Exclude
     public Profile getMe(String myId) {
-        if(owner.getId().equals(myId)) return owner;
+        if (owner.getId().equals(myId)) return owner;
         else return party;
     }
 
@@ -214,13 +232,13 @@ public class Noxbox implements Comparable<Noxbox> {
 
     @Exclude
     public Profile getPerformer() {
-        if(role == MarketRole.supply) return owner;
+        if (role == MarketRole.supply) return owner;
         else return party;
     }
 
     @Exclude
     public Profile getPayer() {
-        if(role == MarketRole.demand) return owner;
+        if (role == MarketRole.demand) return owner;
         else return party;
     }
 
@@ -305,21 +323,21 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Long getTimeDemandDisliked() {
-        return timeDemandDisliked;
+    public Long getTimeOwnerDisliked() {
+        return timeOwnerDisliked;
     }
 
-    public Noxbox setTimeDemandDisliked(Long timeDemandDisliked) {
-        this.timeDemandDisliked = timeDemandDisliked;
+    public Noxbox setTimeOwnerDisliked(Long timeOwnerDisliked) {
+        this.timeOwnerDisliked = timeOwnerDisliked;
         return this;
     }
 
-    public Long getTimeSupplyDisliked() {
-        return timeSupplyDisliked;
+    public Long getTimePartyDisliked() {
+        return timePartyDisliked;
     }
 
-    public Noxbox setTimeSupplyDisliked(Long timeSupplyDisliked) {
-        this.timeSupplyDisliked = timeSupplyDisliked;
+    public Noxbox setTimePartyDisliked(Long timePartyDisliked) {
+        this.timePartyDisliked = timePartyDisliked;
         return this;
     }
 }

@@ -16,7 +16,6 @@ import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 
 public class Estimating implements State {
@@ -44,17 +43,9 @@ public class Estimating implements State {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        profile.getCurrent().setTimeDemandDisliked(null);
-                    } else {
-                        profile.getCurrent().setTimeSupplyDisliked(null);
-                    }
+                    profile.getCurrent().setTimePartyDisliked(null);
                 } else {
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        profile.getCurrent().setTimeDemandDisliked(null);
-                    } else {
-                        profile.getCurrent().setTimeSupplyDisliked(null);
-                    }
+                    profile.getCurrent().setTimeOwnerDisliked(null);
                 }
                 controlDisplayRate(profile);
             }
@@ -64,17 +55,9 @@ public class Estimating implements State {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        profile.getCurrent().setTimeDemandDisliked(System.currentTimeMillis());
-                    } else {
-                        profile.getCurrent().setTimeSupplyDisliked(System.currentTimeMillis());
-                    }
+                    profile.getCurrent().setTimePartyDisliked(System.currentTimeMillis());
                 } else {
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        profile.getCurrent().setTimeDemandDisliked(System.currentTimeMillis());
-                    } else {
-                        profile.getCurrent().setTimeSupplyDisliked(System.currentTimeMillis());
-                    }
+                    profile.getCurrent().setTimeOwnerDisliked(System.currentTimeMillis());
                 }
                 controlDisplayRate(profile);
             }
@@ -174,7 +157,7 @@ public class Estimating implements State {
         estimatingView.findViewById(R.id.estimatingScreenClose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.setCurrent(ProfileStorage.noxbox());
+                profile.getCurrent().clean();
                 displayHiddenViews();
                 estimatingView.removeAllViews();
             }
@@ -183,43 +166,24 @@ public class Estimating implements State {
 
     private void controlDisplayRate(final Profile profile) {
         if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                if (profile.getCurrent().getTimeDemandDisliked() != null) {
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                } else {
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                }
+            if (profile.getCurrent().getTimePartyDisliked() != null) {
+                ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
             } else {
-                if (profile.getCurrent().getTimeSupplyDisliked() != null) {
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                } else {
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                }
+                ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
             }
         } else {
-            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                if (profile.getCurrent().getTimeDemandDisliked() != null) {
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                } else {
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                }
+            if (profile.getCurrent().getTimeOwnerDisliked() != null) {
+                ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
             } else {
-                if (profile.getCurrent().getTimeSupplyDisliked() != null) {
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                } else {
-                    ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
-                    ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
-                }
+                ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.primary));
+                ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
             }
         }
     }
+
 
     @Override
     public void clear() {
