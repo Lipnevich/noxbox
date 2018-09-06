@@ -31,6 +31,7 @@ import com.crashlytics.android.Crashlytics;
 import java.lang.reflect.Field;
 
 import live.noxbox.Configuration;
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.detailed.CoordinateActivity;
 import live.noxbox.model.MarketRole;
@@ -40,6 +41,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -56,7 +58,6 @@ public class ConstructorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.constructorService);
         setContentView(R.layout.activity_constructor);
         closeOrRemove = findViewById(R.id.closeOrRemove);
         TextView textCurrency = findViewById(R.id.textCurrency);
@@ -99,6 +100,7 @@ public class ConstructorActivity extends AppCompatActivity {
     }
 
     private void draw(@NonNull final Profile profile) {
+        drawToolbar(profile);
         findViewById(R.id.publish).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +115,16 @@ public class ConstructorActivity extends AppCompatActivity {
         drawHost(profile);
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
+    }
+
+    private void drawToolbar(final Profile profile) {
+        ((TextView) findViewById(R.id.title)).setText(R.string.constructorService);
+        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Router.startActivity(ConstructorActivity.this, MapActivity.class);
+            }
+        });
     }
 
     private void drawRole(final Profile profile) {
@@ -287,10 +299,10 @@ public class ConstructorActivity extends AppCompatActivity {
                     if (checkLocationPermission()) {
                         ActivityCompat.requestPermissions(ConstructorActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                     }
-                }else{
+                } else {
                     profile.getCurrent().getOwner().setHost(true);
-                    ((CheckBox)findViewById(R.id.isHost)).setChecked(true);
-                    ((CheckBox)findViewById(R.id.isHost)).setEnabled(false);
+                    ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
+                    ((CheckBox) findViewById(R.id.isHost)).setEnabled(false);
                 }
                 draw(profile);
                 return true;
@@ -350,16 +362,16 @@ public class ConstructorActivity extends AppCompatActivity {
 
     public void postNoxbox(Profile profile) {
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
-        finish();
+        Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 
     public void removeNoxbox(Profile profile) {
         profile.getCurrent().setTimeCreated(null);
-        finish();
+        Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 
     private void cancelNoxboxConstructor() {
-        finish();
+        Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 
     @Override
@@ -382,7 +394,7 @@ public class ConstructorActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
-            final Position position = new Position(data.getExtras().getDouble(LAT),data.getExtras().getDouble(LNG));
+            final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
