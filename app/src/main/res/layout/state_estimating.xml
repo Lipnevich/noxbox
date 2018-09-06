@@ -54,15 +54,6 @@
                     android:textColor="@color/google_text"
                     android:textSize="@dimen/text_title" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:gravity="center_horizontal"
-                    android:text="@string/pleaseRatePerformer"
-                    android:textColor="@color/google_text"
-                    android:textSize="@dimen/text_size" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
@@ -109,10 +100,30 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/successfullyLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/commentLayout"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/commentSuccessfullySent"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/commentLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:orientation="vertical">
+
 
                 <EditText
                     android:id="@+id/editComment"

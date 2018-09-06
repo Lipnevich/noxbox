@@ -9,10 +9,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 import live.noxbox.R;
 import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
+import live.noxbox.model.Rating;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 
 public class Estimating implements State {
@@ -34,7 +38,7 @@ public class Estimating implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_estimating, null);
         estimatingView.addView(child);
 
-        ((TextView) estimatingView.findViewById(R.id.finalSum)).setText(profile.getCurrent().getPrice() + activity.getResources().getString(R.string.currency));
+        ((TextView) estimatingView.findViewById(R.id.finalSum)).setText(profile.getCurrent().getPrice() + " " + activity.getResources().getString(R.string.currency));
 
         ((ImageView) estimatingView.findViewById(R.id.like)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,32 +103,78 @@ public class Estimating implements State {
             }
         });
 
+
+        if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                if (profile.getCurrent().getParty().getDemandsRating().size() != 0) {
+                    estimatingView.findViewById(R.id.successfullyLayout).setVisibility(View.VISIBLE);
+                    estimatingView.findViewById(R.id.commentLayout).setVisibility(View.INVISIBLE);
+                }
+            } else {
+                if (profile.getCurrent().getParty().getSuppliesRating().size() != 0) {
+                    estimatingView.findViewById(R.id.successfullyLayout).setVisibility(View.VISIBLE);
+                    estimatingView.findViewById(R.id.commentLayout).setVisibility(View.INVISIBLE);
+                }
+            }
+        } else {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                if (profile.getCurrent().getOwner().getDemandsRating().size() != 0) {
+                    estimatingView.findViewById(R.id.successfullyLayout).setVisibility(View.VISIBLE);
+                    estimatingView.findViewById(R.id.commentLayout).setVisibility(View.INVISIBLE);
+                }
+            } else {
+                if (profile.getCurrent().getOwner().getSuppliesRating().size() != 0) {
+                    estimatingView.findViewById(R.id.successfullyLayout).setVisibility(View.VISIBLE);
+                    estimatingView.findViewById(R.id.commentLayout).setVisibility(View.INVISIBLE);
+                }
+            }
+        }
         estimatingView.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner() == profile.getCurrent().getMe(profile.getId())) {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        profile.getCurrent().getParty().getDemandsRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent()
+                                .getParty()
+                                .getDemandsRating().put(profile.getCurrent().getType().name(), new Rating().setComments(new HashMap<String, Comment>() {{
+                            put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        }}));
                         profile.getCurrent().setCommentForDemand(comment);
                     } else {
-                        profile.getCurrent().getParty().getSuppliesRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent()
+                                .getParty()
+                                .getSuppliesRating().put(profile.getCurrent().getType().name(), new Rating().setComments(new HashMap<String, Comment>() {{
+                            put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        }}));
                         profile.getCurrent().setCommentForSupply(comment);
                     }
                 } else {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        profile.getCurrent().getOwner().getDemandsRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent()
+                                .getOwner()
+                                .getDemandsRating().put(profile.getCurrent().getType().name(), new Rating().setComments(new HashMap<String, Comment>() {{
+                            put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        }}));
                         profile.getCurrent().setCommentForDemand(comment);
                     } else {
-                        profile.getCurrent().getOwner().getSuppliesRating().get(profile.getCurrent().getType().name()).getComments().put(profile.getCurrent().getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        profile.getCurrent()
+                                .getOwner()
+                                .getSuppliesRating().put(profile.getCurrent().getType().name(), new Rating().setComments(new HashMap<String, Comment>() {{
+                            put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
+                        }}));
                         profile.getCurrent().setCommentForSupply(comment);
                     }
                 }
+                estimatingView.findViewById(R.id.successfullyLayout).setVisibility(View.VISIBLE);
+                estimatingView.findViewById(R.id.commentLayout).setVisibility(View.INVISIBLE);
+
             }
         });
 
         estimatingView.findViewById(R.id.estimatingScreenClose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                profile.setCurrent(ProfileStorage.noxbox());
                 displayHiddenViews();
                 estimatingView.removeAllViews();
             }
@@ -176,7 +226,8 @@ public class Estimating implements State {
         displayHiddenViews();
         estimatingView.removeAllViews();
     }
-    private void displayHiddenViews(){
+
+    private void displayHiddenViews() {
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);

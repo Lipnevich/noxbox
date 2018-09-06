@@ -53,22 +53,12 @@
                 android:textColor="@color/google_text"
                 android:textSize="@dimen/text_title" />
 
-            <TextView
-                android:id="@+id/rateTxt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/finalSum"
-                android:layout_marginTop="8dp"
-                android:gravity="center_horizontal"
-                android:text="@string/pleaseRatePerformer"
-                android:textColor="@color/google_text"
-                android:textSize="@dimen/text_size" />
 
             <LinearLayout
                 android:id="@+id/rateLayout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_below="@id/rateTxt"
+                android:layout_below="@id/finalSum"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
@@ -100,18 +90,36 @@
                         android:layout_height="48dp"
                         android:layout_gravity="center_horizontal|center_vertical"
                         android:clickable="true"
-                        android:src="@drawable/like"
-                        android:tint="@color/text_color_secondary" />
+                        android:src="@drawable/like" />
                 </LinearLayout>
 
 
             </LinearLayout>
 
-
             <LinearLayout
+                android:id="@+id/successfullyLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
                 android:layout_below="@+id/rateLayout"
+                android:visibility="gone">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_size"
+                    android:text="@string/commentSuccessfullySent"
+                    />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/commentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/successfullyLayout"
                 android:layout_marginTop="8dp"
                 android:orientation="vertical">
 

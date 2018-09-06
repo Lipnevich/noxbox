@@ -221,4 +221,5 @@
     <string name="inProcess">В процессе</string>
     <string name="pleaseWriteComment">Please write comment...</string>
     <string name="pleaseRatePerformer">Please rate your performer</string>
+    <string name="commentSuccessfullySent">Comment successfully sent!</string>
 </resources>
