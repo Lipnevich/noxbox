@@ -2,7 +2,6 @@ package live.noxbox.tools;
 
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,6 +38,7 @@ import live.noxbox.state.ProfileStorage;
 
 import static live.noxbox.MapActivity.dpToPx;
 import static live.noxbox.model.TravelMode.none;
+import static live.noxbox.tools.Router.startActivity;
 
 public class PathFinder {
 
@@ -51,7 +51,7 @@ public class PathFinder {
                     @Override
                     public void execute(Profile profile) {
                         profile.setViewed(noxbox);
-                        activity.startActivity(new Intent(activity, DetailedActivity.class));
+                        startActivity(activity, DetailedActivity.class);
                     }
                 });
                 return false;

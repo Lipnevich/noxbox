@@ -1,7 +1,6 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +25,7 @@ import live.noxbox.tools.PathFinder;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.MapActivity.dpToPx;
+import static live.noxbox.tools.Router.startActivity;
 
 public class Moving implements State {
 
@@ -161,7 +161,7 @@ public class Moving implements State {
             @Override
             public void onClick(View v) {
                 //TODO (vl) on click opens chat activity
-                activity.startActivity(new Intent(activity, ChatActivity.class));
+                startActivity(activity, ChatActivity.class);
             }
         });
 

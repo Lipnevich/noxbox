@@ -45,6 +45,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
+import live.noxbox.pages.Created;
 import live.noxbox.pages.DebugActivity;
 import live.noxbox.pages.Estimating;
 import live.noxbox.pages.Moving;
@@ -369,15 +370,21 @@ public class MapActivity extends DebugActivity implements
         //    enjoying,
         //    completed,
         //    estimating
-        if (profile.getCurrent().getTimeRequested() != null
-                && profile.getCurrent().getTimeAccepted() == null
-                && profile.getCurrent().getTimeCanceledByDemander() == null
-                && profile.getCurrent().getTimeCanceledBySupplier() == null) {
-            if (profile.equals(profile.getCurrent().getOwner())) {
-                return new Accepting(googleMap, this);
-            }
-            return new Requesting(googleMap, this);
+        if (profile.getCurrent().getTimeCreated() != null
+                && profile.getCurrent().getTimeRequested() == null
+                && profile.getCurrent().getTimeAccepted() == null){
+            return new Created(googleMap,this);
         }
+
+            if (profile.getCurrent().getTimeRequested() != null
+                    && profile.getCurrent().getTimeAccepted() == null
+                    && profile.getCurrent().getTimeCanceledByDemander() == null
+                    && profile.getCurrent().getTimeCanceledBySupplier() == null) {
+                if (profile.equals(profile.getCurrent().getOwner())) {
+                    return new Accepting(googleMap, this);
+                }
+                return new Requesting(googleMap, this);
+            }
         if (profile.getCurrent().getTimeAccepted() != null
                 && profile.getCurrent().getTimeRequested() != null
                 && (profile.getCurrent().getTimeSupplyVerified() == null || profile.getCurrent().getTimeDemandVerified() == null)) {

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
@@ -38,6 +39,7 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.ImageManager;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
@@ -71,13 +73,15 @@ public class DetailedActivity extends AppCompatActivity {
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
         drawPrice(profile.getViewed());
-//        if (profile.getCurrent() != null) {
-//            findViewById(R.id.acceptButton).setVisibility(View.GONE);
-//        } else {
-//            findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
-//
-//        }
-        drawAcceptButton(profile.getViewed().getRole());
+
+        if (profile.getViewed().getOwner().getId().equals(profile.getId())
+                && profile.getCurrent().getTimeCreated() != null
+                && profile.getCurrent().getTimeRequested() == null) {
+            drawEditButton(profile);
+        }
+        if (!profile.getViewed().getOwner().getId().equals(profile.getId())) {
+            drawAcceptButton(profile.getViewed().getRole());
+        }
 
         if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
             drawCancelButton(profile);
@@ -274,6 +278,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void drawAcceptButton(MarketRole role) {
+        findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
         if (role == MarketRole.demand) {
             ((Button) findViewById(R.id.acceptButton)).setText(R.string.proceed);
         } else if (role == MarketRole.supply) {
@@ -408,6 +413,16 @@ public class DetailedActivity extends AppCompatActivity {
                     }
                 });
 
+            }
+        });
+    }
+
+    private void drawEditButton(final Profile profile) {
+        findViewById(R.id.editButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Router.startActivity(DetailedActivity.this, ConstructorActivity.class);
             }
         });
     }

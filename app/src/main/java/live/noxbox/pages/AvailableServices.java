@@ -3,7 +3,6 @@ package live.noxbox.pages;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -47,6 +46,8 @@ import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.tools.Router.startActivity;
+
 public class AvailableServices implements State, ClusterManager.OnClusterClickListener<AvailableServices.NoxboxMarker>,
         ClusterManager.OnClusterItemClickListener<AvailableServices.NoxboxMarker> {
 
@@ -72,7 +73,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         activity.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.startActivity(new Intent(activity, MapFiltersActivity.class));
+                startActivity(activity, MapFiltersActivity.class);
             }
         });
         activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);
@@ -86,7 +87,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
                 profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
                 profile.getCurrent().getOwner().setName(profile.getName());
 
-                activity.startActivity(new Intent(activity, ConstructorActivity.class));
+                startActivity(activity, ConstructorActivity.class);
 
             }
         });
@@ -168,7 +169,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             public void execute(Profile profile) {
                 profile.setViewed(noxboxMarker.getNoxbox());
                 profile.setPosition(Position.from(googleMap.getCameraPosition().target));
-                activity.startActivity(new Intent(activity, DetailedActivity.class));
+                startActivity(activity, DetailedActivity.class);
             }
         });
         return true;
