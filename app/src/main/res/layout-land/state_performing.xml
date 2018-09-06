@@ -43,19 +43,28 @@
         android:textColor="@color/google_text"
         android:textSize="48sp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <live.noxbox.pages.SwipeButton
             android:id="@+id/completeSwipeButton"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="160dp"
-            android:layout_marginStart="160dp" />
-    </LinearLayout>
-
+            android:layout_marginStart="160dp">
+            <TextView
+                android:id="@+id/textSwipeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text_size"
+                android:textColor="@color/google_text"
+                />
+        </live.noxbox.pages.SwipeButton>
+    </RelativeLayout>
 </LinearLayout>
