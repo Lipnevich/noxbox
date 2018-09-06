@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
@@ -75,14 +76,14 @@ public class Moving implements State {
                     Glide.with(activity).asDrawable().load(profile.getCurrent().getParty().getPhoto()).into(new SimpleTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            photoView.findViewById(R.id.photoScreen).setBackground(resource);
+                            ((ImageView) photoView.findViewById(R.id.photo)).setImageDrawable(resource);
                         }
                     });
                 } else {
                     Glide.with(activity).asDrawable().load(profile.getCurrent().getOwner().getPhoto()).into(new SimpleTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            photoView.findViewById(R.id.photoScreen).setBackground(resource);
+                            ((ImageView) photoView.findViewById(R.id.photo)).setImageDrawable(resource);
                         }
                     });
                 }
@@ -98,8 +99,7 @@ public class Moving implements State {
 
 
                 final SwipeButton buttonConformity = photoView.findViewById(R.id.swipeButtonConformity);
-                buttonConformity.setText(activity.getString(R.string.notLikeThat));
-                buttonConformity.setEnabledDrawable(activity.getDrawable(R.drawable.no), activity);
+                buttonConformity.setParametrs(activity.getDrawable(R.drawable.yes),activity.getResources().getString(R.string.notLikeThat), activity);
                 buttonConformity.setOnTouchListener(buttonConformity.getButtonTouchListener(new Task<Object>() {
                     @Override
                     public void execute(Object object) {
@@ -125,8 +125,7 @@ public class Moving implements State {
 
 
                 final SwipeButton buttonConfirm = photoView.findViewById(R.id.swipeButtonConfirm);
-                buttonConfirm.setText(activity.getResources().getString(R.string.confirm));
-                buttonConfirm.setEnabledDrawable(activity.getDrawable(R.drawable.yes), activity);
+                buttonConfirm.setParametrs(activity.getDrawable(R.drawable.yes),activity.getResources().getString(R.string.confirm), activity);
                 buttonConfirm.setOnTouchListener(buttonConfirm.getButtonTouchListener(new Task<Object>() {
                     @Override
                     public void execute(Object object) {
@@ -160,7 +159,6 @@ public class Moving implements State {
         activity.findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO (vl) on click opens chat activity
                 startActivity(activity, ChatActivity.class);
             }
         });
@@ -173,7 +171,9 @@ public class Moving implements State {
     public void clear() {
         googleMap.clear();
         movingView.removeAllViews();
-        photoView.removeAllViews();
+        if (photoView != null) {
+            photoView.removeAllViews();
+        }
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.GONE);
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);

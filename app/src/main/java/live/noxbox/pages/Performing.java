@@ -91,7 +91,7 @@ public class Performing implements State {
     private void drawComplete(final Profile profile) {
         SwipeButton completeSwipeButton = performingView.findViewById(R.id.completeSwipeButton);
         completeSwipeButton.setText(activity.getResources().getString(R.string.completeText));
-        completeSwipeButton.setEnabledDrawable(activity.getDrawable(R.drawable.yes), activity);
+        completeSwipeButton.setParametrs(activity.getDrawable(R.drawable.yes),activity.getResources().getString(R.string.completeText), activity);
         completeSwipeButton.setOnTouchListener(completeSwipeButton.getButtonTouchListener(new Task<Object>() {
             @Override
             public void execute(Object object) {

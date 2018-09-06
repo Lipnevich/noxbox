@@ -36,34 +36,34 @@ public class SwipeButton extends RelativeLayout {
     public SwipeButton(Context context) {
         super(context);
 
-        init(context, null);
+        init(null, "", context);
     }
 
     public SwipeButton(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        init(context, null);
+        init(null, "", context);
     }
 
     public SwipeButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        init(context, null);
+        init(null, "", context);
     }
 
     @TargetApi(21)
     public SwipeButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, null);
+        init(null, "", context);
     }
 
-    public void setEnabledDrawable(Drawable customDrawable, Context context) {
+    public void setParametrs(Drawable customDrawable, String text, Context context) {
         this.enabledDrawable = customDrawable;
-        init(getContext(), customDrawable);
+        init(customDrawable, text, getContext());
     }
 
 
-    private void init(Context context, Drawable customDrawable) {
+    private void init(Drawable customDrawable, String text, Context context) {
         removeAllViews();
         background = new RelativeLayout(context);
 
@@ -85,7 +85,8 @@ public class SwipeButton extends RelativeLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-        centerText.setTextColor(R.color.google_text);
+        centerText.setText(text);
+        centerText.setTextColor(context.getResources().getColor(R.color.google_text));
         centerText.setPadding(35, 35, 35, 35);
         background.addView(centerText, layoutParams);
 
