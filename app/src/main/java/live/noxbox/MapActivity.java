@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -221,7 +222,9 @@ public class MapActivity extends DebugActivity implements
     protected Position getCurrentPosition() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (googleApiClient.isConnected()) {
-                return Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient));
+                Position position = Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position.toLatLng(),15));
+                return position;
             } else {
                 googleApiClient.connect();
             }
@@ -371,19 +374,19 @@ public class MapActivity extends DebugActivity implements
         //    estimating
         if (profile.getCurrent().getTimeCreated() != null
                 && profile.getCurrent().getTimeRequested() == null
-                && profile.getCurrent().getTimeAccepted() == null){
-            return new Created(googleMap,this);
+                && profile.getCurrent().getTimeAccepted() == null) {
+            return new Created(googleMap, this);
         }
 
-            if (profile.getCurrent().getTimeRequested() != null
-                    && profile.getCurrent().getTimeAccepted() == null
-                    && profile.getCurrent().getTimeCanceledByParty() == null
-                    && profile.getCurrent().getTimeCanceledByOwner() == null) {
-                if (profile.equals(profile.getCurrent().getOwner())) {
-                    return new Accepting(googleMap, this);
-                }
-                return new Requesting(googleMap, this);
+        if (profile.getCurrent().getTimeRequested() != null
+                && profile.getCurrent().getTimeAccepted() == null
+                && profile.getCurrent().getTimeCanceledByParty() == null
+                && profile.getCurrent().getTimeCanceledByOwner() == null) {
+            if (profile.equals(profile.getCurrent().getOwner())) {
+                return new Accepting(googleMap, this);
             }
+            return new Requesting(googleMap, this);
+        }
         if (profile.getCurrent().getTimeAccepted() != null
                 && profile.getCurrent().getTimeRequested() != null
                 && (profile.getCurrent().getTimeOwnerVerified() == null || profile.getCurrent().getTimePartyVerified() == null)) {
