@@ -45,6 +45,7 @@ public class ExchangeRate {
 
     }
 
+    // ExchangeRate.Currency.USD
     public static void wavesTo(final Currency currency, final Task<BigDecimal> task) {
         new AsyncTask<Void, Void, BigDecimal>() {
             @Override

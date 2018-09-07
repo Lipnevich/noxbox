@@ -145,8 +145,7 @@ public class Profile implements Serializable {
 
     @Exclude
     public Profile notPublicInfo() {
-        return new Profile().setId(id).setName(name).setPhoto(photo)
-                .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode);
+        return publicInfo().setName(name).setPhoto(photo);
     }
 
     public Noxbox getViewed() {

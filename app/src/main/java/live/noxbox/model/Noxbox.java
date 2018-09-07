@@ -30,15 +30,15 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeRequested;
     private Long timeCompleted;
     private Long timeAccepted;
-    private Long timeCanceledBySupplier;
-    private Long timeCanceledByDemander;
+    private Long timeCanceledByOwner;
+    private Long timeCanceledByParty;
 
-    private Long timeSupplyVerified;
-    private Long timeDemandVerified;
+    private Long timeOwnerVerified;
+    private Long timePartyVerified;
 
     private Long timeStartPerforming;
-
-    private Long totalExecutionTimeInMinutes;
+    private Long timeOwnerDisliked;
+    private Long timePartyDisliked;
 
     private Position position;
     private String price;
@@ -51,10 +51,9 @@ public class Noxbox implements Comparable<Noxbox> {
     private String commentForDemand;
     private String commentForSupply;
 
-    private Long timeOwnerDisliked;
-    private Long timePartyDisliked;
-
+    @Exclude
     public void clean() {
+        id = null;
         estimationTime = null;
         cancellationReasonMessage = null;
         commentForDemand = null;
@@ -63,12 +62,11 @@ public class Noxbox implements Comparable<Noxbox> {
         timeRequested = null;
         timeCompleted = null;
         timeAccepted = null;
-        timeCanceledBySupplier = null;
-        timeCanceledByDemander = null;
-        timeSupplyVerified = null;
-        timeDemandVerified = null;
+        timeCanceledByOwner = null;
+        timeCanceledByParty = null;
+        timeOwnerVerified = null;
+        timePartyVerified = null;
         timeStartPerforming = null;
-        totalExecutionTimeInMinutes = null;
         timeOwnerDisliked = null;
         timePartyDisliked = null;
     }
@@ -137,21 +135,21 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Long getTimeCanceledBySupplier() {
-        return timeCanceledBySupplier;
+    public Long getTimeCanceledByOwner() {
+        return timeCanceledByOwner;
     }
 
-    public Noxbox setTimeCanceledBySupplier(Long timeCanceledBySupplier) {
-        this.timeCanceledBySupplier = timeCanceledBySupplier;
+    public Noxbox setTimeCanceledByOwner(Long timeCanceledByOwner) {
+        this.timeCanceledByOwner = timeCanceledByOwner;
         return this;
     }
 
-    public Long getTimeCanceledByDemander() {
-        return timeCanceledByDemander;
+    public Long getTimeCanceledByParty() {
+        return timeCanceledByParty;
     }
 
-    public Noxbox setTimeCanceledByDemander(Long timeCanceledByDemander) {
-        this.timeCanceledByDemander = timeCanceledByDemander;
+    public Noxbox setTimeCanceledByParty(Long timeCanceledByParty) {
+        this.timeCanceledByParty = timeCanceledByParty;
         return this;
     }
 
@@ -260,30 +258,21 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Long getTimeSupplyVerified() {
-        return timeSupplyVerified;
+    public Long getTimeOwnerVerified() {
+        return timeOwnerVerified;
     }
 
-    public Noxbox setTimeSupplyVerified(Long timeSupplyVerified) {
-        this.timeSupplyVerified = timeSupplyVerified;
+    public Noxbox setTimeOwnerVerified(Long timeOwnerVerified) {
+        this.timeOwnerVerified = timeOwnerVerified;
         return this;
     }
 
-    public Long getTimeDemandVerified() {
-        return timeDemandVerified;
+    public Long getTimePartyVerified() {
+        return timePartyVerified;
     }
 
-    public Noxbox setTimeDemandVerified(Long timeDemandVerified) {
-        this.timeDemandVerified = timeDemandVerified;
-        return this;
-    }
-
-    public Long getTotalExecutionTimeInMinutes() {
-        return totalExecutionTimeInMinutes;
-    }
-
-    public Noxbox setTotalExecutionTimeInMinutes(Long totalExecutionTimeInMinutes) {
-        this.totalExecutionTimeInMinutes = totalExecutionTimeInMinutes;
+    public Noxbox setTimePartyVerified(Long timePartyVerified) {
+        this.timePartyVerified = timePartyVerified;
         return this;
     }
 

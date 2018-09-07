@@ -225,8 +225,8 @@ public class DetailedActivity extends AppCompatActivity {
                     ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
 
                     //for Performing state
-                    if (profile.getCurrent().getTimeDemandVerified() != null &&
-                            profile.getCurrent().getTimeSupplyVerified() != null &&
+                    if (profile.getCurrent().getTimePartyVerified() != null &&
+                            profile.getCurrent().getTimeOwnerVerified() != null &&
                             profile.getCurrent().getTimeCompleted() == null) {
                         ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.inProcess);
                     }
@@ -393,17 +393,9 @@ public class DetailedActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
-                            if (profile.getViewed().getRole() == MarketRole.supply) {
-                                profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
-                            } else {
-                                profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
-                            }
+                            profile.getViewed().setTimeCanceledByOwner(System.currentTimeMillis());
                         } else {
-                            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                profile.getViewed().setTimeCanceledByDemander(System.currentTimeMillis());
-                            } else {
-                                profile.getViewed().setTimeCanceledBySupplier(System.currentTimeMillis());
-                            }
+                            profile.getViewed().setTimeCanceledByParty(System.currentTimeMillis());
                         }
                         profile.getViewed().setCancellationReasonMessage(cancellationReason);
                         alertDialog.cancel();

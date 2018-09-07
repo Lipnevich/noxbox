@@ -99,11 +99,9 @@ public class Performing implements State {
                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
 
                 Long totalTimeInMillis = profile.getCurrent().getTimeCompleted() - profile.getCurrent().getTimeStartPerforming();
-                Long timeInMinutes = (totalTimeInMillis / (1000 * 60)) % 60;
-
-                profile.getCurrent().setTotalExecutionTimeInMinutes(timeInMinutes);
                 profile.getCurrent().setPrice(decimalFormat.format(currency));
 
+                Long timeInMinutes = (totalTimeInMillis / (1000 * 60)) % 60;
                 DebugMessage.popup(activity, String.valueOf(timeInMinutes) + "minutes");
                 ProfileStorage.fireProfile();
             }

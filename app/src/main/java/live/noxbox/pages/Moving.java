@@ -17,7 +17,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import live.noxbox.R;
-import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
@@ -98,26 +97,19 @@ public class Moving implements State {
                 });
 
 
-                final SwipeButton buttonConformity = photoView.findViewById(R.id.swipeButtonConformity);
+                final SwipeButton buttonConformity = photoView.findViewById(R.id.swipeButtonWrongPhoto);
                 buttonConformity.setParametrs(activity.getDrawable(R.drawable.yes),activity.getResources().getString(R.string.notLikeThat), activity);
                 buttonConformity.setOnTouchListener(buttonConformity.getButtonTouchListener(new Task<Object>() {
                     @Override
                     public void execute(Object object) {
                         if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                profile.getCurrent().setTimeCanceledBySupplier(System.currentTimeMillis());
-                            } else {
-                                profile.getCurrent().setTimeCanceledByDemander(System.currentTimeMillis());
-                            }
+                            profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                         } else {
-                            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                profile.getCurrent().setTimeCanceledBySupplier(System.currentTimeMillis());
-                            } else {
-                                profile.getCurrent().setTimeCanceledByDemander(System.currentTimeMillis());
-                            }
+                            profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
                         }
                         googleMap.clear();
                         photoView.removeAllViews();
+                        // TODO (vl) обнулить время и ключ вместо создания нового
                         profile.setCurrent(ProfileStorage.noxbox());
                         ProfileStorage.fireProfile();
                     }
@@ -130,22 +122,12 @@ public class Moving implements State {
                     @Override
                     public void execute(Object object) {
                         if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
-                            } else {
-                                profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
-                            }
+                            profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
                         } else {
-                            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                                profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
-                            } else {
-                                profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
-                            }
+                            profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
                         }
-                        //TODO (vl) simulate accepting for both participants
-                        profile.getCurrent().setTimeSupplyVerified(System.currentTimeMillis());
-                        profile.getCurrent().setTimeDemandVerified(System.currentTimeMillis());
-                        if (profile.getCurrent().getTimeDemandVerified() != null && profile.getCurrent().getTimeSupplyVerified() != null) {
+
+                        if (profile.getCurrent().getTimePartyVerified() != null && profile.getCurrent().getTimeOwnerVerified() != null) {
                             profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                         }
                         buttonConformity.setVisibility(View.GONE);

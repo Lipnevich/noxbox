@@ -47,7 +47,6 @@ import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Created;
 import live.noxbox.pages.DebugActivity;
-import live.noxbox.pages.Estimating;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
@@ -378,8 +377,8 @@ public class MapActivity extends DebugActivity implements
 
             if (profile.getCurrent().getTimeRequested() != null
                     && profile.getCurrent().getTimeAccepted() == null
-                    && profile.getCurrent().getTimeCanceledByDemander() == null
-                    && profile.getCurrent().getTimeCanceledBySupplier() == null) {
+                    && profile.getCurrent().getTimeCanceledByParty() == null
+                    && profile.getCurrent().getTimeCanceledByOwner() == null) {
                 if (profile.equals(profile.getCurrent().getOwner())) {
                     return new Accepting(googleMap, this);
                 }
@@ -387,19 +386,15 @@ public class MapActivity extends DebugActivity implements
             }
         if (profile.getCurrent().getTimeAccepted() != null
                 && profile.getCurrent().getTimeRequested() != null
-                && (profile.getCurrent().getTimeSupplyVerified() == null || profile.getCurrent().getTimeDemandVerified() == null)) {
+                && (profile.getCurrent().getTimeOwnerVerified() == null || profile.getCurrent().getTimePartyVerified() == null)) {
             return new Moving(googleMap, this);
         }
 
-        if (profile.getCurrent().getTimeDemandVerified() != null &&
-                profile.getCurrent().getTimeSupplyVerified() != null &&
+        if (profile.getCurrent().getTimePartyVerified() != null &&
+                profile.getCurrent().getTimeOwnerVerified() != null &&
                 profile.getCurrent().getTimeCompleted() == null) {
 
             return new Performing(this, googleMap);
-        }
-
-        if (profile.getCurrent().getTimeCompleted() != null && profile.getCurrent().getTotalExecutionTimeInMinutes() != null) {
-            return new Estimating(this);
         }
 
         return new AvailableServices(googleMap, googleApiClient, this);

@@ -112,9 +112,6 @@ public class MarkerCreator {
     }
 
     private static int getRatingColor(int percentage, Activity activity, Noxbox noxbox) {
-//        if(TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)){
-//            return activity.getResources().getColor(R.color.divider);
-//        }
         if (percentage == 100) {
             return activity.getResources().getColor(R.color.top_rating_color);
         } else if (percentage < 100 && percentage >= 95) {

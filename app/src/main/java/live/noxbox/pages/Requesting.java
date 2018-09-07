@@ -47,7 +47,6 @@ public class Requesting implements State {
         });
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        activity.findViewById(R.id.exchangeRate).setVisibility(View.GONE);
 
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
         anim.setDuration(15000);
@@ -70,7 +69,6 @@ public class Requesting implements State {
         googleMap.clear();
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.exchangeRate).setVisibility(View.VISIBLE);
         if (anim != null && animationDrawable != null) {
             anim.cancel();
             animationDrawable.stop();

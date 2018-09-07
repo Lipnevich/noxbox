@@ -27,6 +27,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,8 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Activity activity;
-    private List<Noxbox> noxboxes;
+    // TODO (nli) move it to availableServicesStorage
+    private List<Noxbox> noxboxes = new ArrayList<>();
     private ClusterManager<NoxboxMarker> clusterManager;
     private CustomClusterRenderer customClusterRenderer;
 
@@ -65,10 +67,32 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         this.googleApiClient = googleApiClient;
         this.activity = activity;
         this.clusterManager = new ClusterManager<>(activity, googleMap);
+
+        // TODO (vl) нужны ли нам эти два слушателя
+        googleMap.setOnMarkerClickListener(clusterManager);
+        googleMap.setOnCameraIdleListener(clusterManager);
+
+        customClusterRenderer = new CustomClusterRenderer(activity, googleMap, clusterManager);
+        clusterManager.setOnClusterClickListener(this);
+        clusterManager.setOnClusterItemClickListener(this);
+
+        clusterManager.setRenderer(customClusterRenderer);
     }
 
     @Override
     public void draw(final Profile profile) {
+        activity.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 150, profile)) {
+                    // TODO (nli) создать AvailableServicesStorage, добавить туда слушателя, добавить ноксбоксы и зажечь
+                                createMarker(profile, noxbox);
+                }
+            }
+        });
+
+
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,34 +115,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
             }
         });
-        activity.findViewById(R.id.debugNoxboxExample).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.debugNoxboxExample).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (noxboxes == null) {
-                    noxboxes = NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 150, profile);
-                }
-                googleMap.setOnMarkerClickListener(clusterManager);
-                googleMap.setOnCameraIdleListener(clusterManager);
-                customClusterRenderer = new CustomClusterRenderer(activity, googleMap, clusterManager);
-                clusterManager.setOnClusterClickListener(AvailableServices.this);
-                clusterManager.setOnClusterItemClickListener(AvailableServices.this);
-
-                clusterManager.setRenderer(customClusterRenderer);
-                for (Noxbox noxbox : noxboxes) {
-                    if ((profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none)
-                            || (profile.getTravelMode() != TravelMode.none && noxbox.getOwner().getTravelMode() != TravelMode.none && !profile.getHost() && !noxbox.getOwner().getHost())) {
-                        //do not show this marker
-                    } else {
-                        clusterManager.addItem(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
-                    }
-                }
-                clusterManager.cluster();
-
-
-            }
-        });
-
 
         if (profile.getPosition() != null) {
             CameraPosition cameraPosition
@@ -134,14 +130,24 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     @Override
     public void clear() {
         googleMap.clear();
+        // TODO (vl) очистить кластеры
         activity.findViewById(R.id.floatingButton).setVisibility(View.GONE);
         activity.findViewById(R.id.filter).setVisibility(View.GONE);
     }
 
 
     public void createMarker(Profile profile, Noxbox noxbox) {
-        if (markers.get(noxbox.getId()) == null) {
-            markers.put(noxbox.getId(), MarkerCreator.createCustomMarker(noxbox, googleMap, activity, noxbox.getOwner().getTravelMode()));
+        if ((profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none)
+                || (profile.getTravelMode() != TravelMode.none
+                && noxbox.getOwner().getTravelMode() != TravelMode.none
+                && !profile.getHost() && !noxbox.getOwner().getHost())){
+            // TODO (vl) показывать услуги с актуальным временем
+//            TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)
+
+            //do not show this marker
+        } else {
+            clusterManager.addItem(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
+            clusterManager.cluster();
         }
     }
 
@@ -155,7 +161,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     @Override
     public boolean onClusterClick(Cluster<NoxboxMarker> cluster) {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                cluster.getPosition(), googleMap.getCameraPosition().zoom + 3f));
+                cluster.getPosition(), googleMap.getCameraPosition().zoom + 1f));
         DebugMessage.popup(activity, "CLUSTER");
 
         return true;
