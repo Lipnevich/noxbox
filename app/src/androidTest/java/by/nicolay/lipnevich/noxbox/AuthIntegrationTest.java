@@ -30,6 +30,20 @@ public class AuthIntegrationTest {
     public ActivityTestRule<AuthActivity> rule = new ActivityTestRule<>(AuthActivity.class);
 
     @Test
+    public void testCommonRequested() {
+        // open constructor
+        // update fields on it
+        // post Noxbox
+        // become requested
+        // open detailed view
+        // accept
+        // open chat and send message
+        // verify
+        // become verified
+        // complete
+    }
+
+    @Test
     public void testGoogleSignIn() throws Exception {
         Thread.sleep(1000);
         onView(withId(R.id.checkbox)).check(matches(not(isChecked())));
