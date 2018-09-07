@@ -30,6 +30,8 @@ public class Created implements State {
 
     @Override
     public void draw(final Profile profile) {
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(),15));
+
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setImageResource(R.drawable.edit);
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.VISIBLE);
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setOnClickListener(new View.OnClickListener() {

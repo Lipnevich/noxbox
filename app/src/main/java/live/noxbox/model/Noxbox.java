@@ -54,6 +54,7 @@ public class Noxbox implements Comparable<Noxbox> {
     @Exclude
     public void clean() {
         id = null;
+        party = null;
         estimationTime = null;
         cancellationReasonMessage = null;
         commentForDemand = null;

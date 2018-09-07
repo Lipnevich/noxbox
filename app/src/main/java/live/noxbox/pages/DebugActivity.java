@@ -57,7 +57,7 @@ public class DebugActivity extends MenuActivity {
                             if (profile.getCurrent() != null && !profile.getCurrent().getOwner().getId().equals(profile.getId())
                                     && profile.getCurrent().getTimeCreated() != null
                                     && profile.getCurrent().getTimeRequested() != null
-                                    && profile.getCurrent().getTimeAccepted() == null ) {
+                                    && profile.getCurrent().getTimeAccepted() == null) {
 
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                 ProfileStorage.fireProfile();
@@ -101,10 +101,15 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
                                 }
+                                if (profile.getCurrent().getTimeOwnerVerified() != null) {
+                                    profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
+                                }
+
                                 ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to verify");
                             }
+
                         }
                     });
                     findViewById(R.id.debugComplete).setOnClickListener(new View.OnClickListener() {
@@ -116,6 +121,7 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeAccepted() != null
                                     && profile.getCurrent().getTimeCompleted() == null) {
                                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
+                                profile.getCurrent().clean();
                                 ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to complete");

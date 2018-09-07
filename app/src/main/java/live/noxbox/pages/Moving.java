@@ -151,15 +151,16 @@ public class Moving implements State {
 
     @Override
     public void clear() {
-        googleMap.clear();
-        movingView.removeAllViews();
-        if (photoView != null) {
-            photoView.removeAllViews();
-        }
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.GONE);
         ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
+        googleMap.clear();
+        movingView.removeAllViews();
+        if (photoView != null) {
+            photoView.removeAllViews();
+        }
+
     }
 }

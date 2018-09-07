@@ -65,10 +65,9 @@ public class Performing implements State {
                 int secs = seconds % 60;
                 String time = String.format("%d:%02d:%02d", hours, minutes, secs);
 
-                ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
-
-                seconds++;
-                if (handler != null) {
+                if (profile.getCurrent().getTimeCompleted() == null) {
+                    ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
+                    seconds++;
                     drawPrice(profile);
                     handler.postDelayed(this, 1000);
                 }
@@ -91,11 +90,10 @@ public class Performing implements State {
     private void drawComplete(final Profile profile) {
         SwipeButton completeSwipeButton = performingView.findViewById(R.id.completeSwipeButton);
         completeSwipeButton.setText(activity.getResources().getString(R.string.completeText));
-        completeSwipeButton.setParametrs(activity.getDrawable(R.drawable.yes),activity.getResources().getString(R.string.completeText), activity);
+        completeSwipeButton.setParametrs(activity.getDrawable(R.drawable.yes), activity.getResources().getString(R.string.completeText), activity);
         completeSwipeButton.setOnTouchListener(completeSwipeButton.getButtonTouchListener(new Task<Object>() {
             @Override
             public void execute(Object object) {
-                stopTimer();
                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
 
                 Long totalTimeInMillis = profile.getCurrent().getTimeCompleted() - profile.getCurrent().getTimeStartPerforming();
@@ -103,6 +101,8 @@ public class Performing implements State {
 
                 Long timeInMinutes = (totalTimeInMillis / (1000 * 60)) % 60;
                 DebugMessage.popup(activity, String.valueOf(timeInMinutes) + "minutes");
+
+                profile.getCurrent().clean(); //while debug without estimating
                 ProfileStorage.fireProfile();
             }
         }));
@@ -113,14 +113,16 @@ public class Performing implements State {
     }
 
     private void stopTimer() {
-        handler.removeCallbacksAndMessages(null);
-        handler = null;
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
     }
 
 
     @Override
     public void clear() {
         googleMap.clear();
+        stopTimer();
         performingView.removeAllViews();
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
