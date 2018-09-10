@@ -75,9 +75,11 @@ public class Accepting implements State {
         animationDrawable.setExitFadeDuration(1200);
         animationDrawable.start();
 
-        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, acceptingView);
+        if (profile.getCurrent().getTimeAccepted() == null) {
+            PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, acceptingView);
+        }
 
-        long timeCountInMilliSeconds = 30000 - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
+        long timeCountInMilliSeconds = 60000 - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
         countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
