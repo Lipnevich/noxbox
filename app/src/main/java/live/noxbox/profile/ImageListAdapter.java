@@ -3,6 +3,7 @@ package live.noxbox.profile;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +28,11 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
     static final String IMAGE_TYPE_KEY = "imageType";
 
     private List<String> imageUrlList;
-    private ProfilePerformerActivity activity;
+    private AppCompatActivity activity;
     private final ImageType imageType;
     private final NoxboxType type;
 
-    public ImageListAdapter(final List<String> imageUrlList, final ProfilePerformerActivity activity, final ImageType imageType, final NoxboxType type) {
+    public ImageListAdapter(final List<String> imageUrlList, final AppCompatActivity activity, final ImageType imageType, final NoxboxType type) {
         this.imageUrlList = imageUrlList == null ? new ArrayList<String>() : imageUrlList;
         this.activity = activity;
         this.imageType = imageType;

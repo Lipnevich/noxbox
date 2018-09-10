@@ -361,6 +361,12 @@ public class ConstructorActivity extends AppCompatActivity {
     }
 
     public void postNoxbox(Profile profile) {
+        if(profile.getCurrent().getRole() == MarketRole.supply){
+            profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
+        }else{
+            profile.getCurrent().getOwner().setPortfolio(null);
+        }
+
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }

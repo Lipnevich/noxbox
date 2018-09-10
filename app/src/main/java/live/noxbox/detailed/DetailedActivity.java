@@ -29,12 +29,14 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.model.Comment;
+import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
+import live.noxbox.profile.ImageListAdapter;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.DateTimeFormatter;
@@ -72,6 +74,12 @@ public class DetailedActivity extends AppCompatActivity {
         drawDescription(profile.getViewed());
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
+        if (profile.getViewed().getTimeRequested() != null && profile.getCurrent().getOwner().getPortfolio().get(profile.getCurrent().getType().name()) != null) {
+            drawCertificate(profile.getViewed());
+            drawWorkSample(profile.getViewed());
+        }
+
+
         drawPrice(profile.getViewed());
 
         if (profile.getViewed().getOwner().getId().equals(profile.getId())
@@ -434,6 +442,25 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
+    private void drawCertificate(final Noxbox noxbox) {
+        findViewById(R.id.certificateLayout).setVisibility(View.VISIBLE);
+        List<String> certificateUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.certificates.name());
+
+
+        RecyclerView certificateList = (RecyclerView) findViewById(R.id.certificatesList);
+        certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, noxbox.getType()));
+    }
+
+    private void drawWorkSample(final Noxbox noxbox) {
+        findViewById(R.id.workSampleLayout).setVisibility(View.VISIBLE);
+        List<String> workSampleUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.samples.name());
+
+        RecyclerView workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
+        workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, noxbox.getType()));
+    }
+
     private void changeArrowVector(int layout, final int element) {
         final ViewGroup listeningLayout = findViewById(layout);
         listeningLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -466,17 +493,18 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == COORDINATE && resultCode == RESULT_OK) {
-            final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-            ProfileStorage.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                if (requestCode == COORDINATE && resultCode == RESULT_OK) {
+                    final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
                     profile.getViewed().setPosition(position);
                 }
-            });
-        }
+            }
+        });
+
     }
 
 

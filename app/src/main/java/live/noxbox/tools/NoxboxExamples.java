@@ -1,14 +1,18 @@
 package live.noxbox.tools;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import live.noxbox.Configuration;
 import live.noxbox.model.Comment;
+import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
+import live.noxbox.model.Portfolio;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
@@ -58,10 +62,31 @@ public class NoxboxExamples {
                     position.getLongitude() + ThreadLocalRandom.current().nextDouble(-delta, delta)));
             noxbox.setWorkSchedule(new WorkSchedule());
 
-//            Фильтрация услуг в зависимости от настроек
+            if (noxbox.getRole() == MarketRole.supply) {
+                List<String> certificatesList = new ArrayList<>();
+                certificatesList.add("https://i.pinimg.com/736x/1d/ba/a1/1dbaa1fb5b2f64e54010cf6aae72b8b1.jpg");
+                certificatesList.add("http://4u-professional.com/assets/images/sert/gel-lak.jpg");
+                certificatesList.add("https://www.hallyuuk.com/wp-content/uploads/2018/06/reiki-master-certificate-template-inspirational-reiki-certificate-templates-idealstalist-of-reiki-master-certificate-template.jpg");
+                certificatesList.add("http://www.childminder.ng/blog_pics/1479134810.jpg");
+
+                List<String> workSampleList = new ArrayList<>();
+                workSampleList.add("http://coolmanicure.com/media/k2/items/cache/stilnyy_manikur_so_strazami_XL.jpg");
+                workSampleList.add("http://rosdesign.com/design_materials3/img_materials3/kopf/kopf1.jpg");
+                workSampleList.add("http://vmirevolos.ru/wp-content/uploads/2015/12/61.jpg");
+
+                Map<String, List<String>> images = new HashMap<>();
+                images.put(ImageType.samples.name(), new ArrayList<String>(workSampleList));
+                images.put(ImageType.certificates.name(), new ArrayList<String>(certificatesList));
+
+                Map<String, Portfolio> portfolioMap = new HashMap<>();
+                portfolioMap.put(noxbox.getType().name(), new Portfolio(new HashMap<String, List<String>>(images)));
+                noxbox.getOwner().setPortfolio(portfolioMap);
+            }
+
+            //Фильтрация услуг в зависимости от настроек
             if (profile.getDarkList().get(noxbox.getOwner().getId()) != null && !profile.getDarkList().get(noxbox.getOwner().getId())) {//фильтр по чёрному списку
 
-            }else{
+            } else {
                 if (noxbox.getRole() == MarketRole.demand && profile.getFilters().getDemand()) {
                     if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
                         if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
