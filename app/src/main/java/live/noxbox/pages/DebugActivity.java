@@ -1,12 +1,8 @@
 package live.noxbox.pages;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.view.View;
-
-import java.util.List;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
@@ -138,24 +134,40 @@ public class DebugActivity extends MenuActivity {
                     findViewById(R.id.debugYandexNavi).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("yandexnavi://build_route_on_map?lat_from="
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("yandexnavi://build_route_on_map?"
+                                    + "lat_from="
                                     + profile.getPosition().getLatitude()
                                     + "&lon_from="
                                     + profile.getPosition().getLongitude()
                                     + "&lat_to="
                                     + profile.getCurrent().getPosition().getLatitude()
                                     + "&lon_to="
-                                    + profile.getCurrent().getPosition().getLongitude()));
-                            intent.setPackage("ru.yandex.yandexnavi");
+                                    + profile.getCurrent().getPosition().getLongitude()))
+                                    .setPackage("ru.yandex.yandexnavi");
 
-                            PackageManager packageManager = getPackageManager();
-                            List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
-
-                            if (activities.size() > 0) {
+                            if (intent.resolveActivity(getPackageManager()) != null) {
                                 startActivity(intent);
                             } else {
                                 startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=ru.yandex.yandexnavi")));
                             }
+                        }
+                    });
+                    findViewById(R.id.debugGoogleNavi).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Uri uri = Uri.parse("google.navigation:"
+                                    + "q="
+                                    + profile.getCurrent().getPosition().getLatitude()
+                                    + ", "
+                                    + profile.getCurrent().getPosition().getLongitude()
+                                    + "&mode=b");
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps");
+                            if (intent.resolveActivity(getPackageManager()) != null) {
+                                startActivity(intent);
+                            } else {
+                                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=com.google.android.apps.maps")));
+                            }
+
                         }
                     });
                 }
