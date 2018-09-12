@@ -155,13 +155,13 @@ public class DebugActivity extends MenuActivity {
                     findViewById(R.id.debugGoogleNavi).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Uri uri = Uri.parse("google.navigation:"
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:"
                                     + "q="
                                     + profile.getCurrent().getPosition().getLatitude()
                                     + ", "
                                     + profile.getCurrent().getPosition().getLongitude()
-                                    + "&mode=b");
-                            Intent intent = new Intent(Intent.ACTION_VIEW, uri).setPackage("com.google.android.apps.maps");
+                                    + "&mode=b"))
+                                    .setPackage("com.google.android.apps.maps");
                             if (intent.resolveActivity(getPackageManager()) != null) {
                                 startActivity(intent);
                             } else {
