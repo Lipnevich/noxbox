@@ -25,15 +25,15 @@ public enum NoxboxType{
     private final int image;
     private final int background;
     private int description;
-    private int min;
+    private int duration;
 
-    NoxboxType(int id, int name, int image, int background, int description, int min) {
+    NoxboxType(int id, int name, int image, int background, int description, int duration) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.background = background;
         this.description = description;
-        this.min = min;
+        this.duration = duration;
     }
 
     public int getName() {
@@ -56,12 +56,12 @@ public enum NoxboxType{
         return description;
     }
 
-    public int getMin() {
-        return min;
+    public int getDuration() {
+        return duration;
     }
 
-    public NoxboxType setMin(int min) {
-        this.min = min;
+    public NoxboxType setDuration(int duration) {
+        this.duration = duration;
         return this;
     }
 

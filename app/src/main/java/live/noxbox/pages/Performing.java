@@ -25,7 +25,7 @@ public class Performing implements State {
     private Activity activity;
     private GoogleMap googleMap;
     private int seconds;
-    private double currency;
+    private double totalMoney;
     private Handler handler;
     private Runnable runnable;
     private DecimalFormat decimalFormat = new DecimalFormat("###.###");
@@ -52,7 +52,7 @@ public class Performing implements State {
         performingView.addView(child);
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        currency = Double.parseDouble(profile.getCurrent().getPrice()) / 4;
+        totalMoney = Double.parseDouble(profile.getCurrent().getPrice()) / 4;
         drawPrice(profile);
         drawComplete(profile);
 
@@ -77,14 +77,22 @@ public class Performing implements State {
         runTimer();
     }
 
+
     private void drawPrice(Profile profile) {
-        if (profile.getCurrent().getTimeStartPerforming() >=
-                System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS) {
-            ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(currency));
+        final Long startTime = profile.getCurrent().getTimeStartPerforming();
+
+        if (startTime != null) return;
+
+        double pricePerSecond = Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60;
+
+        if (startTime >= System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS) {
+            ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(totalMoney));
         } else {
-            currency += ((Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getMin()) / 60);
-            ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(currency));
+            totalMoney = ((System.currentTimeMillis() - startTime) / 1000) * pricePerSecond;
+            ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(totalMoney));
         }
+
+
     }
 
     private void drawComplete(final Profile profile) {
@@ -97,7 +105,7 @@ public class Performing implements State {
                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
 
                 Long totalTimeInMillis = profile.getCurrent().getTimeCompleted() - profile.getCurrent().getTimeStartPerforming();
-                profile.getCurrent().setPrice(decimalFormat.format(currency));
+                profile.getCurrent().setPrice(decimalFormat.format(totalMoney));
 
                 Long timeInMinutes = (totalTimeInMillis / (1000 * 60)) % 60;
                 DebugMessage.popup(activity, String.valueOf(timeInMinutes) + "minutes");

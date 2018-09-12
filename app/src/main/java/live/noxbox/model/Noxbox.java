@@ -53,23 +53,23 @@ public class Noxbox implements Comparable<Noxbox> {
 
     @Exclude
     public void clean() {
-        id = null;
-        party = null;
-        estimationTime = null;
-        cancellationReasonMessage = null;
-        commentForDemand = null;
-        commentForSupply = null;
-        timeCreated = null;
-        timeRequested = null;
-        timeCompleted = null;
-        timeAccepted = null;
-        timeCanceledByOwner = null;
-        timeCanceledByParty = null;
-        timeOwnerVerified = null;
-        timePartyVerified = null;
-        timeStartPerforming = null;
-        timeOwnerDisliked = null;
-        timePartyDisliked = null;
+        setId(null);
+        setParty(null);
+        setEstimationTime(null);
+        setCancellationReasonMessage(null);
+        setCommentForDemand(null);
+        setCommentForSupply(null);
+        setTimeCreated(null);
+        setTimeRequested(null);
+        setTimeCompleted(null);
+        setTimeAccepted(null);
+        setTimeCanceledByOwner(null);
+        setTimeCanceledByParty(null);
+        setTimeOwnerVerified(null);
+        setTimePartyVerified(null);
+        setTimeStartPerforming(null);
+        setTimeOwnerDisliked(null);
+        setTimePartyDisliked(null);
     }
 
     public String getId() {
