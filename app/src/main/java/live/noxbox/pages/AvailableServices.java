@@ -100,8 +100,10 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
                 startActivity(activity, MapFiltersActivity.class);
             }
         });
-        activity.findViewById(R.id.floatingButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.floatingButton).setOnClickListener(new View.OnClickListener() {
+
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.customFloatingImage).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
@@ -130,8 +132,8 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     @Override
     public void clear() {
         googleMap.clear();
-        // TODO (vl) очистить кластеры
-        activity.findViewById(R.id.floatingButton).setVisibility(View.GONE);
+        clusterManager.clearItems();
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.filter).setVisibility(View.GONE);
     }
 
