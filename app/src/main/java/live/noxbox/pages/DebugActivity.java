@@ -1,6 +1,12 @@
 package live.noxbox.pages;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.view.View;
+
+import java.util.List;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
@@ -126,6 +132,29 @@ public class DebugActivity extends MenuActivity {
                                 ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to complete");
+                            }
+                        }
+                    });
+                    findViewById(R.id.debugYandexNavi).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("yandexnavi://build_route_on_map?lat_from="
+                                    + profile.getPosition().getLatitude()
+                                    + "&lon_from="
+                                    + profile.getPosition().getLongitude()
+                                    + "&lat_to="
+                                    + profile.getCurrent().getPosition().getLatitude()
+                                    + "&lon_to="
+                                    + profile.getCurrent().getPosition().getLongitude()));
+                            intent.setPackage("ru.yandex.yandexnavi");
+
+                            PackageManager packageManager = getPackageManager();
+                            List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
+
+                            if (activities.size() > 0) {
+                                startActivity(intent);
+                            } else {
+                                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=ru.yandex.yandexnavi")));
                             }
                         }
                     });

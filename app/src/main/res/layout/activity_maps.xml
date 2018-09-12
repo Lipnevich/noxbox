@@ -217,6 +217,24 @@
             android:text="Complete"
             android:textColor="@color/primary"
             android:textSize="@dimen/text_size" />
+        <TextView
+            android:id="@+id/debugYandexNavi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_marginTop="16dp"
+            android:text="YandexNavi"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_size" />
+        <TextView
+            android:id="@+id/debugGoogleNavi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|top"
+            android:layout_marginTop="16dp"
+            android:text="GoogleNavi"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_size" />
     </LinearLayout>
 
 </fragment>
