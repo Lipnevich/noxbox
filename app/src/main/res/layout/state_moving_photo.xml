@@ -24,7 +24,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="4">
+                android:layout_weight="1">
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/photoScreenClose"
@@ -58,49 +58,50 @@
                     android:scaleType="fitXY" />
             </RelativeLayout>
 
-
-            <LinearLayout
-                android:id="@+id/messageLayout"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="4"
-                android:orientation="vertical">
+                android:layout_weight="1">
 
-                <android.widget.Space
+                <LinearLayout
+                    android:id="@+id/messageLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:id="@+id/photoScreenMessage"
-                    android:layout_width="wrap_content"
+                    android:layout_centerInParent="true"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/confirmThatYouSeePersonFromPhoto"
-                    android:textColor="@color/google_text"
-                    android:textSize="@dimen/text_size" />
+                    android:orientation="vertical">
 
 
-                <live.noxbox.pages.SwipeButton
-                    android:id="@+id/swipeButtonConfirm"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="10dp"/>
+                    <TextView
+                        android:id="@+id/photoScreenMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/confirmThatYouSeePersonFromPhoto"
+                        android:textColor="@color/google_text"
+                        android:textSize="@dimen/text_size" />
 
-                <live.noxbox.pages.SwipeButton
-                    android:id="@+id/swipeButtonWrongPhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="10dp" />
-            </LinearLayout>
+
+                    <live.noxbox.pages.SwipeButton
+                        android:id="@+id/swipeButtonConfirm"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginEnd="40dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="10dp" />
+
+                    <live.noxbox.pages.SwipeButton
+                        android:id="@+id/swipeButtonWrongPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginEnd="40dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="10dp" />
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

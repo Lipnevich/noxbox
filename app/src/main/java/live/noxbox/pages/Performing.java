@@ -39,7 +39,8 @@ public class Performing implements State {
     @Override
     public void draw(final Profile profile) {
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        activity.findViewById(R.id.pathButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.chat).setVisibility(View.GONE);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
         activity.findViewById(R.id.pathButton).setOnClickListener(new View.OnClickListener() {
             @Override

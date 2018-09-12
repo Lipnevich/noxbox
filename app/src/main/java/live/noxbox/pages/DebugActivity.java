@@ -40,6 +40,7 @@ public class DebugActivity extends MenuActivity {
                             if (profile.getCurrent() != null && profile.getCurrent().getOwner().getId().equals(profile.getId())
                                     && profile.getCurrent().getTimeCreated() != null
                                     && profile.getCurrent().getTimeRequested() == null) {
+
                                 profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setName("Granny Smith").setId("12321").setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
                                 // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
@@ -58,7 +59,7 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeCreated() != null
                                     && profile.getCurrent().getTimeRequested() != null
                                     && profile.getCurrent().getTimeAccepted() == null) {
-
+                                profile.getCurrent().getOwner().setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg");
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                 ProfileStorage.fireProfile();
                             } else {

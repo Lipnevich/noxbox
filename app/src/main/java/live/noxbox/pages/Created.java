@@ -1,8 +1,9 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,11 +31,11 @@ public class Created implements State {
 
     @Override
     public void draw(final Profile profile) {
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(),15));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
 
-        ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setImageResource(R.drawable.edit);
-        ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.VISIBLE);
-        ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setOnClickListener(new View.OnClickListener() {
+        ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.edit);
+        ((CardView) activity.findViewById(R.id.customFloatingView)).setVisibility(View.VISIBLE);
+        ((CardView) activity.findViewById(R.id.customFloatingView)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(activity, ConstructorActivity.class);
@@ -43,7 +44,7 @@ public class Created implements State {
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(),15));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
             }
         });
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
@@ -60,8 +61,9 @@ public class Created implements State {
 
     @Override
     public void clear() {
-        ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setImageResource(R.drawable.add);
-        ((FloatingActionButton) activity.findViewById(R.id.floatingButton)).setVisibility(View.GONE);
+        ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         googleMap.clear();
+
     }
 }

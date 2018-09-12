@@ -39,6 +39,7 @@ public class Accepting implements State {
 
     @Override
     public void draw(final Profile profile) {
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
@@ -115,6 +116,7 @@ public class Accepting implements State {
         googleMap.clear();
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
 
         if (anim != null && animationDrawable != null) {
             anim.cancel();

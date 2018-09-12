@@ -102,7 +102,8 @@ public class SwipeButton extends RelativeLayout {
         }
         enabledDrawable.setTint(Color.WHITE);
         slidingButton.setImageDrawable(disabledDrawable);
-        slidingButton.setPadding(40, 40, 40, 40);
+        slidingButton.getLayoutParams();
+        slidingButton.setPadding(35, 35, 35, 35);
 
         LayoutParams layoutParamsButton = new LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -110,6 +111,8 @@ public class SwipeButton extends RelativeLayout {
 
         layoutParamsButton.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
         layoutParamsButton.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+
+        swipeButton.requestLayout();
         swipeButton.setBackground(ContextCompat.getDrawable(context, R.drawable.swipe_button_shape));
         swipeButton.setImageDrawable(disabledDrawable);
         addView(swipeButton, layoutParamsButton);
