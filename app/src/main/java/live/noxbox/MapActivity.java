@@ -27,7 +27,6 @@ import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -54,6 +53,7 @@ import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.ConfirmationMessage;
+import live.noxbox.tools.MapController;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -193,6 +193,7 @@ public class MapActivity extends DebugActivity implements
             @Override
             public void execute(Profile profile) {
                 profile.setPosition(getCurrentPosition());
+                MapController.buildMapPosition(googleMap, profile);
             }
         });
     }
@@ -223,7 +224,6 @@ public class MapActivity extends DebugActivity implements
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (googleApiClient.isConnected()) {
                 Position position = Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position.toLatLng(),15));
                 return position;
             } else {
                 googleApiClient.connect();
@@ -403,5 +403,3 @@ public class MapActivity extends DebugActivity implements
         return new AvailableServices(googleMap, googleApiClient, this);
     }
 }
-
-

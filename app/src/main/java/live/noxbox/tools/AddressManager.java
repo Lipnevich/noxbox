@@ -33,7 +33,7 @@ public class AddressManager {
             Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
             String lat = numberFormat.format(position.getLatitude());
             String lng = numberFormat.format(position.getLongitude());
-            return lat + " " + lng; 
+            return lat + " " + lng;
         }
 
 
