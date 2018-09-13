@@ -83,6 +83,7 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                                 }
+                                profile.getCurrent().clean();
                                 ProfileStorage.fireProfile();
 
                             } else {
@@ -132,6 +133,7 @@ public class DebugActivity extends MenuActivity {
                             }
                         }
                     });
+
                     findViewById(R.id.debugYandexNavi).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -153,15 +155,26 @@ public class DebugActivity extends MenuActivity {
                             }
                         }
                     });
+
                     findViewById(R.id.debugGoogleNavi).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:"
+                            String uri = "google.navigation:"
                                     + "q="
                                     + profile.getCurrent().getPosition().getLatitude()
                                     + ", "
-                                    + profile.getCurrent().getPosition().getLongitude()
-                                    + "&mode=b"))
+                                    + profile.getCurrent().getPosition().getLongitude();
+                            if(profile.getTravelMode() == TravelMode.bicycling){
+                                uri = uri.concat("&mode=b");
+                            }
+                            if(profile.getTravelMode() == TravelMode.driving){
+                                uri = uri.concat("&mode=d");
+                            }
+                            if(profile.getTravelMode() == TravelMode.walking){
+                                uri = uri.concat("&mode=w");
+                            }
+
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                                     .setPackage("com.google.android.apps.maps");
                             if (intent.resolveActivity(getPackageManager()) != null) {
                                 startActivity(intent);
