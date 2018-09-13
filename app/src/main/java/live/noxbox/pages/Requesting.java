@@ -3,6 +3,7 @@ package live.noxbox.pages;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
@@ -12,8 +13,10 @@ import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
-import live.noxbox.tools.PathFinder;
+import live.noxbox.tools.MapController;
+import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
@@ -24,6 +27,7 @@ public class Requesting implements State {
     private ObjectAnimator anim;
     private AnimationDrawable animationDrawable;
     private LinearLayout requestingView;
+    private CountDownTimer countDownTimer;
 
     public Requesting(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
@@ -32,6 +36,16 @@ public class Requesting implements State {
 
     @Override
     public void draw(final Profile profile) {
+        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapController.buildMapPosition(googleMap, profile);
+            }
+        });
+
+        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
         requestingView.addView(child);
@@ -45,8 +59,6 @@ public class Requesting implements State {
                 fireProfile();
             }
         });
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
 
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
         anim.setDuration(15000);
@@ -60,7 +72,27 @@ public class Requesting implements State {
 
         profile.getViewed().setParty(profile);
 
-        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, requestingView);
+        long timeCountInMilliSeconds = 60000 - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
+        countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                ((TextView) requestingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
+            }
+
+            @Override
+            public void onFinish() {
+                if (profile.getCurrent().getTimeAccepted() == null) {
+                    profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
+                    profile.setCurrent(ProfileStorage.noxbox());
+                    ProfileStorage.fireProfile();
+                }
+            }
+
+        }.start();
+
+        MapController.buildMapMarkerListener(googleMap, profile, activity);
+
+        MapController.buildMapPosition(googleMap, profile);
     }
 
 
@@ -68,11 +100,16 @@ public class Requesting implements State {
     public void clear() {
         googleMap.clear();
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
-        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         if (anim != null && animationDrawable != null) {
             anim.cancel();
             animationDrawable.stop();
         }
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+
+        }
+
         requestingView.removeAllViews();
     }
 }
