@@ -74,7 +74,7 @@ public class DetailedActivity extends AppCompatActivity {
         drawDescription(profile.getViewed());
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
-        if (profile.getViewed().getTimeRequested() != null && profile.getCurrent().getOwner().getPortfolio().get(profile.getCurrent().getType().name()) != null) {
+        if (profile.getViewed().getRole() == MarketRole.supply) {
             drawCertificate(profile.getViewed());
             drawWorkSample(profile.getViewed());
         }
@@ -87,11 +87,12 @@ public class DetailedActivity extends AppCompatActivity {
                 && profile.getCurrent().getTimeRequested() == null) {
             drawEditButton(profile);
         }
-        if (!profile.getViewed().getOwner().getId().equals(profile.getId())) {
+        if (!profile.getViewed().getOwner().getId().equals(profile.getId())
+                && profile.getCurrent().getTimeRequested() == null) {
             drawAcceptButton(profile.getViewed().getRole());
         }
 
-        if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null && profile.getCurrent().getTimeAccepted() != null) {
+        if (profile.getCurrent() != null && (profile.getViewed().getTimeCreated() != null)) {
             drawCancelButton(profile);
         }
     }
@@ -302,6 +303,7 @@ public class DetailedActivity extends AppCompatActivity {
                         profile.setCurrent(profile.getViewed());
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                         profile.getCurrent().setParty(profile.notPublicInfo());
+                        profile.getCurrent().getParty().setPosition(profile.getPosition());
                         finish();
                     }
                 });
@@ -443,6 +445,8 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void drawCertificate(final Noxbox noxbox) {
+        if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
+
         findViewById(R.id.certificateLayout).setVisibility(View.VISIBLE);
         List<String> certificateUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.certificates.name());
 
@@ -453,6 +457,8 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void drawWorkSample(final Noxbox noxbox) {
+        if(noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
+
         findViewById(R.id.workSampleLayout).setVisibility(View.VISIBLE);
         List<String> workSampleUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.samples.name());
 
