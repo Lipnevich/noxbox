@@ -40,6 +40,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeOwnerDisliked;
     private Long timePartyDisliked;
 
+    private Long timeTimeout;
+
     private Position position;
     private String price;
     private NoxboxType type;
@@ -328,6 +330,15 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimePartyDisliked(Long timePartyDisliked) {
         this.timePartyDisliked = timePartyDisliked;
+        return this;
+    }
+
+    public Long getTimeTimeout() {
+        return timeTimeout;
+    }
+
+    public Noxbox setTimeTimeout(Long timeTimeout) {
+        this.timeTimeout = timeTimeout;
         return this;
     }
 }
