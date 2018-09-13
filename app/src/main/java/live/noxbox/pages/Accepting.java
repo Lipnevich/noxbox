@@ -9,17 +9,14 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
-import live.noxbox.tools.PathFinder;
+import live.noxbox.tools.MapController;
+import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
@@ -39,7 +36,7 @@ public class Accepting implements State {
 
     @Override
     public void draw(final Profile profile) {
-        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
+        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
@@ -63,7 +60,6 @@ public class Accepting implements State {
             }
         });
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
 
 
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
@@ -76,10 +72,6 @@ public class Accepting implements State {
         animationDrawable.setExitFadeDuration(1200);
         animationDrawable.start();
 
-        if (profile.getCurrent().getTimeAccepted() == null) {
-            PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, acceptingView);
-        }
-
         long timeCountInMilliSeconds = 60000 - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
         countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
@@ -89,41 +81,29 @@ public class Accepting implements State {
 
             @Override
             public void onFinish() {
-                profile.getCurrent().setTimeAccepted(null);
-                profile.getCurrent().setTimeRequested(null);
-                ProfileStorage.fireProfile();
+                if (profile.getCurrent().getTimeAccepted() == null) {
+                    profile.getCurrent().setTimeAccepted(null);
+                    profile.getCurrent().setTimeRequested(null);
+                    ProfileStorage.fireProfile();
+                }
             }
 
         }.start();
-        if (profile.equals(profile.getCurrent().getOwner())) {
-            moveCamera(profile.getCurrent().getPosition().toLatLng(), 12);
-        }
-    }
 
-    private void moveCamera(LatLng latLng, float zoom) {
-        CameraPosition cameraPosition
-                = new CameraPosition.Builder()
-                .target(latLng)
-                .zoom(zoom)
-                .build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-        googleMap.animateCamera(cameraUpdate);
-
+        MapController.buildMapPosition(googleMap, profile);
     }
 
     @Override
     public void clear() {
         googleMap.clear();
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
-        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
-
         if (anim != null && animationDrawable != null) {
             anim.cancel();
             animationDrawable.stop();
         }
         if (countDownTimer != null) {
             countDownTimer.cancel();
+
         }
         acceptingView.removeAllViews();
     }

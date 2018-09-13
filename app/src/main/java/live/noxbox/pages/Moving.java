@@ -11,19 +11,17 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLngBounds;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
-import live.noxbox.tools.PathFinder;
+import live.noxbox.tools.MapController;
+import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.MapActivity.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
 
 public class Moving implements State {
@@ -40,6 +38,9 @@ public class Moving implements State {
 
     @Override
     public void draw(final Profile profile) {
+        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
         movingView = activity.findViewById(R.id.container);
         View childMoving = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
         movingView.addView(childMoving);
@@ -60,7 +61,6 @@ public class Moving implements State {
         }
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setVisibility(View.VISIBLE);
 
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pathButton).setVisibility(View.VISIBLE);
 
@@ -68,7 +68,7 @@ public class Moving implements State {
             @Override
             public void onClick(View v) {
                 DebugMessage.popup(activity, "way and points");
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(profile.getCurrent().getParty().getPosition().toLatLng()).include(profile.getCurrent().getPosition().toLatLng()).build(), dpToPx(68)));
+                MapController.buildMapPosition(googleMap, profile);
             }
         });
 
@@ -126,8 +126,8 @@ public class Moving implements State {
                         }
                         googleMap.clear();
                         photoView.removeAllViews();
-                        // TODO (vl) обнулить время и ключ вместо создания нового
-                        profile.setCurrent(ProfileStorage.noxbox());
+
+                        profile.getCurrent().clean();
                         ProfileStorage.fireProfile();
                     }
                 }));
@@ -147,7 +147,7 @@ public class Moving implements State {
                         if (profile.getCurrent().getTimePartyVerified() != null && profile.getCurrent().getTimeOwnerVerified() != null) {
                             profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                         }
-                        buttonConformity.setVisibility(View.GONE);
+
                         ProfileStorage.fireProfile();
                     }
                 }));
@@ -162,19 +162,20 @@ public class Moving implements State {
             }
         });
 
-        PathFinder.createRequestPoints(profile.getCurrent(), googleMap, activity, movingView);
+        MapController.buildMapMarkerListener(googleMap, profile, activity);
+
+        MapController.buildMapPosition(googleMap, profile);
     }
 
 
     @Override
     public void clear() {
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
-
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
-        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
         googleMap.clear();
         movingView.removeAllViews();
         if (photoView != null) {

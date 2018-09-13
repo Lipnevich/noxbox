@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.text.DecimalFormat;
@@ -17,6 +16,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
+import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.Task;
 
@@ -38,16 +38,10 @@ public class Performing implements State {
 
     @Override
     public void draw(final Profile profile) {
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
-        activity.findViewById(R.id.chat).setVisibility(View.GONE);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
-        activity.findViewById(R.id.pathButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
-            }
-        });
+
+        MapController.buildMapMarkerListener(googleMap, profile, activity);
+
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
@@ -82,7 +76,7 @@ public class Performing implements State {
     private void drawPrice(Profile profile) {
         final Long startTime = profile.getCurrent().getTimeStartPerforming();
 
-        if (startTime != null) return;
+        if (startTime == null) return;
 
         double pricePerSecond = Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60;
 
@@ -133,7 +127,6 @@ public class Performing implements State {
         googleMap.clear();
         stopTimer();
         performingView.removeAllViews();
-        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
     }
 }

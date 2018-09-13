@@ -5,16 +5,13 @@ import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
 
 import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
-import live.noxbox.detailed.DetailedActivity;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
+import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.tools.Router.startActivity;
@@ -31,7 +28,7 @@ public class Created implements State {
 
     @Override
     public void draw(final Profile profile) {
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.edit);
         ((CardView) activity.findViewById(R.id.customFloatingView)).setVisibility(View.VISIBLE);
@@ -41,26 +38,26 @@ public class Created implements State {
                 startActivity(activity, ConstructorActivity.class);
             }
         });
+
+        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
-            }
-        });
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                profile.setViewed((Noxbox) marker.getTag());
-                startActivity(activity, DetailedActivity.class);
-                return true;
+                MapController.buildMapPosition(googleMap, profile);
             }
         });
 
+        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+
+        MapController.buildMapMarkerListener(googleMap, profile, activity);
+
+        MapController.buildMapPosition(googleMap, profile);
     }
 
     @Override
     public void clear() {
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         googleMap.clear();
