@@ -31,13 +31,17 @@ public class AddressManager {
             }
         } catch (IOException e) {
             Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
-            return numberFormat.format(position.getLatitude() + " " + position.getLongitude());
+            String lat = numberFormat.format(position.getLatitude());
+            String lng = numberFormat.format(position.getLongitude());
+            return lat + " " + lng; 
         }
 
 
         if (address.equals("")) {
             if (city.equals("")) {
-                return numberFormat.format(position.getLatitude() + " " + position.getLongitude());
+                String lat = numberFormat.format(position.getLatitude());
+                String lng = numberFormat.format(position.getLongitude());
+                return lat + " " + lng;
             } else {
                 return city;
             }
