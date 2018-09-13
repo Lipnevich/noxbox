@@ -104,7 +104,8 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
                                 }
-                                if (profile.getCurrent().getTimeOwnerVerified() != null) {
+                                if (profile.getCurrent().getTimeOwnerVerified() != null &&
+                                        profile.getCurrent().getTimePartyVerified() != null) {
                                     profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                                 }
 

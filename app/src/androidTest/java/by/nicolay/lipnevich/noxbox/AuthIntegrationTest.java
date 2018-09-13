@@ -41,6 +41,9 @@ public class AuthIntegrationTest {
         // verify
         // become verified
         // complete
+        // check balance
+        // check history
+        // comment in history
     }
 
     @Test

@@ -54,14 +54,12 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_below="@+id/photoScreenClose"
-                    android:layout_centerHorizontal="true"
-                    android:scaleType="fitXY" />
+                    android:layout_centerHorizontal="true" />
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_height="240dp">
 
                 <LinearLayout
                     android:id="@+id/messageLayout"
