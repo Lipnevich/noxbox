@@ -8,6 +8,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,7 +21,7 @@ public class AddressManager {
         List<Address> addresses;
         String address = "";
         String city = "";
-
+        DecimalFormat numberFormat = new DecimalFormat("##.0000");
         try {
             addresses = geocoder.getFromLocation(position.getLatitude(), position.getLongitude(), 1);
 
@@ -30,13 +31,13 @@ public class AddressManager {
             }
         } catch (IOException e) {
             Crashlytics.log(Log.WARN, "Fail to create path", e.getMessage());
-            return position.getLatitude() + " " + position.getLongitude();
+            return numberFormat.format(position.getLatitude() + " " + position.getLongitude());
         }
 
 
         if (address.equals("")) {
             if (city.equals("")) {
-                return position.getLatitude() + " " + position.getLongitude();
+                return numberFormat.format(position.getLatitude() + " " + position.getLongitude());
             } else {
                 return city;
             }
