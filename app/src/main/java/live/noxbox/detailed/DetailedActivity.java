@@ -27,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.model.Comment;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
@@ -41,7 +41,6 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.ImageManager;
-import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
@@ -70,7 +69,7 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void draw(Profile profile) {
         drawToolbar(profile.getViewed());
-        drawOwnerProfile(profile.getViewed());
+        drawOtherProfile(profile.getViewed());
         drawDescription(profile.getViewed());
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
@@ -79,22 +78,9 @@ public class DetailedActivity extends AppCompatActivity {
             drawWorkSample(profile.getViewed());
         }
 
-
         drawPrice(profile.getViewed());
 
-        if (profile.getViewed().getOwner().getId().equals(profile.getId())
-                && profile.getCurrent().getTimeCreated() != null
-                && profile.getCurrent().getTimeRequested() == null) {
-            drawEditButton(profile);
-        }
-        if (!profile.getViewed().getOwner().getId().equals(profile.getId())
-                && profile.getCurrent().getTimeRequested() == null) {
-            drawAcceptButton(profile.getViewed().getRole());
-        }
-
-        if (profile.getCurrent() != null && (profile.getViewed().getTimeCreated() != null)) {
-            drawCancelButton(profile);
-        }
+        drawButtons(profile);
     }
 
     private void drawToolbar(Noxbox noxbox) {
@@ -104,7 +90,8 @@ public class DetailedActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(noxbox.getType().getName());
     }
 
-    private void drawOwnerProfile(Noxbox noxbox) {
+    //TODO (vl) display info about other participant
+    private void drawOtherProfile(Noxbox noxbox) {
         if (noxbox.getTimeAccepted() != null) {
             findViewById(R.id.profileTitleLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
@@ -189,10 +176,10 @@ public class DetailedActivity extends AppCompatActivity {
                 float[] results = new float[1];
 
                 Location.distanceBetween(
-                        noxbox.getPosition().getLatitude(),
-                        noxbox.getPosition().getLongitude(),
-                        profile.getPosition().getLatitude(),
-                        profile.getPosition().getLongitude(),
+                        noxbox.getOwner().getPosition().getLatitude(),
+                        noxbox.getOwner().getPosition().getLongitude(),
+                        noxbox.getParty().getPosition().getLatitude(),
+                        noxbox.getParty().getPosition().getLongitude(),
                         results);
 
                 int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
@@ -232,13 +219,6 @@ public class DetailedActivity extends AppCompatActivity {
 
                 } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
                     ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
-
-                    //for Performing state
-                    if (profile.getCurrent().getTimePartyVerified() != null &&
-                            profile.getCurrent().getTimeOwnerVerified() != null &&
-                            profile.getCurrent().getTimeCompleted() == null) {
-                        ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.inProcess);
-                    }
 
                     ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
 
@@ -286,15 +266,41 @@ public class DetailedActivity extends AppCompatActivity {
         ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(noxbox.getType().getImage());
     }
 
-    private void drawAcceptButton(MarketRole role) {
+    private void drawButtons(Profile profile) {
+        switch (NoxboxState.getState(profile.getViewed(), profile)) {
+            case created:
+                drawJoinButton(profile.getViewed().getRole());
+                break;
+            case accepting:
+                drawAcceptButton(profile);
+            case moving:
+            case requesting:
+                drawCancelButton(profile);
+                break;
+        }
+    }
+
+    private void drawAcceptButton(final Profile profile) {
         findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
+        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
+                ProfileStorage.fireProfile();
+                finish();
+            }
+        });
+    }
+
+    private void drawJoinButton(MarketRole role) {
+        findViewById(R.id.joinButton).setVisibility(View.VISIBLE);
         if (role == MarketRole.demand) {
-            ((Button) findViewById(R.id.acceptButton)).setText(R.string.proceed);
+            ((Button) findViewById(R.id.joinButton)).setText(R.string.proceed);
         } else if (role == MarketRole.supply) {
-            ((Button) findViewById(R.id.acceptButton)).setText(R.string.order);
+            ((Button) findViewById(R.id.joinButton)).setText(R.string.order);
         }
 
-        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ProfileStorage.readProfile(new Task<Profile>() {
@@ -303,7 +309,6 @@ public class DetailedActivity extends AppCompatActivity {
                         profile.setCurrent(profile.getViewed());
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                         profile.getCurrent().setParty(profile.notPublicInfo());
-                        profile.getCurrent().getParty().setPosition(profile.getPosition());
                         finish();
                     }
                 });
@@ -419,16 +424,6 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
-    private void drawEditButton(final Profile profile) {
-        findViewById(R.id.editButton).setVisibility(View.VISIBLE);
-        findViewById(R.id.editButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.startActivity(DetailedActivity.this, ConstructorActivity.class);
-            }
-        });
-    }
-
     private void drawDropdownElement(int titleId, final int contentId) {
         findViewById(titleId).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -457,7 +452,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void drawWorkSample(final Noxbox noxbox) {
-        if(noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
+        if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
 
         findViewById(R.id.workSampleLayout).setVisibility(View.VISIBLE);
         List<String> workSampleUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.samples.name());

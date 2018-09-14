@@ -89,7 +89,7 @@
 
 
         <Button
-            android:id="@+id/acceptButton"
+            android:id="@+id/joinButton"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_marginBottom="36dp"

@@ -52,7 +52,7 @@ public class Accepting implements State {
             }
         });
 
-        acceptingView.findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+        acceptingView.findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());

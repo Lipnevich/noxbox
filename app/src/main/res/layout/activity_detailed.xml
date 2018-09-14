@@ -845,9 +845,8 @@
                 </LinearLayout>
             </LinearLayout>
 
-
             <Button
-                android:id="@+id/editButton"
+                android:id="@+id/joinButton"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_gravity="center_horizontal|center_vertical"
@@ -856,11 +855,10 @@
                 android:layout_marginTop="24dp"
                 android:background="@drawable/button_corner"
                 android:enabled="true"
-                android:text="@string/edit"
+                android:gravity="center_horizontal|center_vertical"
                 android:textSize="18sp"
                 android:textStyle="normal"
                 android:visibility="gone" />
-
             <Button
                 android:id="@+id/acceptButton"
                 android:layout_width="match_parent"

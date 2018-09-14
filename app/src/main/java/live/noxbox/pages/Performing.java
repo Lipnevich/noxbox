@@ -17,7 +17,6 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
-import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.Task;
 
 public class Performing implements State {
@@ -38,9 +37,10 @@ public class Performing implements State {
 
     @Override
     public void draw(final Profile profile) {
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+        MapController.buildMapPosition(googleMap, profile);
 
-        MapController.buildMapMarkerListener(googleMap, profile, activity);
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.getUiSettings().setZoomControlsEnabled(false);
 
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
@@ -125,6 +125,8 @@ public class Performing implements State {
     @Override
     public void clear() {
         googleMap.clear();
+        googleMap.getUiSettings().setScrollGesturesEnabled(true);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
         stopTimer();
         performingView.removeAllViews();
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);

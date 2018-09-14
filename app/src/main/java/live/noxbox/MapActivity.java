@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
@@ -360,46 +361,22 @@ public class MapActivity extends DebugActivity implements
     }
 
     public State getFragment(final Profile profile) {
-        if (profile.getCurrent() == null || profile.getCurrent().getTimeCreated() == null) {
-            return new AvailableServices(googleMap, googleApiClient, this);
-        }
-        //    created,
-        //    requesting,
-        //    accepting,
-        //    moving,
-        //    watching,
-        //    performing,
-        //    enjoying,
-        //    completed,
-        //    estimating
-        if (profile.getCurrent().getTimeCreated() != null
-                && profile.getCurrent().getTimeRequested() == null
-                && profile.getCurrent().getTimeAccepted() == null) {
-            return new Created(googleMap, this);
-        }
-
-        if (profile.getCurrent().getTimeRequested() != null
-                && profile.getCurrent().getTimeAccepted() == null
-                && profile.getCurrent().getTimeCanceledByParty() == null
-                && profile.getCurrent().getTimeCanceledByOwner() == null) {
-            if (profile.equals(profile.getCurrent().getOwner())) {
+        NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
+        switch (state) {
+            case initial:
+                return new AvailableServices(googleMap, googleApiClient, this);
+            case created:
+                return new Created(googleMap, this);
+            case requesting:
+                return new Requesting(googleMap, this);
+            case accepting:
                 return new Accepting(googleMap, this);
-            }
-            return new Requesting(googleMap, this);
+            case moving:
+                return new Moving(googleMap, this);
+            case performing:
+                return new Performing(this, googleMap);
+            default:
+                throw new IllegalStateException("Unknown state: " + state.name());
         }
-        if (profile.getCurrent().getTimeAccepted() != null
-                && profile.getCurrent().getTimeRequested() != null
-                && (profile.getCurrent().getTimeOwnerVerified() == null || profile.getCurrent().getTimePartyVerified() == null)) {
-            return new Moving(googleMap, this);
-        }
-
-        if (profile.getCurrent().getTimePartyVerified() != null &&
-                profile.getCurrent().getTimeOwnerVerified() != null &&
-                profile.getCurrent().getTimeCompleted() == null) {
-
-            return new Performing(this, googleMap);
-        }
-
-        return new AvailableServices(googleMap, googleApiClient, this);
     }
 }

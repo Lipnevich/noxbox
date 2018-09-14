@@ -99,7 +99,6 @@ public class Requesting implements State {
     @Override
     public void clear() {
         googleMap.clear();
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         if (anim != null && animationDrawable != null) {
             anim.cancel();
