@@ -856,9 +856,11 @@
                 android:background="@drawable/button_corner"
                 android:enabled="true"
                 android:gravity="center_horizontal|center_vertical"
+                android:text="@string/join"
                 android:textSize="18sp"
                 android:textStyle="normal"
                 android:visibility="gone" />
+
             <Button
                 android:id="@+id/acceptButton"
                 android:layout_width="match_parent"
@@ -870,6 +872,7 @@
                 android:background="@drawable/button_corner"
                 android:enabled="true"
                 android:gravity="center_horizontal|center_vertical"
+                android:text="@string/acceptText"
                 android:textSize="18sp"
                 android:textStyle="normal"
                 android:visibility="gone" />

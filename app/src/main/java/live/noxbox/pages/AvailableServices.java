@@ -158,9 +158,9 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     @Override
     public boolean onClusterClick(Cluster<NoxboxMarker> cluster) {
+        DebugMessage.popup(activity, "CLUSTER");
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                 cluster.getPosition(), googleMap.getCameraPosition().zoom + 1f));
-        DebugMessage.popup(activity, "CLUSTER");
 
         return true;
     }
@@ -172,6 +172,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             @Override
             public void execute(Profile profile) {
                 profile.setViewed(noxboxMarker.getNoxbox());
+                profile.getViewed().setParty(profile.notPublicInfo());
                 //profile.setPosition(Position.from(googleMap.getCameraPosition().target));
                 startActivity(activity, DetailedActivity.class);
             }

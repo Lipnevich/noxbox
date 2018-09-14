@@ -194,7 +194,9 @@ public class MapActivity extends DebugActivity implements
             @Override
             public void execute(Profile profile) {
                 profile.setPosition(getCurrentPosition());
-                MapController.buildMapPosition(googleMap, profile);
+                if(profile.getPosition() != null){
+                    MapController.buildMapPosition(googleMap, profile);
+                }
             }
         });
     }

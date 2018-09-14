@@ -17,6 +17,7 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
+import live.noxbox.tools.NavigatorManager;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
@@ -41,6 +42,14 @@ public class Requesting implements State {
             @Override
             public void onClick(View v) {
                 MapController.buildMapPosition(googleMap, profile);
+            }
+        });
+
+        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigatorManager.openNavigator(activity, profile);
             }
         });
 
@@ -99,6 +108,7 @@ public class Requesting implements State {
     @Override
     public void clear() {
         googleMap.clear();
+        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         if (anim != null && animationDrawable != null) {
             anim.cancel();

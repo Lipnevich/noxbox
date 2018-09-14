@@ -20,6 +20,7 @@ import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
+import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.Router.startActivity;
@@ -40,6 +41,15 @@ public class Moving implements State {
     public void draw(final Profile profile) {
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
+        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigatorManager.openNavigator(activity, profile);
+            }
+        });
+
 
         movingView = activity.findViewById(R.id.container);
         View childMoving = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
@@ -171,6 +181,7 @@ public class Moving implements State {
     @Override
     public void clear() {
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
+        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);

@@ -1,7 +1,5 @@
 package live.noxbox.pages;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 
 import live.noxbox.BuildConfig;
@@ -134,56 +132,56 @@ public class DebugActivity extends MenuActivity {
                         }
                     });
 
-                    findViewById(R.id.debugYandexNavi).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("yandexnavi://build_route_on_map?"
-                                    + "lat_from="
-                                    + profile.getPosition().getLatitude()
-                                    + "&lon_from="
-                                    + profile.getPosition().getLongitude()
-                                    + "&lat_to="
-                                    + profile.getCurrent().getPosition().getLatitude()
-                                    + "&lon_to="
-                                    + profile.getCurrent().getPosition().getLongitude()))
-                                    .setPackage("ru.yandex.yandexnavi");
-
-                            if (intent.resolveActivity(getPackageManager()) != null) {
-                                startActivity(intent);
-                            } else {
-                                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=ru.yandex.yandexnavi")));
-                            }
-                        }
-                    });
-
-                    findViewById(R.id.debugGoogleNavi).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String uri = "google.navigation:"
-                                    + "q="
-                                    + profile.getCurrent().getPosition().getLatitude()
-                                    + ", "
-                                    + profile.getCurrent().getPosition().getLongitude();
-                            if(profile.getTravelMode() == TravelMode.bicycling){
-                                uri = uri.concat("&mode=b");
-                            }
-                            if(profile.getTravelMode() == TravelMode.driving){
-                                uri = uri.concat("&mode=d");
-                            }
-                            if(profile.getTravelMode() == TravelMode.walking){
-                                uri = uri.concat("&mode=w");
-                            }
-
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri))
-                                    .setPackage("com.google.android.apps.maps");
-                            if (intent.resolveActivity(getPackageManager()) != null) {
-                                startActivity(intent);
-                            } else {
-                                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=com.google.android.apps.maps")));
-                            }
-
-                        }
-                    });
+//                    findViewById(R.id.debugYandexNavi).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("yandexnavi://build_route_on_map?"
+//                                    + "lat_from="
+//                                    + profile.getPosition().getLatitude()
+//                                    + "&lon_from="
+//                                    + profile.getPosition().getLongitude()
+//                                    + "&lat_to="
+//                                    + profile.getCurrent().getPosition().getLatitude()
+//                                    + "&lon_to="
+//                                    + profile.getCurrent().getPosition().getLongitude()))
+//                                    .setPackage("ru.yandex.yandexnavi");
+//
+//                            if (intent.resolveActivity(getPackageManager()) != null) {
+//                                startActivity(intent);
+//                            } else {
+//                                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=ru.yandex.yandexnavi")));
+//                            }
+//                        }
+//                    });
+//
+//                    findViewById(R.id.debugGoogleNavi).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            String uri = "google.navigation:"
+//                                    + "q="
+//                                    + profile.getCurrent().getPosition().getLatitude()
+//                                    + ", "
+//                                    + profile.getCurrent().getPosition().getLongitude();
+//                            if(profile.getTravelMode() == TravelMode.bicycling){
+//                                uri = uri.concat("&mode=b");
+//                            }
+//                            if(profile.getTravelMode() == TravelMode.driving){
+//                                uri = uri.concat("&mode=d");
+//                            }
+//                            if(profile.getTravelMode() == TravelMode.walking){
+//                                uri = uri.concat("&mode=d");
+//                            }
+//
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+//                                    .setPackage("com.google.android.apps.maps");
+//                            if (intent.resolveActivity(getPackageManager()) != null) {
+//                                startActivity(intent);
+//                            } else {
+//                                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=com.google.android.apps.maps")));
+//                            }
+//
+//                        }
+//                    });
                 }
             });
         }

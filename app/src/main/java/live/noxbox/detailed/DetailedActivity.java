@@ -69,8 +69,8 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void draw(Profile profile) {
         drawToolbar(profile.getViewed());
-        drawOtherProfile(profile.getViewed());
-        drawDescription(profile.getViewed());
+        drawOtherProfile(profile);
+        drawDescription(profile);
         drawWaitingTime(profile.getViewed());
         drawRating(profile.getViewed());
         if (profile.getViewed().getRole() == MarketRole.supply) {
@@ -90,14 +90,20 @@ public class DetailedActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(noxbox.getType().getName());
     }
 
-    //TODO (vl) display info about other participant
-    private void drawOtherProfile(Noxbox noxbox) {
-        if (noxbox.getTimeAccepted() != null) {
+    private void drawOtherProfile(Profile profile) {
+        if (profile.getViewed().getTimeStartPerforming() == null) {
             findViewById(R.id.profileTitleLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
             drawDropdownElement(R.id.profileTitleLayout, R.id.profileLayout);
-            ImageManager.createCircleImageFromUrl(this, noxbox.getOwner().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
-            ((TextView) findViewById(R.id.profileName)).setText(noxbox.getOwner().getName());
+
+            if (profile.getViewed().getOwner().equals(profile)) {
+                ImageManager.createCircleImageFromUrl(this, profile.getViewed().getParty().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
+                ((TextView) findViewById(R.id.profileName)).setText(profile.getViewed().getParty().getName());
+            } else {
+                ImageManager.createCircleImageFromUrl(this, profile.getViewed().getOwner().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
+                ((TextView) findViewById(R.id.profileName)).setText(profile.getViewed().getOwner().getName());
+            }
+
         } else {
             findViewById(R.id.profileTitleLayout).setVisibility(View.GONE);
             findViewById(R.id.profileLayout).setVisibility(View.GONE);
@@ -105,21 +111,33 @@ public class DetailedActivity extends AppCompatActivity {
 
     }
 
-    private void drawDescription(Noxbox noxbox) {
-        if (noxbox.getTimeAccepted() != null) {
+    private void drawDescription(Profile profile) {
+        if (profile.getViewed().getTimeAccepted() != null) {
             findViewById(R.id.descriptionLayout).setVisibility(View.GONE);
         }
+
         drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
         changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
-        if (noxbox.getRole() == MarketRole.supply) {
-            ((TextView) findViewById(R.id.previousDescription)).setText(R.string.readyToPerform);
-            ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
+
+        if (profile.getViewed().getRole() == MarketRole.supply) {
+            if (profile.getViewed().getOwner().equals(profile)) {
+                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.wantToGet);
+                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
+            } else {
+                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.readyToPerform);
+                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
+            }
         } else {
-            ((TextView) findViewById(R.id.previousDescription)).setText(R.string.wantToGet);
-            ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
+            if (profile.getViewed().getOwner().equals(profile)) {
+                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.wantToGet);
+                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
+            } else {
+                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.readyToPerform);
+                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
+            }
         }
 
-        ((TextView) findViewById(R.id.date)).setText(getResources().getString(R.string.dateRegistrationService) + " " + date(noxbox.getTimeCreated()));
+        ((TextView) findViewById(R.id.date)).setText(getResources().getString(R.string.dateRegistrationService) + " " + date(profile.getViewed().getTimeCreated()));
 
     }
 
@@ -308,7 +326,6 @@ public class DetailedActivity extends AppCompatActivity {
                     public void execute(Profile profile) {
                         profile.setCurrent(profile.getViewed());
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                        profile.getCurrent().setParty(profile.notPublicInfo());
                         finish();
                     }
                 });
@@ -413,6 +430,7 @@ public class DetailedActivity extends AppCompatActivity {
                             profile.getViewed().setTimeCanceledByParty(System.currentTimeMillis());
                         }
                         profile.getViewed().setCancellationReasonMessage(cancellationReason);
+                        profile.getViewed().setParty(null);
                         alertDialog.cancel();
                         profile.setCurrent(ProfileStorage.noxbox());
                         profile.setViewed(null);

@@ -39,9 +39,6 @@ public class Performing implements State {
     public void draw(final Profile profile) {
         MapController.buildMapPosition(googleMap, profile);
 
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        googleMap.getUiSettings().setZoomControlsEnabled(false);
-
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
@@ -125,8 +122,6 @@ public class Performing implements State {
     @Override
     public void clear() {
         googleMap.clear();
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
         stopTimer();
         performingView.removeAllViews();
         activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
