@@ -17,6 +17,7 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
+import live.noxbox.tools.NavigatorManager;
 
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
@@ -41,6 +42,14 @@ public class Accepting implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
 
+        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavigatorManager.openNavigator(activity, profile);
+            }
+        });
+
         ((TextView) acceptingView.findViewById(R.id.blinkingInfo)).setText(R.string.acceptingConfirmation);
         acceptingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +61,7 @@ public class Accepting implements State {
             }
         });
 
-        acceptingView.findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+        acceptingView.findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
@@ -89,13 +98,14 @@ public class Accepting implements State {
             }
 
         }.start();
-
+        MapController.buildMapMarkerListener(googleMap, profile, activity);
         MapController.buildMapPosition(googleMap, profile);
     }
 
     @Override
     public void clear() {
         googleMap.clear();
+        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         if (anim != null && animationDrawable != null) {
             anim.cancel();

@@ -29,7 +29,7 @@ public class NoxboxExamples {
 
             noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
             noxbox.setRole(MarketRole.values()[ThreadLocalRandom.current().nextInt(MarketRole.values().length)]);
-            Profile owner = new Profile().setId("1231" + i).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399));
+            Profile owner = new Profile().setId("1231" + i).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg").setName("Granny Zelda");
 
             owner.setTravelMode(TravelMode.values()[ThreadLocalRandom.current().nextInt(TravelMode.values().length)]);
             if (owner.getTravelMode() == TravelMode.none) {
