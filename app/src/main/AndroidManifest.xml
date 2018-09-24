@@ -18,7 +18,6 @@
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -70,6 +69,9 @@
             android:name=".pages.QRCaptureActivity"
             android:screenOrientation="portrait" />
 
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="face" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="4280356528ee3adc2317d482e6f6864f345f98d9" />
