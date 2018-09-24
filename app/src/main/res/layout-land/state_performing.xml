@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/timePassed"
+        android:text="@string/perfirmingPushContent"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/text_color_secondary"
         android:textSize="24sp" />

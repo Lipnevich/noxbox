@@ -6,18 +6,18 @@ import java.util.Map;
  * Created by nicolay.lipnevich on 5/5/2018.
  */
 
-public class Notice {
+public class Notification {
 
-    private EventType type;
-    private Integer id, progress,time;
+    private NotificationType type;
+    private Integer id, progress, time;
     private Boolean local = false;
     private String estimation, icon, name, message, price, balance, previousBalance;
 
-    public static Notice create(Map<String, String> data) {
-        if (data.get("type") == null) return new Notice();
+    public static Notification create(Map<String, String> data) {
+        if (data.get("type") == null) return new Notification();
 
-        return new Notice()
-                .setType(EventType.valueOf(data.get("type")))
+        return new Notification()
+                .setType(NotificationType.valueOf(data.get("type")))
                 .setEstimation(data.get("estimation"))
                 .setIcon(data.get("icon"))
                 .setName(data.get("name"))
@@ -28,8 +28,8 @@ public class Notice {
                 .setPreviousBalance(data.get("previousBalance") != null ? data.get("previousBalance") : "0");
     }
 
-    public static Notice create(Event event) {
-        return new Notice()
+    public static Notification create(Event event) {
+        return new Notification()
                 .setType(event.getType())
                 .setEstimation(event.getEstimationTime())
                 .setIcon(event.getSender().getPhoto())
@@ -40,14 +40,14 @@ public class Notice {
 
     public Boolean getIgnore() {
         return getType() == null ||
-                (getType() == EventType.balance && balance != null && balance.equals(previousBalance));
+                (getType() == NotificationType.balance && balance != null && balance.equals(previousBalance));
     }
 
-    public EventType getType() {
+    public NotificationType getType() {
         return type;
     }
 
-    public Notice setType(EventType type) {
+    public Notification setType(NotificationType type) {
         this.type = type;
         return this;
     }
@@ -56,7 +56,7 @@ public class Notice {
         return estimation;
     }
 
-    public Notice setEstimation(String estimation) {
+    public Notification setEstimation(String estimation) {
         this.estimation = estimation;
         return this;
     }
@@ -65,7 +65,7 @@ public class Notice {
         return icon;
     }
 
-    public Notice setIcon(String icon) {
+    public Notification setIcon(String icon) {
         this.icon = icon;
         return this;
     }
@@ -74,7 +74,7 @@ public class Notice {
         return name;
     }
 
-    public Notice setName(String name) {
+    public Notification setName(String name) {
         this.name = name;
         return this;
     }
@@ -83,7 +83,7 @@ public class Notice {
         return message;
     }
 
-    public Notice setMessage(String message) {
+    public Notification setMessage(String message) {
         this.message = message;
         return this;
     }
@@ -92,7 +92,7 @@ public class Notice {
         return id;
     }
 
-    public Notice setId(Integer id) {
+    public Notification setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -101,7 +101,7 @@ public class Notice {
         return price;
     }
 
-    public Notice setPrice(String price) {
+    public Notification setPrice(String price) {
         this.price = price;
         return this;
     }
@@ -110,7 +110,7 @@ public class Notice {
         return balance;
     }
 
-    public Notice setBalance(String balance) {
+    public Notification setBalance(String balance) {
         this.balance = balance;
         return this;
     }
@@ -119,7 +119,7 @@ public class Notice {
         return local;
     }
 
-    public Notice setLocal(Boolean local) {
+    public Notification setLocal(Boolean local) {
         this.local = local;
         return this;
     }
@@ -128,7 +128,7 @@ public class Notice {
         return previousBalance;
     }
 
-    public Notice setPreviousBalance(String previousBalance) {
+    public Notification setPreviousBalance(String previousBalance) {
         this.previousBalance = previousBalance;
         return this;
     }
@@ -137,7 +137,7 @@ public class Notice {
         return this.progress;
     }
 
-    public Notice setProgress(Integer progress) {
+    public Notification setProgress(Integer progress) {
         this.progress = progress;
         return this;
     }
@@ -146,7 +146,7 @@ public class Notice {
         return time;
     }
 
-    public Notice setTime(Integer time) {
+    public Notification setTime(Integer time) {
         this.time = time;
         return this;
     }

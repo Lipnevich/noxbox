@@ -133,7 +133,7 @@ public class ProfileActivity extends FragmentActivity {
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recyclerView.setAdapter(new PortfolioNoxboxTypeAdapter(typeList, ProfileActivity.this));
-        }else{
+        } else {
             ((RecyclerView) findViewById(R.id.noxboxTypeList)).setVisibility(View.GONE);
             findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.serviceProvidedText).setVisibility(View.GONE);
@@ -271,12 +271,18 @@ public class ProfileActivity extends FragmentActivity {
         ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     ImageManager.uploadPhoto(this, data.getData());
+                    ProfileStorage.readProfile(new Task<Profile>() {
+                        @Override
+                        public void execute(Profile profile) {
+                            profile.setPhoto(data.getData().toString());
+                        }
+                    });
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 DebugMessage.popup(this, "Cancelled");
@@ -303,7 +309,7 @@ public class ProfileActivity extends FragmentActivity {
             });
 
         }
-        if(requestCode == ProfilePerformerActivity.CODE){
+        if (requestCode == ProfilePerformerActivity.CODE) {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {

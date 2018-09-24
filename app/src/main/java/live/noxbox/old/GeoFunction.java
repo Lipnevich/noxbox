@@ -32,7 +32,7 @@ public abstract class GeoFunction extends MapActivity {
     public final static String delimiter = ";";
 
     private String createKey() {
-        return getProfile().getId() + delimiter + getProfile().getTravelMode().toString();
+        return getProfile().getIndex() + delimiter + getProfile().getTravelMode().toString();
     }
 
     private void listenAvailablePerformers(GeoLocation geoLocation) {
@@ -42,7 +42,7 @@ public abstract class GeoFunction extends MapActivity {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 String performerId = key.split(delimiter)[0];
-                if(getProfile().getId().equals(performerId)) return;
+                if(getProfile().getIndex().equals(performerId)) return;
                 TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
                 GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), R.drawable.masseur);
                 marker.setTag(travelMode);
@@ -51,14 +51,14 @@ public abstract class GeoFunction extends MapActivity {
             @Override
             public void onKeyExited(String key) {
                 String performerId = key.split(delimiter)[0];
-                if(getProfile().getId().equals(performerId)) return;
+                if(getProfile().getIndex().equals(performerId)) return;
                 removeMarker(performerId);
             }
 
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
                 String performerId = key.split(delimiter)[0];
-                if(getProfile().getId().equals(performerId)) return;
+                if(getProfile().getIndex().equals(performerId)) return;
                 TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
                 GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), R.drawable.masseur);
                 marker.setTag(travelMode);

@@ -3,7 +3,7 @@ package live.noxbox.model;
 public class Request {
 
     private String id;
-    private EventType type;
+    private NotificationType type;
     private String address;
     private String message;
     private Position position;
@@ -19,11 +19,11 @@ public class Request {
         return this;
     }
 
-    public EventType getType() {
+    public NotificationType getType() {
         return type;
     }
 
-    public Request setType(EventType type) {
+    public Request setType(NotificationType type) {
         this.type = type;
         return this;
     }

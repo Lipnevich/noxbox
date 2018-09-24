@@ -53,7 +53,7 @@ public abstract class ChatFunction extends EventFunction {
             return false;
         }
         for(Event event : noxbox.getChat().values()) {
-            if(!event.getSender().getId().equals(getProfile().getId()) && !event.getWasRead()) {
+            if(!event.getSender().getIndex().equals(getProfile().getIndex()) && !event.getWasRead()) {
                 return true;
             }
         }

@@ -68,16 +68,16 @@
     <string name="logout">Выход</string>
     <string name="logoutPrompt">Вы уверены что хотите выйти?</string>
     <string name="requestPushTitle">Поступил заказ</string>
-    <string name="requestPushBody">%s ожидает подтверждения. Время пути %s минут</string>
+    <string name="requestingPushContent">%s ожидает подтверждения. Время пути %s минут</string>
     <string name="acceptPushTitle">В пути</string>
-    <string name="acceptPushBody">%s прибудет через %s минуты</string>
+    <string name="acceptingPushContent">%s прибудет через %s минуты</string>
     <string name="performerCancelPushTitle">Запрос отклонен</string>
-    <string name="performerCancelPushBody">Пожалуйста попробуйте снова</string>
+    <string name="supplierCanceledPushContent">Пожалуйста попробуйте снова</string>
     <string name="payerCancelPushTitle">Запрос отменен</string>
-    <string name="payerCancelPushBody">Новый запрос будет предоставлен скоро</string>
+    <string name="demanderCanceledPushContent">Новый запрос будет предоставлен скоро</string>
     <string name="completePushTitle">Оплата выполнена</string>
-    <string name="completePushBody">%s %s было отправлено исполнителю</string>
-    <string name="balancePushBody">Ваш баланс составляет %s %s</string>
+    <string name="completedPushContent">%s %s было отправлено исполнителю</string>
+    <string name="balancePushContent">Ваш баланс составляет %s %s</string>
     <string name="balancePushTitle">Баланс изменился</string>
     <string name="qrPushTitle">Работаю</string>
     <string name="qrPushBody">%s рад оказать Вам услугу</string>
@@ -194,7 +194,7 @@
     <string name="workAtHome">Работа на месте</string>
     <string name="chooseTravelMode">Способ передвижения</string>
     <string name="uploadingProgressTitle">Uploading image %d%%</string>
-    <string name="uploadingProgressBody">%d seconds left</string>
+    <string name="uploadingProgressContent">%d seconds left</string>
     <string name="name">Name</string>
     <string name="uploadingStarted">Uploading started</string>
     <string name="haveHost">есть возможность принять у себя</string>
@@ -209,7 +209,7 @@
     <string name="deleteSection">Удалить раздел?</string>
     <string name="confirm">Confirm</string>
     <string name="performing">Performing</string>
-    <string name="timePassed">Прошло времени:</string>
+    <string name="perfirmingPushContent">Прошло времени:</string>
     <string name="cancelReason">Причина отмены:</string>
     <string name="substandardWork">Некачественная работа</string>
     <string name="own">Своя</string>
@@ -223,4 +223,8 @@
     <string name="pleaseRatePerformer">Please rate your performer</string>
     <string name="commentSuccessfullySent">Comment successfully sent!</string>
     <string name="join">Join</string>
+    <string name="replaceIt">Заменить текст!!!</string>
+    <string name="photoValidationProgressContent">Проверка фотографии...</string>
+    <string name="photoValidContent">Фотография успешно обработана!</string>
+    <string name="photoInvalidContent">Фотография не соответствует требованиям</string>
 </resources>

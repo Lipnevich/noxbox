@@ -23,9 +23,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import live.noxbox.R;
-import live.noxbox.model.EventType;
 import live.noxbox.model.ImageType;
-import live.noxbox.model.Notice;
+import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
@@ -33,8 +33,8 @@ import live.noxbox.state.ProfileStorage;
 public class ImageManager {
 
 
-    public static void uploadPhoto(final Activity activity, final Uri url) {
-        Bitmap bitmap = getBitmap(activity, url);
+    public static void uploadPhoto(final Activity activity, final Uri uri) {
+        final Bitmap bitmap = getBitmap(activity, uri);
 
         if (bitmap == null) return;
 
@@ -45,8 +45,11 @@ public class ImageManager {
             public void onSuccess(final Uri uri) {
                 ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
-                    public void execute(Profile profile) {
+                    public void execute(final Profile profile) {
+                        //TODO(vl) пуш прогресса проверки лица
+                        //...
                         profile.setPhoto(uri.toString());
+                        FacePartsDetection.execute(bitmap, profile, activity);
                     }
                 });
             }
@@ -105,23 +108,23 @@ public class ImageManager {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
 
-                Notice notice = new Notice().setType(EventType.uploadingProgress).setProgress(progress);
+                Notification notification = new Notification().setType(NotificationType.uploadingProgress).setProgress(progress);
 
                 if (progress != 0) {
                     int passedSeconds = (int) (System.currentTimeMillis() - time) / 1000;
                     int secPerPercent = passedSeconds / progress;
                     int remainSeconds = (secPerPercent * (100 - progress));
-                    notice.setTime(remainSeconds);
+                    notification.setTime(remainSeconds);
                 }
 
                 MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                messagingService.showPushNotification(notice);
+                messagingService.showPushNotification(notification);
             }
         });
     }
 
 
-    private static Bitmap getBitmap(final Activity activity, final Uri url) {
+    public static Bitmap getBitmap(final Activity activity, final Uri url) {
         try {
             return MediaStore.Images.Media.getBitmap(activity.getContentResolver(), url);
         } catch (IOException e) {
@@ -140,7 +143,8 @@ public class ImageManager {
                 .delete()
                 .addOnFailureListener(onFailureListener);
     }
-    public static void deleteFolderByType(final NoxboxType type){
+
+    public static void deleteFolderByType(final NoxboxType type) {
         getStorageReference().child(type.name()).delete().addOnFailureListener(onFailureListener);
     }
 

@@ -14,7 +14,7 @@ public class Profile implements Serializable {
     // read only
     private String id;
 
-    private Acceptance acceptance;
+    private Acceptance acceptance = new Acceptance();
     private Map<String, Boolean> darkList = new HashMap<>();
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();

@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 
 import live.noxbox.R;
 import live.noxbox.model.Event;
-import live.noxbox.model.EventType;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
@@ -98,7 +98,7 @@ public class PayerFunction extends FragmentActivity {
 //                    pointerImage.setVisibility(View.INVISIBLE);
 //                    drawPath(null, bestOption.getPerformer(), getProfile().publicInfo().setPosition(getCameraPosition()));
 //
-//                    sendRequest(new Request().setType(EventType.request).setNoxbox(bestOption));
+//                    sendRequest(new Request().setType(NotificationType.request).setNoxbox(bestOption));
 //
 //                    timer = new Timer() {
 //                        @Override
@@ -113,7 +113,7 @@ public class PayerFunction extends FragmentActivity {
             }
         });
 
-       // cancelButton = findViewById(R.id.cancelButton);
+        // cancelButton = findViewById(R.id.cancelButton);
     }
 
     private void processTimeout(Noxbox currentNoxbox) {
@@ -128,7 +128,7 @@ public class PayerFunction extends FragmentActivity {
     public void prepareForIteration(Profile profile) {
         processTimeout(profile.getCurrent());
 
-        if(profile.getCurrent() != null) {
+        if (profile.getCurrent() != null) {
             removeCurrentNoxbox();
         }
 
@@ -137,7 +137,7 @@ public class PayerFunction extends FragmentActivity {
 
         cancelButton.setVisibility(View.INVISIBLE);
         showQrCode.setImageDrawable(getResources().getDrawable(R.drawable.qr));
-        if(initialQrHeight != 0) {
+        if (initialQrHeight != 0) {
             showQrCode.getLayoutParams().height = initialQrHeight;
             showQrCode.getLayoutParams().width = initialQrWidth;
         }
@@ -161,13 +161,13 @@ public class PayerFunction extends FragmentActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                sendRequest(new Request().setType(EventType.payerCancel)
+                                sendRequest(new Request().setType(NotificationType.demanderCanceled)
                                         .setNoxbox(noxbox));
                             }
                         });
                 builder.setNegativeButton(R.string.no, null);
                 builder.show();
-                }
+            }
         });
         cancelButton.setVisibility(View.VISIBLE);
         showQrCode.setVisibility(View.VISIBLE);
@@ -177,7 +177,7 @@ public class PayerFunction extends FragmentActivity {
     }
 
     protected void processAccept(Event accept) {
-        if(timer != null) {
+        if (timer != null) {
             timer.stop();
         }
 //        cleanUpMap();

@@ -6,13 +6,13 @@
     <string name="ratingTitle">Rate</string>
     <string name="requestText">Request</string>
     <string name="requestPushTitle">Request incoming</string>
-    <string name="requestPushBody">%s is requesting you. Estimation %s minutes</string>
+    <string name="requestingPushContent">%s is requesting you. Estimation %s minutes</string>
     <string name="goOnlineText">Go online</string>
     <string name="acceptText">Accept</string>
     <string name="goOfflineText">Go Offline</string>
     <string name="cancelText">Cancel</string>
     <string name="rateButton">Send</string>
-    <string name="highRatingQuestion">What qualities You want to notice?</string>
+    <string name="highRatingQuestion">What qualities You want to notification?</string>
     <string name="lowRatingQuestion">What qualities should be improved?</string>
     <string name="responsibility">Responsibility</string>
     <string name="accuracy">Accuracy</string>
@@ -72,14 +72,14 @@
     <string name="logout">Logout</string>
     <string name="logoutPrompt">Are you sure you want to logout?</string>
     <string name="acceptPushTitle">Request accepted</string>
-    <string name="acceptPushBody">%s will arrive in %s minutes</string>
+    <string name="acceptingPushContent">%s will arrive in %s minutes</string>
     <string name="performerCancelPushTitle">Request declined</string>
-    <string name="performerCancelPushBody">Please try to request again</string>
+    <string name="supplierCanceledPushContent">Please try to request again</string>
     <string name="payerCancelPushTitle">Request canceled</string>
-    <string name="payerCancelPushBody">New request will be provided soon</string>
+    <string name="demanderCanceledPushContent">New request will be provided soon</string>
     <string name="completePushTitle">Payment done</string>
-    <string name="completePushBody">%s %s was transferred to performer</string>
-    <string name="balancePushBody">Your balance is %s %s</string>
+    <string name="completedPushContent">%s %s was transferred to performer</string>
+    <string name="balancePushContent">Your balance is %s %s</string>
     <string name="balancePushTitle">Balance updated</string>
     <string name="qrPushTitle">Performer working</string>
     <string name="qrPushBody">%s happy to provide you a service</string>
@@ -196,7 +196,7 @@
     <string name="workAtHome">Work at home</string>
     <string name="chooseTravelMode">Way of travel</string>
     <string name="uploadingProgressTitle">Uploading image %d%%</string>
-    <string name="uploadingProgressBody">%d seconds left</string>
+    <string name="uploadingProgressContent">%d seconds left</string>
     <string name="name">Name</string>
     <string name="uploadingStarted">Uploading started</string>
     <string name="haveHost">have the opportunity to host</string>
@@ -211,7 +211,7 @@
     <string name="deleteSection">Удалить раздел?</string>
     <string name="confirm">Confirm</string>
     <string name="performing">Performing</string>
-    <string name="timePassed">Прошло времени:</string>
+    <string name="perfirmingPushContent">Прошло времени:</string>
     <string name="cancelReason">Причина отмены:</string>
     <string name="substandardWork">Некачественная работа</string>
     <string name="own">Своя</string>
@@ -225,5 +225,9 @@
     <string name="pleaseRatePerformer">Please rate your performer</string>
     <string name="commentSuccessfullySent">Comment successfully sent!</string>
     <string name="join">Join</string>
+    <string name="replaceIt">Заменить текст!!!</string>
+    <string name="photoValidationProgressContent">Проверка фотографии...</string>
+    <string name="photoValidContent">Фотография успешно обработана!</string>
+    <string name="photoInvalidContent">Фотография не соответствует требованиям</string>
 
 </resources>

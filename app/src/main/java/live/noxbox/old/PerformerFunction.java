@@ -105,7 +105,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
             public void onClick(View v) {
                 completeButton.setVisibility(View.INVISIBLE);
                 sendRequest(new Request()
-                        .setType(EventType.complete)
+                        .setType(NotificationType.complete)
                         .setNoxbox(noxbox));
                 persistHistory();
                 prepareForIteration();
@@ -169,7 +169,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
                 cleanUpMap();
 
                 Firebase.sendRequest(new Request()
-                        .setType(EventType.accept)
+                        .setType(NotificationType.accept)
                         .setNoxbox(noxbox));
                 processNoxbox(noxbox);
             }
@@ -191,7 +191,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
     }
 
     private void cancelRequest(Noxbox noxbox) {
-        sendRequest(new Request().setType(EventType.performerCancel)
+        sendRequest(new Request().setType(NotificationType.performerCancel)
                 .setNoxbox(noxbox));
         prepareForIteration();
     }

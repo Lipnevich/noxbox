@@ -12,11 +12,14 @@ import java.text.DecimalFormat;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
+import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
 public class Performing implements State {
@@ -48,6 +51,13 @@ public class Performing implements State {
         drawPrice(profile);
         drawComplete(profile);
 
+        final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+        messagingService.showPushNotification(new Notification()
+                .setType(NotificationType.performing)
+                .setTime(seconds)
+                .setPrice(drawPrice(profile)));
+
+
         handler = new Handler();
         runnable = new Runnable() {
             @Override
@@ -57,10 +67,15 @@ public class Performing implements State {
                 int secs = seconds % 60;
                 String time = String.format("%d:%02d:%02d", hours, minutes, secs);
 
+
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
+
+                    MessagingService.builder.setContentText(time);
+                    messagingService.getNotificationService().notify(NotificationType.performing.getIndex(),MessagingService.builder.build());
+
                     seconds++;
-                    drawPrice(profile);
+
                     handler.postDelayed(this, 1000);
                 }
             }
@@ -70,10 +85,10 @@ public class Performing implements State {
     }
 
 
-    private void drawPrice(Profile profile) {
+    private String drawPrice(Profile profile) {
         final Long startTime = profile.getCurrent().getTimeStartPerforming();
 
-        if (startTime == null) return;
+        if (startTime == null) return null;
 
         double pricePerSecond = Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60;
 
@@ -83,7 +98,7 @@ public class Performing implements State {
             totalMoney = ((System.currentTimeMillis() - startTime) / 1000) * pricePerSecond;
             ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(totalMoney));
         }
-
+        return ((TextView) performingView.findViewById(R.id.currency)).getText().toString();
 
     }
 

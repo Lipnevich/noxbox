@@ -32,7 +32,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
-import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
 import static java.lang.reflect.Modifier.isStatic;
@@ -73,9 +72,9 @@ public class Firebase {
     }
 
     public static void sendRequest(Request request) {
-        requests().child(getProfile().getId()).child(request.getType().toString())
-                .setValue(objectToMap(request.setId(getProfile().getId())
-                        .setPush(MessagingService.generatePush(request))));
+//        requests().child(getProfile().getId()).child(request.getType().toString())
+//                .setValue(objectToMap(request.setId(getProfile().getId())
+//                        .setPush(MessagingService.generatePush(request))));
     }
 
     // Noxboxes API
