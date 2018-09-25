@@ -131,9 +131,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawOtherProfile(Profile profile) {
 
         if (profile.getViewed().getTimeStartPerforming() == null) {
-            findViewById(R.id.profileTitleLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
-            drawDropdownElement(R.id.profileTitleLayout, R.id.profileLayout);
 
             if (profile.getViewed().getOwner().equals(profile)) {
                 ImageManager.createCircleImageFromUrl(this, profile.getViewed().getParty().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
@@ -144,7 +142,6 @@ public class DetailedActivity extends AppCompatActivity {
             }
 
         } else {
-            findViewById(R.id.profileTitleLayout).setVisibility(View.GONE);
             findViewById(R.id.profileLayout).setVisibility(View.GONE);
         }
 

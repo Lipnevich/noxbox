@@ -55,84 +55,29 @@
             android:orientation="vertical">
             <!--********************************PROFILE START******************************************-->
             <LinearLayout
+                android:id="@+id/profileLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="72dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp" />
 
-                    <LinearLayout
-                        android:id="@+id/profileTitleLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/primary"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
+                <TextView
+                    android:id="@+id/profileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@color/google_text"
+                    android:textSize="@dimen/text_size" />
 
-                        <ImageView
-                            android:id="@+id/profileTitleImage"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginBottom="4dp"
-                            android:layout_marginStart="24dp"
-                            android:layout_marginTop="4dp"
-                            android:src="@drawable/about_me"
-                            android:tint="#fffc46" />
-
-                        <TextView
-                            android:id="@+id/profileTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="4"
-                            android:gravity="center"
-                            android:text="@string/profile"
-                            android:textColor="@color/secondary"
-                            android:textSize="@dimen/text_title" />
-
-                        <ImageView
-                            android:id="@+id/profileArrow"
-                            android:layout_width="24dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="24dp"
-                            android:src="@drawable/arrow_down"
-                            android:tint="@color/secondary" />
-                    </LinearLayout>
-                    <!--dropdown part-->
-                    <LinearLayout
-                        android:id="@+id/profileLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:orientation="horizontal"
-                        android:visibility="gone">
-
-                        <ImageView
-                            android:id="@+id/profileImage"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="16dp" />
-
-                        <TextView
-                            android:id="@+id/profileName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="16dp"
-                            android:textColor="@color/google_text"
-                            android:textSize="@dimen/text_size" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
             </LinearLayout>
-
             <!--*******************************DESCRIPTION START***************************************-->
             <LinearLayout
                 android:layout_width="match_parent"
