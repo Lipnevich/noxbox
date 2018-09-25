@@ -172,15 +172,16 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             @Override
             public void execute(Profile profile) {
                 profile.setViewed(noxboxMarker.getNoxbox());
+                if (googleMap.getCameraPosition() != null) {
+                    profile.setPosition(Position.from(googleMap.getCameraPosition().target));
+                }
                 profile.getViewed().setParty(profile.notPublicInfo());
-                //profile.setPosition(Position.from(googleMap.getCameraPosition().target));
                 startActivity(activity, DetailedActivity.class);
             }
         });
         return true;
     }
-
-
+    
     private class CustomClusterRenderer extends DefaultClusterRenderer<NoxboxMarker> {
         private final IconGenerator mClusterIconGenerator = new IconGenerator(activity.getApplicationContext());
 
