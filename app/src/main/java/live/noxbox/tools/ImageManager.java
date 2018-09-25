@@ -46,10 +46,12 @@ public class ImageManager {
                 ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(final Profile profile) {
-                        //TODO(vl) пуш прогресса проверки лица
-                        //...
+
                         profile.setPhoto(uri.toString());
                         FacePartsDetection.execute(bitmap, profile, activity);
+                        MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+                        messagingService.showPushNotification(new Notification().setType(NotificationType.photoValidationProgress));
+
                     }
                 });
             }

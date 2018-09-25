@@ -70,13 +70,17 @@ public abstract class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        ProfileStorage.readProfile(new Task<Profile>() {
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ProfileStorage.listenProfile(MenuActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
             }
         });
-
     }
 
     private void draw(Profile profile) {

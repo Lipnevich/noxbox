@@ -88,9 +88,11 @@ public class DetailedActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
+        ((ImageView)findViewById(R.id.illustration)).setImageDrawable(getDrawable(noxbox.getType().getIllustration()));
     }
 
     private void drawOtherProfile(Profile profile) {
+
         if (profile.getViewed().getTimeStartPerforming() == null) {
             findViewById(R.id.profileTitleLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);

@@ -3,14 +3,16 @@ package live.noxbox.model;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
 
+import static live.noxbox.Configuration.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
+
 public class Acceptance {
 
-    private Boolean expired = true;
     private Float correctNameProbability = 0f;
     private Boolean failToRecognizeFace = true;
     private Float smileProbability = 0f;
     private Float rightEyeOpenProbability = 0f;
     private Float leftEyeOpenProbability = 0f;
+    private Boolean isNose = false;
 
     public Acceptance() {
 
@@ -27,13 +29,13 @@ public class Acceptance {
     }
 
     @Exclude
-    public Boolean isAccepted(float minProbability) {
-        return correctNameProbability > minProbability
-                && !failToRecognizeFace
-                && !expired
-                && smileProbability > minProbability
-                && rightEyeOpenProbability > minProbability
-                && leftEyeOpenProbability > minProbability;
+    public Boolean isAccepted() {
+        return //correctNameProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE &&
+                !failToRecognizeFace
+                && smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
+                && rightEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
+                && leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
+                && isNose;
     }
 
     public Float getCorrectNameProbability() {
@@ -81,12 +83,12 @@ public class Acceptance {
         return this;
     }
 
-    public Boolean getExpired() {
-        return expired;
+    public Boolean getNose() {
+        return isNose;
     }
 
-    public Acceptance setExpired(Boolean expired) {
-        this.expired = expired;
+    public Acceptance setNose(Boolean nose) {
+        isNose = nose;
         return this;
     }
 }

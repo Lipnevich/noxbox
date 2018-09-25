@@ -18,7 +18,7 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 
 import live.noxbox.R;
-import live.noxbox.model.EventType;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
 import live.noxbox.model.Wallet;
@@ -58,7 +58,7 @@ public class WalletActivity extends AppCompatActivity {
 //            addressToSendEditor.setText(getProfile().getAddressToRefund());
 //        }
         // TODO (nli) send request to blockchain directly instead
-        Firebase.sendRequest(new Request().setType(EventType.balance));
+        Firebase.sendRequest(new Request().setType(NotificationType.balance));
     }
 
     private void refund(Profile profile, String address) {
@@ -69,7 +69,7 @@ public class WalletActivity extends AppCompatActivity {
         }
 
         Firebase.sendRequest(new Request()
-                .setType(EventType.refund)
+                .setType(NotificationType.refund)
                 .setAddress(profile.getWallet().getAddressToRefund()));
     }
 

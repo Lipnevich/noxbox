@@ -19,7 +19,7 @@ public class Event implements Comparable<Event> {
     private Boolean wasRead;
     private Wallet wallet;
     private Profile sender;
-    private EventType type;
+    private NotificationType type;
     private Position position;
     private Long time;
     private Noxbox noxbox;
@@ -34,11 +34,11 @@ public class Event implements Comparable<Event> {
         return this;
     }
 
-    public EventType getType() {
+    public NotificationType getType() {
         return type;
     }
 
-    public Event setType(EventType type) {
+    public Event setType(NotificationType type) {
         this.type = type;
         return this;
     }
