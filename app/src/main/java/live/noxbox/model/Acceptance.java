@@ -7,7 +7,6 @@ import static live.noxbox.Configuration.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
 
 public class Acceptance {
 
-    private Float correctNameProbability = 0f;
     private Boolean failToRecognizeFace = true;
     private Float smileProbability = 0f;
     private Float rightEyeOpenProbability = 0f;
@@ -15,36 +14,23 @@ public class Acceptance {
     private Boolean isNose = false;
 
     public Acceptance() {
-
     }
 
     public Acceptance(FirebaseUser user) {
-        correctNameProbability = user.getDisplayName() != null ? 1f : 0f;
         failToRecognizeFace = user.getPhotoUrl() != null ? false : true;
     }
 
     public Acceptance(Profile profile) {
-        correctNameProbability = profile.getName() != null ? 1f : 0f;
         failToRecognizeFace = profile.getPhoto() != null ? false : true;
     }
 
     @Exclude
     public Boolean isAccepted() {
-        return //correctNameProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE &&
-                !failToRecognizeFace
+        return !failToRecognizeFace
                 && smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && rightEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && isNose;
-    }
-
-    public Float getCorrectNameProbability() {
-        return correctNameProbability;
-    }
-
-    public Acceptance setCorrectNameProbability(Float correctNameProbability) {
-        this.correctNameProbability = correctNameProbability;
-        return this;
     }
 
     public Float getSmileProbability() {
