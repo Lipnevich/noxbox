@@ -2,6 +2,8 @@ package live.noxbox.model;
 
 import java.util.Map;
 
+import live.noxbox.tools.InvalidAcceptance;
+
 /**
  * Created by nicolay.lipnevich on 5/5/2018.
  */
@@ -12,6 +14,8 @@ public class Notification {
     private Integer id, progress, time;
     private Boolean local = false;
     private String estimation, icon, name, message, price, balance, previousBalance;
+    private InvalidAcceptance invalidAcceptance;
+
 
     public static Notification create(Map<String, String> data) {
         if (data.get("type") == null) return new Notification();
@@ -148,6 +152,15 @@ public class Notification {
 
     public Notification setTime(Integer time) {
         this.time = time;
+        return this;
+    }
+
+    public InvalidAcceptance getInvalidAcceptance() {
+        return invalidAcceptance;
+    }
+
+    public Notification setInvalidAccetrance(InvalidAcceptance invalidAcceptance) {
+        this.invalidAcceptance = invalidAcceptance;
         return this;
     }
 }

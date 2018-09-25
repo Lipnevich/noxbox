@@ -181,7 +181,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         });
         return true;
     }
-    
+
     private class CustomClusterRenderer extends DefaultClusterRenderer<NoxboxMarker> {
         private final IconGenerator mClusterIconGenerator = new IconGenerator(activity.getApplicationContext());
 

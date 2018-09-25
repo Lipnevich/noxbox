@@ -3,6 +3,8 @@ package live.noxbox.model;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
 
+import live.noxbox.tools.InvalidAcceptance;
+
 import static live.noxbox.Configuration.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
 
 public class Acceptance {
@@ -31,6 +33,21 @@ public class Acceptance {
                 && rightEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && isNose;
+    }
+
+    @Exclude
+    public InvalidAcceptance getInvalidAcceptance() {
+        if (!isNose) return new InvalidAcceptance.Nose();
+
+        if (smileProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE)
+            return new InvalidAcceptance.Smile();
+
+        if (rightEyeOpenProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE || leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE)
+            return new InvalidAcceptance.Eyes();
+
+        if (failToRecognizeFace) return new InvalidAcceptance.Face();
+
+        return new InvalidAcceptance.None();
     }
 
     public Float getSmileProbability() {

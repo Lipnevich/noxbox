@@ -70,7 +70,7 @@ public class FacePartsDetection {
                             buildNotification(new Notification().setType(NotificationType.photoValid), activity);
                         } else {
                             profile.getAcceptance().setFailToRecognizeFace(true);
-                            buildNotification(new Notification().setType(NotificationType.photoInvalid), activity);
+                            buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                         }
 
                         ProfileStorage.fireProfile();

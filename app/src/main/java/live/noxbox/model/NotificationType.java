@@ -117,7 +117,9 @@ public enum NotificationType {
             }
             return format(resources, content, notification.getTime());
         }
-        if (notification.getType() == photoInvalid) return format(resources, content);
+        if (notification.getType() == photoInvalid) {
+            return format(resources, content, resources.getString(notification.getInvalidAcceptance().getCorrectionMessage()));
+        }
         if (notification.getType() == photoValid) return format(resources, content);
         return "Glad to serve you!";
     }
@@ -149,11 +151,11 @@ public enum NotificationType {
                     .addNextIntentWithParentStack(new Intent(context, ChatActivity.class))
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if(notification.getType() == photoInvalid) return TaskStackBuilder.create(context)
+        if (notification.getType() == photoInvalid) return TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, ProfileActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if(notification.getType() == photoValid) return TaskStackBuilder.create(context)
+        if (notification.getType() == photoValid) return TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 

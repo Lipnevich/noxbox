@@ -227,4 +227,9 @@
     <string name="photoValidationProgressContent">Проверка фотографии...</string>
     <string name="photoValidContent">Фотография успешно обработана!</string>
     <string name="photoInvalidContent">Фотография не соответствует требованиям</string>
+    <string name="smile">Улыбнитесь.</string>
+    <string name="openYourEyes">Откройте глаза.</string>
+    <string name="openYourFace">Покажите лицо.</string>
+    <string name="approachFace">Приблизьте лицо.</string>
+    <string name="none" />
 </resources>
