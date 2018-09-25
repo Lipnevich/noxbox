@@ -42,7 +42,7 @@ public class Acceptance {
         if (smileProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE)
             return new InvalidAcceptance.Smile();
 
-        if (rightEyeOpenProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE || leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE)
+        if (rightEyeOpenProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE || leftEyeOpenProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE)
             return new InvalidAcceptance.Eyes();
 
         if (failToRecognizeFace) return new InvalidAcceptance.Face();
