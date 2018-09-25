@@ -3,8 +3,11 @@ package live.noxbox.detailed;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +25,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.gjiazhe.panoramaimageview.GyroscopeObserver;
+import com.gjiazhe.panoramaimageview.PanoramaImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,22 +60,38 @@ import static live.noxbox.detailed.CoordinateActivity.LNG;
 import static live.noxbox.tools.DateTimeFormatter.date;
 
 public class DetailedActivity extends AppCompatActivity {
+    private GyroscopeObserver gyroscopeObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed);
+        gyroscopeObserver = new GyroscopeObserver();
+        // Set the maximum radian the device should rotate to show image's bounds.
+        // It should be set between 0 and π/2.
+        // The default value is π/9.
+        gyroscopeObserver.setMaxRotateRadian(Math.PI / 2);
+        PanoramaImageView panoramaImageView = (PanoramaImageView) findViewById(R.id.illustration);
+        // Set GyroscopeObserver for PanoramaImageView.
+        panoramaImageView.setGyroscopeObserver(gyroscopeObserver);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        gyroscopeObserver.register(this);
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gyroscopeObserver.unregister();
     }
 
     private void draw(Profile profile) {
@@ -88,7 +115,17 @@ public class DetailedActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
-        ((ImageView)findViewById(R.id.illustration)).setImageDrawable(getDrawable(noxbox.getType().getIllustration()));
+
+        Glide.with(this)
+                .asDrawable()
+                .load(noxbox.getType().getIllustration())
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        ((ImageView) findViewById(R.id.illustration)).setImageDrawable(resource);
+                    }
+                });
     }
 
     private void drawOtherProfile(Profile profile) {

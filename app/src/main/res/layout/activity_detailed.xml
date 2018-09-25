@@ -23,13 +23,14 @@
             app:expandedTitleMarginStart="24dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <ImageView
+            <com.gjiazhe.panoramaimageview.PanoramaImageView
                 android:id="@+id/illustration"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:scaleType="fitXY"
-                app:layout_collapseMode="parallax"/>
+                app:layout_collapseMode="parallax"
+                app:piv_enablePanoramaMode="true"
+                app:piv_invertScrollDirection="false"
+                app:piv_show_scrollbar="false" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
