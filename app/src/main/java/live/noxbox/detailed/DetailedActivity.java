@@ -50,6 +50,8 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.profile.ImageListAdapter;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
+import live.noxbox.tools.BalanceCalculator;
+import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
@@ -323,7 +325,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawButtons(Profile profile) {
         switch (NoxboxState.getState(profile.getViewed(), profile)) {
             case created:
-                drawJoinButton(profile.getViewed().getRole());
+                drawJoinButton(profile);
                 break;
             case accepting:
                 drawAcceptButton(profile);
@@ -346,11 +348,11 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
-    private void drawJoinButton(MarketRole role) {
+    private void drawJoinButton(final Profile profile) {
         findViewById(R.id.joinButton).setVisibility(View.VISIBLE);
-        if (role == MarketRole.demand) {
+        if (profile.getViewed().getRole() == MarketRole.demand) {
             ((Button) findViewById(R.id.joinButton)).setText(R.string.proceed);
-        } else if (role == MarketRole.supply) {
+        } else if (profile.getViewed().getRole() == MarketRole.supply) {
             ((Button) findViewById(R.id.joinButton)).setText(R.string.order);
         }
 
@@ -360,6 +362,10 @@ public class DetailedActivity extends AppCompatActivity {
                 ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
+                        if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) { ((Button) findViewById(R.id.joinButton)).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+                            BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
+                            return;
+                        }
                         profile.setCurrent(profile.getViewed());
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                         finish();
@@ -561,6 +567,5 @@ public class DetailedActivity extends AppCompatActivity {
         });
 
     }
-
 
 }

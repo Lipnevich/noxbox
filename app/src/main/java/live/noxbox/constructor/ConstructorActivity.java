@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
+import live.noxbox.tools.BalanceCalculator;
+import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
@@ -99,14 +102,9 @@ public class ConstructorActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED;
     }
 
+
     private void draw(@NonNull final Profile profile) {
         drawToolbar(profile);
-        findViewById(R.id.publish).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                postNoxbox(profile);
-            }
-        });
         drawRole(profile);
         drawType(profile);
         drawTypeDescription(profile);
@@ -115,6 +113,7 @@ public class ConstructorActivity extends AppCompatActivity {
         drawHost(profile);
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
+        drawPublishButton(profile);
     }
 
     private void drawToolbar(final Profile profile) {
@@ -347,6 +346,25 @@ public class ConstructorActivity extends AppCompatActivity {
         });
     }
 
+    private void drawPublishButton(final Profile profile) {
+
+        ((LinearLayout) findViewById(R.id.publish).getParent()).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (profile.getCurrent().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
+
+                    ((LinearLayout) findViewById(R.id.publish).getParent())
+                            .setBackgroundColor(getResources().getColor(R.color.translucent));
+
+                    BottomSheetDialog.openWalletAddressSheetDialog(ConstructorActivity.this, profile);
+                    return;
+                }
+                postNoxbox(profile);
+            }
+        });
+    }
+
+
     private void setHeightForDropdownList(Spinner spinner) {
         try {
             Field popup = Spinner.class.getDeclaredField("mPopup");
@@ -361,9 +379,9 @@ public class ConstructorActivity extends AppCompatActivity {
     }
 
     public void postNoxbox(Profile profile) {
-        if(profile.getCurrent().getRole() == MarketRole.supply){
+        if (profile.getCurrent().getRole() == MarketRole.supply) {
             profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
-        }else{
+        } else {
             profile.getCurrent().getOwner().setPortfolio(null);
         }
 
@@ -381,7 +399,8 @@ public class ConstructorActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {

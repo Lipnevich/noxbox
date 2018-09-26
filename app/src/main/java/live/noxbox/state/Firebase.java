@@ -32,6 +32,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
+import live.noxbox.model.Wallet;
 import live.noxbox.tools.Task;
 
 import static java.lang.reflect.Modifier.isStatic;
@@ -186,6 +187,7 @@ public class Firebase {
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName())
                             .setHost(true)
+                            .setWallet(new Wallet().setBalance("1").setAddress("3PA1KvFfq9VuJjg45p2ytGgaNjrgnLSgf4r"))
                             .setPhoto(firebaseUser.getPhotoUrl().toString())
                             .setDemandsRating(ratingList)
                             .setSuppliesRating(ratingList)

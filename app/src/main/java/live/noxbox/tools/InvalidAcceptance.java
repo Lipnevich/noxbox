@@ -35,7 +35,7 @@ public interface InvalidAcceptance {
         }
     }
 
-    class None implements InvalidAcceptance {
+    class None implements InvalidAcceptance{
         @Override
         public int getCorrectionMessage() {
             return R.string.none;

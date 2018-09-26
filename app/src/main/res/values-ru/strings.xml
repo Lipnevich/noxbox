@@ -233,4 +233,5 @@
     <string name="approachFace">приблизьте лицо</string>
     <string name="none" />
     <string name="photoInvalidContent">Пожалуйста, %s</string>
+    <string name="topUpYourAcc">Пополните ваш счёт</string>
 </resources>
