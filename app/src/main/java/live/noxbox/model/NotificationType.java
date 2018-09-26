@@ -24,7 +24,7 @@ public enum NotificationType {
     uploadingProgress(0, R.string.uploadingProgressTitle, R.string.uploadingProgressContent),
     photoValidationProgress(0, R.string.noxbox, R.string.photoValidationProgressContent),
     photoValid(0, R.string.noxbox, R.string.photoValidContent),
-    photoInvalid(0, R.string.noxbox, R.string.photoInvalidContent),
+    photoInvalid(0, R.string.photoInvalidTitle, R.string.photoInvalidContent),
 
     balance(1, R.string.balancePushTitle, R.string.balancePushContent),
 
@@ -118,7 +118,8 @@ public enum NotificationType {
             return format(resources, content, notification.getTime());
         }
         if (notification.getType() == photoInvalid) {
-            return format(resources, content, resources.getString(notification.getInvalidAcceptance().getCorrectionMessage()));
+            String message = resources.getString(notification.getInvalidAcceptance().getCorrectionMessage());
+            return format(resources, content, message);
         }
         if (notification.getType() == photoValid) return format(resources, content);
         return "Glad to serve you!";
