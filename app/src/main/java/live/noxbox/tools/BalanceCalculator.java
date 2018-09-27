@@ -6,8 +6,9 @@ import live.noxbox.model.Profile;
 public class BalanceCalculator {
 
     public static boolean enoughBalance(Noxbox noxbox, Profile profile) {
-        Integer minimalPrice = Integer.parseInt(noxbox.getPrice()) / 4;
-        Integer walletBalance = Integer.parseInt(profile.getWallet().getBalance());
+        //TODO (vl)  java.lang.NumberFormatException: For input string: "0,25"
+        Double minimalPrice = Double.parseDouble(noxbox.getPrice()) / 4;
+        Double walletBalance = Double.parseDouble(profile.getWallet().getBalance());
         if (minimalPrice < walletBalance) return true;
 
         return false;
