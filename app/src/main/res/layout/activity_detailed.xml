@@ -23,14 +23,11 @@
             app:expandedTitleMarginStart="24dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <com.gjiazhe.panoramaimageview.PanoramaImageView
+            <live.noxbox.tools.PanoramaImageView
                 android:id="@+id/illustration"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_collapseMode="parallax"
-                app:piv_enablePanoramaMode="true"
-                app:piv_invertScrollDirection="false"
-                app:piv_show_scrollbar="false" />
+                app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

@@ -31,8 +31,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.gjiazhe.panoramaimageview.GyroscopeObserver;
-import com.gjiazhe.panoramaimageview.PanoramaImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,9 @@ import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.ImageManager;
+import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
@@ -68,14 +68,15 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed);
+
+
+        PanoramaImageView panoramaImageView = (PanoramaImageView) findViewById(R.id.illustration);
         gyroscopeObserver = new GyroscopeObserver();
         // Set the maximum radian the device should rotate to show image's bounds.
         // It should be set between 0 and π/2.
         // The default value is π/9.
-        gyroscopeObserver.setMaxRotateRadian(Math.PI / 2);
-        PanoramaImageView panoramaImageView = (PanoramaImageView) findViewById(R.id.illustration);
-        // Set GyroscopeObserver for PanoramaImageView.
-        panoramaImageView.setGyroscopeObserver(gyroscopeObserver);
+        gyroscopeObserver.setMaxRotateRadian(Math.PI / 4);
+        gyroscopeObserver.addPanoramaImageView(panoramaImageView);
     }
 
     @Override
@@ -362,7 +363,8 @@ public class DetailedActivity extends AppCompatActivity {
                 ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
-                        if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) { ((Button) findViewById(R.id.joinButton)).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+                        if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
+                            ((Button) findViewById(R.id.joinButton)).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
                             BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
                             return;
                         }
