@@ -68,7 +68,6 @@ public class MapActivity extends DebugActivity implements
     private Map<String, GroundOverlay> markers = new HashMap<>();
     private Map<String, Polyline> pathes = new HashMap<>();
     private ImageView pathButton;
-    private ImageView locationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +97,7 @@ public class MapActivity extends DebugActivity implements
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_in_night));
-        moveGoogleCopyrights();
+        googleMap.setPadding(16,0,0,136);
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -114,11 +113,10 @@ public class MapActivity extends DebugActivity implements
     }
 
     protected void visibleCurrentLocation(boolean visible) {
-        locationButton = findViewById(R.id.locationButton);
         if (checkLocationPermission()) {
             // Permission to access the location is missing.
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            locationButton.setOnClickListener(new View.OnClickListener() {
+            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ActivityCompat.requestPermissions(MapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -127,7 +125,7 @@ public class MapActivity extends DebugActivity implements
             });
         } else {
             googleMap.setMyLocationEnabled(true);
-            locationButton.setOnClickListener(new View.OnClickListener() {
+            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (checkLocationPermission()) {
@@ -337,10 +335,6 @@ public class MapActivity extends DebugActivity implements
             cleanUpMap();
             pathButton.setVisibility(View.INVISIBLE);
         }
-    }
-
-    private void moveGoogleCopyrights() {
-        //googleMap.setPadding(dpToPx(13), dpToPx(64), dpToPx(270), dpToPx(10));
     }
 
     private State currentState;

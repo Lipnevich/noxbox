@@ -97,18 +97,19 @@
         android:src="@drawable/path"
         android:tint="@color/primary" />
 
+
     <ImageView
         android:id="@+id/locationButton"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="32dp"
-        android:layout_marginStart="16dp"
-        android:background="@drawable/my_location_corners"
-        android:elevation="2dp"
-        android:padding="8dp"
+        android:layout_width="78dp"
+        android:layout_height="78dp"
+        android:layout_gravity="start|bottom"
+        android:layout_margin="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
         android:src="@drawable/my_location"
-        android:visibility="gone" />
+        android:tint="@color/primary" />
+
 
     <ImageView
         android:id="@+id/navigation"
