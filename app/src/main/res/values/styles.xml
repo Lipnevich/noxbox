@@ -132,7 +132,8 @@
 
     <!--list activity style for dialog window-->
     <style name="DialogListActivity" parent="@android:style/Theme.Holo.Light.Dialog">
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/secondary</item>
+        <item name="android:background">@color/primary</item>
     </style>
 
 </resources>
