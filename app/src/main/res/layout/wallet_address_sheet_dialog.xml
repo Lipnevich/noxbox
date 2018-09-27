@@ -21,7 +21,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:textColor="@color/google_text"
-        android:textSize="@dimen/text_size" />
+        android:textSize="@dimen/text_size_secondary" />
 
     <ImageView
         android:id="@+id/copyToClipboard"
