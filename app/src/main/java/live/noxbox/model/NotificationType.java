@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.widget.RemoteViews;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.MapActivity;
@@ -32,7 +33,7 @@ public enum NotificationType {
     accepting(2, R.string.replaceIt, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
-    performing(2, R.string.replaceIt, R.string.perfirmingPushContent),
+    performing(2, R.string.performing, R.string.perfirmingPushContent),
     lowBalance(2, R.string.replaceIt, R.string.replaceIt),
     completed(2, R.string.replaceIt, R.string.completedPushContent),
     supplierCanceled(2, R.string.replaceIt, R.string.supplierCanceledPushContent),
@@ -57,6 +58,15 @@ public enum NotificationType {
     }
 
     public NotificationCompat.Builder getBuilder(Context context, String channelId, Notification notification) {
+        //TODO (vl) make custom
+        if (notification.getType() == performing) return new NotificationCompat.Builder(context)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setVibrate(getVibrate(notification))
+                .setSound(getSound(context, notification.getType()))
+                .setCustomContentView(getCustomContentView(context, notification))
+                .setCustomBigContentView(getCustomBigContentView(context, notification))
+                .setContentIntent(getIntent(context, notification));
+
         return new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setVibrate(getVibrate(notification))
@@ -68,6 +78,28 @@ public enum NotificationType {
                 .setAutoCancel(!BuildConfig.DEBUG)
                 .setOnlyAlertOnce(isAlertOnce(notification.getType()))
                 .setContentIntent(getIntent(context, notification));
+    }
+
+    private RemoteViews getCustomContentView(Context context, final Notification notification) {
+        if (notification.getType() == performing) {
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_perfirming);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.timeHasPassed, context.getResources().getString(notification.getType().content));
+            int seconds = notification.getTime();
+            int hours = seconds / 3600;
+            int minutes = (seconds % 3600) / 60;
+            int secs = seconds % 60;
+            remoteViews.setTextViewText(R.id.stopwatch, String.format("%d:%02d:%02d", hours, minutes, secs));
+            remoteViews.setTextViewText(R.id.totalPayment,notification.getPrice());
+            return remoteViews;
+        }
+
+
+        return null;
+    }
+
+    private RemoteViews getCustomBigContentView(Context context, final Notification notification) {
+        return null;
     }
 
     public long[] getVibrate(Notification notification) {
@@ -136,10 +168,12 @@ public enum NotificationType {
 
     public NotificationCompat.Style getStyle(Resources resources, Notification notification) {
 
-        if (notification.getType() == message) {
-            //TODO (vl) собственнай макет для уведомления с возможность ответа прямо из меню уведомлений
+        if (notification.getType() == message)
             return new NotificationCompat.BigTextStyle().bigText(notification.getType().getContent(resources, notification));
-        }
+
+        if (notification.getType() == performing)
+            return new NotificationCompat.DecoratedCustomViewStyle();
+
 
         return new NotificationCompat.BigTextStyle().bigText(notification.getType().getContent(resources, notification));
     }

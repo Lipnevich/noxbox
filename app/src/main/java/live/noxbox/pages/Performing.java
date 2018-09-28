@@ -1,5 +1,6 @@
 package live.noxbox.pages;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Handler;
 import android.view.View;
@@ -40,6 +41,7 @@ public class Performing implements State {
 
     @Override
     public void draw(final Profile profile) {
+        googleMap.setPadding(0, 0, 0, 0);
         MapController.buildMapPosition(googleMap, profile);
 
         performingView = activity.findViewById(R.id.container);
@@ -52,14 +54,15 @@ public class Performing implements State {
         drawComplete(profile);
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        messagingService.showPushNotification(new Notification()
+
+        final Notification notification = new Notification()
                 .setType(NotificationType.performing)
                 .setTime(seconds)
-                .setPrice(drawPrice(profile)));
-
-
+                .setPrice(drawPrice(profile));
+        messagingService.showPushNotification(notification);
         handler = new Handler();
         runnable = new Runnable() {
+            @SuppressLint("RestrictedApi")
             @Override
             public void run() {
                 int hours = seconds / 3600;
@@ -70,12 +73,8 @@ public class Performing implements State {
 
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
-
-                    MessagingService.builder.setContentText(time);
-                    messagingService.getNotificationService().notify(NotificationType.performing.getIndex(),MessagingService.builder.build());
-
                     seconds++;
-
+                    drawPrice(profile);
                     handler.postDelayed(this, 1000);
                 }
             }

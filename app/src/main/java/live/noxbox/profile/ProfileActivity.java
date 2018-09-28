@@ -40,7 +40,11 @@ public class ProfileActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         ProfileStorage.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
@@ -54,7 +58,6 @@ public class ProfileActivity extends FragmentActivity {
                 finish();
             }
         });
-
     }
 
     private void draw(final Profile profile) {
@@ -98,7 +101,6 @@ public class ProfileActivity extends FragmentActivity {
         findViewById(R.id.travelModeLayout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
         findViewById(R.id.editTravelMode).setVisibility(View.GONE);

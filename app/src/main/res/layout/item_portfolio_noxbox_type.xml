@@ -13,8 +13,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:tint="@color/primary" />
+        android:layout_marginEnd="@dimen/activity_horizontal_margin" />
 
     <LinearLayout
         android:id="@+id/noxboxTypeTopLayout"

@@ -79,6 +79,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     @Override
     public void draw(final Profile profile) {
+        googleMap.setPadding(16,0,0,136);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
