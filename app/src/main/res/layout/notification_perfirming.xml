@@ -56,7 +56,6 @@
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:textColor="#fff" />
 
             <TextView
@@ -64,7 +63,6 @@
                 style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:textColor="#fff" />
         </LinearLayout>
 
@@ -82,7 +80,7 @@
                 style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="К оплате:"
+                android:text="@string/toPay"
                 android:textColor="#fff" />
 
             <TextView
