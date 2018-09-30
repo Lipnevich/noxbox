@@ -35,6 +35,7 @@
     <string name="homeTeacher">Репетитор</string>
     <string name="husbandForHour">Муж на час</string>
     <string name="musician">Музыкант</string>
+    <string name="photographer">Фотограф</string>
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
@@ -135,6 +136,7 @@
     <string name="sportCompanionDescription">1 час тренировка в зале</string>
     <string name="sportCoachDescription">1 час тренировка с тренером</string>
     <string name="musicianDescription">1 час игры на гитаре</string>
+    <string name="photographerDescription">1 час услуги фотографа</string>
 
     <string name="trackLocation">Показывать местоположение</string>
 
@@ -234,4 +236,5 @@
     <string name="none" />
     <string name="photoInvalidContent">Пожалуйста, %s</string>
     <string name="topUpYourAcc">Пополните ваш счёт</string>
+    <string name="toPay">К оплате:</string>
 </resources>

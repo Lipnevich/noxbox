@@ -2,10 +2,11 @@ package live.noxbox.model;
 
 import live.noxbox.R;
 
-public enum NoxboxType{
-    nanny(0, R.string.nanny, R.drawable.nanny, R.drawable.nanny_illustration, R.string.nannyDescription, 60),
-    haircut(1, R.string.haircut, R.drawable.haircut, R.drawable.music_back, R.string.haircutDescription, 60),
-    manicure(2, R.string.manicure, R.drawable.manicure, R.drawable.music_back, R.string.manicureDescription, 60);
+public enum NoxboxType {
+    nanny(0, R.string.nanny, R.drawable.ic_nanny, R.drawable.illustration_nanny, R.string.nannyDescription, 60),
+    photographer(1, R.string.photographer, R.drawable.ic_photographer, R.drawable.illustration_photographer, R.string.photographerDescription, 60),
+    haircut(2, R.string.haircut, R.drawable.haircut, R.drawable.music_back, R.string.haircutDescription, 60),
+    manicure(3, R.string.manicure, R.drawable.manicure, R.drawable.music_back, R.string.manicureDescription, 60);
     //massage(0, R.string.massage, R.drawable.masseur, R.drawable.music_back, R.string.massageDescription, 60),
     //dinner(2, R.string.dinner, R.drawable.dinner, R.drawable.music_back, R.string.dinnerDescription, 60),
     //plumber(3, R.string.plumber, R.drawable.plumber, R.drawable.music_back, R.string.plumberDescription, 60),
