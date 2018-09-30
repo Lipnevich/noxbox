@@ -46,6 +46,7 @@ import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.MapActivity.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
 
 public class AvailableServices implements State, ClusterManager.OnClusterClickListener<AvailableServices.NoxboxMarker>,
@@ -79,7 +80,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     @Override
     public void draw(final Profile profile) {
-        googleMap.setPadding(16,0,0,136);
+        googleMap.setPadding(dpToPx(84), 0, 0, dpToPx(8));
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);

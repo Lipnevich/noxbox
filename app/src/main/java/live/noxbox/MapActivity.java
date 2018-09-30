@@ -97,7 +97,7 @@ public class MapActivity extends DebugActivity implements
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_in_night));
-        googleMap.setPadding(16, 0, 0, 136);
+        googleMap.setPadding(dpToPx(84), 0, 0, dpToPx(8));
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
