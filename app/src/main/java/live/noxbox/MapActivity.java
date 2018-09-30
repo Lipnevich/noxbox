@@ -22,7 +22,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -58,6 +57,7 @@ import live.noxbox.tools.MapController;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.tools.MapController.moveCopyrightLeft;
 
 public class MapActivity extends DebugActivity implements
         OnMapReadyCallback,
@@ -67,20 +67,14 @@ public class MapActivity extends DebugActivity implements
     private GoogleApiClient googleApiClient;
     private Map<String, GroundOverlay> markers = new HashMap<>();
     private Map<String, Polyline> pathes = new HashMap<>();
-    private ImageView pathButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId)).getMapAsync(this);
-        pathButton = findViewById(R.id.pathButton);
-        connectGoogleApi();
-
-    }
-
-    private void connectGoogleApi() {
-        googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
-                .addApi(LocationServices.API).build();
+        googleApiClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .build();
         googleApiClient.connect();
     }
 
@@ -97,7 +91,7 @@ public class MapActivity extends DebugActivity implements
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_in_night));
-        googleMap.setPadding(dpToPx(84), 0, 0, dpToPx(8));
+        moveCopyrightLeft(googleMap);
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -299,42 +293,6 @@ public class MapActivity extends DebugActivity implements
             }
         }
         return noxbox;
-    }
-
-    protected void cleanUpMap() {
-        Iterator iterator = markers.values().iterator();
-        while (iterator.hasNext()) {
-            GroundOverlay item = (GroundOverlay) iterator.next();
-            item.remove();
-            iterator.remove();
-        }
-
-        iterator = pathes.values().iterator();
-        while (iterator.hasNext()) {
-            Polyline item = (Polyline) iterator.next();
-            item.remove();
-            iterator.remove();
-        }
-    }
-
-    public void processNoxbox(Noxbox noxbox) {
-        visibleCurrentLocation(false);
-
-        pathButton.setVisibility(View.VISIBLE);
-        pathButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //focus();
-            }
-        });
-    }
-
-    public void prepareForIteration() {
-        if (googleMap != null) {
-            visibleCurrentLocation(true);
-            cleanUpMap();
-            pathButton.setVisibility(View.INVISIBLE);
-        }
     }
 
     private State currentState;

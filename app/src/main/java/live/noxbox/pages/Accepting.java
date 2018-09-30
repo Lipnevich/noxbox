@@ -68,8 +68,6 @@ public class Accepting implements State {
                 ProfileStorage.fireProfile();
             }
         });
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-
 
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
         anim.setDuration(15000);
@@ -98,6 +96,8 @@ public class Accepting implements State {
             }
 
         }.start();
+
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
         MapController.buildMapMarkerListener(googleMap, profile, activity);
         MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
     }

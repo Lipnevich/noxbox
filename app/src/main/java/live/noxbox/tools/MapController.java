@@ -37,7 +37,7 @@ public class MapController {
 
             case created:
             case performing:
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
                 break;
             default:
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
@@ -91,6 +91,14 @@ public class MapController {
                 });
         }
 
-
     }
+
+    public static void moveCopyrightRight(GoogleMap googleMap) {
+        googleMap.setPadding(dpToPx(84), 0, 0, dpToPx(8));
+    }
+
+    public static void moveCopyrightLeft(GoogleMap googleMap) {
+        googleMap.setPadding(dpToPx(8), 0, 0, dpToPx(8));
+    }
+
 }

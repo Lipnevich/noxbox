@@ -211,7 +211,7 @@
     <string name="deleteSection">Удалить раздел?</string>
     <string name="confirm">Confirm</string>
     <string name="performing">Performing</string>
-    <string name="perfirmingPushContent">Прошло времени:</string>
+    <string name="performingPushContent">Прошло времени:</string>
     <string name="cancelReason">Причина отмены:</string>
     <string name="substandardWork">Некачественная работа</string>
     <string name="own">Своя</string>

@@ -23,6 +23,8 @@ import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.tools.MapController.moveCopyrightLeft;
+import static live.noxbox.tools.MapController.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
 
 public class Moving implements State {
@@ -72,9 +74,10 @@ public class Moving implements State {
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setVisibility(View.VISIBLE);
 
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.pathButton).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
+        moveCopyrightRight(googleMap);
 
-        activity.findViewById(R.id.pathButton).setOnClickListener(new View.OnClickListener() {
+        activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DebugMessage.popup(activity, "way and points");
@@ -90,7 +93,7 @@ public class Moving implements State {
 
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
                 activity.findViewById(R.id.chat).setVisibility(View.GONE);
-                activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
+                activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
 
                 photoView = movingView.findViewById(R.id.photoContainer);
                 final View childPhoto = activity.getLayoutInflater().inflate(R.layout.state_moving_photo, null);
@@ -118,7 +121,7 @@ public class Moving implements State {
 
                         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
                         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
-                        activity.findViewById(R.id.pathButton).setVisibility(View.VISIBLE);
+                        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
                         photoView.removeAllViews();
                     }
                 });
@@ -185,7 +188,8 @@ public class Moving implements State {
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
-        activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        moveCopyrightLeft(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         googleMap.clear();
         movingView.removeAllViews();

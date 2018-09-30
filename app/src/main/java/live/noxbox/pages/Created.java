@@ -11,9 +11,12 @@ import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
-import live.noxbox.tools.MapController;
-import live.noxbox.tools.MarkerCreator;
 
+import static live.noxbox.tools.MapController.buildMapMarkerListener;
+import static live.noxbox.tools.MapController.buildMapPosition;
+import static live.noxbox.tools.MapController.moveCopyrightLeft;
+import static live.noxbox.tools.MapController.moveCopyrightRight;
+import static live.noxbox.tools.MarkerCreator.createCustomMarker;
 import static live.noxbox.tools.Router.startActivity;
 
 public class Created implements State {
@@ -40,24 +43,24 @@ public class Created implements State {
         });
 
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
+        moveCopyrightRight(googleMap);
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+                buildMapPosition(googleMap, profile, activity.getApplicationContext());
             }
         });
 
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
-
-        MapController.buildMapMarkerListener(googleMap, profile, activity);
-
-        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+        createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+        buildMapMarkerListener(googleMap, profile, activity);
+        buildMapPosition(googleMap, profile, activity.getApplicationContext());
     }
 
     @Override
     public void clear() {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        moveCopyrightLeft(googleMap);
         ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         googleMap.clear();

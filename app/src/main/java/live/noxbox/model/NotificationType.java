@@ -33,7 +33,7 @@ public enum NotificationType {
     accepting(2, R.string.replaceIt, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
-    performing(2, R.string.performing, R.string.perfirmingPushContent),
+    performing(2, R.string.performing, R.string.performingPushContent),
     lowBalance(2, R.string.replaceIt, R.string.replaceIt),
     completed(2, R.string.replaceIt, R.string.completedPushContent),
     supplierCanceled(2, R.string.replaceIt, R.string.supplierCanceledPushContent),

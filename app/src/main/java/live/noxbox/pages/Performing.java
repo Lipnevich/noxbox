@@ -19,9 +19,10 @@ import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
-import live.noxbox.tools.MapController;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
+
+import static live.noxbox.tools.MapController.buildMapPosition;
 
 public class Performing implements State {
 
@@ -41,8 +42,7 @@ public class Performing implements State {
 
     @Override
     public void draw(final Profile profile) {
-        googleMap.setPadding(0, 0, 0, 0);
-        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+        buildMapPosition(googleMap, profile, activity.getApplicationContext());
 
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
@@ -92,12 +92,12 @@ public class Performing implements State {
         double pricePerSecond = Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60;
 
         if (startTime >= System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS) {
-            ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(totalMoney));
+            ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
         } else {
             totalMoney = ((System.currentTimeMillis() - startTime) / 1000) * pricePerSecond;
-            ((TextView) performingView.findViewById(R.id.currency)).setText(decimalFormat.format(totalMoney));
+            ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
         }
-        return ((TextView) performingView.findViewById(R.id.currency)).getText().toString();
+        return ((TextView) performingView.findViewById(R.id.moneyToPay)).getText().toString();
 
     }
 
@@ -138,6 +138,5 @@ public class Performing implements State {
         googleMap.clear();
         stopTimer();
         performingView.removeAllViews();
-        activity.findViewById(R.id.pathButton).setVisibility(View.GONE);
     }
 }

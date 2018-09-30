@@ -3,7 +3,7 @@
     android:id="@+id/performingScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="64dp"
+    android:layout_marginTop="128dp"
     android:orientation="vertical">
 
 
@@ -17,19 +17,19 @@
         android:textSize="32sp" />
 
     <TextView
-        android:id="@+id/currency"
+        android:id="@+id/moneyToPay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/google_text"
+        android:textColor="@color/primary"
         android:textSize="74sp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/perfirmingPushContent"
+        android:text="@string/performingPushContent"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/text_color_secondary"
         android:textSize="32sp" />
