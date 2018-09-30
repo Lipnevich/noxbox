@@ -1,15 +1,19 @@
 package live.noxbox.tools;
 
+import java.math.BigDecimal;
+
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 
 public class BalanceCalculator {
 
     public static boolean enoughBalance(Noxbox noxbox, Profile profile) {
-        //TODO (vl)  java.lang.NumberFormatException: For input string: "0,25"
-        Double minimalPrice = Double.parseDouble(noxbox.getPrice()) / 4;
-        Double walletBalance = Double.parseDouble(profile.getWallet().getBalance());
-        if (minimalPrice < walletBalance) return true;
+        BigDecimal quarter = new BigDecimal("4.0");
+        BigDecimal minimalPrice = new BigDecimal(noxbox.getPrice());
+        minimalPrice = minimalPrice.divide(quarter, 2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal walletBalance = new BigDecimal(profile.getWallet().getBalance());
+
+        if (minimalPrice.compareTo(walletBalance) < 0) return true;
 
         return false;
     }
