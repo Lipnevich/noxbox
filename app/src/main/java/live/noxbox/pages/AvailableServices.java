@@ -119,7 +119,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         });
 
         if (profile.getPosition() != null) {
-            MapController.buildMapPosition(googleMap, profile);
+            MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
         }
     }
 

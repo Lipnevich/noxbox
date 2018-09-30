@@ -41,7 +41,7 @@ public class Requesting implements State {
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapController.buildMapPosition(googleMap, profile);
+                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
             }
         });
 
@@ -101,7 +101,7 @@ public class Requesting implements State {
 
         MapController.buildMapMarkerListener(googleMap, profile, activity);
 
-        MapController.buildMapPosition(googleMap, profile);
+        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
     }
 
 

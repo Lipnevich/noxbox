@@ -1,6 +1,7 @@
 package live.noxbox.tools;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,17 +19,20 @@ import static live.noxbox.tools.Router.startActivity;
 
 public class MapController {
 
-    public static void buildMapPosition(GoogleMap googleMap, Profile profile) {
+    public static void buildMapPosition(GoogleMap googleMap, Profile profile, Context context) {
         switch (NoxboxState.getState(profile.getCurrent(), profile)) {
-
             case requesting:
             case accepting:
             case moving:
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(profile.getPosition().toLatLng());
+                builder.include(profile.getCurrent().getPosition().toLatLng());
+                LatLngBounds latLngBounds = builder.build();
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
-                        new LatLngBounds.Builder()
-                                .include(profile.getPosition().toLatLng())
-                                .include(profile.getCurrent().getPosition().toLatLng())
-                                .build(), dpToPx(68)));
+                        latLngBounds,
+                        context.getResources().getDisplayMetrics().widthPixels,
+                        context.getResources().getDisplayMetrics().heightPixels,
+                        dpToPx(68)));
                 break;
 
             case created:

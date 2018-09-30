@@ -42,7 +42,7 @@ public class Performing implements State {
     @Override
     public void draw(final Profile profile) {
         googleMap.setPadding(0, 0, 0, 0);
-        MapController.buildMapPosition(googleMap, profile);
+        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
 
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);

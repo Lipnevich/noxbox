@@ -78,7 +78,7 @@ public class Moving implements State {
             @Override
             public void onClick(View v) {
                 DebugMessage.popup(activity, "way and points");
-                MapController.buildMapPosition(googleMap, profile);
+                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
             }
         });
 
@@ -174,7 +174,7 @@ public class Moving implements State {
 
         MapController.buildMapMarkerListener(googleMap, profile, activity);
 
-        MapController.buildMapPosition(googleMap, profile);
+        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
     }
 
 

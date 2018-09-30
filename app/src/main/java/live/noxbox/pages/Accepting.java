@@ -99,7 +99,7 @@ public class Accepting implements State {
 
         }.start();
         MapController.buildMapMarkerListener(googleMap, profile, activity);
-        MapController.buildMapPosition(googleMap, profile);
+        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
     }
 
     @Override

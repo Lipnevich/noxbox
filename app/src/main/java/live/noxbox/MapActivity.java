@@ -97,7 +97,7 @@ public class MapActivity extends DebugActivity implements
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_in_night));
-        googleMap.setPadding(16,0,0,136);
+        googleMap.setPadding(16, 0, 0, 136);
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -192,8 +192,8 @@ public class MapActivity extends DebugActivity implements
             @Override
             public void execute(Profile profile) {
                 profile.setPosition(getCurrentPosition());
-                if(profile.getPosition() != null){
-                    MapController.buildMapPosition(googleMap, profile);
+                if (profile.getPosition() != null) {
+                    MapController.buildMapPosition(googleMap, profile, getApplicationContext());
                 }
             }
         });
