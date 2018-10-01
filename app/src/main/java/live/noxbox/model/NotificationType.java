@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
@@ -21,6 +22,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CURRENCY;
 import static live.noxbox.tools.MessagingService.getNotificationService;
+import static live.noxbox.tools.NotificationImageDrawer.addGradient;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.
@@ -82,6 +84,15 @@ public enum NotificationType {
                     .setCustomContentView(getCustomContentView(context, notification))
                     .setCustomBigContentView(getCustomBigContentView(context, notification));
 
+        if (notification.getType() == moving) {
+            return new NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setVibrate(getVibrate(notification))
+                    .setSound(getSound(context, notification.getType()))
+                    .setCustomContentView(getCustomContentView(context, notification))
+                    .setCustomBigContentView(getCustomBigContentView(context, notification));
+        }
+
 
         return new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -126,10 +137,18 @@ public enum NotificationType {
             return remoteViews;
         }
 
+        if (notification.getType() == moving) {
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
+            remoteViews.setImageViewBitmap(
+                    R.id.noxboxTypeImage,
+                    addGradient(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_nanny)).getBitmap()));
+            return remoteViews;
+
+        }
+
 
         return null;
     }
-
 
     private RemoteViews getCustomBigContentView(Context context, final Notification notification) {
         return null;
@@ -146,7 +165,7 @@ public enum NotificationType {
     }
 
     public Uri getSound(Context context, NotificationType type) {
-        if (type == uploadingProgress || type == performing || type == requesting) return null;
+        if (type == uploadingProgress || type == performing) return null;
 
         int sound = R.raw.push;
         if (type == requesting) {

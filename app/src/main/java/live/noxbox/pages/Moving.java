@@ -14,12 +14,15 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
+import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
+import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
@@ -178,6 +181,10 @@ public class Moving implements State {
         MapController.buildMapMarkerListener(googleMap, profile, activity);
 
         MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+
+        MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+        Notification notification = new Notification().setTime("15").setType(NotificationType.moving);
+        messagingService.showPushNotification(notification);
     }
 
 
