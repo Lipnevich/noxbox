@@ -119,7 +119,7 @@ public enum NotificationType {
         }
 
         if (notification.getType() == requesting) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_request);
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
             remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setOnClickPendingIntent(R.id.cancel, getIntent(context, notification));
