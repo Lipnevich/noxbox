@@ -69,7 +69,8 @@ public class DetailedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed);
 
-
+        //TODO (vl) Пожалуй, лучше снести всю эту логику с гироскопом внутрь PanoramaImageView,
+        //TODO  например в конструктор, чтобы ее легко можно было переиспользовать без дополнительных настроек, а через чистый xml
         PanoramaImageView panoramaImageView = (PanoramaImageView) findViewById(R.id.illustration);
         gyroscopeObserver = new GyroscopeObserver();
         // Set the maximum radian the device should rotate to show image's bounds.

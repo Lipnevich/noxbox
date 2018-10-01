@@ -41,7 +41,7 @@ public class Moving implements State {
 
     @Override
     public void draw(final Profile profile) {
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);

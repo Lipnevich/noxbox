@@ -58,7 +58,7 @@ public class Requesting implements State {
             }
         });
 
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap);
 
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);

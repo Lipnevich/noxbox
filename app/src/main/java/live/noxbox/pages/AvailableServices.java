@@ -254,7 +254,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         public NoxboxMarker(LatLng position, Noxbox noxbox) {
             this.position = position;
             this.noxbox = noxbox;
-            this.markerOptions = MarkerCreator.createCustomMarker(noxbox, activity);
+            this.markerOptions = MarkerCreator.createCustomMarker(noxbox);
 
         }
 

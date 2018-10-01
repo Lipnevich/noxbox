@@ -37,7 +37,7 @@ public class Accepting implements State {
 
     @Override
     public void draw(final Profile profile) {
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity, profile.getTravelMode());
+        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap);
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
