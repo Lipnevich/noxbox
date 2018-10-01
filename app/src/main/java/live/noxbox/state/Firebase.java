@@ -185,10 +185,10 @@ public class Firebase {
 
                     profile = new Profile()
                             .setId(firebaseUser.getUid())
-                            .setName(firebaseUser.getDisplayName())
+                            .setName(firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "Unnamed Person")
                             .setHost(true)
                             .setWallet(new Wallet().setBalance("1").setAddress("3PA1KvFfq9VuJjg45p2ytGgaNjrgnLSgf4r"))
-                            .setPhoto(firebaseUser.getPhotoUrl().toString())
+                            .setPhoto(firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl().toString() : null)
                             .setDemandsRating(ratingList)
                             .setSuppliesRating(ratingList)
                             .setFilters(new Filters(true, true, "0", filterTypesList))

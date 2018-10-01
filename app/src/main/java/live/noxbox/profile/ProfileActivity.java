@@ -86,9 +86,9 @@ public class ProfileActivity extends FragmentActivity {
 
         if (profile.getPhoto() != null) {
             createCircleImageFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profileImage));
-            return;
+        } else {
+            ((ImageView) findViewById(R.id.profileImage)).setImageResource(R.drawable.unknown_profile);
         }
-        ((ImageView) findViewById(R.id.profileImage)).setImageResource(R.drawable.unknown_profile);
     }
 
     private void drawName(Profile profile) {
