@@ -195,8 +195,8 @@
     <string name="certificates">Сертификаты</string>
     <string name="workAtHome">Работа на месте</string>
     <string name="chooseTravelMode">Способ передвижения</string>
-    <string name="uploadingProgressTitle">Uploading image %d%%</string>
-    <string name="uploadingProgressContent">%d seconds left</string>
+    <string name="uploadingProgressTitle">Uploading image %s%%</string>
+    <string name="uploadingProgressContent">%s seconds left</string>
     <string name="name">Name</string>
     <string name="uploadingStarted">Uploading started</string>
     <string name="haveHost">есть возможность принять у себя</string>

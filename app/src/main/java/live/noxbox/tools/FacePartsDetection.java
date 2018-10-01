@@ -44,7 +44,7 @@ public class FacePartsDetection {
                     public void onSuccess(List<FirebaseVisionFace> faces) {
                         if (faces.size() != 1) {
                             profile.getAcceptance().setFailToRecognizeFace(true);
-                            buildNotification(new Notification().setType(NotificationType.photoInvalid), activity);
+                            buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                             ProfileStorage.fireProfile();
                             return;
                         }
@@ -80,7 +80,7 @@ public class FacePartsDetection {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         profile.getAcceptance().setFailToRecognizeFace(true);
-                        buildNotification(new Notification().setType(NotificationType.photoInvalid), activity);
+                        buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                         ProfileStorage.fireProfile();
                     }
                 });
