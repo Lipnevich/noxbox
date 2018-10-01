@@ -91,6 +91,12 @@
                 <action android:name="com.google.Firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".model.NotificationType$CancelRequestListener">
+            <intent-filter>
+                <action android:name="cancelRequestByClickedButton"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

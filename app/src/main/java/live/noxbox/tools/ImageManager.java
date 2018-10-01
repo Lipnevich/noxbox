@@ -116,7 +116,7 @@ public class ImageManager {
                     int passedSeconds = (int) (System.currentTimeMillis() - time) / 1000;
                     int secPerPercent = passedSeconds / progress;
                     int remainSeconds = (secPerPercent * (100 - progress));
-                    notification.setTime(remainSeconds);
+                    notification.setTime(String.valueOf(remainSeconds));
                 }
 
                 MessagingService messagingService = new MessagingService(activity.getApplicationContext());

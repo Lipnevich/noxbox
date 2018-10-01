@@ -11,9 +11,9 @@ import live.noxbox.tools.InvalidAcceptance;
 public class Notification {
 
     private NotificationType type;
-    private Integer id, progress, time;
+    private Integer id, progress;
     private Boolean local = false;
-    private String estimation, icon, name, message, price, balance, previousBalance;
+    private String estimation, icon, name, message, price, balance, previousBalance, time;
     private InvalidAcceptance invalidAcceptance;
 
 
@@ -146,11 +146,11 @@ public class Notification {
         return this;
     }
 
-    public Integer getTime() {
+    public String getTime() {
         return time;
     }
 
-    public Notification setTime(Integer time) {
+    public Notification setTime(String time) {
         this.time = time;
         return this;
     }

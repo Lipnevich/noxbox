@@ -63,10 +63,10 @@ public class MessagingService extends FirebaseMessagingService {
 
         cancelOtherNotifications(notification.getType());
         if (notification.getType() != NotificationType.moving && notification.getType() != NotificationType.message) {
-            getNotificationService().cancel(NotificationType.message.getIndex());
+            getNotificationService(context).cancel(NotificationType.message.getIndex());
         }
         if (notification.getProgress() != null && notification.getProgress() == 100) {
-            getNotificationService().cancel(notification.getType().getIndex());
+            getNotificationService(context).cancel(notification.getType().getIndex());
         } else {
             notify(notification);
         }
@@ -75,7 +75,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getNotificationService().createNotificationChannel(
+            getNotificationService(context).createNotificationChannel(
                     new NotificationChannel(channelId,
                             "Noxbox channel",
                             NotificationManager.IMPORTANCE_DEFAULT));
@@ -92,9 +92,10 @@ public class MessagingService extends FirebaseMessagingService {
                 NotificationType.performing));
 
         if (cancelOther.contains(type)) {
-            getNotificationService().cancelAll();
+            getNotificationService(context).cancelAll();
         }
     }
+
 
     private void notify(final Notification notification) {
 
@@ -106,7 +107,7 @@ public class MessagingService extends FirebaseMessagingService {
             @Override
             public void execute(Bitmap icon) {
                 builder.setLargeIcon(icon);
-                getNotificationService().notify(notification.getType().getIndex(), builder.build());
+                getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
             }
         };
 
@@ -116,6 +117,7 @@ public class MessagingService extends FirebaseMessagingService {
             iconLoading.execute(loadIcon(notification));
         }
     }
+
 
     private void setProgress(NotificationCompat.Builder builder, Notification notification) {
         if (notification.getProgress() != null) {
@@ -161,7 +163,7 @@ public class MessagingService extends FirebaseMessagingService {
         }
     }
 
-    public NotificationManager getNotificationService() {
+    public static NotificationManager getNotificationService(Context context) {
         return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 

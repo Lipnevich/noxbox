@@ -136,4 +136,9 @@
         <item name="android:background">@color/primary</item>
     </style>
 
+    <!--notification progress bar-->
+    <style name="CircularProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/secondary</item>
+    </style>
+
 </resources>

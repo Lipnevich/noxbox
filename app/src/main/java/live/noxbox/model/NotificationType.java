@@ -2,6 +2,7 @@ package live.noxbox.model;
 
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -14,8 +15,12 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
+import live.noxbox.state.ProfileStorage;
+import live.noxbox.tools.MessagingService;
+import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CURRENCY;
+import static live.noxbox.tools.MessagingService.getNotificationService;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.
@@ -29,7 +34,7 @@ public enum NotificationType {
 
     balance(1, R.string.balancePushTitle, R.string.balancePushContent),
 
-    requesting(2, R.string.replaceIt, R.string.requestingPushContent),
+    requesting(2, R.string.requestText, R.string.requestingPushContent),
     accepting(2, R.string.replaceIt, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
@@ -57,15 +62,26 @@ public enum NotificationType {
         return index;
     }
 
+
     public NotificationCompat.Builder getBuilder(Context context, String channelId, Notification notification) {
         //TODO (vl) make custom
-        if (notification.getType() == performing) return new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setVibrate(getVibrate(notification))
-                .setSound(getSound(context, notification.getType()))
-                .setCustomContentView(getCustomContentView(context, notification))
-                .setCustomBigContentView(getCustomBigContentView(context, notification))
-                .setContentIntent(getIntent(context, notification));
+        if (notification.getType() == performing)
+            return new NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setVibrate(getVibrate(notification))
+                    .setSound(getSound(context, notification.getType()))
+                    .setCustomContentView(getCustomContentView(context, notification))
+                    .setCustomBigContentView(getCustomBigContentView(context, notification))
+                    .setContentIntent(getIntent(context, notification));
+
+        if (notification.getType() == requesting)
+            return new NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setVibrate(getVibrate(notification))
+                    .setSound(getSound(context, notification.getType()))
+                    .setCustomContentView(getCustomContentView(context, notification))
+                    .setCustomBigContentView(getCustomBigContentView(context, notification));
+
 
         return new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -80,23 +96,40 @@ public enum NotificationType {
                 .setContentIntent(getIntent(context, notification));
     }
 
+    public void updateNotification(Context context, final Notification notification, NotificationCompat.Builder builder, MessagingService messagingService) {
+        if (notification.getType() == requesting || notification.getType() == performing) {
+            builder.setCustomContentView(getCustomContentView(context, notification));
+            getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
+        }
+
+    }
+
+    public void removeNotification(Context context) {
+        MessagingService.getNotificationService(context).cancelAll();
+    }
+
     private RemoteViews getCustomContentView(Context context, final Notification notification) {
         if (notification.getType() == performing) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_perfirming);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.timeHasPassed, context.getResources().getString(notification.getType().content));
-            int seconds = notification.getTime();
-            int hours = seconds / 3600;
-            int minutes = (seconds % 3600) / 60;
-            int secs = seconds % 60;
-            remoteViews.setTextViewText(R.id.stopwatch, String.format("%d:%02d:%02d", hours, minutes, secs));
-            remoteViews.setTextViewText(R.id.totalPayment,notification.getPrice());
+            remoteViews.setTextViewText(R.id.stopwatch, notification.getTime());
+            remoteViews.setTextViewText(R.id.totalPayment, notification.getPrice());
+            return remoteViews;
+        }
+
+        if (notification.getType() == requesting) {
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_request);
+            remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setOnClickPendingIntent(R.id.cancel, getIntent(context, notification));
             return remoteViews;
         }
 
 
         return null;
     }
+
 
     private RemoteViews getCustomBigContentView(Context context, final Notification notification) {
         return null;
@@ -113,7 +146,7 @@ public enum NotificationType {
     }
 
     public Uri getSound(Context context, NotificationType type) {
-        if (type == uploadingProgress || type == performing) return null;
+        if (type == uploadingProgress || type == performing || type == requesting) return null;
 
         int sound = R.raw.push;
         if (type == requesting) {
@@ -194,6 +227,10 @@ public enum NotificationType {
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        if (notification.getType() == requesting)
+            return PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0);
+
+
         return PendingIntent.getActivity(context, 0, context.getPackageManager()
                         .getLaunchIntentForPackage(context.getPackageName()),
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -201,6 +238,20 @@ public enum NotificationType {
 
     private boolean isAlertOnce(NotificationType type) {
         return type != NotificationType.balance;
+    }
+
+    public static class CancelRequestListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    profile.getCurrent().setTimeRequested(null);
+                    ProfileStorage.fireProfile();
+                    MessagingService.getNotificationService(context).cancelAll();
+                }
+            });
+        }
     }
 
 }
