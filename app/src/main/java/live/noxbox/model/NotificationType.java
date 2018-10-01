@@ -114,7 +114,7 @@ public enum NotificationType {
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.timeHasPassed, context.getResources().getString(notification.getType().content));
             remoteViews.setTextViewText(R.id.stopwatch, notification.getTime());
-            remoteViews.setTextViewText(R.id.totalPayment, notification.getPrice());
+            remoteViews.setTextViewText(R.id.totalPayment, (notification.getPrice().concat(" ")).concat(context.getResources().getString(R.string.currency)));
             return remoteViews;
         }
 

@@ -22,6 +22,7 @@ import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.tools.MapController.buildMapPosition;
 
 public class Performing implements State {
@@ -54,12 +55,12 @@ public class Performing implements State {
         drawComplete(profile);
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-
         final Notification notification = new Notification()
                 .setType(NotificationType.performing)
-                .setTime(seconds)
+                .setTime(START_TIME)
                 .setPrice(drawPrice(profile));
         messagingService.showPushNotification(notification);
+
         handler = new Handler();
         runnable = new Runnable() {
             @SuppressLint("RestrictedApi")
@@ -73,6 +74,8 @@ public class Performing implements State {
 
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
+                    notification.setTime(time);
+                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder, messagingService);
                     seconds++;
                     drawPrice(profile);
                     handler.postDelayed(this, 1000);
