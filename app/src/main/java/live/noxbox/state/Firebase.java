@@ -187,7 +187,7 @@ public class Firebase {
                             .setId(firebaseUser.getUid())
                             .setName(firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "Unnamed Person")
                             .setHost(true)
-                            .setWallet(new Wallet().setBalance("1").setAddress("3PA1KvFfq9VuJjg45p2ytGgaNjrgnLSgf4r"))
+                            .setWallet(new Wallet().setBalance("666").setAddress("3PA1KvFfq9VuJjg45p2ytGgaNjrgnLSgf4r"))
                             .setPhoto(firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl().toString() : null)
                             .setDemandsRating(ratingList)
                             .setSuppliesRating(ratingList)

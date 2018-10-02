@@ -11,7 +11,9 @@ import live.noxbox.tools.InvalidAcceptance;
 public class Notification {
 
     private NotificationType type;
-    private Integer id, progress, icon;
+    private Integer id, icon;
+    private Integer progress = 0;
+    private Integer maxProgress = 0;
     private Boolean local = false;
     private String estimation, name, message, price, balance, previousBalance, time;
     private InvalidAcceptance invalidAcceptance;
@@ -161,6 +163,15 @@ public class Notification {
 
     public Notification setInvalidAccetrance(InvalidAcceptance invalidAcceptance) {
         this.invalidAcceptance = invalidAcceptance;
+        return this;
+    }
+
+    public Integer getMaxProgress() {
+        return maxProgress;
+    }
+
+    public Notification setMaxProgress(Integer maxProgress) {
+        this.maxProgress = maxProgress;
         return this;
     }
 }

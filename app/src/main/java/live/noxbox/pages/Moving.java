@@ -2,6 +2,8 @@ package live.noxbox.pages;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -17,6 +19,7 @@ import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
+import live.noxbox.model.TravelMode;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
@@ -36,6 +39,7 @@ public class Moving implements State {
     private Activity activity;
     private LinearLayout movingView;
     private LinearLayout photoView;
+    private static CountDownTimer countDownTimer;
 
     public Moving(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
@@ -182,9 +186,53 @@ public class Moving implements State {
 
         MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
 
-        MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        Notification notification = new Notification().setTime("15").setType(NotificationType.moving);
-        messagingService.showPushNotification(notification);
+        if (profile.getCurrent().getTimeToMeet() == null) {
+            final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+            profile.getCurrent().setTimeToMeet((long) (Math.ceil(getTravelTimeInMinutes(profile)) * 60000));
+            final Notification notification = new Notification()
+                    .setTime(String.valueOf(profile.getCurrent().getTimeToMeet()))
+                    .setType(NotificationType.moving)
+                    .setMaxProgress((int) (long) profile.getCurrent().getTimeToMeet());
+            messagingService.showPushNotification(notification);
+
+
+            countDownTimer = new CountDownTimer(profile.getCurrent().getTimeToMeet(), 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    notification.setTime(String.valueOf(profile.getCurrent().getTimeToMeet() - (profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
+                    notification.setProgress((int) (profile.getCurrent().getTimeToMeet() - millisUntilFinished));
+
+                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder, messagingService);
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            }.start();
+        }
+
+    }
+
+    private Float getDistance(Profile profile) {
+        double startLat = profile.getCurrent().getParty().getPosition().getLatitude();
+        double startLng = profile.getCurrent().getParty().getPosition().getLongitude();
+        double endLat = profile.getCurrent().getPosition().getLatitude();
+        double endLng = profile.getCurrent().getPosition().getLongitude();
+
+        float[] results = new float[1];
+        Location.distanceBetween(startLat, startLng, endLat, endLng, results);
+        return results[0];
+    }
+
+    private Float getTravelTimeInMinutes(Profile profile) {
+        if (profile.getCurrent().getParty().getTravelMode() != TravelMode.none && profile.getCurrent().getOwner().getTravelMode() != TravelMode.none)
+            return getDistance(profile) / profile.getCurrent().getParty().getTravelMode().getSpeedInMetersPerMinute();
+        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none) {
+            return getDistance(profile) / profile.getCurrent().getParty().getTravelMode().getSpeedInMetersPerMinute();
+        } else {
+            return getDistance(profile) / profile.getCurrent().getOwner().getTravelMode().getSpeedInMetersPerMinute();
+        }
     }
 
 
@@ -199,6 +247,10 @@ public class Moving implements State {
         moveCopyrightLeft(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         googleMap.clear();
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+
+        }
         movingView.removeAllViews();
         if (photoView != null) {
             photoView.removeAllViews();

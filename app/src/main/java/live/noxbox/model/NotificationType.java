@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
@@ -22,7 +21,6 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CURRENCY;
 import static live.noxbox.tools.MessagingService.getNotificationService;
-import static live.noxbox.tools.NotificationImageDrawer.addGradient;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.
@@ -90,7 +88,8 @@ public enum NotificationType {
                     .setVibrate(getVibrate(notification))
                     .setSound(getSound(context, notification.getType()))
                     .setCustomContentView(getCustomContentView(context, notification))
-                    .setCustomBigContentView(getCustomBigContentView(context, notification));
+                    .setCustomBigContentView(getCustomBigContentView(context, notification))
+                    .setContentIntent(getIntent(context, notification));
         }
 
 
@@ -108,7 +107,7 @@ public enum NotificationType {
     }
 
     public void updateNotification(Context context, final Notification notification, NotificationCompat.Builder builder, MessagingService messagingService) {
-        if (notification.getType() == requesting || notification.getType() == performing) {
+        if (notification.getType() == requesting || notification.getType() == performing || notification.getType() == moving) {
             builder.setCustomContentView(getCustomContentView(context, notification));
             getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
         }
@@ -139,9 +138,9 @@ public enum NotificationType {
 
         if (notification.getType() == moving) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
-            remoteViews.setImageViewBitmap(
-                    R.id.noxboxTypeImage,
-                    addGradient(((BitmapDrawable) context.getResources().getDrawable(R.drawable.ic_nanny)).getBitmap()));
+            remoteViews.setTextViewText(R.id.time, String.valueOf((Long.parseLong(notification.getTime())) / 60000).concat("min"));
+            remoteViews.setProgressBar(R.id.progress, notification.getMaxProgress(), notification.getProgress(), false);
+
             return remoteViews;
 
         }
@@ -157,6 +156,7 @@ public enum NotificationType {
     public long[] getVibrate(Notification notification) {
         switch (notification.getType()) {
             case uploadingProgress:
+            case moving:
             case performing:
                 return null;
             default:
@@ -165,7 +165,7 @@ public enum NotificationType {
     }
 
     public Uri getSound(Context context, NotificationType type) {
-        if (type == uploadingProgress || type == performing) return null;
+        if (type == uploadingProgress || type == performing || type == moving) return null;
 
         int sound = R.raw.push;
         if (type == requesting) {
@@ -248,6 +248,10 @@ public enum NotificationType {
 
         if (notification.getType() == requesting)
             return PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0);
+
+        if (notification.getType() == moving) return TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         return PendingIntent.getActivity(context, 0, context.getPackageManager()

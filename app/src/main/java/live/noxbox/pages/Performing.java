@@ -1,6 +1,5 @@
 package live.noxbox.pages;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Handler;
 import android.view.View;
@@ -63,7 +62,6 @@ public class Performing implements State {
 
         handler = new Handler();
         runnable = new Runnable() {
-            @SuppressLint("RestrictedApi")
             @Override
             public void run() {
                 int hours = seconds / 3600;
