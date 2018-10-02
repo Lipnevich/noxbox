@@ -97,7 +97,7 @@ public class Requesting implements State {
             public void onTick(long millisUntilFinished) {
                 ((TextView) requestingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
                 notification.getType().updateNotification(activity.getApplicationContext(),
-                        new Notification().setType(NotificationType.requesting).setTime(String.valueOf(millisUntilFinished / 1000)),
+                        notification.setType(NotificationType.requesting).setTime(String.valueOf(millisUntilFinished / 1000)),
                         MessagingService.builder,
                         messagingService);
             }

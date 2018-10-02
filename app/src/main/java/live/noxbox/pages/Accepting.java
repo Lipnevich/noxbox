@@ -12,13 +12,17 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
+import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
+import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 
+import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
 import static live.noxbox.state.ProfileStorage.fireProfile;
 
 public class Accepting implements State {
@@ -79,11 +83,21 @@ public class Accepting implements State {
         animationDrawable.setExitFadeDuration(1200);
         animationDrawable.start();
 
+
+        final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+        final Notification notification = new Notification()
+                .setType(NotificationType.accepting)
+                .setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS));
+        messagingService.showPushNotification(notification);
         long timeCountInMilliSeconds = 60000 - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
         countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 ((TextView) acceptingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
+                notification.getType().updateNotification(activity.getApplicationContext(),
+                        notification.setType(NotificationType.accepting).setTime(String.valueOf(millisUntilFinished / 1000)),
+                        MessagingService.builder,
+                        messagingService);
             }
 
             @Override

@@ -97,6 +97,12 @@
                 <action android:name="cancelRequestByClickedButton"/>
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".model.NotificationType$AcceptRequestListener">
+            <intent-filter>
+                <action android:name="acceptRequestByClickedButton"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

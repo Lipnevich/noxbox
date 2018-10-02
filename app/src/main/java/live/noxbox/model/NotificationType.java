@@ -35,7 +35,7 @@ public enum NotificationType {
     balance(1, R.string.balancePushTitle, R.string.balancePushContent),
 
     requesting(2, R.string.requestText, R.string.requestingPushContent),
-    accepting(2, R.string.replaceIt, R.string.acceptingPushContent),
+    accepting(2, R.string.acceptText, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
     performing(2, R.string.performing, R.string.performingPushContent),
@@ -92,6 +92,15 @@ public enum NotificationType {
                     .setContentIntent(getIntent(context, notification));
         }
 
+        if (notification.getType() == accepting) {
+            return new NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setVibrate(getVibrate(notification))
+                    .setSound(getSound(context, notification.getType()))
+                    .setCustomContentView(getCustomContentView(context, notification))
+                    .setCustomBigContentView(getCustomBigContentView(context, notification));
+        }
+
 
         return new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -107,7 +116,7 @@ public enum NotificationType {
     }
 
     public void updateNotification(Context context, final Notification notification, NotificationCompat.Builder builder, MessagingService messagingService) {
-        if (notification.getType() == requesting || notification.getType() == performing || notification.getType() == moving) {
+        if (notification.getType() == requesting || notification.getType() == performing || notification.getType() == moving || notification.getType() == accepting) {
             builder.setCustomContentView(getCustomContentView(context, notification));
             getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
         }
@@ -132,7 +141,16 @@ public enum NotificationType {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
             remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-            remoteViews.setOnClickPendingIntent(R.id.cancel, getIntent(context, notification));
+            remoteViews.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
+            return remoteViews;
+        }
+
+        if (notification.getType() == accepting) {
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
+            remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setOnClickPendingIntent(R.id.accept, PendingIntent.getBroadcast(context, 0, new Intent(context, AcceptRequestListener.class), 0));
+            remoteViews.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
             return remoteViews;
         }
 
@@ -158,6 +176,8 @@ public enum NotificationType {
             case uploadingProgress:
             case moving:
             case performing:
+            case requesting:
+            case accepting:
                 return null;
             default:
                 return new long[]{100, 500, 200, 100, 100};
@@ -165,7 +185,8 @@ public enum NotificationType {
     }
 
     public Uri getSound(Context context, NotificationType type) {
-        if (type == uploadingProgress || type == performing || type == moving) return null;
+        if (type == uploadingProgress || type == performing || type == moving || type == requesting || type == accepting)
+            return null;
 
         int sound = R.raw.push;
         if (type == requesting) {
@@ -246,9 +267,6 @@ public enum NotificationType {
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (notification.getType() == requesting)
-            return PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0);
-
         if (notification.getType() == moving) return TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -270,6 +288,20 @@ public enum NotificationType {
                 @Override
                 public void execute(Profile profile) {
                     profile.getCurrent().setTimeRequested(null);
+                    ProfileStorage.fireProfile();
+                    MessagingService.getNotificationService(context).cancelAll();
+                }
+            });
+        }
+    }
+
+    public static class AcceptRequestListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                     ProfileStorage.fireProfile();
                     MessagingService.getNotificationService(context).cancelAll();
                 }

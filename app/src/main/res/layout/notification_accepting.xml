@@ -42,16 +42,26 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_marginTop="24dp">
-
         <Button
             android:id="@+id/accept"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginStart="16dp"
             android:background="#ffa530"
             android:text="@string/acceptText"
+            android:textColor="@color/secondary"
+            android:textSize="14sp"
+            android:visibility="visible" />
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@+id/accept"
+            android:background="#ffa530"
+            android:text="@string/cancelText"
             android:textColor="@color/secondary"
             android:textSize="14sp"
             android:visibility="visible" />
@@ -60,8 +70,9 @@
             android:id="@+id/countDownTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
 
     </RelativeLayout>
