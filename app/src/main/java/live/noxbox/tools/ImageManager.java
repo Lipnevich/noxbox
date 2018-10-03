@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -121,14 +120,11 @@ public class ImageManager {
                     int remainSeconds = (secPerPercent * (100 - progress));
                     notification.setTime(String.valueOf(remainSeconds));
                 }
-                if (progress > 0){
-                    Log.e("AAA","AAAA");
+                if (progress == 0) {
+                    messagingService.showPushNotification(notification);
+                } else {
+                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                 }
-                    if (progress == 0) {
-                        messagingService.showPushNotification(notification);
-                    } else {
-                        notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
-                    }
 
             }
         });
