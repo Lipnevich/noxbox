@@ -143,7 +143,7 @@
 
     <!--notification horizontal progress bar-->
     <style name="HorizontalProgressBarNotificationStyle" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressBackgroundTint">#00ffffff</item>
+        <item name="android:progressBackgroundTint">@color/translucent</item>
         <item name="android:progressTint">@color/secondary</item>
         <item name="android:minWidth">100dp</item>
     </style>

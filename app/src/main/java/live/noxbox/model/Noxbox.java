@@ -74,6 +74,7 @@ public class Noxbox implements Comparable<Noxbox> {
         setTimeStartPerforming(null);
         setTimeOwnerDisliked(null);
         setTimePartyDisliked(null);
+        setTimeToMeet(null);
     }
 
     public String getId() {

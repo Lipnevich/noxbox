@@ -73,7 +73,7 @@ public class Performing implements State {
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     notification.setTime(time);
-                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder, messagingService);
+                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                     seconds++;
                     drawPrice(profile);
                     handler.postDelayed(this, 1000);

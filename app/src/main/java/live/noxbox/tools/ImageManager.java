@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -46,11 +47,11 @@ public class ImageManager {
                 ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(final Profile profile) {
-
-                        profile.setPhoto(uri.toString());
-                        FacePartsDetection.execute(bitmap, profile, activity);
                         MessagingService messagingService = new MessagingService(activity.getApplicationContext());
                         messagingService.showPushNotification(new Notification().setType(NotificationType.photoValidationProgress));
+                        profile.setPhoto(uri.toString());
+                        FacePartsDetection.execute(bitmap, profile, activity);
+
 
                     }
                 });
@@ -93,6 +94,8 @@ public class ImageManager {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         //TODO (vl) check photo size <= 1MB or compress to lower quality
         UploadTask uploadTask = storageRef.putBytes(baos.toByteArray());
+        final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+        final Notification notification = new Notification();
         uploadTask
                 .addOnFailureListener(onFailureListener)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -110,7 +113,7 @@ public class ImageManager {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
 
-                Notification notification = new Notification().setType(NotificationType.uploadingProgress).setProgress(progress);
+                notification.setType(NotificationType.uploadingProgress).setProgress(progress).setMaxProgress(100);
 
                 if (progress != 0) {
                     int passedSeconds = (int) (System.currentTimeMillis() - time) / 1000;
@@ -118,9 +121,15 @@ public class ImageManager {
                     int remainSeconds = (secPerPercent * (100 - progress));
                     notification.setTime(String.valueOf(remainSeconds));
                 }
+                if (progress > 0){
+                    Log.e("AAA","AAAA");
+                }
+                    if (progress == 0) {
+                        messagingService.showPushNotification(notification);
+                    } else {
+                        notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    }
 
-                MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                messagingService.showPushNotification(notification);
             }
         });
     }

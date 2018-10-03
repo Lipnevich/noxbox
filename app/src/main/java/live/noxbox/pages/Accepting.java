@@ -96,8 +96,7 @@ public class Accepting implements State {
                 ((TextView) acceptingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
                 notification.getType().updateNotification(activity.getApplicationContext(),
                         notification.setType(NotificationType.accepting).setTime(String.valueOf(millisUntilFinished / 1000)),
-                        MessagingService.builder,
-                        messagingService);
+                        MessagingService.builder);
             }
 
             @Override

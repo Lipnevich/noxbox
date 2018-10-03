@@ -188,6 +188,7 @@ public class Moving implements State {
 
         if (profile.getCurrent().getTimeToMeet() == null) {
             final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+
             profile.getCurrent().setTimeToMeet((long) (Math.ceil(getTravelTimeInMinutes(profile)) * 60000));
             final Notification notification = new Notification()
                     .setTime(String.valueOf(profile.getCurrent().getTimeToMeet()))
@@ -201,17 +202,17 @@ public class Moving implements State {
                 public void onTick(long millisUntilFinished) {
                     notification.setTime(String.valueOf(profile.getCurrent().getTimeToMeet() - (profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
                     notification.setProgress((int) (profile.getCurrent().getTimeToMeet() - millisUntilFinished));
-
-                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder, messagingService);
+                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                 }
 
                 @Override
                 public void onFinish() {
-
+                    final Notification notification = new Notification()
+                            .setType(NotificationType.confirm);
+                    messagingService.showPushNotification(notification);
                 }
             }.start();
         }
-
     }
 
     private Float getDistance(Profile profile) {

@@ -74,9 +74,9 @@
     <string name="logoutPrompt">Are you sure you want to logout?</string>
     <string name="acceptPushTitle">Request accepted</string>
     <string name="acceptingPushContent">%s will arrive in %s minutes</string>
-    <string name="performerCancelPushTitle">Request declined</string>
+    <string name="supplierCancelPushTitle">Request declined</string>
     <string name="supplierCanceledPushContent">Please try to request again</string>
-    <string name="payerCancelPushTitle">Request canceled</string>
+    <string name="demanderCancelPushTitle">Request canceled</string>
     <string name="demanderCanceledPushContent">New request will be provided soon</string>
     <string name="completePushTitle">Payment done</string>
     <string name="completedPushContent">%s %s was transferred to performer</string>

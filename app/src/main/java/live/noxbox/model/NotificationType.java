@@ -6,20 +6,26 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import live.noxbox.BuildConfig;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.MessagingService;
+import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.CURRENCY;
 import static live.noxbox.tools.MessagingService.getNotificationService;
 
 /**
@@ -27,7 +33,7 @@ import static live.noxbox.tools.MessagingService.getNotificationService;
  */
 public enum NotificationType {
 
-    uploadingProgress(0, R.string.uploadingProgressTitle, R.string.uploadingProgressContent),
+    uploadingProgress(0, R.string.uploadingStarted, R.string.uploadingProgressTitle),
     photoValidationProgress(0, R.string.noxbox, R.string.photoValidationProgressContent),
     photoValid(0, R.string.noxbox, R.string.photoValidContent),
     photoInvalid(0, R.string.photoInvalidTitle, R.string.photoInvalidContent),
@@ -37,12 +43,13 @@ public enum NotificationType {
     requesting(2, R.string.requestText, R.string.requestingPushContent),
     accepting(2, R.string.acceptText, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
+    confirm(2, R.string.confirm, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
     performing(2, R.string.performing, R.string.performingPushContent),
     lowBalance(2, R.string.replaceIt, R.string.replaceIt),
     completed(2, R.string.replaceIt, R.string.completedPushContent),
-    supplierCanceled(2, R.string.replaceIt, R.string.supplierCanceledPushContent),
-    demanderCanceled(2, R.string.replaceIt, R.string.demanderCanceledPushContent),
+    supplierCanceled(2, R.string.supplierCancelPushTitle, R.string.supplierCanceledPushContent),
+    demanderCanceled(2, R.string.demanderCancelPushTitle, R.string.demanderCanceledPushContent),
 
     refund(3, R.string.replaceIt, R.string.replaceIt),
 
@@ -64,111 +71,115 @@ public enum NotificationType {
 
 
     public NotificationCompat.Builder getBuilder(Context context, String channelId, Notification notification) {
-        //TODO (vl) make custom
-        if (notification.getType() == performing)
-            return new NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setVibrate(getVibrate(notification))
-                    .setSound(getSound(context, notification.getType()))
-                    .setCustomContentView(getCustomContentView(context, notification))
-                    .setCustomBigContentView(getCustomBigContentView(context, notification))
-                    .setContentIntent(getIntent(context, notification));
-
-        if (notification.getType() == requesting)
-            return new NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setVibrate(getVibrate(notification))
-                    .setSound(getSound(context, notification.getType()))
-                    .setCustomContentView(getCustomContentView(context, notification))
-                    .setCustomBigContentView(getCustomBigContentView(context, notification));
-
-        if (notification.getType() == moving) {
-            return new NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setVibrate(getVibrate(notification))
-                    .setSound(getSound(context, notification.getType()))
-                    .setCustomContentView(getCustomContentView(context, notification))
-                    .setCustomBigContentView(getCustomBigContentView(context, notification))
-                    .setContentIntent(getIntent(context, notification));
-        }
-
-        if (notification.getType() == accepting) {
-            return new NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setVibrate(getVibrate(notification))
-                    .setSound(getSound(context, notification.getType()))
-                    .setCustomContentView(getCustomContentView(context, notification))
-                    .setCustomBigContentView(getCustomBigContentView(context, notification));
-        }
-
-
         return new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setVibrate(getVibrate(notification))
                 .setSound(getSound(context, notification.getType()))
-                .setContentTitle(notification.getType().getTitle(context.getResources(), notification))
-                .setContentText(notification.getType().getContent(context.getResources(), notification))
-                .setContentInfo(notification.getType().getContentInfo(context.getResources(), notification))
-                .setStyle(notification.getType().getStyle(context.getResources(), notification))
-                .setAutoCancel(!BuildConfig.DEBUG)
+                .setCustomContentView(getCustomContentView(context, notification))
                 .setOnlyAlertOnce(isAlertOnce(notification.getType()))
                 .setContentIntent(getIntent(context, notification));
     }
 
-    public void updateNotification(Context context, final Notification notification, NotificationCompat.Builder builder, MessagingService messagingService) {
-        if (notification.getType() == requesting || notification.getType() == performing || notification.getType() == moving || notification.getType() == accepting) {
-            builder.setCustomContentView(getCustomContentView(context, notification));
-            getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
-        }
-
+    public void updateNotification(Context context, final Notification notification, NotificationCompat.Builder builder) {
+        builder.setCustomContentView(getCustomContentView(context, notification));
+        getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
     }
 
     public void removeNotification(Context context) {
         MessagingService.getNotificationService(context).cancelAll();
     }
 
-    private RemoteViews getCustomContentView(Context context, final Notification notification) {
+    private RemoteViews getCustomContentView(final Context context, final Notification notification) {
+        RemoteViews remoteViews = null;
+        if (notification.getType() == uploadingProgress) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_uploading_progress);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.uploadingProgress, format(context.getResources(), notification.getType().content, notification.getProgress()));
+            remoteViews.setProgressBar(R.id.progress, notification.getMaxProgress(), notification.getProgress(), false);
+        }
+        if (notification.getType() == photoValidationProgress) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_photo_validation_progress);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
+        }
+        if (notification.getType() == photoValid) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_valid_photo);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
+        }
+        if (notification.getType() == photoInvalid) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_invalid_photo);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.content, format(context.getResources(), notification.getType().content, context.getResources().getString(notification.getInvalidAcceptance().getCorrectionMessage())));
+        }
+
         if (notification.getType() == performing) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_perfirming);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_perfirming);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.timeHasPassed, context.getResources().getString(notification.getType().content));
             remoteViews.setTextViewText(R.id.stopwatch, notification.getTime());
             remoteViews.setTextViewText(R.id.totalPayment, (notification.getPrice().concat(" ")).concat(context.getResources().getString(R.string.currency)));
-            return remoteViews;
         }
 
         if (notification.getType() == requesting) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
             remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
-            return remoteViews;
         }
 
         if (notification.getType() == accepting) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
             remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setOnClickPendingIntent(R.id.accept, PendingIntent.getBroadcast(context, 0, new Intent(context, AcceptRequestListener.class), 0));
             remoteViews.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
-            return remoteViews;
         }
 
         if (notification.getType() == moving) {
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
             remoteViews.setTextViewText(R.id.time, String.valueOf((Long.parseLong(notification.getTime())) / 60000).concat("min"));
             remoteViews.setProgressBar(R.id.progress, notification.getMaxProgress(), notification.getProgress(), false);
-
-            return remoteViews;
-
+            remoteViews.setOnClickPendingIntent(R.id.navigation, PendingIntent.getBroadcast(context, 0, new Intent(context, NavigationButtonListener.class), 0));
         }
 
+        if (notification.getType() == confirm) {
+            final RemoteViews remoteViewsConfirm = new RemoteViews(context.getPackageName(), R.layout.notification_confirm);
+            remoteViewsConfirm.setOnClickPendingIntent(R.id.confirm, PendingIntent.getBroadcast(context, 0, new Intent(context, ConfirmPhotoListener.class), 0));
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    //TODO (vl) картинка не успевает подгрузиться до вызова "return"
+                    if (profile.getCurrent().getOwner().equals(profile)) {
+                        Glide.with(context).asBitmap().load(profile.getCurrent().getParty().getPhoto()).into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                                remoteViewsConfirm.setImageViewBitmap(R.id.photo, bitmap);
 
-        return null;
-    }
+                            }
+                        });
+                    } else {
+                        Glide.with(context).asBitmap().load(profile.getCurrent().getOwner().getPhoto()).into(new SimpleTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
+                                remoteViewsConfirm.setImageViewBitmap(R.id.photo, bitmap);
 
-    private RemoteViews getCustomBigContentView(Context context, final Notification notification) {
-        return null;
+                            }
+                        });
+                    }
+
+                }
+            });
+            return remoteViewsConfirm;
+        }
+
+        if (notification.getType() == supplierCanceled || notification.getType() == demanderCanceled) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_canceled);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
+        }
+
+        return remoteViews;
     }
 
     public long[] getVibrate(Notification notification) {
@@ -197,60 +208,9 @@ public enum NotificationType {
                 + context.getResources().getResourceEntryName(sound));
     }
 
-    public String getTitle(Resources resources, Notification notification) {
-        if (this == uploadingProgress) return format(resources, title, notification.getProgress());
-
-        return resources.getString(title);
-    }
-
     private String format(Resources resources, int resource, Object... args) {
         return String.format(resources.getString(resource), args);
     }
-
-    public String getContent(Resources resources, Notification notification) {
-        if (notification.getType() == requesting)
-            return format(resources, content, notification.getName(), notification.getEstimation());
-        if (notification.getType() == accepting)
-            return format(resources, content, notification.getName(), notification.getEstimation());
-        if (notification.getType() == performing)
-            return format(resources, content, " ", notification.getTime());
-        if (notification.getType() == completed)
-            return format(resources, content, notification.getPrice(), CURRENCY);
-        if (notification.getType() == uploadingProgress) {
-            if (notification.getTime() == null) {
-                return format(resources, R.string.uploadingStarted);
-            }
-            return format(resources, content, notification.getTime());
-        }
-        if (notification.getType() == photoInvalid) {
-            String message = resources.getString(notification.getInvalidAcceptance().getCorrectionMessage());
-            return format(resources, content, message);
-        }
-        if (notification.getType() == photoValid) return format(resources, content);
-        return "Glad to serve you!";
-    }
-
-
-    public CharSequence getContentInfo(Resources resources, Notification notification) {
-        switch (notification.getType()) {
-            case performing:
-                return format(resources, R.string.currency, ": ", notification.getPrice());
-        }
-        return null;
-    }
-
-    public NotificationCompat.Style getStyle(Resources resources, Notification notification) {
-
-        if (notification.getType() == message)
-            return new NotificationCompat.BigTextStyle().bigText(notification.getType().getContent(resources, notification));
-
-        if (notification.getType() == performing)
-            return new NotificationCompat.DecoratedCustomViewStyle();
-
-
-        return new NotificationCompat.BigTextStyle().bigText(notification.getType().getContent(resources, notification));
-    }
-
 
     //TODO (vl) открываем активность по нажатию на уведомление в меню уведомлений, если необходимо
     private PendingIntent getIntent(Context context, Notification notification) {
@@ -270,6 +230,18 @@ public enum NotificationType {
         if (notification.getType() == moving) return TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (notification.getType() == demanderCanceled || notification.getType() == supplierCanceled)
+            return TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        switch (notification.getType()) {
+            case requesting:
+            case accepting:
+            case confirm:
+                return null;
+        }
 
 
         return PendingIntent.getActivity(context, 0, context.getPackageManager()
@@ -309,4 +281,38 @@ public enum NotificationType {
         }
     }
 
+    public static class ConfirmPhotoListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                        profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
+                    } else {
+                        profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
+                    }
+
+                    if (profile.getCurrent().getTimePartyVerified() != null && profile.getCurrent().getTimeOwnerVerified() != null) {
+                        profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
+                    }
+
+                    ProfileStorage.fireProfile();
+                    MessagingService.getNotificationService(context).cancelAll();
+                }
+            });
+        }
+    }
+
+    public static class NavigationButtonListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    NavigatorManager.openNavigator(context, profile);
+                }
+            });
+        }
+    }
 }
