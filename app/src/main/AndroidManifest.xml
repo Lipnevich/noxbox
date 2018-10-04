@@ -86,11 +86,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".tools.RefreshNotificationTokenService">
-            <intent-filter>
-                <action android:name="com.google.Firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
 
         <receiver android:name=".model.NotificationType$CancelRequestListener">
             <intent-filter>

@@ -4,29 +4,35 @@ admin.initializeApp(functions.config().firebase);
 
 const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
+const version = 0.8;
 
-const oldWavesAPI = require('waves-api');
-const newWavesAPI = require('@waves/waves-api');
-
-const oldWaves = oldWavesAPI.create(oldWavesAPI.MAINNET_CONFIG);
-const newWaves = newWavesAPI.create(newWavesAPI.MAINNET_CONFIG);
-
-exports.welcome = functions.auth.user().onCreate((user) => {
-    return wallet.create(user).then(
-           noxbox.init);
-});
-
-exports.compareWavesLibs = functions.https.onRequest((req, res) => {
-    const password = '019283485';
-    const oldEncrypted = oldWaves.Seed.fromExistingPhrase(oldWaves.Seed.create().phrase).encrypt(password);
-    const newEncrypted = newWaves.Seed.fromExistingPhrase(newWaves.Seed.create().phrase).encrypt(password);
-
-    let oldSeed = oldWaves.Seed.fromExistingPhrase(oldWaves.Seed.decryptSeedPhrase(oldEncrypted, password));
-    let newSeed = newWaves.Seed.fromExistingPhrase(newWaves.Seed.decryptSeedPhrase(newEncrypted, password));
-
-    res.status(200).send('Old address ' + oldSeed.address + '<br/>New address ' + newSeed.address);
+exports.welcome = functions.auth.user().onCreate(user => {
+    return wallet.create(user).then(noxbox.init);
 });
 
 exports.version = functions.https.onRequest((req, res) => {
-    res.status(200).send('Version 0.1');
+    res.status(200).send('Version ' + version);
+});
+
+
+exports.push = functions.https.onRequest((req, res) => {
+    var registrationToken = 'dLHjhs_hdbs:APA91bEvOZ-3tYFxL4Jzu4G3MkNAQQ67exB6AEuNdeCINWDSFtG95qbKNH_iGFPrDCYnSvmvtaqVDKjOtlt1hdmvBvLbKqJTmx2IhdO8Ez_flRv4XQUweLZEjlrWLad-y1cs06UNTW5A';
+
+    var message = {
+      data: {
+        score: '850',
+        time: '2:45'
+      },
+      token: registrationToken
+    };
+
+    admin.messaging().send(message)
+      .then(response => {
+        console.log('Successfully sent message:', response);
+      })
+      .catch(error => {
+        console.log('Error sending message:', error);
+      });
+
+    res.status(200).send('Version ' + version);
 });

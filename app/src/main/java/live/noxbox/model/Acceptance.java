@@ -1,6 +1,5 @@
 package live.noxbox.model;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Exclude;
 
 import live.noxbox.tools.InvalidAcceptance;
@@ -10,6 +9,7 @@ import static live.noxbox.Configuration.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
 public class Acceptance {
 
     private Boolean failToRecognizeFace = true;
+    private Boolean incorrectName = true;
     private Float smileProbability = 0f;
     private Float rightEyeOpenProbability = 0f;
     private Float leftEyeOpenProbability = 0f;
@@ -18,17 +18,10 @@ public class Acceptance {
     public Acceptance() {
     }
 
-    public Acceptance(FirebaseUser user) {
-        failToRecognizeFace = user.getPhotoUrl() != null ? false : true;
-    }
-
-    public Acceptance(Profile profile) {
-        failToRecognizeFace = profile.getPhoto() != null ? false : true;
-    }
-
     @Exclude
     public Boolean isAccepted() {
         return !failToRecognizeFace
+                && !incorrectName
                 && smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && rightEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
@@ -92,6 +85,15 @@ public class Acceptance {
 
     public Acceptance setNose(Boolean nose) {
         isNose = nose;
+        return this;
+    }
+
+    public Boolean getIncorrectName() {
+        return incorrectName;
+    }
+
+    public Acceptance setIncorrectName(Boolean incorrectName) {
+        this.incorrectName = incorrectName;
         return this;
     }
 }

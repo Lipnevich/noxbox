@@ -9,7 +9,6 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.model.Wallet;
 import live.noxbox.model.WorkSchedule;
 import live.noxbox.tools.Task;
 
@@ -29,16 +28,10 @@ public class ProfileStorage {
         if (profile != null) {
             task.execute(profile);
         } else {
-            Firebase.listenProfile(new Task<Profile>() {
+            Firestore.listenProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     ProfileStorage.profile = profile;
-                    if (profile.getWallet() == null) {
-                        profile.setWallet(new Wallet());
-                    }
-                    if (profile.getCurrent() == null) {
-                        profile.setCurrent(noxbox());
-                    }
                     task.execute(profile);
                     fireProfile();
                 }

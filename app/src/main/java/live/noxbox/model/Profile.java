@@ -1,5 +1,7 @@
 package live.noxbox.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.common.base.Objects;
 import com.google.firebase.database.Exclude;
 
@@ -90,6 +92,9 @@ public class Profile implements Serializable {
     }
 
     public TravelMode getTravelMode() {
+        if(travelMode == null) {
+            travelMode = TravelMode.walking;
+        }
         return travelMode;
     }
 
@@ -108,6 +113,9 @@ public class Profile implements Serializable {
     }
 
     public Noxbox getCurrent() {
+        if(current == null) {
+            current = new Noxbox();
+        }
         return current;
     }
 
@@ -117,6 +125,9 @@ public class Profile implements Serializable {
     }
 
     public Wallet getWallet() {
+        if(wallet == null) {
+            wallet = new Wallet();
+        }
         return wallet;
     }
 
@@ -125,6 +136,7 @@ public class Profile implements Serializable {
         return this;
     }
 
+    @NonNull
     public NotificationKeys getNotificationKeys() {
         if (notificationKeys == null) {
             notificationKeys = new NotificationKeys();
@@ -239,6 +251,9 @@ public class Profile implements Serializable {
     }
 
     public Boolean getHost() {
+        if(host == null) {
+            host = false;
+        }
         return host;
     }
 

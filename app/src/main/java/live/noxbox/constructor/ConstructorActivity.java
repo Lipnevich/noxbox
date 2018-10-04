@@ -347,7 +347,7 @@ public class ConstructorActivity extends AppCompatActivity {
     }
 
     private void drawPublishButton(final Profile profile) {
-
+        // TODO (vl) если имя пустое или null то выводить просьбу ввести имя
         ((LinearLayout) findViewById(R.id.publish).getParent()).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

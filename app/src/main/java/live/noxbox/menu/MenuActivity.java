@@ -61,9 +61,6 @@ import live.noxbox.profile.ProfileActivity;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
-import static live.noxbox.tools.DebugMessage.popup;
-
 public abstract class MenuActivity extends AppCompatActivity {
 
     @Override
@@ -83,18 +80,9 @@ public abstract class MenuActivity extends AppCompatActivity {
         });
     }
 
-    private void draw(Profile profile) {
-        createMenu(profile);
-
-
-        if (profile.ratingToPercentage() <= MIN_RATE_IN_PERCENTAGE) {
-            popup(this, "Low rate!");
-        }
-    }
-
     protected Drawer menu;
 
-    protected void createMenu(Profile profile) {
+    private void draw(Profile profile) {
         makeProfileImageRounded();
 
         ProfileDrawerItem account = new ProfileDrawerItem()

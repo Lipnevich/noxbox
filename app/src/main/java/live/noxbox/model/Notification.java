@@ -20,6 +20,7 @@ public class Notification {
 
 
     public static Notification create(Map<String, String> data) {
+        // TODO (vl) create custom notification for pushes from server
         if (data.get("type") == null) return new Notification();
 
         return new Notification()
