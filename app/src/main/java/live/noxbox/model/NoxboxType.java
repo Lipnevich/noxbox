@@ -18,6 +18,8 @@ public enum NoxboxType {
     //dogWalker(11, R.string.dogWalker, R.drawable.dog_walker, R.drawable.music_back, R.string.dogWalkingDescription, 60),
     //homeTeacher(12, R.string.homeTeacher, R.drawable.home_teacher, R.drawable.music_back, R.string.homeTeacherDescription, 60),
     //musician(13, R.string.musician, R.drawable.musician, R.drawable.music_back, R.string.musicianDescription, 60);
+    //evacuator(14, R.string.evacuator, R.drawable.evacuator, R.drawable.evacuator_back, R.string.evacuatorDescription, 60);
+    //carBatteryRecharge(14, R.string.carBatteryRecharge, R.drawable.carBatteryRecharge, R.drawable.carBatteryRecharge_back, R.string.carBatteryRechargeDescription, 60);
 
 
     private int id;
