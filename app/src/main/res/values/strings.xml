@@ -239,4 +239,5 @@
     <string name="photoInvalidContent">Пожалуйста, %s</string>
     <string name="topUpYourAcc">Пополните ваш счёт</string>
     <string name="toPay">К оплате:</string>
+    <string name="messageFromTheSupport">Сообщение от техническое поддержки</string>
 </resources>

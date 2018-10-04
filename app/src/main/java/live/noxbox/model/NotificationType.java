@@ -53,7 +53,10 @@ public enum NotificationType {
 
     refund(3, R.string.replaceIt, R.string.replaceIt),
 
-    message(4, R.string.replaceIt, R.string.replaceIt);
+    message(4, R.string.replaceIt, R.string.replaceIt),
+
+    support(5, R.string.messageFromTheSupport, R.string.replaceIt);
+
 
     private int index;
     private int title;
@@ -77,7 +80,17 @@ public enum NotificationType {
                 .setSound(getSound(context, notification.getType()))
                 .setCustomContentView(getCustomContentView(context, notification))
                 .setOnlyAlertOnce(isAlertOnce(notification.getType()))
-                .setContentIntent(getIntent(context, notification));
+                .setContentIntent(getIntent(context, notification))
+                .setAutoCancel(getAutoCancel(notification));
+    }
+
+    private boolean getAutoCancel(Notification notification) {
+        switch (notification.getType()) {
+            case support:
+                return true;
+        }
+
+        return false;
     }
 
     public void updateNotification(Context context, final Notification notification, NotificationCompat.Builder builder) {
@@ -177,6 +190,12 @@ public enum NotificationType {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_canceled);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
+        }
+
+        if (notification.getType() == support) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_support);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.content, notification.getMessage());
         }
 
         return remoteViews;

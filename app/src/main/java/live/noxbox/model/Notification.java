@@ -25,8 +25,6 @@ public class Notification {
 
         return new Notification()
                 .setType(NotificationType.valueOf(data.get("type")))
-                .setEstimation(data.get("estimation"))
-                //.setIcon(data.get("icon"))
                 .setName(data.get("name"))
                 .setMessage(data.get("message"))
                 .setLocal(data.get("local") != null ? Boolean.valueOf(data.get("local")) : false)

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -57,6 +58,7 @@ public class MessagingService extends FirebaseMessagingService {
 
         Notification notification = Notification.create(remoteMessage.getData());
 
+        Log.d(this.getClass().getName().toUpperCase(), "Message data payload: " + remoteMessage.getData());
         if (notification.getIgnore()) return;
 
         showPushNotification(notification);
