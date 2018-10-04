@@ -11,9 +11,11 @@ import live.noxbox.tools.InvalidAcceptance;
 public class Notification {
 
     private NotificationType type;
-    private Integer id, progress;
+    private Integer id, icon;
+    private Integer progress = 0;
+    private Integer maxProgress = 0;
     private Boolean local = false;
-    private String estimation, icon, name, message, price, balance, previousBalance, time;
+    private String estimation, name, message, price, balance, previousBalance, time;
     private InvalidAcceptance invalidAcceptance;
 
 
@@ -23,7 +25,7 @@ public class Notification {
         return new Notification()
                 .setType(NotificationType.valueOf(data.get("type")))
                 .setEstimation(data.get("estimation"))
-                .setIcon(data.get("icon"))
+                //.setIcon(data.get("icon"))
                 .setName(data.get("name"))
                 .setMessage(data.get("message"))
                 .setLocal(data.get("local") != null ? Boolean.valueOf(data.get("local")) : false)
@@ -36,7 +38,7 @@ public class Notification {
         return new Notification()
                 .setType(event.getType())
                 .setEstimation(event.getEstimationTime())
-                .setIcon(event.getSender().getPhoto())
+                //.setIcon(event.getSender().getPhoto())
                 .setName(event.getSender().getName())
                 .setMessage(event.getMessage())
                 .setLocal(true);
@@ -65,11 +67,11 @@ public class Notification {
         return this;
     }
 
-    public String getIcon() {
+    public Integer getIcon() {
         return icon;
     }
 
-    public Notification setIcon(String icon) {
+    public Notification setIcon(Integer icon) {
         this.icon = icon;
         return this;
     }
@@ -161,6 +163,15 @@ public class Notification {
 
     public Notification setInvalidAccetrance(InvalidAcceptance invalidAcceptance) {
         this.invalidAcceptance = invalidAcceptance;
+        return this;
+    }
+
+    public Integer getMaxProgress() {
+        return maxProgress;
+    }
+
+    public Notification setMaxProgress(Integer maxProgress) {
+        this.maxProgress = maxProgress;
         return this;
     }
 }

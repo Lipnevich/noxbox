@@ -136,9 +136,16 @@
         <item name="android:background">@color/primary</item>
     </style>
 
-    <!--notification progress bar-->
+    <!--notification circular progress bar-->
     <style name="CircularProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/secondary</item>
+    </style>
+
+    <!--notification horizontal progress bar-->
+    <style name="HorizontalProgressBarNotificationStyle" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressBackgroundTint">@color/translucent</item>
+        <item name="android:progressTint">@color/secondary</item>
+        <item name="android:minWidth">100dp</item>
     </style>
 
 </resources>

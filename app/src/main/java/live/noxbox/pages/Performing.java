@@ -1,6 +1,5 @@
 package live.noxbox.pages;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Handler;
 import android.view.View;
@@ -63,7 +62,6 @@ public class Performing implements State {
 
         handler = new Handler();
         runnable = new Runnable() {
-            @SuppressLint("RestrictedApi")
             @Override
             public void run() {
                 int hours = seconds / 3600;
@@ -75,7 +73,7 @@ public class Performing implements State {
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     notification.setTime(time);
-                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder, messagingService);
+                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                     seconds++;
                     drawPrice(profile);
                     handler.postDelayed(this, 1000);

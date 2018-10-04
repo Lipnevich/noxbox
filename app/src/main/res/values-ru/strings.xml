@@ -72,9 +72,9 @@
     <string name="requestingPushContent">%s ожидает подтверждения. Время пути %s минут</string>
     <string name="acceptPushTitle">В пути</string>
     <string name="acceptingPushContent">%s прибудет через %s минуты</string>
-    <string name="performerCancelPushTitle">Запрос отклонен</string>
+    <string name="supplierCancelPushTitle">Запрос отклонен</string>
     <string name="supplierCanceledPushContent">Пожалуйста попробуйте снова</string>
-    <string name="payerCancelPushTitle">Запрос отменен</string>
+    <string name="demanderCancelPushTitle">Запрос отменен</string>
     <string name="demanderCanceledPushContent">Новый запрос будет предоставлен скоро</string>
     <string name="completePushTitle">Оплата выполнена</string>
     <string name="completedPushContent">%s %s было отправлено исполнителю</string>

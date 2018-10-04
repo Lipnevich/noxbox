@@ -97,6 +97,24 @@
                 <action android:name="cancelRequestByClickedButton"/>
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".model.NotificationType$AcceptRequestListener">
+            <intent-filter>
+                <action android:name="acceptRequestByClickedButton"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".model.NotificationType$ConfirmPhotoListener">
+            <intent-filter>
+                <action android:name="confirmPhotoByClickedButton"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".model.NotificationType$NavigationButtonListener">
+            <intent-filter>
+                <action android:name="openNavigatorByClickedButton"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

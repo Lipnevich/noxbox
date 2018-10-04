@@ -1,6 +1,6 @@
 package live.noxbox.tools;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -9,7 +9,7 @@ import live.noxbox.model.TravelMode;
 
 public class NavigatorManager {
 
-    public static void openNavigator(Activity activity, Profile profile) {
+    public static void openNavigator(Context context, Profile profile) {
         String uri = "google.navigation:"
                 + "q="
                 + profile.getCurrent().getPosition().getLatitude()
@@ -27,8 +27,8 @@ public class NavigatorManager {
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri))
                 .setPackage("com.google.android.apps.maps");
-        if (intent.resolveActivity(activity.getPackageManager()) != null) {
-            activity.startActivity(intent);
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
         } else {
             uri = "yandexnavi://build_route_on_map?"
                     + "lat_from="
@@ -40,14 +40,14 @@ public class NavigatorManager {
                     + "&lon_to="
                     + profile.getCurrent().getPosition().getLongitude();
             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri)).setPackage("ru.yandex.yandexnavi");
-            if (intent.resolveActivity(activity.getPackageManager()) != null) {
-                activity.startActivity(intent);
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(intent);
             } else {
 
                 if (System.currentTimeMillis() % 2 == 0) {
-                    activity.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=com.google.android.apps.maps")));
+                    context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=com.google.android.apps.maps")));
                 } else {
-                    activity.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=ru.yandex.yandexnavi")));
+                    context.startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse("market://details?id=ru.yandex.yandexnavi")));
                 }
             }
         }
