@@ -87,6 +87,8 @@ public enum NotificationType {
     private boolean getAutoCancel(Notification notification) {
         switch (notification.getType()) {
             case support:
+            case supplierCanceled:
+            case demanderCanceled:
                 return true;
         }
 

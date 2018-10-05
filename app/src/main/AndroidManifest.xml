@@ -81,33 +81,33 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name="live.noxbox.tools.MessagingService">
+        <service android:name=".tools.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <receiver android:name="live.noxbox.model.NotificationType$CancelRequestListener">
+        <receiver android:name=".model.NotificationType$CancelRequestListener">
             <intent-filter>
-                <action android:name="cancelRequestByClickedButton"/>
+                <action android:name="live.noxbox.cancelRequestByClickedButton"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name="live.noxbox.model.NotificationType$AcceptRequestListener">
+        <receiver android:name=".model.NotificationType$AcceptRequestListener">
             <intent-filter>
-                <action android:name="acceptRequestByClickedButton"/>
+                <action android:name="live.noxbox.acceptRequestByClickedButton"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name="live.noxbox.model.NotificationType$ConfirmPhotoListener">
+        <receiver android:name=".model.NotificationType$ConfirmPhotoListener">
             <intent-filter>
-                <action android:name="confirmPhotoByClickedButton"/>
+                <action android:name="live.noxbox.confirmPhotoByClickedButton"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name="live.noxbox.model.NotificationType$NavigationButtonListener">
+        <receiver android:name=".model.NotificationType$NavigationButtonListener">
             <intent-filter>
-                <action android:name="openNavigatorByClickedButton"/>
+                <action android:name="live.noxbox.openNavigatorByClickedButton"/>
             </intent-filter>
         </receiver>
     </application>

@@ -32,9 +32,10 @@ public class Firestore {
     }
 
 
-
     // Profiles API
     static void listenProfile(@NonNull final Task<Profile> task) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+
         profile().addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
@@ -63,7 +64,7 @@ public class Firestore {
     }
 
     public static void persistNotificationToken(String notificationToken) {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             profile().update("notificationKeys.android", notificationToken);
         }
     }
