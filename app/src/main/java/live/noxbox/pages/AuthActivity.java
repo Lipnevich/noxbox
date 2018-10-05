@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Arrays;
 
@@ -82,6 +83,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private void login() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
             startActivity(new Intent(this, MapActivity.class));
         }
     }

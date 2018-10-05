@@ -46,9 +46,4 @@ public class Firestore {
         });
     }
 
-    public static void persistNotificationToken(String notificationToken) {
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            profile().update("notificationKeys.android", notificationToken);
-        }
-    }
 }

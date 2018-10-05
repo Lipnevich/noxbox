@@ -27,7 +27,6 @@ import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 
 import static live.noxbox.model.NotificationType.balance;
-import static live.noxbox.state.Firestore.persistNotificationToken;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -45,11 +44,6 @@ public class MessagingService extends FirebaseMessagingService {
 
     public MessagingService(Context context) {
         this.context = context;
-    }
-
-    @Override
-    public void onNewToken(String token) {
-        persistNotificationToken(token);
     }
 
     @Override
