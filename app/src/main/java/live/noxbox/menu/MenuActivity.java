@@ -13,57 +13,38 @@
  */
 package live.noxbox.menu;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
-import com.mikepenz.materialdrawer.util.DrawerImageLoader;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.filters.MapFiltersActivity;
-import live.noxbox.model.IntentAndKey;
 import live.noxbox.model.Profile;
 import live.noxbox.pages.AuthActivity;
 import live.noxbox.profile.ProfileActivity;
 import live.noxbox.state.ProfileStorage;
+import live.noxbox.tools.ImageManager;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-public abstract class MenuActivity extends AppCompatActivity {
+public abstract class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,170 +58,45 @@ public abstract class MenuActivity extends AppCompatActivity {
         ProfileStorage.listenProfile(MenuActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                draw(profile);
+                draw(MenuActivity.this, profile);
             }
         });
     }
 
-    protected Drawer menu;
+    private void draw(final Activity activity, final Profile profile) {
+        drawNavigation(activity, profile);
+    }
 
-    private void draw(Profile profile) {
-        makeProfileImageRounded();
-
-        ProfileDrawerItem account = new ProfileDrawerItem()
-                .withName(profile.getName())
-                .withEmail(profile.ratingToPercentage() + " %");
+    private void drawNavigation(final Activity activity, final Profile profile) {
+        drawerLayout = findViewById(R.id.drawerLayout);
+        ImageView profilePhoto = findViewById(R.id.photo);
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
         if (profile.getPhoto() == null) {
-            account.withIcon(ContextCompat.getDrawable(getApplicationContext(),
-                    R.drawable.profile_picture_blank));
+            ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.profile_picture_blank), (profilePhoto));
         } else {
-            account.withIcon(profile.getPhoto());
+            ImageManager.createCircleImageFromUrl(activity, profile.getPhoto(), profilePhoto);
         }
 
-        AccountHeader header = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.color.primary)
-                .withTextColorRes(R.color.secondary)
-                .withProfileImagesClickable(false)
-                .withSelectionListEnabledForSingleProfile(false)
-                .withAccountHeader(R.layout.material_drawer_header)
-                .addProfiles(account)
-                .build();
-
-        SecondaryDrawerItem version = new SecondaryDrawerItem()
-                .withName("Version " + BuildConfig.VERSION_NAME)
-                .withEnabled(false);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        menu = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withSelectedItem(-1)
-                .withAccountHeader(header)
-                .addDrawerItems(convertToItems(getMenu()))
-                .addStickyDrawerItems(version)
-                .withStickyFooterShadow(false)
-                .build();
-
-        menu.getDrawerLayout().setFitsSystemWindows(true);
+        if (profile.getName() != null) {
+            ((TextView) findViewById(R.id.name)).setText(profile.getName());
+        }
+        ((TextView) findViewById(R.id.rating)).setText(profile.ratingToPercentage() + " %");
+        ((TextView) findViewById(R.id.version)).setText("Version " + BuildConfig.VERSION_NAME);
 
 
-        ImageView menuImage = findViewById(R.id.menu);
-        menuImage.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                menu.openDrawer();
+                drawerLayout.openDrawer(GravityCompat.START);
             }
         });
-        menuImage.setVisibility(View.VISIBLE);
-    }
-
-    private void makeProfileImageRounded() {
-        DrawerImageLoader.init(new AbstractDrawerImageLoader() {
+        profilePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void set(final ImageView imageView, Uri uri, Drawable placeholder) {
-                Glide.with(getApplicationContext()).asBitmap().load(uri)
-                        .apply(RequestOptions.placeholderOf(placeholder).circleCrop())
-                        .into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                imageView.setImageBitmap(resource);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        startActivity(new Intent(MenuActivity.this, ProfileActivity.class));
-                                    }
-                                });
-                            }
-                        });
-            }
-
-            @Override
-            public void cancel(ImageView imageView) {
-                Glide.with(getApplicationContext()).clear(imageView);
-            }
-
-            @Override
-            public Drawable placeholder(Context ctx) {
-                return ContextCompat.getDrawable(getApplicationContext(), R.drawable.profile_picture_blank);
-            }
-
-            @Override
-            public Drawable placeholder(Context ctx, String tag) {
-                return placeholder(ctx);
+            public void onClick(View v) {
+                Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
             }
         });
-    }
-
-    private IDrawerItem[] convertToItems(Map<String, IntentAndKey> menu) {
-        List<IDrawerItem> items = new ArrayList<>();
-        for (final Map.Entry<String, IntentAndKey> entry : menu.entrySet()) {
-            PrimaryDrawerItem item = new PrimaryDrawerItem()
-                    .withIdentifier(entry.getKey().hashCode())
-                    .withName(entry.getKey())
-                    .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                        @Override
-                        public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            startActivityForResult(entry.getValue().getIntent(), entry.getValue().getKey());
-                            return true;
-                        }
-                    })
-                    .withTextColorRes(R.color.primary);
-
-            items.add(item);
-        }
-
-        PrimaryDrawerItem logout = new PrimaryDrawerItem()
-                .withIdentifier(999)
-                .withName(getResources().getString(R.string.logout))
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MenuActivity.this,
-                                R.style.NoxboxAlertDialogStyle);
-                        builder.setTitle(getResources().getString(R.string.logoutPrompt));
-                        builder.setPositiveButton(getResources().getString(R.string.logout),
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        FirebaseMessaging.getInstance().unsubscribeFromTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        AuthUI.getInstance()
-                                                .signOut(MenuActivity.this)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                                                        // TODO (nli) start activity for result
-                                                        startActivity(new Intent(MenuActivity.this, AuthActivity.class));
-                                                    }
-                                                });
-                                    }
-                                });
-                        builder.setNegativeButton(android.R.string.cancel, null);
-                        builder.show();
-                        return true;
-                    }
-                })
-                .withTextColorRes(R.color.primary);
-        items.add(logout);
-
-        return items.toArray(new IDrawerItem[menu.size()]);
-    }
-
-    protected SortedMap<String, IntentAndKey> getMenu() {
-        TreeMap<String, IntentAndKey> menu = new TreeMap<>();
-        menu.put(getString(R.string.history), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), HistoryActivity.class))
-                .setKey(HistoryActivity.CODE));
-        menu.put(getString(R.string.wallet), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), WalletActivity.class))
-                .setKey(WalletActivity.CODE));
-        menu.put(getString(R.string.filters), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), MapFiltersActivity.class))
-                .setKey(MapFiltersActivity.CODE));
-        menu.put(getString(R.string.profile), new IntentAndKey()
-                .setIntent(new Intent(getApplicationContext(), ProfileActivity.class))
-                .setKey(ProfileActivity.CODE));
-        return menu;
     }
 
     @Override
@@ -249,11 +105,57 @@ public abstract class MenuActivity extends AppCompatActivity {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
-                    draw(profile);
+                    draw(MenuActivity.this, profile);
                 }
             });
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_filters: {
+                Router.startActivityForResult(this, MapFiltersActivity.class, MapFiltersActivity.CODE);
+                break;
+            }
+            case R.id.navigation_history: {
+                Router.startActivityForResult(this, HistoryActivity.class, HistoryActivity.CODE);
+                break;
+            }
+            case R.id.navigation_profile: {
+                Router.startActivityForResult(this, ProfileActivity.class, ProfileActivity.CODE);
+                break;
+            }
+            case R.id.navigation_wallet: {
+                Router.startActivityForResult(this, WalletActivity.class, WalletActivity.CODE);
+                break;
+            }
+            case R.id.navigation_logout: {
+                AuthUI.getInstance()
+                        .signOut(MenuActivity.this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                                FirebaseMessaging.getInstance().unsubscribeFromTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                // TODO (nli) start activity for result
+                                startActivity(new Intent(MenuActivity.this, AuthActivity.class));
+                            }
+                        });
+            }
+        }
+        //true to display the item as the selected item
+        return true;
     }
 
 }

@@ -34,6 +34,7 @@ public class DebugActivity extends MenuActivity {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
+                    profile.setPhoto("https://i.ytimg.com/vi/ZjZqWUp2Y90/maxresdefault.jpg");
                     Rating rating = new Rating();
                     rating.setReceivedLikes(ThreadLocalRandom.current().nextInt(900, 1000));
                     rating.setReceivedDislikes(ThreadLocalRandom.current().nextInt(rating.getReceivedLikes() / 10));

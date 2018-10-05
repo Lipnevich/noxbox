@@ -173,6 +173,4 @@ public class ImageManager {
                 .apply(RequestOptions.circleCropTransform())
                 .into(image);
     }
-
-
 }
