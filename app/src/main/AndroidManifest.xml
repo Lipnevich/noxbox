@@ -81,31 +81,31 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name=".tools.MessagingService">
+        <service android:name="live.noxbox.tools.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".model.NotificationType$CancelRequestListener">
+        <receiver android:name="live.noxbox.model.NotificationType$CancelRequestListener">
             <intent-filter>
                 <action android:name="cancelRequestByClickedButton"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".model.NotificationType$AcceptRequestListener">
+        <receiver android:name="live.noxbox.model.NotificationType$AcceptRequestListener">
             <intent-filter>
                 <action android:name="acceptRequestByClickedButton"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".model.NotificationType$ConfirmPhotoListener">
+        <receiver android:name="live.noxbox.model.NotificationType$ConfirmPhotoListener">
             <intent-filter>
                 <action android:name="confirmPhotoByClickedButton"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".model.NotificationType$NavigationButtonListener">
+        <receiver android:name="live.noxbox.model.NotificationType$NavigationButtonListener">
             <intent-filter>
                 <action android:name="openNavigatorByClickedButton"/>
             </intent-filter>
