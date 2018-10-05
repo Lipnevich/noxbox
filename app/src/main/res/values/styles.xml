@@ -1,7 +1,6 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar.TranslucentStatus">
+    <style name="AppTheme" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
@@ -24,12 +23,7 @@
     <style name="NoActionBar" parent="@style/AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-    </style>
-
-    <style name="NoActionBarWithStatusBar" parent="@style/AppTheme">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
     </style>
 
     <style name="MainButtonStyle" parent="Widget.AppCompat.Button.Colored">
@@ -51,11 +45,8 @@
 
     <style name="NoxboxAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/secondary</item>
-        <!-- Used for the title and text -->
         <item name="android:textColorPrimary">@color/secondary</item>
-        <!-- Used for the background -->
         <item name="android:background">@color/primary</item>
-        <!--<item name="android:windowTitleStyle">@style/MyTitleTextStyle</item>-->
     </style>
 
     <style name="FirebaseUI" parent="Theme.AppCompat.DayNight.DarkActionBar">
@@ -117,10 +108,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!--Detailed page action bar style-->
     <style name="DetailedAppBarStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <!--<item name="android:textColor">@color/secondary_detailed</item>-->
-        <!--<item name="android:textColorPrimary">@color/secondary_detailed</item>-->
         <item name="android:textColorSecondary">@color/primary</item>
     </style>
 

@@ -19,6 +19,8 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
+
 public class MapFiltersActivity extends AppCompatActivity {
 
     public static final int CODE = 1005;
@@ -142,7 +144,7 @@ public class MapFiltersActivity extends AppCompatActivity {
         typesChecked = new boolean[NoxboxType.values().length];
         for (NoxboxType type : NoxboxType.values()) {
             typesName[type.getId()] = getResources().getString(type.getName());
-            typesChecked[type.getId()] = profile.getFilters().getTypes().get(type.name());
+            typesChecked[type.getId()] = firstNonNull(profile.getFilters().getTypes().get(type.name()), true);
             if (typesChecked[type.getId()]) {
                 totalChecked++;
             }

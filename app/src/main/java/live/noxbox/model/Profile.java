@@ -38,6 +38,9 @@ public class Profile implements Serializable {
     private Filters filters;
 
     public Filters getFilters() {
+        if(filters == null) {
+            filters = new Filters();
+        }
         return filters;
     }
 

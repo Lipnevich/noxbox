@@ -1,13 +1,14 @@
 package live.noxbox.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Filters {
 
-    private boolean supply;
-    private boolean demand;
-    private String maxPrice;
-    private Map<String,Boolean> types;
+    private Boolean supply = true;
+    private Boolean demand = true;
+    private String maxPrice = "0";
+    private Map<String,Boolean> types = new HashMap<>();
 
     public Filters() { }
 
@@ -19,24 +20,33 @@ public class Filters {
     }
 
     public Boolean getSupply() {
+        if(supply == null) {
+            supply = true;
+        }
         return supply;
     }
 
-    public Filters setSupply(boolean supply) {
+    public Filters setSupply(Boolean supply) {
         this.supply = supply;
         return this;
     }
 
     public Boolean getDemand() {
+        if(demand == null) {
+            demand = true;
+        }
         return demand;
     }
 
-    public Filters setDemand(boolean demand) {
+    public Filters setDemand(Boolean demand) {
         this.demand = demand;
         return this;
     }
 
     public String getPrice() {
+        if(maxPrice == null) {
+            maxPrice = "0";
+        }
         return maxPrice;
     }
 
