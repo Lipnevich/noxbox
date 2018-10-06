@@ -245,6 +245,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_view_body"
-        app:itemTextColor="@color/primary" />
+        app:itemTextColor="@color/primary"
+        app:itemIconTint="@color/primary"/>
 
 </android.support.v4.widget.DrawerLayout>
