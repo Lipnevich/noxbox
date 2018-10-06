@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_filters"
+            android:icon="@drawable/filter"
+            android:title="@string/filters" />
+        <item
+            android:id="@+id/navigation_history"
+            android:icon="@drawable/history"
+            android:title="@string/history" />
+        <item
+            android:id="@+id/navigation_profile"
+            android:icon="@drawable/profile"
+            android:title="@string/profile" />
+        <item
+            android:id="@+id/navigation_wallet"
+            android:icon="@drawable/wallet"
+            android:title="@string/wallet" />
+        <item
+            android:id="@+id/navigation_logout"
+            android:icon="@drawable/logout"
+            android:title="@string/logout" />
+    </group>
+
+
+
+</menu>

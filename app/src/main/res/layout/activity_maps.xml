@@ -244,7 +244,7 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:headerLayout="@layout/navigation_header"
-        app:menu="@menu/drawer_view"
+        app:menu="@menu/navigation_view_body"
         app:itemTextColor="@color/primary" />
 
 </android.support.v4.widget.DrawerLayout>
