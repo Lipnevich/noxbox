@@ -31,7 +31,6 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -57,6 +56,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
+import static live.noxbox.tools.MapController.setupMap;
 
 public class MapActivity extends DebugActivity implements
         OnMapReadyCallback,
@@ -81,13 +81,8 @@ public class MapActivity extends DebugActivity implements
         googleMap = readyMap;
         scaleMarkers();
         visibleCurrentLocation(true);
-        // TODO (nli) night and day mode
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_in_night));
-        googleMap.setMaxZoomPreference(18);
-        googleMap.getUiSettings().setRotateGesturesEnabled(false);
-        googleMap.getUiSettings().setTiltGesturesEnabled(false);
+        setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
         moveCopyrightLeft(googleMap);
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -98,28 +93,18 @@ public class MapActivity extends DebugActivity implements
         draw();
     }
 
-    protected boolean checkLocationPermission() {
+    protected boolean isLocationPermissionGranted() {
         return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED;
+                == PackageManager.PERMISSION_GRANTED;
     }
 
     protected void visibleCurrentLocation(boolean visible) {
-        if (checkLocationPermission()) {
-            // Permission to access the location is missing.
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat.requestPermissions(MapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_PERMISSION_REQUEST_CODE);
-                }
-            });
-        } else {
+        if (isLocationPermissionGranted()) {
             googleMap.setMyLocationEnabled(true);
             findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (checkLocationPermission()) {
+                    if (!isLocationPermissionGranted()) {
                         return;
                     }
                     ProfileStorage.readProfile(new Task<Profile>() {
@@ -135,17 +120,23 @@ public class MapActivity extends DebugActivity implements
             if (!visible) {
                 return;
             }
-            // Access to the location has been granted to the app.
-            // Get the requestButton view
             View locationButton = ((View) findViewById(new Integer(1)).getParent()).findViewById(new Integer(2));
 
-            // and next place it, for example, on bottom right (as Google Maps app)
             RelativeLayout.LayoutParams layout = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
             // position on right bottom
             layout.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
             layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
             layout.setMargins(0, 0, 0, dpToPx(8));
             locationButton.setLayoutParams(layout);
+        } else {
+            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityCompat.requestPermissions(MapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                }
+            });
         }
     }
 
@@ -199,7 +190,7 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     protected void onResume() {
-        if (!checkLocationPermission()) {
+        if (isLocationPermissionGranted()) {
             if (!isGpsEnabled()) {
                 ConfirmationMessage.messageGps(this);
             }

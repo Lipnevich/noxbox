@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,6 +24,8 @@ import java.util.concurrent.ExecutionException;
 import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
+import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
 
 import static live.noxbox.model.NotificationType.balance;
 
@@ -47,15 +48,17 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(final RemoteMessage remoteMessage) {
         context = getApplicationContext();
 
-        Notification notification = Notification.create(remoteMessage.getData());
-
-        Log.d(this.getClass().getName().toUpperCase(), "Message data payload: " + remoteMessage.getData());
-        if (notification.getIgnore()) return;
-
-        showPushNotification(notification);
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                Notification notification = Notification.create(remoteMessage.getData());
+                if (notification.getIgnore()) return;
+                showPushNotification(notification);
+            }
+        });
     }
 
     public void showPushNotification(Notification notification) {

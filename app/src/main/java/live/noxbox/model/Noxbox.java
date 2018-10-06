@@ -105,6 +105,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getPrice() {
+        if(price == null) {
+            price = "5";
+        }
         return price;
     }
 
@@ -169,6 +172,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public NoxboxType getType() {
+        if(type == null) {
+            type = NoxboxType.values()[0];
+        }
         return type;
     }
 
@@ -226,6 +232,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public MarketRole getRole() {
+        if(role == null) {
+            role = MarketRole.supply;
+        }
         return role;
     }
 
@@ -247,6 +256,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public WorkSchedule getWorkSchedule() {
+        if(workSchedule == null) {
+            workSchedule = new WorkSchedule();
+        }
         return workSchedule;
     }
 

@@ -42,7 +42,7 @@
             <ImageView
                 android:id="@+id/pointerImage"
                 style="@style/IconButtonStyle"
-                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_gravity="center"
                 android:layout_marginBottom="42dp"
                 android:src="@drawable/pointer" />
 
@@ -65,14 +65,6 @@
                 android:src="@drawable/filter"
                 android:tint="@color/primary" />
 
-            <ImageButton
-                android:id="@+id/centerAim"
-                style="@style/IconButtonStyle"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:src="@drawable/aim"
-                android:tint="@color/primary" />
-
             <ImageView
                 android:id="@+id/check"
                 style="@style/IconButtonStyle"
@@ -87,16 +79,6 @@
                 android:layout_gravity="end|top"
                 android:layout_marginEnd="13dp"
                 android:layout_marginTop="13dp">
-
-                <ImageView
-                    android:id="@+id/showQrCode"
-                    style="@style/IconButtonStyle"
-                    android:src="@drawable/qr" />
-
-                <ImageView
-                    android:id="@+id/scanQrCode"
-                    style="@style/IconButtonStyle"
-                    android:src="@drawable/scan_qr" />
 
                 <ImageView
                     android:id="@+id/chat"
@@ -233,7 +215,7 @@
         </fragment>
 
     </android.support.constraint.ConstraintLayout>
-    <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
+
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"

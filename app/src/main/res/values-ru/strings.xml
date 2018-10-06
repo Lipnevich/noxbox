@@ -1,6 +1,5 @@
 <resources>
     <string name="noxbox">NoxBox</string>
-    <string name="noxboxer">Noxboxer</string>
     <string name="permissionRequired">Необходимо разрешение</string>
     <string name="completeText">Завершить</string>
     <string name="ratingTitle">Оцените работу</string>
@@ -169,7 +168,7 @@
     <string name="priceClarificationAfter">исполнения услуги, оплата будет рассчитываться поминутно в зависимости от действительного времени исполнения.</string>
     <string name="ending">а</string>
     <string name="byAddress">По адресу</string>
-    <string name="search">Введите адрес</string>
+    <string name="search">введите адрес</string>
     <string name="choosePlace">Выберете место</string>
     <string name="validityOfTheOffer">Срок действия предложения</string>
     <string name="waitingByAddress">Ожидаю по адресу:</string>

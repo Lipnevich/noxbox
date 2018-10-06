@@ -9,6 +9,7 @@
     <dimen name="text_title">22sp</dimen>
     <dimen name="text_title_large">34sp</dimen>
     <dimen name="text_size">18sp</dimen>
+    <dimen name="text_search">20sp</dimen>
     <dimen name="text_size_secondary">14sp</dimen>
 
     <!--profile page dimen's-->

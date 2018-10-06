@@ -70,7 +70,7 @@ public class DebugActivity extends MenuActivity {
                     portfolioMap.put(NoxboxType.manicure.name(), new Portfolio(new HashMap<String, List<String>>(images)));
 
                     profile.setHost(true)
-                            .setWallet(new Wallet().setBalance("666").setAddress("3PA1KvFfq9VuJjg45p2ytGgaNjrgnLSgf4r"))
+                            .setWallet(new Wallet().setBalance("555").setAddress("3PA1KvFfq9VuJjg45p2ytGgaNjrgnLSgf4r"))
                             .setDemandsRating(ratingList)
                             .setSuppliesRating(ratingList)
                             .setFilters(new Filters(true, true, "0", filterTypesList))

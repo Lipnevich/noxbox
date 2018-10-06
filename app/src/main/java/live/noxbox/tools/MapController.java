@@ -6,8 +6,10 @@ import android.content.Context;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 
+import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
@@ -100,5 +102,14 @@ public class MapController {
     public static void moveCopyrightLeft(GoogleMap googleMap) {
         googleMap.setPadding(dpToPx(8), 0, 0, dpToPx(8));
     }
+
+    public static void setupMap(Context context, GoogleMap googleMap) {
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_in_night));
+        googleMap.setMaxZoomPreference(18);
+        googleMap.getUiSettings().setRotateGesturesEnabled(false);
+        googleMap.getUiSettings().setTiltGesturesEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+    }
+
 
 }

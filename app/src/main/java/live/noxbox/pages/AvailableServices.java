@@ -81,7 +81,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     public void draw(final Profile profile) {
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         MapController.moveCopyrightRight(googleMap);
-        activity.findViewById(R.id.centerAim).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
@@ -108,11 +108,10 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
+                profile.getCurrent().setOwner(profile.notPublicInfo());
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     profile.getCurrent().getOwner().setPosition(Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient)));
                 }
-                profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
-                profile.getCurrent().getOwner().setName(profile.getName());
 
                 startActivity(activity, ConstructorActivity.class);
 
@@ -128,7 +127,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     public void clear() {
         googleMap.clear();
         clusterManager.clearItems();
-        activity.findViewById(R.id.centerAim).setVisibility(View.GONE);
+        activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.filter).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);

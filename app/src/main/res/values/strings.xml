@@ -1,6 +1,5 @@
 <resources>
     <string name="noxbox">NoxBox</string>
-    <string name="noxboxer">Noxboxer</string>
     <string name="permissionRequired">Permission required</string>
     <string name="completeText">Complete</string>
     <string name="ratingTitle">Rate</string>
@@ -171,7 +170,7 @@
     <string name="priceClarificationAfter">performance of the service, the payment will be calculated per minute depending on the actual execution time.</string>
     <string name="ending">s</string>
     <string name="byAddress">By address</string>
-    <string name="search">Enter your address</string>
+    <string name="search">enter your address</string>
     <string name="choosePlace">Choose place</string>
     <string name="validityOfTheOffer">Validity of the offer</string>
     <string name="waitingByAddress">I\'m waiting on the address:</string>

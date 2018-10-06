@@ -67,9 +67,6 @@
         <activity
             android:name=".menu.WalletActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".pages.QRCaptureActivity"
-            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

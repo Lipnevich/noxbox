@@ -47,6 +47,8 @@ import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.tools.MapController.setupMap;
+
 public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
     public static final String LAT = "lat";
     public static final String LNG = "lng";
@@ -101,7 +103,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
             return;
         }
 
-        this.googleMap.getUiSettings().setCompassEnabled(false);
+        setupMap(this, googleMap);
         this.googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         this.googleMap.setMyLocationEnabled(true);
         ProfileStorage.readProfile(new Task<Profile>() {
