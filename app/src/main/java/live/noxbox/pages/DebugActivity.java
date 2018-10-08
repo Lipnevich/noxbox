@@ -97,7 +97,7 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeCreated() != null
                                     && profile.getCurrent().getTimeRequested() == null) {
 
-                                profile.getCurrent().setParty(new Profile().setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setName("Granny Smith").setId("12321").setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
+                                profile.getCurrent().setParty(new Profile().setWallet(new Wallet().setBalance("20")).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setName("Granny Smith").setId("12321").setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
                                 // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 ProfileStorage.fireProfile();

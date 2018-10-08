@@ -56,6 +56,7 @@ public class MessagingService extends FirebaseMessagingService {
             public void execute(Profile profile) {
                 Notification notification = Notification.create(remoteMessage.getData());
                 if (notification.getIgnore()) return;
+                notification.setMessage(notification.getMessage().concat("!!! and ").concat(profile.getName()));
                 showPushNotification(notification);
             }
         });

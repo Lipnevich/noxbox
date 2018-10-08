@@ -12,6 +12,7 @@ import java.text.DecimalFormat;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -22,6 +23,7 @@ import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.START_TIME;
+import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.MapController.buildMapPosition;
 
 public class Performing implements State {
@@ -71,17 +73,41 @@ public class Performing implements State {
 
 
                 if (profile.getCurrent().getTimeCompleted() == null) {
+                    seconds++;
+
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     notification.setTime(time);
-                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
-                    seconds++;
+                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
+                        notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    } else {
+                        buildLowBalanceNotification(profile, notification);
+                    }
+
                     drawPrice(profile);
+
                     handler.postDelayed(this, 1000);
                 }
             }
         };
 
         runTimer();
+    }
+
+    private void buildLowBalanceNotification(final Profile profile, final Notification notification) {
+        if (profile.getCurrent().getOwner().equals(profile)) {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                notification.setType(NotificationType.lowBalance).setMessage("supply");
+            } else {
+                notification.setType(NotificationType.lowBalance).setMessage("demand");
+            }
+        } else {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                notification.setType(NotificationType.lowBalance).setMessage("demand");
+            } else {
+                notification.setType(NotificationType.lowBalance).setMessage("supply");
+            }
+        }
+        notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
     }
 
 

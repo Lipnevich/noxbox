@@ -12,5 +12,7 @@ public interface Configuration {
     long MINIMUM_PAYMENT_TIME_MILLIS = 15 * 60 * 1000;
     float MINIMUM_FACE_SIZE = 0.6F;
     float MINIMUM_PROBABILITY_FOR_ACCEPTANCE = 0.6F;
+    double FIVE_MINUTES_PART_OF_HOUR = 12.0D;
+    int BIG_DECIMAL_DEFAULT_BALANCE_SCALE = 3;
 
 }

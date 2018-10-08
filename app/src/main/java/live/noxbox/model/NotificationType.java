@@ -19,6 +19,7 @@ import com.bumptech.glide.request.transition.Transition;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.menu.WalletActivity;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
 import live.noxbox.state.ProfileStorage;
@@ -46,7 +47,7 @@ public enum NotificationType {
     confirm(2, R.string.confirm, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
     performing(2, R.string.performing, R.string.performingPushContent),
-    lowBalance(2, R.string.replaceIt, R.string.replaceIt),
+    lowBalance(2, R.string.outOfMoney, R.string.beforeSpendingMoney),
     completed(2, R.string.replaceIt, R.string.completedPushContent),
     supplierCanceled(2, R.string.supplierCancelPushTitle, R.string.supplierCanceledPushContent),
     demanderCanceled(2, R.string.demanderCancelPushTitle, R.string.demanderCanceledPushContent),
@@ -200,6 +201,13 @@ public enum NotificationType {
             remoteViews.setTextViewText(R.id.content, notification.getMessage());
         }
 
+        if (notification.getType() == lowBalance) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_low_balance);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
+        }
+
+
         return remoteViews;
     }
 
@@ -256,6 +264,18 @@ public enum NotificationType {
             return TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (notification.getType() == lowBalance) {
+            if (notification.getMessage().equals("supply")) {
+                return TaskStackBuilder.create(context)
+                        .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
+                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            } else {
+                return TaskStackBuilder.create(context)
+                        .addNextIntentWithParentStack(new Intent(context, WalletActivity.class))
+                        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+        }
 
         switch (notification.getType()) {
             case requesting:

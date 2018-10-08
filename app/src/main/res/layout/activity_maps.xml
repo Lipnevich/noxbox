@@ -226,7 +226,7 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:headerLayout="@layout/navigation_header"
-        app:menu="@menu/navigation_view_body"
+        app:menu="@menu/navigation_body"
         app:itemTextColor="@color/primary"
         app:itemIconTint="@color/primary"/>
 

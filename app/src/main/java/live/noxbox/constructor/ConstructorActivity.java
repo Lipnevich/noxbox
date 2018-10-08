@@ -351,7 +351,7 @@ public class ConstructorActivity extends AppCompatActivity {
         ((LinearLayout) findViewById(R.id.publish).getParent()).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (profile.getCurrent().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
+                if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
 
                     ((LinearLayout) findViewById(R.id.publish).getParent())
                             .setBackgroundColor(getResources().getColor(R.color.translucent));
