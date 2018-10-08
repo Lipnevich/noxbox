@@ -126,7 +126,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
         goOnlineButton.setVisibility(View.INVISIBLE);
     }
 
-    protected void processRequest(final Event request) {
+    protected void processRequest(final Message request) {
         request.getNoxbox().setEstimationTime(request.getEstimationTime());
         processRequest(request.getNoxbox());
     }
@@ -223,7 +223,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
     }
 
     @Override
-    protected void processPerformerCancel(Event performerCancel) {
+    protected void processPerformerCancel(Message performerCancel) {
         prepareForIteration();
     }*/
 

@@ -16,27 +16,27 @@ package live.noxbox.old;
 public abstract class EventFunction extends GeoFunction {
 /*
 
-    protected void processRequest(Event request) {}
-    protected void processAccept(Event accept) {}
-    protected void processPerformerCancel(Event performerCancel) {}
-    protected void processPayerCancel(Event payerCancel) {}
-    protected void processMove(Event move) {}
-    protected void processSync(Event sync) {}
-    protected void processQr(Event qr) {
+    protected void processRequest(Message request) {}
+    protected void processAccept(Message accept) {}
+    protected void processPerformerCancel(Message performerCancel) {}
+    protected void processPayerCancel(Message payerCancel) {}
+    protected void processMove(Message move) {}
+    protected void processSync(Message sync) {}
+    protected void processQr(Message qr) {
         // TODO (nli) update ui for both users
     }
-    protected void processStory(Event story) {}
-    protected void processDislike(Event dislike) {
+    protected void processStory(Message story) {}
+    protected void processDislike(Message dislike) {
         getRating().getReceived().setLikes(getRating().getReceived().getLikes() - 1);
         getRating().getReceived().setDislikes(getRating().getReceived().getDislikes() + 1);
 
         processProfile(getProfile());
     }
-    private void processBalanceUpdated(Event update) {
+    private void processBalanceUpdated(Message update) {
         Firebase.updateWallet(update.getWallet());
     }
 
-    public void processEvent(Event event) {
+    public void processEvent(Message event) {
         switch (event.getType()) {
             case request: processRequest(event); break;
             case sync: processSync(event); break;

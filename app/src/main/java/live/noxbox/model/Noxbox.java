@@ -23,7 +23,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String id;
     private Profile owner;
     private Profile party;
-    private Map<String, Event> chat = new HashMap<>();
+    private Map<String, Message> chat = new HashMap<>();
 
     // Noxbox specific data
     private Long timeCreated;
@@ -183,11 +183,11 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Map<String, Event> getChat() {
+    public Map<String, Message> getChat() {
         return chat;
     }
 
-    public Noxbox setChat(Map<String, Event> chat) {
+    public Noxbox setChat(Map<String, Message> chat) {
         this.chat = chat;
         return this;
     }

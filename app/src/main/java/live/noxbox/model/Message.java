@@ -13,50 +13,28 @@
  */
 package live.noxbox.model;
 
-public class Event implements Comparable<Event> {
+public class Message implements Comparable<Message> {
 
     private String id, message, estimationTime;
     private Boolean wasRead;
-    private Wallet wallet;
     private Profile sender;
-    private NotificationType type;
-    private Position position;
     private Long time;
-    private Noxbox noxbox;
-    private Push push;
 
     public String getId() {
         return id;
     }
 
-    public Event setId(String id) {
+    public Message setId(String id) {
         this.id = id;
         return this;
     }
 
-    public NotificationType getType() {
-        return type;
-    }
-
-    public Event setType(NotificationType type) {
-        this.type = type;
-        return this;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public Event setPosition(Position position) {
-        this.position = position;
-        return this;
-    }
 
     public Long getTime() {
         return time;
     }
 
-    public Event setTime(Long time) {
+    public Message setTime(Long time) {
         this.time = time;
         return this;
     }
@@ -65,26 +43,8 @@ public class Event implements Comparable<Event> {
         return sender;
     }
 
-    public Event setSender(Profile sender) {
+    public Message setSender(Profile sender) {
         this.sender = sender;
-        return this;
-    }
-
-    public Wallet getWallet() {
-        return wallet;
-    }
-
-    public Event setWallet(Wallet wallet) {
-        this.wallet = wallet;
-        return this;
-    }
-
-    public Noxbox getNoxbox() {
-        return noxbox;
-    }
-
-    public Event setNoxbox(Noxbox noxbox) {
-        this.noxbox = noxbox;
         return this;
     }
 
@@ -100,17 +60,8 @@ public class Event implements Comparable<Event> {
         return wasRead;
     }
 
-    public Event setWasRead(Boolean wasRead) {
+    public Message setWasRead(Boolean wasRead) {
         this.wasRead = wasRead;
-        return this;
-    }
-
-    public Push getPush() {
-        return push;
-    }
-
-    public Event setPush(Push push) {
-        this.push = push;
         return this;
     }
 
@@ -118,7 +69,7 @@ public class Event implements Comparable<Event> {
         return message;
     }
 
-    public Event setMessage(String message) {
+    public Message setMessage(String message) {
         this.message = message;
         return this;
     }
@@ -127,8 +78,8 @@ public class Event implements Comparable<Event> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Event event = (Event) o;
-        return id != null ? id.equals(event.id) : event.id == null;
+        Message message = (Message) o;
+        return id != null ? id.equals(message.id) : message.id == null;
 
     }
 
@@ -138,7 +89,7 @@ public class Event implements Comparable<Event> {
     }
 
     @Override
-    public int compareTo(Event that) {
+    public int compareTo(Message that) {
         return this.getTime().compareTo(that.getTime());
     }
 }

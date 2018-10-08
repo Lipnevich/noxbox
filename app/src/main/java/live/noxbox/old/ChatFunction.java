@@ -52,7 +52,7 @@ public abstract class ChatFunction extends EventFunction {
         if(noxbox == null || noxbox.getChat() == null || noxbox.getChat().isEmpty()) {
             return false;
         }
-        for(Event event : noxbox.getChat().values()) {
+        for(Message event : noxbox.getChat().values()) {
             if(!event.getSender().getIndex().equals(getProfile().getIndex()) && !event.getWasRead()) {
                 return true;
             }
@@ -60,7 +60,7 @@ public abstract class ChatFunction extends EventFunction {
         return false;
     }
 
-    protected void processStory(Event story) {
+    protected void processStory(Message story) {
         if(getCurrentNoxbox() != null) {
             addMessageToChat(story.setWasRead(false));
             drawNewMessageSign();

@@ -30,7 +30,7 @@ import java.util.List;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
-import live.noxbox.model.Event;
+import live.noxbox.model.Message;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
@@ -44,7 +44,7 @@ public class ChatActivity extends AppCompatActivity {
 
     public static final int CODE = 1001;
 
-    private List<Event> events = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
     private RecyclerView chatList;
     private TextView text;
     private ChatAdapter chatAdapter;
@@ -105,7 +105,7 @@ public class ChatActivity extends AppCompatActivity {
         interlocutorName.setText(getInterlocutorName(profile));
 
         initMessages(profile);
-        chatAdapter = new ChatAdapter(screen, events, profile.getId());
+        chatAdapter = new ChatAdapter(screen, messages, profile.getId());
         chatList.setAdapter(chatAdapter);
         chatList.smoothScrollToPosition(View.FOCUS_DOWN);
 
@@ -179,17 +179,17 @@ public class ChatActivity extends AppCompatActivity {
 
     private void send(Profile profile) {
         if(TextUtils.isEmpty(text.getText().toString().trim())) return;
-        add(new Event().setWasRead(true));
+        add(new Message().setWasRead(true));
         text.setText("");
     }
 
-    private void add(Event event) {
+    private void add(Message message) {
         sound();
-        events.add(event);
-        sort(events);
-        chatAdapter.notifyItemInserted(events.indexOf(event));
+        messages.add(message);
+        sort(messages);
+        chatAdapter.notifyItemInserted(messages.indexOf(message));
 
-        chatList.scrollToPosition(events.size() - 1);
+        chatList.scrollToPosition(messages.size() - 1);
     }
 
     private void sound() {
@@ -197,15 +197,15 @@ public class ChatActivity extends AppCompatActivity {
         mediaPlayer.start();
     }
 
-    private List<Event> initMessages(Profile profile) {
-        events.clear();
+    private List<Message> initMessages(Profile profile) {
+        messages.clear();
 
         if(profile.getCurrent() != null) {
-            events.addAll(profile.getCurrent().getChat().values());
-            sort(events);
+            messages.addAll(profile.getCurrent().getChat().values());
+            sort(messages);
         }
 
-        return events;
+        return messages;
     }
 
     private String getInterlocutorName(@NonNull Profile profile) {

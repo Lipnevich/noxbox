@@ -16,23 +16,23 @@ import java.util.Date;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.model.Event;
+import live.noxbox.model.Message;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
-    private List<Event> events;
+    private List<Message> messages;
     private String profileId;
     private DisplayMetrics metrics;
 
-    public ChatAdapter(DisplayMetrics metrics, List<Event> events, String profileId) {
-        this.events = events;
+    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, String profileId) {
+        this.messages = messages;
         this.profileId = profileId;
         this.metrics = metrics;
     }
 
     @Override
     public int getItemCount() {
-        return events.size();
+        return messages.size();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     private boolean isOwner(int position) {
-        return events.get(position).getSender().getId().equals(profileId);
+        return messages.get(position).getSender().getId().equals(profileId);
     }
 
     @Override
@@ -55,12 +55,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             card.setCardBackgroundColor(parent.getResources().getColor(R.color.message));
         }
 
-        Event event = events.get(position);
-        event.setWasRead(true);
+        Message message = messages.get(position);
+        message.setWasRead(true);
         TextView text = v.findViewById(R.id.message_id);
-        text.setText(event.getMessage());
+        text.setText(message.getMessage());
         TextView time = v.findViewById(R.id.time_id);
-        time.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(event.getTime())));
+        time.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(message.getTime())));
 
         LayoutParams cardParams = (LayoutParams) card.getLayoutParams();
         if(position == 0) {

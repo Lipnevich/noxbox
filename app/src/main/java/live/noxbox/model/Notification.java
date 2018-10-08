@@ -11,11 +11,11 @@ import live.noxbox.tools.InvalidAcceptance;
 public class Notification {
 
     private NotificationType type;
-    private Integer id, icon;
+    private Integer icon;
     private Integer progress = 0;
     private Integer maxProgress = 0;
     private Boolean local = false;
-    private String estimation, name, message, price, balance, previousBalance, time;
+    private String estimation, name, message, price, balance, previousBalance, time, id;
     private InvalidAcceptance invalidAcceptance;
 
 
@@ -24,6 +24,7 @@ public class Notification {
         if (data.get("type") == null) return new Notification();
 
         return new Notification()
+                .setId(data.get("id"))
                 .setType(NotificationType.valueOf(data.get("type")))
                 .setName(data.get("name"))
                 .setMessage(data.get("message"))
@@ -31,16 +32,6 @@ public class Notification {
                 .setPrice(data.get("price"))
                 .setBalance(data.get("balance") != null ? data.get("balance") : "0")
                 .setPreviousBalance(data.get("previousBalance") != null ? data.get("previousBalance") : "0");
-    }
-
-    public static Notification create(Event event) {
-        return new Notification()
-                .setType(event.getType())
-                .setEstimation(event.getEstimationTime())
-                //.setIcon(event.getSender().getPhoto())
-                .setName(event.getSender().getName())
-                .setMessage(event.getMessage())
-                .setLocal(true);
     }
 
     public Boolean getIgnore() {
@@ -93,11 +84,11 @@ public class Notification {
         return this;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public Notification setId(Integer id) {
+    public Notification setId(String id) {
         this.id = id;
         return this;
     }
