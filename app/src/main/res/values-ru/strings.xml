@@ -237,4 +237,6 @@
     <string name="topUpYourAcc">Пополните ваш счёт</string>
     <string name="toPay">К оплате:</string>
     <string name="messageFromTheSupport">Сообщение от техническое поддержки</string>
+    <string name="outOfMoney">Заканчиваются средства</string>
+    <string name="beforeSpendingMoney">До израсходования средств на балансе заказчика осталось 5 минут</string>
 </resources>
