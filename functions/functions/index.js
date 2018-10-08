@@ -14,25 +14,21 @@ exports.version = functions.https.onRequest((req, res) => {
     res.status(200).send('Version ' + version);
 });
 
-
-exports.push = functions.https.onRequest((req, res) => {
-    var registrationToken = 'dLHjhs_hdbs:APA91bEvOZ-3tYFxL4Jzu4G3MkNAQQ67exB6AEuNdeCINWDSFtG95qbKNH_iGFPrDCYnSvmvtaqVDKjOtlt1hdmvBvLbKqJTmx2IhdO8Ez_flRv4XQUweLZEjlrWLad-y1cs06UNTW5A';
-
-    var message = {
+exports.push = functions.https.onRequest((request, response) => {
+    let message = {
       data: {
-        score: '850',
-        time: '2:45'
+        type: 'message',
+        id: 'somelongidstringthatwasgeneratedbyfirestore',
+
       },
-      token: registrationToken
+      topic: 'hqeaykYp2Cfd6Ys9v01kRwzid9j1'
     };
-
     admin.messaging().send(message)
-      .then(response => {
-        console.log('Successfully sent message:', response);
+      .then(o => {
+        return response.send("Success version 4");
       })
-      .catch(error => {
-        console.log('Error sending message:', error);
+      .catch(e => {
+        return response.send("Error version 4");
       });
-
-    res.status(200).send('Version ' + version);
 });
+
