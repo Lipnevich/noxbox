@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import java.math.BigDecimal;
 
 import live.noxbox.R;
-import live.noxbox.model.Event;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
@@ -19,7 +18,6 @@ import live.noxbox.model.Request;
 
 import static live.noxbox.state.Firebase.removeCurrentNoxbox;
 import static live.noxbox.state.Firebase.sendRequest;
-import static live.noxbox.state.Firebase.updateCurrentNoxbox;
 
 public class PayerFunction extends FragmentActivity {
 
@@ -89,10 +87,6 @@ public class PayerFunction extends FragmentActivity {
         cancelButton.setVisibility(View.INVISIBLE);
     }
 
-    protected void processSync(Event sync) {
-        updateCurrentNoxbox(sync.getNoxbox());
-    }
-
     public void processNoxbox(final Noxbox noxbox) {
 //        stopListenAvailablePerformers();
 //        drawPathToNoxbox(noxbox);
@@ -118,11 +112,6 @@ public class PayerFunction extends FragmentActivity {
 
         requestButton.setVisibility(View.INVISIBLE);
         pointerImage.setVisibility(View.INVISIBLE);
-    }
-
-    protected void processAccept(Event accept) {
-        updateCurrentNoxbox(accept.getNoxbox());
-        processNoxbox(accept.getNoxbox());
     }
 
 }
