@@ -1,10 +1,12 @@
 package live.noxbox.tools;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
@@ -27,7 +29,14 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 import static live.noxbox.model.NotificationType.balance;
+import static live.noxbox.model.NotificationType.showLowBalanceNotification;
+import static live.noxbox.model.NotificationType.updateNotification;
+import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
+import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
+import static live.noxbox.tools.SeparateStreamForStopwatch.seconds;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -53,8 +62,8 @@ public class MessagingService extends FirebaseMessagingService {
 
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
-            public void execute(Profile profile) {
-                Notification notification = Notification.create(remoteMessage.getData());
+            public void execute(final Profile profile) {
+                final Notification notification = Notification.create(remoteMessage.getData());
                 if (notification.getIgnore()) return;
 
                 if (notification.getType() == NotificationType.message) {
@@ -63,7 +72,39 @@ public class MessagingService extends FirebaseMessagingService {
                     notification.setTime(String.valueOf(System.currentTimeMillis()));
                 }
 
+                if (notification.getType() == NotificationType.performing && !inForeground()) {
+                    final Handler handler = new Handler();
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            int hours = seconds / 3600;
+                            int minutes = (seconds % 3600) / 60;
+                            int secs = seconds % 60;
+                            String time = String.format("%d:%02d:%02d", hours, minutes, secs);
+
+                            if (profile.getCurrent().getTimeCompleted() == null) {
+                                seconds++;
+
+                                notification.setTime(time);
+
+                                if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
+                                    updateNotification(context, notification, MessagingService.builder);
+                                } else {
+                                    showLowBalanceNotification(context, profile, notification);
+                                }
+
+
+                                handler.postDelayed(this, 1000);
+                            }
+                        }
+                    };
+                    initializeStopwatch(profile, handler, runnable);
+                }
+
+
                 showPushNotification(notification);
+
+
             }
         });
     }
@@ -180,14 +221,12 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
 
-
-
-    /*private boolean inForeground() {
+    private static boolean inForeground() {
         ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
         return (appProcessInfo.importance == IMPORTANCE_FOREGROUND
                 || appProcessInfo.importance == IMPORTANCE_VISIBLE);
-    }*/
+    }
 
     /*public static Push generatePush(Request request) {
         Push push = new Push().setType(request.getType().name());

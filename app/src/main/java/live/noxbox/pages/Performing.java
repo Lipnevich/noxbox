@@ -12,7 +12,6 @@ import java.text.DecimalFormat;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
-import live.noxbox.model.MarketRole;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -22,19 +21,23 @@ import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.PRICE_FORMAT;
 import static live.noxbox.Configuration.START_TIME;
+import static live.noxbox.model.NotificationType.showLowBalanceNotification;
+import static live.noxbox.model.NotificationType.updateNotification;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.MapController.buildMapPosition;
+import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
+import static live.noxbox.tools.SeparateStreamForStopwatch.removeTimer;
+import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
+import static live.noxbox.tools.SeparateStreamForStopwatch.seconds;
+import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
 
 public class Performing implements State {
 
     private Activity activity;
     private GoogleMap googleMap;
-    private int seconds;
-    private double totalMoney;
-    private Handler handler;
-    private Runnable runnable;
-    private DecimalFormat decimalFormat = new DecimalFormat("###.###");
+    private DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT);
     private LinearLayout performingView;
 
     public Performing(Activity activity, GoogleMap googleMap) {
@@ -52,18 +55,17 @@ public class Performing implements State {
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
         totalMoney = Double.parseDouble(profile.getCurrent().getPrice()) / 4;
-        drawPrice(profile);
         drawComplete(profile);
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
         final Notification notification = new Notification()
                 .setType(NotificationType.performing)
                 .setTime(START_TIME)
-                .setPrice(drawPrice(profile));
+                .setPrice(decimalFormat.format(totalMoney));
         messagingService.showPushNotification(notification);
 
-        handler = new Handler();
-        runnable = new Runnable() {
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 int hours = seconds / 3600;
@@ -76,56 +78,31 @@ public class Performing implements State {
                     seconds++;
 
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
-                    notification.setTime(time);
-                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
-                        notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    if (hasMinimumServiceTimePassed(profile)) {
+                        double pricePerSecond = Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60;
+                        totalMoney = ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000) * pricePerSecond;
+                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
                     } else {
-                        buildLowBalanceNotification(profile, notification);
+                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
                     }
 
-                    drawPrice(profile);
+                    notification.setPrice(decimalFormat.format(totalMoney));
+                    notification.setTime(time);
+
+                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
+                        updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    } else {
+                        showLowBalanceNotification(activity.getApplicationContext(), profile, notification);
+                    }
 
                     handler.postDelayed(this, 1000);
                 }
             }
         };
 
+        initializeStopwatch(profile, handler, runnable);
+
         runTimer();
-    }
-
-    private void buildLowBalanceNotification(final Profile profile, final Notification notification) {
-        if (profile.getCurrent().getOwner().equals(profile)) {
-            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                notification.setType(NotificationType.lowBalance).setMessage("supply");
-            } else {
-                notification.setType(NotificationType.lowBalance).setMessage("demand");
-            }
-        } else {
-            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                notification.setType(NotificationType.lowBalance).setMessage("demand");
-            } else {
-                notification.setType(NotificationType.lowBalance).setMessage("supply");
-            }
-        }
-        notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
-    }
-
-
-    private String drawPrice(Profile profile) {
-        final Long startTime = profile.getCurrent().getTimeStartPerforming();
-
-        if (startTime == null) return null;
-
-        double pricePerSecond = Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60;
-
-        if (startTime >= System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS) {
-            ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
-        } else {
-            totalMoney = ((System.currentTimeMillis() - startTime) / 1000) * pricePerSecond;
-            ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
-        }
-        return ((TextView) performingView.findViewById(R.id.moneyToPay)).getText().toString();
-
     }
 
     private void drawComplete(final Profile profile) {
@@ -149,21 +126,29 @@ public class Performing implements State {
         }));
     }
 
-    private void runTimer() {
-        handler.post(runnable);
-    }
-
-    private void stopTimer() {
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-        }
-    }
-
 
     @Override
     public void clear() {
         googleMap.clear();
-        stopTimer();
+        removeTimer();
         performingView.removeAllViews();
+    }
+
+    @Override
+    public void onDestroy() {
+        removeTimer();
+    }
+
+    public static boolean hasMinimumServiceTimePassed(Profile profile) {
+        final Long startTime = profile.getCurrent().getTimeStartPerforming();
+
+        if (startTime == null) return false;
+
+        if (startTime >= System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 }

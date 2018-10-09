@@ -20,7 +20,6 @@ import live.noxbox.state.State;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.MessagingService;
-import live.noxbox.tools.NavigatorManager;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
 import static live.noxbox.state.ProfileStorage.fireProfile;
@@ -45,14 +44,6 @@ public class Accepting implements State {
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
-
-        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavigatorManager.openNavigator(activity, profile);
-            }
-        });
 
         ((TextView) acceptingView.findViewById(R.id.blinkingInfo)).setText(R.string.acceptingConfirmation);
         acceptingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
@@ -102,6 +93,7 @@ public class Accepting implements State {
             @Override
             public void onFinish() {
                 if (profile.getCurrent().getTimeAccepted() == null) {
+                    notification.getType().removeNotification(activity.getApplicationContext());
                     profile.getCurrent().setTimeAccepted(null);
                     profile.getCurrent().setTimeRequested(null);
                     ProfileStorage.fireProfile();
@@ -118,7 +110,6 @@ public class Accepting implements State {
     @Override
     public void clear() {
         googleMap.clear();
-        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         if (anim != null && animationDrawable != null) {
             anim.cancel();
@@ -129,5 +120,10 @@ public class Accepting implements State {
 
         }
         acceptingView.removeAllViews();
+    }
+
+    @Override
+    public void onDestroy() {
+
     }
 }

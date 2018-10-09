@@ -66,4 +66,9 @@ public class Created implements State {
         googleMap.clear();
 
     }
+
+    @Override
+    public void onDestroy() {
+
+    }
 }

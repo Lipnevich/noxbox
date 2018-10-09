@@ -20,7 +20,6 @@ import live.noxbox.state.State;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.MessagingService;
-import live.noxbox.tools.NavigatorManager;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
@@ -47,14 +46,6 @@ public class Requesting implements State {
             @Override
             public void onClick(View v) {
                 MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-            }
-        });
-
-        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavigatorManager.openNavigator(activity, profile);
             }
         });
 
@@ -134,5 +125,10 @@ public class Requesting implements State {
         }
 
         requestingView.removeAllViews();
+    }
+
+    @Override
+    public void onDestroy() {
+
     }
 }

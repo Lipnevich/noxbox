@@ -136,6 +136,11 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     }
 
+    @Override
+    public void onDestroy() {
+
+    }
+
 
     private void createMarker(Profile profile, Noxbox noxbox) {
         if ((profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none)

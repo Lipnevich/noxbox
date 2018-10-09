@@ -433,4 +433,21 @@ public enum NotificationType {
                 .addAction(action);
     }
 
+    public static void showLowBalanceNotification(Context context, final Profile profile, final Notification notification) {
+        if (profile.getCurrent().getOwner().equals(profile)) {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                notification.setType(NotificationType.lowBalance).setMessage("supply");
+            } else {
+                notification.setType(NotificationType.lowBalance).setMessage("demand");
+            }
+        } else {
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                notification.setType(NotificationType.lowBalance).setMessage("demand");
+            } else {
+                notification.setType(NotificationType.lowBalance).setMessage("supply");
+            }
+        }
+        updateNotification(context, notification, MessagingService.builder);
+    }
+
 }

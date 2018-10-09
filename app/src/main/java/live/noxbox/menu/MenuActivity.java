@@ -143,15 +143,24 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                 break;
             }
             case R.id.navigation_logout: {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                AuthUI.getInstance()
-                        .signOut(MenuActivity.this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                                startActivity(new Intent(MenuActivity.this, AuthActivity.class));
-                            }
-                        });
+                ProfileStorage.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        profile.getCurrent().clean();
+
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                        AuthUI.getInstance()
+                                .signOut(MenuActivity.this)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                                        startActivity(new Intent(MenuActivity.this, AuthActivity.class));
+                                    }
+                                });
+                    }
+                });
+
             }
         }
         return true;

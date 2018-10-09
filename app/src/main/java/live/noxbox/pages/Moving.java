@@ -258,4 +258,9 @@ public class Moving implements State {
         }
 
     }
+
+    @Override
+    public void onDestroy() {
+
+    }
 }

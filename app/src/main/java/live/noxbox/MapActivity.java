@@ -283,6 +283,12 @@ public class MapActivity extends DebugActivity implements
         return noxbox;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (currentState != null) currentState.onDestroy();
+    }
+
     private State currentState;
 
     private void draw() {
