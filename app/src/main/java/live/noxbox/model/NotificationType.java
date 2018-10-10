@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
@@ -31,7 +32,13 @@ import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.MessagingService.getNotificationService;
+import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
+import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
+import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
+import static live.noxbox.tools.SeparateStreamForStopwatch.seconds;
+import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.
@@ -259,7 +266,7 @@ public enum NotificationType {
     }
 
     //TODO (vl) открываем активность по нажатию на уведомление в меню уведомлений, если необходимо
-    private PendingIntent getIntent(Context context, Notification notification) {
+    private static PendingIntent getIntent(Context context, Notification notification) {
         if (notification.getType() == message)
             return TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(new Intent(context, ChatActivity.class))
@@ -449,5 +456,38 @@ public enum NotificationType {
         }
         updateNotification(context, notification, MessagingService.builder);
     }
+
+    public static void showPerformingNotificationInBackground(final Context context, final Profile profile, final Notification notification) {
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                int hours = seconds / 3600;
+                int minutes = (seconds % 3600) / 60;
+                int secs = seconds % 60;
+                String time = String.format("%d:%02d:%02d", hours, minutes, secs);
+
+                if (profile.getCurrent().getTimeCompleted() == null) {
+                    seconds++;
+
+                    notification.setTime(time);
+                    notification.setPrice(decimalFormat.format(totalMoney));
+
+                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
+                        updateNotification(context, notification, MessagingService.builder);
+                    } else {
+                        showLowBalanceNotification(context, profile, notification);
+                    }
+
+
+                    handler.postDelayed(this, 1000);
+                }
+            }
+        };
+        initializeStopwatch(profile, handler, runnable);
+        runTimer();
+    }
+
+
 
 }

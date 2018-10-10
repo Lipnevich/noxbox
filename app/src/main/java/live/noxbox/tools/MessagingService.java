@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
@@ -23,27 +22,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
-import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
-import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
-import live.noxbox.model.TravelMode;
-import live.noxbox.model.Wallet;
 import live.noxbox.state.ProfileStorage;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 import static live.noxbox.model.NotificationType.balance;
-import static live.noxbox.model.NotificationType.showLowBalanceNotification;
-import static live.noxbox.model.NotificationType.updateNotification;
-import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
-import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
-import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
-import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
-import static live.noxbox.tools.SeparateStreamForStopwatch.seconds;
-import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
+import static live.noxbox.model.NotificationType.showPerformingNotificationInBackground;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -80,39 +68,8 @@ public class MessagingService extends FirebaseMessagingService {
                 }
 
                 if (notification.getType() == NotificationType.performing && !inForeground()) {
-                    if(BuildConfig.DEBUG){
-                        profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
-                        profile.getCurrent().setParty(new Profile().setWallet(new Wallet().setBalance("20")).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setTravelMode(TravelMode.driving).setHost(false).setName("Granny Smith").setId("12321").setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
-                    }
-                    final Handler handler = new Handler();
-
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            int hours = seconds / 3600;
-                            int minutes = (seconds % 3600) / 60;
-                            int secs = seconds % 60;
-                            String time = String.format("%d:%02d:%02d", hours, minutes, secs);
-
-                            if (profile.getCurrent().getTimeCompleted() == null) {
-                                seconds++;
-
-                                notification.setTime(time);
-                                notification.setPrice(decimalFormat.format(totalMoney));
-
-                                if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
-                                    updateNotification(context, notification, MessagingService.builder);
-                                } else {
-                                    showLowBalanceNotification(context, profile, notification);
-                                }
-
-
-                                handler.postDelayed(this, 1000);
-                            }
-                        }
-                    };
-                    initializeStopwatch(profile, handler, runnable);
-                    runTimer();
+                    showPerformingNotificationInBackground(context, profile, notification);
+                    return;
                 }
 
 

@@ -40,8 +40,8 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".constructor.ConstructorActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/NoActionBar"/>
+            android:theme="@style/NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".constructor.NoxboxTypeListActivity"
             android:label="@string/selectService"
@@ -78,39 +78,49 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name=".tools.MessagingService">
+        <service android:name=".tools.MessagingService"
+            android:isolatedProcess="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <service
+            android:name=".tools.NotificationService"
+            android:isolatedProcess="true"/>
+        <receiver
+            android:name=".tools.NotificationService$RestarterBroadcastReceiver">
+            <intent-filter>
+                <action android:name="live.noxbox.RestarterBroadcastReceiver"/>
+            </intent-filter>
+        </receiver>
 
         <receiver android:name=".model.NotificationType$CancelRequestListener">
             <intent-filter>
-                <action android:name="live.noxbox.cancelRequestByClickedButton"/>
+                <action android:name="live.noxbox.cancelRequestByClickedButton" />
             </intent-filter>
         </receiver>
 
         <receiver android:name=".model.NotificationType$AcceptRequestListener">
             <intent-filter>
-                <action android:name="live.noxbox.acceptRequestByClickedButton"/>
+                <action android:name="live.noxbox.acceptRequestByClickedButton" />
             </intent-filter>
         </receiver>
 
         <receiver android:name=".model.NotificationType$ConfirmPhotoListener">
             <intent-filter>
-                <action android:name="live.noxbox.confirmPhotoByClickedButton"/>
+                <action android:name="live.noxbox.confirmPhotoByClickedButton" />
             </intent-filter>
         </receiver>
 
         <receiver android:name=".model.NotificationType$NavigationButtonListener">
             <intent-filter>
-                <action android:name="live.noxbox.openNavigatorByClickedButton"/>
+                <action android:name="live.noxbox.openNavigatorByClickedButton" />
             </intent-filter>
         </receiver>
 
         <receiver android:name=".model.NotificationType$UserInputListener">
             <intent-filter>
-                <action android:name="live.noxbox.Tlistener"/>
+                <action android:name="live.noxbox.Tlistener" />
             </intent-filter>
         </receiver>
     </application>

@@ -185,6 +185,7 @@ public class MapActivity extends DebugActivity implements
     @Override
     protected void onPause() {
         googleApiClient.disconnect();
+        if (currentState != null) currentState.onDestroy();
         super.onPause();
     }
 
@@ -283,11 +284,7 @@ public class MapActivity extends DebugActivity implements
         return noxbox;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (currentState != null) currentState.onDestroy();
-    }
+
 
     private State currentState;
 

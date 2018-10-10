@@ -1,6 +1,7 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MessagingService;
+import live.noxbox.tools.NotificationService;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.START_TIME;
@@ -134,6 +136,15 @@ public class Performing implements State {
     @Override
     public void onDestroy() {
         removeTimer();
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                if (profile.getCurrent().getTimeStartPerforming() != null) {
+                    activity.startService(new Intent(activity.getApplicationContext(), NotificationService.class));
+                }
+            }
+        });
+
     }
 
     public static boolean hasMinimumServiceTimePassed(Profile profile) {
