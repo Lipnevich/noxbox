@@ -8,8 +8,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
-import java.text.DecimalFormat;
-
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.Notification;
@@ -21,12 +19,12 @@ import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.PRICE_FORMAT;
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.model.NotificationType.showLowBalanceNotification;
 import static live.noxbox.model.NotificationType.updateNotification;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.MapController.buildMapPosition;
+import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
 import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
 import static live.noxbox.tools.SeparateStreamForStopwatch.removeTimer;
 import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
@@ -37,7 +35,6 @@ public class Performing implements State {
 
     private Activity activity;
     private GoogleMap googleMap;
-    private DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT);
     private LinearLayout performingView;
 
     public Performing(Activity activity, GoogleMap googleMap) {
