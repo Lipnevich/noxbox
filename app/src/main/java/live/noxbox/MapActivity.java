@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -74,6 +75,20 @@ public class MapActivity extends DebugActivity implements
                 .addConnectionCallbacks(this)
                 .build();
         googleApiClient.connect();
+//        if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
+//            Intent intent = new Intent();
+//            intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
+//            startActivity(intent);
+//        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.e("MapActivity","onDestroy()");
+        Log.e("MapActivity","onDestroy()");
+        Log.e("MapActivity","onDestroy()");
+        Log.e("MapActivity","onDestroy()");
+        super.onDestroy();
     }
 
     @Override
@@ -184,9 +199,16 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     protected void onPause() {
-        googleApiClient.disconnect();
-        if (currentState != null) currentState.onDestroy();
         super.onPause();
+        googleApiClient.disconnect();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (currentState != null) currentState.clear();
+
     }
 
     @Override

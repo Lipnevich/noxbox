@@ -67,8 +67,4 @@ public class Created implements State {
 
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
 }

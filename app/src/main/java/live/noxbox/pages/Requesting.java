@@ -127,8 +127,4 @@ public class Requesting implements State {
         requestingView.removeAllViews();
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
 }

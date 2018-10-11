@@ -6,6 +6,5 @@ public interface State {
 
     void draw(Profile profile);
     void clear();
-    void onDestroy();
 
 }

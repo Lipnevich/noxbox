@@ -13,27 +13,25 @@ public class BalanceCalculator {
     private static final BigDecimal QUARTER = new BigDecimal("4.0");
 
     public static boolean enoughBalance(Noxbox noxbox, Profile profile) {
-        //TODO (vl) пересчитать и зкрепить
         BigDecimal minimalPrice = new BigDecimal(noxbox.getPrice());
-        minimalPrice = minimalPrice.divide(QUARTER, BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_UP);
+        minimalPrice = minimalPrice.divide(QUARTER, BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         BigDecimal walletBalance = new BigDecimal(profile.getWallet().getBalance());
 
         return minimalPrice.compareTo(walletBalance) < 0;
     }
 
     public static boolean enoughBalanceOnFiveMinutes(Noxbox noxbox, Profile profile) {
-        BigDecimal priceForFiveMinutes = new BigDecimal(String.valueOf(Double.parseDouble(noxbox.getPrice()) / FIVE_MINUTES_PART_OF_HOUR))
-                .setScale(BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_EVEN);
-        BigDecimal pricePerSecond = new BigDecimal(Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60)
-                .setScale(BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_EVEN);
-        BigDecimal secondsPassed = new BigDecimal(String.valueOf((System.currentTimeMillis() - noxbox.getTimeStartPerforming()) / 1000));
-        BigDecimal totalSpent = new BigDecimal(String.valueOf(pricePerSecond.doubleValue() * secondsPassed.doubleValue()));
-
+        BigDecimal priceForFiveMinutes = new BigDecimal(noxbox.getPrice()).divide(new BigDecimal(FIVE_MINUTES_PART_OF_HOUR), BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal pricePerSecond = new BigDecimal(profile.getCurrent().getPrice()).divide(new BigDecimal(profile.getCurrent().getType().getDuration()), BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        pricePerSecond = pricePerSecond.divide(new BigDecimal("60"), BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal secondsPassed = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(noxbox.getTimeStartPerforming())));
+        secondsPassed = secondsPassed.divide(new BigDecimal("1000"), BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal totalSpent = new BigDecimal(String.valueOf(pricePerSecond.doubleValue())).multiply(new BigDecimal(String.valueOf(secondsPassed.doubleValue())));
         BigDecimal balance;
         if (noxbox.getRole() == MarketRole.supply) {
-            balance = new BigDecimal(noxbox.getParty().getWallet().getBalance()).setScale(BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_EVEN);
+            balance = new BigDecimal(noxbox.getParty().getWallet().getBalance()).setScale(BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         } else {
-            balance = new BigDecimal(noxbox.getOwner().getWallet().getBalance()).setScale(BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_EVEN);
+            balance = new BigDecimal(noxbox.getOwner().getWallet().getBalance()).setScale(BIG_DECIMAL_DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         }
 
         return balance.subtract(totalSpent).compareTo(priceForFiveMinutes) > 0;

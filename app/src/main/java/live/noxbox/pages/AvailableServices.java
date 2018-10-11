@@ -136,10 +136,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
 
 
     private void createMarker(Profile profile, Noxbox noxbox) {

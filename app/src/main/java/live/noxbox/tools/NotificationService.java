@@ -1,36 +1,32 @@
 package live.noxbox.tools;
 
-import android.app.Service;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
+import android.util.Log;
 
-import live.noxbox.model.Notification;
-import live.noxbox.model.NotificationType;
-import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+public class NotificationService extends JobService {
+    private static final String TAG = "NotificationService.class";
 
-import static live.noxbox.Configuration.START_TIME;
-import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
-import static live.noxbox.tools.SeparateStreamForStopwatch.removeTimer;
-import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
+    public NotificationService() {
+    }
 
-public class NotificationService extends Service {
     @Override
-    public void onCreate() {
-        super.onCreate();
-        ProfileStorage.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                NotificationType.showPerformingNotificationInBackground(getApplicationContext(), profile, new Notification()
-                        .setType(NotificationType.performing)
-                        .setTime(START_TIME)
-                        .setPrice(decimalFormat.format(totalMoney)));
-            }
-        });
-
+    public boolean onStartJob(JobParameters params) {
+        Log.e(TAG, "onStartJob()");
+//        ProfileStorage.readProfile(new Task<Profile>() {
+//            @Override
+//            public void execute(Profile profile) {
+//                NotificationType.showPerformingNotificationInBackground(getApplicationContext(), profile, new Notification()
+//                        .setType(NotificationType.performing)
+//                        .setTime(START_TIME)
+//                        .setPrice(decimalFormat.format(totalMoney)));
+//            }
+//        });
+        doInBackground(params);
+        return true;
     }
 
     @Override
@@ -39,22 +35,58 @@ public class NotificationService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        removeTimer();
-        sendBroadcast(new Intent("live.noxbox.RestarterBroadcastReceiver"));
+    public boolean onStopJob(JobParameters params) {
+        Log.e(TAG, "onStopJob()");
+        return true;
     }
 
-    @Nullable
+    private static void doInBackground(final JobParameters jobParameters) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 10; i > 0; i--) {
+                    Log.e(TAG, "run()");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Log.e(TAG, "Job finished");
+            }
+        }).start();
+    }
+
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public void onTaskRemoved(Intent rootIntent) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "onTaskRemoved");
+            }
+        }).start();
+        Log.e(TAG, "onTaskRemoved");
     }
 
-    public static class RestarterBroadcastReceiver extends BroadcastReceiver {
+    @Override
+    public void onDestroy() {
+        Log.e(TAG, "onDestroy");
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.e(TAG, "onUnbind");
+        return super.onUnbind(intent);
+    }
+
+    public class RestartServiceReceiver extends BroadcastReceiver {
+
+        private static final String TAG = "RestartServiceReceiver";
+
         @Override
-        public void onReceive(final Context context, final Intent intent) {
-            context.startService(new Intent(context, NotificationService.class));
+        public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, "onReceive");
         }
     }
+
 }

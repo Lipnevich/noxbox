@@ -1,13 +1,19 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+
+import java.math.BigDecimal;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
@@ -53,7 +59,7 @@ public class Performing implements State {
         performingView.addView(child);
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        totalMoney = Double.parseDouble(profile.getCurrent().getPrice()) / 4;
+        totalMoney = Double.parseDouble(new BigDecimal(profile.getCurrent().getPrice()).divide(new BigDecimal("4")).toString());
         drawComplete(profile);
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
@@ -131,21 +137,39 @@ public class Performing implements State {
         googleMap.clear();
         removeTimer();
         performingView.removeAllViews();
-    }
-
-    @Override
-    public void onDestroy() {
-        removeTimer();
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (profile.getCurrent().getTimeStartPerforming() != null) {
-                    activity.startService(new Intent(activity.getApplicationContext(), NotificationService.class));
+                    Log.e("AAAAAAAAAAAAAAAAAAA", "clear()");
+                    scheduleJob();
                 }
             }
         });
-
     }
+
+    private void scheduleJob() {
+
+        ComponentName componentName = new ComponentName(activity.getApplicationContext(), NotificationService.class);
+        JobInfo info = new JobInfo.Builder(NotificationType.performing.getIndex(), componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+                .setPersisted(true)
+                .build();
+
+        JobScheduler scheduler = (JobScheduler)
+                activity.getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        assert scheduler != null;
+        scheduler.schedule(info);
+
+        int requestCode = scheduler.schedule(info);
+        if (requestCode == JobScheduler.RESULT_SUCCESS) {
+            Log.e("AAAAAAAAAAAAAAAAAAA", "JobScheduler SUCCESS");
+
+        } else {
+            Log.e("AAAAAAAAAAAAAAAAAAA", "JobScheduler FAILING");
+        }
+    }
+
 
     public static boolean hasMinimumServiceTimePassed(Profile profile) {
         final Long startTime = profile.getCurrent().getTimeStartPerforming();

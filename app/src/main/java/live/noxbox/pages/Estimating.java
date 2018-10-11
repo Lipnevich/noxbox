@@ -191,10 +191,6 @@ public class Estimating implements State {
         estimatingView.removeAllViews();
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
 
     private void displayHiddenViews() {
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);

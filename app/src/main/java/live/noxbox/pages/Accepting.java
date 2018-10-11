@@ -122,8 +122,4 @@ public class Accepting implements State {
         acceptingView.removeAllViews();
     }
 
-    @Override
-    public void onDestroy() {
-
-    }
 }

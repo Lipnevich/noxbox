@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.bumptech.glide.Glide;
@@ -469,7 +470,7 @@ public enum NotificationType {
 
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     seconds++;
-
+                    Log.e("NotificationType.class", "run()");
                     notification.setTime(time);
                     notification.setPrice(decimalFormat.format(totalMoney));
 
