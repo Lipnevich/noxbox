@@ -1,12 +1,7 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,6 +47,8 @@ public class Performing implements State {
 
     @Override
     public void draw(final Profile profile) {
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
         buildMapPosition(googleMap, profile, activity.getApplicationContext());
 
         performingView = activity.findViewById(R.id.container);
@@ -134,6 +131,7 @@ public class Performing implements State {
 
     @Override
     public void clear() {
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
         googleMap.clear();
         removeTimer();
         performingView.removeAllViews();
@@ -141,7 +139,6 @@ public class Performing implements State {
             @Override
             public void execute(Profile profile) {
                 if (profile.getCurrent().getTimeStartPerforming() != null) {
-                    Log.e("AAAAAAAAAAAAAAAAAAA", "clear()");
                     scheduleJob();
                 }
             }
@@ -149,25 +146,7 @@ public class Performing implements State {
     }
 
     private void scheduleJob() {
-
-        ComponentName componentName = new ComponentName(activity.getApplicationContext(), NotificationService.class);
-        JobInfo info = new JobInfo.Builder(NotificationType.performing.getIndex(), componentName)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true)
-                .build();
-
-        JobScheduler scheduler = (JobScheduler)
-                activity.getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
-        assert scheduler != null;
-        scheduler.schedule(info);
-
-        int requestCode = scheduler.schedule(info);
-        if (requestCode == JobScheduler.RESULT_SUCCESS) {
-            Log.e("AAAAAAAAAAAAAAAAAAA", "JobScheduler SUCCESS");
-
-        } else {
-            Log.e("AAAAAAAAAAAAAAAAAAA", "JobScheduler FAILING");
-        }
+        activity.startService(NotificationService.newService(activity));
     }
 
 

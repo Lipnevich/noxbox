@@ -1,92 +1,75 @@
 package live.noxbox.tools;
 
-import android.app.job.JobParameters;
-import android.app.job.JobService;
-import android.content.BroadcastReceiver;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-public class NotificationService extends JobService {
-    private static final String TAG = "NotificationService.class";
+import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationType;
+import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
+
+import static live.noxbox.Configuration.START_TIME;
+import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
+import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
+
+public class NotificationService extends IntentService {
+    private static final String TAG = "NotificationService";
 
     public NotificationService() {
+        super(TAG);
     }
 
-    @Override
-    public boolean onStartJob(JobParameters params) {
-        Log.e(TAG, "onStartJob()");
-//        ProfileStorage.readProfile(new Task<Profile>() {
-//            @Override
-//            public void execute(Profile profile) {
-//                NotificationType.showPerformingNotificationInBackground(getApplicationContext(), profile, new Notification()
-//                        .setType(NotificationType.performing)
-//                        .setTime(START_TIME)
-//                        .setPrice(decimalFormat.format(totalMoney)));
-//            }
-//        });
-        doInBackground(params);
-        return true;
+    public static Intent newService(Context context) {
+        return new Intent(context, NotificationService.class);
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
+        Log.d(TAG, "onStartCommand()");
+        return super.onStartCommand(intent, flags, startId);
     }
 
-    @Override
-    public boolean onStopJob(JobParameters params) {
-        Log.e(TAG, "onStopJob()");
-        return true;
-    }
-
-    private static void doInBackground(final JobParameters jobParameters) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 10; i > 0; i--) {
-                    Log.e(TAG, "run()");
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.e(TAG, "Job finished");
+    private static void doInBackground() {
+        for (int i = 10; i > 0; i--) {
+            Log.d(TAG, "run()");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }).start();
+
+            Log.d(TAG, "Job finished");
+        }
     }
+
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "onTaskRemoved");
-            }
-        }).start();
-        Log.e(TAG, "onTaskRemoved");
+        Log.d(TAG, "onTaskRemoved()");
+        super.onTaskRemoved(rootIntent);
+        stopSelf();
     }
 
     @Override
     public void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
-        Log.e(TAG, "onUnbind");
-        return super.onUnbind(intent);
-    }
-
-    public class RestartServiceReceiver extends BroadcastReceiver {
-
-        private static final String TAG = "RestartServiceReceiver";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e(TAG, "onReceive");
-        }
+    protected void onHandleIntent(Intent intent) {
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                NotificationType.showPerformingNotificationInBackground(getApplicationContext(), profile, new Notification()
+                        .setType(NotificationType.performing)
+                        .setTime(START_TIME)
+                        .setPrice(decimalFormat.format(totalMoney)));
+            }
+        });
     }
 
 }

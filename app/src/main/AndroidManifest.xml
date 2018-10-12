@@ -12,9 +12,9 @@
         android:name=".App"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/noxbox"
-        tools:replace="label"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="label">
         <activity
             android:name=".pages.AuthActivity"
             android:theme="@style/NoActionBar">
@@ -78,7 +78,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name=".tools.MessagingService"
+        <service
+            android:name=".tools.MessagingService"
             android:isolatedProcess="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -86,13 +87,9 @@
         </service>
         <service
             android:name=".tools.NotificationService"
+            android:enabled="true"
+            android:exported="true"
             android:isolatedProcess="true"/>
-        <receiver
-            android:name=".tools.NotificationService$RestarterBroadcastReceiver">
-            <intent-filter>
-                <action android:name="live.noxbox.RestarterBroadcastReceiver"/>
-            </intent-filter>
-        </receiver>
 
         <receiver android:name=".model.NotificationType$CancelRequestListener">
             <intent-filter>

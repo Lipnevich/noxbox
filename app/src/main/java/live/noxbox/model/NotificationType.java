@@ -60,7 +60,7 @@ public enum NotificationType {
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
     performing(2, R.string.performing, R.string.performingPushContent),
     lowBalance(2, R.string.outOfMoney, R.string.beforeSpendingMoney),
-    completed(2, R.string.replaceIt, R.string.completedPushContent),
+    completed(2, R.string.noxboxCompleted, R.string.completedPushContent),
     supplierCanceled(2, R.string.supplierCancelPushTitle, R.string.supplierCanceledPushContent),
     demanderCanceled(2, R.string.demanderCancelPushTitle, R.string.demanderCanceledPushContent),
 
@@ -108,6 +108,7 @@ public enum NotificationType {
             case supplierCanceled:
             case demanderCanceled:
             case message:
+            case balance:
                 return true;
         }
         return false;
@@ -231,6 +232,12 @@ public enum NotificationType {
             remoteViews.setTextViewText(R.id.name, notification.getName());
             remoteViews.setTextViewText(R.id.content, notification.getMessage());
             remoteViews.setTextViewText(R.id.time, DateTimeFormatter.time(Long.parseLong(notification.getTime())));
+        }
+        if(notification.getType() == balance){
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_balance);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.content, notification.getBalance());
+
         }
 
         return remoteViews;

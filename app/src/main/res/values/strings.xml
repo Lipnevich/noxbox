@@ -244,4 +244,5 @@
     <string name="newMessage">Новое сообщение!</string>
     <string name="reply">reply</string>
     <string name="messageSent">Message sent</string>
+    <string name="noxboxCompleted">Услуга завершена</string>
 </resources>
