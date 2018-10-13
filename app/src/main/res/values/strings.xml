@@ -245,4 +245,6 @@
     <string name="reply">reply</string>
     <string name="messageSent">Message sent</string>
     <string name="noxboxCompleted">Услуга завершена</string>
+    <string name="toEarn">Заработано</string>
+    <string name="spent">Потрачено</string>
 </resources>
