@@ -93,7 +93,7 @@ public class Accepting implements State {
             @Override
             public void onFinish() {
                 if (profile.getCurrent().getTimeAccepted() == null) {
-                    notification.getType().removeNotification(activity.getApplicationContext());
+                    notification.getType().removeNotifications(activity.getApplicationContext());
                     profile.getCurrent().setTimeAccepted(null);
                     profile.getCurrent().setTimeRequested(null);
                     ProfileStorage.fireProfile();

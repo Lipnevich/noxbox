@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -22,10 +23,13 @@ import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NotificationService;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
+import static live.noxbox.Configuration.QUARTER;
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.model.NotificationType.showLowBalanceNotification;
 import static live.noxbox.model.NotificationType.updateNotification;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
+import static live.noxbox.tools.BalanceCalculator.getTotalSpentForNoxbox;
 import static live.noxbox.tools.MapController.buildMapPosition;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
 import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
@@ -56,7 +60,7 @@ public class Performing implements State {
         performingView.addView(child);
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        totalMoney = Double.parseDouble(new BigDecimal(profile.getCurrent().getPrice()).divide(new BigDecimal("4")).toString());
+        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).divide(QUARTER, DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         drawComplete(profile);
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
@@ -81,8 +85,13 @@ public class Performing implements State {
 
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     if (hasMinimumServiceTimePassed(profile)) {
-                        double pricePerSecond = Double.parseDouble(profile.getCurrent().getPrice()) / profile.getCurrent().getType().getDuration() / 60;
-                        totalMoney = ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000) * pricePerSecond;
+                        BigDecimal pricePerSecond = new BigDecimal(profile.getCurrent().getPrice());
+                        pricePerSecond = pricePerSecond.divide(new BigDecimal(profile.getCurrent().getType().getDuration()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        pricePerSecond = pricePerSecond.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        totalMoney = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
+                        totalMoney = totalMoney.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        totalMoney = totalMoney.divide(pricePerSecond, DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
                     } else {
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
@@ -115,6 +124,23 @@ public class Performing implements State {
             @Override
             public void execute(Object object) {
                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
+
+                MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+                Notification notification = new Notification().setType(NotificationType.completed).setPrice(getTotalSpentForNoxbox(profile).toString());
+                if (profile.getCurrent().getOwner().equals(profile)) {
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        notification.setMessage(activity.getResources().getString(R.string.toEarn).concat(":"));
+                    } else {
+                        notification.setMessage(activity.getResources().getString(R.string.spent).concat(":"));
+                    }
+                } else {
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        notification.setMessage(activity.getResources().getString(R.string.toEarn).concat(":"));
+                    } else {
+                        notification.setMessage(activity.getResources().getString(R.string.spent).concat(":"));
+                    }
+                }
+                messagingService.showPushNotification(notification);
 
                 Long totalTimeInMillis = profile.getCurrent().getTimeCompleted() - profile.getCurrent().getTimeStartPerforming();
                 profile.getCurrent().setPrice(decimalFormat.format(totalMoney));

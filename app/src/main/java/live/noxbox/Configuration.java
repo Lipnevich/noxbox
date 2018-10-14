@@ -1,5 +1,7 @@
 package live.noxbox;
 
+import java.math.BigDecimal;
+
 public interface Configuration {
     int REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS = 60;
     int REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS = 60 * 1000;
@@ -12,7 +14,8 @@ public interface Configuration {
     float MINIMUM_FACE_SIZE = 0.6F;
     float MINIMUM_PROBABILITY_FOR_ACCEPTANCE = 0.6F;
     String FIVE_MINUTES_PART_OF_HOUR = "12";
-    int BIG_DECIMAL_DEFAULT_BALANCE_SCALE = 3;
+    int DEFAULT_BALANCE_SCALE = 3;
     String PRICE_FORMAT = "###.###";
+    BigDecimal QUARTER = new BigDecimal("4.0");
 
 }

@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -46,6 +45,7 @@ import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Created;
 import live.noxbox.pages.DebugActivity;
+import live.noxbox.pages.Estimating;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
@@ -85,10 +85,6 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     protected void onDestroy() {
-        Log.e(this.getClass().getName(),"onDestroy()");
-        Log.e(this.getClass().getName(),"onDestroy()");
-        Log.e(this.getClass().getName(),"onDestroy()");
-        Log.e(this.getClass().getName(),"onDestroy()");
         super.onDestroy();
     }
 
@@ -341,6 +337,8 @@ public class MapActivity extends DebugActivity implements
                 return new Moving(googleMap, this);
             case performing:
                 return new Performing(this, googleMap);
+            case estimating:
+                return new Estimating(this);
             default:
                 throw new IllegalStateException("Unknown state: " + state.name());
         }

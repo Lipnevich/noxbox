@@ -109,6 +109,7 @@ public enum NotificationType {
             case demanderCanceled:
             case message:
             case balance:
+            case completed:
                 return true;
         }
         return false;
@@ -121,7 +122,7 @@ public enum NotificationType {
         getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
     }
 
-    public void removeNotification(Context context) {
+    public static void removeNotifications(Context context) {
         MessagingService.getNotificationService(context).cancelAll();
     }
 
@@ -233,11 +234,18 @@ public enum NotificationType {
             remoteViews.setTextViewText(R.id.content, notification.getMessage());
             remoteViews.setTextViewText(R.id.time, DateTimeFormatter.time(Long.parseLong(notification.getTime())));
         }
-        if(notification.getType() == balance){
+        if (notification.getType() == balance) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_balance);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, notification.getBalance());
 
+        }
+        if (notification.getType() == completed) {
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
+            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
+            remoteViews.setTextViewText(R.id.contentRole, notification.getMessage());
+            remoteViews.setTextViewText(R.id.content, notification.getPrice().concat(" ").concat(context.getResources().getString(R.string.currency)));
+            remoteViews.setOnClickPendingIntent(R.id.estimate, PendingIntent.getBroadcast(context, 0, new Intent(context, EstimatingListener.class), 0));
         }
 
         return remoteViews;
@@ -273,7 +281,6 @@ public enum NotificationType {
         return String.format(resources.getString(resource), args);
     }
 
-    //TODO (vl) открываем активность по нажатию на уведомление в меню уведомлений, если необходимо
     private static PendingIntent getIntent(Context context, Notification notification) {
         if (notification.getType() == message)
             return TaskStackBuilder.create(context)
@@ -417,6 +424,23 @@ public enum NotificationType {
 
     }
 
+    public static class EstimatingListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    profile.getCurrent().setTimeEstimating(System.currentTimeMillis());
+
+                    removeNotifications(context);
+
+                    ProfileStorage.fireProfile();
+                }
+            });
+        }
+
+    }
+
     private static String getMessageText(Intent intent, Context context) {
         Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
         if (remoteInput != null) {
@@ -495,7 +519,6 @@ public enum NotificationType {
         initializeStopwatch(profile, handler, runnable);
         runTimer();
     }
-
 
 
 }

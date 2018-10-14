@@ -29,6 +29,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeCreated;
     private Long timeRequested;
     private Long timeCompleted;
+    private Long timeEstimating;
     private Long timeAccepted;
     private Long timeCanceledByOwner;
     private Long timeCanceledByParty;
@@ -363,6 +364,15 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeToMeet(Long timeToMeet) {
         this.timeToMeet = timeToMeet;
+        return this;
+    }
+
+    public Long getTimeEstimating() {
+        return timeEstimating;
+    }
+
+    public Noxbox setTimeEstimating(Long timeEstimating) {
+        this.timeEstimating = timeEstimating;
         return this;
     }
 }
