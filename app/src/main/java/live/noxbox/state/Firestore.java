@@ -57,7 +57,7 @@ public class Firestore {
                     new CountDownTimer(100, 100) {
                         @Override public void onTick(long millisUntilFinished) {}
                         @Override public void onFinish() {
-                            Crashlytics.log(Log.INFO, Firestore.class.getSimpleName(), "Wait for auto update for created profile loading from Server");
+                            Crashlytics.log(Log.DEBUG, Firestore.class.getSimpleName(), "Wait for auto update for created profile loading from Server");
                             listenProfile(task); }
                     }.start();
                 }

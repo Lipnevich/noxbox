@@ -24,6 +24,9 @@ public class ProfileStorage {
     private static List<Task<Noxbox>> noxboxTasks = new ArrayList<>();
 
     public static void listenProfile(String clazz, final Task<Profile> task) {
+        if(profile != null) {
+            task.execute(profile);
+        }
         listenTasks.put(clazz, task);
     }
 
