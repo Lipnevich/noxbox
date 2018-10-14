@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import live.noxbox.BuildConfig;
@@ -147,8 +148,10 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                     @Override
                     public void execute(Profile profile) {
                         profile.getCurrent().clean();
-
-                        FirebaseMessaging.getInstance().unsubscribeFromTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if(currentUser != null) {
+                            FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
+                        }
 
                         AuthUI.getInstance()
                                 .signOut(MenuActivity.this)

@@ -18,12 +18,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.Arrays;
-
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 
-import static live.noxbox.tools.DebugMessage.popup;
+import static java.util.Collections.singletonList;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -68,11 +66,9 @@ public class AuthActivity extends AppCompatActivity {
         if (NetworkReceiver.isOnline(this) && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
             Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
                     .setIsSmartLockEnabled(false)
-                    .setAvailableProviders(Arrays.asList(provider.build()))
+                    .setAvailableProviders(singletonList(provider.build()))
                     .build();
             startActivityForResult(intent, REQUEST_CODE);
-        } else {
-            popup(this, "No internet");
         }
     }
 
@@ -85,7 +81,7 @@ public class AuthActivity extends AppCompatActivity {
     private void login() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
             startActivity(new Intent(this, MapActivity.class));
         }
     }

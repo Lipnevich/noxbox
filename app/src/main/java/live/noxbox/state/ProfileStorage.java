@@ -1,7 +1,10 @@
 package live.noxbox.state;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,23 +19,28 @@ public class ProfileStorage {
 
     private static Profile profile;
 
-    private static Map<String, Task<Profile>> profileTasks = new HashMap<>();
+    private static Map<String, Task<Profile>> listenTasks = new HashMap<>();
+    private static Map<String, Task<Profile>> readTasks = new HashMap<>();
     private static List<Task<Noxbox>> noxboxTasks = new ArrayList<>();
 
     public static void listenProfile(String clazz, final Task<Profile> task) {
-        profileTasks.put(clazz, task);
-        readProfile(task);
+        listenTasks.put(clazz, task);
     }
 
     public static void readProfile(final Task<Profile> task) {
-        if (profile != null) {
-            task.execute(profile);
+        if(profile == null) {
+            readTasks.put(task.hashCode() + "", task);
         } else {
+            task.execute(profile);
+        }
+    }
+
+    public static void startListening() {
+        if(profile == null || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
             Firestore.listenProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     ProfileStorage.profile = profile;
-                    task.execute(profile);
                     fireProfile();
                 }
             });
@@ -40,8 +48,16 @@ public class ProfileStorage {
     }
 
     public static void fireProfile() {
-        for (Task<Profile> profileTask : profileTasks.values()) {
-            profileTask.execute(profile);
+        if(profile == null) return;
+
+        for (Task<Profile> task : listenTasks.values()) {
+            task.execute(profile);
+        }
+
+        for(Iterator<Map.Entry<String, Task<Profile>>> task = readTasks.entrySet().iterator(); task.hasNext();) {
+            Map.Entry<String, Task<Profile>> entry = task.next();
+            entry.getValue().execute(profile);
+            task.remove();
         }
     }
 
@@ -55,18 +71,7 @@ public class ProfileStorage {
     }
 
     public static void listenCurrentNoxbox(final Task<Noxbox> task) {
-        noxboxTasks.add(task);
-        if (profile != null) {
-            task.execute(profile.getCurrent());
-        } else {
-            //TODO (nli) read noxbox instead
-            readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    fireNoxbox();
-                }
-            });
-        }
+
     }
 
     private static void fireNoxbox() {
@@ -76,7 +81,8 @@ public class ProfileStorage {
     }
 
     public static void stopListen() {
-        profileTasks.clear();
+        listenTasks.clear();
+        readTasks.clear();
         noxboxTasks.clear();
         // TODO (nli) persist profile in firebase and bundle
     }

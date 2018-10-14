@@ -75,6 +75,7 @@ public class MapActivity extends DebugActivity implements
                 .addConnectionCallbacks(this)
                 .build();
         googleApiClient.connect();
+        ProfileStorage.startListening();
 //        if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
 //            Intent intent = new Intent();
 //            intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
@@ -84,10 +85,10 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     protected void onDestroy() {
-        Log.e("MapActivity","onDestroy()");
-        Log.e("MapActivity","onDestroy()");
-        Log.e("MapActivity","onDestroy()");
-        Log.e("MapActivity","onDestroy()");
+        Log.e(this.getClass().getName(),"onDestroy()");
+        Log.e(this.getClass().getName(),"onDestroy()");
+        Log.e(this.getClass().getName(),"onDestroy()");
+        Log.e(this.getClass().getName(),"onDestroy()");
         super.onDestroy();
     }
 

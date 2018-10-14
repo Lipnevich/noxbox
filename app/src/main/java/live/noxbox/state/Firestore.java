@@ -1,7 +1,10 @@
 package live.noxbox.state;
 
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,9 +38,8 @@ public class Firestore {
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
-
     // Profiles API
-    static void listenProfile(@NonNull final Task<Profile> task) {
+    public static void listenProfile(@NonNull final Task<Profile> task) {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
 
         profile().addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -47,11 +49,17 @@ public class Firestore {
                     Profile profile = snapshot.toObject(Profile.class);
 
                     Map<String, Object> map = objectToMap(profile);
-                    // TODO (vl) проверить для нового аккаунта
 //                    profile().set(map);
                     task.execute(profile);
                 } else {
-                    listenProfile(task);
+
+
+                    new CountDownTimer(100, 100) {
+                        @Override public void onTick(long millisUntilFinished) {}
+                        @Override public void onFinish() {
+                            Crashlytics.log(Log.INFO, Firestore.class.getSimpleName(), "Wait for auto update for created profile loading from Server");
+                            listenProfile(task); }
+                    }.start();
                 }
             }
         });
