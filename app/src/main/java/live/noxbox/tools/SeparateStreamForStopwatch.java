@@ -7,7 +7,6 @@ import java.text.DecimalFormat;
 
 import live.noxbox.model.Profile;
 
-import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.Configuration.PRICE_FORMAT;
 import static live.noxbox.Configuration.QUARTER;
 
@@ -26,7 +25,7 @@ public class SeparateStreamForStopwatch {
         SeparateStreamForStopwatch.handler = handler;
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).divide(QUARTER, DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
 
     }
 

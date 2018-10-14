@@ -15,7 +15,7 @@ public class BalanceCalculator {
 
     public static boolean enoughBalance(Noxbox noxbox, Profile profile) {
         BigDecimal minimalPrice = new BigDecimal(noxbox.getPrice());
-        minimalPrice = minimalPrice.divide(QUARTER, DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        minimalPrice = minimalPrice.multiply(QUARTER);
         BigDecimal walletBalance = new BigDecimal(profile.getWallet().getBalance());
 
         return minimalPrice.compareTo(walletBalance) < 0;
@@ -40,7 +40,7 @@ public class BalanceCalculator {
 
     public static BigDecimal getTotalSpentForNoxbox(Profile profile) {
         if (!Performing.hasMinimumServiceTimePassed(profile))
-            return new BigDecimal(profile.getCurrent().getPrice()).divide(QUARTER, DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+            return new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
 
         BigDecimal pricePerSecond = new BigDecimal(profile.getCurrent().getPrice()).divide(new BigDecimal(profile.getCurrent().getType().getDuration()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         pricePerSecond = pricePerSecond.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);

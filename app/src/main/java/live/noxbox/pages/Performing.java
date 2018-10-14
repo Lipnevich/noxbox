@@ -60,7 +60,7 @@ public class Performing implements State {
         performingView.addView(child);
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).divide(QUARTER, DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
         drawComplete(profile);
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());

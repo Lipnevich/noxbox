@@ -16,6 +16,6 @@ public interface Configuration {
     String FIVE_MINUTES_PART_OF_HOUR = "12";
     int DEFAULT_BALANCE_SCALE = 3;
     String PRICE_FORMAT = "###.###";
-    BigDecimal QUARTER = new BigDecimal("4.0");
+    BigDecimal QUARTER = new BigDecimal("0.25");
 
 }
