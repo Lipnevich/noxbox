@@ -100,6 +100,7 @@ public class Moving implements State {
 
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
                 activity.findViewById(R.id.chat).setVisibility(View.GONE);
+                activity.findViewById(R.id.navigation).setVisibility(View.GONE);
                 activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
 
                 photoView = movingView.findViewById(R.id.photoContainer);
@@ -128,6 +129,7 @@ public class Moving implements State {
 
                         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
                         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
+                        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
                         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
                         photoView.removeAllViews();
                     }

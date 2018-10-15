@@ -13,7 +13,7 @@ import static live.noxbox.Configuration.QUARTER;
 public class SeparateStreamForStopwatch {
 
     public static int seconds;
-    public static BigDecimal totalMoney;
+    public static BigDecimal totalMoney = new BigDecimal("1");
     private static Handler handler;
     private static Runnable runnable;
     public static final DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT);
@@ -25,7 +25,7 @@ public class SeparateStreamForStopwatch {
         SeparateStreamForStopwatch.handler = handler;
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
+        totalMoney = new BigDecimal(profile.getCurrent().getPrice().replaceAll(",", "\\.")).multiply(QUARTER);
 
     }
 
