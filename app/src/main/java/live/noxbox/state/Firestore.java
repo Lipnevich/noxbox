@@ -12,6 +12,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.SetOptions;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -67,6 +68,10 @@ public class Firestore {
                 }
             }
         });
+    }
+
+    public static void writeProfile(final Profile profile) {
+        profile().set(objectToMap(profile),SetOptions.merge());
     }
 
     // in case of null value - does not override value

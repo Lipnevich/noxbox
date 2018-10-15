@@ -75,11 +75,6 @@ public class MapActivity extends DebugActivity implements
                 .build();
         googleApiClient.connect();
         ProfileStorage.startListening();
-//        if (Build.BRAND.equalsIgnoreCase("xiaomi")) {
-//            Intent intent = new Intent();
-//            intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
-//            startActivity(intent);
-//        }
     }
 
     @Override
@@ -301,7 +296,6 @@ public class MapActivity extends DebugActivity implements
         }
         return noxbox;
     }
-
 
 
     private State currentState;

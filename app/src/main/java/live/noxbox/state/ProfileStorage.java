@@ -15,6 +15,8 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.WorkSchedule;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.state.Firestore.writeProfile;
+
 public class ProfileStorage {
 
     private static Profile profile;
@@ -24,14 +26,14 @@ public class ProfileStorage {
     private static List<Task<Noxbox>> noxboxTasks = new ArrayList<>();
 
     public static void listenProfile(String clazz, final Task<Profile> task) {
-        if(profile != null) {
+        if (profile != null) {
             task.execute(profile);
         }
         listenTasks.put(clazz, task);
     }
 
     public static void readProfile(final Task<Profile> task) {
-        if(profile == null) {
+        if (profile == null) {
             readTasks.put(task.hashCode() + "", task);
         } else {
             task.execute(profile);
@@ -39,7 +41,7 @@ public class ProfileStorage {
     }
 
     public static void startListening() {
-        if(profile == null || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
+        if (profile == null || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
             Firestore.listenProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
@@ -51,13 +53,15 @@ public class ProfileStorage {
     }
 
     public static void fireProfile() {
-        if(profile == null) return;
+        if (profile == null) return;
+
+        writeProfile(profile);
 
         for (Task<Profile> task : listenTasks.values()) {
             task.execute(profile);
         }
 
-        for(Iterator<Map.Entry<String, Task<Profile>>> task = readTasks.entrySet().iterator(); task.hasNext();) {
+        for (Iterator<Map.Entry<String, Task<Profile>>> task = readTasks.entrySet().iterator(); task.hasNext(); ) {
             Map.Entry<String, Task<Profile>> entry = task.next();
             entry.getValue().execute(profile);
             task.remove();
