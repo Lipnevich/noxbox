@@ -3,7 +3,6 @@ package live.noxbox.constructor;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -52,9 +51,7 @@ public class NoxboxTypeListActivity extends ListActivity {
                 } else if (getIntent().getStringExtra(MapActivity.class.getName()) != null
                         && getIntent().getStringExtra(MapActivity.class.getName()).equals(NoxboxTypeListActivity.class.getName())) {
                     typeList = new ArrayList<>();
-                    for (NoxboxType type : NoxboxType.values()) {
-                            typeList.add(type);
-                    }
+                    typeList.addAll(Arrays.asList(NoxboxType.values()));
                     createArrayAdapter();
                     drawInMap(profile);
 
@@ -66,7 +63,6 @@ public class NoxboxTypeListActivity extends ListActivity {
             }
         });
 
-
     }
 
     private void drawInMap(final Profile profile) {
@@ -75,14 +71,11 @@ public class NoxboxTypeListActivity extends ListActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 for (NoxboxType type : NoxboxType.values()) {
-                    if (type != typeList.get(i)) {
+                    if (type == typeList.get(i)) {
                         profile.getFilters().getTypes().put(type.name(), true);
-                        return;
+                        continue;
                     }
                     profile.getFilters().getTypes().put(type.name(), false);
-                }
-                for (Boolean bool : profile.getFilters().getTypes().values()) {
-                    Log.e("aaaaaaaaaa", bool.toString());
                 }
                 finish();
             }
