@@ -3,6 +3,7 @@ package live.noxbox.pages;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,10 +31,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
+import live.noxbox.constructor.NoxboxTypeListActivity;
 import live.noxbox.detailed.DetailedActivity;
-import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -47,6 +49,7 @@ import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.Router.startActivity;
+import static live.noxbox.tools.Router.startActivityForResult;
 
 public class AvailableServices implements State, ClusterManager.OnClusterClickListener<AvailableServices.NoxboxMarker>,
         ClusterManager.OnClusterItemClickListener<AvailableServices.NoxboxMarker> {
@@ -98,7 +101,9 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         activity.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(activity, MapFiltersActivity.class);
+                Intent intent = new Intent(activity, NoxboxTypeListActivity.class);
+                intent.putExtra(MapActivity.class.getName(), NoxboxTypeListActivity.class.getName());
+                startActivityForResult(activity, intent,NoxboxTypeListActivity.MAP_CODE);
             }
         });
 
@@ -135,7 +140,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
 
     }
-
 
 
     private void createMarker(Profile profile, Noxbox noxbox) {

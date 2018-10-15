@@ -3,6 +3,7 @@ package live.noxbox.constructor;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
@@ -21,6 +23,7 @@ import live.noxbox.tools.Task;
 
 public class NoxboxTypeListActivity extends ListActivity {
     public static final int PROFILE_CODE = 1010;
+    public static final int MAP_CODE = 1011;
 
     private List<NoxboxType> typeList;
 
@@ -46,17 +49,44 @@ public class NoxboxTypeListActivity extends ListActivity {
                     createArrayAdapter();
                     drawInProfile(profile);
 
-                } else {
+                } else if (getIntent().getStringExtra(MapActivity.class.getName()) != null
+                        && getIntent().getStringExtra(MapActivity.class.getName()).equals(NoxboxTypeListActivity.class.getName())) {
+                    typeList = new ArrayList<>();
+                    for (NoxboxType type : NoxboxType.values()) {
+                            typeList.add(type);
+                    }
+                    createArrayAdapter();
+                    drawInMap(profile);
 
+                } else {
                     typeList = Arrays.asList(NoxboxType.values());
                     createArrayAdapter();
                     drawInConstructor(profile);
-
                 }
             }
         });
 
 
+    }
+
+    private void drawInMap(final Profile profile) {
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                for (NoxboxType type : NoxboxType.values()) {
+                    if (type != typeList.get(i)) {
+                        profile.getFilters().getTypes().put(type.name(), true);
+                        return;
+                    }
+                    profile.getFilters().getTypes().put(type.name(), false);
+                }
+                for (Boolean bool : profile.getFilters().getTypes().values()) {
+                    Log.e("aaaaaaaaaa", bool.toString());
+                }
+                finish();
+            }
+        });
     }
 
     private void createArrayAdapter() {

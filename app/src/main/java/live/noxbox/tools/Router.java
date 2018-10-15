@@ -11,4 +11,8 @@ public class Router {
     public static void startActivityForResult(Activity activity, Class<?> cls, int code) {
         activity.startActivityForResult(new Intent(activity, cls), code);
     }
+
+    public static void startActivityForResult(Activity activity, Intent intent, int code) {
+        activity.startActivityForResult(intent, code);
+    }
 }
