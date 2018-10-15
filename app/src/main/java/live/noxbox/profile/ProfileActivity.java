@@ -50,7 +50,7 @@ public class ProfileActivity extends FragmentActivity {
         ProfileStorage.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                if(isEditable) {
+                if (isEditable) {
                     drawEditable(profile);
                 } else {
                     draw(profile);
@@ -150,6 +150,11 @@ public class ProfileActivity extends FragmentActivity {
     }
 
     private void drawMenuAddingPerformer(final Profile profile) {
+        if (profile.getPortfolio().values().size() == NoxboxType.values().length){
+            findViewById(R.id.addLayout).setVisibility(View.GONE);
+            return;
+        }
+
         findViewById(R.id.addLayout).setVisibility(View.VISIBLE);
         findViewById(R.id.addLayout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,7 +210,7 @@ public class ProfileActivity extends FragmentActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String newName = String.valueOf(s);
-                if(!profile.getName().equals(newName)){
+                if (!profile.getName().equals(newName)) {
                     profile.setName(newName);
                 }
             }
