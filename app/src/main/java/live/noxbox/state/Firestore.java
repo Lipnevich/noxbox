@@ -1,10 +1,7 @@
 package live.noxbox.state;
 
-import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -48,30 +45,14 @@ public class Firestore {
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (snapshot != null && snapshot.exists()) {
                     Profile profile = snapshot.toObject(Profile.class);
-
-                    Map<String, Object> map = objectToMap(profile);
-//                    profile().set(map);
                     task.execute(profile);
-                } else {
-
-                    new CountDownTimer(100, 100) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            Crashlytics.log(Log.DEBUG, Firestore.class.getSimpleName(), "Wait for auto update for created profile loading from Server");
-                            listenProfile(task);
-                        }
-                    }.start();
                 }
             }
         });
     }
 
     public static void writeProfile(final Profile profile) {
-        profile().set(objectToMap(profile),SetOptions.merge());
+        profile().set(objectToMap(profile), SetOptions.merge());
     }
 
     // in case of null value - does not override value
