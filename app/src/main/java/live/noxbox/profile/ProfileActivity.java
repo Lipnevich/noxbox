@@ -36,6 +36,8 @@ public class ProfileActivity extends FragmentActivity {
     public static final int CODE = 1006;
     public static final int SELECT_IMAGE = 1007;
 
+    private static boolean isEditable;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +50,11 @@ public class ProfileActivity extends FragmentActivity {
         ProfileStorage.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                draw(profile);
+                if(isEditable) {
+                    drawEditable(profile);
+                } else {
+                    draw(profile);
+                }
             }
         });
 
@@ -64,8 +70,8 @@ public class ProfileActivity extends FragmentActivity {
         findViewById(R.id.editProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isEditable = true;
                 drawEditable(profile);
-
             }
         });
         ((ImageView) findViewById(R.id.editProfile)).setImageResource(R.drawable.edit);
@@ -160,8 +166,9 @@ public class ProfileActivity extends FragmentActivity {
         findViewById(R.id.editProfile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isEditable = false;
+                ProfileStorage.fireProfile();
                 draw(profile);
-
             }
         });
         ((ImageView) findViewById(R.id.editProfile)).setImageResource(R.drawable.yes);
@@ -188,7 +195,6 @@ public class ProfileActivity extends FragmentActivity {
 
     private void drawEditName(final Profile profile) {
         ((EditText) findViewById(R.id.editName)).setEnabled(true);
-        ((EditText) findViewById(R.id.editName)).setSelection(profile.getName().length());
         ((EditText) findViewById(R.id.editName)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -199,11 +205,8 @@ public class ProfileActivity extends FragmentActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String newName = String.valueOf(s);
                 if(!profile.getName().equals(newName)){
-                    profile.setName(String.valueOf(s));
-                    ProfileStorage.fireProfile();
+                    profile.setName(newName);
                 }
-
-
             }
 
             @Override

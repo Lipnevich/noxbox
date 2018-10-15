@@ -28,6 +28,19 @@ public class ProfileStorage {
     private static Map<String, Task<Profile>> readTasks = new HashMap<>();
     private static List<Task<Noxbox>> noxboxTasks = new ArrayList<>();
 
+    public static void startListening() {
+        if (profile == null || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
+            Firestore.listenProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile)
+                {
+                    ProfileStorage.profile = profile;
+                    fireProfile();
+                }
+            });
+        }
+    }
+
     public static void listenProfile(String clazz, final Task<Profile> task) {
         if (profile != null) {
             task.execute(profile);
@@ -40,18 +53,6 @@ public class ProfileStorage {
             readTasks.put(task.hashCode() + "", task);
         } else {
             task.execute(profile);
-        }
-    }
-
-    public static void startListening() {
-        if (profile == null || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
-            Firestore.listenProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    ProfileStorage.profile = profile;
-                    fireProfile();
-                }
-            });
         }
     }
 
