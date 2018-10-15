@@ -197,7 +197,12 @@ public class ProfileActivity extends FragmentActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                profile.setName(String.valueOf(s));
+                String newName = String.valueOf(s);
+                if(!profile.getName().equals(newName)){
+                    profile.setName(String.valueOf(s));
+                    ProfileStorage.fireProfile();
+                }
+
 
             }
 

@@ -1,5 +1,8 @@
 package live.noxbox.state;
 
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -56,7 +59,7 @@ public class ProfileStorage {
         if (profile == null) return;
 
         writeProfile(profile);
-
+        Crashlytics.log(Log.DEBUG, "fireProfile()", profile.getName());
         for (Task<Profile> task : listenTasks.values()) {
             task.execute(profile);
         }

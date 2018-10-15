@@ -70,6 +70,17 @@ public class Firestore {
                         } else if (value.getClass().getPackage().getName().startsWith(BuildConfig.APPLICATION_ID)) {
                             // write all application objects
                             params.put(field.getName(), objectToMap(value));
+                        } else if (value instanceof Map) {
+                            Map mapValue = (Map) value;
+                            if (!mapValue.isEmpty()
+                                    && !mapValue.values().iterator().next().getClass().getPackage().getName().startsWith(BuildConfig.APPLICATION_ID)) {
+                                params.put(field.getName(), mapValue);
+                            } else {
+                                for (Object entry : ((Map) value).entrySet()) {
+                                    Map.Entry newEntry = (Map.Entry) entry;
+                                    params.put(field.getName().concat(".").concat(newEntry.getKey().toString()), objectToMap(newEntry.getValue()));
+                                }
+                            }
                         } else {
                             params.put(field.getName(), value);
                         }

@@ -94,6 +94,7 @@
                         android:inputType="text"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/secondary"
+                        android:maxLength="50"
                         android:textCursorDrawable="@color/secondary" />
 
                 </LinearLayout>
