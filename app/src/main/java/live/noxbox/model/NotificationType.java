@@ -24,6 +24,7 @@ import com.bumptech.glide.request.transition.Transition;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
@@ -245,7 +246,6 @@ public enum NotificationType {
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.contentRole, notification.getMessage());
             remoteViews.setTextViewText(R.id.content, notification.getPrice().concat(" ").concat(context.getResources().getString(R.string.currency)));
-            remoteViews.setOnClickPendingIntent(R.id.estimate, PendingIntent.getBroadcast(context, 0, new Intent(context, EstimatingListener.class), 0));
         }
 
         return remoteViews;
@@ -319,6 +319,12 @@ public enum NotificationType {
         if (notification.getType() == message) {
             return TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(new Intent(context, ChatActivity.class))
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
+        if (notification.getType() == completed) {
+            return TaskStackBuilder.create(context)
+                    .addNextIntentWithParentStack(new Intent(context, HistoryActivity.class))
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
@@ -418,23 +424,6 @@ public enum NotificationType {
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentText(context.getResources().getString(R.string.messageSent)));
 
-                }
-            });
-        }
-
-    }
-
-    public static class EstimatingListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            ProfileStorage.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    profile.getCurrent().setTimeEstimating(System.currentTimeMillis());
-
-                    removeNotifications(context);
-
-                    ProfileStorage.fireProfile();
                 }
             });
         }

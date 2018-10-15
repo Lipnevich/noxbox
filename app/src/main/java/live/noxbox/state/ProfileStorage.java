@@ -68,7 +68,7 @@ public class ProfileStorage {
         return new Noxbox()
                 .setOwner(profile.publicInfo())
                 .setRole(MarketRole.supply)
-                .setType(NoxboxType.nanny)
+                .setType(NoxboxType.meditation)
                 .setPrice("1")
                 .setWorkSchedule(new WorkSchedule());
     }

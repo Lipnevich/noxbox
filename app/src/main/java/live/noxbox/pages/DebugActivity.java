@@ -66,8 +66,8 @@ public class DebugActivity extends MenuActivity {
 
 
                     Map<String, Portfolio> portfolioMap = new HashMap<>();
-                    portfolioMap.put(NoxboxType.haircut.name(), new Portfolio(new HashMap<String, List<String>>(images)));
-                    portfolioMap.put(NoxboxType.manicure.name(), new Portfolio(new HashMap<String, List<String>>(images)));
+                    portfolioMap.put(NoxboxType.photographer.name(), new Portfolio(new HashMap<String, List<String>>(images)));
+                    portfolioMap.put(NoxboxType.nanny.name(), new Portfolio(new HashMap<String, List<String>>(images)));
 
                     profile.setHost(true)
                             .setWallet(new Wallet().setBalance("555").setAddress("3PA1KvFfq9VuJjg45p2ytGgaNjrgnLSgf4r"))

@@ -8,8 +8,7 @@ public enum NoxboxState {
     accepting,
     moving,
     performing,
-    completed,
-    estimating;
+    completed;
 
     public static NoxboxState getState(Noxbox noxbox, Profile profile) {
         if (noxbox == null || noxbox.getTimeCreated() == null) return initial;
@@ -41,10 +40,6 @@ public enum NoxboxState {
                 noxbox.getTimeCompleted() == null) {
 
             return performing;
-        }
-
-        if (noxbox.getTimeCompleted() != null && noxbox.getTimeEstimating() != null) {
-            return estimating;
         }
         return initial;
     }

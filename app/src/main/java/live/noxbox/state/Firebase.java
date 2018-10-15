@@ -162,10 +162,10 @@ public class Firebase {
                     try {
                         Object value = field.get(object);
                         if (value != null) {
-                            if(value instanceof Map) {
+                            if (value instanceof Map) {
 
                                 Map<String, Object> stringMap = new HashMap<>();
-                                Map map = (Map)value;
+                                Map map = (Map) value;
                                 Iterator<Map.Entry> iterator = map.entrySet().iterator();
                                 while (iterator.hasNext()) {
                                     Map.Entry entry = iterator.next();

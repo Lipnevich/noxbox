@@ -43,6 +43,7 @@
     <string name="husbandForHour">Husband for hour</string>
     <string name="musician">Musician</string>
     <string name="photographer">Photographer</string>
+    <string name="meditation">Медитация</string>
 
 
     <string name="tirefitting">Tire fitting</string>
@@ -138,6 +139,8 @@
     <string name="sportCoachDescription">1 hour training with a coach</string>
     <string name="musicianDescription">1 hour play on guitar</string>
     <string name="photographerDescription">1 hour photographer service</string>
+    <string name="meditationDescription">1 час медитации</string>
+
 
     <string name="trackLocation">Track location</string>
 

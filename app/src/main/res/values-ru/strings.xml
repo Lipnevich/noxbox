@@ -35,6 +35,8 @@
     <string name="husbandForHour">Муж на час</string>
     <string name="musician">Музыкант</string>
     <string name="photographer">Фотограф</string>
+    <string name="meditation">Медитация</string>
+
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
@@ -136,6 +138,7 @@
     <string name="sportCoachDescription">1 час тренировка с тренером</string>
     <string name="musicianDescription">1 час игры на гитаре</string>
     <string name="photographerDescription">1 час услуги фотографа</string>
+    <string name="meditationDescription">1 час медитации</string>
 
     <string name="trackLocation">Показывать местоположение</string>
 

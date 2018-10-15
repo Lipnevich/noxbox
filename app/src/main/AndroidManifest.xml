@@ -121,11 +121,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".model.NotificationType$EstimatingListener">
-            <intent-filter>
-                <action android:name="live.noxbox.EstimatingListener" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>

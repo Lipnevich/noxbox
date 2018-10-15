@@ -53,12 +53,16 @@ public class Firestore {
                     task.execute(profile);
                 } else {
 
-
                     new CountDownTimer(100, 100) {
-                        @Override public void onTick(long millisUntilFinished) {}
-                        @Override public void onFinish() {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                        }
+
+                        @Override
+                        public void onFinish() {
                             Crashlytics.log(Log.DEBUG, Firestore.class.getSimpleName(), "Wait for auto update for created profile loading from Server");
-                            listenProfile(task); }
+                            listenProfile(task);
+                        }
                     }.start();
                 }
             }
@@ -75,7 +79,7 @@ public class Firestore {
                 try {
                     Object value = field.get(object);
                     if (value != null) {
-                        if(value.getClass().isEnum()) {
+                        if (value.getClass().isEnum()) {
                             params.put(field.getName(), value.toString());
                         } else if (value.getClass().getPackage().getName().startsWith(BuildConfig.APPLICATION_ID)) {
                             // write all application objects

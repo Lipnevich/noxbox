@@ -45,7 +45,6 @@ import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Created;
 import live.noxbox.pages.DebugActivity;
-import live.noxbox.pages.Estimating;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
@@ -337,8 +336,6 @@ public class MapActivity extends DebugActivity implements
                 return new Moving(googleMap, this);
             case performing:
                 return new Performing(this, googleMap);
-            case estimating:
-                return new Estimating(this);
             default:
                 throw new IllegalStateException("Unknown state: " + state.name());
         }
