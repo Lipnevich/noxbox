@@ -15,8 +15,7 @@
             android:id="@+id/mapId"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <Button
                 android:id="@+id/requestButton"
@@ -59,8 +58,8 @@
                 android:id="@+id/filter"
                 style="@style/IconButtonStyle"
                 android:layout_gravity="end|top"
-                android:layout_marginEnd="12dp"
                 android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/filter"
                 android:tint="@color/primary" />
@@ -77,8 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|top"
-                android:layout_marginEnd="13dp"
-                android:layout_marginTop="13dp">
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="13dp">
 
                 <ImageView
                     android:id="@+id/chat"
@@ -102,15 +101,28 @@
                 android:tint="@color/primary"
                 android:visibility="gone" />
 
-
-            <ImageView
+            <android.support.v7.widget.CardView
                 android:id="@+id/navigation"
-                style="@style/IconButtonStyle"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="16dp"
-                android:src="@drawable/navigation" />
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/primary"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="8dp">
+
+                <ImageView
+                    android:id="@+id/navigationImage"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/navigation"
+                    android:tint="@color/secondary"
+                    android:visibility="visible" />
+            </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/customFloatingView"
@@ -226,8 +238,8 @@
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:headerLayout="@layout/navigation_header"
-        app:menu="@menu/navigation_body"
+        app:itemIconTint="@color/primary"
         app:itemTextColor="@color/primary"
-        app:itemIconTint="@color/primary"/>
+        app:menu="@menu/navigation_body" />
 
 </android.support.v4.widget.DrawerLayout>
