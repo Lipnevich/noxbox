@@ -109,8 +109,8 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                 if (profile.getName() != null) {
                     ((TextView) findViewById(R.id.name)).setText(profile.getName());
                 }
-                ((TextView) findViewById(R.id.rating)).setText(profile.ratingToPercentage() + " %");
-                ((TextView) findViewById(R.id.version)).setText("Version " + BuildConfig.VERSION_NAME);
+                ((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
+                ((TextView) findViewById(R.id.version)).setText(getResources().getString(R.string.version).concat(" ").concat(BuildConfig.VERSION_NAME));
                 profilePhoto.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -169,7 +169,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                     public void execute(Profile profile) {
                         profile.getCurrent().clean();
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if(currentUser != null) {
+                        if (currentUser != null) {
                             FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
                         }
 
