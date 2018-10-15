@@ -176,7 +176,8 @@ public class ProfileActivity extends FragmentActivity {
         drawEditName(profile);
         drawEditTravelMode(profile);
         drawEditHost(profile);
-        drawHideMenuAddingPerformer(profile);
+        drawPortfolioEditingMenu(profile);
+        drawMenuAddingPerformer(profile);
     }
 
     private void drawEditPhoto(final Profile profile) {
@@ -259,10 +260,6 @@ public class ProfileActivity extends FragmentActivity {
                 setHostStatus(isChecked, profile);
             }
         });
-    }
-
-    private void drawHideMenuAddingPerformer(final Profile profile) {
-        findViewById(R.id.addLayout).setVisibility(View.GONE);
     }
 
     private void setTravelModeStatus(Profile profile) {
