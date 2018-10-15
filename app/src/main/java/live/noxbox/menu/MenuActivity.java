@@ -96,7 +96,6 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,7 +119,6 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                 });
             }
         });
-
     }
 
     @Override
@@ -180,6 +178,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                                        ProfileStorage.clear();
                                         startActivity(new Intent(MenuActivity.this, AuthActivity.class));
                                     }
                                 });

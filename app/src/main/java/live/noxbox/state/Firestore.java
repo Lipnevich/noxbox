@@ -76,9 +76,11 @@ public class Firestore {
                                     && !mapValue.values().iterator().next().getClass().getPackage().getName().startsWith(BuildConfig.APPLICATION_ID)) {
                                 params.put(field.getName(), mapValue);
                             } else {
+                                Map<String, Object> map = new HashMap<>();
                                 for (Object entry : ((Map) value).entrySet()) {
                                     Map.Entry newEntry = (Map.Entry) entry;
-                                    params.put(field.getName().concat(".").concat(newEntry.getKey().toString()), objectToMap(newEntry.getValue()));
+                                    params.put(field.getName(), map);
+                                    map.put(newEntry.getKey().toString(), objectToMap(newEntry.getValue()));
                                 }
                             }
                         } else {

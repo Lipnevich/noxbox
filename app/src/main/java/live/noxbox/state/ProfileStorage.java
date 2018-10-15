@@ -98,4 +98,7 @@ public class ProfileStorage {
         // TODO (nli) persist profile in firebase and bundle
     }
 
+    public static void clear() {
+        stopListen();
+    }
 }
