@@ -29,6 +29,12 @@ public class ProfileStorage {
             Firestore.listenProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile newProfile) {
+                    Noxbox.onNoxboxChangeListener = new Task<Noxbox>() {
+                        @Override
+                        public void execute(Noxbox noxbox) {
+                        }
+                    };
+
                     // since current and viewed are virtual Noxboxes we should transfer them
                     if(profile != null && newProfile != null) {
                         newProfile.setCurrent(profile.getCurrent());
@@ -53,7 +59,7 @@ public class ProfileStorage {
 
                     fireProfile();
 
-                    ProfileStorage.profile.getCurrent().onNoxboxChangeListener = new Task<Noxbox>() {
+                    Noxbox.onNoxboxChangeListener = new Task<Noxbox>() {
                         @Override
                         public void execute(Noxbox noxbox) {
                             writeNoxbox(profile.getCurrent());
@@ -82,7 +88,7 @@ public class ProfileStorage {
     public static void fireProfile() {
         if (profile == null) return;
 
-        ProfileStorage.profile.getCurrent().onNoxboxChangeListener = new Task<Noxbox>() {
+        Noxbox.onNoxboxChangeListener = new Task<Noxbox>() {
             @Override
             public void execute(Noxbox noxbox) {
             }
