@@ -109,7 +109,7 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                if(profile.getViewed()!= null){
+                if(profile.getViewed().getPosition() != null){
                     moveCamera(profile.getViewed().getPosition().toLatLng(), 15);
                 }else{
                     moveCamera(profile.getCurrent().getPosition().toLatLng(),15);

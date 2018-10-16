@@ -40,6 +40,7 @@ import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.state.Firebase;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
@@ -54,7 +55,6 @@ import static live.noxbox.detailed.CoordinateActivity.LNG;
 
 public class ConstructorActivity extends AppCompatActivity {
 
-
     protected double price;
     private TextView closeOrRemove;
 
@@ -66,6 +66,12 @@ public class ConstructorActivity extends AppCompatActivity {
         TextView textCurrency = findViewById(R.id.textCurrency);
         String currency = Configuration.CURRENCY + ".";
         textCurrency.setText(currency);
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                profile.getCurrent().setGeoId(Firebase.createKey(profile.getCurrent()));
+            }
+        });
     }
 
     @Override
@@ -74,7 +80,7 @@ public class ConstructorActivity extends AppCompatActivity {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
-                if (profile.getCurrent() != null) {
+                if (profile.getCurrent().getId() != null) {
                     closeOrRemove.setText(R.string.remove);
                     closeOrRemove.setOnClickListener(new View.OnClickListener() {
                         @Override

@@ -26,7 +26,6 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.model.Noxbox;
 
-import static live.noxbox.state.Firebase.dislikeNoxbox;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.DateTimeFormatter.time;
 
@@ -115,7 +114,7 @@ public class HistoryAdapter extends BaseAdapter {
                                 public void onClick(DialogInterface dialog, int which) {
                                     v.setOnClickListener(null);
                                     showRating((ImageView) v, false);
-                                    dislikeNoxbox(profileId, noxbox);
+//                                    dislikeNoxbox(profileId, noxbox);
                                 }
                             });
                     builder.setNegativeButton(android.R.string.cancel, null);

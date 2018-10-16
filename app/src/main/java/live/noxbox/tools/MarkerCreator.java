@@ -25,7 +25,7 @@ public class MarkerCreator {
 
     public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Resources resources) {
         Bitmap bitmap = BitmapFactory.decodeResource(resources, noxbox.getType().getImage());
-        Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(48), dpToPx(48), false);
+        Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(64), dpToPx(64), false);
 
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(noxbox.getPosition().toLatLng())

@@ -178,6 +178,9 @@ public class Profile implements Serializable {
     }
 
     public Map<String, Rating> getDemandsRating() {
+        if(demandsRating == null) {
+            demandsRating = new HashMap<>();
+        }
         return demandsRating;
     }
 
@@ -187,6 +190,9 @@ public class Profile implements Serializable {
     }
 
     public Map<String, Rating> getSuppliesRating() {
+        if(suppliesRating == null) {
+            suppliesRating = new HashMap<>();
+        }
         return suppliesRating;
     }
 

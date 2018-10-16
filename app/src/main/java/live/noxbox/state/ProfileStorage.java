@@ -10,10 +10,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
 import static com.google.common.base.Objects.equal;
+import static live.noxbox.state.Firebase.offline;
+import static live.noxbox.state.Firebase.online;
 import static live.noxbox.state.Firestore.writeNoxbox;
 import static live.noxbox.state.Firestore.writeProfile;
 
@@ -48,11 +51,11 @@ public class ProfileStorage {
         }
     };
 
-    private static void removeNoxbox(String existingNoxboxId) {
-        if(existingNoxboxId != null) {
-            // TODO (nli) delete current from available services
-            writeNoxbox(new Noxbox().setId(existingNoxboxId).setTimeRemoved(System.currentTimeMillis()));
-            Firestore.listenNoxbox(existingNoxboxId, OFF);
+    private static void removeNoxbox(String noxboxId) {
+        if(noxboxId != null) {
+            offline(profile.getCurrent());
+            writeNoxbox(new Noxbox().setId(noxboxId).setTimeRemoved(System.currentTimeMillis()));
+            Firestore.listenNoxbox(noxboxId, OFF);
         }
     }
 
@@ -72,7 +75,7 @@ public class ProfileStorage {
                 });
 
                 fireProfile();
-                // TODO (nli) make current available services
+                online(noxbox);
             }
         }
     };
@@ -171,6 +174,9 @@ public class ProfileStorage {
         stopListen();
         if(profile.getCurrent().getId() != null) {
             Firestore.listenNoxbox(profile.getCurrent().getId(), OFF);
+            if(NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.initial) {
+                removeNoxbox(profile.getNoxboxId());
+            }
         }
         if(profile != null) {
             profile.getCurrent().onNoxboxUpdateListener = OFF;

@@ -4,7 +4,6 @@ package live.noxbox.menu;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -12,14 +11,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.state.Firebase;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
@@ -59,19 +55,19 @@ public class HistoryActivity extends AppCompatActivity {
         historyAdapter = new HistoryAdapter(HistoryActivity.this, profile.getId(), historyItems);
         listView.setAdapter(historyAdapter);
 
-        Firebase.loadHistory(new Task<Collection<Noxbox>>() {
-            @Override
-            public void execute(Collection<Noxbox> noxboxes) {
-                historyItems.addAll(noxboxes);
-                Collections.sort(historyItems);
-                historyAdapter.notifyDataSetChanged();
-
-                ImageView progressView = findViewById(R.id.progressView);
-                progressView.setVisibility(View.INVISIBLE);
-                ListView listView = findViewById(R.id.historyView);
-                listView.setVisibility(View.VISIBLE);
-            }
-        });
+//        Firebase.loadHistory(new Task<Collection<Noxbox>>() {
+//            @Override
+//            public void execute(Collection<Noxbox> noxboxes) {
+//                historyItems.addAll(noxboxes);
+//                Collections.sort(historyItems);
+//                historyAdapter.notifyDataSetChanged();
+//
+//                ImageView progressView = findViewById(R.id.progressView);
+//                progressView.setVisibility(View.INVISIBLE);
+//                ListView listView = findViewById(R.id.historyView);
+//                listView.setVisibility(View.VISIBLE);
+//            }
+//        });
     }
 
 }

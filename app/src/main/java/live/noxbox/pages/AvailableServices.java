@@ -86,12 +86,14 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         MapController.moveCopyrightRight(googleMap);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
+        // TODO (nli) добавить слушателя доступных услуг, ноксбоксы отрисовать
+
         activity.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 150, profile)) {
-                    // TODO (nli) создать AvailableServicesStorage, добавить туда слушателя, добавить ноксбоксы и зажечь
                     createMarker(profile, noxbox);
                 }
             }
@@ -131,6 +133,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     @Override
     public void clear() {
         googleMap.clear();
+        // TODO (nli) убрать слушателя, добавить ноксбоксы и зажечь
         clusterManager.clearItems();
         activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
@@ -147,11 +150,11 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
                 || (profile.getTravelMode() != TravelMode.none
                 && noxbox.getOwner().getTravelMode() != TravelMode.none
                 && !profile.getHost() && !noxbox.getOwner().getHost())) {
-            // TODO (vl) показывать услуги с актуальным временем
 //            TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)
 
             //do not show this marker
         } else {
+            // TODO (vl) показывать услуги с актуальным временем
             clusterManager.addItem(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             clusterManager.cluster();
         }

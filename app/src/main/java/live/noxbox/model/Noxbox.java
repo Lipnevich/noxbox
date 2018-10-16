@@ -29,6 +29,8 @@ public class Noxbox implements Comparable<Noxbox> {
     @Virtual
     public Task<Noxbox> onNoxboxRemoveListener;
     private String id;
+    @Virtual
+    private String geoId;
     private Profile owner;
     private Profile party;
     private Map<String, Message> chat = new HashMap<>();
@@ -414,6 +416,15 @@ public class Noxbox implements Comparable<Noxbox> {
         if (onNoxboxRemoveListener != null) {
             onNoxboxRemoveListener.execute(this);
         }
+        return this;
+    }
+
+    public String getGeoId() {
+        return geoId;
+    }
+
+    public Noxbox setGeoId(String geoId) {
+        this.geoId = geoId;
         return this;
     }
 }

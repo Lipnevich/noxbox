@@ -1,197 +1,82 @@
 package live.noxbox.state;
 
-import android.support.annotation.NonNull;
-
 import com.firebase.geofire.GeoFire;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
-import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
-import live.noxbox.model.Profile;
+import live.noxbox.model.NoxboxType;
+import live.noxbox.model.Rating;
 import live.noxbox.model.Request;
-import live.noxbox.tools.Task;
-
-import static java.lang.reflect.Modifier.isStatic;
+import live.noxbox.model.TravelMode;
 
 public class Firebase {
+
+    public final static String delimiter = ";";
 
     static {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
-    private static DatabaseReference profiles() {
-        return db().child("profiles");
-    }
-
-    private static DatabaseReference events() {
-        return db().child("events");
-    }
-
-    private static DatabaseReference requests() {
-        return db().child("requests");
-    }
-
     private static GeoFire geo;
 
-    public static GeoFire geo() {
-        if (geo == null) geo = new GeoFire(db().child("geo"));
+    private static GeoFire geo() {
+        if (geo == null) geo = new GeoFire(FirebaseDatabase.getInstance().getReference().child("geo"));
         return geo;
     }
 
-    private static DatabaseReference db() {
-        return FirebaseDatabase.getInstance().getReference();
+    public static void online(Noxbox current) {
+        geo().setLocation(createKey(current), current.getPosition().toGeoLocation());
     }
 
-    static Profile profile;
+    public static void offline(Noxbox current) {
+        if (current.getGeoId() != null) {
+            geo().removeLocation(current.getGeoId());
+        }
+        geo().removeLocation(createKey(current));
+    }
 
-    static Profile getProfile() {
-        return profile;
+    public static String createKey(Noxbox currentNoxbox) {
+        Rating ownerRating = currentNoxbox.getRole() == MarketRole.supply ?
+                currentNoxbox.getOwner().getSuppliesRating().get(currentNoxbox.getType().name()) :
+                currentNoxbox.getOwner().getDemandsRating().get(currentNoxbox.getType().name());
+        if(ownerRating == null) {
+            ownerRating = new Rating();
+        }
+
+        return currentNoxbox.getId()
+                + delimiter + currentNoxbox.getRole()
+                + delimiter + currentNoxbox.getType()
+                + delimiter + currentNoxbox.getPrice()
+                + delimiter + currentNoxbox.getOwner().getTravelMode()
+                + delimiter + ownerRating.getReceivedLikes()
+                + delimiter + ownerRating.getReceivedDislikes()
+                ;
+    }
+
+    private static Noxbox parseKey(String key) {
+        String [] values = key.split(delimiter);
+        Noxbox noxbox = new Noxbox();
+        if(values.length >= 7) {
+            noxbox.setId(values[0]);
+            noxbox.setRole(MarketRole.valueOf(values[1]));
+            noxbox.setType(NoxboxType.valueOf(values[2]));
+            noxbox.setPrice(values[3]);
+            noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[4]));
+
+            Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[5])).setReceivedDislikes(Integer.valueOf(values[6]));
+            if(noxbox.getRole() == MarketRole.supply) {
+                noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
+            } else if (noxbox.getRole() == MarketRole.demand) {
+                noxbox.getOwner().getDemandsRating().put(noxbox.getType().name(), rating);
+            }
+        }
+        return noxbox;
     }
 
     public static void sendRequest(Request request) {
 //        requests().child(getProfile().getId()).child(request.getType().toString())
 //                .setValue(objectToMap(request.setId(getProfile().getId())
 //                        .setPush(MessagingService.generatePush(request))));
-    }
-
-    // Noxboxes API
-    private static DatabaseReference currentNoxboxReference() {
-        return profiles().child(getProfile().getId()).child("profile").child("current");
-    }
-
-    public static void updateCurrentNoxbox(@NonNull Noxbox noxbox) {
-        currentNoxboxReference().updateChildren(objectToMap(noxbox));
-        getProfile().setCurrent(noxbox);
-    }
-
-    public static void removeCurrentNoxbox() {
-        currentNoxboxReference().removeValue();
-        getProfile().setCurrent(null);
-    }
-
-    // History API
-    public static Noxbox persistHistory() {
-        Noxbox current = getProfile().getCurrent();
-        if (current == null) return null;
-
-        like();
-        return persistHistory(current.setTimeCompleted(System.currentTimeMillis()));
-    }
-
-    public static Noxbox persistHistory(Noxbox noxbox) {
-        history().child(noxbox.getId()).updateChildren(objectToMap(noxbox));
-        return noxbox;
-    }
-
-    public static void loadHistory(final Task<Collection<Noxbox>> task) {
-        history().limitToLast(15).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    GenericTypeIndicator<Map<String, Noxbox>> genericTypeIndicator
-                            = new GenericTypeIndicator<Map<String, Noxbox>>() {
-                    };
-                    Map<String, Noxbox> history = dataSnapshot.getValue(genericTypeIndicator);
-                    task.execute(history.values());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-    }
-
-    private static DatabaseReference history() {
-        return profiles().child(getProfile().getId()).child("history");
-    }
-
-    static private ValueEventListener listener;
-
-    // Profiles API
-    static void listenProfile(@NonNull final Task<Profile> task) {
-        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        listener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    profile = snapshot.getValue(Profile.class);
-                    task.execute(profile);
-                } else {
-                    profile = new Profile()
-                            .setId(firebaseUser.getUid())
-                            .setName(firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "")
-                            .setPhoto(firebaseUser.getPhotoUrl() != null ? firebaseUser.getPhotoUrl().toString() : null);
-                    task.execute(profile);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        };
-
-        profiles().child(firebaseUser.getUid()).child("profile").addValueEventListener(listener);
-    }
-
-    public static void updateProfile(Profile profile) {
-        profiles().child(profile.getId()).child("profile").updateChildren(objectToMap(profile));
-    }
-
-    // in case of null value - does not override value
-    public static Map<String, Object> objectToMap(Object object) {
-        Map<String, Object> params = new HashMap<>();
-        Class clazz = object.getClass();
-        while (clazz != Object.class) {
-            for (Field field : clazz.getDeclaredFields()) {
-                if (!isStatic(field.getModifiers())) {
-                    field.setAccessible(true);
-                    try {
-                        Object value = field.get(object);
-                        if (value != null) {
-                            if (value instanceof Map) {
-
-                                Map<String, Object> stringMap = new HashMap<>();
-                                Map map = (Map) value;
-                                Iterator<Map.Entry> iterator = map.entrySet().iterator();
-                                while (iterator.hasNext()) {
-                                    Map.Entry entry = iterator.next();
-                                    stringMap.put(entry.getKey().toString(), entry.getValue());
-                                }
-                                params.put(field.getName(), stringMap);
-                            } else {
-                                params.put(field.getName(), value);
-                            }
-                        }
-                    } catch (IllegalAccessException e) {
-                    }
-                }
-            }
-            clazz = clazz.getSuperclass();
-        }
-        return params;
-    }
-
-    public static void like() {
-//        getProfile().getRating().setReceivedLikes(getProfile().getRating().getReceivedLikes() + 1);
-//        getProfile().getRating().setSentLikes(getProfile().getRating().getSentLikes() + 1);
-    }
-
-    public static void dislikeNoxbox(String profileId, Noxbox noxbox) {
-        //noxbox.getNotMe(profileId).setTimeDisliked(currentTimeMillis());
-        // TODO (nli) update history
     }
 }
