@@ -370,6 +370,7 @@ public class DetailedActivity extends AppCompatActivity {
                             return;
                         }
                         profile.setCurrent(profile.getViewed());
+                        //TODO (nli) logic for transfer listeners
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                         finish();
                     }

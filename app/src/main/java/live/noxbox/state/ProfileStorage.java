@@ -52,6 +52,11 @@ public class ProfileStorage {
         if(existingNoxboxId != null) {
             // TODO (nli) delete current from available services
             writeNoxbox(new Noxbox().setId(existingNoxboxId).setTimeRemoved(System.currentTimeMillis()));
+            Firestore.listenNoxbox(existingNoxboxId, new Task<Noxbox>() {
+                @Override
+                public void execute(Noxbox current) {
+                }
+            });
         }
     }
 
@@ -61,6 +66,15 @@ public class ProfileStorage {
             if(profile != null) {
                 removeNoxbox(profile.getNoxboxId());
                 writeNoxbox(profile.getCurrent());
+                Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
+                    @Override
+                    public void execute(Noxbox current) {
+                        profile.setCurrent(current);
+                        executeUITasks();
+                    }
+                });
+                profile.setNoxboxId(profile.getCurrent().getId());
+                fireProfile();
                 // TODO (nli) make current available services
             }
         }
@@ -92,6 +106,10 @@ public class ProfileStorage {
                         Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
                             @Override
                             public void execute(Noxbox current) {
+                                current.onNoxboxCreateListener = profile.getCurrent().onNoxboxCreateListener;
+                                current.onNoxboxUpdateListener = profile.getCurrent().onNoxboxUpdateListener;
+                                current.onNoxboxRemoveListener = profile.getCurrent().onNoxboxRemoveListener;
+
                                 profile.setCurrent(current);
                                 executeUITasks();
                             }

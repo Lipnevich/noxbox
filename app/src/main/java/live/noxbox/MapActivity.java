@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -273,30 +272,6 @@ public class MapActivity extends DebugActivity implements
 
         return Position.from(latLng);
     }
-
-    protected Noxbox chooseBestOptionPerformer(Profile profile) {
-        int minEstimation = Integer.MAX_VALUE;
-        Noxbox noxbox = null;
-        // TODO (nli) hide performers from black list
-        for (Map.Entry<String, GroundOverlay> marker : markers.entrySet()) {
-            if (marker.getValue().getTag() == null) {
-                continue;
-            }
-            TravelMode travelMode = TravelMode.valueOf(marker.getValue().getTag().toString());
-            int estimation = getEstimationInMinutes(getCameraPosition(),
-                    Position.from(marker.getValue().getPosition()), travelMode);
-            if (estimation < minEstimation) {
-                minEstimation = estimation;
-                String performerId = marker.getKey();
-                noxbox = new Noxbox().setEstimationTime("" + estimation)
-                        .setPosition(getCameraPosition())
-                        .setOwner(profile.publicInfo()).setParty(new Profile().setId(performerId)
-                                .setTravelMode(travelMode).setPosition(Position.from(marker.getValue().getPosition())));
-            }
-        }
-        return noxbox;
-    }
-
 
     private State currentState;
 
