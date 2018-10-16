@@ -25,7 +25,7 @@ public class SeparateStreamForStopwatch {
         SeparateStreamForStopwatch.handler = handler;
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        totalMoney = new BigDecimal(profile.getCurrent().getPrice().replaceAll(",", "\\.")).multiply(QUARTER);
+        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
 
     }
 

@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -50,11 +51,11 @@ public class Firestore {
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (snapshot != null && snapshot.exists()) {
                     Profile profile = snapshot.toObject(Profile.class);
-                    if(profile != null) {
+                    if (profile != null) {
                         profile.setViewed(null);
                         profile.setCurrent(null);
                     }
-                     task.execute(profile);
+                    task.execute(profile);
                 }
             }
         });
@@ -75,7 +76,7 @@ public class Firestore {
     }
 
     public static void writeNoxbox(final Noxbox current) {
-        if(current.getId() == null) {
+        if (current.getId() == null) {
             current.clean();
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
@@ -93,7 +94,7 @@ public class Firestore {
         Map<String, Object> params = new HashMap<>();
         Class clazz = object.getClass();
         for (Field field : clazz.getDeclaredFields()) {
-            if (!isStatic(field.getModifiers())) {
+            if (!isStatic(field.getModifiers()) && field.getAnnotation(Exclude.class) == null) {
                 field.setAccessible(true);
                 try {
                     Object value = field.get(object);
