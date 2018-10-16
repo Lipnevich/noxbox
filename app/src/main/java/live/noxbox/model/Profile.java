@@ -3,11 +3,12 @@ package live.noxbox.model;
 import android.support.annotation.NonNull;
 
 import com.google.common.base.Objects;
-import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import live.noxbox.Virtual;
 
 import static live.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
 
@@ -28,8 +29,10 @@ public class Profile implements Serializable {
     private String photo;
     private NotificationKeys notificationKeys;
     private String noxboxId;
-    @Exclude private Noxbox current;
-    @Exclude private Noxbox viewed;
+    @Virtual
+    private Noxbox current;
+    @Virtual
+    private Noxbox viewed;
     private TravelMode travelMode;
     private Boolean host;
 
@@ -116,7 +119,6 @@ public class Profile implements Serializable {
         return this;
     }
 
-    @Exclude
     public Noxbox getCurrent() {
         if(current == null) {
             current = new Noxbox();
@@ -154,18 +156,15 @@ public class Profile implements Serializable {
         return this;
     }
 
-    @Exclude
     public Profile publicInfo() {
         return new Profile().setId(id)
                 .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode).setHost(host);
     }
 
-    @Exclude
     public Profile notPublicInfo() {
         return publicInfo().setName(name).setPhoto(photo);
     }
 
-    @Exclude
     public Noxbox getViewed() {
         if(viewed == null) {
             viewed = new Noxbox();
@@ -205,7 +204,6 @@ public class Profile implements Serializable {
         return this;
     }
 
-    @Exclude
     public int ratingToPercentage(MarketRole role, NoxboxType type) {
         int likes = 0;
         int dislikes = 0;
@@ -224,7 +222,6 @@ public class Profile implements Serializable {
 
     }
 
-    @Exclude
     public int ratingToPercentage() {
         int likes = 0;
         int dislikes = 0;

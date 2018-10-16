@@ -13,18 +13,21 @@
  */
 package live.noxbox.model;
 
-import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import live.noxbox.Virtual;
 import live.noxbox.tools.Task;
 
 public class Noxbox implements Comparable<Noxbox> {
 
-    @Exclude public Task<Noxbox> onNoxboxUpdateListener;
-    @Exclude public Task<Noxbox> onNoxboxCreateListener;
-    @Exclude public Task<Noxbox> onNoxboxRemoveListener;
+    @Virtual
+    public Task<Noxbox> onNoxboxUpdateListener;
+    @Virtual
+    public Task<Noxbox> onNoxboxCreateListener;
+    @Virtual
+    public Task<Noxbox> onNoxboxRemoveListener;
     private String id;
     private Profile owner;
     private Profile party;
@@ -62,7 +65,6 @@ public class Noxbox implements Comparable<Noxbox> {
     private String commentForSupply;
 
 
-    @Exclude
     public Noxbox clean() {
         id = null;
         party = null;
@@ -209,7 +211,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public Profile getOwner() {
-        if(owner == null) {
+        if (owner == null) {
             owner = new Profile();
         }
         return owner;
@@ -230,13 +232,11 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    @Exclude
     public Profile getNotMe(String myId) {
         if (owner.getId().equals(myId)) return party;
         else return owner;
     }
 
-    @Exclude
     public Profile getMe(String myId) {
         if (owner.getId().equals(myId)) return owner;
         else return party;
@@ -264,13 +264,11 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    @Exclude
     public Profile getPerformer() {
         if (role == MarketRole.supply) return owner;
         else return party;
     }
 
-    @Exclude
     public Profile getPayer() {
         if (role == MarketRole.demand) return owner;
         else return party;
@@ -401,7 +399,6 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    @Exclude
     public void changed() {
         if (onNoxboxUpdateListener != null) {
             onNoxboxUpdateListener.execute(this);

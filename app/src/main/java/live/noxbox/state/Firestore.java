@@ -6,7 +6,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
@@ -19,6 +18,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import live.noxbox.BuildConfig;
+import live.noxbox.Virtual;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
@@ -94,7 +94,7 @@ public class Firestore {
         Map<String, Object> params = new HashMap<>();
         Class clazz = object.getClass();
         for (Field field : clazz.getDeclaredFields()) {
-            if (!isStatic(field.getModifiers()) && field.getAnnotation(Exclude.class) == null) {
+            if (!isStatic(field.getModifiers()) && field.getAnnotation(Virtual.class) == null) {
                 field.setAccessible(true);
                 try {
                     Object value = field.get(object);
