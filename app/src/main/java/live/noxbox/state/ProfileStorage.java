@@ -24,9 +24,9 @@ public class ProfileStorage {
     private static Map<String, Task<Profile>> listenProfile = new HashMap<>();
     private static Map<String, Task<Profile>> readProfile = new HashMap<>();
 
-    private static final Task<Noxbox> OFF = new Task<Noxbox>() {
+    private static final Task OFF = new Task() {
         @Override
-        public void execute(Noxbox noxbox) {
+        public void execute(Object noxbox) {
         }
     };
 
@@ -52,11 +52,7 @@ public class ProfileStorage {
         if(existingNoxboxId != null) {
             // TODO (nli) delete current from available services
             writeNoxbox(new Noxbox().setId(existingNoxboxId).setTimeRemoved(System.currentTimeMillis()));
-            Firestore.listenNoxbox(existingNoxboxId, new Task<Noxbox>() {
-                @Override
-                public void execute(Noxbox current) {
-                }
-            });
+            Firestore.listenNoxbox(existingNoxboxId, OFF);
         }
     }
 
@@ -173,5 +169,16 @@ public class ProfileStorage {
 
     public static void clear() {
         stopListen();
+        if(profile.getCurrent().getId() != null) {
+            Firestore.listenNoxbox(profile.getCurrent().getId(), OFF);
+        }
+        if(profile != null) {
+            profile.getCurrent().onNoxboxUpdateListener = OFF;
+            profile.getCurrent().onNoxboxCreateListener = OFF;
+            profile.getCurrent().onNoxboxRemoveListener = OFF;
+        }
+
+        Firestore.listenProfile(OFF);
+        profile = null;
     }
 }
