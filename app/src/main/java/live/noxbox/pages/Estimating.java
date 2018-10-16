@@ -157,7 +157,6 @@ public class Estimating implements State {
         estimatingView.findViewById(R.id.estimatingScreenClose).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.getCurrent().clean();
                 displayHiddenViews();
                 estimatingView.removeAllViews();
             }

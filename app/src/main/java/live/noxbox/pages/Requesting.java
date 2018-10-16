@@ -96,7 +96,6 @@ public class Requesting implements State {
                 if (profile.getCurrent().getTimeAccepted() == null) {
                     notification.getType().removeNotifications(activity.getApplicationContext());
                     profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
-                    profile.getCurrent().clean();
                 }
             }
 

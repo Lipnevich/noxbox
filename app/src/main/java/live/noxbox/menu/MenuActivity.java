@@ -167,7 +167,6 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                 ProfileStorage.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
-                        profile.getCurrent().clean();
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                         if (currentUser != null) {
                             FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());

@@ -71,7 +71,6 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                                 }
-                                profile.getCurrent().clean();
                                 ProfileStorage.fireProfile();
 
                             } else {
@@ -114,7 +113,6 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeAccepted() != null
                                     && profile.getCurrent().getTimeCompleted() == null) {
                                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
-                                profile.getCurrent().clean();
                                 ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to complete");

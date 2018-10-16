@@ -150,7 +150,6 @@ public class Performing implements State {
                 DebugMessage.popup(activity, String.valueOf(timeInMinutes) + "minutes");
 
                 ProfileStorage.fireProfile();
-                profile.getCurrent().clean(); //while debug without estimating
             }
         }));
     }

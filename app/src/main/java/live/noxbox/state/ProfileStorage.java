@@ -100,7 +100,6 @@ public class ProfileStorage {
 
                     if(profile.getNoxboxId() != null) {
                         if(!profile.getNoxboxId().equals(profile.getCurrent().getId())) {
-                            profile.getCurrent().clean();
                             profile.getCurrent().setId(profile.getNoxboxId());
                         }
                         Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {

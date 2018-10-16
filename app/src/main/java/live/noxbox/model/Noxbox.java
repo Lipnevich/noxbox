@@ -70,7 +70,7 @@ public class Noxbox implements Comparable<Noxbox> {
         cancellationReasonMessage = null;
         commentForDemand = null;
         commentForSupply = null;
-        timeCreated = null;
+        timeRemoved = null;
         timeRequested = null;
         timeCompleted = null;
         timeAccepted = null;
@@ -414,7 +414,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeRemoved(Long timeRemoved) {
         this.timeRemoved = timeRemoved;
-        if (onNoxboxRemoveListener!= null) {
+        if (onNoxboxRemoveListener != null) {
             onNoxboxRemoveListener.execute(this);
         }
         return this;

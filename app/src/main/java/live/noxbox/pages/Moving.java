@@ -149,7 +149,6 @@ public class Moving implements State {
                         googleMap.clear();
                         photoView.removeAllViews();
 
-                        profile.getCurrent().clean();
                         ProfileStorage.fireProfile();
                     }
                 }));
