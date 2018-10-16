@@ -385,7 +385,7 @@ public class ConstructorActivity extends AppCompatActivity {
         } else {
             profile.getCurrent().getOwner().setPortfolio(null);
         }
-        profile.getCurrent().setId(null);
+        profile.getCurrent().clean();
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }

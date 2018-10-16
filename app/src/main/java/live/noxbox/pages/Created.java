@@ -51,7 +51,7 @@ public class Created implements State {
             }
         });
 
-        createCustomMarker(profile.getCurrent(), googleMap);
+        createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         buildMapMarkerListener(googleMap, profile, activity);
         buildMapPosition(googleMap, profile, activity.getApplicationContext());
     }
