@@ -18,8 +18,10 @@ import com.google.firebase.database.Exclude;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Noxbox implements Comparable<Noxbox> {
+import live.noxbox.tools.Task;
 
+public class Noxbox implements Comparable<Noxbox> {
+    public static Task<Noxbox> onNoxboxChangeListener;
     private String id;
     private Profile owner;
     private Profile party;
@@ -54,6 +56,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String cancellationReasonMessage;
     private String commentForDemand;
     private String commentForSupply;
+
 
     @Exclude
     public void clean() {
@@ -92,6 +95,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setPosition(Position position) {
         this.position = position;
+        changed();
         return this;
     }
 
@@ -101,11 +105,12 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCompleted(Long timeCompleted) {
         this.timeCompleted = timeCompleted;
+        changed();
         return this;
     }
 
     public String getPrice() {
-        if(price == null) {
+        if (price == null) {
             price = "5";
         }
         return price;
@@ -141,6 +146,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeRequested(Long timeRequested) {
         this.timeRequested = timeRequested;
+        changed();
         return this;
     }
 
@@ -150,6 +156,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCanceledByOwner(Long timeCanceledByOwner) {
         this.timeCanceledByOwner = timeCanceledByOwner;
+        changed();
         return this;
     }
 
@@ -159,6 +166,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCanceledByParty(Long timeCanceledByParty) {
         this.timeCanceledByParty = timeCanceledByParty;
+        changed();
         return this;
     }
 
@@ -168,11 +176,12 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeAccepted(Long timeAccepted) {
         this.timeAccepted = timeAccepted;
+        changed();
         return this;
     }
 
     public NoxboxType getType() {
-        if(type == null) {
+        if (type == null) {
             type = NoxboxType.values()[0];
         }
         return type;
@@ -189,6 +198,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setChat(Map<String, Message> chat) {
         this.chat = chat;
+        changed();
         return this;
     }
 
@@ -207,6 +217,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setParty(Profile party) {
         this.party = party;
+        changed();
         return this;
     }
 
@@ -228,11 +239,12 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setEstimationTime(String estimationTime) {
         this.estimationTime = estimationTime;
+        changed();
         return this;
     }
 
     public MarketRole getRole() {
-        if(role == null) {
+        if (role == null) {
             role = MarketRole.supply;
         }
         return role;
@@ -256,7 +268,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public WorkSchedule getWorkSchedule() {
-        if(workSchedule == null) {
+        if (workSchedule == null) {
             workSchedule = new WorkSchedule();
         }
         return workSchedule;
@@ -264,6 +276,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setWorkSchedule(WorkSchedule workSchedule) {
         this.workSchedule = workSchedule;
+        changed();
         return this;
     }
 
@@ -273,6 +286,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCreated(Long timeCreated) {
         this.timeCreated = timeCreated;
+        changed();
         return this;
     }
 
@@ -282,6 +296,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeOwnerVerified(Long timeOwnerVerified) {
         this.timeOwnerVerified = timeOwnerVerified;
+        changed();
         return this;
     }
 
@@ -291,6 +306,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimePartyVerified(Long timePartyVerified) {
         this.timePartyVerified = timePartyVerified;
+        changed();
         return this;
     }
 
@@ -300,6 +316,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeStartPerforming(Long timeStartPerforming) {
         this.timeStartPerforming = timeStartPerforming;
+        changed();
         return this;
     }
 
@@ -309,6 +326,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCancellationReasonMessage(String cancellationReasonMessage) {
         this.cancellationReasonMessage = cancellationReasonMessage;
+        changed();
         return this;
     }
 
@@ -318,6 +336,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCommentForDemand(String commentForDemand) {
         this.commentForDemand = commentForDemand;
+        changed();
         return this;
     }
 
@@ -327,6 +346,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCommentForSupply(String commentForSupply) {
         this.commentForSupply = commentForSupply;
+        changed();
         return this;
     }
 
@@ -336,6 +356,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeOwnerDisliked(Long timeOwnerDisliked) {
         this.timeOwnerDisliked = timeOwnerDisliked;
+        changed();
         return this;
     }
 
@@ -345,6 +366,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimePartyDisliked(Long timePartyDisliked) {
         this.timePartyDisliked = timePartyDisliked;
+        changed();
         return this;
     }
 
@@ -354,6 +376,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeTimeout(Long timeTimeout) {
         this.timeTimeout = timeTimeout;
+        changed();
         return this;
     }
 
@@ -363,7 +386,14 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeToMeet(Long timeToMeet) {
         this.timeToMeet = timeToMeet;
+        changed();
         return this;
+    }
+
+    public void changed() {
+        if (onNoxboxChangeListener != null) {
+            onNoxboxChangeListener.execute(this);
+        }
     }
 
 }

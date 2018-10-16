@@ -60,7 +60,7 @@ public class Performing implements State {
         performingView.addView(child);
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        String price = profile.getCurrent().getPrice().replaceAll(",", "\\.");
+        String price = profile.getCurrent().getPrice();
         totalMoney = new BigDecimal(price);
         totalMoney = totalMoney.multiply(QUARTER);
         drawComplete(profile);
@@ -108,7 +108,7 @@ public class Performing implements State {
                         showLowBalanceNotification(activity.getApplicationContext(), profile, notification);
                     }
 
-                    handler.postDelayed(this, 1000);
+
                 }
             }
         };
@@ -145,13 +145,12 @@ public class Performing implements State {
                 messagingService.showPushNotification(notification);
 
                 Long totalTimeInMillis = profile.getCurrent().getTimeCompleted() - profile.getCurrent().getTimeStartPerforming();
-                profile.getCurrent().setPrice(decimalFormat.format(totalMoney));
 
                 Long timeInMinutes = (totalTimeInMillis / (1000 * 60)) % 60;
                 DebugMessage.popup(activity, String.valueOf(timeInMinutes) + "minutes");
 
-                profile.getCurrent().clean(); //while debug without estimating
                 ProfileStorage.fireProfile();
+                profile.getCurrent().clean(); //while debug without estimating
             }
         }));
     }

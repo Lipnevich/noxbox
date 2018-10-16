@@ -15,7 +15,6 @@ import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
@@ -97,8 +96,7 @@ public class Requesting implements State {
                 if (profile.getCurrent().getTimeAccepted() == null) {
                     notification.getType().removeNotifications(activity.getApplicationContext());
                     profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
-                    profile.setCurrent(ProfileStorage.noxbox());
-                    ProfileStorage.fireProfile();
+                    profile.getCurrent().clean();
                 }
             }
 

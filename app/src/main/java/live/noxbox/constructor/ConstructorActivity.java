@@ -188,7 +188,8 @@ public class ConstructorActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    profile.getCurrent().setPrice(s.toString());
+                    String price = s.toString().replaceAll(",", "\\.");
+                    profile.getCurrent().setPrice(price);
                 }
             };
             priceInput.addTextChangedListener(changeCountOfMoneyListener);
@@ -386,11 +387,13 @@ public class ConstructorActivity extends AppCompatActivity {
         }
 
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
+        ProfileStorage.fireProfile();
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 
     public void removeNoxbox(Profile profile) {
         profile.getCurrent().setTimeCreated(null);
+        ProfileStorage.fireProfile();
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 

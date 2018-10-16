@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import live.noxbox.BuildConfig;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
@@ -49,6 +50,10 @@ public class Firestore {
                 }
             }
         });
+    }
+
+    public static void writeNoxbox(final Noxbox current) {
+        db().collection("noxboxes").document(current.getId()).set(objectToMap(current), SetOptions.merge());
     }
 
     public static void writeProfile(final Profile profile) {

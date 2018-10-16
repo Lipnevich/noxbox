@@ -477,7 +477,6 @@ public class DetailedActivity extends AppCompatActivity {
                         profile.getViewed().setCancellationReasonMessage(cancellationReason);
                         profile.getViewed().setParty(null);
                         alertDialog.cancel();
-                        profile.setCurrent(ProfileStorage.noxbox());
                         profile.setViewed(null);
                         finish();
                     }
