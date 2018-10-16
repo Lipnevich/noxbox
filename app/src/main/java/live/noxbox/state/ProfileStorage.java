@@ -66,6 +66,7 @@ public class ProfileStorage {
             if(profile != null) {
                 removeNoxbox(profile.getNoxboxId());
                 writeNoxbox(profile.getCurrent());
+                profile.setNoxboxId(profile.getCurrent().getId());
                 Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
                     @Override
                     public void execute(Noxbox current) {
@@ -73,7 +74,7 @@ public class ProfileStorage {
                         executeUITasks();
                     }
                 });
-                profile.setNoxboxId(profile.getCurrent().getId());
+
                 fireProfile();
                 // TODO (nli) make current available services
             }
