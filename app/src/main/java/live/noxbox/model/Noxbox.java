@@ -21,7 +21,10 @@ import java.util.Map;
 import live.noxbox.tools.Task;
 
 public class Noxbox implements Comparable<Noxbox> {
-    public static Task<Noxbox> onNoxboxChangeListener;
+
+    @Exclude public Task<Noxbox> onNoxboxUpdateListener;
+    @Exclude public Task<Noxbox> onNoxboxCreateListener;
+    @Exclude public Task<Noxbox> onNoxboxRemoveListener;
     private String id;
     private Profile owner;
     private Profile party;
@@ -29,6 +32,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     // Noxbox specific data
     private Long timeCreated;
+    private Long timeRemoved;
     private Long timeRequested;
     private Long timeCompleted;
     private Long timeAccepted;
@@ -288,7 +292,9 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCreated(Long timeCreated) {
         this.timeCreated = timeCreated;
-        changed();
+        if (onNoxboxCreateListener != null) {
+            onNoxboxCreateListener.execute(this);
+        }
         return this;
     }
 
@@ -392,10 +398,22 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
+    @Exclude
     public void changed() {
-        if (onNoxboxChangeListener != null) {
-            onNoxboxChangeListener.execute(this);
+        if (onNoxboxUpdateListener != null) {
+            onNoxboxUpdateListener.execute(this);
         }
     }
 
+    public Long getTimeRemoved() {
+        return timeRemoved;
+    }
+
+    public Noxbox setTimeRemoved(Long timeRemoved) {
+        this.timeRemoved = timeRemoved;
+        if (onNoxboxRemoveListener!= null) {
+            onNoxboxRemoveListener.execute(this);
+        }
+        return this;
+    }
 }

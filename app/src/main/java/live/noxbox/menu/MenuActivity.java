@@ -178,6 +178,7 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
+                                        // TODO (nli) remove current Noxbox
                                         ProfileStorage.clear();
                                         startActivity(new Intent(MenuActivity.this, AuthActivity.class));
                                     }

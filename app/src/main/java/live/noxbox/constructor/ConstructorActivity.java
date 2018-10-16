@@ -385,15 +385,13 @@ public class ConstructorActivity extends AppCompatActivity {
         } else {
             profile.getCurrent().getOwner().setPortfolio(null);
         }
-
+        profile.getCurrent().setId(null);
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
-        ProfileStorage.fireProfile();
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 
     public void removeNoxbox(Profile profile) {
-        profile.getCurrent().setTimeCreated(null);
-        ProfileStorage.fireProfile();
+        profile.getCurrent().setTimeRemoved(System.currentTimeMillis());
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 

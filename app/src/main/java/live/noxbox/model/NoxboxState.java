@@ -11,7 +11,7 @@ public enum NoxboxState {
     completed;
 
     public static NoxboxState getState(Noxbox noxbox, Profile profile) {
-        if (noxbox == null || noxbox.getTimeCreated() == null) return initial;
+        if (noxbox == null || noxbox.getTimeCreated() == null || noxbox.getTimeRemoved() != null) return initial;
 
 
         if (noxbox.getTimeCreated() != null
