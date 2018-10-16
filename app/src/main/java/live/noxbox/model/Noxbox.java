@@ -59,7 +59,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
 
     @Exclude
-    public void clean() {
+    public Noxbox clean() {
         setId(null);
         setParty(null);
         setEstimationTime(null);
@@ -78,6 +78,8 @@ public class Noxbox implements Comparable<Noxbox> {
         setTimeOwnerDisliked(null);
         setTimePartyDisliked(null);
         setTimeToMeet(null);
+
+        return this;
     }
 
     public String getId() {

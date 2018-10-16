@@ -32,32 +32,54 @@ public class Firestore {
         return db;
     }
 
-    private static DocumentReference profile() {
+    private static DocumentReference profileReference() {
         return db().collection("profiles")
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    }
+
+    private static DocumentReference noxboxReference(String noxboxId) {
+        return db().collection("noxboxes").document(noxboxId);
     }
 
     // Profiles API
     public static void listenProfile(@NonNull final Task<Profile> task) {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
 
-        profile().addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        profileReference().addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (snapshot != null && snapshot.exists()) {
                     Profile profile = snapshot.toObject(Profile.class);
-                    task.execute(profile);
+                    if(profile != null) {
+                        profile.setViewed(null);
+                        profile.setCurrent(null);
+                    }
+                     task.execute(profile);
+                }
+            }
+        });
+    }
+
+    public static void listenNoxbox(@NonNull String noxboxId, @NonNull final Task<Noxbox> task) {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+
+        noxboxReference(noxboxId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+                if (snapshot != null && snapshot.exists()) {
+                    Noxbox current = snapshot.toObject(Noxbox.class);
+                    task.execute(current);
                 }
             }
         });
     }
 
     public static void writeNoxbox(final Noxbox current) {
-        db().collection("noxboxes").document(current.getId()).set(objectToMap(current), SetOptions.merge());
+        noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge());
     }
 
     public static void writeProfile(final Profile profile) {
-        profile().set(objectToMap(profile), SetOptions.merge());
+        profileReference().set(objectToMap(profile), SetOptions.merge());
     }
 
     // in case of null value - does not override value

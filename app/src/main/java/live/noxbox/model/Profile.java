@@ -27,12 +27,13 @@ public class Profile implements Serializable {
     private String name;
     private String photo;
     private NotificationKeys notificationKeys;
-    private Noxbox current;
+    private String noxboxId;
+    @Exclude private Noxbox current;
+    @Exclude private Noxbox viewed;
     private TravelMode travelMode;
     private Boolean host;
 
     private Position position;
-    private Noxbox viewed;
     private Long arriveInSeconds;
 
     private Filters filters;
@@ -115,6 +116,7 @@ public class Profile implements Serializable {
         return this;
     }
 
+    @Exclude
     public Noxbox getCurrent() {
         if(current == null) {
             current = new Noxbox();
@@ -163,7 +165,11 @@ public class Profile implements Serializable {
         return publicInfo().setName(name).setPhoto(photo);
     }
 
+    @Exclude
     public Noxbox getViewed() {
+        if(viewed == null) {
+            viewed = new Noxbox();
+        }
         return viewed;
     }
 
@@ -271,6 +277,15 @@ public class Profile implements Serializable {
 
     public Profile setDarkList(Map<String, Boolean> darkList) {
         this.darkList = darkList;
+        return this;
+    }
+
+    public String getNoxboxId() {
+        return noxboxId;
+    }
+
+    public Profile setNoxboxId(String noxboxId) {
+        this.noxboxId = noxboxId;
         return this;
     }
 }

@@ -415,15 +415,8 @@ public enum NotificationType {
                 @Override
                 public void execute(Profile profile) {
                     profile.getCurrent().getChat().put(profile.getId(), new Message().setMessage(getMessageText(intent, context)));
-                    try {
-                        Thread.sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    updateNotification(context, new Notification().setType(message), new NotificationCompat.Builder(context, "noxbox_channel")
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentText(context.getResources().getString(R.string.messageSent)));
-
+                    profile.getCurrent().setChat(profile.getCurrent().getChat());
+                    removeNotifications(context);
                 }
             });
         }
