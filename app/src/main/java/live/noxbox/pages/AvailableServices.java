@@ -105,7 +105,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             public void onClick(View v) {
                 Intent intent = new Intent(activity, NoxboxTypeListActivity.class);
                 intent.putExtra(MapActivity.class.getName(), NoxboxTypeListActivity.class.getName());
-                startActivityForResult(activity, intent,NoxboxTypeListActivity.MAP_CODE);
+                startActivityForResult(activity, intent, NoxboxTypeListActivity.MAP_CODE);
             }
         });
 
@@ -156,13 +156,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             // TODO (vl) показывать услуги с актуальным временем
             clusterManager.addItem(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             clusterManager.cluster();
-        }
-    }
-
-    public void removeMarker(String key) {
-        Marker marker = markers.remove(key);
-        if (marker != null) {
-            marker.remove();
         }
     }
 
@@ -260,7 +253,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         public NoxboxMarker(LatLng position, Noxbox noxbox) {
             this.position = position;
             this.noxbox = noxbox;
-            this.markerOptions = MarkerCreator.createCustomMarker(noxbox);
+            this.markerOptions = MarkerCreator.createCustomMarker(noxbox, activity.getResources());
 
         }
 

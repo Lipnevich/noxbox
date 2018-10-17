@@ -89,12 +89,13 @@ public class NoxboxExamples {
                 if (noxbox.getRole() == MarketRole.demand && profile.getFilters().getDemand()) {
                     if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
                         if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
+                            noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
                             noxboxes.add(noxbox);
                         }
                     }
                 } else if (noxbox.getRole() == MarketRole.supply && profile.getFilters().getSupply())
                     if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
-                        if (profile.getFilters().getTypes().size() != 0 && profile.getFilters().getTypes().get(noxbox.getType().name())) {
+                        if (profile.getFilters().getTypes().size() != 0 && profile.getFilters().getTypes().get(noxbox.getType().name()) != null) {
                             noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
                             noxboxes.add(noxbox);
                         }
