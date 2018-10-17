@@ -51,10 +51,7 @@ public class Firestore {
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (snapshot != null && snapshot.exists()) {
                     Profile profile = snapshot.toObject(Profile.class);
-                    if (profile != null) {
-                        profile.setViewed(null);
-                        profile.setCurrent(null);
-                    }
+
                     task.execute(profile);
                 }
             }

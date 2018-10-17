@@ -20,14 +20,14 @@ import java.util.Map;
 import live.noxbox.Virtual;
 import live.noxbox.tools.Task;
 
-public class Noxbox implements Comparable<Noxbox> {
+import static live.noxbox.model.NoxboxStrategy.create;
+import static live.noxbox.model.NoxboxStrategy.remove;
+import static live.noxbox.model.NoxboxStrategy.update;
 
+public class Noxbox implements Comparable<Noxbox> {
     @Virtual
-    public Task<Noxbox> onNoxboxUpdateListener;
-    @Virtual
-    public Task<Noxbox> onNoxboxCreateListener;
-    @Virtual
-    public Task<Noxbox> onNoxboxRemoveListener;
+    public Map<NoxboxStrategy, Task> strategy = new HashMap<>();
+
     private String id;
     @Virtual
     private String geoId;
@@ -295,8 +295,8 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCreated(Long timeCreated) {
         this.timeCreated = timeCreated;
-        if (onNoxboxCreateListener != null) {
-            onNoxboxCreateListener.execute(this);
+        if (strategy.get(create) != null) {
+            strategy.get(create).execute(this);
         }
         return this;
     }
@@ -402,8 +402,8 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public void changed() {
-        if (onNoxboxUpdateListener != null) {
-            onNoxboxUpdateListener.execute(this);
+        if (strategy.get(update) != null) {
+            strategy.get(update).execute(this);
         }
     }
 
@@ -413,8 +413,8 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeRemoved(Long timeRemoved) {
         this.timeRemoved = timeRemoved;
-        if (onNoxboxRemoveListener != null) {
-            onNoxboxRemoveListener.execute(this);
+        if (strategy.get(remove) != null) {
+            strategy.get(remove).execute(this);
         }
         return this;
     }
