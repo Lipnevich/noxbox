@@ -1,6 +1,7 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.CountDownTimer;
@@ -15,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import live.noxbox.R;
 import live.noxbox.model.Notification;
@@ -49,6 +51,11 @@ public class Moving implements State {
 
     @Override
     public void draw(final Profile profile) {
+        googleMap.addPolyline(new PolylineOptions()
+                .add(profile.getCurrent().getOwner().getPosition().toLatLng(),profile.getCurrent().getParty().getPosition().toLatLng())
+                .width(5)
+                .color(Color.GREEN));
+
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
@@ -204,7 +211,7 @@ public class Moving implements State {
                 public void onTick(long millisUntilFinished) {
                     notification.setTime(String.valueOf(profile.getCurrent().getTimeToMeet() - (profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
                     notification.setProgress((int) (profile.getCurrent().getTimeToMeet() - millisUntilFinished));
-                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                 }
 
                 @Override

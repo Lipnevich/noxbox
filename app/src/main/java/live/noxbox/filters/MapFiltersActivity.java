@@ -66,8 +66,8 @@ public class MapFiltersActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
