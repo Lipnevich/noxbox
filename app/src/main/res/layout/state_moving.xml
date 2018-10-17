@@ -4,32 +4,6 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/timeLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="68dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/travelTime"
-            android:textColor="@color/google_text"
-            android:textSize="@dimen/text_size" />
-
-        <TextView
-            android:id="@+id/travelTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/google_text"
-            android:textSize="@dimen/text_title_large" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/photoContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
