@@ -32,7 +32,7 @@ public class Estimating implements State {
     public void draw(final Profile profile) {
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        activity.findViewById(R.id.customFloatingImage).setVisibility(View.GONE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         estimatingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_estimating, null);
         estimatingView.addView(child);
@@ -194,6 +194,6 @@ public class Estimating implements State {
     private void displayHiddenViews() {
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.customFloatingImage).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
     }
 }

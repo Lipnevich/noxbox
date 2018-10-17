@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.TextView;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 
 public class ConfirmationMessage {
@@ -16,7 +17,13 @@ public class ConfirmationMessage {
 
     public static void messageOffline(final Activity activity) {
         if (online == null) {
-            online = Snackbar.make(activity.findViewById(android.R.id.content), R.string.isOffline, Snackbar.LENGTH_INDEFINITE)
+            View content = null;
+            if(activity.getClass().getName().equals(MapActivity.class.getName())){
+                content = activity.findViewById(R.id.coordinatorLayout);
+            }else{
+                content = activity.findViewById(android.R.id.content);
+            }
+            online = Snackbar.make(content, R.string.isOffline, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.enable, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

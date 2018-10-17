@@ -110,7 +110,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         });
 
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.customFloatingImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

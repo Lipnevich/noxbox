@@ -1,9 +1,8 @@
 package live.noxbox.pages;
 
 import android.app.Activity;
-import android.support.v7.widget.CardView;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.google.android.gms.maps.GoogleMap;
 
@@ -33,9 +32,9 @@ public class Created implements State {
     public void draw(final Profile profile) {
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
-        ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.edit);
-        ((CardView) activity.findViewById(R.id.customFloatingView)).setVisibility(View.VISIBLE);
-        ((CardView) activity.findViewById(R.id.customFloatingView)).setOnClickListener(new View.OnClickListener() {
+        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.edit);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(activity, ConstructorActivity.class);
@@ -61,7 +60,7 @@ public class Created implements State {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         moveCopyrightLeft(googleMap);
-        ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
+        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         googleMap.clear();
 

@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +65,7 @@ public class Moving implements State {
         View childMoving = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
         movingView.addView(childMoving);
 
-        ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.eye);
+        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.eye);
         if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
             if (profile.getCurrent().getTimeOwnerVerified() != null) {
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
@@ -78,7 +79,7 @@ public class Moving implements State {
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
             }
         }
-        ((ImageView) activity.findViewById(R.id.customFloatingImage)).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
 
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
@@ -243,7 +244,7 @@ public class Moving implements State {
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
-        ((ImageView) activity.findViewById(R.id.customFloatingImage)).setImageResource(R.drawable.add);
+        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         moveCopyrightLeft(googleMap);
