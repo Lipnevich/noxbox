@@ -73,7 +73,7 @@ public class Performing implements State {
         messagingService.showPushNotification(notification);
 
         final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
+        final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 int hours = seconds / 3600;
@@ -87,12 +87,12 @@ public class Performing implements State {
 
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     if (hasMinimumServiceTimePassed(profile)) {
-                        BigDecimal pricePerSecond = new BigDecimal(profile.getCurrent().getPrice());
-                        pricePerSecond = pricePerSecond.divide(new BigDecimal(profile.getCurrent().getType().getDuration()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-                        pricePerSecond = pricePerSecond.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-                        totalMoney = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
-                        totalMoney = totalMoney.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-                        totalMoney = totalMoney.divide(pricePerSecond, DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        BigDecimal pricePerHour = new BigDecimal(profile.getCurrent().getPrice());
+                        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getDuration()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        BigDecimal timeFromStartPerformingInMillis = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
+                        BigDecimal timeFromStartPerformingInSeconds = timeFromStartPerformingInMillis.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        totalMoney = timeFromStartPerformingInSeconds.multiply(pricePerSecond);
 
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
                     } else {
@@ -108,7 +108,7 @@ public class Performing implements State {
                         showLowBalanceNotification(activity.getApplicationContext(), profile, notification);
                     }
 
-
+                    handler.postDelayed(this,1000);
                 }
             }
         };
