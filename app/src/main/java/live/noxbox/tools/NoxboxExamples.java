@@ -27,9 +27,8 @@ public class NoxboxExamples {
 
             Noxbox noxbox = new Noxbox();
 
-            noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
             noxbox.setRole(MarketRole.values()[ThreadLocalRandom.current().nextInt(MarketRole.values().length)]);
-            Profile owner = new Profile().setId("1231" + i).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg").setName("Granny Zelda");
+            Profile owner = new Profile().setId("1231" + i).setNoxboxId("123456" + i).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg").setName("Granny Zelda");
 
             owner.setTravelMode(TravelMode.values()[ThreadLocalRandom.current().nextInt(TravelMode.values().length)]);
             if (owner.getTravelMode() == TravelMode.none) {
@@ -50,7 +49,7 @@ public class NoxboxExamples {
             owner.getDemandsRating().put(noxbox.getType().name(), rating);
             owner.getSuppliesRating().put(noxbox.getType().name(), rating);
             noxbox.setOwner(owner);
-            noxbox.setId("12311" + i);
+            noxbox.setId(owner.getNoxboxId());
             noxbox.setEstimationTime("0");
             noxbox.setPrice(ThreadLocalRandom.current().nextInt(10, 100) + "");
             double delta = 360 * Configuration.RADIUS_IN_METERS / 40075000;
@@ -95,7 +94,8 @@ public class NoxboxExamples {
                     }
                 } else if (noxbox.getRole() == MarketRole.supply && profile.getFilters().getSupply())
                     if (profile.getFilters().getPrice().equals("0") || Integer.parseInt(noxbox.getPrice()) < Integer.parseInt(profile.getFilters().getPrice())) {
-                        if (profile.getFilters().getTypes().get(noxbox.getType().name())) {
+                        if (profile.getFilters().getTypes().size() != 0 && profile.getFilters().getTypes().get(noxbox.getType().name())) {
+                            noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
                             noxboxes.add(noxbox);
                         }
                     }

@@ -1,14 +1,18 @@
 package live.noxbox.model;
 
-import java.util.HashMap;
+import com.google.common.collect.ImmutableMap;
+
 import java.util.Map;
 
 public class Filters {
 
     private Boolean supply = true;
     private Boolean demand = true;
-    private String maxPrice = "0";
-    private Map<String, Boolean> types = new HashMap<>();
+    private String maxPrice = "100";
+    private Map<String, Boolean> types = ImmutableMap.of(
+            NoxboxType.nanny.name(), true,
+            NoxboxType.photographer.name(), true,
+            NoxboxType.meditation.name(), true);
 
     public Filters() {
     }

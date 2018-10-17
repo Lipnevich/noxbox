@@ -15,6 +15,7 @@ import android.widget.TextView;
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
+import live.noxbox.state.Firestore;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
@@ -64,6 +65,17 @@ public class MapFiltersActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                Firestore.writeProfile(profile);
+            }
+        });
+    }
+
     private void draw(final Profile profile) {
         drawDemand(profile);
         drawSupply(profile);
@@ -97,6 +109,7 @@ public class MapFiltersActivity extends AppCompatActivity {
                 } else {
                     demand.setClickable(false);
                 }
+
             }
         });
     }
@@ -167,6 +180,7 @@ public class MapFiltersActivity extends AppCompatActivity {
                                     totalChecked--;
                                 }
                                 typesChecked[which] = isChecked;
+
                             }
                         })
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {

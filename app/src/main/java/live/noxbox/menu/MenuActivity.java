@@ -39,6 +39,7 @@ import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.pages.AuthActivity;
 import live.noxbox.profile.ProfileActivity;
+import live.noxbox.state.Firestore;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
@@ -122,16 +123,22 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        if (requestCode == WalletActivity.CODE) {
-            ProfileStorage.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
+    protected void onActivityResult(final int requestCode, int resultCode, final Intent data) {
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                if (requestCode == WalletActivity.CODE) {
                     draw(MenuActivity.this, profile);
                 }
-            });
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+
+                if (requestCode == MapFiltersActivity.CODE) {
+                    Firestore.writeProfile(profile);
+                }
+            }
+        });
+        super.
+
+                onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
