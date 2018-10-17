@@ -14,7 +14,7 @@ public interface Configuration {
     float MINIMUM_FACE_SIZE = 0.6F;
     float MINIMUM_PROBABILITY_FOR_ACCEPTANCE = 0.6F;
     String FIVE_MINUTES_PART_OF_HOUR = "12";
-    int DEFAULT_BALANCE_SCALE = 3;
+    int DEFAULT_BALANCE_SCALE = 10;
     String PRICE_FORMAT = "###.###";
     BigDecimal QUARTER = new BigDecimal("0.25");
 
