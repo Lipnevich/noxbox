@@ -171,6 +171,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
+                noxboxMarker.getNoxbox().getOwner().setPosition(noxboxMarker.getNoxbox().getPosition());
                 profile.setViewed(noxboxMarker.getNoxbox());
                 if (googleMap.getCameraPosition() != null) {
                     profile.setPosition(Position.from(googleMap.getCameraPosition().target));

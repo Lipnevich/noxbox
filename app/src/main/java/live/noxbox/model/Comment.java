@@ -12,7 +12,9 @@ public class Comment {
         this.time = time;
         this.like = like;
     }
-    public Comment(){}
+
+    public Comment() {
+    }
 
     public String getId() {
         return id;
@@ -33,6 +35,7 @@ public class Comment {
     }
 
     public Long getTime() {
+
         return time;
     }
 
@@ -42,6 +45,9 @@ public class Comment {
     }
 
     public Boolean getLike() {
+        if (like == null) {
+            like = Boolean.FALSE;
+        }
         return like;
     }
 
