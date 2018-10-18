@@ -23,7 +23,7 @@ import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.Firestore;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
@@ -57,6 +57,8 @@ public class Moving implements State {
                 .color(Color.GREEN));
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
+        MarkerCreator.createPartyMarker(profile.getCurrent().getParty(), googleMap, activity.getResources());
+
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
@@ -157,7 +159,7 @@ public class Moving implements State {
                         googleMap.clear();
                         photoView.removeAllViews();
 
-                        ProfileStorage.fireProfile();
+                        Firestore.writeNoxbox(profile.getCurrent());
                     }
                 }));
 
@@ -177,7 +179,6 @@ public class Moving implements State {
                             profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                         }
 
-                        ProfileStorage.fireProfile();
                     }
                 }));
 

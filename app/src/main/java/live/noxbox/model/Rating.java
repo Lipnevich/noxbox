@@ -23,6 +23,7 @@ public class Rating {
     }
 
     public Integer getReceivedLikes() {
+        if (receivedLikes == null) receivedLikes = 1;
         return receivedLikes;
     }
 

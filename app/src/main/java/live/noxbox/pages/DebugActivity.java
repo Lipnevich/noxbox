@@ -9,11 +9,11 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
+import live.noxbox.state.Firestore;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.state.ProfileStorage.fireProfile;
 import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 import static live.noxbox.tools.DetectNullValue.areTheyNull;
 
@@ -35,9 +35,9 @@ public class DebugActivity extends MenuActivity {
                             if (areNotTheyNull(profile.getCurrent(), profile.getCurrent().getOwner(), profile.getCurrent().getTimeCreated())
                                     && profile.getCurrent().getTimeRequested() == null) {
                                 // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
-                                profile.getCurrent().setParty(new Profile().setWallet(new Wallet().setBalance("20")).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setNoxboxId(profile.getNoxboxId()).setTravelMode(TravelMode.driving).setHost(false).setName("Granny Smith").setId("12321").setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
+                                profile.getCurrent().setParty(new Profile().setWallet(new Wallet().setBalance("1000")).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setNoxboxId(profile.getNoxboxId()).setTravelMode(TravelMode.driving).setHost(false).setName("Granny Smith").setId("12321").setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                                fireProfile();
+                                Firestore.writeNoxbox(profile.getCurrent());
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }
@@ -54,7 +54,6 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeAccepted() == null) {
                                 profile.getCurrent().getOwner().setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg");
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                                fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to accept");
                             }
@@ -74,8 +73,6 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                                 }
-                                fireProfile();
-
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to reject");
                             }
@@ -103,8 +100,7 @@ public class DebugActivity extends MenuActivity {
                                         profile.getCurrent().getTimePartyVerified() != null) {
                                     profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                                 }
-
-                                fireProfile();
+                                Firestore.writeNoxbox(profile.getCurrent());
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to verify");
                             }
@@ -120,7 +116,6 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeAccepted() != null
                                     && profile.getCurrent().getTimeCompleted() == null) {
                                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
-                                fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to complete");
                             }

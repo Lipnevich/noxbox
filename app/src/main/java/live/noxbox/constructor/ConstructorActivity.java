@@ -308,7 +308,7 @@ public class ConstructorActivity extends AppCompatActivity {
                 } else {
                     profile.getCurrent().getOwner().setHost(true);
                     ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
-                    ((CheckBox) findViewById(R.id.isHost)).setEnabled(false);
+                    findViewById(R.id.isHost).setEnabled(false);
                 }
                 draw(profile);
                 return true;
@@ -392,11 +392,13 @@ public class ConstructorActivity extends AppCompatActivity {
             profile.getCurrent().getOwner().setPortfolio(null);
         }
         profile.getCurrent().clean();
+        profile.getCurrent().setOwner(profile.publicInfo());
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
 
     public void removeNoxbox(Profile profile) {
+        profile.getCurrent().clean();
         profile.getCurrent().setTimeRemoved(System.currentTimeMillis());
         Router.startActivity(ConstructorActivity.this, MapActivity.class);
     }
