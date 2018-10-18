@@ -239,7 +239,7 @@ public class MapActivity extends DebugActivity implements
         Iterator it = markers.values().iterator();
         while (it.hasNext()) {
             GroundOverlay item = (GroundOverlay) it.next();
-            if (Position.from(item.getPosition()).toLocation().distanceTo(getCameraPosition().toLocation())
+            if (Position.from(item.getPosition()).toLocation().distanceTo(getCameraPosition(googleMap).toLocation())
                     > Configuration.RADIUS_IN_METERS) {
                 item.remove();
                 it.remove();
@@ -267,7 +267,8 @@ public class MapActivity extends DebugActivity implements
     public void onConnectionSuspended(int i) {
     }
 
-    public Position getCameraPosition() {
+    public static Position getCameraPosition(GoogleMap googleMap) {
+        if (googleMap == null) return null;
         LatLng latLng = googleMap.getCameraPosition().target;
 
         return Position.from(latLng);

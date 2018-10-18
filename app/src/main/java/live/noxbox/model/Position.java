@@ -50,6 +50,13 @@ public class Position implements Serializable {
         return new Position().setLatitude(location.getLatitude()).setLongitude(location.getLongitude());
     }
 
+    public static Position from(GeoLocation location) {
+        if (location == null) {
+            return null;
+        }
+        return new Position().setLatitude(location.latitude).setLongitude(location.longitude);
+    }
+
     public Location toLocation() {
         Location location = new Location("");
         location.setLatitude(latitude);

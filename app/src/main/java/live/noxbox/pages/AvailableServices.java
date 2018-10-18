@@ -26,9 +26,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import live.noxbox.MapActivity;
@@ -39,27 +37,25 @@ import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
-import live.noxbox.model.TravelMode;
+import live.noxbox.state.Firebase;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
-import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.state.Firebase.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
 
 public class AvailableServices implements State, ClusterManager.OnClusterClickListener<AvailableServices.NoxboxMarker>,
         ClusterManager.OnClusterItemClickListener<AvailableServices.NoxboxMarker> {
 
-    private Map<String, Marker> markers = new HashMap<>();
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Activity activity;
-    // TODO (nli) move it to availableServicesStorage
-    private List<Noxbox> noxboxes = new ArrayList<>();
+    private Map<String, NoxboxMarker> markers = new HashMap<>();
     private ClusterManager<NoxboxMarker> clusterManager;
     private CustomClusterRenderer customClusterRenderer;
 
@@ -89,13 +85,11 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
         // TODO (nli) добавить слушателя доступных услуг, ноксбоксы отрисовать
 
-        activity.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
+        startListenAvailableNoxboxes();
+        googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
-            public void onClick(View v) {
-                for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(new Position().setLongitude(27.569018).setLatitude(53.871399), 150, profile)) {
-                    createMarker(profile, noxbox);
-                }
+            public void onCameraMove() {
+                startListenAvailableNoxboxes();
             }
         });
 
@@ -131,8 +125,13 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     @Override
     public void clear() {
+        stopListenAvailableNoxboxes();
         googleMap.clear();
-        // TODO (nli) убрать слушателя, добавить ноксбоксы и зажечь
+        googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+            }
+        });
         clusterManager.clearItems();
         activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
@@ -144,19 +143,17 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     }
 
 
-    private void createMarker(Profile profile, Noxbox noxbox) {
-        if ((profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none)
-                || (profile.getTravelMode() != TravelMode.none
-                && noxbox.getOwner().getTravelMode() != TravelMode.none
-                && !profile.getHost() && !noxbox.getOwner().getHost())) {
-//            TimeManager.compareTime(noxbox.getWorkSchedule().getStartInHours(),noxbox.getWorkSchedule().getStartInMinutes(),activity)
+    private void createMarker(Noxbox noxbox) {
+        // TODO (vl) показывать услуги с актуальным временем
+        NoxboxMarker noxboxMarker = new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox);
+        markers.put(noxbox.getId(), noxboxMarker);
+        clusterManager.addItem(noxboxMarker);
+        clusterManager.cluster();
+    }
 
-            //do not show this marker
-        } else {
-            // TODO (vl) показывать услуги с актуальным временем
-            clusterManager.addItem(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
-            clusterManager.cluster();
-        }
+    private void removeMarker(Noxbox noxbox) {
+        clusterManager.removeItem(markers.get(noxbox.getId()));
+        markers.remove(noxbox.getId());
     }
 
     @Override
@@ -280,5 +277,28 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             return null;
         }
     }
+
+    private Task moved = new Task<Noxbox>() {
+        @Override
+        public void execute(Noxbox noxbox) {
+            if (markers.get(noxbox.getId()) != null) {
+                markers.get(noxbox.getId()).getMarker().position(noxbox.getPosition().toLatLng());
+            } else {
+                createMarker(noxbox);
+            }
+        }
+    };
+    private Task removed = new Task<Noxbox>() {
+        @Override
+        public void execute(Noxbox noxbox) {
+            removeMarker(noxbox);
+        }
+    };
+
+    private void startListenAvailableNoxboxes() {
+        Firebase.startListenAvailableNoxboxes(MapActivity.getCameraPosition(googleMap).toGeoLocation(), moved, removed);
+
+    }
+
 
 }

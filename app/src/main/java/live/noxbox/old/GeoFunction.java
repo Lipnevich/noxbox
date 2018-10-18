@@ -35,75 +35,10 @@ public abstract class GeoFunction extends MapActivity {
         return getProfile().getIndex() + delimiter + getProfile().getTravelMode().toString();
     }
 
-    private void listenAvailablePerformers(GeoLocation geoLocation) {
-        if(geoQuery != null) geoQuery.removeAllListeners();
-        geoQuery = geo().queryAtLocation(geoLocation, getResources().getInteger(R.integer.radius_in_kilometers));
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                String performerId = key.split(delimiter)[0];
-                if(getProfile().getIndex().equals(performerId)) return;
-                TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
-                GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), R.drawable.masseur);
-                marker.setTag(travelMode);
-            }
 
-            @Override
-            public void onKeyExited(String key) {
-                String performerId = key.split(delimiter)[0];
-                if(getProfile().getIndex().equals(performerId)) return;
-                removeMarker(performerId);
-            }
 
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                String performerId = key.split(delimiter)[0];
-                if(getProfile().getIndex().equals(performerId)) return;
-                TravelMode travelMode = TravelMode.valueOf(key.split(delimiter)[1]);
-                GroundOverlay marker = createMarker(performerId, new LatLng(location.latitude, location.longitude), R.drawable.masseur);
-                marker.setTag(travelMode);
-            }
 
-            @Override public void onGeoQueryReady() {}
-            @Override public void onGeoQueryError(DatabaseError error) {}
-        });
-    }
 
-    protected void listenAvailablePerformers() {
-        if(googleMap == null) {
-//            wait a second for google map loading
-            new Timer() {
-                @Override
-                protected void timeout() {
-                    listenAvailablePerformers();
-                }
-            }.start(1);
-            return;
-        }
 
-        listenAvailablePerformers(getCameraPosition().toGeoLocation());
-        googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                listenAvailablePerformers(getCameraPosition().toGeoLocation());
-                scaleMarkers();
-                removeOutOfRangeMarkers();
-            }
-        });
-    }
-
-    protected void stopListenAvailablePerformers() {
-        if(geoQuery != null) {
-            geoQuery.removeAllListeners();
-        }
-        if(googleMap != null) {
-            googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-                @Override
-                public void onCameraMove() {
-                    scaleMarkers();
-                }
-            });
-        }
-    }
 */
 }

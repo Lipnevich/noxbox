@@ -1,14 +1,21 @@
 package live.noxbox.state;
 
 import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 
+import live.noxbox.Configuration;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
+import live.noxbox.model.Position;
 import live.noxbox.model.Rating;
 import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
+import live.noxbox.tools.Task;
 
 public class Firebase {
 
@@ -21,7 +28,8 @@ public class Firebase {
     private static GeoFire geo;
 
     private static GeoFire geo() {
-        if (geo == null) geo = new GeoFire(FirebaseDatabase.getInstance().getReference().child("geo"));
+        if (geo == null)
+            geo = new GeoFire(FirebaseDatabase.getInstance().getReference().child("geo"));
         return geo;
     }
 
@@ -40,7 +48,7 @@ public class Firebase {
         Rating ownerRating = currentNoxbox.getRole() == MarketRole.supply ?
                 currentNoxbox.getOwner().getSuppliesRating().get(currentNoxbox.getType().name()) :
                 currentNoxbox.getOwner().getDemandsRating().get(currentNoxbox.getType().name());
-        if(ownerRating == null) {
+        if (ownerRating == null) {
             ownerRating = new Rating();
         }
 
@@ -55,9 +63,9 @@ public class Firebase {
     }
 
     private static Noxbox parseKey(String key) {
-        String [] values = key.split(delimiter);
+        String[] values = key.split(delimiter);
         Noxbox noxbox = new Noxbox();
-        if(values.length >= 7) {
+        if (values.length >= 7) {
             noxbox.setId(values[0]);
             noxbox.setRole(MarketRole.valueOf(values[1]));
             noxbox.setType(NoxboxType.valueOf(values[2]));
@@ -65,7 +73,7 @@ public class Firebase {
             noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[4]));
 
             Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[5])).setReceivedDislikes(Integer.valueOf(values[6]));
-            if(noxbox.getRole() == MarketRole.supply) {
+            if (noxbox.getRole() == MarketRole.supply) {
                 noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
             } else if (noxbox.getRole() == MarketRole.demand) {
                 noxbox.getOwner().getDemandsRating().put(noxbox.getType().name(), rating);
@@ -79,4 +87,56 @@ public class Firebase {
 //                .setValue(objectToMap(request.setId(getProfile().getId())
 //                        .setPush(MessagingService.generatePush(request))));
     }
+
+    private static GeoQuery geoQuery;
+    private static long time;
+
+    public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Task<Noxbox> moved, final Task<Noxbox> removed) {
+        //allow to recreate query once per three seconds
+        if (System.currentTimeMillis() - time < 3000)
+            return;
+
+        time = System.currentTimeMillis();
+
+        if (geoQuery != null) geoQuery.removeAllListeners();
+        geoQuery = geo().queryAtLocation(geoLocation, Configuration.RADIUS_IN_METERS / 1000);
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                Noxbox noxbox = parseKey(key);
+                if (noxbox != null) {
+                    noxbox.setPosition(Position.from(location));
+                    moved.execute(noxbox);
+                }
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                Noxbox noxbox = parseKey(key);
+                if (noxbox != null) {
+                    removed.execute(noxbox);
+                }
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                onKeyEntered(key, location);
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+            }
+        });
+    }
+
+    public static void stopListenAvailableNoxboxes() {
+        if (geoQuery != null) {
+            geoQuery.removeAllListeners();
+        }
+    }
+
 }
