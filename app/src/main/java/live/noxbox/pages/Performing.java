@@ -88,7 +88,7 @@ public class Performing implements State {
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     if (hasMinimumServiceTimePassed(profile)) {
                         BigDecimal pricePerHour = new BigDecimal(profile.getCurrent().getPrice());
-                        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getDuration()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+                        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
                         BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
                         BigDecimal timeFromStartPerformingInMillis = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
                         BigDecimal timeFromStartPerformingInSeconds = timeFromStartPerformingInMillis.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);

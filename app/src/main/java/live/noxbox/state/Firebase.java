@@ -57,6 +57,7 @@ public class Firebase {
                 + delimiter + currentNoxbox.getType()
                 + delimiter + currentNoxbox.getPrice()
                 + delimiter + currentNoxbox.getOwner().getTravelMode()
+                + delimiter + currentNoxbox.getOwner().getHost()
                 + delimiter + ownerRating.getReceivedLikes()
                 + delimiter + ownerRating.getReceivedDislikes()
                 ;
@@ -65,14 +66,16 @@ public class Firebase {
     private static Noxbox parseKey(String key) {
         String[] values = key.split(delimiter);
         Noxbox noxbox = new Noxbox();
-        if (values.length >= 7) {
-            noxbox.setId(values[0]);
-            noxbox.setRole(MarketRole.valueOf(values[1]));
-            noxbox.setType(NoxboxType.valueOf(values[2]));
-            noxbox.setPrice(values[3]);
-            noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[4]));
+        int index = 0;
+        if (values.length == 8) {
+            noxbox.setId(values[index++]);
+            noxbox.setRole(MarketRole.valueOf(values[index++]));
+            noxbox.setType(NoxboxType.valueOf(values[index++]));
+            noxbox.setPrice(values[index++]);
+            noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[index++]));
+            noxbox.getOwner().setHost(Boolean.valueOf(values[index++]));
 
-            Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[5])).setReceivedDislikes(Integer.valueOf(values[6]));
+            Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[index++])).setReceivedDislikes(Integer.valueOf(values[index++]));
             if (noxbox.getRole() == MarketRole.supply) {
                 noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
             } else if (noxbox.getRole() == MarketRole.demand) {

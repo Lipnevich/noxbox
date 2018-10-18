@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
+
+import java.util.Collection;
 import java.util.List;
 
 import live.noxbox.R;
@@ -20,8 +23,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     public CommentAdapter() { }
 
-    public CommentAdapter(List<Comment> comments) {
-        this.comments = comments;
+    public CommentAdapter(Collection<Comment> comments) {
+        this.comments = Lists.newArrayList(comments);
     }
 
     @NonNull

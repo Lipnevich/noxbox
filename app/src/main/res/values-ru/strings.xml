@@ -35,7 +35,7 @@
     <string name="husbandForHour">Муж на час</string>
     <string name="musician">Музыкант</string>
     <string name="photographer">Фотограф</string>
-    <string name="meditation">Медитация</string>
+    <string name="meditation">Уроки медитации</string>
 
 
     <string name="logoutText">Выход</string>
@@ -130,15 +130,15 @@
     <string name="computerRepairDescription">1 час ремонт компьютера</string>
     <string name="dinnerDescription">1 час приготовление пищи</string>
     <string name="houseWifeDescription">1 час уборка квартиры </string>
-    <string name="nannyDescription">1 час присмотр за ребёнком</string>
+    <string name="nannyDuration">1 час присмотр за ребёнком</string>
     <string name="homeTeacherDescription">1 час репетитор английского</string>
     <string name="husbandForHourDescription">1 час муж на час</string>
     <string name="plumberDescription">1 час профилактика трубопровода</string>
     <string name="sportCompanionDescription">1 час тренировка в зале</string>
     <string name="sportCoachDescription">1 час тренировка с тренером</string>
     <string name="musicianDescription">1 час игры на гитаре</string>
-    <string name="photographerDescription">1 час услуги фотографа</string>
-    <string name="meditationDescription">1 час медитации</string>
+    <string name="photographerDuration">1 час услуги фотографа</string>
+    <string name="meditationDuration">1 час медитации</string>
 
     <string name="trackLocation">Показывать местоположение</string>
 
@@ -249,4 +249,7 @@
     <string name="toEarn">Заработано</string>
     <string name="spent">Потрачено</string>
     <string name="version">Версия</string>
+    <string name="nannyDescription">Добрая и заботливая няня с огнем в глазам и теплом в руках</string>
+    <string name="photographerDescription">Фотограф качественно снимающий и быстро готовящий фотографии</string>
+    <string name="meditationDescription">Коллективная медитация и лекция от Дады</string>
 </resources>

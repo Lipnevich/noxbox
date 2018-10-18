@@ -34,6 +34,7 @@ import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.constructor.NoxboxTypeListActivity;
 import live.noxbox.detailed.DetailedActivity;
+import live.noxbox.model.Filters;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -58,6 +59,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     private Map<String, NoxboxMarker> markers = new HashMap<>();
     private ClusterManager<NoxboxMarker> clusterManager;
     private CustomClusterRenderer customClusterRenderer;
+    private Filters filters;
 
 
     public AvailableServices(GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
@@ -78,6 +80,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
     @Override
     public void draw(final Profile profile) {
+        filters = profile.getFilters();
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         MapController.moveCopyrightRight(googleMap);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
@@ -143,8 +146,10 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     }
 
 
-    private void createMarker(Noxbox noxbox) {
-        // TODO (vl) показывать услуги с актуальным временем
+    private void createMarker(final Noxbox noxbox) {
+        // TODO (vl) проверить другие фильтры, время работы, черный список, и совместимость по типу передвижения
+        if(!filters.getTypes().get(noxbox.getType().name())) return;
+
         NoxboxMarker noxboxMarker = new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox);
         markers.put(noxbox.getId(), noxboxMarker);
         clusterManager.addItem(noxboxMarker);

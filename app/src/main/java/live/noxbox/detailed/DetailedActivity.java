@@ -32,11 +32,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.model.Comment;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
@@ -132,19 +130,13 @@ public class DetailedActivity extends AppCompatActivity {
                 });
     }
 
-    private void drawOtherProfile(Profile profile) {
-
-        if (profile.getViewed().getTimeStartPerforming() == null) {
+    private void drawOtherProfile(Profile me) {
+        Profile other = me.getViewed().getNotMe(me.getId());
+        if (other.getName() != null && other.getPhoto() != null) {
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
 
-            if (profile.getViewed().getOwner().equals(profile)) {
-                ImageManager.createCircleImageFromUrl(this, profile.getViewed().getParty().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
-                ((TextView) findViewById(R.id.profileName)).setText(profile.getViewed().getParty().getName());
-            } else {
-                ImageManager.createCircleImageFromUrl(this, profile.getViewed().getOwner().getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
-                ((TextView) findViewById(R.id.profileName)).setText(profile.getViewed().getOwner().getName());
-            }
-
+            ImageManager.createCircleImageFromUrl(this, other.getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
+            ((TextView) findViewById(R.id.profileName)).setText(other.getName());
         } else {
             findViewById(R.id.profileLayout).setVisibility(View.GONE);
         }
@@ -176,8 +168,12 @@ public class DetailedActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
             }
         }
+        ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
 
-        ((TextView) findViewById(R.id.date)).setText(getResources().getString(R.string.dateRegistrationService) + " " + date(profile.getViewed().getTimeCreated()));
+
+        if(profile.getViewed().getTimeCreated() != null) {
+            ((TextView) findViewById(R.id.date)).setText(getText(R.string.dateRegistrationService) + " " + date(profile.getViewed().getTimeCreated()));
+        }
 
     }
 
@@ -204,15 +200,10 @@ public class DetailedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " " + getResources().getString(R.string.like));
         ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
 
-        List<Comment> comments = new ArrayList<>();
-        comments.add(rating.getComments().get("0"));
-        comments.add(rating.getComments().get("1"));
-        comments.add(rating.getComments().get("2"));
-
         RecyclerView recyclerView = findViewById(R.id.listComments);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new CommentAdapter(comments));
+        recyclerView.setAdapter(new CommentAdapter(rating.getComments().values()));
     }
 
     private void drawWaitingTime(final Noxbox noxbox) {
@@ -304,9 +295,9 @@ public class DetailedActivity extends AppCompatActivity {
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
         ((TextView) findViewById(R.id.priceTitle)).setText(getResources().getString(R.string.priceTxt) + " " + noxbox.getPrice() + " " + getResources().getString(R.string.currency));
         ((TextView) findViewById(R.id.price)).setText(noxbox.getPrice());
-        ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(noxbox.getType().getDescription());
+        ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(noxbox.getType().getDuration());
 
-        String description = getResources().getString(noxbox.getType().getDescription());
+        String description = getResources().getString(noxbox.getType().getDuration());
         String serviceDescription = "";
         int countSpace = 0;
         for (int i = 0; i < description.length(); i++) {
