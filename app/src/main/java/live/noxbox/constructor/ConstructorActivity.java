@@ -174,7 +174,7 @@ public class ConstructorActivity extends AppCompatActivity {
     }
 
     private void drawTypeDescription(Profile profile) {
-        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDescription()).concat("."));
+        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDuration()).concat("."));
     }
 
 

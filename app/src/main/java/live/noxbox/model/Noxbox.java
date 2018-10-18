@@ -235,8 +235,8 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public Profile getNotMe(String myId) {
-        if (owner.getId().equals(myId)) return party;
-        else return owner;
+        if (myId.equals(getOwner().getId())) return getParty();
+        else return getOwner();
     }
 
     public Profile getMe(String myId) {

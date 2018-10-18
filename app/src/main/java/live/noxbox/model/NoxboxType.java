@@ -3,9 +3,9 @@ package live.noxbox.model;
 import live.noxbox.R;
 
 public enum NoxboxType {
-    nanny(0, R.string.nanny, R.drawable.ic_nanny, R.drawable.illustration_nanny, R.string.nannyDescription, "60"),
-    photographer(1, R.string.photographer, R.drawable.ic_photographer, R.drawable.illustration_photographer, R.string.photographerDescription, "60"),
-    meditation(2, R.string.meditation, R.drawable.ic_meditation, R.drawable.illustration_meditation, R.string.meditationDescription, "60");
+    nanny(0, R.string.nanny, R.drawable.ic_nanny, R.drawable.illustration_nanny, R.string.nannyDescription, R.string.nannyDuration, "60"),
+    photographer(1, R.string.photographer, R.drawable.ic_photographer, R.drawable.illustration_photographer, R.string.photographerDescription, R.string.photographerDuration, "60"),
+    meditation(2, R.string.meditation, R.drawable.ic_meditation, R.drawable.illustration_meditation, R.string.meditationDescription, R.string.meditationDuration, "60");
     //haircut(2, R.string.haircut, R.drawable.haircut, R.drawable.music_back, R.string.haircutDescription, "60"),
     //manicure(3, R.string.manicure, R.drawable.manicure, R.drawable.music_back, R.string.manicureDescription, "60");
     //massage(0, R.string.massage, R.drawable.masseur, R.drawable.music_back, R.string.massageDescription, 60),
@@ -25,18 +25,20 @@ public enum NoxboxType {
 
     private int id;
     private int name;
-    private final int image;
-    private final int illustration;
+    private int image;
+    private int illustration;
     private int description;
-    private String duration;
+    private int duration;
+    private String minutes;
 
-    NoxboxType(int id, int name, int image, int illustration, int description, String duration) {
+    NoxboxType(int id, int name, int image, int illustration, int description, int duration, String minutes) {
         this.id = id;
         this.name = name;
         this.image = image;
         this.illustration = illustration;
         this.description = description;
         this.duration = duration;
+        this.minutes = minutes;
     }
 
     public int getName() {
@@ -55,12 +57,16 @@ public enum NoxboxType {
         return id;
     }
 
-    public int getDescription() {
-        return description;
+    public int getDuration() {
+        return duration;
     }
 
-    public String getDuration() {
-        return duration;
+    public String getMinutes() {
+        return minutes;
+    }
+
+    public int getDescription() {
+        return description;
     }
 
     public static NoxboxType byId(int id) {
