@@ -11,6 +11,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 
 import static live.noxbox.MapActivity.dpToPx;
@@ -37,6 +38,17 @@ public class MarkerCreator {
         marker.setTag(noxbox);
 
         return marker;
+    }
+
+    public static Marker createPartyMarker(Profile party, GoogleMap googleMap, Resources resources) {
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, party.getTravelMode().getImage());
+        Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(28), dpToPx(28), false);
+        MarkerOptions markerOptions = new MarkerOptions()
+                .position(party.getPosition().toLatLng())
+                .icon(BitmapDescriptorFactory.fromBitmap(resizedImage))
+                .anchor(0.5f, 1f);
+
+        return googleMap.addMarker(markerOptions);
     }
 
     public static MarkerOptions createCustomMarker(Noxbox noxbox, Resources resources) {
