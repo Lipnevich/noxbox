@@ -15,7 +15,6 @@ import android.widget.TextView;
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.Firestore;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
@@ -68,12 +67,7 @@ public class MapFiltersActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ProfileStorage.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                Firestore.writeProfile(profile);
-            }
-        });
+        ProfileStorage.fireProfile();
     }
 
     private void draw(final Profile profile) {
