@@ -1,5 +1,6 @@
 package live.noxbox.state;
 
+import com.crashlytics.android.Crashlytics;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -66,24 +67,29 @@ public class Firebase {
 
     private static Noxbox parseKey(String key) {
         String[] values = key.split(delimiter);
-        Noxbox noxbox = new Noxbox();
         int index = 0;
-        if (values.length == 8) {
-            noxbox.setId(values[index++]);
-            noxbox.setRole(MarketRole.valueOf(values[index++]));
-            noxbox.setType(NoxboxType.valueOf(values[index++]));
-            noxbox.setPrice(values[index++]);
-            noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[index++]));
-            noxbox.getOwner().setHost(Boolean.valueOf(values[index++]));
+        try {
+            if (values.length == 8) {
+                Noxbox noxbox = new Noxbox();
+                noxbox.setId(values[index++]);
+                noxbox.setRole(MarketRole.valueOf(values[index++]));
+                noxbox.setType(NoxboxType.valueOf(values[index++]));
+                noxbox.setPrice(values[index++]);
+                noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[index++]));
+                noxbox.getOwner().setHost(Boolean.valueOf(values[index++]));
 
-            Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[index++])).setReceivedDislikes(Integer.valueOf(values[index++]));
-            if (noxbox.getRole() == MarketRole.supply) {
-                noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
-            } else if (noxbox.getRole() == MarketRole.demand) {
-                noxbox.getOwner().getDemandsRating().put(noxbox.getType().name(), rating);
+                Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[index++])).setReceivedDislikes(Integer.valueOf(values[index++]));
+                if (noxbox.getRole() == MarketRole.supply) {
+                    noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
+                } else if (noxbox.getRole() == MarketRole.demand) {
+                    noxbox.getOwner().getDemandsRating().put(noxbox.getType().name(), rating);
+                }
+                return noxbox;
             }
+        } catch (IllegalArgumentException someOneRenamedEnum) {
+            Crashlytics.logException(someOneRenamedEnum);
         }
-        return noxbox;
+        return null;
     }
 
     public static void sendRequest(Request request) {
@@ -111,7 +117,6 @@ public class Firebase {
             public void onKeyEntered(String key, GeoLocation location) {
                 Noxbox noxbox = parseKey(key);
                 if (noxbox != null) {
-
                     noxbox.setPosition(Position.from(location));
                     moved.execute(noxbox);
                 }
