@@ -274,7 +274,7 @@ public class ProfileActivity extends FragmentActivity {
     }
 
     private void setTravelModeStatus(Profile profile) {
-        ((TextView) findViewById(R.id.travelModeName)).setText(profile.getTravelMode().name());
+        ((TextView) findViewById(R.id.travelModeName)).setText(getText(profile.getTravelMode().getName()));
         ((ImageView) findViewById(R.id.travelModeImage)).setImageResource(profile.getTravelMode().getImage());
     }
 
