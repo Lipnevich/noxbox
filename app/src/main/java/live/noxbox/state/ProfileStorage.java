@@ -108,7 +108,7 @@ public class ProfileStorage {
                         profile.getCurrent().strategy = OFF;
                     }
 
-                    if (profile.getNoxboxId() != null) {
+                    if (profile != null && profile.getNoxboxId() != null) {
                         if (!profile.getNoxboxId().equals(profile.getCurrent().getId())) {
                             profile.getCurrent().setId(profile.getNoxboxId());
                         }
