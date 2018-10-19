@@ -18,6 +18,7 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
+import live.noxbox.tools.MapController;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NotificationService;
 import live.noxbox.tools.Task;
@@ -27,9 +28,9 @@ import static live.noxbox.Configuration.QUARTER;
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.model.NotificationType.showLowBalanceNotification;
 import static live.noxbox.model.NotificationType.updateNotification;
+import static live.noxbox.state.ProfileStorage.readProfile;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.BalanceCalculator.getTotalSpentForNoxbox;
-import static live.noxbox.tools.MapController.buildMapPosition;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
 import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
 import static live.noxbox.tools.SeparateStreamForStopwatch.removeTimer;
@@ -43,20 +44,26 @@ public class Performing implements State {
     private GoogleMap googleMap;
     private LinearLayout performingView;
 
-    public Performing(Activity activity, GoogleMap googleMap) {
+    public Performing(final Activity activity, final GoogleMap googleMap) {
         this.activity = activity;
         this.googleMap = googleMap;
+        readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+
+            }
+        });
     }
 
     @Override
     public void draw(final Profile profile) {
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
-        buildMapPosition(googleMap, profile, activity.getApplicationContext());
-
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
+
         long currentTimeInMillis = System.currentTimeMillis();
         seconds = (int) ((currentTimeInMillis - profile.getCurrent().getTimeStartPerforming()) / 1000);
         String price = profile.getCurrent().getPrice();

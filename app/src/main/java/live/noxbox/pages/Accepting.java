@@ -21,10 +21,12 @@ import live.noxbox.state.State;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.MessagingService;
+import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
 import static live.noxbox.state.ProfileStorage.fireProfile;
+import static live.noxbox.state.ProfileStorage.readProfile;
 
 public class Accepting implements State {
 
@@ -35,9 +37,16 @@ public class Accepting implements State {
     private CountDownTimer countDownTimer;
     private LinearLayout acceptingView;
 
-    public Accepting(GoogleMap googleMap, Activity activity) {
+    public Accepting(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+        readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+
+            }
+        });
     }
 
     @Override
@@ -106,7 +115,6 @@ public class Accepting implements State {
 
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         MapController.buildMapMarkerListener(googleMap, profile, activity);
-        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
     }
 
     @Override

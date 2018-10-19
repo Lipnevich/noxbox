@@ -215,7 +215,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         @Override
         protected void onBeforeClusterRendered(Cluster<NoxboxMarker> cluster, MarkerOptions markerOptions) {
 
-            int size = 70;
+            int size = 85;
             if (cluster.getSize() >= 100) {
                 size += 50;
             } else if (cluster.getSize() >= 50) {

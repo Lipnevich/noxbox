@@ -115,7 +115,7 @@ public class ProfileStorage {
                         Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
                             @Override
                             public void execute(Noxbox current) {
-                                if(profile == null) return;
+                                if (profile == null) return;
                                 current.strategy = profile.getCurrent().strategy;
 
                                 profile.setCurrent(current);

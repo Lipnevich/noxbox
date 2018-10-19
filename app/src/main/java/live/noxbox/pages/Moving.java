@@ -32,6 +32,7 @@ import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.state.ProfileStorage.readProfile;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
@@ -44,9 +45,16 @@ public class Moving implements State {
     private LinearLayout photoView;
     private static CountDownTimer countDownTimer;
 
-    public Moving(GoogleMap googleMap, Activity activity) {
+    public Moving(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+        readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+
+            }
+        });
     }
 
     @Override
@@ -193,8 +201,6 @@ public class Moving implements State {
         });
 
         MapController.buildMapMarkerListener(googleMap, profile, activity);
-
-        MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
 
         if (profile.getCurrent().getTimeToMeet() == null) {
             final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
