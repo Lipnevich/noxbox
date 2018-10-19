@@ -153,18 +153,14 @@ public class DetailedActivity extends AppCompatActivity {
 
         if (profile.getViewed().getRole() == MarketRole.supply) {
             if (profile.getViewed().getOwner().equals(profile)) {
-                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.wantToGet);
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
             } else {
-                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.readyToPerform);
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
             }
         } else {
             if (profile.getViewed().getOwner().equals(profile)) {
-                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.wantToGet);
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
             } else {
-                ((TextView) findViewById(R.id.previousDescription)).setText(R.string.readyToPerform);
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
             }
         }

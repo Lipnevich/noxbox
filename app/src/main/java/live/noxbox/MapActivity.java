@@ -29,12 +29,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
@@ -63,7 +58,6 @@ public class MapActivity extends DebugActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-    private Map<String, GroundOverlay> markers = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,17 +78,10 @@ public class MapActivity extends DebugActivity implements
     @Override
     public void onMapReady(GoogleMap readyMap) {
         googleMap = readyMap;
-        scaleMarkers();
         visibleCurrentLocation(true);
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveCopyrightLeft(googleMap);
-        googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                scaleMarkers();
-            }
-        });
         draw();
     }
 
@@ -104,7 +91,8 @@ public class MapActivity extends DebugActivity implements
     }
 
     protected void visibleCurrentLocation(boolean visible) {
-        if (isLocationPermissionGranted()) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
             googleMap.setMyLocationEnabled(true);
             findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -191,7 +179,7 @@ public class MapActivity extends DebugActivity implements
     protected void onPause() {
         super.onPause();
         googleApiClient.disconnect();
-
+        ProfileStorage.stopListen(this.getClass().getName());
     }
 
     @Override
@@ -209,7 +197,6 @@ public class MapActivity extends DebugActivity implements
             }
         }
         googleApiClient.connect();
-        scaleMarkers();
         draw();
 
 
@@ -226,34 +213,6 @@ public class MapActivity extends DebugActivity implements
             }
         }
         return null;
-    }
-
-    protected void scaleMarkers() {
-        float size = getScaledSize();
-        for (GroundOverlay marker : markers.values()) {
-            marker.setDimensions(size, size);
-        }
-    }
-
-    protected void removeOutOfRangeMarkers() {
-        Iterator it = markers.values().iterator();
-        while (it.hasNext()) {
-            GroundOverlay item = (GroundOverlay) it.next();
-            if (Position.from(item.getPosition()).toLocation().distanceTo(getCameraPosition(googleMap).toLocation())
-                    > Configuration.RADIUS_IN_METERS) {
-                item.remove();
-                it.remove();
-            }
-        }
-    }
-
-    private float getScaledSize() {
-        if (googleMap != null && googleMap.getCameraPosition() != null) {
-            return (float) Math.pow(2, 22 - Math.max(googleMap.getCameraPosition().zoom, 11));
-        } else {
-            return 0;
-        }
-
     }
 
     protected int getEstimationInMinutes(Position from, Position to, TravelMode travelMode) {
@@ -282,11 +241,20 @@ public class MapActivity extends DebugActivity implements
             public void execute(Profile profile) {
                 if (googleMap == null) return;
                 State newState = getFragment(profile);
-                if (newState != currentState && currentState != null) {
-                    currentState.clear();
+                if(currentState == null) {
+                    currentState = newState;
+                    newState.draw(profile);
+                    return;
                 }
-                currentState = newState;
-                newState.draw(profile);
+
+                if (!newState.getClass().getName().equals(currentState.getClass().getName())) {
+                    currentState.clear();
+                    currentState = newState;
+                    newState.draw(profile);
+                    return;
+                }
+
+                currentState.draw(profile);
             }
         });
     }

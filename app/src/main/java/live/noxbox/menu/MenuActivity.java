@@ -64,6 +64,12 @@ public abstract class MenuActivity extends AppCompatActivity implements Navigati
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ProfileStorage.stopListen(this.getClass().getName());
+    }
+
     private void draw(final Activity activity, final Profile profile) {
         drawNavigation(activity, profile);
     }

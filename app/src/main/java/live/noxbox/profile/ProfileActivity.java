@@ -66,6 +66,12 @@ public class ProfileActivity extends FragmentActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ProfileStorage.stopListen(this.getClass().getName());
+    }
+
     private void draw(final Profile profile) {
         findViewById(R.id.editProfile).setOnClickListener(new View.OnClickListener() {
             @Override

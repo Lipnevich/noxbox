@@ -33,6 +33,7 @@ public class Firebase {
         return geo;
     }
 
+    // supplier
     public static void online(Noxbox current) {
         geo().setLocation(createKey(current), current.getPosition().toGeoLocation());
     }
@@ -91,6 +92,8 @@ public class Firebase {
 //                        .setPush(MessagingService.generatePush(request))));
     }
 
+
+    // consumer
     private static GeoQuery geoQuery;
     private static long time;
 
@@ -108,6 +111,7 @@ public class Firebase {
             public void onKeyEntered(String key, GeoLocation location) {
                 Noxbox noxbox = parseKey(key);
                 if (noxbox != null) {
+
                     noxbox.setPosition(Position.from(location));
                     moved.execute(noxbox);
                 }

@@ -275,6 +275,9 @@ public class Profile implements Serializable {
     }
 
     public Map<String, Boolean> getDarkList() {
+        if(darkList == null) {
+            darkList = new HashMap<>();
+        }
         return darkList;
     }
 
@@ -291,4 +294,5 @@ public class Profile implements Serializable {
         this.noxboxId = noxboxId;
         return this;
     }
+
 }

@@ -67,6 +67,7 @@ public class MapFiltersActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        ProfileStorage.stopListen(this.getClass().getName());
         ProfileStorage.fireProfile();
     }
 

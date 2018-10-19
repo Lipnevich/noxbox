@@ -14,7 +14,6 @@ import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,7 +33,6 @@ import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.constructor.NoxboxTypeListActivity;
 import live.noxbox.detailed.DetailedActivity;
-import live.noxbox.model.Filters;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -46,6 +44,7 @@ import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.Task;
 
+import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 import static live.noxbox.state.Firebase.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -59,10 +58,9 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     private Map<String, NoxboxMarker> markers = new HashMap<>();
     private ClusterManager<NoxboxMarker> clusterManager;
     private CustomClusterRenderer customClusterRenderer;
-    private Filters filters;
 
 
-    public AvailableServices(GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
+    public AvailableServices(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
         this.googleMap = googleMap;
         this.googleApiClient = googleApiClient;
         this.activity = activity;
@@ -76,17 +74,24 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         clusterManager.setOnClusterItemClickListener(this);
 
         clusterManager.setRenderer(customClusterRenderer);
+
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                if (profile.getPosition() != null) {
+                    MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+                }
+            }
+        });
+
     }
 
     @Override
     public void draw(final Profile profile) {
-        filters = profile.getFilters();
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         MapController.moveCopyrightRight(googleMap);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
-
-        // TODO (nli) добавить слушателя доступных услуг, ноксбоксы отрисовать
 
         startListenAvailableNoxboxes();
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
@@ -120,10 +125,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
             }
         });
-
-        if (profile.getPosition() != null) {
-            MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-        }
     }
 
     @Override
@@ -147,8 +148,13 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
 
     private void createMarker(final Noxbox noxbox) {
-        // TODO (vl) проверить другие фильтры, время работы, черный список, и совместимость по типу передвижения
-        if(!filters.getTypes().get(noxbox.getType().name())) return;
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                if(!profile.getFilters().getTypes().get(noxbox.getType().name())) return;
+                // TODO (vl) проверить другие фильтры, время работы, черный список, и совместимость по типу передвижения
+            }
+        });
 
         NoxboxMarker noxboxMarker = new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox);
         markers.put(noxbox.getId(), noxboxMarker);
@@ -164,9 +170,12 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     @Override
     public boolean onClusterClick(Cluster<NoxboxMarker> cluster) {
         DebugMessage.popup(activity, "CLUSTER");
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                cluster.getPosition(), googleMap.getCameraPosition().zoom + 1f));
 
+        float newZoom = googleMap.getCameraPosition().zoom + 1f;
+        if(newZoom < googleMap.getMaxZoomLevel())
+            googleMap.animateCamera(newLatLngZoom(cluster.getPosition(), newZoom));
+
+        // TODO (vl) показать список со всеми элементами кластера
         return true;
     }
 

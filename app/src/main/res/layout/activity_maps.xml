@@ -168,6 +168,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Generate Noxboxes"
                     android:textColor="@color/primary"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size" />
 
                 <TextView
@@ -177,6 +178,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Request"
                     android:textColor="@color/primary"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size" />
 
                 <TextView
@@ -186,6 +188,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Accept"
                     android:textColor="@color/primary"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size" />
 
                 <TextView
@@ -196,6 +199,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Verify Photo"
                     android:textColor="@color/primary"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size" />
 
                 <TextView
@@ -206,6 +210,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Reject Photo"
                     android:textColor="@color/primary"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size" />
 
                 <TextView
@@ -216,6 +221,7 @@
                     android:layout_marginTop="16dp"
                     android:text="Complete"
                     android:textColor="@color/primary"
+                    android:visibility="gone"
                     android:textSize="@dimen/text_size" />
             </LinearLayout>
 

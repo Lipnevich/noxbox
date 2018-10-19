@@ -148,9 +148,8 @@
                             android:id="@+id/serviceDescription"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Музыкант — это человек, умеющий играть на музыкальном инструменте. Также к представителям этой профессии относятся композиторы, вокалисты, то есть те люди, которые по роду своей деятельности прямо связаны с музыкой."
                             android:textColor="@color/google_text"
-                            android:textSize="@dimen/text_size_secondary" />
+                            android:textSize="@dimen/text_title" />
 
                         <LinearLayout
                             android:layout_width="match_parent"

@@ -64,6 +64,12 @@ public class ProfilePerformerActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ProfileStorage.stopListen(this.getClass().getName());
+    }
+
     private void draw(final Profile profile) {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override

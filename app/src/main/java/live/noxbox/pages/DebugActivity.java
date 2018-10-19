@@ -22,7 +22,7 @@ public class DebugActivity extends MenuActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (true || BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {

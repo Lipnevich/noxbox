@@ -26,7 +26,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
     }
     private void initCrashReporting() {
         CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
-                .disabled(BuildConfig.DEBUG)
+                .disabled(false && BuildConfig.DEBUG)
                 .build();
         Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
@@ -43,7 +43,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
         } catch (IllegalArgumentException e) {
             Crashlytics.logException(e);
         }
-        ProfileStorage.stopListen();
+        ProfileStorage.clearListeners();
     }
 
     @Override

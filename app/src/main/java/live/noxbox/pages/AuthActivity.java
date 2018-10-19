@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -81,6 +82,7 @@ public class AuthActivity extends AppCompatActivity {
     private void login() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
+            Crashlytics.setUserIdentifier(user.getUid());
             FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
             startActivity(new Intent(this, MapActivity.class));
         }
