@@ -128,7 +128,7 @@
                     android:tint="@color/secondary"
                     android:visibility="gone"
                     app:fabSize="auto"
-                    app:maxImageSize="48dp"/>
+                    app:maxImageSize="48dp" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/customFloatingView"
@@ -137,8 +137,9 @@
                     android:layout_gravity="bottom|end"
                     android:layout_margin="16dp"
                     android:scaleType="center"
-                    android:tint="@color/secondary"
                     android:src="@drawable/add"
+                    android:tint="@color/secondary"
+                    android:visibility="gone"
                     app:fabSize="auto"
                     app:maxImageSize="48dp" />
 

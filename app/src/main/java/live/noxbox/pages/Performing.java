@@ -18,7 +18,6 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
-import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NotificationService;
 import live.noxbox.tools.Task;
@@ -58,8 +57,8 @@ public class Performing implements State {
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
-
-        seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
+        long currentTimeInMillis = System.currentTimeMillis();
+        seconds = (int) ((currentTimeInMillis - profile.getCurrent().getTimeStartPerforming()) / 1000);
         String price = profile.getCurrent().getPrice();
         totalMoney = new BigDecimal(price);
         totalMoney = totalMoney.multiply(QUARTER);
@@ -144,12 +143,6 @@ public class Performing implements State {
                 }
                 messagingService.showPushNotification(notification);
 
-                Long totalTimeInMillis = profile.getCurrent().getTimeCompleted() - profile.getCurrent().getTimeStartPerforming();
-
-                Long timeInMinutes = (totalTimeInMillis / (1000 * 60)) % 60;
-                DebugMessage.popup(activity, String.valueOf(timeInMinutes) + "minutes");
-
-                ProfileStorage.fireProfile();
             }
         }));
     }
@@ -181,11 +174,7 @@ public class Performing implements State {
 
         if (startTime == null) return false;
 
-        if (startTime >= System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS) {
-            return false;
-        } else {
-            return true;
-        }
+        return startTime < System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS;
 
     }
 }

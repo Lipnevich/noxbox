@@ -31,7 +31,7 @@ public class Requesting implements State {
     private ObjectAnimator anim;
     private AnimationDrawable animationDrawable;
     private LinearLayout requestingView;
-    private CountDownTimer countDownTimer;
+    private static CountDownTimer countDownTimer;
 
     public Requesting(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
@@ -81,12 +81,11 @@ public class Requesting implements State {
                 .setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS));
         messagingService.showPushNotification(notification);
 
-        long timeCountInMilliSeconds = REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
-        countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
+        countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 ((TextView) requestingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
-                notification.getType().updateNotification(activity.getApplicationContext(),
+                NotificationType.updateNotification(activity.getApplicationContext(),
                         notification.setType(NotificationType.requesting).setTime(String.valueOf(millisUntilFinished / 1000)),
                         MessagingService.builder);
             }
@@ -94,8 +93,9 @@ public class Requesting implements State {
             @Override
             public void onFinish() {
                 if (profile.getCurrent().getTimeAccepted() == null) {
-                    notification.getType().removeNotifications(activity.getApplicationContext());
+                    NotificationType.removeNotifications(activity.getApplicationContext());
                     profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
+                    fireProfile();
                 }
             }
 

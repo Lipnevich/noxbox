@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/secondary"
+            android:visibility="visible"
             android:textSize="@dimen/text_title_large" />
 
 

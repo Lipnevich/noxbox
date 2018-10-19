@@ -86,6 +86,7 @@ public class Noxbox implements Comparable<Noxbox> {
         timeOwnerDisliked = null;
         timePartyDisliked = null;
         timeToMeet = null;
+        timeTimeout = null;
 
         return this;
     }
