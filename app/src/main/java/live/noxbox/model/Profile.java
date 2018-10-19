@@ -42,7 +42,7 @@ public class Profile implements Serializable {
     private Filters filters;
 
     public Filters getFilters() {
-        if(filters == null) {
+        if (filters == null) {
             filters = new Filters();
         }
         return filters;
@@ -99,7 +99,7 @@ public class Profile implements Serializable {
     }
 
     public TravelMode getTravelMode() {
-        if(travelMode == null) {
+        if (travelMode == null) {
             travelMode = TravelMode.walking;
         }
         return travelMode;
@@ -120,7 +120,7 @@ public class Profile implements Serializable {
     }
 
     public Noxbox getCurrent() {
-        if(current == null) {
+        if (current == null) {
             current = new Noxbox();
         }
         return current;
@@ -132,7 +132,7 @@ public class Profile implements Serializable {
     }
 
     public Wallet getWallet() {
-        if(wallet == null) {
+        if (wallet == null) {
             wallet = new Wallet();
         }
         return wallet;
@@ -158,7 +158,12 @@ public class Profile implements Serializable {
 
     public Profile publicInfo() {
         return new Profile().setId(id)
-                .setPosition(position).setSuppliesRating(suppliesRating).setDemandsRating(demandsRating).setTravelMode(travelMode).setHost(host);
+                .setAcceptance(acceptance)
+                .setPosition(position)
+                .setSuppliesRating(suppliesRating)
+                .setDemandsRating(demandsRating)
+                .setTravelMode(travelMode)
+                .setHost(host);
     }
 
     public Profile notPublicInfo() {
@@ -166,7 +171,7 @@ public class Profile implements Serializable {
     }
 
     public Noxbox getViewed() {
-        if(viewed == null) {
+        if (viewed == null) {
             viewed = new Noxbox();
         }
         return viewed;
@@ -178,7 +183,7 @@ public class Profile implements Serializable {
     }
 
     public Map<String, Rating> getDemandsRating() {
-        if(demandsRating == null) {
+        if (demandsRating == null) {
             demandsRating = new HashMap<>();
         }
         return demandsRating;
@@ -190,7 +195,7 @@ public class Profile implements Serializable {
     }
 
     public Map<String, Rating> getSuppliesRating() {
-        if(suppliesRating == null) {
+        if (suppliesRating == null) {
             suppliesRating = new HashMap<>();
         }
         return suppliesRating;
@@ -263,7 +268,7 @@ public class Profile implements Serializable {
     }
 
     public Boolean getHost() {
-        if(host == null) {
+        if (host == null) {
             host = false;
         }
         return host;
@@ -275,7 +280,7 @@ public class Profile implements Serializable {
     }
 
     public Map<String, Boolean> getDarkList() {
-        if(darkList == null) {
+        if (darkList == null) {
             darkList = new HashMap<>();
         }
         return darkList;

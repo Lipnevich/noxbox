@@ -165,6 +165,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     private void removeMarker(Noxbox noxbox) {
         clusterManager.removeItem(markers.get(noxbox.getId()));
         markers.remove(noxbox.getId());
+        clusterManager.cluster();
     }
 
     @Override
