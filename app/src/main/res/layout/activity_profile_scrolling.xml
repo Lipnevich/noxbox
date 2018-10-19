@@ -172,8 +172,8 @@
                 android:layout_toEndOf="@id/addTravelModeLayout"
                 android:layout_centerVertical="true"
                 android:text="@string/addProvidedService"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                />
         </RelativeLayout>
 
     </LinearLayout>

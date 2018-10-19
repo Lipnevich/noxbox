@@ -34,6 +34,7 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.util.List;
 
+import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
@@ -289,7 +290,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawPrice(Noxbox noxbox) {
         drawDropdownElement(R.id.priceTitleLayout, R.id.priceLayout);
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
-        ((TextView) findViewById(R.id.priceTitle)).setText(getResources().getString(R.string.priceTxt) + " " + noxbox.getPrice() + " " + getResources().getString(R.string.currency));
+        ((TextView) findViewById(R.id.priceTitle)).setText(getResources().getString(R.string.priceTxt) + " " + noxbox.getPrice() + " " + Configuration.CURRENCY);
         ((TextView) findViewById(R.id.price)).setText(noxbox.getPrice());
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(noxbox.getType().getDuration());
 

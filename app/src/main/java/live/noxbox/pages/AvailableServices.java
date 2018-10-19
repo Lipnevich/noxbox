@@ -153,13 +153,14 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             public void execute(Profile profile) {
                 if(!profile.getFilters().getTypes().get(noxbox.getType().name())) return;
                 // TODO (vl) проверить другие фильтры, время работы, черный список, и совместимость по типу передвижения
+                NoxboxMarker noxboxMarker = new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox);
+                markers.put(noxbox.getId(), noxboxMarker);
+                clusterManager.addItem(noxboxMarker);
+                clusterManager.cluster();
             }
         });
 
-        NoxboxMarker noxboxMarker = new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox);
-        markers.put(noxbox.getId(), noxboxMarker);
-        clusterManager.addItem(noxboxMarker);
-        clusterManager.cluster();
+
     }
 
     private void removeMarker(Noxbox noxbox) {

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 
+import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
@@ -37,7 +38,7 @@ public class Estimating implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_estimating, null);
         estimatingView.addView(child);
 
-        ((TextView) estimatingView.findViewById(R.id.finalSum)).setText(profile.getCurrent().getPrice() + " " + activity.getResources().getString(R.string.currency));
+        ((TextView) estimatingView.findViewById(R.id.finalSum)).setText(profile.getCurrent().getPrice() + " " + Configuration.CURRENCY);
 
         ((ImageView) estimatingView.findViewById(R.id.like)).setOnClickListener(new View.OnClickListener() {
             @Override

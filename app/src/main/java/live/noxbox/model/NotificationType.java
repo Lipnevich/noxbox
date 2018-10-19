@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.menu.HistoryActivity;
@@ -156,7 +157,7 @@ public enum NotificationType {
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.timeHasPassed, context.getResources().getString(notification.getType().content));
             remoteViews.setTextViewText(R.id.stopwatch, notification.getTime());
-            remoteViews.setTextViewText(R.id.totalPayment, (notification.getPrice().concat(" ")).concat(context.getResources().getString(R.string.currency)));
+            remoteViews.setTextViewText(R.id.totalPayment, (notification.getPrice().concat(" ")).concat(Configuration.CURRENCY));
         }
 
         if (notification.getType() == requesting) {
@@ -245,7 +246,7 @@ public enum NotificationType {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.contentRole, notification.getMessage());
-            remoteViews.setTextViewText(R.id.content, notification.getPrice().concat(" ").concat(context.getResources().getString(R.string.currency)));
+            remoteViews.setTextViewText(R.id.content, notification.getPrice().concat(" ").concat(Configuration.CURRENCY));
         }
 
         return remoteViews;

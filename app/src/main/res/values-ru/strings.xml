@@ -147,7 +147,6 @@
 
     <string name="availableTime">Доступное время</string>
     <string name="myRating">Мой рейтинг</string>
-    <string name="currency">Waves</string>
     <string name="description">Описание</string>
 
     <!--detailed activity-->
@@ -185,7 +184,7 @@
     <string name="chooseAll">Выбрать все</string>
     <string name="ok">Ок</string>
     <string name="filters">Фильтры</string>
-    <string name="constructorService">Конструктор услуги</string>
+    <string name="constructorService">Договор</string>
     <string name="filterMaxPriceText">Максимальная стоимость услуг</string>
     <string name="filterDemandText">Показывать спрос на услуги на карте</string>
     <string name="filterSupplyText">Показывать предложения услуг на карте</string>
@@ -201,8 +200,8 @@
     <string name="uploadingProgressContent">%s seconds left</string>
     <string name="name">Name</string>
     <string name="uploadingStarted">Uploading started</string>
-    <string name="haveHost">есть возможность принять у себя</string>
-    <string name="notHaveHost">нету возможности принять у себя</string>
+    <string name="haveHost">приму у себя</string>
+    <string name="notHaveHost">нет</string>
     <string name="serviceProvided">Предоставляемые услуги:</string>
     <string name="addProvidedService">Добавить предоставляемую услугу</string>
     <string name="noComments">Комментарии отстутвуют</string>

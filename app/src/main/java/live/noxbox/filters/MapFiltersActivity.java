@@ -12,6 +12,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
@@ -114,7 +115,7 @@ public class MapFiltersActivity extends AppCompatActivity {
             priceText.setText(R.string.max);
             price.setProgress(100);
         } else {
-            priceText.setText(profile.getFilters().getPrice() + getResources().getString(R.string.currency));
+            priceText.setText(profile.getFilters().getPrice() + Configuration.CURRENCY);
             price.setProgress(Integer.parseInt(profile.getFilters().getPrice()));
         }
         price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -122,7 +123,7 @@ public class MapFiltersActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (progress == 0) {
                     profile.getFilters().setPrice("1");
-                    priceText.setText("1 " + getResources().getString(R.string.currency));
+                    priceText.setText("1 " + Configuration.CURRENCY);
                     return;
                 }
                 if (progress == 100) {
@@ -131,7 +132,7 @@ public class MapFiltersActivity extends AppCompatActivity {
                     return;
                 }
                 profile.getFilters().setPrice(String.valueOf(progress));
-                priceText.setText(progress + " " + getResources().getString(R.string.currency));
+                priceText.setText(progress + " " + Configuration.CURRENCY);
             }
 
             @Override

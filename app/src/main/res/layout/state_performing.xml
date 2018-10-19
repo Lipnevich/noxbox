@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/currency"
+        android:text="Waves"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/primary"
         android:textSize="32sp" />
