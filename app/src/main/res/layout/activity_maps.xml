@@ -237,6 +237,7 @@
         android:layout_gravity="start"
         android:clickable="true"
         android:fitsSystemWindows="true"
+        android:theme="@style/NavigationViewStyle"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
         app:headerLayout="@layout/navigation_header"
