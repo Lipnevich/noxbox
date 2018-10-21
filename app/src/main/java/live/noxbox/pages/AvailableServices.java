@@ -33,9 +33,11 @@ import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.constructor.NoxboxTypeListActivity;
 import live.noxbox.detailed.DetailedActivity;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
+import live.noxbox.model.TravelMode;
 import live.noxbox.state.Firebase;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
@@ -151,8 +153,30 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                if(!profile.getFilters().getTypes().get(noxbox.getType().name())) return;
-                // TODO (vl) проверить другие фильтры, время работы, черный список, и совместимость по типу передвижения
+
+                if (profile.getDarkList().get(noxbox.getOwner().getId()) != null) return;
+
+                if (!profile.getFilters().getTypes().get(noxbox.getType().name())) return;
+
+                if (Integer.parseInt(noxbox.getPrice()) > Integer.parseInt(profile.getFilters().getPrice()))
+                    return;
+
+                if (noxbox.getRole() == MarketRole.demand && !profile.getFilters().getDemand())
+                    return;
+
+                if (noxbox.getRole() == MarketRole.supply && !profile.getFilters().getSupply())
+                    return;
+
+                //фильтры по типу передвижения
+                if (noxbox.getOwner().getHost() && noxbox.getOwner().getTravelMode() == TravelMode.none) {
+                    if (profile.getTravelMode() == TravelMode.none) return;
+                }
+
+                if (!noxbox.getOwner().getHost()) {
+                    if (!profile.getHost()) return;
+                }
+
+                
                 NoxboxMarker noxboxMarker = new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox);
                 markers.put(noxbox.getId(), noxboxMarker);
                 clusterManager.addItem(noxboxMarker);
@@ -174,7 +198,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         DebugMessage.popup(activity, "CLUSTER");
 
         float newZoom = googleMap.getCameraPosition().zoom + 1f;
-        if(newZoom < googleMap.getMaxZoomLevel())
+        if (newZoom < googleMap.getMaxZoomLevel())
             googleMap.animateCamera(newLatLngZoom(cluster.getPosition(), newZoom));
 
         // TODO (vl) показать список со всеми элементами кластера
