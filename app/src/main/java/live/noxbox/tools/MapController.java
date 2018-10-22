@@ -16,7 +16,7 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
 
-import static live.noxbox.MapActivity.dpToPx;
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
 
 public class MapController {

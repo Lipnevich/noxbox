@@ -81,6 +81,9 @@ public class Profile implements Serializable {
     }
 
     public Position getPosition() {
+        if(position == null){
+            return new Position().setLatitude(0.0).setLongitude(0.0);
+        }
         return position;
     }
 

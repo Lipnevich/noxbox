@@ -15,7 +15,6 @@ package live.noxbox;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -49,6 +48,7 @@ import live.noxbox.tools.MapController;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.setupMap;
 
@@ -136,10 +136,6 @@ public class MapActivity extends DebugActivity implements
     protected boolean isGpsEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-    public static int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     @Override

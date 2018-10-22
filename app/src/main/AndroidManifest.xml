@@ -90,6 +90,8 @@
             android:enabled="true"
             android:exported="true"
             android:isolatedProcess="true"/>
+        <service
+            android:name=".pages.AvailableServices$AvailableNoxboxesService"/>
 
         <receiver android:name=".model.NotificationType$CancelRequestListener">
             <intent-filter>

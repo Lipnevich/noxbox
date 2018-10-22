@@ -107,6 +107,7 @@ public class DebugActivity extends MenuActivity {
 
                         }
                     });
+
                     findViewById(R.id.debugComplete).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -121,6 +122,7 @@ public class DebugActivity extends MenuActivity {
                             }
                         }
                     });
+
                 }
             });
         }
