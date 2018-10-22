@@ -35,7 +35,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 import java.util.HashMap;
@@ -94,8 +93,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         });
         clusterManager = new ClusterManager<NoxboxMarker>(activity, googleMap);
 
-        clusterManager.setAlgorithm(new NonHierarchicalDistanceBasedAlgorithm<NoxboxMarker>());
-
         clusterManager.setRenderer(new CustomClusterRenderer(activity, googleMap, clusterManager));
         clusterManager.setOnClusterClickListener(this);
         clusterManager.setOnClusterItemClickListener(this);
@@ -106,7 +103,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     }
 
 
-    public static Boolean isNotBind = true;
+    private static Boolean isNotBind = true;
 
     @Override
     public void draw(final Profile profile) {
@@ -170,6 +167,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         if (serviceHandler != null) {
             serviceHandler.removeCallbacksAndMessages(null);
         }
+        clusterManager.clearItems();
         googleMap.clear();
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
@@ -187,7 +185,6 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             activity.unbindService(mConnection);
             mBound = false;
         }
-        clusterManager.clearItems();
     }
 
     private AvailableNoxboxesService availableNoxboxesService;
