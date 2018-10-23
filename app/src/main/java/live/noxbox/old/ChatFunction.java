@@ -76,7 +76,7 @@ public abstract class ChatFunction extends EventFunction {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ChatActivity.CODE && Firebase.getProfile() != null) {
+        if(requestCode == ChatActivity.CODE && GeoRealtime.getProfile() != null) {
             if(hasNewMessages(getCurrentNoxbox())) {
                 drawNewMessageSign();
             } else {

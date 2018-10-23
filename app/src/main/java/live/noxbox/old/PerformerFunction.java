@@ -168,7 +168,7 @@ public abstract class PerformerFunction extends PerformerLocationFunction {
                 goOffline();
                 cleanUpMap();
 
-                Firebase.sendRequest(new Request()
+                GeoRealtime.sendRequest(new Request()
                         .setType(NotificationType.accept)
                         .setNoxbox(noxbox));
                 processNoxbox(noxbox);

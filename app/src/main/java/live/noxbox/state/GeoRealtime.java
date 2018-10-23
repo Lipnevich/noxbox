@@ -18,7 +18,7 @@ import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.Task;
 
-public class Firebase {
+public class GeoRealtime {
 
     public final static String delimiter = ";";
 
@@ -146,6 +146,7 @@ public class Firebase {
     }
 
     public static void stopListenAvailableNoxboxes() {
+        time = 0;
         if (geoQuery != null) {
             geoQuery.removeAllListeners();
         }

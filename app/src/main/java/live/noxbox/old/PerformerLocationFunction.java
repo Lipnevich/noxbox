@@ -23,7 +23,7 @@ public abstract class PerformerLocationFunction extends ChatFunction {
             Noxbox noxbox = getProfile().getCurrent();
             if(noxbox != null) {
                 noxbox.setPerformer(getProfile().publicInfo());
-                Firebase.updateCurrentNoxbox(noxbox);
+                GeoRealtime.updateCurrentNoxbox(noxbox);
                 sendNoxboxEvent(new Message().setType(move));
             }
         }

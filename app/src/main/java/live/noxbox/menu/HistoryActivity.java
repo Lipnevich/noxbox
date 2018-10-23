@@ -55,7 +55,7 @@ public class HistoryActivity extends AppCompatActivity {
         historyAdapter = new HistoryAdapter(HistoryActivity.this, profile.getId(), historyItems);
         listView.setAdapter(historyAdapter);
 
-//        Firebase.loadHistory(new Task<Collection<Noxbox>>() {
+//        GeoRealtime.loadHistory(new Task<Collection<Noxbox>>() {
 //            @Override
 //            public void execute(Collection<Noxbox> noxboxes) {
 //                historyItems.addAll(noxboxes);

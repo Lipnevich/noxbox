@@ -22,7 +22,7 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
 import live.noxbox.model.Wallet;
-import live.noxbox.state.Firebase;
+import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
@@ -58,7 +58,7 @@ public class WalletActivity extends AppCompatActivity {
 //            addressToSendEditor.setText(getProfile().getAddressToRefund());
 //        }
         // TODO (nli) send request to blockchain directly instead
-//        Firebase.sendRequest(new Request().setType(NotificationType.balance));
+//        GeoRealtime.sendRequest(new Request().setType(NotificationType.balance));
     }
 
     private void refund(Profile profile, String address) {
@@ -68,7 +68,7 @@ public class WalletActivity extends AppCompatActivity {
             profile.getWallet().setAddressToRefund(address);
         }
 
-        Firebase.sendRequest(new Request()
+        GeoRealtime.sendRequest(new Request()
                 .setType(NotificationType.refund)
                 .setAddress(profile.getWallet().getAddressToRefund()));
     }

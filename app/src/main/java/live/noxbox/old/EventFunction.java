@@ -33,7 +33,7 @@ public abstract class EventFunction extends GeoFunction {
         processProfile(getProfile());
     }
     private void processBalanceUpdated(Message update) {
-        Firebase.updateWallet(update.getWallet());
+        GeoRealtime.updateWallet(update.getWallet());
     }
 
     public void processEvent(Message event) {

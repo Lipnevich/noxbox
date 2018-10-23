@@ -40,7 +40,7 @@ import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.Firebase;
+import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
@@ -69,7 +69,7 @@ public class ConstructorActivity extends AppCompatActivity {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                profile.getCurrent().setGeoId(Firebase.createKey(profile.getCurrent()));
+                profile.getCurrent().setGeoId(GeoRealtime.createKey(profile.getCurrent()));
             }
         });
     }

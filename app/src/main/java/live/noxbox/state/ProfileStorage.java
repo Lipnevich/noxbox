@@ -17,10 +17,10 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
 import static com.google.common.base.Objects.equal;
-import static live.noxbox.state.Firebase.offline;
-import static live.noxbox.state.Firebase.online;
 import static live.noxbox.state.Firestore.writeNoxbox;
 import static live.noxbox.state.Firestore.writeProfile;
+import static live.noxbox.state.GeoRealtime.offline;
+import static live.noxbox.state.GeoRealtime.online;
 
 public class ProfileStorage {
 
