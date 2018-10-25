@@ -16,7 +16,6 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
@@ -32,15 +31,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ConcurrentHashMap;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.MapActivity;
@@ -53,7 +51,7 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.Firebase;
+import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
@@ -64,7 +62,7 @@ import live.noxbox.tools.Task;
 
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 import static live.noxbox.Configuration.MIN_ZOOM_LEVEL_FOR_SHOWING_MARKER_IN_VISIBLE_AREA;
-import static live.noxbox.state.Firebase.stopListenAvailableNoxboxes;
+import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -75,10 +73,11 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Activity activity;
-    private Map<String, NoxboxMarker> markers = new HashMap<>();
+    private Map<String, NoxboxMarker> markers = new ConcurrentHashMap<>();
     private ClusterManager<NoxboxMarker> clusterManager;
     private Handler serviceHandler;
     private Runnable serviceRunnable;
+
 
     public AvailableServices(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
         this.googleMap = googleMap;
@@ -180,53 +179,40 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         MapController.moveCopyrightLeft(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        if (mBound) {
+        if (serviceIsBound) {
             stopListenAvailableNoxboxes();
             activity.unbindService(mConnection);
-            mBound = false;
+            serviceIsBound = false;
         }
+        markers.clear();
     }
 
-    private AvailableNoxboxesService availableNoxboxesService;
-    private boolean mBound = false;
+    private boolean serviceIsBound = false;
     private ServiceConnection mConnection = new ServiceConnection() {
-        private Handler listenerHandler;
-        private Runnable listenerRunnable;
-        private long time;
+
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             AvailableNoxboxesService.LocalBinder binder = (AvailableNoxboxesService.LocalBinder) service;
-            availableNoxboxesService = binder.getService();
-            mBound = true;
-            listenerHandler = new Handler();
-            listenerRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    startListenAvailableNoxboxes(googleMap);
-                    googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            AvailableNoxboxesService availableNoxboxesService = binder.getService();
+            serviceIsBound = true;
+
+            startListenAvailableNoxboxes(googleMap);
+            googleMap.setOnCameraMoveListener(
+                    new GoogleMap.OnCameraMoveListener() {
                         @Override
                         public void onCameraMove() {
-                            if (System.currentTimeMillis() - time > 3000){
-                                for(NoxboxMarker marker : markers.values()){
-                                    createMarker(marker.getNoxbox());
-                                }
-                            }
-                            time = System.currentTimeMillis();
                             startListenAvailableNoxboxes(googleMap);
                         }
-                    });
-                }
-            };
-            listenerHandler.post(listenerRunnable);
+                    }
+            );
+
+
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            if (listenerHandler != null) {
-                listenerHandler.removeCallbacksAndMessages(this);
-            }
-            mBound = false;
+            serviceIsBound = false;
         }
     };
 
@@ -278,7 +264,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
     };
 
     private void startListenAvailableNoxboxes(GoogleMap googleMap) {
-        Firebase.startListenAvailableNoxboxes(MapActivity.getCameraPosition(googleMap).toGeoLocation(), moved, removed);
+        GeoRealtime.startListenAvailableNoxboxes(MapActivity.getCameraPosition(googleMap).toGeoLocation(), moved, removed);
 
     }
 
@@ -293,6 +279,16 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         protected void onBeforeClusterItemRendered(NoxboxMarker item, MarkerOptions markerOptions) {
             markerOptions.icon(item.getMarker().getIcon());
 
+        }
+
+        private Map<Integer, Bitmap> bitmapCaches = new ConcurrentHashMap<>();
+
+        private Bitmap getBitmap(int size) {
+            if (bitmapCaches.containsKey(size)) {
+                return bitmapCaches.get(size);
+            }
+            bitmapCaches.put(size, Bitmap.createScaledBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.noxbox), size, size, true));
+            return bitmapCaches.get(size);
         }
 
         @Override
@@ -311,7 +307,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
 
             String clusterSize = String.valueOf(cluster.getSize());
 
-            Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.noxbox), size, size, true);
+            Bitmap bitmap = getBitmap(size).copy(getBitmap(size).getConfig(), true);
 
             Paint paint = new Paint();
             paint.setColor(activity.getResources().getColor(R.color.secondary));
@@ -349,6 +345,7 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
             this.position = position;
             this.noxbox = noxbox;
             this.markerOptions = new MarkerOptions();
+            //TODO (vl) try to use custom caches (not glide)
             Glide.with(context)
                     .asBitmap()
                     .load(noxbox.getType().getImage())
@@ -397,20 +394,10 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
         clusterManager.cluster();
     }
 
-    private AtomicInteger noxboxCount = new AtomicInteger();
-    private AtomicLong totalTime = new AtomicLong();
-    private String TAG = this.getClass().getName();
-
     private void createMarker(final Noxbox noxbox) {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                int count = noxboxCount.incrementAndGet();
-                long currentTimeInMillis = System.currentTimeMillis();
-                if (count % 100 == 0) {
-                    Log.d(TAG, "Average creation time " + String.valueOf(totalTime.intValue() / count));
-                }
-
                 if (profile.getDarkList().get(noxbox.getOwner().getId()) != null) return;
 
                 if (!profile.getFilters().getTypes().get(noxbox.getType().name())) return;
@@ -433,27 +420,27 @@ public class AvailableServices implements State, ClusterManager.OnClusterClickLi
                     if (!profile.getHost()) return;
                 }
 
-                final LatLngBounds latLngBounds = googleMap.getProjection().getVisibleRegion().latLngBounds;
-
                 NoxboxMarker noxboxMarker = new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox, activity);
 
                 markers.put(noxbox.getId(), noxboxMarker);
-                if (isInVisibleArea(noxboxMarker.getPosition(), latLngBounds) && isMinimalZoomLevel()) {
-                    clusterManager.addItem(noxboxMarker);
-                    clusterManager.cluster();
-                }
 
+                clusterManager.addItem(noxboxMarker);
+                clusterManager.cluster();
 
-                totalTime.addAndGet(System.currentTimeMillis() - currentTimeInMillis);
             }
         });
+    }
+
+    private LatLngBounds getVisibleArea(GoogleMap googleMap){
+        VisibleRegion visibleRegion = googleMap.getProjection().getVisibleRegion();
+        return visibleRegion.latLngBounds;
     }
 
     private Boolean isInVisibleArea(LatLng position, LatLngBounds latLngBounds) {
         return (latLngBounds == null ? googleMap.getProjection().getVisibleRegion().latLngBounds : latLngBounds).contains(position);
     }
 
-    private Boolean isMinimalZoomLevel(){
+    private Boolean isMinimalZoomLevel() {
         return googleMap.getCameraPosition().zoom > MIN_ZOOM_LEVEL_FOR_SHOWING_MARKER_IN_VISIBLE_AREA;
     }
 

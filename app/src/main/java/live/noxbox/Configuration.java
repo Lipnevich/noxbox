@@ -17,6 +17,6 @@ public interface Configuration {
     int DEFAULT_BALANCE_SCALE = 10;
     String PRICE_FORMAT = "###.###";
     BigDecimal QUARTER = new BigDecimal("0.25");
-    int MIN_ZOOM_LEVEL_FOR_SHOWING_MARKER_IN_VISIBLE_AREA = 13;
+    int MIN_ZOOM_LEVEL_FOR_SHOWING_MARKER_IN_VISIBLE_AREA = 11;
 
 }
