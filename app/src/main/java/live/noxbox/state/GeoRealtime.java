@@ -8,6 +8,8 @@ import com.firebase.geofire.GeoQueryEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Map;
+
 import live.noxbox.Configuration;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
@@ -16,7 +18,6 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Rating;
 import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
-import live.noxbox.tools.Task;
 
 public class GeoRealtime {
 
@@ -103,46 +104,48 @@ public class GeoRealtime {
     private static GeoQuery geoQuery;
     private static long time;
 
-    public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Task<Noxbox> moved, final Task<Noxbox> removed) {
+    public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Map<String, Noxbox> noxboxes) {
         //allow to recreate query once per three seconds
         if (System.currentTimeMillis() - time < 3000)
             return;
-
         time = System.currentTimeMillis();
 
-        if (geoQuery != null) geoQuery.removeAllListeners();
-        geoQuery = geo().queryAtLocation(geoLocation, Configuration.RADIUS_IN_METERS / 1000);
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                Noxbox noxbox = parseKey(key);
-                if (noxbox != null) {
-                    noxbox.setPosition(Position.from(location));
-                    moved.execute(noxbox);
+        if (geoQuery != null) {
+            geoQuery.setCenter(geoLocation);
+        } else {
+            geoQuery = geo().queryAtLocation(geoLocation, Configuration.RADIUS_IN_METERS / 1000);
+            geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+                @Override
+                public void onKeyEntered(String key, GeoLocation location) {
+                    Noxbox noxbox = parseKey(key);
+                    if (noxbox != null) {
+                        noxbox.setPosition(Position.from(location));
+                        noxboxes.put(noxbox.getId(), noxbox);
+                    }
                 }
-            }
 
-            @Override
-            public void onKeyExited(String key) {
-                Noxbox noxbox = parseKey(key);
-                if (noxbox != null) {
-                    removed.execute(noxbox);
+                @Override
+                public void onKeyExited(String key) {
+                    Noxbox noxbox = parseKey(key);
+                    if (noxbox != null) {
+                        noxboxes.remove(noxbox.getId());
+                    }
                 }
-            }
 
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-                onKeyEntered(key, location);
-            }
+                @Override
+                public void onKeyMoved(String key, GeoLocation location) {
+                    onKeyEntered(key, location);
+                }
 
-            @Override
-            public void onGeoQueryReady() {
-            }
+                @Override
+                public void onGeoQueryReady() {
+                }
 
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-            }
-        });
+                @Override
+                public void onGeoQueryError(DatabaseError error) {
+                }
+            });
+        }
     }
 
     public static void stopListenAvailableNoxboxes() {
