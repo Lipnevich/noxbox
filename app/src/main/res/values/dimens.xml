@@ -16,4 +16,10 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+
+    <!--cluster-->
+    <dimen name="cluster_stroke_width">1dp</dimen>
+    <dimen name="cluster_text_size">14sp</dimen>
+    <dimen name="cluster_icon_min_size">32dp</dimen>
+    <dimen name="cluster_icon_padding">8dp</dimen>
 </resources>
