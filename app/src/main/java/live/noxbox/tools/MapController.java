@@ -5,9 +5,12 @@ import android.content.Context;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+
+import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
@@ -15,6 +18,7 @@ import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
+import live.noxbox.state.cluster.NoxboxMarker;
 
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
@@ -111,5 +115,20 @@ public class MapController {
         googleMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
+
+    public static LatLng getCenterBetweenSomeLocations(List<NoxboxMarker> points){
+        double totalLatitude = 0;
+        double totalLongitude = 0;
+
+        for (NoxboxMarker point : points) {
+            totalLatitude += point.getPosition().latitude;
+            totalLongitude += point.getPosition().longitude;
+        }
+
+        double latitude = totalLatitude / points.size();
+        double longitude = totalLongitude / points.size();
+
+        return new LatLng(latitude,longitude);
+    }
 
 }

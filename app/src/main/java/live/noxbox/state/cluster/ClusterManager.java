@@ -3,8 +3,10 @@ package live.noxbox.state.cluster;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.tools.MapController;
 
 import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 
@@ -44,12 +47,16 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         this.renderer = new live.noxbox.state.cluster.ClusterRenderer(this.context, googleMap);
     }
 
+    public ClusterManager setCallbacks(@Nullable Callbacks callbacks) {
+        renderer.setCallbacks(callbacks);
+        return this;
+    }
 
     public void setItems(@NonNull Map<String, Noxbox> noxboxItems, final Profile profile) {
         List<NoxboxMarker> clusterItems = new ArrayList<>();
         if (areNotTheyNull(noxboxItems)) {
             for (Noxbox noxbox : noxboxItems.values()) {
-                if (isFiltered(profile, noxbox)) continue;
+                if (!isFiltered(profile, noxbox)) continue;
                 clusterItems.add(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             }
             buildQuadTree(clusterItems);
@@ -164,18 +171,9 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
                 }
 
                 if (points.size() >= minClusterSize) {
-                    double totalLatitude = 0;
-                    double totalLongitude = 0;
 
-                    for (NoxboxMarker point : points) {
-                        totalLatitude += point.getPosition().latitude;
-                        totalLongitude += point.getPosition().longitude;
-                    }
-
-                    double latitude = totalLatitude / points.size();
-                    double longitude = totalLongitude / points.size();
-
-                    clusters.add(new live.noxbox.state.cluster.Cluster<NoxboxMarker>(latitude, longitude,
+                    LatLng center = MapController.getCenterBetweenSomeLocations(points);
+                    clusters.add(new live.noxbox.state.cluster.Cluster<NoxboxMarker>(center.latitude, center.longitude,
                             points, north, west, south, east));
                 } else {
                     for (NoxboxMarker point : points) {

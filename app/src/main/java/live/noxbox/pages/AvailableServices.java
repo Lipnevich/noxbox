@@ -9,12 +9,14 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -36,7 +38,10 @@ import live.noxbox.model.Profile;
 import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
+import live.noxbox.state.cluster.Callbacks;
+import live.noxbox.state.cluster.Cluster;
 import live.noxbox.state.cluster.ClusterManager;
+import live.noxbox.state.cluster.NoxboxMarker;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.NoxboxExamples;
@@ -68,7 +73,7 @@ public class AvailableServices implements State {
         this.googleApiClient = googleApiClient;
         this.activity = activity;
 
-        this.clusterManager = new ClusterManager(activity.getApplicationContext(), googleMap);
+        createClusterManager();
 
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
@@ -96,6 +101,43 @@ public class AvailableServices implements State {
 //            }
 //        });
         startListenAvailableNoxboxes();
+    }
+
+    private void createClusterManager() {
+        clusterManager = new ClusterManager(activity.getApplicationContext(), googleMap)
+                .setCallbacks(new Callbacks() {
+                    @Override
+                    public boolean onClusterClick(@NonNull Cluster<NoxboxMarker> cluster) {
+                        DebugMessage.popup(activity, "CLUSTER");
+
+                        float newZoom = googleMap.getCameraPosition().zoom + 1f;
+                        if (newZoom < googleMap.getMaxZoomLevel()) {
+                            LatLng center = MapController.getCenterBetweenSomeLocations(cluster.getItems());
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, newZoom));
+                        } else {
+                            // TODO (vl) показать список со всеми элементами кластера
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onClusterItemClick(@NonNull final NoxboxMarker clusterItem) {
+                        DebugMessage.popup(activity, "ITEM");
+                        ProfileStorage.readProfile(new Task<Profile>() {
+                            @Override
+                            public void execute(Profile profile) {
+                                //noxbox.getOwner().setPosition(noxbox.getPosition());
+                                profile.setViewed(clusterItem.getNoxbox());
+                                if (googleMap.getCameraPosition() != null) {
+                                    profile.setPosition(Position.from(googleMap.getCameraPosition().target));
+                                }
+                                profile.getViewed().setParty(profile.notPublicInfo());
+                                Router.startActivity(activity, DetailedActivity.class);
+                            }
+                        });
+                        return false;
+                    }
+                });
     }
 
 //    private void refresh() {

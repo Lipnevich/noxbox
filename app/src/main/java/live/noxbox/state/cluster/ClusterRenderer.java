@@ -40,6 +40,7 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
         this.googleMap = googleMap;
         this.context = context;
         this.iconGenerator = new IconGenerator(context);
+        this.googleMap.setOnMarkerClickListener(this);
     }
 
     @Override
