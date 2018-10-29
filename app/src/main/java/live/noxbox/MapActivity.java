@@ -30,6 +30,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import live.noxbox.debug.DebugActivity;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -37,14 +38,12 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Created;
-import live.noxbox.pages.DebugActivity;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.ConfirmationMessage;
-import live.noxbox.tools.MapController;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -164,7 +163,7 @@ public class MapActivity extends DebugActivity implements
             public void execute(Profile profile) {
                 profile.setPosition(getCurrentPosition());
                 if (profile.getPosition() != null) {
-                    MapController.buildMapPosition(googleMap, profile, getApplicationContext());
+                    //MapController.buildMapPosition(googleMap, profile, getApplicationContext());
                 }
             }
         });

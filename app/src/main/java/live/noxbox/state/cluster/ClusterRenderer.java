@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import live.noxbox.tools.TimeLogger;
+import live.noxbox.debug.TimeLogger;
 
 public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
 

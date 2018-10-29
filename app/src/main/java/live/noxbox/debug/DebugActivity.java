@@ -1,4 +1,4 @@
-package live.noxbox.pages;
+package live.noxbox.debug;
 
 import android.view.View;
 

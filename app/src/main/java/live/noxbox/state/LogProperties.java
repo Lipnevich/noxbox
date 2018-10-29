@@ -22,7 +22,7 @@ public final class LogProperties {
         for (Task<Profile> profileListener : profileListeners.values()) {
             Crashlytics.setString(PROFILE_LISTENER + ++i, profileListener.getClass().getName());
         }
-        Crashlytics.setString(PROFILE_PUBLIC_INFO, new Gson().toJson(profile.publicInfo()));
+        Crashlytics.setString(PROFILE_PUBLIC_INFO, new Gson().toJson(profile.notPublicInfo()));
         Crashlytics.setString(PROFILE_NOXBOX_ID, profile.getNoxboxId());
         Crashlytics.setString(NOXBOX_STATE, NoxboxState.getState(profile.getCurrent(), profile).name());
         Crashlytics.setBool(NOXBOX_STRATEGY, off == profile.getCurrent().strategy);

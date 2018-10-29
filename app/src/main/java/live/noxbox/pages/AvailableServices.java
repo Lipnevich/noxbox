@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,6 +28,7 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
 import live.noxbox.constructor.NoxboxTypeListActivity;
+import live.noxbox.debug.LogTracker;
 import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
@@ -48,6 +50,8 @@ import static live.noxbox.tools.Router.startActivityForResult;
 
 public class AvailableServices implements State {
 
+    private static String TAG = AvailableServices.class.getName();
+
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Activity activity;
@@ -59,7 +63,6 @@ public class AvailableServices implements State {
     private Handler serviceHandler;
     private Runnable serviceRunnable;
 
-    private static Map<String, Noxbox> markersS = new ConcurrentHashMap<>();
     public AvailableServices(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
         this.googleMap = googleMap;
         this.googleApiClient = googleApiClient;
@@ -70,15 +73,10 @@ public class AvailableServices implements State {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
-                for(Noxbox noxbox : NoxboxExamples.generateNoxboxes(profile.getPosition(),10000,profile)){
-                    markersS.put(noxbox.getId(),noxbox);
-                }
                 googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
                     @Override
                     public void onCameraIdle() {
                         startListenAvailableNoxboxes();
-
-                        clusterManager.setItems(markersS, profile);
                     }
                 });
 
@@ -210,7 +208,7 @@ public class AvailableServices implements State {
 //    }
 
 
-    private static Boolean isNotBind = true;
+    private static boolean serviceIsBound = false;
 
     @Override
     public void draw(final Profile profile) {
@@ -254,7 +252,7 @@ public class AvailableServices implements State {
             });
         }
 
-        if (isNotBind) {
+        if (!serviceIsBound) {
             serviceHandler = new Handler();
             serviceRunnable = new Runnable() {
                 @Override
@@ -265,15 +263,26 @@ public class AvailableServices implements State {
             };
             serviceHandler.post(serviceRunnable);
 
-            isNotBind = false;
+            serviceIsBound = true;
         }
     }
 
     @Override
     public void clear() {
+        //service clear
+        if (serviceIsBound) {
+            if (drawingHeandler != null) {
+                drawingHeandler.removeCallbacksAndMessages(drawingRunnable);
+                drawingHeandler.removeCallbacks(drawingRunnable);
+            }
+            mConnection.onServiceDisconnected(new ComponentName(activity.getApplicationContext().getPackageName(), AvailableServices.class.getName()));
+            activity.unbindService(mConnection);
+            serviceIsBound = false;
+        }
         if (serviceHandler != null) {
             serviceHandler.removeCallbacksAndMessages(null);
         }
+        //map clear
         googleMap.clear();
         googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
@@ -292,26 +301,44 @@ public class AvailableServices implements State {
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         MapController.moveCopyrightLeft(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        if (serviceIsBound) {
-            activity.unbindService(mConnection);
-            serviceIsBound = false;
-        }
         stopListenAvailableNoxboxes();
     }
 
-    private boolean serviceIsBound = false;
+    private Handler drawingHeandler = new Handler();
+    private Runnable drawingRunnable;
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
             AvailableNoxboxesService.LocalBinder binder = (AvailableNoxboxesService.LocalBinder) service;
             AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
+
+            LogTracker.showLog(TAG, "onServiceConnected()");
+
+            ProfileStorage.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(final Profile profile) {
+                    drawingRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            LogTracker.showLog(TAG, "run()");
+                            clusterManager.setItems(markers, profile);
+                            drawingHeandler.postDelayed(drawingRunnable, 200);
+                        }
+                    };
+                }
+            });
+            drawingHeandler.post(drawingRunnable);
+
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
+            Log.e(TAG, "onServiceDisconnected()");
+            if (drawingHeandler != null) {
+                drawingHeandler.removeCallbacksAndMessages(drawingRunnable);
+            }
             serviceIsBound = false;
         }
     };
