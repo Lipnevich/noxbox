@@ -37,6 +37,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.ADDRESS_SEARCH_RADIUS_IN_METERS;
 import static live.noxbox.tools.MapController.setupMap;
 
 public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
@@ -109,16 +111,15 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                if(profile.getViewed().getPosition() != null){
+                if (profile.getViewed().getPosition() != null) {
                     moveCamera(profile.getViewed().getPosition().toLatLng(), 15);
-                }else{
-                    moveCamera(profile.getCurrent().getPosition().toLatLng(),15);
+                } else {
+                    moveCamera(profile.getCurrent().getPosition().toLatLng(), 15);
                 }
-
+                init(profile);
             }
         });
 
-        init();
 
         findViewById(R.id.choosePlace).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +139,16 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    private void init() {
+    public LatLngBounds getAreaByRadiusAroundPoint(LatLng center, double radiusInMeters) {
+        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
+        LatLng southwestCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
+        LatLng northeastCorner =
+                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
+        return new LatLngBounds(southwestCorner, northeastCorner);
+    }
+
+    private void init(final Profile profile) {
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -149,10 +159,10 @@ public class CoordinateActivity extends AppCompatActivity implements OnMapReadyC
         mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(
                 this,
                 mGoogleApiClient,
-                new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136)),
+                getAreaByRadiusAroundPoint(profile.getPosition().toLatLng(), ADDRESS_SEARCH_RADIUS_IN_METERS),
                 null);
 
-        searchLine = ((AutoCompleteTextView) findViewById(R.id.searchInput));
+        searchLine = findViewById(R.id.searchInput);
         searchLine.setOnItemClickListener(mAutocompleteClickListener);
         searchLine.setAdapter(mPlaceAutocompleteAdapter);
 

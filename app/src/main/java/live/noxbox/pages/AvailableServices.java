@@ -305,7 +305,7 @@ public class AvailableServices implements State {
             };
             serviceHandler.post(serviceRunnable);
 
-            serviceIsBound = true;
+
         }
     }
 
