@@ -9,7 +9,6 @@ import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -28,6 +27,7 @@ import com.bumptech.glide.request.transition.Transition;
 import java.util.ArrayList;
 import java.util.List;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.model.Message;
@@ -40,7 +40,7 @@ import static android.graphics.Bitmap.createScaledBitmap;
 import static com.bumptech.glide.request.RequestOptions.diskCacheStrategyOf;
 import static java.util.Collections.sort;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseActivity {
 
     public static final int CODE = 1001;
 

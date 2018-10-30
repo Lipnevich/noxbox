@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.constructor.NoxboxTypeListActivity;
 import live.noxbox.model.NoxboxType;
@@ -31,7 +31,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.ImageManager.createCircleImageFromUrl;
 
-public class ProfileActivity extends FragmentActivity {
+public class ProfileActivity extends BaseActivity {
 
     public static final int CODE = 1006;
     public static final int SELECT_IMAGE = 1007;
@@ -105,7 +105,7 @@ public class ProfileActivity extends FragmentActivity {
 
     private void drawName(Profile profile) {
         ((EditText) findViewById(R.id.editName)).setText(profile.getName());
-        ((EditText) findViewById(R.id.editName)).setEnabled(false);
+        findViewById(R.id.editName).setEnabled(false);
     }
 
     private void drawTravelMode(final Profile profile) {
@@ -143,12 +143,12 @@ public class ProfileActivity extends FragmentActivity {
         if (typeList.size() >= 1) {
             findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.INVISIBLE);
             findViewById(R.id.serviceProvidedText).setVisibility(View.VISIBLE);
-            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.noxboxTypeList);
+            RecyclerView recyclerView = findViewById(R.id.noxboxTypeList);
             recyclerView.setVisibility(View.VISIBLE);
             recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
             recyclerView.setAdapter(new PortfolioNoxboxTypeAdapter(typeList, ProfileActivity.this));
         } else {
-            ((RecyclerView) findViewById(R.id.noxboxTypeList)).setVisibility(View.GONE);
+            findViewById(R.id.noxboxTypeList).setVisibility(View.GONE);
             findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.serviceProvidedText).setVisibility(View.GONE);
         }
@@ -206,7 +206,7 @@ public class ProfileActivity extends FragmentActivity {
     }
 
     private void drawEditName(final Profile profile) {
-        ((EditText) findViewById(R.id.editName)).setEnabled(true);
+        findViewById(R.id.editName).setEnabled(true);
         ((EditText) findViewById(R.id.editName)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -253,7 +253,7 @@ public class ProfileActivity extends FragmentActivity {
     }
 
     private void drawEditHost(final Profile profile) {
-        ((Switch) findViewById(R.id.switchHost)).setVisibility(View.VISIBLE);
+        findViewById(R.id.switchHost).setVisibility(View.VISIBLE);
         ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
         findViewById(R.id.hostLayout).setOnClickListener(new View.OnClickListener() {
             @Override

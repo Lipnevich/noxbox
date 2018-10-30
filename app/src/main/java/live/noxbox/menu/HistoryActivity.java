@@ -3,7 +3,6 @@ package live.noxbox.menu;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -13,13 +12,14 @@ import com.bumptech.glide.request.RequestOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends BaseActivity {
 
     public static final int CODE = 1002;
 
