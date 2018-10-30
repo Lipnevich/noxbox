@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
@@ -26,7 +26,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.ImageManager.deleteFolderByType;
 
-public class ProfilePerformerActivity extends AppCompatActivity {
+public class ProfilePerformerActivity extends BaseActivity {
 
     public static final int CODE = 1011;
     public static final int SELECT_IMAGE_CERTIFICATE = 1012;
@@ -103,7 +103,7 @@ public class ProfilePerformerActivity extends AppCompatActivity {
 
         List<String> certificateUrlList = profile.getPortfolio().get(type.name()).getImages().get(ImageType.certificates.name());
 
-        RecyclerView certificateList = (RecyclerView) findViewById(R.id.certificatesList);
+        RecyclerView certificateList = findViewById(R.id.certificatesList);
         certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, type));
 
@@ -121,7 +121,7 @@ public class ProfilePerformerActivity extends AppCompatActivity {
     private void drawWorkSample(final Profile profile) {
         List<String> workSampleUrlList = profile.getPortfolio().get(type.name()).getImages().get(ImageType.samples.name());
 
-        RecyclerView workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
+        RecyclerView workSampleList = findViewById(R.id.workSampleList);
         workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, type));
 

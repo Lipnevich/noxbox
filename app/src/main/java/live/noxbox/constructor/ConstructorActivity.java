@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
@@ -31,6 +30,7 @@ import com.crashlytics.android.Crashlytics;
 
 import java.lang.reflect.Field;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
@@ -53,7 +53,7 @@ import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
 
-public class ConstructorActivity extends AppCompatActivity {
+public class ConstructorActivity extends BaseActivity {
 
     protected double price;
     private TextView closeOrRemove;

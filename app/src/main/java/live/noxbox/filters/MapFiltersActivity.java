@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -12,6 +11,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
@@ -22,7 +22,7 @@ import live.noxbox.tools.Task;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 
-public class MapFiltersActivity extends AppCompatActivity {
+public class MapFiltersActivity extends BaseActivity {
 
     public static final int CODE = 1005;
 

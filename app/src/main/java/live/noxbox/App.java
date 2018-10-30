@@ -3,15 +3,12 @@ package live.noxbox;
 import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 
 import io.fabric.sdk.android.Fabric;
-import live.noxbox.pages.NetworkReceiver;
 import live.noxbox.state.ProfileStorage;
 
 public class App extends Application implements Application.ActivityLifecycleCallbacks {
@@ -32,17 +29,11 @@ public class App extends Application implements Application.ActivityLifecycleCal
     }
     @Override
     public void onActivityResumed(Activity activity) {
-        networkReceiver = new NetworkReceiver(activity);
-        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-        try {
-            unregisterReceiver(networkReceiver);
-        } catch (IllegalArgumentException e) {
-            Crashlytics.logException(e);
-        }
         ProfileStorage.clearListeners();
     }
 

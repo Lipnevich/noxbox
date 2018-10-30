@@ -6,7 +6,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 
 import java.math.BigDecimal;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -30,7 +30,7 @@ import static live.noxbox.Configuration.CURRENCY;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
-public class WalletActivity extends AppCompatActivity {
+public class WalletActivity extends BaseActivity {
 
     public static final int CODE = 1003;
 

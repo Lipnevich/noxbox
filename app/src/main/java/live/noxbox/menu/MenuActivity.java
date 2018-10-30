@@ -21,7 +21,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.filters.MapFiltersActivity;
@@ -44,7 +44,7 @@ import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-public abstract class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public abstract class MenuActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
 
     @Override

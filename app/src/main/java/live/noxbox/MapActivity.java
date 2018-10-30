@@ -13,6 +13,7 @@
  */
 package live.noxbox;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -57,6 +58,7 @@ public class MapActivity extends DebugActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
+    private BroadcastReceiver networkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

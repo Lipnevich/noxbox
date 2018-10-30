@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -43,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
@@ -51,7 +51,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.Configuration.ADDRESS_SEARCH_RADIUS_IN_METERS;
 import static live.noxbox.tools.MapController.setupMap;
 
-public class CoordinateActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
+public class CoordinateActivity extends BaseActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
     public static final String LAT = "lat";
     public static final String LNG = "lng";
     public static final int COORDINATE = 111;
