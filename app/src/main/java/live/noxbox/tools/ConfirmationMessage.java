@@ -37,7 +37,13 @@ public class ConfirmationMessage {
 
     public static void messageGps(final Activity activity) {
         if (gps == null) {
-            gps = Snackbar.make(activity.findViewById(android.R.id.content), R.string.isGps, Snackbar.LENGTH_INDEFINITE)
+            View content = null;
+            if(activity.getClass().getName().equals(MapActivity.class.getName())){
+                content = activity.findViewById(R.id.coordinatorLayout);
+            }else{
+                content = activity.findViewById(android.R.id.content);
+            }
+            gps = Snackbar.make(content, R.string.isGps, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.enable, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
