@@ -477,9 +477,9 @@ public enum NotificationType {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                int hours = seconds / 3600;
-                int minutes = (seconds % 3600) / 60;
-                int secs = seconds % 60;
+                long hours = seconds / 3600;
+                long minutes = (seconds % 3600) / 60;
+                long secs = seconds % 60;
                 String time = String.format("%d:%02d:%02d", hours, minutes, secs);
 
                 if (profile.getCurrent().getTimeCompleted() == null) {

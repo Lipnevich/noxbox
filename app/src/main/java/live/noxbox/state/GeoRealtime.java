@@ -71,7 +71,7 @@ public class GeoRealtime {
         String[] values = key.split(delimiter);
         int index = 0;
         try {
-            if (values.length == 8) {
+            if (values.length == 9) {
                 Noxbox noxbox = new Noxbox();
                 noxbox.setId(values[index++]);
                 noxbox.setRole(MarketRole.valueOf(values[index++]));

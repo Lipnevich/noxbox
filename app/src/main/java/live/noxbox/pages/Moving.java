@@ -24,6 +24,7 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.Firestore;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
@@ -186,6 +187,7 @@ public class Moving implements State {
                         if (profile.getCurrent().getTimePartyVerified() != null && profile.getCurrent().getTimeOwnerVerified() != null) {
                             profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
                         }
+                        ProfileStorage.fireProfile();
 
                     }
                 }));

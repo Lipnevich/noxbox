@@ -35,9 +35,17 @@ public class DebugActivity extends MenuActivity {
                             if (areNotTheyNull(profile.getCurrent(), profile.getCurrent().getOwner(), profile.getCurrent().getTimeCreated())
                                     && profile.getCurrent().getTimeRequested() == null) {
                                 // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
-                                profile.getCurrent().setParty(new Profile().setWallet(new Wallet().setBalance("1000")).setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399)).setNoxboxId(profile.getNoxboxId()).setTravelMode(TravelMode.driving).setHost(false).setName("Granny Smith").setId("12321").setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
+                                profile.getCurrent().setParty(new Profile()
+                                        .setWallet(new Wallet().setBalance("1000"))
+                                        .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
+                                        .setNoxboxId(profile.getNoxboxId())
+                                        .setTravelMode(TravelMode.driving)
+                                        .setHost(false)
+                                        .setName("Granny Smith")
+                                        .setId("12321")
+                                        .setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                                Firestore.writeNoxbox(profile.getCurrent());
+                                ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }

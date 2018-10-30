@@ -64,8 +64,7 @@ public class Performing implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
 
-        long currentTimeInMillis = System.currentTimeMillis();
-        seconds = (int) ((currentTimeInMillis - profile.getCurrent().getTimeStartPerforming()) / 1000);
+        seconds = (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000;
         String price = profile.getCurrent().getPrice();
         totalMoney = new BigDecimal(price);
         totalMoney = totalMoney.multiply(QUARTER);
@@ -82,9 +81,9 @@ public class Performing implements State {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                int hours = seconds / 3600;
-                int minutes = (seconds % 3600) / 60;
-                int secs = seconds % 60;
+                long hours = seconds / 3600;
+                long minutes = (seconds % 3600) / 60;
+                long secs = seconds % 60;
                 String time = String.format("%d:%02d:%02d", hours, minutes, secs);
 
 
