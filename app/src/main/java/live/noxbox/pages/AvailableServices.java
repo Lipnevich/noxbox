@@ -48,6 +48,7 @@ import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
+import static live.noxbox.state.GeoRealtime.online;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -165,7 +166,7 @@ public class AvailableServices implements State {
                 @Override
                 public void onClick(View v) {
                     for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(MapActivity.getCameraPosition(googleMap), 5000, profile)) {
-                        //online(noxbox);
+                        online(noxbox);
                     }
                 }
             });
