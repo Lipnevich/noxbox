@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -47,7 +48,6 @@ import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
-import static live.noxbox.debug.LogTracker.showLog;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -233,7 +233,7 @@ public class AvailableServices implements State {
             AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
 
-            showLog(TAG, "onServiceConnected()");
+            Log.d(TAG, "onServiceConnected()");
 
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
@@ -241,7 +241,7 @@ public class AvailableServices implements State {
                     drawingRunnable = new Runnable() {
                         @Override
                         public void run() {
-                            showLog(TAG, "run()");
+                            Log.d(TAG, "run()");
                             clusterManager.setItems(markers, profile);
                             drawingHeandler.postDelayed(drawingRunnable, 200);
                         }
@@ -256,7 +256,7 @@ public class AvailableServices implements State {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            showLog(TAG, "onServiceDisconnected()");
+            Log.d(TAG, "onServiceDisconnected()");
             if (drawingHeandler != null) {
                 drawingHeandler.removeCallbacksAndMessages(drawingRunnable);
             }

@@ -44,7 +44,6 @@ import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.ConfirmationMessage;
-import live.noxbox.tools.MapController;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -163,7 +162,6 @@ public class MapActivity extends DebugActivity implements
             @Override
             public void execute(Profile profile) {
                 profile.setPosition(getCurrentPosition());
-                MapController.buildMapPosition(googleMap, profile, getApplicationContext());
             }
         });
     }
