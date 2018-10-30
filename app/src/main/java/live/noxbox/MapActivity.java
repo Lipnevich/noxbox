@@ -163,9 +163,7 @@ public class MapActivity extends DebugActivity implements
             @Override
             public void execute(Profile profile) {
                 profile.setPosition(getCurrentPosition());
-                if (profile.getPosition() != null) {
-                    MapController.buildMapPosition(googleMap, profile, getApplicationContext());
-                }
+                MapController.buildMapPosition(googleMap, profile, getApplicationContext());
             }
         });
     }
@@ -237,7 +235,7 @@ public class MapActivity extends DebugActivity implements
             public void execute(Profile profile) {
                 if (googleMap == null) return;
                 State newState = getFragment(profile);
-                if(currentState == null) {
+                if (currentState == null) {
                     currentState = newState;
                     newState.draw(profile);
                     return;

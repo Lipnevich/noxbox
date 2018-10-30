@@ -56,7 +56,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         List<NoxboxMarker> clusterItems = new ArrayList<>();
         if (areNotTheyNull(noxboxItems)) {
             for (Noxbox noxbox : noxboxItems.values()) {
-                if (!isFiltered(profile, noxbox)) continue;
+                if (isFiltered(profile, noxbox)) continue;
                 clusterItems.add(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             }
             buildQuadTree(clusterItems);
@@ -64,10 +64,6 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     }
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
-//        if(noxbox.getPosition().getLongitude() < screen.southwest.longitude || noxbox.getPosition().getLongitude() > screen.northeast.longitude
-//                || noxbox.getPosition().getLatitude() < screen.northeast.latitude || noxbox.getPosition().getLatitude() > screen.southwest.latitude)
-//            return true;
-
         if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
             return true;
         if (!profile.getFilters().getTypes().get(noxbox.getType().name()))
