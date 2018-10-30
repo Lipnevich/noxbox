@@ -64,6 +64,12 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     }
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
+
+        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами
+
+        if (!profile.getFilters().getAllowNovices())
+            return true;
+
         if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
             return true;
         if (!profile.getFilters().getTypes().get(noxbox.getType().name()))

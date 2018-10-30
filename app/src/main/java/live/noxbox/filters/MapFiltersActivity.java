@@ -26,6 +26,7 @@ public class MapFiltersActivity extends BaseActivity {
 
     public static final int CODE = 1005;
 
+    private Switch novice;
     private Switch demand;
     private Switch supply;
     private SeekBar price;
@@ -44,12 +45,15 @@ public class MapFiltersActivity extends BaseActivity {
     }
 
     private void initialize() {
+        novice = findViewById(R.id.novice);
         demand = findViewById(R.id.demand);
         supply = findViewById(R.id.supply);
         price = findViewById(R.id.price);
         priceText = findViewById(R.id.priceText);
         typeLayout = findViewById(R.id.types);
 
+
+        ((TextView) findViewById(R.id.noviceTitle)).setText(getResources().getString(R.string.novice));
         ((TextView) findViewById(R.id.demandTitle)).setText(getResources().getString(R.string.demand).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.demand).substring(1)));
         ((TextView) findViewById(R.id.supplyTitle)).setText(getResources().getString(R.string.supply).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.supply).substring(1)));
     }
@@ -73,10 +77,21 @@ public class MapFiltersActivity extends BaseActivity {
     }
 
     private void draw(final Profile profile) {
+        drawNovice(profile);
         drawDemand(profile);
         drawSupply(profile);
         drawPrice(profile);
         drawTypeList(profile);
+    }
+
+    private void drawNovice(final Profile profile) {
+        novice.setChecked(profile.getFilters().getAllowNovices());
+        novice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                profile.getFilters().setAllowNovices(isChecked);
+            }
+        });
     }
 
     private void drawDemand(final Profile profile) {

@@ -61,6 +61,7 @@ public class GeoRealtime {
                 + delimiter + currentNoxbox.getPrice()
                 + delimiter + currentNoxbox.getOwner().getTravelMode()
                 + delimiter + currentNoxbox.getOwner().getHost()
+                + delimiter + currentNoxbox.getOwner().getFilters().getAllowNovices()
                 + delimiter + ownerRating.getReceivedLikes()
                 + delimiter + ownerRating.getReceivedDislikes()
                 ;
@@ -78,6 +79,7 @@ public class GeoRealtime {
                 noxbox.setPrice(values[index++]);
                 noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[index++]));
                 noxbox.getOwner().setHost(Boolean.valueOf(values[index++]));
+                noxbox.getOwner().getFilters().setAllowNovices(Boolean.valueOf(values[index++]));
 
                 Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[index++])).setReceivedDislikes(Integer.valueOf(values[index++]));
                 if (noxbox.getRole() == MarketRole.supply) {

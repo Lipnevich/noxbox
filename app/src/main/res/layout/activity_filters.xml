@@ -4,6 +4,49 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!--NOVICE-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:paddingStart="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="6"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/noviceTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/google_text"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filterNoviceText"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="@dimen/text_size_secondary" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <Switch
+                android:id="@+id/novice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
+        </FrameLayout>
+    </LinearLayout>
+
     <!--DEMAND-->
     <LinearLayout
         android:layout_width="match_parent"

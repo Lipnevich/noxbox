@@ -188,6 +188,7 @@
     <string name="filters">Filters</string>
     <string name="constructorService">Constructor of service</string>
     <string name="filterMaxPriceText">The maximum cost of services</string>
+    <string name="filterNoviceText">Show the services of employees who do not have reviews or only with negative reviews.</string>
     <string name="filterDemandText">Show the demand for services on the map</string>
     <string name="filterSupplyText">Show service offers on the map</string>
     <string name="noxboxType">Service type</string>
@@ -254,4 +255,5 @@
     <string name="photographerDescription">Фотограф качественно снимающий и быстро готовящий фотографии</string>
     <string name="meditationDescription">Коллективная медитация и лекция от Дады</string>
     <string name="currency">Waves</string>
+    <string name="novice">Novice</string>
 </resources>
