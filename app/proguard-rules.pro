@@ -22,3 +22,5 @@
 -dontwarn org.ietf.jgss.**
 
 -keep class live.noxbox.** { *; }
+
+-ignorewarnings
