@@ -28,22 +28,11 @@
     <string name="settings">Settings</string>
 
     <!--NoxboxType's-->
-    <string name="massage">Massage</string>
-    <string name="sportCompanion">Sport Companion</string>
-    <string name="haircut">Haircut</string>
-    <string name="dinner">Dinner</string>
-    <string name="plumber">Plumber</string>
-    <string name="manicure">Manicure</string>
-    <string name="sportCoach">Sport coach</string>
-    <string name="computerRepairMan">Computer repair</string>
-    <string name="houseWife">House wife</string>
     <string name="nanny">Nanny</string>
-    <string name="dogWalker">Dog walker</string>
-    <string name="homeTeacher">Home teacher</string>
-    <string name="husbandForHour">Husband for hour</string>
-    <string name="musician">Musician</string>
     <string name="photographer">Photographer</string>
     <string name="meditation">Meditation lessons</string>
+    <string name="water">Питьевая вода</string>
+    <string name="plant">Посадка саженцев</string>
 
 
     <string name="tirefitting">Tire fitting</string>
@@ -124,26 +113,13 @@
     <string name="priceService">Price 1 hour services</string>
 
     <!--Service description-->Description
-    <string name="massageDescription">1 hour of massage</string>
-    <string name="dogWalkingDescription">1 hour of dog walking</string>
-    <string name="haircutDescription">1 hour haircut</string>
-    <string name="manicureDescription">1 hour manicure session</string>
-    <string name="computerRepairDescription">1 hours computer repair</string>
-    <string name="dinnerDescription">1 hour cooking</string>
-    <string name="houseWifeDescription">1 hour apartment cleaning</string>
     <string name="nannyDuration">1 hours childcare</string>
-    <string name="homeTeacherDescription">1 hour English tutor</string>
-    <string name="husbandForHourDescription">1 hour the husband for an hour</string>
-    <string name="plumberDescription">1 hour pipeline prevention</string>
-    <string name="sportCompanionDescription">1 hour training in a hall</string>
-    <string name="sportCoachDescription">1 hour training with a coach</string>
-    <string name="musicianDescription">1 hour play on guitar</string>
     <string name="photographerDuration">1 hour photographer service</string>
     <string name="meditationDuration">1 час медитации</string>
     <string name="waterDuration" />
     <string name="plantDuration">1 час работ</string>
     <string name="waterDescription">Доставка свежей воды</string>
-    <string name="plantDescription">Доставка и посадка деревья-саженцы, кустарников, декаоративных деревьев. А так же: cоздание цветников; обрезка деревьев, кустов.</string>
+    <string name="plantDescription">Доставка и посадка деревьев-саженцев, кустарников, декоративных деревьев. А так же: cоздание цветников; обрезка деревьев, кустов.</string>
 
 
     <string name="trackLocation">Track location</string>
@@ -260,8 +236,7 @@
     <string name="meditationDescription">Коллективная медитация и лекция от Дады</string>
     <string name="currency">Waves</string>
     <string name="novice">Novice</string>
-    <string name="water">Питьевая вода</string>
-    <string name="plant">Посадка саженцев</string>
+
 
 
 </resources>
