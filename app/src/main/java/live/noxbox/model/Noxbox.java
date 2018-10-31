@@ -31,6 +31,9 @@ public class Noxbox implements Comparable<Noxbox> {
     private String id;
     @Virtual
     private String geoId;
+    @Virtual
+    private Long timeStartPerforming;
+
     private Profile owner;
     private Profile party;
     private Map<String, Message> chat = new HashMap<>();
@@ -47,7 +50,6 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeOwnerVerified;
     private Long timePartyVerified;
 
-    private Long timeStartPerforming;
     private Long timeOwnerDisliked;
     private Long timePartyDisliked;
 
@@ -323,13 +325,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public Long getTimeStartPerforming() {
-        return timeStartPerforming;
-    }
+        if (getTimeOwnerVerified() == null || getTimePartyVerified() == null) return null;
 
-    public Noxbox setTimeStartPerforming(Long timeStartPerforming) {
-        this.timeStartPerforming = timeStartPerforming;
-        changed();
-        return this;
+        return Math.max(getTimeOwnerVerified(), getTimePartyVerified());
     }
 
     public String getCancellationReasonMessage() {

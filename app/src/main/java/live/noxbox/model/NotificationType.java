@@ -386,11 +386,6 @@ public enum NotificationType {
                         profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
                     }
 
-                    if (profile.getCurrent().getTimePartyVerified() != null && profile.getCurrent().getTimeOwnerVerified() != null) {
-                        profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
-                    }
-
-                    ProfileStorage.fireProfile();
                     MessagingService.getNotificationService(context).cancelAll();
                 }
             });

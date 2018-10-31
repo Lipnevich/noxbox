@@ -32,7 +32,6 @@ import java.lang.reflect.Field;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.Configuration;
-import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.detailed.CoordinateActivity;
 import live.noxbox.model.MarketRole;
@@ -45,7 +44,6 @@ import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
-import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -127,7 +125,7 @@ public class ConstructorActivity extends BaseActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Router.startActivity(ConstructorActivity.this, MapActivity.class);
+                finish();
             }
         });
     }
@@ -394,17 +392,17 @@ public class ConstructorActivity extends BaseActivity {
         profile.getCurrent().clean();
         profile.getCurrent().setOwner(profile.publicInfo());
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
-        Router.startActivity(ConstructorActivity.this, MapActivity.class);
+        finish();
     }
 
     public void removeNoxbox(Profile profile) {
         profile.getCurrent().clean();
         profile.getCurrent().setTimeRemoved(System.currentTimeMillis());
-        Router.startActivity(ConstructorActivity.this, MapActivity.class);
+        finish();
     }
 
     private void cancelNoxboxConstructor() {
-        Router.startActivity(ConstructorActivity.this, MapActivity.class);
+        finish();
     }
 
     @Override

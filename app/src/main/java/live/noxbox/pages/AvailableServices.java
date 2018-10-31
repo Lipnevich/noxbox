@@ -68,7 +68,7 @@ public class AvailableServices implements State {
     private Handler serviceHandler;
     private Runnable serviceRunnable;
 
-    public AvailableServices(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
+    public  AvailableServices(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
         this.googleMap = googleMap;
         this.googleApiClient = googleApiClient;
         this.activity = activity;

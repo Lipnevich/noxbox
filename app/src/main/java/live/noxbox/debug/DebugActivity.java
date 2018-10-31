@@ -9,7 +9,6 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
-import live.noxbox.state.Firestore;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
@@ -38,14 +37,13 @@ public class DebugActivity extends MenuActivity {
                                 profile.getCurrent().setParty(new Profile()
                                         .setWallet(new Wallet().setBalance("1000"))
                                         .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
-                                        .setNoxboxId(profile.getNoxboxId())
+                                        .setNoxboxId(profile.getCurrent().getId())
                                         .setTravelMode(TravelMode.driving)
                                         .setHost(false)
                                         .setName("Granny Smith")
                                         .setId("12321")
                                         .setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                                ProfileStorage.fireProfile();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }
@@ -104,11 +102,6 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
                                 }
-                                if (profile.getCurrent().getTimeOwnerVerified() != null &&
-                                        profile.getCurrent().getTimePartyVerified() != null) {
-                                    profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
-                                }
-                                Firestore.writeNoxbox(profile.getCurrent());
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to verify");
                             }

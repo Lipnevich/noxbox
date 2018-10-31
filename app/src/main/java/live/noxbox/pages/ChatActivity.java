@@ -212,4 +212,9 @@ public class ChatActivity extends BaseActivity {
         return profile.getCurrent().getNotMe(profile.getId()).getName();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

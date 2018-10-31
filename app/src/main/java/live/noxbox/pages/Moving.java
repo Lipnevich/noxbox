@@ -23,7 +23,6 @@ import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.Firestore;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DebugMessage;
@@ -61,7 +60,7 @@ public class Moving implements State {
     @Override
     public void draw(final Profile profile) {
         googleMap.addPolyline(new PolylineOptions()
-                .add(profile.getCurrent().getOwner().getPosition().toLatLng(),profile.getCurrent().getParty().getPosition().toLatLng())
+                .add(profile.getCurrent().getOwner().getPosition().toLatLng(), profile.getCurrent().getParty().getPosition().toLatLng())
                 .width(5)
                 .color(Color.GREEN));
 
@@ -168,7 +167,7 @@ public class Moving implements State {
                         googleMap.clear();
                         photoView.removeAllViews();
 
-                        Firestore.writeNoxbox(profile.getCurrent());
+                        ProfileStorage.fireProfile();
                     }
                 }));
 
@@ -183,12 +182,6 @@ public class Moving implements State {
                         } else {
                             profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
                         }
-
-                        if (profile.getCurrent().getTimePartyVerified() != null && profile.getCurrent().getTimeOwnerVerified() != null) {
-                            profile.getCurrent().setTimeStartPerforming(System.currentTimeMillis());
-                        }
-                        ProfileStorage.fireProfile();
-
                     }
                 }));
 
