@@ -13,7 +13,6 @@
  */
 package live.noxbox;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -30,6 +29,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.WeakHashMap;
 
 import live.noxbox.debug.DebugActivity;
 import live.noxbox.model.NoxboxState;
@@ -58,7 +59,6 @@ public class MapActivity extends DebugActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-    private BroadcastReceiver networkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,28 +248,44 @@ public class MapActivity extends DebugActivity implements
                     return;
                 }
 
+
                 currentState.draw(profile);
             }
         });
     }
 
+    private WeakHashMap<NoxboxState, State> states = new WeakHashMap<>();
+
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
+        //strong link for weakMap
+        State newState = states.get(state);
+        if (newState != null)
+            return newState;
+
         switch (state) {
             case initial:
-                return new AvailableServices(googleMap, googleApiClient, this);
+                newState = new AvailableServices(googleMap, googleApiClient, this);
+                break;
             case created:
-                return new Created(googleMap, this);
+                newState = new Created(googleMap, this);
+                break;
             case requesting:
-                return new Requesting(googleMap, this);
+                newState = new Requesting(googleMap, this);
+                break;
             case accepting:
-                return new Accepting(googleMap, this);
+                newState = new Accepting(googleMap, this);
+                break;
             case moving:
-                return new Moving(googleMap, this);
+                newState = new Moving(googleMap, this);
+                break;
             case performing:
-                return new Performing(this, googleMap);
+                newState = new Performing(this, googleMap);
+                break;
             default:
                 throw new IllegalStateException("Unknown state: " + state.name());
         }
+        states.put(state, newState);
+        return newState;
     }
 }
