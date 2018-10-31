@@ -139,6 +139,10 @@
     <string name="musicianDescription">1 час игры на гитаре</string>
     <string name="photographerDuration">1 час услуги фотографа</string>
     <string name="meditationDuration">1 час медитации</string>
+    <string name="waterDuration" />
+    <string name="plantDuration">1 час работ</string>
+    <string name="waterDescription">Доставка свежей воды</string>
+    <string name="plantDescription">Доставка и посадка деревья-саженцы, кустарников, декаоративных деревьев. А так же: cоздание цветников; обрезка деревьев, кустов.</string>
 
     <string name="trackLocation">Показывать местоположение</string>
 
@@ -254,5 +258,10 @@
     <string name="meditationDescription">Коллективная медитация и лекция от Дады</string>
     <string name="currency">Waves</string>
     <string name="novice">Новичок</string>
+    <string name="water">Питьевая вода</string>
+    <string name="plant">Посадка саженцев</string>
+
+
+
 
 </resources>

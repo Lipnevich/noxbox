@@ -5,7 +5,9 @@ import live.noxbox.R;
 public enum NoxboxType {
     nanny(0, R.string.nanny, R.drawable.ic_nanny, R.drawable.illustration_nanny, R.string.nannyDescription, R.string.nannyDuration, "60"),
     photographer(1, R.string.photographer, R.drawable.ic_photographer, R.drawable.illustration_photographer, R.string.photographerDescription, R.string.photographerDuration, "60"),
-    meditation(2, R.string.meditation, R.drawable.ic_meditation, R.drawable.illustration_meditation, R.string.meditationDescription, R.string.meditationDuration, "60");
+    meditation(2, R.string.meditation, R.drawable.ic_meditation, R.drawable.illustration_meditation, R.string.meditationDescription, R.string.meditationDuration, "60"),
+    water(3, R.string.water, R.drawable.ic_water, R.drawable.illustration_water, R.string.waterDescription, R.string.waterDuration, "60"),
+    plant(4, R.string.plant, R.drawable.ic_plant, R.drawable.illustration_plant, R.string.plantDescription, R.string.plantDuration, "60");
     //haircut(2, R.string.haircut, R.drawable.haircut, R.drawable.music_back, R.string.haircutDescription, "60"),
     //manicure(3, R.string.manicure, R.drawable.manicure, R.drawable.music_back, R.string.manicureDescription, "60");
     //massage(0, R.string.massage, R.drawable.masseur, R.drawable.music_back, R.string.massageDescription, 60),
