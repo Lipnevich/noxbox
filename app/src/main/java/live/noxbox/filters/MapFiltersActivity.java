@@ -211,7 +211,7 @@ public class MapFiltersActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 for (NoxboxType type : NoxboxType.values()) {
-                                    typesChecked[type.getId()] = profile.getFilters().getTypes().get(type.name());
+                                    typesChecked[type.getId()] = firstNonNull(profile.getFilters().getTypes().get(type.name()), true);
                                 }
                                 dialog.dismiss();
                             }
