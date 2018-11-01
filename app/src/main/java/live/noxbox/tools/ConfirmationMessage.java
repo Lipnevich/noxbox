@@ -18,9 +18,9 @@ public class ConfirmationMessage {
     public static void messageOffline(final Activity activity) {
         if (online == null) {
             View content = null;
-            if(activity.getClass().getName().equals(MapActivity.class.getName())){
+            if (activity.getClass().getName().equals(MapActivity.class.getName())) {
                 content = activity.findViewById(R.id.coordinatorLayout);
-            }else{
+            } else {
                 content = activity.findViewById(android.R.id.content);
             }
             online = Snackbar.make(content, R.string.isOffline, Snackbar.LENGTH_INDEFINITE)
@@ -38,9 +38,9 @@ public class ConfirmationMessage {
     public static void messageGps(final Activity activity) {
         if (gps == null) {
             View content = null;
-            if(activity.getClass().getName().equals(MapActivity.class.getName())){
+            if (activity.getClass().getName().equals(MapActivity.class.getName())) {
                 content = activity.findViewById(R.id.coordinatorLayout);
-            }else{
+            } else {
                 content = activity.findViewById(android.R.id.content);
             }
             gps = Snackbar.make(content, R.string.isGps, Snackbar.LENGTH_INDEFINITE)

@@ -14,6 +14,7 @@
 package live.noxbox;
 
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -41,16 +42,17 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Created;
+import live.noxbox.pages.GpsReceiver;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
-import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.setupMap;
@@ -172,10 +174,26 @@ public class MapActivity extends DebugActivity implements
         });
     }
 
+    private GpsReceiver gpsReceiver;
+    @Override
+    protected void onResume() {
+        if (isLocationPermissionGranted()) {
+            if (!isGpsEnabled()) {
+                messageGps(this);
+            }
+        }
+        gpsReceiver = new GpsReceiver(this);
+        registerReceiver(gpsReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        googleApiClient.connect();
+        draw();
+
+        super.onResume();
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterReceiver(gpsReceiver);
         googleApiClient.disconnect();
         ProfileStorage.stopListen(this.getClass().getName());
     }
@@ -187,19 +205,6 @@ public class MapActivity extends DebugActivity implements
 
     }
 
-    @Override
-    protected void onResume() {
-        if (isLocationPermissionGranted()) {
-            if (!isGpsEnabled()) {
-                ConfirmationMessage.messageGps(this);
-            }
-        }
-        googleApiClient.connect();
-        draw();
-
-
-        super.onResume();
-    }
 
     protected Position getCurrentPosition() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
