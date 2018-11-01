@@ -1,5 +1,6 @@
 package live.noxbox.debug;
 
+import android.util.Log;
 import android.view.View;
 
 import live.noxbox.BuildConfig;
@@ -11,6 +12,8 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
 import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.State;
+import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
@@ -20,6 +23,7 @@ import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 import static live.noxbox.tools.DetectNullValue.areTheyNull;
 
 public class DebugActivity extends MenuActivity {
+    private static final String TAG = "DebugActivity";
 
     @Override
     protected void onResume() {
@@ -31,12 +35,12 @@ public class DebugActivity extends MenuActivity {
                     DebugActivity.this.findViewById(R.id.debugLayout).setVisibility(View.VISIBLE);
 
                     DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(profile.getPosition(), 150)) {
-                                    online(noxbox);
-                                }
+                        @Override
+                        public void onClick(View v) {
+                            for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(profile.getPosition(), 150)) {
+                                online(noxbox);
                             }
+                        }
                     });
 
                     findViewById(R.id.debugRequest).setOnClickListener(new View.OnClickListener() {
@@ -60,6 +64,13 @@ public class DebugActivity extends MenuActivity {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }
 
+
+                            Log.d(State.TAG + TAG, "debugRequest");
+                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+
+
                         }
                     });
 
@@ -75,6 +86,11 @@ public class DebugActivity extends MenuActivity {
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to accept");
                             }
+                            Log.d(State.TAG + TAG, "debugAccept");
+                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
                         }
                     });
 
@@ -94,6 +110,18 @@ public class DebugActivity extends MenuActivity {
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to reject");
                             }
+
+                            Log.d(State.TAG + TAG, "debugPhotoReject");
+                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+                            if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                                Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByParty()));
+                            } else {
+                                Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByOwner()));
+                            }
+
                         }
                     });
 
@@ -117,6 +145,16 @@ public class DebugActivity extends MenuActivity {
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to verify");
                             }
+                            Log.d(State.TAG + TAG, "debugPhotoVerify");
+                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+                            if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                                Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
+                            } else {
+                                Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
+                            }
 
                         }
                     });
@@ -133,6 +171,17 @@ public class DebugActivity extends MenuActivity {
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to complete");
                             }
+                            Log.d(State.TAG + TAG, "debugComplete");
+                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+                            if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                                Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
+                            } else {
+                                Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
+                            }
+                            Log.d(State.TAG + TAG, "timeCompleted: " + DateTimeFormatter.time(profile.getCurrent().getTimeCompleted()));
                         }
                     });
 

@@ -52,8 +52,6 @@ import static live.noxbox.tools.Router.startActivityForResult;
 
 public class AvailableServices implements State {
 
-    private static String TAG = AvailableServices.class.getName();
-
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Activity activity;
@@ -64,7 +62,7 @@ public class AvailableServices implements State {
     private Handler serviceHandler;
     private Runnable serviceRunnable;
 
-    public  AvailableServices(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
+    public AvailableServices(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
         this.googleMap = googleMap;
         this.googleApiClient = googleApiClient;
         this.activity = activity;
@@ -132,6 +130,16 @@ public class AvailableServices implements State {
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+
+
+        activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+            }
+        });
+
         activity.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,7 +148,7 @@ public class AvailableServices implements State {
                 startActivityForResult(activity, intent, NoxboxTypeListActivity.MAP_CODE);
             }
         });
-        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+
         activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,8 +173,6 @@ public class AvailableServices implements State {
                 }
             };
             serviceHandler.post(serviceRunnable);
-
-
         }
     }
 
@@ -217,7 +223,7 @@ public class AvailableServices implements State {
             AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
 
-            Log.d(TAG, "onServiceConnected()");
+            Log.d(TAG + "AvailableServices", "onServiceConnected()");
 
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
@@ -225,7 +231,7 @@ public class AvailableServices implements State {
                     drawingRunnable = new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "run()");
+                            Log.d(TAG + "AvailableServices", "run()");
                             clusterManager.setItems(markers, profile);
                             drawingHeandler.postDelayed(drawingRunnable, 200);
                         }
@@ -240,7 +246,7 @@ public class AvailableServices implements State {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            Log.d(TAG, "onServiceDisconnected()");
+            Log.d(TAG + "AvailableServices", "onServiceDisconnected()");
             if (drawingHeandler != null) {
                 drawingHeandler.removeCallbacksAndMessages(drawingRunnable);
             }

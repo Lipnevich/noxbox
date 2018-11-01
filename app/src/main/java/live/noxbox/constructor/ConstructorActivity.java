@@ -12,6 +12,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,9 +42,11 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.State;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
+import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -384,20 +387,29 @@ public class ConstructorActivity extends BaseActivity {
     }
 
     public void postNoxbox(Profile profile) {
+        profile.getCurrent().clean();
+
         if (profile.getCurrent().getRole() == MarketRole.supply) {
             profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
         } else {
             profile.getCurrent().getOwner().setPortfolio(null);
         }
-        profile.getCurrent().clean();
         profile.getCurrent().setOwner(profile.publicInfo());
-        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
+
+        long timeCreated = System.currentTimeMillis();
+        Log.d(State.TAG + "ConstructorActivity", "timeCreated: " + DateTimeFormatter.time(timeCreated));
+        profile.getCurrent().setTimeCreated(timeCreated);
+
         finish();
     }
 
     public void removeNoxbox(Profile profile) {
         profile.getCurrent().clean();
-        profile.getCurrent().setTimeRemoved(System.currentTimeMillis());
+
+        long timeRemoved = System.currentTimeMillis();
+        Log.d(State.TAG + "ConstructorActivity", "timeRemoved: " + DateTimeFormatter.time(timeRemoved));
+        profile.getCurrent().setTimeRemoved(timeRemoved);
+
         finish();
     }
 

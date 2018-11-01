@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -46,6 +47,7 @@ import live.noxbox.pages.Requesting;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.ConfirmationMessage;
+import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -56,6 +58,8 @@ import static live.noxbox.tools.MapController.setupMap;
 public class MapActivity extends DebugActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
+
+    protected static final String TAG = "MapActivity";
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
@@ -286,6 +290,21 @@ public class MapActivity extends DebugActivity implements
                 throw new IllegalStateException("Unknown state: " + state.name());
         }
         states.put(state, newState);
+
+        if (BuildConfig.DEBUG && currentState != null)
+            Log.d(State.TAG + TAG, "previousState: " + currentState.getClass().getName());
+        Log.d(State.TAG + TAG, "newState: " + newState.getClass().getName());
+        if (profile.getCurrent() != null) {
+            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+            Log.d(State.TAG + TAG, "timeStartPerforming: " + DateTimeFormatter.time(profile.getCurrent().getTimeStartPerforming()));
+            Log.d(State.TAG + TAG, "timeCompleted: " + DateTimeFormatter.time(profile.getCurrent().getTimeCompleted()));
+        } else {
+            Log.d(State.TAG + TAG, "current noxbox: " + "null");
+        }
+
+
         return newState;
     }
 }

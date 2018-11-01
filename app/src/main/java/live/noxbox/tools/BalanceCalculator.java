@@ -38,13 +38,13 @@ public class BalanceCalculator {
         return balance.subtract(totalSpent).compareTo(priceForFiveMinutes) > 0;
     }
 
-    public static BigDecimal getTotalSpentForNoxbox(Profile profile) {
+    public static BigDecimal getTotalSpentForNoxbox(Profile profile, long timeCompleted) {
         if (!Performing.hasMinimumServiceTimePassed(profile))
             return new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
 
         BigDecimal pricePerMinute = new BigDecimal(profile.getCurrent().getPrice()).divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        BigDecimal secondsPassed = new BigDecimal(profile.getCurrent().getTimeCompleted()).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
+        BigDecimal secondsPassed = new BigDecimal(timeCompleted).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
         return secondsPassed.multiply(pricePerSecond);
     }
 }

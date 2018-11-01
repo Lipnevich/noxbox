@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
@@ -15,9 +16,9 @@ import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.Firestore;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
+import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.MessagingService;
@@ -37,6 +38,7 @@ public class Accepting implements State {
     private CountDownTimer countDownTimer;
     private LinearLayout acceptingView;
 
+
     public Accepting(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
@@ -44,13 +46,14 @@ public class Accepting implements State {
             @Override
             public void execute(Profile profile) {
                 MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-
             }
         });
     }
 
     @Override
     public void draw(final Profile profile) {
+        Log.d(TAG + "Accepting", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
@@ -60,9 +63,9 @@ public class Accepting implements State {
         acceptingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.getCurrent().setTimeAccepted(null);
-                profile.getCurrent().setTimeRequested(null);
-                clear();
+                long timeCanceled = System.currentTimeMillis();
+                Log.d(TAG + "Accepting", "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
+                profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
                 fireProfile();
             }
         });
@@ -70,8 +73,10 @@ public class Accepting implements State {
         acceptingView.findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                ProfileStorage.fireProfile();
+                long timeAccepted = System.currentTimeMillis();
+                Log.d(TAG + "Accepting", "timeAccepted: " + DateTimeFormatter.time(timeAccepted));
+                profile.getCurrent().setTimeAccepted(timeAccepted);
+                fireProfile();
             }
         });
 
@@ -109,7 +114,7 @@ public class Accepting implements State {
                     NotificationType.removeNotifications(activity.getApplicationContext());
                     profile.getCurrent().setTimeAccepted(null);
                     profile.getCurrent().setTimeRequested(null);
-                    Firestore.writeNoxbox(profile.getCurrent());
+                    ProfileStorage.fireProfile();
                 }
             }
 

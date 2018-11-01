@@ -2,6 +2,7 @@ package live.noxbox.pages;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
+import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NotificationService;
@@ -57,6 +59,10 @@ public class Performing implements State {
 
     @Override
     public void draw(final Profile profile) {
+        Log.d(TAG + "Performing", "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
+        Log.d(TAG + "Performing", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
+        Log.d(TAG + "Performing", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
+        Log.d(TAG + "Performing", "timeStartPerforming: " + DateTimeFormatter.time(profile.getCurrent().getTimeStartPerforming()));
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         performingView = activity.findViewById(R.id.container);
@@ -87,7 +93,7 @@ public class Performing implements State {
 
 
                 if (profile.getCurrent().getTimeCompleted() == null) {
-                    seconds++;
+                    seconds = (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000;
 
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     if (hasMinimumServiceTimePassed(profile)) {
@@ -112,7 +118,7 @@ public class Performing implements State {
                         showLowBalanceNotification(activity.getApplicationContext(), profile, notification);
                     }
 
-                    handler.postDelayed(this,1000);
+                    handler.postDelayed(this, 1000);
                 }
             }
         };
@@ -129,10 +135,12 @@ public class Performing implements State {
         completeSwipeButton.setOnTouchListener(completeSwipeButton.getButtonTouchListener(new Task<Object>() {
             @Override
             public void execute(Object object) {
-                profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
+                long timeCompleted = System.currentTimeMillis();
+
+                Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
 
                 MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                Notification notification = new Notification().setType(NotificationType.completed).setPrice(getTotalSpentForNoxbox(profile).toString());
+                Notification notification = new Notification().setType(NotificationType.completed).setPrice(getTotalSpentForNoxbox(profile, timeCompleted).toString());
                 if (profile.getCurrent().getOwner().equals(profile)) {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
                         notification.setMessage(activity.getResources().getString(R.string.toEarn).concat(":"));
@@ -147,7 +155,7 @@ public class Performing implements State {
                     }
                 }
                 messagingService.showPushNotification(notification);
-
+                profile.getCurrent().setTimeCompleted(timeCompleted);
             }
         }));
     }
@@ -167,6 +175,8 @@ public class Performing implements State {
                 }
             }
         });
+
+        Log.d(TAG + "Performing", "time return to AvailableService: " + DateTimeFormatter.time(System.currentTimeMillis()));
     }
 
     private void scheduleJob() {

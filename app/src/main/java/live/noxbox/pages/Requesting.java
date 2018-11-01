@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
@@ -16,6 +17,7 @@ import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
+import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.MessagingService;
@@ -23,7 +25,6 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
-import static live.noxbox.state.ProfileStorage.fireProfile;
 import static live.noxbox.state.ProfileStorage.readProfile;
 
 public class Requesting implements State {
@@ -48,6 +49,7 @@ public class Requesting implements State {
 
     @Override
     public void draw(final Profile profile) {
+        Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,9 +68,8 @@ public class Requesting implements State {
         requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
                 profile.getCurrent().setTimeRequested(null);
-                clear();
-                fireProfile();
             }
         });
 
@@ -92,7 +93,9 @@ public class Requesting implements State {
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                ((TextView) requestingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
+                if(requestingView != null){
+                    ((TextView) requestingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
+                }
                 NotificationType.updateNotification(activity.getApplicationContext(),
                         notification.setType(NotificationType.requesting).setTime(String.valueOf(millisUntilFinished / 1000)),
                         MessagingService.builder);
@@ -102,8 +105,10 @@ public class Requesting implements State {
             public void onFinish() {
                 if (profile.getCurrent().getTimeAccepted() == null) {
                     NotificationType.removeNotifications(activity.getApplicationContext());
-                    profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
-                    fireProfile();
+
+                    long timeTimeout = System.currentTimeMillis();
+                    Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
+                    profile.getCurrent().setTimeTimeout(timeTimeout);
                 }
             }
 
