@@ -63,16 +63,22 @@ public class ConstructorActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_constructor);
-        closeOrRemove = findViewById(R.id.closeOrRemove);
-        TextView textCurrency = findViewById(R.id.textCurrency);
-        String currency = Configuration.CURRENCY + ".";
-        textCurrency.setText(currency);
+
+        initializeUi();
+
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 profile.getCurrent().setGeoId(GeoRealtime.createKey(profile.getCurrent()));
             }
         });
+
+    }
+
+    private void initializeUi() {
+        closeOrRemove = findViewById(R.id.closeOrRemove);
+        String currency = Configuration.CURRENCY + ".";
+        ((TextView) findViewById(R.id.textCurrency)).setText(currency);
     }
 
     @Override
@@ -81,7 +87,9 @@ public class ConstructorActivity extends BaseActivity {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
-                if (profile.getCurrent().getId() != null) {
+                if (profile == null) return;
+
+                if (profile.getCurrent() != null && profile.getCurrent().getTimeRemoved() == null) {
                     closeOrRemove.setText(R.string.remove);
                     closeOrRemove.setOnClickListener(new View.OnClickListener() {
                         @Override
