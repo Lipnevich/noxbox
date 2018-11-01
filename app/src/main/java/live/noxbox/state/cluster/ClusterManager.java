@@ -22,6 +22,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MapController;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 
 public class ClusterManager implements GoogleMap.OnCameraIdleListener {
@@ -72,7 +73,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
         if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
             return true;
-        if (!profile.getFilters().getTypes().get(noxbox.getType().name()))
+        if (!firstNonNull(profile.getFilters().getTypes().get(noxbox.getType().name()), true))
             return true;
         if (Integer.parseInt(noxbox.getPrice()) > Integer.parseInt(profile.getFilters().getPrice()))
             return true;
@@ -83,9 +84,8 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
             return true;
 
         //фильтры по типу передвижения
-        if (noxbox.getOwner().getHost() && noxbox.getOwner().getTravelMode() == TravelMode.none) {
-            if (profile.getTravelMode() == TravelMode.none)
-                return true;
+        if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none) {
+            return true;
         }
 
         if (!noxbox.getOwner().getHost()) {
