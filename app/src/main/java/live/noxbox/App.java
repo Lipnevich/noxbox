@@ -23,7 +23,7 @@ public class App extends Application implements Application.ActivityLifecycleCal
     }
     private void initCrashReporting() {
         CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
-                .disabled(false && BuildConfig.DEBUG)
+                .disabled(BuildConfig.DEBUG)
                 .build();
         Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }

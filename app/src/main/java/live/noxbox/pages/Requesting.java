@@ -42,7 +42,6 @@ public class Requesting implements State {
             @Override
             public void execute(Profile profile) {
                 MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-
             }
         });
     }

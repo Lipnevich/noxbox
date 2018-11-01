@@ -154,6 +154,7 @@ public class GeoRealtime {
         time = 0;
         if (geoQuery != null) {
             geoQuery.removeAllListeners();
+            geoQuery = null;
         }
     }
 

@@ -5,14 +5,17 @@ import android.view.View;
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.menu.MenuActivity;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
 import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.DebugMessage;
+import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.state.GeoRealtime.online;
 import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 import static live.noxbox.tools.DetectNullValue.areTheyNull;
 
@@ -26,6 +29,15 @@ public class DebugActivity extends MenuActivity {
                 @Override
                 public void execute(final Profile profile) {
                     DebugActivity.this.findViewById(R.id.debugLayout).setVisibility(View.VISIBLE);
+
+                    DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(profile.getPosition(), 150)) {
+                                    online(noxbox);
+                                }
+                            }
+                    });
 
                     findViewById(R.id.debugRequest).setOnClickListener(new View.OnClickListener() {
                         @Override

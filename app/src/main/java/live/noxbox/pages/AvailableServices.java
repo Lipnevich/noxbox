@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import live.noxbox.BuildConfig;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.constructor.ConstructorActivity;
@@ -43,12 +42,10 @@ import live.noxbox.state.cluster.ClusterManager;
 import live.noxbox.state.cluster.NoxboxMarker;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
-import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
-import static live.noxbox.state.GeoRealtime.online;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -64,7 +61,6 @@ public class AvailableServices implements State {
 
     private ClusterManager clusterManager;
 
-    // TODO (nli) how much time we need for one refresh?
     private Handler serviceHandler;
     private Runnable serviceRunnable;
 
@@ -78,17 +74,9 @@ public class AvailableServices implements State {
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
-                googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-                    @Override
-                    public void onCameraIdle() {
-                        startListenAvailableNoxboxes();
-                    }
-                });
-
                 MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
             }
         });
-        startListenAvailableNoxboxes();
     }
 
     private void createClusterManager() {
@@ -132,6 +120,13 @@ public class AvailableServices implements State {
 
     @Override
     public void draw(final Profile profile) {
+        startListenAvailableNoxboxes();
+        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                startListenAvailableNoxboxes();
+            }
+        });
         MapController.moveCopyrightRight(googleMap);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
@@ -159,18 +154,6 @@ public class AvailableServices implements State {
 
             }
         });
-
-
-        if (BuildConfig.DEBUG) {
-            activity.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(MapActivity.getCameraPosition(googleMap), 5000, profile)) {
-                        online(noxbox);
-                    }
-                }
-            });
-        }
 
         if (!serviceIsBound) {
             serviceHandler = new Handler();

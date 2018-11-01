@@ -21,7 +21,8 @@ import live.noxbox.model.WorkSchedule;
 
 public class NoxboxExamples {
 
-    public static List<Noxbox> generateNoxboxes(Position position, int size, Profile profile) {
+    public static List<Noxbox> generateNoxboxes(Position position, int size) {
+        if(position == null) position = new Position();
         List<Noxbox> noxboxes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
 

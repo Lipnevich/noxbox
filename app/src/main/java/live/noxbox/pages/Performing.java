@@ -51,7 +51,6 @@ public class Performing implements State {
             @Override
             public void execute(Profile profile) {
                 MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-
             }
         });
     }
