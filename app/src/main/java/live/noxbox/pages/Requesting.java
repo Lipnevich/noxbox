@@ -16,6 +16,7 @@ import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -26,6 +27,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
 import static live.noxbox.state.ProfileStorage.readProfile;
+import static live.noxbox.state.ProfileStorage.updateNoxbox;
 
 public class Requesting implements State {
 
@@ -69,7 +71,8 @@ public class Requesting implements State {
             @Override
             public void onClick(View v) {
                 Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
-                profile.getCurrent().setTimeRequested(null);
+                profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+                updateNoxbox();
             }
         });
 
@@ -83,7 +86,7 @@ public class Requesting implements State {
         animationDrawable.setExitFadeDuration(1200);
         animationDrawable.start();
 
-        profile.getViewed().setParty(profile);
+        profile.getViewed().setParty(profile.notPublicInfo());
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
         final Notification notification = new Notification()
                 .setType(NotificationType.requesting)
@@ -109,6 +112,7 @@ public class Requesting implements State {
                     long timeTimeout = System.currentTimeMillis();
                     Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
                     profile.getCurrent().setTimeTimeout(timeTimeout);
+                    ProfileStorage.updateNoxbox();
                 }
             }
 

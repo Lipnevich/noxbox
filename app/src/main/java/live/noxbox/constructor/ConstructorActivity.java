@@ -396,9 +396,9 @@ public class ConstructorActivity extends BaseActivity {
         }
         profile.getCurrent().setOwner(profile.publicInfo());
 
-        long timeCreated = System.currentTimeMillis();
-        Log.d(State.TAG + "ConstructorActivity", "timeCreated: " + DateTimeFormatter.time(timeCreated));
-        profile.getCurrent().setTimeCreated(timeCreated);
+        Log.d(State.TAG + "ConstructorActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
+
+        ProfileStorage.noxboxCreated();
 
         finish();
     }
@@ -408,7 +408,8 @@ public class ConstructorActivity extends BaseActivity {
 
         long timeRemoved = System.currentTimeMillis();
         Log.d(State.TAG + "ConstructorActivity", "timeRemoved: " + DateTimeFormatter.time(timeRemoved));
-        profile.getCurrent().setTimeRemoved(timeRemoved);
+
+        ProfileStorage.removeNoxbox();
 
         finish();
     }

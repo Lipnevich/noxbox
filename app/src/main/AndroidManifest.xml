@@ -105,12 +105,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".model.NotificationType$ConfirmPhotoListener">
-            <intent-filter>
-                <action android:name="live.noxbox.confirmPhotoByClickedButton" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name=".model.NotificationType$NavigationButtonListener">
             <intent-filter>
                 <action android:name="live.noxbox.openNavigatorByClickedButton" />

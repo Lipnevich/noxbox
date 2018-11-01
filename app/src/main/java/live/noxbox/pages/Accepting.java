@@ -16,7 +16,6 @@ import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -26,8 +25,8 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
-import static live.noxbox.state.ProfileStorage.fireProfile;
 import static live.noxbox.state.ProfileStorage.readProfile;
+import static live.noxbox.state.ProfileStorage.updateNoxbox;
 
 public class Accepting implements State {
 
@@ -66,7 +65,7 @@ public class Accepting implements State {
                 long timeCanceled = System.currentTimeMillis();
                 Log.d(TAG + "Accepting", "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
                 profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
-                fireProfile();
+                updateNoxbox();
             }
         });
 
@@ -76,7 +75,7 @@ public class Accepting implements State {
                 long timeAccepted = System.currentTimeMillis();
                 Log.d(TAG + "Accepting", "timeAccepted: " + DateTimeFormatter.time(timeAccepted));
                 profile.getCurrent().setTimeAccepted(timeAccepted);
-                fireProfile();
+                updateNoxbox();
             }
         });
 
@@ -112,9 +111,8 @@ public class Accepting implements State {
             public void onFinish() {
                 if (profile.getCurrent().getTimeAccepted() == null) {
                     NotificationType.removeNotifications(activity.getApplicationContext());
-                    profile.getCurrent().setTimeAccepted(null);
-                    profile.getCurrent().setTimeRequested(null);
-                    ProfileStorage.fireProfile();
+                    profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
+                    updateNoxbox();
                 }
             }
 

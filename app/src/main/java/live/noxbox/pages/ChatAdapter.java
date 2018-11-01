@@ -21,12 +21,10 @@ import live.noxbox.model.Message;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private List<Message> messages;
-    private String profileId;
     private DisplayMetrics metrics;
 
-    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, String profileId) {
+    public ChatAdapter(DisplayMetrics metrics, List<Message> messages) {
         this.messages = messages;
-        this.profileId = profileId;
         this.metrics = metrics;
     }
 
@@ -41,7 +39,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
     private boolean isOwner(int position) {
-        return messages.get(position).getSender().getId().equals(profileId);
+        return messages.get(position).isMyMessage();
     }
 
     @Override

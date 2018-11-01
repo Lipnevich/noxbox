@@ -13,30 +13,26 @@
  */
 package live.noxbox.model;
 
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import live.noxbox.Virtual;
-import live.noxbox.tools.Task;
-
-import static live.noxbox.model.NoxboxStrategy.create;
-import static live.noxbox.model.NoxboxStrategy.remove;
-import static live.noxbox.model.NoxboxStrategy.update;
 
 public class Noxbox implements Comparable<Noxbox> {
-    @Virtual
-    public Map<NoxboxStrategy, Task> strategy = new HashMap<>();
 
     private String id;
     @Virtual
     private String geoId;
-    @Virtual
-    private Long timeStartPerforming;
 
     private Profile owner;
     private Profile party;
-    private Map<String, Message> chat = new HashMap<>();
+    private Map<String, Message> ownerMessages = new HashMap<>();
+    private Map<String, Message> partyMessages = new HashMap<>();
 
     // Noxbox specific data
     private Long timeCreated;
@@ -68,7 +64,6 @@ public class Noxbox implements Comparable<Noxbox> {
     private String commentForDemand;
     private String commentForSupply;
 
-
     public Noxbox clean() {
         id = null;
         party = null;
@@ -84,7 +79,6 @@ public class Noxbox implements Comparable<Noxbox> {
         timeCanceledByParty = null;
         timeOwnerVerified = null;
         timePartyVerified = null;
-        timeStartPerforming = null;
         timeOwnerDisliked = null;
         timePartyDisliked = null;
         timeToMeet = null;
@@ -108,7 +102,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setPosition(Position position) {
         this.position = position;
-        changed();
         return this;
     }
 
@@ -118,7 +111,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCompleted(Long timeCompleted) {
         this.timeCompleted = timeCompleted;
-        changed();
         return this;
     }
 
@@ -159,7 +151,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeRequested(Long timeRequested) {
         this.timeRequested = timeRequested;
-        changed();
         return this;
     }
 
@@ -169,7 +160,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCanceledByOwner(Long timeCanceledByOwner) {
         this.timeCanceledByOwner = timeCanceledByOwner;
-        changed();
         return this;
     }
 
@@ -179,7 +169,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCanceledByParty(Long timeCanceledByParty) {
         this.timeCanceledByParty = timeCanceledByParty;
-        changed();
         return this;
     }
 
@@ -189,7 +178,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeAccepted(Long timeAccepted) {
         this.timeAccepted = timeAccepted;
-        changed();
         return this;
     }
 
@@ -202,16 +190,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setType(NoxboxType type) {
         this.type = type;
-        return this;
-    }
-
-    public Map<String, Message> getChat() {
-        return chat;
-    }
-
-    public Noxbox setChat(Map<String, Message> chat) {
-        this.chat = chat;
-        changed();
         return this;
     }
 
@@ -233,7 +211,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setParty(Profile party) {
         this.party = party;
-        changed();
         return this;
     }
 
@@ -253,7 +230,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setEstimationTime(String estimationTime) {
         this.estimationTime = estimationTime;
-        changed();
         return this;
     }
 
@@ -288,7 +264,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setWorkSchedule(WorkSchedule workSchedule) {
         this.workSchedule = workSchedule;
-        changed();
         return this;
     }
 
@@ -298,9 +273,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCreated(Long timeCreated) {
         this.timeCreated = timeCreated;
-        if (strategy.get(create) != null) {
-            strategy.get(create).execute(this);
-        }
         return this;
     }
 
@@ -310,7 +282,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeOwnerVerified(Long timeOwnerVerified) {
         this.timeOwnerVerified = timeOwnerVerified;
-        changed();
         return this;
     }
 
@@ -320,7 +291,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimePartyVerified(Long timePartyVerified) {
         this.timePartyVerified = timePartyVerified;
-        changed();
         return this;
     }
 
@@ -336,7 +306,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCancellationReasonMessage(String cancellationReasonMessage) {
         this.cancellationReasonMessage = cancellationReasonMessage;
-        changed();
         return this;
     }
 
@@ -346,7 +315,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCommentForDemand(String commentForDemand) {
         this.commentForDemand = commentForDemand;
-        changed();
         return this;
     }
 
@@ -356,7 +324,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setCommentForSupply(String commentForSupply) {
         this.commentForSupply = commentForSupply;
-        changed();
         return this;
     }
 
@@ -366,7 +333,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeOwnerDisliked(Long timeOwnerDisliked) {
         this.timeOwnerDisliked = timeOwnerDisliked;
-        changed();
         return this;
     }
 
@@ -376,7 +342,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimePartyDisliked(Long timePartyDisliked) {
         this.timePartyDisliked = timePartyDisliked;
-        changed();
         return this;
     }
 
@@ -386,7 +351,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeTimeout(Long timeTimeout) {
         this.timeTimeout = timeTimeout;
-        changed();
         return this;
     }
 
@@ -396,14 +360,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeToMeet(Long timeToMeet) {
         this.timeToMeet = timeToMeet;
-        changed();
         return this;
-    }
-
-    public void changed() {
-        if (strategy.get(update) != null) {
-            strategy.get(update).execute(this);
-        }
     }
 
     public Long getTimeRemoved() {
@@ -412,9 +369,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeRemoved(Long timeRemoved) {
         this.timeRemoved = timeRemoved;
-        if (strategy.get(remove) != null) {
-            strategy.get(remove).execute(this);
-        }
         return this;
     }
 
@@ -424,6 +378,52 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setGeoId(String geoId) {
         this.geoId = geoId;
+        return this;
+    }
+
+    public List<Message> getChat(String profileId) {
+        List<Message> chat = new ArrayList<>();
+        Collection<Message> myMessages = getPartyMessages().values();
+        if(getOwner().getId().equals(profileId)) {
+            myMessages = getOwnerMessages().values();
+        }
+        for(Message message : myMessages) {
+            message.setMyMessage(true);
+        }
+        chat.addAll(getPartyMessages().values());
+        chat.addAll(getOwnerMessages().values());
+
+        Collections.sort(chat, new Comparator<Message>() {
+            @Override
+            public int compare(Message first, Message second) {
+                return Long.compare(first.getTime(), second.getTime());
+            }
+        });
+
+        return chat;
+    }
+
+    public Map<String, Message> getOwnerMessages() {
+        if(ownerMessages == null) {
+            ownerMessages = new HashMap<>();
+        }
+        return ownerMessages;
+    }
+
+    public Noxbox setOwnerMessages(Map<String, Message> ownerMessages) {
+        this.ownerMessages = ownerMessages;
+        return this;
+    }
+
+    public Map<String, Message> getPartyMessages() {
+        if(partyMessages == null) {
+            partyMessages = new HashMap<>();
+        }
+        return partyMessages;
+    }
+
+    public Noxbox setPartyMessages(Map<String, Message> partyMessages) {
+        this.partyMessages = partyMessages;
         return this;
     }
 }

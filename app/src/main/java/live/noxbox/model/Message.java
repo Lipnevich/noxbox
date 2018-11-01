@@ -13,12 +13,15 @@
  */
 package live.noxbox.model;
 
+import live.noxbox.Virtual;
+
 public class Message implements Comparable<Message> {
 
     private String id, message, estimationTime;
     private Boolean wasRead;
-    private Profile sender;
     private Long time;
+    @Virtual
+    private boolean myMessage;
 
     public String getId() {
         return id;
@@ -36,15 +39,6 @@ public class Message implements Comparable<Message> {
 
     public Message setTime(Long time) {
         this.time = time;
-        return this;
-    }
-
-    public Profile getSender() {
-        return sender;
-    }
-
-    public Message setSender(Profile sender) {
-        this.sender = sender;
         return this;
     }
 
@@ -91,5 +85,14 @@ public class Message implements Comparable<Message> {
     @Override
     public int compareTo(Message that) {
         return this.getTime().compareTo(that.getTime());
+    }
+
+    public boolean isMyMessage() {
+        return myMessage;
+    }
+
+    public Message setMyMessage(boolean myMessage) {
+        this.myMessage = myMessage;
+        return this;
     }
 }

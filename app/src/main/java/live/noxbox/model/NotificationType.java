@@ -6,21 +6,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.util.Log;
 import android.widget.RemoteViews;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 
 import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
@@ -183,33 +176,7 @@ public enum NotificationType {
         }
 
         if (notification.getType() == confirm) {
-            final RemoteViews remoteViewsConfirm = new RemoteViews(context.getPackageName(), R.layout.notification_confirm);
-            remoteViewsConfirm.setOnClickPendingIntent(R.id.confirm, PendingIntent.getBroadcast(context, 0, new Intent(context, ConfirmPhotoListener.class), 0));
-            ProfileStorage.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    //TODO (vl) картинка не успевает подгрузиться до вызова "return"
-                    if (profile.getCurrent().getOwner().equals(profile)) {
-                        Glide.with(context).asBitmap().load(profile.getCurrent().getParty().getPhoto()).into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
-                                remoteViewsConfirm.setImageViewBitmap(R.id.photo, bitmap);
-
-                            }
-                        });
-                    } else {
-                        Glide.with(context).asBitmap().load(profile.getCurrent().getOwner().getPhoto()).into(new SimpleTarget<Bitmap>() {
-                            @Override
-                            public void onResourceReady(@NonNull Bitmap bitmap, @Nullable Transition<? super Bitmap> transition) {
-                                remoteViewsConfirm.setImageViewBitmap(R.id.photo, bitmap);
-
-                            }
-                        });
-                    }
-
-                }
-            });
-            return remoteViewsConfirm;
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_confirm);
         }
 
         if (notification.getType() == supplierCanceled || notification.getType() == demanderCanceled) {
@@ -352,8 +319,12 @@ public enum NotificationType {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
-                    profile.getCurrent().setTimeRequested(null);
-                    ProfileStorage.fireProfile();
+                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                        profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+                    } else {
+                        profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
+                    }
+                    ProfileStorage.updateNoxbox();
                     MessagingService.getNotificationService(context).cancelAll();
                 }
             });
@@ -368,24 +339,6 @@ public enum NotificationType {
                 public void execute(Profile profile) {
                     profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                     ProfileStorage.fireProfile();
-                    MessagingService.getNotificationService(context).cancelAll();
-                }
-            });
-        }
-    }
-
-    public static class ConfirmPhotoListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            ProfileStorage.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                        profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
-                    } else {
-                        profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
-                    }
-
                     MessagingService.getNotificationService(context).cancelAll();
                 }
             });
@@ -410,8 +363,15 @@ public enum NotificationType {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
-                    profile.getCurrent().getChat().put(profile.getId(), new Message().setMessage(getMessageText(intent, context)));
-                    profile.getCurrent().setChat(profile.getCurrent().getChat());
+                    // TODO (?) сохранить одно сообщение в базе
+                    Message message = new Message()
+                            .setMessage(getMessageText(intent, context)).setId("111");
+                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                        profile.getCurrent().getOwnerMessages().put(message.getId(), message);
+                    } else {
+                        profile.getCurrent().getPartyMessages().put(message.getId(), message);
+                    }
+                    ProfileStorage.updateNoxbox();
                     removeNotifications(context);
                 }
             });

@@ -21,7 +21,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -45,7 +44,6 @@ import live.noxbox.tools.MapController;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-import static com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -253,36 +251,6 @@ public class AvailableServices implements State {
             serviceIsBound = false;
         }
     };
-
-    public boolean onClusterClick(List<Noxbox> noxboxes, LatLng position) {
-        DebugMessage.popup(activity, "CLUSTER");
-
-        float newZoom = googleMap.getCameraPosition().zoom + 1f;
-        if (newZoom < googleMap.getMaxZoomLevel())
-            googleMap.animateCamera(newLatLngZoom(position, newZoom));
-        else {
-            // TODO (vl) показать список со всеми элементами кластера
-        }
-        return true;
-    }
-
-    public boolean onClusterItemClick(final Noxbox noxbox) {
-        DebugMessage.popup(activity, "ITEM");
-        ProfileStorage.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                noxbox.getOwner().setPosition(noxbox.getPosition());
-                profile.setViewed(noxbox);
-                if (googleMap.getCameraPosition() != null) {
-                    profile.setPosition(Position.from(googleMap.getCameraPosition().target));
-                }
-                profile.getViewed().setParty(profile.notPublicInfo());
-                Router.startActivity(activity, DetailedActivity.class);
-            }
-        });
-        return true;
-    }
-
 
     private void startListenAvailableNoxboxes() {
         GeoRealtime.startListenAvailableNoxboxes(MapActivity.getCameraPosition(googleMap).toGeoLocation(), markers);

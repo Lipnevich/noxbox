@@ -24,6 +24,7 @@ import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
@@ -34,6 +35,7 @@ import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.state.ProfileStorage.readProfile;
+import static live.noxbox.state.ProfileStorage.updateNoxbox;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
@@ -136,6 +138,8 @@ public class Moving implements State {
             final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
 
             profile.getCurrent().setTimeToMeet((long) (Math.ceil(getTravelTimeInMinutes(profile)) * 60000));
+            ProfileStorage.updateNoxbox();
+
             final Notification notification = new Notification()
                     .setTime(String.valueOf(profile.getCurrent().getTimeToMeet()))
                     .setType(NotificationType.moving)
@@ -225,6 +229,7 @@ public class Moving implements State {
                     Log.d(TAG + "Moving", "timeCanceledByParty: " + DateTimeFormatter.time(timeCanceled));
                     profile.getCurrent().setTimeCanceledByParty(timeCanceled);
                 }
+                updateNoxbox();
             }
         }));
 
@@ -247,17 +252,14 @@ public class Moving implements State {
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
                     Log.d(TAG + "Moving", "timeOwnerVerified: " + DateTimeFormatter.time(timeVerified));
                     profile.getCurrent().setTimeOwnerVerified(timeVerified);
-
                 } else {
                     Log.d(TAG + "Moving", "timePartyVerified: " + DateTimeFormatter.time(timeVerified));
                     profile.getCurrent().setTimePartyVerified(timeVerified);
                 }
+                ProfileStorage.updateNoxbox();
 
                 if (photoView != null)
                     photoView.removeAllViews();
-
-
-                //TODO (vl) write if need fireProfile()
             }
         }));
 

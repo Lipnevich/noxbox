@@ -72,17 +72,12 @@ public class MessagingService extends FirebaseMessagingService {
                     return;
                 }
 
-
                 showPushNotification(notification);
-
-
             }
         });
     }
 
     public void showPushNotification(Notification notification) {
-        // if(inForeground()) return;
-
         createChannel();
 
         cancelOtherNotifications(notification.getType());
@@ -198,30 +193,5 @@ public class MessagingService extends FirebaseMessagingService {
         return (appProcessInfo.importance == IMPORTANCE_FOREGROUND
                 || appProcessInfo.importance == IMPORTANCE_VISIBLE);
     }
-
-    /*public static Push generatePush(Request request) {
-        Push push = new Push().setType(request.getType().name());
-
-        switch (request.getType()) {
-            case request:
-            case payerCancel:
-                return push.setRecipientId(request.getNoxbox().getOwner().getId())
-                        .setName(request.getNoxbox().getParty().getName())
-                        .setIcon(request.getNoxbox().getParty().getPhoto())
-                        .setEstimation(request.getNoxbox().getEstimationTime());
-            case accept:
-            case performerCancel:
-            case complete:
-            case qr:
-                return push.setRecipientId(request.getNoxbox().getParty().getId())
-                        .setName(request.getNoxbox().getOwner().getName())
-                        .setIcon(request.getNoxbox().getOwner().getPhoto())
-                        .setPrice(request.getNoxbox().getPrice())
-                        .setEstimation(request.getNoxbox().getEstimationTime());
-            case balance:
-                return push.setRecipientId(request.getId());
-        }
-        return null;
-    }*/
 
 }

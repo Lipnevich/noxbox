@@ -31,6 +31,7 @@ import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.model.NotificationType.showLowBalanceNotification;
 import static live.noxbox.model.NotificationType.updateNotification;
 import static live.noxbox.state.ProfileStorage.readProfile;
+import static live.noxbox.state.ProfileStorage.updateNoxbox;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.BalanceCalculator.getTotalSpentForNoxbox;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
@@ -156,6 +157,7 @@ public class Performing implements State {
                 }
                 messagingService.showPushNotification(notification);
                 profile.getCurrent().setTimeCompleted(timeCompleted);
+                updateNoxbox();
             }
         }));
     }

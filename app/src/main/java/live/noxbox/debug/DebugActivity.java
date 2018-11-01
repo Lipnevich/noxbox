@@ -50,6 +50,7 @@ public class DebugActivity extends MenuActivity {
                             if (areNotTheyNull(profile.getCurrent(), profile.getCurrent().getOwner(), profile.getCurrent().getTimeCreated())
                                     && profile.getCurrent().getTimeRequested() == null) {
                                 // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
+                                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 profile.getCurrent().setParty(new Profile()
                                         .setWallet(new Wallet().setBalance("1000"))
                                         .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
@@ -59,7 +60,7 @@ public class DebugActivity extends MenuActivity {
                                         .setName("Granny Smith")
                                         .setId("12321")
                                         .setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
-                                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+                                ProfileStorage.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }
@@ -82,6 +83,7 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeRequested() != null
                                     && profile.getCurrent().getTimeAccepted() == null) {
                                 profile.getCurrent().getOwner().setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg");
+                                profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to accept");
@@ -107,6 +109,7 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                                 }
+                                ProfileStorage.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to reject");
                             }
@@ -142,6 +145,7 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
                                 }
+                                ProfileStorage.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to verify");
                             }
@@ -168,6 +172,7 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeAccepted() != null
                                     && profile.getCurrent().getTimeCompleted() == null) {
                                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
+                                ProfileStorage.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to complete");
                             }

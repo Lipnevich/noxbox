@@ -43,8 +43,9 @@ public class GeoRealtime {
     public static void offline(Noxbox current) {
         if (current.getGeoId() != null) {
             geo().removeLocation(current.getGeoId());
+        } else {
+            geo().removeLocation(createKey(current));
         }
-        geo().removeLocation(createKey(current));
     }
 
     public static String createKey(Noxbox currentNoxbox) {

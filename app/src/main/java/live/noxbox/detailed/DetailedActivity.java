@@ -332,7 +332,7 @@ public class DetailedActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                ProfileStorage.fireProfile();
+                ProfileStorage.updateNoxbox();
                 finish();
             }
         });
@@ -358,8 +358,8 @@ public class DetailedActivity extends AppCompatActivity {
                             return;
                         }
                         profile.setCurrent(profile.getViewed());
-                        //TODO (nli) logic for transfer listeners
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+                        ProfileStorage.updateNoxbox();
                         finish();
                     }
                 });
@@ -464,9 +464,8 @@ public class DetailedActivity extends AppCompatActivity {
                             profile.getViewed().setTimeCanceledByParty(System.currentTimeMillis());
                         }
                         profile.getViewed().setCancellationReasonMessage(cancellationReason);
-                        profile.getViewed().setParty(null);
+                        ProfileStorage.updateNoxbox();
                         alertDialog.cancel();
-                        profile.setViewed(null);
                         finish();
                     }
                 });

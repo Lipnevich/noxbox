@@ -105,7 +105,7 @@ public class ChatActivity extends BaseActivity {
         interlocutorName.setText(getInterlocutorName(profile));
 
         initMessages(profile);
-        chatAdapter = new ChatAdapter(screen, messages, profile.getId());
+        chatAdapter = new ChatAdapter(screen, messages);
         chatList.setAdapter(chatAdapter);
         chatList.smoothScrollToPosition(View.FOCUS_DOWN);
 
@@ -201,7 +201,7 @@ public class ChatActivity extends BaseActivity {
         messages.clear();
 
         if(profile.getCurrent() != null) {
-            messages.addAll(profile.getCurrent().getChat().values());
+            messages.addAll(profile.getCurrent().getChat(profile.getId()));
             sort(messages);
         }
 

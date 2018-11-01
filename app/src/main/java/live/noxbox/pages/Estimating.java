@@ -17,6 +17,7 @@ import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
+import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 
 public class Estimating implements State {
@@ -40,19 +41,14 @@ public class Estimating implements State {
 
         ((TextView) estimatingView.findViewById(R.id.finalSum)).setText(profile.getCurrent().getPrice() + " " + Configuration.CURRENCY);
 
-        ((ImageView) estimatingView.findViewById(R.id.like)).setOnClickListener(new View.OnClickListener() {
+        estimatingView.findViewById(R.id.like).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                    profile.getCurrent().setTimePartyDisliked(null);
-                } else {
-                    profile.getCurrent().setTimeOwnerDisliked(null);
-                }
                 controlDisplayRate(profile);
             }
         });
 
-        ((ImageView) estimatingView.findViewById(R.id.dislike)).setOnClickListener(new View.OnClickListener() {
+        estimatingView.findViewById(R.id.dislike).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
@@ -60,6 +56,7 @@ public class Estimating implements State {
                 } else {
                     profile.getCurrent().setTimeOwnerDisliked(System.currentTimeMillis());
                 }
+                ProfileStorage.updateNoxbox();
                 controlDisplayRate(profile);
             }
         });
@@ -124,6 +121,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForDemand(comment);
+                        ProfileStorage.updateNoxbox();
                     } else {
                         profile.getCurrent()
                                 .getParty()
@@ -131,6 +129,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForSupply(comment);
+                        ProfileStorage.updateNoxbox();
                     }
                 } else {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
@@ -140,6 +139,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForDemand(comment);
+                        ProfileStorage.updateNoxbox();
                     } else {
                         profile.getCurrent()
                                 .getOwner()
@@ -147,6 +147,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForSupply(comment);
+                        ProfileStorage.updateNoxbox();
                     }
                 }
                 estimatingView.findViewById(R.id.successfullyLayout).setVisibility(View.VISIBLE);
