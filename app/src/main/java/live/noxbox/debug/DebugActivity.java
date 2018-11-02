@@ -78,7 +78,7 @@ public class DebugActivity extends MenuActivity {
                     findViewById(R.id.debugAccept).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (profile.getCurrent() != null && !profile.getCurrent().getOwner().getId().equals(profile.getId())
+                            if (profile.getCurrent() != null && !profile.equals(profile.getCurrent().getOwner())
                                     && profile.getCurrent().getTimeCreated() != null
                                     && profile.getCurrent().getTimeRequested() != null
                                     && profile.getCurrent().getTimeAccepted() == null) {
@@ -104,7 +104,7 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeRequested() != null
                                     && profile.getCurrent().getTimeAccepted() != null
                                     && profile.getCurrent().getTimeCompleted() == null) {
-                                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                                if (profile.equals(profile.getCurrent().getOwner())) {
                                     profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
                                 } else {
                                     profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
@@ -119,7 +119,7 @@ public class DebugActivity extends MenuActivity {
                             Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
                             Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
                             Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                            if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                            if (profile.equals(profile.getCurrent().getOwner())) {
                                 Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByParty()));
                             } else {
                                 Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByOwner()));
@@ -140,7 +140,7 @@ public class DebugActivity extends MenuActivity {
                                     profile.getCurrent().getTimeStartPerforming(),
                                     profile.getCurrent().getTimeCompleted())) {
 
-                                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                                if (profile.equals(profile.getCurrent().getOwner())) {
                                     profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
                                 } else {
                                     profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
@@ -154,7 +154,7 @@ public class DebugActivity extends MenuActivity {
                             Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
                             Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
                             Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                            if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                            if (profile.equals(profile.getCurrent().getOwner())) {
                                 Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
                             } else {
                                 Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
@@ -181,7 +181,7 @@ public class DebugActivity extends MenuActivity {
                             Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
                             Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
                             Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                            if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                            if (profile.equals(profile.getCurrent().getOwner())) {
                                 Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
                             } else {
                                 Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
