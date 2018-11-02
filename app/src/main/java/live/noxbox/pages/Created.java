@@ -15,6 +15,7 @@ import live.noxbox.tools.DateTimeFormatter;
 
 import static live.noxbox.tools.MapController.buildMapMarkerListener;
 import static live.noxbox.tools.MapController.buildMapPosition;
+import static live.noxbox.tools.MapController.clearMapMarkerListener;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.moveCopyrightRight;
 import static live.noxbox.tools.MarkerCreator.createCustomMarker;
@@ -60,6 +61,7 @@ public class Created implements State {
 
     @Override
     public void clear() {
+        clearMapMarkerListener(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         moveCopyrightLeft(googleMap);
