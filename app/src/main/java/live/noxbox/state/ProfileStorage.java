@@ -48,14 +48,7 @@ public class ProfileStorage {
                         if (!profile.getNoxboxId().equals(profile.getCurrent().getId())) {
                             profile.getCurrent().setId(profile.getNoxboxId());
                         }
-                        Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
-                            @Override
-                            public void execute(Noxbox current) {
-                                if (profile == null) return;
-                                profile.setCurrent(current);
-                                executeUITasks();
-                            }
-                        });
+                        startListenNoxbox();
                     }
 
                     executeUITasks();
@@ -124,13 +117,8 @@ public class ProfileStorage {
         profile = null;
     }
 
-    public static void noxboxCreated() {
-        if (profile == null) return;
-
-        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
-        removeNoxbox();
-        writeNoxbox(profile.getCurrent());
-        profile.setNoxboxId(profile.getCurrent().getId());
+    public static void startListenNoxbox() {
+        if (profile == null || profile.getNoxboxId() == null) return;
         Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
             @Override
             public void execute(Noxbox current) {
@@ -138,23 +126,40 @@ public class ProfileStorage {
                 executeUITasks();
             }
         });
+    }
+
+    public static void stopListenNoxbox() {
+        if (profile == null || profile.getNoxboxId() == null) return;
+        Firestore.listenNoxbox(profile.getNoxboxId(), NONE);
+    }
+
+
+    public static void noxboxCreated() {
+        if (profile == null) return;
+
+        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
+        removeNoxbox();
+        writeNoxbox(profile.getCurrent());
+        profile.setNoxboxId(profile.getCurrent().getId());
+
+        startListenNoxbox();
 
         fireProfile();
         online(profile.getCurrent());
     }
 
     public static void removeNoxbox() {
-        if(profile == null) return;
+        if (profile == null) return;
         String noxboxId = profile.getNoxboxId();
         if (noxboxId != null) {
             offline(profile.getCurrent());
             writeNoxbox(new Noxbox().setId(profile.getNoxboxId()).setTimeRemoved(System.currentTimeMillis()));
-            Firestore.listenNoxbox(noxboxId, NONE);
+            stopListenNoxbox();
         }
     }
 
     public static void updateNoxbox() {
-        if(profile == null) return;
+        if (profile == null) return;
         writeNoxbox(profile.getCurrent());
         executeUITasks();
     }

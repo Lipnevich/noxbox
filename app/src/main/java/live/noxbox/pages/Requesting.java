@@ -51,7 +51,10 @@ public class Requesting implements State {
 
     @Override
     public void draw(final Profile profile) {
+        ProfileStorage.startListenNoxbox();
+
         Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +99,7 @@ public class Requesting implements State {
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if(requestingView != null){
+                if (requestingView != null) {
                     ((TextView) requestingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
                 }
                 NotificationType.updateNotification(activity.getApplicationContext(),
@@ -126,6 +129,7 @@ public class Requesting implements State {
 
     @Override
     public void clear() {
+        ProfileStorage.stopListenNoxbox();
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);

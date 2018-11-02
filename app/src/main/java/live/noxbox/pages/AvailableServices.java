@@ -189,6 +189,7 @@ public class AvailableServices implements State {
         if (serviceHandler != null) {
             serviceHandler.removeCallbacksAndMessages(null);
         }
+
         //map clear
         googleMap.clear();
         googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
