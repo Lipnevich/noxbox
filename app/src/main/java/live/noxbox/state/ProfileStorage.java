@@ -6,8 +6,10 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
@@ -117,8 +119,11 @@ public class ProfileStorage {
         profile = null;
     }
 
+    private static Set<String> ids = new HashSet<>();
+
     public static void startListenNoxbox(String noxboxId) {
-        if (noxboxId == null) return;
+        if (noxboxId == null || ids.contains(noxboxId)) return;
+        ids.add(noxboxId);
         Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
             @Override
             public void execute(Noxbox current) {
@@ -130,7 +135,7 @@ public class ProfileStorage {
     }
 
     public static void stopListenNoxbox(String noxboxId) {
-        if (noxboxId == null) return;
+        if (noxboxId == null || !ids.remove(noxboxId)) return;
         Firestore.listenNoxbox(noxboxId, NONE);
     }
 
