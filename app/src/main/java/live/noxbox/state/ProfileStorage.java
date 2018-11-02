@@ -142,8 +142,6 @@ public class ProfileStorage {
         writeNoxbox(profile.getCurrent());
         profile.setNoxboxId(profile.getCurrent().getId());
 
-        startListenNoxbox();
-
         fireProfile();
         online(profile.getCurrent());
     }
