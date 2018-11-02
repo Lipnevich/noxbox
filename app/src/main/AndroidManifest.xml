@@ -39,11 +39,11 @@
             android:parentActivityName=".profile.ProfileActivity"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name=".constructor.ConstructorActivity"
+            android:name=".contract.ContractActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".constructor.NoxboxTypeListActivity"
+            android:name=".contract.NoxboxTypeListActivity"
             android:label="@string/selectService"
             android:noHistory="true"
             android:theme="@style/DialogListActivity" />

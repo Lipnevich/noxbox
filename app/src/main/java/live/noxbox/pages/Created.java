@@ -8,7 +8,7 @@ import android.view.View;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
-import live.noxbox.constructor.ConstructorActivity;
+import live.noxbox.contract.ContractActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
@@ -40,7 +40,7 @@ public class Created implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(activity, ConstructorActivity.class);
+                startActivity(activity, ContractActivity.class);
             }
         });
 

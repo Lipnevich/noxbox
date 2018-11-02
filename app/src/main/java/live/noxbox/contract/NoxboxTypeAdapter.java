@@ -1,4 +1,4 @@
-package live.noxbox.constructor;
+package live.noxbox.contract;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

@@ -20,7 +20,7 @@ import java.util.List;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
-import live.noxbox.constructor.NoxboxTypeListActivity;
+import live.noxbox.contract.NoxboxTypeListActivity;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;

@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.constructor.ConstructorActivity;
-import live.noxbox.constructor.NoxboxTypeListActivity;
+import live.noxbox.contract.ContractActivity;
+import live.noxbox.contract.NoxboxTypeListActivity;
 import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
@@ -156,7 +156,7 @@ public class AvailableServices implements State {
                     profile.getCurrent().getOwner().setPosition(Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient)));
                 }
 
-                startActivity(activity, ConstructorActivity.class);
+                startActivity(activity, ContractActivity.class);
 
             }
         });

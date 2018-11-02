@@ -1,4 +1,4 @@
-package live.noxbox.constructor;
+package live.noxbox.contract;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -54,7 +54,7 @@ import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
 
-public class ConstructorActivity extends BaseActivity {
+public class ContractActivity extends BaseActivity {
 
     protected double price;
     private TextView closeOrRemove;
@@ -266,7 +266,7 @@ public class ConstructorActivity extends BaseActivity {
             spanTxt.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-                    ConstructorActivity.this.startActivityForResult(new Intent(ConstructorActivity.this, CoordinateActivity.class), COORDINATE);
+                    ContractActivity.this.startActivityForResult(new Intent(ContractActivity.this, CoordinateActivity.class), COORDINATE);
                 }
             }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
             address.setMovementMethod(LinkMovementMethod.getInstance());
@@ -285,7 +285,7 @@ public class ConstructorActivity extends BaseActivity {
     }
 
     protected void createRoleList(final Profile profile, View textView) {
-        final PopupMenu popup = new PopupMenu(ConstructorActivity.this, textView, Gravity.CENTER_HORIZONTAL);
+        final PopupMenu popup = new PopupMenu(ContractActivity.this, textView, Gravity.CENTER_HORIZONTAL);
         for (MarketRole role : MarketRole.values()) {
             popup.getMenu().add(Menu.NONE, role.getId(), Menu.NONE, role.getName());
         }
@@ -302,7 +302,7 @@ public class ConstructorActivity extends BaseActivity {
     }
 
     private void createTravelModeList(final Profile profile, TextView textView) {
-        final PopupMenu popup = new PopupMenu(ConstructorActivity.this, textView, Gravity.CENTER_HORIZONTAL);
+        final PopupMenu popup = new PopupMenu(ContractActivity.this, textView, Gravity.CENTER_HORIZONTAL);
         for (TravelMode mode : TravelMode.values()) {
             popup.getMenu().add(Menu.NONE, mode.getId(), Menu.NONE, mode.getName());
         }
@@ -312,7 +312,7 @@ public class ConstructorActivity extends BaseActivity {
                 if (profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
                     //если человек хочет двигаться путь разрешит отслеживать своё местоположение
                     if (checkLocationPermission()) {
-                        ActivityCompat.requestPermissions(ConstructorActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+                        ActivityCompat.requestPermissions(ContractActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                     }
                 } else {
                     profile.getCurrent().getOwner().setHost(true);
@@ -327,7 +327,7 @@ public class ConstructorActivity extends BaseActivity {
     }
 
     private void drawNoxboxTimeSwitch(final Profile profile) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(ConstructorActivity.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(ContractActivity.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner timeSelectFrom = findViewById(R.id.timeFromView);
@@ -372,7 +372,7 @@ public class ConstructorActivity extends BaseActivity {
                     ((LinearLayout) findViewById(R.id.publish).getParent())
                             .setBackgroundColor(getResources().getColor(R.color.translucent));
 
-                    BottomSheetDialog.openWalletAddressSheetDialog(ConstructorActivity.this, profile);
+                    BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
                 }
                 postNoxbox(profile);
@@ -404,7 +404,7 @@ public class ConstructorActivity extends BaseActivity {
         }
         profile.getCurrent().setOwner(profile.publicInfo());
 
-        Log.d(State.TAG + "ConstructorActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
+        Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
 
         ProfileStorage.noxboxCreated();
 
@@ -415,7 +415,7 @@ public class ConstructorActivity extends BaseActivity {
         profile.getCurrent().clean();
 
         long timeRemoved = System.currentTimeMillis();
-        Log.d(State.TAG + "ConstructorActivity", "timeRemoved: " + DateTimeFormatter.time(timeRemoved));
+        Log.d(State.TAG + "ContractActivity", "timeRemoved: " + DateTimeFormatter.time(timeRemoved));
 
         ProfileStorage.removeNoxbox();
 

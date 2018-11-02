@@ -13,7 +13,7 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.constructor.ConstructorActivity;
+import live.noxbox.contract.ContractActivity;
 import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
@@ -59,7 +59,7 @@ public class MapController {
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        startActivity(activity, ConstructorActivity.class);
+                        startActivity(activity, ContractActivity.class);
                         return true;
                     }
                 });
