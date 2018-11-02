@@ -53,7 +53,7 @@ public class NoxboxExamples {
             noxbox.setId(owner.getNoxboxId());
             noxbox.setEstimationTime("0");
             noxbox.setPrice(ThreadLocalRandom.current().nextInt(10, 100) + "");
-            double delta = 360 * Configuration.RADIUS_IN_METERS / 40075000;
+            double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 100;
             noxbox.setPosition(new Position(
                     position.getLatitude() + ThreadLocalRandom.current().nextDouble(-delta, delta),
                     position.getLongitude() + ThreadLocalRandom.current().nextDouble(-delta, delta)));

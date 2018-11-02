@@ -23,10 +23,6 @@ public class GeoRealtime {
 
     public final static String delimiter = ";";
 
-    static {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-    }
-
     private static GeoFire geo;
 
     private static GeoFire geo() {
