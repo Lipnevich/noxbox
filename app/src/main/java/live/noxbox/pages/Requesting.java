@@ -95,7 +95,14 @@ public class Requesting implements State {
                 updateNoxbox();
             }
         });
-        countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS, 1000) {
+
+        long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
+        if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
+            autoDisconnectFromService(profile);
+            return;
+        }
+
+        countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView countdownTime = requestingView.findViewById(R.id.countdownTime);
@@ -109,14 +116,7 @@ public class Requesting implements State {
 
             @Override
             public void onFinish() {
-                if (profile.getCurrent().getTimeAccepted() == null) {
-                    NotificationType.removeNotifications(activity.getApplicationContext());
-
-                    long timeTimeout = System.currentTimeMillis();
-                    Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
-                    profile.getCurrent().setTimeTimeout(timeTimeout);
-                    ProfileStorage.updateNoxbox();
-                }
+                autoDisconnectFromService(profile);
             }
 
         }.start();
@@ -124,6 +124,16 @@ public class Requesting implements State {
         MapController.buildMapMarkerListener(googleMap, profile, activity);
 
 
+    }
+
+    private void autoDisconnectFromService(final Profile profile) {
+        if (profile.getCurrent().getTimeAccepted() == null) {
+            NotificationType.removeNotifications(activity.getApplicationContext());
+            long timeTimeout = System.currentTimeMillis();
+            Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
+            profile.getCurrent().setTimeTimeout(timeTimeout);
+            ProfileStorage.updateNoxbox();
+        }
     }
 
 
