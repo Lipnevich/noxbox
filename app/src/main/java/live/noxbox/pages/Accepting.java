@@ -65,6 +65,7 @@ public class Accepting implements State {
                 long timeCanceled = System.currentTimeMillis();
                 Log.d(TAG + "Accepting", "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
                 profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
+                NotificationType.removeNotifications(activity.getApplicationContext());
                 updateNoxbox();
             }
         });
@@ -96,7 +97,13 @@ public class Accepting implements State {
                 .setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS));
         messagingService.showPushNotification(notification);
 
-        countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS, 1000) {
+
+        long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
+        if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
+            autoDisconnectFromService(profile);
+            return;
+        }
+        countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView countdownTime = acceptingView.findViewById(R.id.countdownTime);
@@ -121,6 +128,14 @@ public class Accepting implements State {
 
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         MapController.buildMapMarkerListener(googleMap, profile, activity);
+    }
+
+    private void autoDisconnectFromService(final Profile profile) {
+        if (profile.getCurrent().getTimeAccepted() == null) {
+            NotificationType.removeNotifications(activity.getApplicationContext());
+            profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
+            updateNoxbox();
+        }
     }
 
     @Override

@@ -33,7 +33,7 @@ public class Requesting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    private ObjectAnimator anim;
+    private ObjectAnimator animationProgress;
     private AnimationDrawable animationDrawable;
     private LinearLayout requestingView;
     private static CountDownTimer countDownTimer;
@@ -63,24 +63,10 @@ public class Requesting implements State {
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
 
-        requestingView = activity.findViewById(R.id.container);
-        View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
-        requestingView.addView(child);
-
-        ((TextView) requestingView.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
-        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
-                profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
-                updateNoxbox();
-            }
-        });
-
-        anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
-        anim.setDuration(15000);
-        anim.setInterpolator(new DecelerateInterpolator());
-        anim.start();
+        animationProgress = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
+        animationProgress.setDuration(15000);
+        animationProgress.setInterpolator(new DecelerateInterpolator());
+        animationProgress.start();
 
         animationDrawable = (AnimationDrawable) activity.findViewById(R.id.blinkingInfoLayout).getBackground();
         animationDrawable.setEnterFadeDuration(600);
@@ -94,12 +80,34 @@ public class Requesting implements State {
                 .setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS));
         messagingService.showPushNotification(notification);
 
-        countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS, 1000) {
+
+        requestingView = activity.findViewById(R.id.container);
+        View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
+        requestingView.addView(child);
+
+        ((TextView) requestingView.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
+        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
+                NotificationType.removeNotifications(activity.getApplicationContext());
+                profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+                updateNoxbox();
+            }
+        });
+
+        long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
+        if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
+            autoDisconnectFromService(profile);
+            return;
+        }
+
+        countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView countdownTime = requestingView.findViewById(R.id.countdownTime);
                 if (countdownTime != null) {
-                    ((TextView)countdownTime.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
+                    ((TextView) countdownTime.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
                 }
                 NotificationType.updateNotification(activity.getApplicationContext(),
                         notification.setType(NotificationType.requesting).setTime(String.valueOf(millisUntilFinished / 1000)),
@@ -108,14 +116,7 @@ public class Requesting implements State {
 
             @Override
             public void onFinish() {
-                if (profile.getCurrent().getTimeAccepted() == null) {
-                    NotificationType.removeNotifications(activity.getApplicationContext());
-
-                    long timeTimeout = System.currentTimeMillis();
-                    Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
-                    profile.getCurrent().setTimeTimeout(timeTimeout);
-                    ProfileStorage.updateNoxbox();
-                }
+                autoDisconnectFromService(profile);
             }
 
         }.start();
@@ -125,6 +126,16 @@ public class Requesting implements State {
 
     }
 
+    private void autoDisconnectFromService(final Profile profile) {
+        if (profile.getCurrent().getTimeAccepted() == null) {
+            NotificationType.removeNotifications(activity.getApplicationContext());
+            long timeTimeout = System.currentTimeMillis();
+            Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
+            profile.getCurrent().setTimeTimeout(timeTimeout);
+            ProfileStorage.updateNoxbox();
+        }
+    }
+
 
     @Override
     public void clear() {
@@ -132,8 +143,8 @@ public class Requesting implements State {
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        if (anim != null && animationDrawable != null) {
-            anim.cancel();
+        if (animationProgress != null && animationDrawable != null) {
+            animationProgress.cancel();
             animationDrawable.stop();
         }
         if (countDownTimer != null) {
