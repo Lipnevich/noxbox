@@ -11,9 +11,9 @@ import static android.content.Context.LOCATION_SERVICE;
 import static live.noxbox.tools.ConfirmationMessage.dismissGpsMessage;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 
-public class GpsReceiver extends BroadcastReceiver {
+public class LocationReceiver extends BroadcastReceiver {
     private MapActivity activity;
-    public GpsReceiver(MapActivity activity){
+    public LocationReceiver(MapActivity activity){
         this.activity = activity;
     }
     @Override

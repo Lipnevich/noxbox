@@ -88,6 +88,8 @@ public class GeoRealtime {
                 } else if (noxbox.getRole() == MarketRole.demand) {
                     noxbox.getOwner().getDemandsRating().put(noxbox.getType().name(), rating);
                 }
+
+                noxbox.setTimeCreated(0L);
                 return noxbox;
             }
         } catch (IllegalArgumentException someOneRenamedEnum) {

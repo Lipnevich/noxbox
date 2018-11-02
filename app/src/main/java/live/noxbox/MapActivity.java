@@ -42,7 +42,7 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.pages.Accepting;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Created;
-import live.noxbox.pages.GpsReceiver;
+import live.noxbox.pages.LocationReceiver;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
@@ -174,7 +174,7 @@ public class MapActivity extends DebugActivity implements
         });
     }
 
-    private GpsReceiver gpsReceiver;
+    private LocationReceiver locationReceiver;
     @Override
     protected void onResume() {
         if (isLocationPermissionGranted()) {
@@ -182,8 +182,8 @@ public class MapActivity extends DebugActivity implements
                 messageGps(this);
             }
         }
-        gpsReceiver = new GpsReceiver(this);
-        registerReceiver(gpsReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
+        locationReceiver = new LocationReceiver(this);
+        registerReceiver(locationReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         googleApiClient.connect();
         draw();
 
@@ -193,7 +193,7 @@ public class MapActivity extends DebugActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(gpsReceiver);
+        unregisterReceiver(locationReceiver);
         googleApiClient.disconnect();
         ProfileStorage.stopListen(this.getClass().getName());
     }
