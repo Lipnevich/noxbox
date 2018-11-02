@@ -229,7 +229,6 @@ public class AvailableServices implements State {
                     drawingRunnable = new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG + "AvailableServices", "run()");
                             clusterManager.setItems(markers, profile);
                             drawingHeandler.postDelayed(drawingRunnable, 200);
                         }

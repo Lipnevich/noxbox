@@ -29,7 +29,7 @@ public class Firestore {
 
     private static FirebaseFirestore db() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().setPersistenceEnabled(true).build());
+        db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().build());
         return db;
     }
 
