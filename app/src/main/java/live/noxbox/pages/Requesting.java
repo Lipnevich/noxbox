@@ -97,8 +97,9 @@ public class Requesting implements State {
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (requestingView != null) {
-                    ((TextView) requestingView.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
+                TextView countdownTime = requestingView.findViewById(R.id.countdownTime);
+                if (countdownTime != null) {
+                    ((TextView)countdownTime.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
                 }
                 NotificationType.updateNotification(activity.getApplicationContext(),
                         notification.setType(NotificationType.requesting).setTime(String.valueOf(millisUntilFinished / 1000)),

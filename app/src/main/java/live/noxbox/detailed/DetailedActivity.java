@@ -187,8 +187,12 @@ public class DetailedActivity extends AppCompatActivity {
         drawDropdownElement(R.id.ratingTitleLayout, R.id.ratingLayout);
         changeArrowVector(R.id.ratingLayout, R.id.ratingArrow);
         Rating rating = viewed.getRole() == MarketRole.demand ?
-                viewed.getOwner().getDemandsRating().get(viewed.getType().name()) : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
+                viewed.getOwner().getDemandsRating().get(viewed.getType().name())
+                : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
 
+        if(rating == null){
+            rating = new Rating();
+        }
         int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
         if (percentage >= 95) {
             ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.GREEN);

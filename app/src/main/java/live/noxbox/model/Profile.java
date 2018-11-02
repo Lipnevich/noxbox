@@ -227,6 +227,10 @@ public class Profile implements Serializable {
             rating = suppliesRating.get(type.name());
         }
 
+        if(rating == null){
+            rating = new Rating();
+        }
+
         likes = rating.getReceivedLikes();
         dislikes = rating.getReceivedDislikes();
         if (dislikes == 0) return 100;
