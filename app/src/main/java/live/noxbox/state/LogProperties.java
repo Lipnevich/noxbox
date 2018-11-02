@@ -13,6 +13,7 @@ public final class LogProperties {
 
     private static String PROFILE_LISTENER = "profileListener";
     private static String PROFILE_PUBLIC_INFO = "profilePublicInfo";
+    private static String PROFILE_NAME = "profileName";
     private static String PROFILE_NOXBOX_ID = "profileNoxboxId";
     private static String NOXBOX_STATE = "noxboxState";
 
@@ -21,7 +22,8 @@ public final class LogProperties {
         for (Task<Profile> profileListener : profileListeners.values()) {
             Crashlytics.setString(PROFILE_LISTENER + ++i, profileListener.getClass().getName());
         }
-        Crashlytics.setString(PROFILE_PUBLIC_INFO, new Gson().toJson(profile.notPublicInfo()));
+        Crashlytics.setString(PROFILE_PUBLIC_INFO, new Gson().toJson(profile.publicInfo()));
+        Crashlytics.setString(PROFILE_NAME, profile.getName());
         Crashlytics.setString(PROFILE_NOXBOX_ID, profile.getNoxboxId());
         Crashlytics.setString(NOXBOX_STATE, NoxboxState.getState(profile.getCurrent(), profile).name());
     }

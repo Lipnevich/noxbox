@@ -90,6 +90,8 @@ public class ProfileStorage {
     }
 
     private static void executeUITasks() {
+        LogProperties.update(profile, profileListeners);
+
         for (Task<Profile> task : profileListeners.values()) {
             task.execute(profile);
         }
