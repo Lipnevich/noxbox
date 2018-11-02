@@ -32,6 +32,8 @@ public class DebugActivity extends MenuActivity {
             ProfileStorage.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
+                    profile.getWallet().setBalance("10000000");
+
                     DebugActivity.this.findViewById(R.id.debugLayout).setVisibility(View.VISIBLE);
 
                     DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {

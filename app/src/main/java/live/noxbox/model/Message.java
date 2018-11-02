@@ -13,8 +13,6 @@
  */
 package live.noxbox.model;
 
-import live.noxbox.Virtual;
-
 public class Message implements Comparable<Message> {
 
     private String id, message, estimationTime;

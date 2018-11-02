@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import live.noxbox.Virtual;
-
 import static live.noxbox.Configuration.MIN_RATE_IN_PERCENTAGE;
 
 public class Profile implements Serializable {

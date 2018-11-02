@@ -156,5 +156,6 @@ public class ProfileStorage {
     public static void updateNoxbox() {
         if(profile == null) return;
         writeNoxbox(profile.getCurrent());
+        executeUITasks();
     }
 }

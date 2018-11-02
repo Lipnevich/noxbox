@@ -1,4 +1,4 @@
-package live.noxbox;
+package live.noxbox.model;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

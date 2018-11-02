@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import live.noxbox.Virtual;
-
 public class Noxbox implements Comparable<Noxbox> {
 
     private String id;
@@ -34,6 +32,13 @@ public class Noxbox implements Comparable<Noxbox> {
     private Map<String, Message> ownerMessages = new HashMap<>();
     private Map<String, Message> partyMessages = new HashMap<>();
 
+    private Position position;
+    private String price;
+    private NoxboxType type;
+    private MarketRole role;
+    private WorkSchedule workSchedule;
+    private String estimationTime;
+
     // Noxbox specific data
     private Long timeCreated;
     private Long timeRemoved;
@@ -42,24 +47,12 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timeAccepted;
     private Long timeCanceledByOwner;
     private Long timeCanceledByParty;
-
     private Long timeOwnerVerified;
     private Long timePartyVerified;
-
     private Long timeOwnerDisliked;
     private Long timePartyDisliked;
-
     private Long timeToMeet;
-
     private Long timeTimeout;
-
-    private Position position;
-    private String price;
-    private NoxboxType type;
-    private MarketRole role;
-    private WorkSchedule workSchedule;
-    private String estimationTime;
-
     private String cancellationReasonMessage;
     private String commentForDemand;
     private String commentForSupply;
@@ -235,7 +228,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public MarketRole getRole() {
         if (role == null) {
-            role = MarketRole.supply;
+            role = MarketRole.demand;
         }
         return role;
     }

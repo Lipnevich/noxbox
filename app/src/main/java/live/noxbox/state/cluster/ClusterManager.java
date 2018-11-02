@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import live.noxbox.BuildConfig;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
@@ -65,8 +66,8 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     }
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
-
-        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами
+        if(BuildConfig.DEBUG) return false;
+        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
 
         if (!profile.getFilters().getAllowNovices())
             return true;

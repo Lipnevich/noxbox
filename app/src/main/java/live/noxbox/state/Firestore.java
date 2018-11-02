@@ -18,9 +18,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import live.noxbox.BuildConfig;
-import live.noxbox.Virtual;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.model.Virtual;
 import live.noxbox.tools.Task;
 
 import static java.lang.reflect.Modifier.isStatic;
