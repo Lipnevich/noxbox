@@ -123,6 +123,7 @@ public class ProfileStorage {
             @Override
             public void execute(Noxbox current) {
                 profile.setCurrent(current);
+                profile.setViewed(current);
                 executeUITasks();
             }
         });

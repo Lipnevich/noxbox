@@ -52,6 +52,7 @@ public class DebugActivity extends MenuActivity {
                             if (areNotTheyNull(profile.getCurrent(), profile.getCurrent().getOwner(), profile.getCurrent().getTimeCreated())
                                     && profile.getCurrent().getTimeRequested() == null) {
                                 // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
+
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 profile.getCurrent().setParty(new Profile()
                                         .setWallet(new Wallet().setBalance("1000"))
