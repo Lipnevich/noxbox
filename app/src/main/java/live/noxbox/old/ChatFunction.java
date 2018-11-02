@@ -13,7 +13,7 @@
  */
 package live.noxbox.old;
 
-public abstract class ChatFunction extends EventFunction {
+public abstract class ChatFunction {
 
    /* private ImageView chatIcon;
 

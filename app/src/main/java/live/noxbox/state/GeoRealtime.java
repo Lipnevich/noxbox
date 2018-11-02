@@ -102,16 +102,17 @@ public class GeoRealtime {
 //                        .setPush(MessagingService.generatePush(request))));
     }
 
-
     // consumer
     private static GeoQuery geoQuery;
-    private static long time;
+    private static GeoLocation currentLocation = new GeoLocation(0, 0);
+    private static final double MIN_STEP = 0.01;
 
     public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Map<String, Noxbox> noxboxes) {
         //allow to recreate query once per three seconds
-        if (System.currentTimeMillis() - time < 3000)
+        if (Math.abs(geoLocation.latitude - currentLocation.latitude) < MIN_STEP ||
+                Math.abs(geoLocation.longitude - currentLocation.longitude) < MIN_STEP)
             return;
-        time = System.currentTimeMillis();
+        currentLocation = geoLocation;
 
         if (geoQuery != null) {
             geoQuery.setCenter(geoLocation);
@@ -152,7 +153,7 @@ public class GeoRealtime {
     }
 
     public static void stopListenAvailableNoxboxes() {
-        time = 0;
+        currentLocation = new GeoLocation(0, 0);
         if (geoQuery != null) {
             geoQuery.removeAllListeners();
             geoQuery = null;
