@@ -79,12 +79,12 @@ public class DetailedActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        // TODO (vl) добавить слушателя ноксбокса с вызовом метода draw
         super.onResume();
         gyroscopeObserver.register(this);
-        ProfileStorage.readProfile(new Task<Profile>() {
+        ProfileStorage.listenProfile(DetailedActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
+                ProfileStorage.startListenNoxbox(profile.getViewed().getId());
                 draw(profile);
             }
         });
@@ -92,8 +92,14 @@ public class DetailedActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        // TODO (vl) убрать слушателя ноксбокса
         super.onPause();
+        ProfileStorage.stopListen(DetailedActivity.class.getName());
+        ProfileStorage.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                ProfileStorage.stopListenNoxbox(profile.getViewed().getId());
+            }
+        });
         gyroscopeObserver.unregister();
     }
 

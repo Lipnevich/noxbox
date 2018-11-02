@@ -48,7 +48,7 @@ public class ProfileStorage {
                         if (!profile.getNoxboxId().equals(profile.getCurrent().getId())) {
                             profile.getCurrent().setId(profile.getNoxboxId());
                         }
-                        startListenNoxbox();
+                        startListenNoxbox(profile.getNoxboxId());
                     }
 
                     executeUITasks();
@@ -117,9 +117,9 @@ public class ProfileStorage {
         profile = null;
     }
 
-    public static void startListenNoxbox() {
-        if (profile == null || profile.getNoxboxId() == null) return;
-        Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
+    public static void startListenNoxbox(String noxboxId) {
+        if (noxboxId == null) return;
+        Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
             @Override
             public void execute(Noxbox current) {
                 profile.setCurrent(current);
@@ -128,9 +128,9 @@ public class ProfileStorage {
         });
     }
 
-    public static void stopListenNoxbox() {
-        if (profile == null || profile.getNoxboxId() == null) return;
-        Firestore.listenNoxbox(profile.getNoxboxId(), NONE);
+    public static void stopListenNoxbox(String noxboxId) {
+        if (noxboxId == null) return;
+        Firestore.listenNoxbox(noxboxId, NONE);
     }
 
 
@@ -152,7 +152,7 @@ public class ProfileStorage {
         if (noxboxId != null) {
             offline(profile.getCurrent());
             writeNoxbox(new Noxbox().setId(profile.getNoxboxId()).setTimeRemoved(System.currentTimeMillis()));
-            stopListenNoxbox();
+            stopListenNoxbox(noxboxId);
         }
     }
 
