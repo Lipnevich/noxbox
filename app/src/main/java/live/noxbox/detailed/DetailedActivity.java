@@ -104,10 +104,13 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void draw(Profile profile) {
+        if(profile.getViewed().getParty() == null){
+            profile.getViewed().setParty(profile.notPublicInfo());
+        }
         drawToolbar(profile.getViewed());
         drawOtherProfile(profile);
         drawDescription(profile);
-        drawWaitingTime(profile.getViewed());
+        drawWaitingTime(profile);
         drawRating(profile.getViewed());
         if (profile.getViewed().getRole() == MarketRole.supply) {
             drawCertificate(profile.getViewed());
@@ -120,7 +123,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void drawToolbar(Noxbox noxbox) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
@@ -174,7 +177,7 @@ public class DetailedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
 
 
-        if(profile.getViewed().getTimeCreated() != null) {
+        if (profile.getViewed().getTimeCreated() != null) {
             ((TextView) findViewById(R.id.date)).setText(getText(R.string.dateRegistrationService) + " " + date(profile.getViewed().getTimeCreated()));
         }
 
@@ -209,7 +212,8 @@ public class DetailedActivity extends AppCompatActivity {
         recyclerView.setAdapter(new CommentAdapter(rating.getComments().values()));
     }
 
-    private void drawWaitingTime(final Noxbox noxbox) {
+    private void drawWaitingTime(final Profile profile) {
+        final Noxbox noxbox = profile.getViewed();
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -220,76 +224,70 @@ public class DetailedActivity extends AppCompatActivity {
         ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
         ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
 
-        ProfileStorage.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition()));
+        ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition()));
 
-                float[] results = new float[1];
+        float[] results = new float[1];
 
-                Location.distanceBetween(
-                        noxbox.getOwner().getPosition().getLatitude(),
-                        noxbox.getOwner().getPosition().getLongitude(),
-                        noxbox.getParty().getPosition().getLatitude(),
-                        noxbox.getParty().getPosition().getLongitude(),
-                        results);
+        Location.distanceBetween(
+                noxbox.getOwner().getPosition().getLatitude(),
+                noxbox.getOwner().getPosition().getLongitude(),
+                noxbox.getParty().getPosition().getLatitude(),
+                noxbox.getParty().getPosition().getLongitude(),
+                results);
 
-                int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
-                String timeTxt;
-                String distanceTxt = String.valueOf((int) results[0] / 1000) + " " + getResources().getString(R.string.km);
-                switch (minutes % 10) {
-                    case 1: {
-                        timeTxt = getResources().getString(R.string.minute);
-                        break;
-                    }
-                    case 2: {
-                        timeTxt = getResources().getString(R.string.minutes_);
-                        break;
-                    }
-                    case 3: {
-                        timeTxt = getResources().getString(R.string.minutes_);
-                        break;
-                    }
-                    case 4: {
-                        timeTxt = getResources().getString(R.string.minutes_);
-                        break;
-                    }
-                    default: {
-                        timeTxt = getResources().getString(R.string.minutes);
-                        break;
-                    }
-                }
-
-                String displayTime = DateTimeFormatter.format(noxbox.getWorkSchedule().getStartTime().getHourOfDay(), noxbox.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
-                        DateTimeFormatter.format(noxbox.getWorkSchedule().getEndTime().getHourOfDay(), noxbox.getWorkSchedule().getEndTime().getMinuteOfHour());
-                ((TextView) findViewById(R.id.offerTime)).setText(R.string.validityOfTheOffer);
-                ((TextView) findViewById(R.id.time)).setText(displayTime);
-
-                if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
-                    ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
-                    ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
-
-                } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
-                    ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
-
-                    ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
-
-                    if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null) {
-                        findViewById(R.id.coordinatesSelect).setVisibility(View.GONE);
-                    } else {
-                        findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
-                        findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                startCoordinateActivity();
-                            }
-                        });
-                    }
-                }
-
-
+        int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
+        String timeTxt;
+        String distanceTxt = String.valueOf((int) results[0] / 1000) + " " + getResources().getString(R.string.km);
+        switch (minutes % 10) {
+            case 1: {
+                timeTxt = getResources().getString(R.string.minute);
+                break;
             }
-        });
+            case 2: {
+                timeTxt = getResources().getString(R.string.minutes_);
+                break;
+            }
+            case 3: {
+                timeTxt = getResources().getString(R.string.minutes_);
+                break;
+            }
+            case 4: {
+                timeTxt = getResources().getString(R.string.minutes_);
+                break;
+            }
+            default: {
+                timeTxt = getResources().getString(R.string.minutes);
+                break;
+            }
+        }
+
+        String displayTime = DateTimeFormatter.format(noxbox.getWorkSchedule().getStartTime().getHourOfDay(), noxbox.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
+                DateTimeFormatter.format(noxbox.getWorkSchedule().getEndTime().getHourOfDay(), noxbox.getWorkSchedule().getEndTime().getMinuteOfHour());
+        ((TextView) findViewById(R.id.offerTime)).setText(R.string.validityOfTheOffer);
+        ((TextView) findViewById(R.id.time)).setText(displayTime);
+
+        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+            ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
+            ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
+
+        } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
+            ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
+
+            ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
+
+            if (profile.getCurrent() != null && profile.getCurrent().getTimeRequested() != null) {
+                findViewById(R.id.coordinatesSelect).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
+                findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startCoordinateActivity();
+                    }
+                });
+            }
+        }
+
 
     }
 
@@ -359,7 +357,7 @@ public class DetailedActivity extends AppCompatActivity {
                     @Override
                     public void execute(Profile profile) {
                         if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
-                            ((Button) findViewById(R.id.joinButton)).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+                            findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
                             BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
                             return;
                         }
@@ -502,7 +500,7 @@ public class DetailedActivity extends AppCompatActivity {
         List<String> certificateUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.certificates.name());
 
 
-        RecyclerView certificateList = (RecyclerView) findViewById(R.id.certificatesList);
+        RecyclerView certificateList = findViewById(R.id.certificatesList);
         certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, noxbox.getType()));
     }
@@ -513,7 +511,7 @@ public class DetailedActivity extends AppCompatActivity {
         findViewById(R.id.workSampleLayout).setVisibility(View.VISIBLE);
         List<String> workSampleUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.samples.name());
 
-        RecyclerView workSampleList = (RecyclerView) findViewById(R.id.workSampleList);
+        RecyclerView workSampleList = findViewById(R.id.workSampleList);
         workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, noxbox.getType()));
     }

@@ -102,7 +102,6 @@ public class AvailableServices implements State {
                                 if (googleMap.getCameraPosition() != null) {
                                     profile.setPosition(Position.from(googleMap.getCameraPosition().target));
                                 }
-                                profile.getViewed().setParty(profile.notPublicInfo());
                                 Router.startActivity(activity, DetailedActivity.class);
                             }
                         });
