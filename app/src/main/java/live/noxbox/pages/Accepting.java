@@ -125,6 +125,7 @@ public class Accepting implements State {
 
     @Override
     public void clear() {
+        MapController.clearMapMarkerListener(googleMap);
         googleMap.clear();
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         if (anim != null && animationDrawable != null) {

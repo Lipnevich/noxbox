@@ -289,6 +289,7 @@ public class Moving implements State {
 
     @Override
     public void clear() {
+        MapController.clearMapMarkerListener(googleMap);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);

@@ -99,6 +99,15 @@ public class MapController {
 
     }
 
+    public static void clearMapMarkerListener(GoogleMap googleMap) {
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                return true;
+            }
+        });
+    }
+
     public static void moveCopyrightRight(GoogleMap googleMap) {
         googleMap.setPadding(dpToPx(84), 0, 0, dpToPx(8));
     }

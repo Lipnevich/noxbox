@@ -127,6 +127,7 @@ public class Requesting implements State {
 
     @Override
     public void clear() {
+        MapController.clearMapMarkerListener(googleMap);
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
