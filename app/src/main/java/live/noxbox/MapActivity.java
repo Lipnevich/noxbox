@@ -268,9 +268,9 @@ public class MapActivity extends DebugActivity implements
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
         if(state == NoxboxState.initial) {
-            ProfileStorage.stopListenNoxbox();
+            ProfileStorage.stopListenNoxbox(profile.getCurrent().getId());
         } else {
-            ProfileStorage.startListenNoxbox();
+            ProfileStorage.startListenNoxbox(profile.getCurrent().getId());
         }
         //strong link for weakMap
         State newState = states.get(state);
