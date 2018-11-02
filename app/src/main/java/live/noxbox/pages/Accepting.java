@@ -65,6 +65,7 @@ public class Accepting implements State {
                 long timeCanceled = System.currentTimeMillis();
                 Log.d(TAG + "Accepting", "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
                 profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
+                NotificationType.removeNotifications(activity.getApplicationContext());
                 updateNoxbox();
             }
         });
