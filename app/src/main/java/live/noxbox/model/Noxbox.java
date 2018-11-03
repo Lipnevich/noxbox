@@ -377,7 +377,7 @@ public class Noxbox implements Comparable<Noxbox> {
     public List<Message> getChat(String profileId) {
         List<Message> chat = new ArrayList<>();
         Collection<Message> myMessages = getPartyMessages().values();
-        if(getOwner().getId().equals(profileId)) {
+        if(profileId.equals(getOwner().getId())) {
             myMessages = getOwnerMessages().values();
         }
         for(Message message : myMessages) {

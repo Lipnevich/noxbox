@@ -51,10 +51,16 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        long millis = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.chat);
+
+        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         chatList = findViewById(R.id.chat_list);
         chatList.setHasFixedSize(true);
@@ -88,13 +94,24 @@ public class ChatActivity extends BaseActivity {
                     }
                     getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
         }});
+    }
 
-        ProfileStorage.readProfile(new Task<Profile>() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ProfileStorage.listenProfile(ChatActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ProfileStorage.stopListen(ChatActivity.class.getName());
+        ProfileStorage.updateNoxbox();
     }
 
     private void draw(final Profile profile) {
@@ -178,17 +195,27 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void send(Profile profile) {
-        if(TextUtils.isEmpty(text.getText().toString().trim())) return;
-        add(new Message().setWasRead(true));
+        String trimmedText = text.getText().toString().trim();
+        if(TextUtils.isEmpty(trimmedText)) return;
+        sound();
+
+        long time = System.currentTimeMillis();
+
+        Message message = new Message().setMessage(trimmedText).setWasRead(true)
+                .setId("" + time).setTime(time).setMyMessage(true);
+        if(profile.equals(profile.getCurrent().getOwner())) {
+            profile.getCurrent().getOwnerMessages().put(message.getId(), message);
+        } else {
+            profile.getCurrent().getPartyMessages().put(message.getId(), message);
+        }
         text.setText("");
+        ProfileStorage.updateNoxbox();
     }
 
     private void add(Message message) {
-        sound();
         messages.add(message);
         sort(messages);
         chatAdapter.notifyItemInserted(messages.indexOf(message));
-
         chatList.scrollToPosition(messages.size() - 1);
     }
 
@@ -212,9 +239,4 @@ public class ChatActivity extends BaseActivity {
         return profile.getCurrent().getNotMe(profile.getId()).getName();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
 }

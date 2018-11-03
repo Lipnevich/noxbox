@@ -68,10 +68,13 @@ public class Requesting implements State {
         animationProgress.setInterpolator(new DecelerateInterpolator());
         animationProgress.start();
 
-        animationDrawable = (AnimationDrawable) activity.findViewById(R.id.blinkingInfoLayout).getBackground();
-        animationDrawable.setEnterFadeDuration(600);
-        animationDrawable.setExitFadeDuration(1200);
-        animationDrawable.start();
+        // TODO (vl) lead to null pointer
+        if(activity.findViewById(R.id.blinkingInfoLayout) != null) {
+            animationDrawable = (AnimationDrawable) activity.findViewById(R.id.blinkingInfoLayout).getBackground();
+            animationDrawable.setEnterFadeDuration(600);
+            animationDrawable.setExitFadeDuration(1200);
+            animationDrawable.start();
+        }
 
         profile.getViewed().setParty(profile.notPublicInfo());
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());

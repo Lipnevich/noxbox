@@ -15,7 +15,7 @@ package live.noxbox.model;
 
 public class Message implements Comparable<Message> {
 
-    private String id, message, estimationTime;
+    private String id, message;
     private Boolean wasRead;
     private Long time;
     @Virtual
@@ -38,14 +38,6 @@ public class Message implements Comparable<Message> {
     public Message setTime(Long time) {
         this.time = time;
         return this;
-    }
-
-    public String getEstimationTime() {
-        return estimationTime;
-    }
-
-    public void setEstimationTime(String estimationTime) {
-        this.estimationTime = estimationTime;
     }
 
     public Boolean getWasRead() {

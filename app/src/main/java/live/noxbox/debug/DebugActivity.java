@@ -3,6 +3,8 @@ package live.noxbox.debug;
 import android.util.Log;
 import android.view.View;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.menu.MenuActivity;
@@ -86,8 +88,10 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeRequested() != null
                                     && profile.getCurrent().getTimeAccepted() == null) {
                                 profile.getCurrent().getOwner().setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg");
+                                profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
                                 profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
+                                ProfileStorage.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to accept");
                             }
