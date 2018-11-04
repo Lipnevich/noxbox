@@ -108,7 +108,7 @@ public class ProfileStorage {
         profileReaders.clear();
     }
 
-    public static void clear() {
+    public static void logout() {
         clearListeners();
         if (profile.getCurrent().getId() != null) {
             Firestore.listenNoxbox(profile.getCurrent().getId(), NONE);
@@ -116,7 +116,9 @@ public class ProfileStorage {
                 removeNoxbox();
             }
         }
-
+        for(String noxboxId : ids) {
+            stopListenNoxbox(noxboxId);
+        }
         Firestore.listenProfile(NONE);
         profile = null;
     }

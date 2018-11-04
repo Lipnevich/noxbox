@@ -13,12 +13,17 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder;
+import com.firebase.ui.auth.AuthUI.IdpConfig.PhoneBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import io.fabric.sdk.android.Fabric;
 import live.noxbox.BaseActivity;
+import live.noxbox.BuildConfig;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 
@@ -31,46 +36,52 @@ public class AuthActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initCrashReporting();
         login();
         setContentView(R.layout.activity_auth);
         ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 if (isChecked) {
-                    ((TextView) findViewById(R.id.textGoogleAuth)).setTextColor(getResources().getColor(R.color.secondary));
-                    ((TextView) findViewById(R.id.textPhoneAuth)).setTextColor(getResources().getColor(R.color.secondary));
+                    colorText(R.id.textGoogleAuth, R.color.secondary);
+                    colorText(R.id.textPhoneAuth, R.color.secondary);
                 } else {
-                    ((TextView) findViewById(R.id.textGoogleAuth)).setTextColor(getResources().getColor(R.color.google_text));
-                    ((TextView) findViewById(R.id.textPhoneAuth)).setTextColor(getResources().getColor(R.color.google_text));
+                    colorText(R.id.textGoogleAuth, R.color.google_text);
+                    colorText(R.id.textPhoneAuth, R.color.google_text);
                 }
 
             }
 
         });
-        createMultipleLinks((TextView) findViewById(R.id.agreementView));
-        findViewById(R.id.googleAuth).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startAuth(new AuthUI.IdpConfig.GoogleBuilder());
-            }
-        });
-        findViewById(R.id.phoneAuth).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startAuth(new AuthUI.IdpConfig.PhoneBuilder());
-            }
-        });
+        drawAgreement();
+        findViewById(R.id.googleAuth).setOnClickListener(authentificate(new GoogleBuilder()));
+        findViewById(R.id.phoneAuth).setOnClickListener(authentificate(new PhoneBuilder()));
     }
 
-    private void startAuth(AuthUI.IdpConfig.Builder provider) {
-        if (NetworkReceiver.isOnline(this) && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
-            Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
-                    .setIsSmartLockEnabled(false)
-                    .setAvailableProviders(singletonList(provider.build()))
-                    .build();
-            startActivityForResult(intent, REQUEST_CODE);
-        }
+    private void colorText(int textView, int color) {
+        ((TextView) findViewById(textView)).setTextColor(getResources().getColor(color));
+    }
+
+    private void initCrashReporting() {
+        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build();
+        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
+    }
+
+    private View.OnClickListener authentificate(final AuthUI.IdpConfig.Builder provider) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (NetworkReceiver.isOnline(AuthActivity.this) && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
+                    Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
+                            .setIsSmartLockEnabled(false)
+                            .setAvailableProviders(singletonList(provider.build()))
+                            .build();
+                    startActivityForResult(intent, REQUEST_CODE);
+                }
+            }
+        };
     }
 
     @Override
@@ -85,35 +96,33 @@ public class AuthActivity extends BaseActivity {
             Crashlytics.setUserIdentifier(user.getUid());
             FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
             startActivity(new Intent(this, MapActivity.class));
+            finish();
         }
     }
 
-    private void createMultipleLinks(TextView textView) {
-        SpannableStringBuilder spanTxt = new SpannableStringBuilder(
-                getResources().getString(R.string.iAgreeToThe).concat(" "));
-        spanTxt.append(getResources().getString(R.string.termOfServices));
-        spanTxt.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                openLink(getResources().getString(R.string.termsOfServiceLink));
-            }
-        }, spanTxt.length() - getResources().getString(R.string.termOfServices).length(), spanTxt.length(), 0);
-        spanTxt.append(" ".concat(getResources().getString(R.string.and).concat(" ")));
-        spanTxt.append(getResources().getString(R.string.privacyPolicy));
-        spanTxt.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                openLink(getResources().getString(R.string.privacyPolicyLink));
-            }
-        }, spanTxt.length() - getResources().getString(R.string.privacyPolicy).length(), spanTxt.length(), 0);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+    private void drawAgreement() {
+        String termOfServices = getString(R.string.termOfServices);
+        String privacyPolicy = getString(R.string.privacyPolicy);
+
+        SpannableStringBuilder agreement = new SpannableStringBuilder(getString(R.string.agreement,
+                termOfServices, privacyPolicy));
+        createLink(agreement, termOfServices, R.string.termsOfServiceLink);
+        createLink(agreement, privacyPolicy, R.string.privacyPolicyLink);
+
+        TextView view = findViewById(R.id.agreementView);
+        view.setMovementMethod(LinkMovementMethod.getInstance());
+        view.setText(agreement, TextView.BufferType.SPANNABLE);
     }
 
-    private void openLink(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
+    private void createLink(SpannableStringBuilder links, String text, final int url) {
+        int start = links.toString().indexOf(text);
+        links.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(url))));
+            }
+        }, start, start + text.length(), 0);
+
     }
 
 }

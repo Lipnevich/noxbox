@@ -69,7 +69,8 @@ public class MapActivity extends DebugActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((MapFragment) getFragmentManager().findFragmentById(R.id.mapId)).getMapAsync(this);
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapId);
+        mapFragment.getMapAsync(this);
         googleApiClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .build();
@@ -317,5 +318,10 @@ public class MapActivity extends DebugActivity implements
 
 
         return newState;
+    }
+
+    @Override
+    public void onBackPressed() {
+        // ignore it
     }
 }

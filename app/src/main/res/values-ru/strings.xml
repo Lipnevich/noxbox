@@ -76,15 +76,14 @@
     <string name="addressInClipBoard">Адрес скопирован</string>
     <string name="chat">Чат</string>
     <string name="isOffline">Нет подключения к сети</string>
+    <string name="enable">Включить</string>
     <string name="isGps">Нет сигнала GPS</string>
     <!--строка соглашения-->
-    <string name="iAgreeToThe">Я прочел и согласен с</string>
+    <string name="agreement">Я прочел и согласен с %1$s и %2$s</string>
     <string name="termOfServices">Правилами пользования</string>
-    <string name="and">и</string>
     <string name="privacyPolicy">Политикой конфиденциальности</string>
     <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
-    <string name="enable">Включить</string>
     <!--contract-->
     <string name="i">Я</string>
     <string name="want">хочу</string>

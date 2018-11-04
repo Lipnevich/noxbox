@@ -183,9 +183,9 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                                        // TODO (nli) remove current Noxbox
-                                        ProfileStorage.clear();
+                                        ProfileStorage.logout();
                                         startActivity(new Intent(MenuActivity.this, AuthActivity.class));
+                                        finish();
                                     }
                                 });
                     }

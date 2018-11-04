@@ -77,15 +77,14 @@
     <string name="addressInClipBoard">Address copied to clipboard</string>
     <string name="chat">Chat</string>
     <string name="isOffline">No network connection</string>
+    <string name="enable">Connect</string>
     <string name="isGps">No GPS signal</string>
     <!--line agreement-->
-    <string name="iAgreeToThe">I agree to the </string>
+    <string name="agreement">I agree to the %1$s and %2$s</string>
     <string name="termOfServices">Term of services</string>
-    <string name="and">and</string>
     <string name="privacyPolicy">Privacy Policy</string>
     <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
-    <string name="enable">Connect</string>
     <!--contract-->
     <string name="i">I</string>
     <string name="want">want</string>

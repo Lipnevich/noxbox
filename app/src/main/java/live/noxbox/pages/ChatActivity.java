@@ -115,6 +115,10 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void draw(final Profile profile) {
+        if(!messages.isEmpty()
+                && messages.size() == profile.getCurrent().getChat(profile.getId()).size()) {
+            return;
+        }
         final DisplayMetrics screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
 
@@ -209,6 +213,7 @@ public class ChatActivity extends BaseActivity {
             profile.getCurrent().getPartyMessages().put(message.getId(), message);
         }
         text.setText("");
+        add(message);
         ProfileStorage.updateNoxbox();
     }
 

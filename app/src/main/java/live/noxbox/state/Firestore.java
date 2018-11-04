@@ -9,6 +9,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.SetOptions;
 
 import java.lang.reflect.Field;
@@ -58,10 +59,13 @@ public class Firestore {
         });
     }
 
+    private static ListenerRegistration noxboxListener;
+
     public static void listenNoxbox(@NonNull String noxboxId, @NonNull final Task<Noxbox> task) {
         if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+        if(noxboxListener != null) noxboxListener.remove();
 
-        noxboxReference(noxboxId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        noxboxListener = noxboxReference(noxboxId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (snapshot != null && snapshot.exists()) {
