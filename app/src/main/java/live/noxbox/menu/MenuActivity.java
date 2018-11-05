@@ -39,7 +39,7 @@ import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.pages.AuthActivity;
 import live.noxbox.profile.ProfileActivity;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
@@ -56,7 +56,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.listenProfile(MenuActivity.class.getName(), new Task<Profile>() {
+        AppCache.listenProfile(MenuActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(MenuActivity.this, profile);
@@ -67,7 +67,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     @Override
     protected void onPause() {
         super.onPause();
-        ProfileStorage.stopListen(this.getClass().getName());
+        AppCache.stopListen(this.getClass().getName());
     }
 
     private void draw(final Activity activity, final Profile profile) {
@@ -130,7 +130,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == WalletActivity.CODE) {
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     draw(MenuActivity.this, profile);
@@ -170,7 +170,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 break;
             }
             case R.id.navigation_logout: {
-                ProfileStorage.readProfile(new Task<Profile>() {
+                AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -183,7 +183,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                                        ProfileStorage.logout();
+                                        AppCache.logout();
                                         startActivity(new Intent(MenuActivity.this, AuthActivity.class));
                                         finish();
                                     }

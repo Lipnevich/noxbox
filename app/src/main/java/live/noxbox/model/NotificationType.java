@@ -22,7 +22,7 @@ import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
@@ -316,7 +316,7 @@ public enum NotificationType {
     public static class CancelRequestListener extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
@@ -324,7 +324,7 @@ public enum NotificationType {
                     } else {
                         profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                     }
-                    ProfileStorage.updateNoxbox();
+                    AppCache.updateNoxbox();
                     MessagingService.getNotificationService(context).cancelAll();
                 }
             });
@@ -334,11 +334,11 @@ public enum NotificationType {
     public static class AcceptRequestListener extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                    ProfileStorage.fireProfile();
+                    AppCache.fireProfile();
                     MessagingService.getNotificationService(context).cancelAll();
                 }
             });
@@ -348,7 +348,7 @@ public enum NotificationType {
     public static class NavigationButtonListener extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     NavigatorManager.openNavigator(context, profile);
@@ -360,7 +360,7 @@ public enum NotificationType {
     public static class UserInputListener extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     // TODO (?) сохранить одно сообщение в базе
@@ -371,7 +371,7 @@ public enum NotificationType {
                     } else {
                         profile.getCurrent().getPartyMessages().put(message.getId(), message);
                     }
-                    ProfileStorage.updateNoxbox();
+                    AppCache.updateNoxbox();
                     removeNotifications(context);
                 }
             });

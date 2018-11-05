@@ -32,7 +32,7 @@ import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.model.Message;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 import static android.graphics.Bitmap.createBitmap;
@@ -99,7 +99,7 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.listenProfile(ChatActivity.class.getName(), new Task<Profile>() {
+        AppCache.listenProfile(ChatActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
@@ -110,8 +110,8 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ProfileStorage.stopListen(ChatActivity.class.getName());
-        ProfileStorage.updateNoxbox();
+        AppCache.stopListen(ChatActivity.class.getName());
+        AppCache.updateNoxbox();
     }
 
     private void draw(final Profile profile) {
@@ -214,7 +214,7 @@ public class ChatActivity extends BaseActivity {
         }
         text.setText("");
         add(message);
-        ProfileStorage.updateNoxbox();
+        AppCache.updateNoxbox();
     }
 
     private void add(Message message) {

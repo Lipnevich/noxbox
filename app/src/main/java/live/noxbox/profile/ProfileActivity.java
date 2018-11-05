@@ -24,7 +24,7 @@ import live.noxbox.contract.NoxboxTypeListActivity;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
@@ -47,7 +47,7 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
+        AppCache.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (isEditable) {
@@ -69,7 +69,7 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ProfileStorage.stopListen(this.getClass().getName());
+        AppCache.stopListen(this.getClass().getName());
     }
 
     private void draw(final Profile profile) {
@@ -178,7 +178,7 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 isEditable = false;
-                ProfileStorage.fireProfile();
+                AppCache.fireProfile();
                 draw(profile);
             }
         });
@@ -295,7 +295,7 @@ public class ProfileActivity extends BaseActivity {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     ImageManager.uploadPhoto(this, data.getData());
-                    ProfileStorage.readProfile(new Task<Profile>() {
+                    AppCache.readProfile(new Task<Profile>() {
                         @Override
                         public void execute(Profile profile) {
                             profile.setPhoto(data.getData().toString());
@@ -308,7 +308,7 @@ public class ProfileActivity extends BaseActivity {
         }
         if (requestCode == TravelModeListActivity.CODE) {
 
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     drawEditable(profile);
@@ -319,7 +319,7 @@ public class ProfileActivity extends BaseActivity {
 
         if (requestCode == NoxboxTypeListActivity.PROFILE_CODE) {
 
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     draw(profile);
@@ -328,7 +328,7 @@ public class ProfileActivity extends BaseActivity {
 
         }
         if (requestCode == ProfilePerformerActivity.CODE) {
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     draw(profile);

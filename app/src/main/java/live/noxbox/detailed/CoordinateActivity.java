@@ -45,7 +45,7 @@ import java.util.List;
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.ADDRESS_SEARCH_RADIUS_IN_METERS;
@@ -108,7 +108,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         setupMap(this, googleMap);
         this.googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         this.googleMap.setMyLocationEnabled(true);
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (profile.getViewed().getPosition() != null) {

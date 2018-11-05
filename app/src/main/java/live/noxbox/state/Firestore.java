@@ -43,26 +43,29 @@ public class Firestore {
         return db().collection("noxboxes").document(noxboxId);
     }
 
-    // Profiles API
+    // Current profile
+    private static ListenerRegistration profileListener;
     public static void listenProfile(@NonNull final Task<Profile> task) {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+        if(profileListener != null) profileListener.remove();
 
-        profileReference().addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        profileListener = profileReference().addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                 if (snapshot != null && snapshot.exists()) {
                     Profile profile = snapshot.toObject(Profile.class);
-
                     task.execute(profile);
                 }
             }
         });
     }
 
-    private static ListenerRegistration noxboxListener;
+    public static void writeProfile(final Profile profile) {
+        profileReference().set(objectToMap(profile), SetOptions.merge());
+    }
 
+    // Current noxbox
+    private static ListenerRegistration noxboxListener;
     public static void listenNoxbox(@NonNull String noxboxId, @NonNull final Task<Noxbox> task) {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
         if(noxboxListener != null) noxboxListener.remove();
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -84,10 +87,6 @@ public class Firestore {
         }
 
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge());
-    }
-
-    public static void writeProfile(final Profile profile) {
-        profileReference().set(objectToMap(profile), SetOptions.merge());
     }
 
     // in case of null value - does not override value

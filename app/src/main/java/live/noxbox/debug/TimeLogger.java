@@ -6,7 +6,10 @@ public final class TimeLogger {
     private long time = System.currentTimeMillis();
 
     public void makeLog(String tag) {
-        Log.d(tag, "Execution time: " + (System.currentTimeMillis() - time));
+        long timeSpent = System.currentTimeMillis() - time;
+        if(timeSpent > 10) {
+            Log.w(tag, "Long Execution Time: " + timeSpent);
+        }
     }
 
 }

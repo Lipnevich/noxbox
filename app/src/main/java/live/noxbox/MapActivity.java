@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.WeakHashMap;
 
 import live.noxbox.debug.DebugActivity;
+import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -46,7 +47,7 @@ import live.noxbox.pages.LocationReceiver;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
@@ -75,7 +76,7 @@ public class MapActivity extends DebugActivity implements
                 .addConnectionCallbacks(this)
                 .build();
         googleApiClient.connect();
-        ProfileStorage.startListening();
+        AppCache.startListening();
     }
 
     @Override
@@ -108,11 +109,11 @@ public class MapActivity extends DebugActivity implements
                     if (!isLocationPermissionGranted()) {
                         return;
                     }
-                    ProfileStorage.readProfile(new Task<Profile>() {
+                    AppCache.readProfile(new Task<Profile>() {
                         @Override
                         public void execute(Profile profile) {
                             profile.setPosition(getCurrentPosition());
-                            ProfileStorage.fireProfile();
+                            AppCache.fireProfile();
                         }
                     });
                 }
@@ -153,11 +154,11 @@ public class MapActivity extends DebugActivity implements
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     visibleCurrentLocation(true);
-                    ProfileStorage.readProfile(new Task<Profile>() {
+                    AppCache.readProfile(new Task<Profile>() {
                         @Override
                         public void execute(Profile profile) {
                             profile.setPosition(getCurrentPosition());
-                            ProfileStorage.fireProfile();
+                            AppCache.fireProfile();
                         }
                     });
                 }
@@ -167,7 +168,7 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 profile.setPosition(getCurrentPosition());
@@ -196,7 +197,7 @@ public class MapActivity extends DebugActivity implements
         super.onPause();
         unregisterReceiver(locationReceiver);
         googleApiClient.disconnect();
-        ProfileStorage.stopListen(this.getClass().getName());
+        AppCache.stopListen(this.getClass().getName());
     }
 
     @Override
@@ -240,13 +241,14 @@ public class MapActivity extends DebugActivity implements
     private State currentState;
 
     private void draw() {
-        ProfileStorage.listenProfile(this.getClass().getName(), new Task<Profile>() {
+        AppCache.listenProfile(this.getClass().getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (googleMap == null) return;
                 State newState = getFragment(profile);
                 if (currentState == null) {
                     currentState = newState;
+                    measuredDraw(newState, profile);
                     newState.draw(profile);
                     return;
                 }
@@ -254,14 +256,19 @@ public class MapActivity extends DebugActivity implements
                 if (!newState.getClass().getName().equals(currentState.getClass().getName())) {
                     currentState.clear();
                     currentState = newState;
-                    newState.draw(profile);
+                    measuredDraw(newState, profile);
                     return;
                 }
 
-
-                currentState.draw(profile);
+                measuredDraw(currentState, profile);
             }
         });
+    }
+
+    private void measuredDraw(State state, Profile profile) {
+        TimeLogger timeLogger = new TimeLogger();
+        state.draw(profile);
+        timeLogger.makeLog(state.getClass().getSimpleName());
     }
 
     private WeakHashMap<NoxboxState, State> states = new WeakHashMap<>();
@@ -269,9 +276,9 @@ public class MapActivity extends DebugActivity implements
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
         if(state == NoxboxState.initial) {
-            ProfileStorage.stopListenNoxbox(profile.getCurrent().getId());
+            AppCache.stopListenNoxbox(profile.getCurrent().getId());
         } else {
-            ProfileStorage.startListenNoxbox(profile.getCurrent().getId());
+            AppCache.startListenNoxbox(profile.getCurrent().getId());
         }
         //strong link for weakMap
         State newState = states.get(state);

@@ -24,7 +24,7 @@ import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
@@ -34,8 +34,8 @@ import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.state.ProfileStorage.readProfile;
-import static live.noxbox.state.ProfileStorage.updateNoxbox;
+import static live.noxbox.state.AppCache.readProfile;
+import static live.noxbox.state.AppCache.updateNoxbox;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
@@ -138,7 +138,7 @@ public class Moving implements State {
             final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
 
             profile.getCurrent().setTimeToMeet((long) (Math.ceil(getTravelTimeInMinutes(profile)) * 60000));
-            ProfileStorage.updateNoxbox();
+            AppCache.updateNoxbox();
 
             final Notification notification = new Notification()
                     .setTime(String.valueOf(profile.getCurrent().getTimeToMeet()))
@@ -256,7 +256,7 @@ public class Moving implements State {
                     Log.d(TAG + "Moving", "timePartyVerified: " + DateTimeFormatter.time(timeVerified));
                     profile.getCurrent().setTimePartyVerified(timeVerified);
                 }
-                ProfileStorage.updateNoxbox();
+                AppCache.updateNoxbox();
 
                 if (photoView != null)
                     photoView.removeAllViews();

@@ -24,7 +24,7 @@ import live.noxbox.R;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.Task;
 
@@ -77,7 +77,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         v.findViewById(R.id.deleteImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProfileStorage.readProfile(new Task<Profile>() {
+                AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(final Profile profile) {
                         DialogBuilder.createSimpleAlertDialog(getActivity(), R.string.wantDeleteImage, new DialogInterface.OnClickListener() {
@@ -86,7 +86,7 @@ public class SlideshowDialogFragment extends DialogFragment {
                                 profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).remove(currentIndex);
                                 deleteImage(type, currentIndex, imageType);
                                 dismiss();
-                                ProfileStorage.fireProfile();
+                                AppCache.fireProfile();
                             }
                         });
                     }

@@ -17,7 +17,7 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -30,8 +30,8 @@ import static live.noxbox.Configuration.QUARTER;
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.model.NotificationType.showLowBalanceNotification;
 import static live.noxbox.model.NotificationType.updateNotification;
-import static live.noxbox.state.ProfileStorage.readProfile;
-import static live.noxbox.state.ProfileStorage.updateNoxbox;
+import static live.noxbox.state.AppCache.readProfile;
+import static live.noxbox.state.AppCache.updateNoxbox;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.BalanceCalculator.getTotalSpentForNoxbox;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
@@ -169,7 +169,7 @@ public class Performing implements State {
         googleMap.clear();
         removeTimer();
         performingView.removeAllViews();
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (profile.getCurrent().getTimeStartPerforming() != null) {

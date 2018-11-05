@@ -13,7 +13,7 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
@@ -31,7 +31,7 @@ public class DebugActivity extends MenuActivity {
     protected void onResume() {
         super.onResume();
         if (true || BuildConfig.DEBUG) {
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
                     profile.getWallet().setBalance("10000000");
@@ -65,7 +65,7 @@ public class DebugActivity extends MenuActivity {
                                         .setName("Granny Smith")
                                         .setId("12321")
                                         .setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
-                                ProfileStorage.updateNoxbox();
+                                AppCache.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }
@@ -91,7 +91,7 @@ public class DebugActivity extends MenuActivity {
                                 profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
                                 profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                                ProfileStorage.updateNoxbox();
+                                AppCache.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to accept");
                             }
@@ -116,7 +116,7 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                                 }
-                                ProfileStorage.updateNoxbox();
+                                AppCache.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to reject");
                             }
@@ -152,7 +152,7 @@ public class DebugActivity extends MenuActivity {
                                 } else {
                                     profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
                                 }
-                                ProfileStorage.updateNoxbox();
+                                AppCache.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to verify");
                             }
@@ -179,7 +179,7 @@ public class DebugActivity extends MenuActivity {
                                     && profile.getCurrent().getTimeAccepted() != null
                                     && profile.getCurrent().getTimeCompleted() == null) {
                                 profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
-                                ProfileStorage.updateNoxbox();
+                                AppCache.updateNoxbox();
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to complete");
                             }

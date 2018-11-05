@@ -22,8 +22,8 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
 import live.noxbox.model.Wallet;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.GeoRealtime;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CURRENCY;
@@ -46,7 +46,7 @@ public class WalletActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 recalculateBalance(profile);
@@ -54,11 +54,6 @@ public class WalletActivity extends BaseActivity {
         });
 
         addressToSendEditor = findViewById(R.id.address_to_send_id);
-//        if(getProfile() != null && getProfile().getAddressToRefund() != null) {
-//            addressToSendEditor.setText(getProfile().getAddressToRefund());
-//        }
-        // TODO (nli) send request to blockchain directly instead
-//        GeoRealtime.sendRequest(new Request().setType(NotificationType.balance));
     }
 
     private void refund(Profile profile, String address) {
@@ -74,6 +69,11 @@ public class WalletActivity extends BaseActivity {
     }
 
     private void recalculateBalance(final Profile profile) {
+        if(profile.getWallet().getAddressToRefund() != null) {
+            addressToSendEditor.setText(profile.getWallet().getAddressToRefund());
+        }
+        // TODO (nli) send request to blockchain directly instead
+
         final Wallet wallet = profile.getWallet();
         BigDecimal balance = wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO;
         BigDecimal frozenMoney = wallet.getFrozenMoney() != null ? new BigDecimal(wallet.getFrozenMoney()) : BigDecimal.ZERO;
