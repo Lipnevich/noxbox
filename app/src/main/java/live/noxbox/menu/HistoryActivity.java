@@ -1,7 +1,6 @@
 package live.noxbox.menu;
 
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -23,7 +22,6 @@ public class HistoryActivity extends BaseActivity {
 
     public static final int CODE = 1002;
 
-    private Activity activity;
     private HistoryAdapter historyAdapter;
     private List<Noxbox> historyItems = new ArrayList<>();
 
@@ -32,9 +30,6 @@ public class HistoryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.history);
         setTitle(R.string.history);
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         int size = 384;
         Glide.with(this).asGif()

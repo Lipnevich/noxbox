@@ -39,12 +39,8 @@ public class WalletActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_wallet);
         setTitle(R.string.wallet);
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         ProfileStorage.readProfile(new Task<Profile>() {
             @Override
@@ -57,14 +53,20 @@ public class WalletActivity extends BaseActivity {
 //        if(getProfile() != null && getProfile().getAddressToRefund() != null) {
 //            addressToSendEditor.setText(getProfile().getAddressToRefund());
 //        }
-        // TODO (nli) send request to blockchain directly instead
+//          TODO (nli) send request to blockchain directly instead
 //        GeoRealtime.sendRequest(new Request().setType(NotificationType.balance));
     }
 
-    private void refund(Profile profile, String address) {
-        if(TextUtils.isEmpty(address)) return;
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
-        if(!address.equals(profile.getWallet().getAddressToRefund())) {
+    private void refund(Profile profile, String address) {
+        if (TextUtils.isEmpty(address)) return;
+
+        if (!address.equals(profile.getWallet().getAddressToRefund())) {
             profile.getWallet().setAddressToRefund(address);
         }
 
@@ -94,10 +96,10 @@ public class WalletActivity extends BaseActivity {
         View.OnClickListener addressToClipboardListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(wallet.getAddress() == null) return;
+                if (wallet.getAddress() == null) return;
 
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                if(clipboard == null) return;
+                if (clipboard == null) return;
 
                 clipboard.setPrimaryClip(ClipData.newPlainText("walletAddress", wallet.getAddress()));
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.addressInClipBoard), Toast.LENGTH_SHORT).show();
@@ -116,7 +118,7 @@ public class WalletActivity extends BaseActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(addressToSendEditor.getText())) {
+                if (TextUtils.isEmpty(addressToSendEditor.getText())) {
                     return;
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(WalletActivity.this, R.style.NoxboxAlertDialogStyle);

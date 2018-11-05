@@ -21,6 +21,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".TestActivity"
+            android:theme="@style/NoActionBar" />
+        <activity
             android:name=".MapActivity"
             android:theme="@style/NoActionBar" />
         <activity
@@ -55,14 +58,17 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".detailed.CoordinateActivity"
+
             android:theme="@style/NoActionBar" />
-        <activity android:name=".menu.HistoryActivity" />
+        <activity android:name=".menu.HistoryActivity"
+            android:parentActivityName=".MapActivity"/>
         <activity
             android:name=".pages.ChatActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".menu.WalletActivity"
+            android:parentActivityName=".MapActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <meta-data
