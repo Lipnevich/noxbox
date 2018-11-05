@@ -20,6 +20,7 @@ import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
 import live.noxbox.state.cluster.NoxboxMarker;
 
+import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
 
@@ -118,7 +119,7 @@ public class MapController {
 
     public static void setupMap(Context context, GoogleMap googleMap) {
         googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_in_night));
-        googleMap.setMaxZoomPreference(18);
+        googleMap.setMaxZoomPreference(MAX_ZOOM_LEVEL);
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
         googleMap.getUiSettings().setTiltGesturesEnabled(false);
         googleMap.getUiSettings().setMapToolbarEnabled(false);

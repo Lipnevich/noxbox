@@ -38,7 +38,8 @@ public class AppCache {
     };
 
     public static void startListening() {
-        if (profile == null || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
+        if (profile == null
+                || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
             Firestore.listenProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile newProfile) {

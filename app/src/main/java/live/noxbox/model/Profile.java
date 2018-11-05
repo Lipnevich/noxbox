@@ -237,6 +237,11 @@ public class Profile implements Serializable {
         return (likes * 100 / (likes + dislikes));
 
     }
+    public static int ratingToPercentage(int likes, int dislikes) {
+        if (dislikes == 0) return 100;
+        return (likes * 100 / (likes + dislikes));
+
+    }
 
     public int ratingToPercentage() {
         int likes = 0;

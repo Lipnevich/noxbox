@@ -33,6 +33,7 @@ import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.State;
 import live.noxbox.state.cluster.Callbacks;
 import live.noxbox.state.cluster.Cluster;
+import live.noxbox.state.cluster.ClusterItemsActivity;
 import live.noxbox.state.cluster.ClusterManager;
 import live.noxbox.state.cluster.NoxboxMarker;
 import live.noxbox.tools.DebugMessage;
@@ -40,6 +41,8 @@ import live.noxbox.tools.MapController;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;
 import static live.noxbox.state.AppCache.markers;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
@@ -79,11 +82,13 @@ public class AvailableServices implements State {
                         DebugMessage.popup(activity, "CLUSTER");
 
                         float newZoom = googleMap.getCameraPosition().zoom + 1f;
-                        if (newZoom < googleMap.getMaxZoomLevel()) {
+                        if (newZoom < MAX_ZOOM_LEVEL) {
                             LatLng center = MapController.getCenterBetweenSomeLocations(cluster.getItems());
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, newZoom));
                         } else {
                             // TODO (vl) показать список со всеми элементами кластера
+                            ClusterItemsActivity.noxboxes.addAll(cluster.getItems());
+                            Router.startActivityForResult(activity, new Intent(activity, ClusterItemsActivity.class), 1);
                         }
                         return false;
                     }
@@ -129,7 +134,12 @@ public class AvailableServices implements State {
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+                if(MapActivity.isLocationPermissionGranted(activity)){
+                    MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+                }else{
+                    ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                }
             }
         });
 

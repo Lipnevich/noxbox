@@ -18,5 +18,6 @@ public interface Configuration {
     String PRICE_FORMAT = "###.###";
     BigDecimal QUARTER = new BigDecimal("0.25");
     double ADDRESS_SEARCH_RADIUS_IN_METERS = 100000D;
+    int MAX_ZOOM_LEVEL = 18;
 
 }

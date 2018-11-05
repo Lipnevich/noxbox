@@ -13,6 +13,7 @@
  */
 package live.noxbox;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -94,8 +95,8 @@ public class MapActivity extends DebugActivity implements
         draw();
     }
 
-    protected boolean isLocationPermissionGranted() {
-        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+    public static  boolean isLocationPermissionGranted(final Activity activity) {
+        return ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -106,7 +107,7 @@ public class MapActivity extends DebugActivity implements
             findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!isLocationPermissionGranted()) {
+                    if (!isLocationPermissionGranted(MapActivity.this)) {
                         return;
                     }
                     AppCache.readProfile(new Task<Profile>() {
@@ -179,7 +180,7 @@ public class MapActivity extends DebugActivity implements
     private LocationReceiver locationReceiver;
     @Override
     protected void onResume() {
-        if (isLocationPermissionGranted()) {
+        if (isLocationPermissionGranted(this)) {
             if (!isGpsEnabled()) {
                 messageGps(this);
             }
