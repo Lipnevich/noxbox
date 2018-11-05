@@ -40,8 +40,8 @@ import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.GeoRealtime;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
@@ -66,7 +66,7 @@ public class ContractActivity extends BaseActivity {
 
         initializeUi();
 
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 profile.getCurrent().setGeoId(GeoRealtime.createKey(profile.getCurrent()));
@@ -84,7 +84,7 @@ public class ContractActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
                 if (profile == null) return;
@@ -406,7 +406,7 @@ public class ContractActivity extends BaseActivity {
 
         Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
 
-        ProfileStorage.noxboxCreated();
+        AppCache.noxboxCreated();
 
         finish();
     }
@@ -417,7 +417,7 @@ public class ContractActivity extends BaseActivity {
         long timeRemoved = System.currentTimeMillis();
         Log.d(State.TAG + "ContractActivity", "timeRemoved: " + DateTimeFormatter.time(timeRemoved));
 
-        ProfileStorage.removeNoxbox();
+        AppCache.removeNoxbox();
 
         finish();
     }
@@ -432,7 +432,7 @@ public class ContractActivity extends BaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {
-                ProfileStorage.readProfile(new Task<Profile>() {
+                AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         profile.getCurrent().getOwner().setTravelMode(TravelMode.none);
@@ -448,7 +448,7 @@ public class ContractActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
                     profile.getCurrent().setPosition(position);

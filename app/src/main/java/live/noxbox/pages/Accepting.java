@@ -25,8 +25,8 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
-import static live.noxbox.state.ProfileStorage.readProfile;
-import static live.noxbox.state.ProfileStorage.updateNoxbox;
+import static live.noxbox.state.AppCache.readProfile;
+import static live.noxbox.state.AppCache.updateNoxbox;
 
 public class Accepting implements State {
 

@@ -15,7 +15,7 @@ import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 public class HistoryActivity extends BaseActivity {
@@ -37,7 +37,7 @@ public class HistoryActivity extends BaseActivity {
                 .apply(RequestOptions.overrideOf(size, size))
                 .into((ImageView) findViewById(R.id.progressView));
 
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 loadHistory(profile);

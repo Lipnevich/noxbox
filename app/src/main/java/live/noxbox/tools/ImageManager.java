@@ -28,7 +28,7 @@ import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 
 public class ImageManager {
 
@@ -43,7 +43,7 @@ public class ImageManager {
         uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
-                ProfileStorage.readProfile(new Task<Profile>() {
+                AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(final Profile profile) {
                         MessagingService messagingService = new MessagingService(activity.getApplicationContext());
@@ -66,11 +66,11 @@ public class ImageManager {
         uploadImage(activity, bitmap, type.name() + "/" + imageType.name() + "/" + index, new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
-                ProfileStorage.readProfile(new Task<Profile>() {
+                AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
-                        ProfileStorage.fireProfile();
+                        AppCache.fireProfile();
                     }
                 });
             }

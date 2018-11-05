@@ -19,7 +19,7 @@ import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
@@ -45,7 +45,7 @@ public class ProfilePerformerActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.listenProfile(ProfilePerformerActivity.class.getName(), new Task<Profile>() {
+        AppCache.listenProfile(ProfilePerformerActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (profile.getPortfolio().get(type.name()) == null) {
@@ -67,7 +67,7 @@ public class ProfilePerformerActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ProfileStorage.stopListen(this.getClass().getName());
+        AppCache.stopListen(this.getClass().getName());
     }
 
     private void draw(final Profile profile) {
@@ -142,7 +142,7 @@ public class ProfilePerformerActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (data != null) {
-                ProfileStorage.readProfile(new Task<Profile>() {
+                AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         if (requestCode == SELECT_IMAGE_CERTIFICATE) {

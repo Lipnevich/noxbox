@@ -8,7 +8,7 @@ import android.util.Log;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
@@ -61,7 +61,7 @@ public class NotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 NotificationType.showPerformingNotificationInBackground(getApplicationContext(), profile, new Notification()

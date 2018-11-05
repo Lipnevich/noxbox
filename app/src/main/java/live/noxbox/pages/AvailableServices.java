@@ -21,19 +21,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.contract.ContractActivity;
 import live.noxbox.contract.NoxboxTypeListActivity;
 import live.noxbox.detailed.DetailedActivity;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.GeoRealtime;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.state.State;
 import live.noxbox.state.cluster.Callbacks;
 import live.noxbox.state.cluster.Cluster;
@@ -44,6 +40,7 @@ import live.noxbox.tools.MapController;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.state.AppCache.markers;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -53,7 +50,6 @@ public class AvailableServices implements State {
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Activity activity;
-    private static Map<String, Noxbox> markers = new ConcurrentHashMap<>();
 
     private ClusterManager clusterManager;
 
@@ -67,7 +63,7 @@ public class AvailableServices implements State {
 
         createClusterManager();
 
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
                 MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
@@ -95,7 +91,7 @@ public class AvailableServices implements State {
                     @Override
                     public boolean onClusterItemClick(@NonNull final NoxboxMarker clusterItem) {
                         DebugMessage.popup(activity, "ITEM");
-                        ProfileStorage.readProfile(new Task<Profile>() {
+                        AppCache.readProfile(new Task<Profile>() {
                             @Override
                             public void execute(Profile profile) {
                                 profile.setViewed(clusterItem.getNoxbox());
@@ -223,7 +219,7 @@ public class AvailableServices implements State {
 
             Log.d(TAG + "AvailableServices", "onServiceConnected()");
 
-            ProfileStorage.readProfile(new Task<Profile>() {
+            AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
                     drawingRunnable = new Runnable() {

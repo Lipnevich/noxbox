@@ -16,7 +16,7 @@ import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -26,8 +26,8 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
-import static live.noxbox.state.ProfileStorage.readProfile;
-import static live.noxbox.state.ProfileStorage.updateNoxbox;
+import static live.noxbox.state.AppCache.readProfile;
+import static live.noxbox.state.AppCache.updateNoxbox;
 
 public class Requesting implements State {
 
@@ -135,7 +135,7 @@ public class Requesting implements State {
             long timeTimeout = System.currentTimeMillis();
             Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
             profile.getCurrent().setTimeTimeout(timeTimeout);
-            ProfileStorage.updateNoxbox();
+            AppCache.updateNoxbox();
         }
     }
 

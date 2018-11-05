@@ -17,7 +17,7 @@ import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 
 public class Estimating implements State {
@@ -56,7 +56,7 @@ public class Estimating implements State {
                 } else {
                     profile.getCurrent().setTimeOwnerDisliked(System.currentTimeMillis());
                 }
-                ProfileStorage.updateNoxbox();
+                AppCache.updateNoxbox();
                 controlDisplayRate(profile);
             }
         });
@@ -121,7 +121,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForDemand(comment);
-                        ProfileStorage.updateNoxbox();
+                        AppCache.updateNoxbox();
                     } else {
                         profile.getCurrent()
                                 .getParty()
@@ -129,7 +129,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForSupply(comment);
-                        ProfileStorage.updateNoxbox();
+                        AppCache.updateNoxbox();
                     }
                 } else {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
@@ -139,7 +139,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForDemand(comment);
-                        ProfileStorage.updateNoxbox();
+                        AppCache.updateNoxbox();
                     } else {
                         profile.getCurrent()
                                 .getOwner()
@@ -147,7 +147,7 @@ public class Estimating implements State {
                             put(profile.getId(), new Comment().setText(comment).setTime(System.currentTimeMillis()));
                         }}));
                         profile.getCurrent().setCommentForSupply(comment);
-                        ProfileStorage.updateNoxbox();
+                        AppCache.updateNoxbox();
                     }
                 }
                 estimatingView.findViewById(R.id.successfullyLayout).setVisibility(View.VISIBLE);

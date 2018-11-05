@@ -13,7 +13,7 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 public class TravelModeListActivity extends ListActivity {
@@ -32,7 +32,7 @@ public class TravelModeListActivity extends ListActivity {
         View titleDivider = this.getWindow().getDecorView().findViewById(titleDividerId);
         titleDivider.setBackgroundColor(getResources().getColor(R.color.primary));
 
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);

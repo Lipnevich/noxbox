@@ -18,7 +18,7 @@ import java.util.List;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 
 import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
 
@@ -45,7 +45,7 @@ public class FacePartsDetection {
                         if (faces.size() != 1) {
                             profile.getAcceptance().setFailToRecognizeFace(true);
                             buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
-                            ProfileStorage.fireProfile();
+                            AppCache.fireProfile();
                             return;
                         }
                         profile.getAcceptance().setFailToRecognizeFace(false);
@@ -73,7 +73,7 @@ public class FacePartsDetection {
                             buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                         }
 
-                        ProfileStorage.fireProfile();
+                        AppCache.fireProfile();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -81,7 +81,7 @@ public class FacePartsDetection {
                     public void onFailure(@NonNull Exception e) {
                         profile.getAcceptance().setFailToRecognizeFace(true);
                         buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
-                        ProfileStorage.fireProfile();
+                        AppCache.fireProfile();
                     }
                 });
     }

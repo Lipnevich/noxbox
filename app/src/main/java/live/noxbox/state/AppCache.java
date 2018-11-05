@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
@@ -22,9 +23,11 @@ import static live.noxbox.state.Firestore.writeProfile;
 import static live.noxbox.state.GeoRealtime.offline;
 import static live.noxbox.state.GeoRealtime.online;
 
-public class ProfileStorage {
+public class AppCache {
 
     private static Profile profile;
+    public static Map<String, Noxbox> markers = new ConcurrentHashMap<>();
+
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
 
@@ -40,7 +43,7 @@ public class ProfileStorage {
                 @Override
                 public void execute(Profile newProfile) {
                     // since current and viewed are virtual Noxboxes we should transfer them
-                    if (profile != null && newProfile != null) {
+                    if (profile != null) {
                         newProfile.setCurrent(profile.getCurrent());
                         newProfile.setViewed(profile.getViewed());
                     }
@@ -51,9 +54,9 @@ public class ProfileStorage {
                             profile.getCurrent().setId(profile.getNoxboxId());
                         }
                         startListenNoxbox(profile.getNoxboxId());
+                    } else {
+                        executeUITasks();
                     }
-
-                    executeUITasks();
                 }
             });
         }
@@ -64,18 +67,22 @@ public class ProfileStorage {
     }
 
     public static void listenProfile(String clazz, final Task<Profile> task) {
-        if (profile != null) {
+        if (isProfileReady()) {
             task.execute(profile);
         }
         profileListeners.put(clazz, task);
     }
 
     public static void readProfile(final Task<Profile> task) {
-        if (profile == null) {
-            profileReaders.put(task.hashCode() + "", task);
-        } else {
+        if (isProfileReady()) {
             task.execute(profile);
+        } else {
+            profileReaders.put(task.hashCode() + "", task);
         }
+    }
+
+    private static boolean isProfileReady() {
+        return profile != null && (profile.getNoxboxId() == null || profile.getNoxboxId().equals(profile.getCurrent().getId()));
     }
 
     public static void fireProfile() {
@@ -130,9 +137,12 @@ public class ProfileStorage {
         ids.add(noxboxId);
         Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
             @Override
-            public void execute(Noxbox current) {
-                profile.setCurrent(current);
-                profile.setViewed(current);
+            public void execute(Noxbox noxbox) {
+                if(noxbox.getId().equals(profile.getNoxboxId())) {
+                    profile.setCurrent(noxbox);
+                } else {
+                    profile.setViewed(noxbox);
+                }
                 executeUITasks();
             }
         });

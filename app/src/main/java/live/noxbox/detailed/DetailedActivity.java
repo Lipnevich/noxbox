@@ -45,7 +45,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.profile.ImageListAdapter;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
@@ -81,10 +81,10 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         gyroscopeObserver.register(this);
-        ProfileStorage.listenProfile(DetailedActivity.class.getName(), new Task<Profile>() {
+        AppCache.listenProfile(DetailedActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                ProfileStorage.startListenNoxbox(profile.getViewed().getId());
+                AppCache.startListenNoxbox(profile.getViewed().getId());
                 draw(profile);
             }
         });
@@ -93,11 +93,11 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ProfileStorage.stopListen(DetailedActivity.class.getName());
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.stopListen(DetailedActivity.class.getName());
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                ProfileStorage.stopListenNoxbox(profile.getViewed().getId());
+                AppCache.stopListenNoxbox(profile.getViewed().getId());
             }
         });
         gyroscopeObserver.unregister();
@@ -340,7 +340,7 @@ public class DetailedActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                ProfileStorage.updateNoxbox();
+                AppCache.updateNoxbox();
                 finish();
             }
         });
@@ -357,7 +357,7 @@ public class DetailedActivity extends AppCompatActivity {
         findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProfileStorage.readProfile(new Task<Profile>() {
+                AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
                         if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
@@ -367,7 +367,7 @@ public class DetailedActivity extends AppCompatActivity {
                         }
                         profile.setCurrent(profile.getViewed());
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                        ProfileStorage.updateNoxbox();
+                        AppCache.updateNoxbox();
                         finish();
                     }
                 });
@@ -472,7 +472,7 @@ public class DetailedActivity extends AppCompatActivity {
                             profile.getViewed().setTimeCanceledByParty(System.currentTimeMillis());
                         }
                         profile.getViewed().setCancellationReasonMessage(cancellationReason);
-                        ProfileStorage.updateNoxbox();
+                        AppCache.updateNoxbox();
                         alertDialog.cancel();
                         finish();
                     }
@@ -542,7 +542,7 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 profile.setViewed(null);
@@ -554,7 +554,7 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (requestCode == COORDINATE && resultCode == RESULT_OK) {

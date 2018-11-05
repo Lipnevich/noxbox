@@ -17,7 +17,7 @@ import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
 import live.noxbox.profile.ProfileActivity;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 public class NoxboxTypeListActivity extends ListActivity {
@@ -34,7 +34,7 @@ public class NoxboxTypeListActivity extends ListActivity {
         View titleDivider = this.getWindow().getDecorView().findViewById(titleDividerId);
         titleDivider.setBackgroundColor(getResources().getColor(R.color.primary));
 
-        ProfileStorage.readProfile(new Task<Profile>() {
+        AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 if (getIntent().getStringExtra(ProfileActivity.class.getName()) != null
@@ -58,7 +58,7 @@ public class NoxboxTypeListActivity extends ListActivity {
                 } else {
                     typeList = Arrays.asList(NoxboxType.values());
                     createArrayAdapter();
-                    drawInConstructor(profile);
+                    drawInContract(profile);
                 }
             }
         });
@@ -87,7 +87,7 @@ public class NoxboxTypeListActivity extends ListActivity {
         setListAdapter(itemArrayAdapter);
     }
 
-    private void drawInConstructor(final Profile profile) {
+    private void drawInContract(final Profile profile) {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

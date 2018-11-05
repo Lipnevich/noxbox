@@ -16,7 +16,7 @@ import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.ProfileStorage;
+import live.noxbox.state.AppCache;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 
@@ -61,7 +61,7 @@ public class MapFiltersActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ProfileStorage.listenProfile(MapFiltersActivity.class.getName(), new Task<Profile>() {
+        AppCache.listenProfile(MapFiltersActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
@@ -72,8 +72,8 @@ public class MapFiltersActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        ProfileStorage.stopListen(this.getClass().getName());
-        ProfileStorage.fireProfile();
+        AppCache.stopListen(this.getClass().getName());
+        AppCache.fireProfile();
     }
 
     private void draw(final Profile profile) {
