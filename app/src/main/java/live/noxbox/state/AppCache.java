@@ -6,8 +6,10 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import live.noxbox.model.Noxbox;
@@ -121,29 +123,33 @@ public class AppCache {
                 removeNoxbox();
             }
         }
-        stopListenNoxbox(listenNoxboxId);
+        for(String noxboxId : ids) {
+            stopListenNoxbox(noxboxId);
+        }
         Firestore.listenProfile(NONE);
         profile = null;
     }
 
-    private static String listenNoxboxId;
+    private static Set<String> ids = new HashSet<>();
 
     public static void startListenNoxbox(String noxboxId) {
-        if (noxboxId == null || noxboxId.equals(listenNoxboxId)) return;
-        listenNoxboxId = noxboxId;
+        if (noxboxId == null || ids.contains(noxboxId)) return;
+        ids.add(noxboxId);
         Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
             @Override
-            public void execute(Noxbox current) {
-                profile.setCurrent(current);
-                profile.setViewed(current);
+            public void execute(Noxbox noxbox) {
+                if(noxbox.getId().equals(profile.getNoxboxId())) {
+                    profile.setCurrent(noxbox);
+                } else {
+                    profile.setViewed(noxbox);
+                }
                 executeUITasks();
             }
         });
     }
 
     public static void stopListenNoxbox(String noxboxId) {
-        if (noxboxId == null || !noxboxId.equals(listenNoxboxId)) return;
-        listenNoxboxId = null;
+        if (noxboxId == null || !ids.remove(noxboxId)) return;
         Firestore.listenNoxbox(noxboxId, NONE);
     }
 
