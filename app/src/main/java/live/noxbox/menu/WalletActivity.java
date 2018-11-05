@@ -22,8 +22,8 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
 import live.noxbox.model.Wallet;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.GeoRealtime;
-import live.noxbox.state.ProfileStorage;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CURRENCY;

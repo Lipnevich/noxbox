@@ -134,7 +134,8 @@ public class IconGenerator {
 
     @NonNull
     private String getClusterIconText(int clusterIconBucket) {
-        return (clusterIconBucket < CLUSTER_ICON_BUCKETS[0]) ?
-                String.valueOf(clusterIconBucket) : String.valueOf(clusterIconBucket) + "+";
+//        return (clusterIconBucket < CLUSTER_ICON_BUCKETS[0]) ?
+//                String.valueOf(clusterIconBucket) : String.valueOf(clusterIconBucket) + "+";
+        return String.valueOf(clusterIconBucket);
     }
 }
