@@ -32,8 +32,8 @@
             android:layout_alignTop="@+id/icon"
             android:layout_marginStart="18dp"
             android:layout_marginTop="1dp"
-            android:layout_toEndOf="@+id/icon"
             android:layout_toStartOf="@+id/price"
+            android:layout_toEndOf="@+id/icon"
             android:textColor="@color/google_text"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -52,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/type"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="4dp"
             android:layout_toStartOf="@+id/price"
             android:text="@string/currency"

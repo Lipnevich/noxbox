@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textColor="@color/google_text"
-            android:textSize="@dimen/text_title_large" />
+            android:textSize="@dimen/text_title" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/supplyList"
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textColor="@color/google_text"
-            android:textSize="@dimen/text_title_large" />
+            android:textSize="@dimen/text_title" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/demandList"
