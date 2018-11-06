@@ -68,7 +68,7 @@
             android:id="@+id/supplyTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/primary"
+            android:textColor="@color/google_text"
             android:textSize="@dimen/text_title_large" />
 
         <android.support.v7.widget.RecyclerView
@@ -81,7 +81,7 @@
             android:id="@+id/demandTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/primary"
+            android:textColor="@color/google_text"
             android:textSize="@dimen/text_title_large" />
 
         <android.support.v7.widget.RecyclerView
