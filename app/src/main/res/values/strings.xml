@@ -240,6 +240,7 @@
     <string name="byPrice">По цене</string>
     <string name="byRating">По рейтингу</string>
     <string name="sortBy">Сортировать</string>
+    <string name="services">Услуги</string>
 
 
 </resources>
