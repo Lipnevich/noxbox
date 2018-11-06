@@ -33,6 +33,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".state.cluster.ClusterItemsActivity"
+            android:theme="@style/NoActionBar"
             android:parentActivityName=".MapActivity" />
         <activity
             android:name=".profile.ProfilePerformerActivity"

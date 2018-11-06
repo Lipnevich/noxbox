@@ -371,7 +371,6 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
-    private View cancellationReasonDialog;
     private RadioButton longToWait;
     private RadioButton photoDoesNotMatch;
     private RadioButton rudeBehavior;
