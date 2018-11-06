@@ -50,13 +50,13 @@ public class Created implements State {
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buildMapPosition(googleMap, profile, activity.getApplicationContext());
+                buildMapPosition(googleMap, activity.getApplicationContext());
             }
         });
 
         createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         buildMapMarkerListener(googleMap, profile, activity);
-        buildMapPosition(googleMap, profile, activity.getApplicationContext());
+        buildMapPosition(googleMap, activity.getApplicationContext());
     }
 
     @Override

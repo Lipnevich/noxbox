@@ -357,20 +357,16 @@ public class DetailedActivity extends AppCompatActivity {
         findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AppCache.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
-                            findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
-                            BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
-                            return;
-                        }
-                        profile.setCurrent(profile.getViewed());
-                        profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                        AppCache.updateNoxbox();
-                        finish();
-                    }
-                });
+                if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
+                    findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+                    BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
+                    return;
+                }
+                profile.setCurrent(profile.getViewed());
+                profile.setNoxboxId(profile.getCurrent().getId());
+                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+                AppCache.updateNoxbox();
+                finish();
             }
         });
     }

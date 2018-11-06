@@ -18,6 +18,7 @@ import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
+import live.noxbox.state.AppCache;
 import live.noxbox.state.cluster.NoxboxMarker;
 
 import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;
@@ -26,31 +27,34 @@ import static live.noxbox.tools.Router.startActivity;
 
 public class MapController {
 
-    public static void buildMapPosition(GoogleMap googleMap, Profile profile, Context context) {
-        switch (NoxboxState.getState(profile.getCurrent(), profile)) {
-            case requesting:
-            case accepting:
-            case moving:
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                builder.include(profile.getPosition().toLatLng());
-                builder.include(profile.getCurrent().getPosition().toLatLng());
-                LatLngBounds latLngBounds = builder.build();
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
-                        latLngBounds,
-                        context.getResources().getDisplayMetrics().widthPixels,
-                        context.getResources().getDisplayMetrics().heightPixels,
-                        dpToPx(68)));
-                break;
+    public static void buildMapPosition(final GoogleMap googleMap, final Context context) {
+        AppCache.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(final Profile profile) {
+                switch (NoxboxState.getState(profile.getCurrent(), profile)) {
+                    case requesting:
+                    case accepting:
+                    case moving:
+                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                        builder.include(profile.getPosition().toLatLng());
+                        builder.include(profile.getCurrent().getPosition().toLatLng());
+                        LatLngBounds latLngBounds = builder.build();
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
+                                latLngBounds,
+                                context.getResources().getDisplayMetrics().widthPixels,
+                                context.getResources().getDisplayMetrics().heightPixels,
+                                dpToPx(68)));
+                        break;
 
-            case created:
-            case performing:
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
-                break;
-            default:
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
-        }
-
-
+                    case created:
+                    case performing:
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
+                        break;
+                    default:
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
+                }
+            }
+        });
     }
 
 

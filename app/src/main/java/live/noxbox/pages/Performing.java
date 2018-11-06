@@ -30,7 +30,6 @@ import static live.noxbox.Configuration.QUARTER;
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.model.NotificationType.showLowBalanceNotification;
 import static live.noxbox.model.NotificationType.updateNotification;
-import static live.noxbox.state.AppCache.readProfile;
 import static live.noxbox.state.AppCache.updateNoxbox;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.BalanceCalculator.getTotalSpentForNoxbox;
@@ -50,12 +49,7 @@ public class Performing implements State {
     public Performing(final Activity activity, final GoogleMap googleMap) {
         this.activity = activity;
         this.googleMap = googleMap;
-        readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-            }
-        });
+        MapController.buildMapPosition(googleMap, activity.getApplicationContext());
     }
 
     @Override

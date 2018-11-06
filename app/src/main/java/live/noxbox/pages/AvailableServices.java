@@ -9,40 +9,29 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.contract.ContractActivity;
 import live.noxbox.contract.NoxboxTypeListActivity;
-import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.state.AppCache;
 import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.State;
-import live.noxbox.state.cluster.Callbacks;
-import live.noxbox.state.cluster.Cluster;
-import live.noxbox.state.cluster.ClusterItemsActivity;
 import live.noxbox.state.cluster.ClusterManager;
-import live.noxbox.state.cluster.NoxboxMarker;
-import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
-import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
-import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;
 import static live.noxbox.state.AppCache.markers;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
@@ -63,60 +52,18 @@ public class AvailableServices implements State {
         this.googleMap = googleMap;
         this.googleApiClient = googleApiClient;
         this.activity = activity;
-
-        createClusterManager();
-
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(final Profile profile) {
-                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-            }
-        });
+        MapController.buildMapPosition(googleMap, activity.getApplicationContext());
     }
-
-    private void createClusterManager() {
-        clusterManager = new ClusterManager(activity.getApplicationContext(), googleMap)
-                .setCallbacks(new Callbacks() {
-                    @Override
-                    public boolean onClusterClick(@NonNull Cluster<NoxboxMarker> cluster) {
-                        DebugMessage.popup(activity, "CLUSTER");
-
-                        float newZoom = googleMap.getCameraPosition().zoom + 1f;
-                        if (newZoom < MAX_ZOOM_LEVEL) {
-                            LatLng center = MapController.getCenterBetweenSomeLocations(cluster.getItems());
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, newZoom));
-                        } else {
-                            // TODO (vl) показать список со всеми элементами кластера
-                            ClusterItemsActivity.noxboxes.addAll(cluster.getItems());
-                            Router.startActivityForResult(activity, new Intent(activity, ClusterItemsActivity.class), 1);
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onClusterItemClick(@NonNull final NoxboxMarker clusterItem) {
-                        DebugMessage.popup(activity, "ITEM");
-                        AppCache.readProfile(new Task<Profile>() {
-                            @Override
-                            public void execute(Profile profile) {
-                                profile.setViewed(clusterItem.getNoxbox());
-                                if (googleMap.getCameraPosition() != null) {
-                                    profile.setPosition(Position.from(googleMap.getCameraPosition().target));
-                                }
-                                Router.startActivity(activity, DetailedActivity.class);
-                            }
-                        });
-                        return false;
-                    }
-                });
-    }
-
 
     private static boolean serviceIsBound = false;
 
     @Override
     public void draw(final Profile profile) {
         startListenAvailableNoxboxes();
+        if(clusterManager == null) {
+            clusterManager = new ClusterManager(activity, googleMap);
+        }
+        googleMap.setOnMarkerClickListener(clusterManager.getRenderer());
         googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
@@ -130,12 +77,11 @@ public class AvailableServices implements State {
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
 
-
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(MapActivity.isLocationPermissionGranted(activity)){
-                    MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+                    MapController.buildMapPosition(googleMap, activity.getApplicationContext());
                 }else{
                     ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                             LOCATION_PERMISSION_REQUEST_CODE);
@@ -205,7 +151,7 @@ public class AvailableServices implements State {
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                return false;
+                return true;
             }
         });
         activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);

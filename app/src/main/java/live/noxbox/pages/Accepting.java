@@ -21,11 +21,9 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.MessagingService;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
-import static live.noxbox.state.AppCache.readProfile;
 import static live.noxbox.state.AppCache.updateNoxbox;
 
 public class Accepting implements State {
@@ -41,12 +39,7 @@ public class Accepting implements State {
     public Accepting(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-            }
-        });
+        MapController.buildMapPosition(googleMap, activity.getApplicationContext());
     }
 
     @Override

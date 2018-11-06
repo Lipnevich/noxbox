@@ -1,9 +1,8 @@
 package live.noxbox.state.cluster;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -32,7 +31,6 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     private static final int DEFAULT_MIN_CLUSTER_SIZE = 1;
 
     private GoogleMap googleMap;
-    private Context context;
     private live.noxbox.state.cluster.ClusterRenderer renderer;
 
     private AsyncTask quadTreeTask;
@@ -43,15 +41,9 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
     private int minClusterSize = DEFAULT_MIN_CLUSTER_SIZE;
 
-    public ClusterManager(@NonNull Context context, @NonNull GoogleMap googleMap) {
+    public ClusterManager(@NonNull Activity activity, @NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
-        this.context = context;
-        this.renderer = new live.noxbox.state.cluster.ClusterRenderer(this.context, googleMap);
-    }
-
-    public ClusterManager setCallbacks(@Nullable Callbacks callbacks) {
-        renderer.setCallbacks(callbacks);
-        return this;
+        this.renderer = new live.noxbox.state.cluster.ClusterRenderer(activity, googleMap);
     }
 
     public void setItems(@NonNull Map<String, Noxbox> noxboxItems, final Profile profile) {
@@ -66,7 +58,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     }
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
-        if(BuildConfig.DEBUG) return false;
+        if (BuildConfig.DEBUG) return false;
         //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
 
         if (!profile.getFilters().getAllowNovices())
@@ -89,10 +81,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
             return true;
         }
 
-        if (!noxbox.getOwner().getHost()) {
-            return !profile.getHost();
-        }
-        return false;
+        return !noxbox.getOwner().getHost() && !profile.getHost();
     }
 
     private void buildQuadTree(@NonNull List<NoxboxMarker> clusterItems) {
@@ -186,6 +175,10 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
                 }
             }
         }
+    }
+
+    public ClusterRenderer getRenderer() {
+        return renderer;
     }
 
     private class QuadTreeTask extends AsyncTask<Void, Void, Void> {

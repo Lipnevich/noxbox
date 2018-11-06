@@ -34,7 +34,6 @@ import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.state.AppCache.readProfile;
 import static live.noxbox.state.AppCache.updateNoxbox;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.moveCopyrightRight;
@@ -54,12 +53,7 @@ public class Moving implements State {
     public Moving(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
-            }
-        });
+        MapController.buildMapPosition(googleMap, activity.getApplicationContext());
     }
 
     @Override
@@ -115,7 +109,7 @@ public class Moving implements State {
             @Override
             public void onClick(View v) {
                 DebugMessage.popup(activity, "way and points");
-                MapController.buildMapPosition(googleMap, profile, activity.getApplicationContext());
+                MapController.buildMapPosition(googleMap, activity.getApplicationContext());
             }
         });
 

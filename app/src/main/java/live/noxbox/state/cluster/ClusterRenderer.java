@@ -4,11 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
@@ -21,6 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 import live.noxbox.debug.TimeLogger;
+import live.noxbox.detailed.DetailedActivity;
+import live.noxbox.model.Position;
+import live.noxbox.model.Profile;
+import live.noxbox.state.AppCache;
+import live.noxbox.tools.MapController;
+import live.noxbox.tools.Router;
+import live.noxbox.tools.Task;
+
+import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;
 
 public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
 
@@ -28,44 +39,58 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
     private static final int FOREGROUND_MARKER_Z_INDEX = 1;
 
     private GoogleMap googleMap;
-    private Context context;
-    private Callbacks callbacks;
+    private Activity activity;
     private IconGenerator iconGenerator;
-
-    private final List<Cluster<NoxboxMarker>> clusters = new ArrayList<>();
 
     private final Map<Cluster<NoxboxMarker>, Marker> markers = new HashMap<>();
 
-    public ClusterRenderer(Context context, GoogleMap googleMap) {
+    public ClusterRenderer(Activity activity, GoogleMap googleMap) {
         this.googleMap = googleMap;
-        this.context = context;
-        this.iconGenerator = new IconGenerator(context);
-        this.googleMap.setOnMarkerClickListener(this);
+        this.activity = activity;
+        this.iconGenerator = new IconGenerator(activity);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         Object markerTag = marker.getTag();
         if (markerTag instanceof Cluster) {
-            //noinspection unchecked
             Cluster<NoxboxMarker> cluster = (Cluster<NoxboxMarker>) marker.getTag();
-            //noinspection ConstantConditions
             List<NoxboxMarker> clusterItems = cluster.getItems();
 
-            if (callbacks != null) {
-                if (clusterItems.size() > 1) {
-                    return callbacks.onClusterClick(cluster);
-                } else {
-                    return callbacks.onClusterItemClick(clusterItems.get(0));
-                }
+            if (clusterItems.size() > 1) {
+                return onClusterClick(cluster);
+            } else {
+                return onClusterItemClick(clusterItems.get(0));
             }
         }
 
         return false;
     }
 
-    void setCallbacks(@Nullable Callbacks listener) {
-        callbacks = listener;
+    private boolean onClusterClick(@NonNull Cluster<NoxboxMarker> cluster) {
+        float newZoom = googleMap.getCameraPosition().zoom + 1f;
+        if (newZoom < MAX_ZOOM_LEVEL) {
+            LatLng center = MapController.getCenterBetweenSomeLocations(cluster.getItems());
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, newZoom));
+        } else {
+            ClusterItemsActivity.noxboxes.addAll(cluster.getItems());
+            Router.startActivityForResult(activity, new Intent(activity, ClusterItemsActivity.class), 1);
+        }
+        return false;
+    }
+
+    private boolean onClusterItemClick(@NonNull final NoxboxMarker clusterItem) {
+        AppCache.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                profile.setViewed(clusterItem.getNoxbox());
+                if (googleMap.getCameraPosition() != null) {
+                    profile.setPosition(Position.from(googleMap.getCameraPosition().target));
+                }
+                Router.startActivity(activity, DetailedActivity.class);
+            }
+        });
+        return false;
     }
 
     void render(@NonNull List<Cluster<NoxboxMarker>> clusters) {
