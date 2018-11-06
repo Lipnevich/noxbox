@@ -3,6 +3,8 @@ package live.noxbox.tools;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -41,7 +43,16 @@ public class MarkerCreator {
     }
 
     public static Marker createPartyMarker(Profile party, GoogleMap googleMap, Resources resources) {
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, party.getTravelMode().getImage());
+        Drawable drawable = resources.getDrawable(party.getTravelMode().getImage());
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        
+
+
         Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(28), dpToPx(28), false);
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(party.getPosition().toLatLng())
