@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import live.noxbox.R;
@@ -46,7 +47,7 @@ public class Moving implements State {
     private LinearLayout movingView;
     private LinearLayout photoView;
 
-    private static CountDownTimer countDownTimer;
+    private CountDownTimer countDownTimer;
 
     private static boolean acceptingViewIsOpened = false;
 
@@ -61,10 +62,11 @@ public class Moving implements State {
         Log.d(TAG + "Moving", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         Log.d(TAG + "Moving", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
 
-        googleMap.addPolyline(new PolylineOptions()
-                .add(profile.getCurrent().getOwner().getPosition().toLatLng(), profile.getCurrent().getParty().getPosition().toLatLng())
+        Polyline polyline = googleMap.addPolyline(new PolylineOptions()
+                .add(profile.getPosition().toLatLng(), profile.getCurrent().getPosition().toLatLng())
                 .width(5)
-                .color(Color.GREEN));
+                .color(Color.GREEN)
+                .geodesic(true));
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         MarkerCreator.createPartyMarker(profile.getCurrent().getParty(), googleMap, activity.getResources());
@@ -144,9 +146,11 @@ public class Moving implements State {
             countDownTimer = new CountDownTimer(profile.getCurrent().getTimeToMeet(), 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    notification.setTime(String.valueOf(profile.getCurrent().getTimeToMeet() - (profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
-                    notification.setProgress((int) (profile.getCurrent().getTimeToMeet() - millisUntilFinished));
-                    NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    if(countDownTimer != null){
+                        notification.setTime(String.valueOf(profile.getCurrent().getTimeToMeet() - (profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
+                        notification.setProgress((int) (profile.getCurrent().getTimeToMeet() - millisUntilFinished));
+                        NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    }
                 }
 
                 @Override
@@ -160,6 +164,31 @@ public class Moving implements State {
 
         MapController.buildMapMarkerListener(googleMap, profile, activity);
         moveCopyrightRight(googleMap);
+    }
+
+    @Override
+    public void clear() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+        MapController.clearMapMarkerListener(googleMap);
+        NotificationType.removeNotifications(activity.getApplicationContext());
+        googleMap.getUiSettings().setScrollGesturesEnabled(true);
+        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
+        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
+        activity.findViewById(R.id.chat).setVisibility(View.GONE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        moveCopyrightLeft(googleMap);
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        googleMap.clear();
+
+        movingView.removeAllViews();
+        if (photoView != null) {
+            photoView.removeAllViews();
+        }
+
     }
 
     private void openAcceptingView(final Profile profile) {
@@ -280,28 +309,5 @@ public class Moving implements State {
         }
     }
 
-
-    @Override
-    public void clear() {
-        MapController.clearMapMarkerListener(googleMap);
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
-        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
-        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
-        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
-        activity.findViewById(R.id.chat).setVisibility(View.GONE);
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        moveCopyrightLeft(googleMap);
-        activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        googleMap.clear();
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-
-        }
-        movingView.removeAllViews();
-        if (photoView != null) {
-            photoView.removeAllViews();
-        }
-
-    }
 
 }

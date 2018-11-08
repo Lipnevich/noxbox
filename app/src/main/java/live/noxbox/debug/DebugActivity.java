@@ -57,7 +57,7 @@ public class DebugActivity extends MenuActivity {
 
                                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
                                 profile.getCurrent().setParty(new Profile()
-                                        .setWallet(new Wallet().setBalance("1000"))
+                                        .setWallet(new Wallet().setBalance("1000000"))
                                         .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
                                         .setNoxboxId(profile.getCurrent().getId())
                                         .setTravelMode(TravelMode.driving)

@@ -2,6 +2,7 @@ package live.noxbox.state;
 
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -87,6 +88,24 @@ public class Firestore {
         }
 
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge());
+
+        if(current.getTimeCompleted() != null){
+            GeoRealtime.offline(current);
+        }
+    }
+
+    public static void readNoxbox(String noxboxId, final Task<Noxbox> task){
+        noxboxReference(noxboxId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> completion) {
+                if(!completion.isSuccessful()) return;
+                DocumentSnapshot snapshot = completion.getResult();
+                if (snapshot != null && snapshot.exists()) {
+                    Noxbox noxbox = snapshot.toObject(Noxbox.class);
+                    task.execute(noxbox);
+                }
+            }
+        });
     }
 
     // in case of null value - does not override value

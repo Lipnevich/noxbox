@@ -224,8 +224,10 @@ public enum NotificationType {
             case uploadingProgress:
             case moving:
             case performing:
+            case completed:
             case requesting:
             case accepting:
+            case lowBalance:
                 return null;
             default:
                 return new long[]{100, 500, 200, 100, 100};

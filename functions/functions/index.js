@@ -10,6 +10,16 @@ exports.welcome = functions.auth.user().onCreate(user => {
     return wallet.create(user).then(noxbox.init);
 });
 
+exports.requested = functions.firestore.document('noxboxes/{noxboxId}/timeRequested').onCreate((snap, context) => {
+      let pushRequested = {
+            data: {
+                 type: 'requesting'
+            },
+            topic: 'hqeaykYp2Cfd6Ys9v01kRwzid9j1'
+          };
+    });
+
+
 exports.version = functions.https.onRequest((req, res) => {
     res.status(200).send('Version ' + version);
 });
@@ -17,7 +27,7 @@ exports.version = functions.https.onRequest((req, res) => {
 exports.push = functions.https.onRequest((request, response) => {
     let message = {
       data: {
-        type: 'message',
+        type: 'balance',
         id: 'somelongidstringthatwasgeneratedbyfirestore',
 
       },
@@ -25,10 +35,12 @@ exports.push = functions.https.onRequest((request, response) => {
     };
     admin.messaging().send(message)
       .then(o => {
-        return response.send("Success version 4");
+        return response.send("Success version 7");
       })
       .catch(e => {
-        return response.send("Error version 4");
+        return response.send("Error version 7");
       });
 });
+
+
 

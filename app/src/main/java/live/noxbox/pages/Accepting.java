@@ -35,7 +35,6 @@ public class Accepting implements State {
     private CountDownTimer countDownTimer;
     private LinearLayout acceptingView;
 
-
     public Accepting(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
@@ -69,6 +68,7 @@ public class Accepting implements State {
                 long timeAccepted = System.currentTimeMillis();
                 Log.d(TAG + "Accepting", "timeAccepted: " + DateTimeFormatter.time(timeAccepted));
                 profile.getCurrent().setTimeAccepted(timeAccepted);
+                profile.getCurrent().getOwner().setWallet(profile.getWallet());
                 updateNoxbox();
             }
         });
