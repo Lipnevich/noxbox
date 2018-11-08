@@ -1,6 +1,8 @@
 package live.noxbox.contract;
 
 import android.app.ListActivity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -41,6 +43,7 @@ public class NoxboxTypeListActivity extends ListActivity {
                         && getIntent().getStringExtra(ProfileActivity.class.getName()).equals(NoxboxTypeListActivity.class.getName())) {
                     typeList = new ArrayList<>();
                     for (NoxboxType type : NoxboxType.values()) {
+
                         if (profile.getPortfolio().get(type.name()) == null) {
                             typeList.add(type);
                         }
@@ -51,7 +54,9 @@ public class NoxboxTypeListActivity extends ListActivity {
                 } else if (getIntent().getStringExtra(MapActivity.class.getName()) != null
                         && getIntent().getStringExtra(MapActivity.class.getName()).equals(NoxboxTypeListActivity.class.getName())) {
                     typeList = new ArrayList<>();
-                    typeList.addAll(Arrays.asList(NoxboxType.values()));
+                    for (NoxboxType type : NoxboxType.values()) {
+                        typeList.add(type);
+                    }
                     createArrayAdapter();
                     drawInMap(profile);
 
@@ -69,18 +74,22 @@ public class NoxboxTypeListActivity extends ListActivity {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                for (NoxboxType type : NoxboxType.values()) {
-                    if (type == typeList.get(i)) {
-                        profile.getFilters().getTypes().put(type.name(), true);
-                        continue;
+                if (typeList.get(i) == NoxboxType.redirect) {
+                    openApplicationMarketPage();
+                } else {
+                    for (NoxboxType type : NoxboxType.values()) {
+                        if (type == typeList.get(i)) {
+                            profile.getFilters().getTypes().put(type.name(), true);
+                            continue;
+                        }
+                        profile.getFilters().getTypes().put(type.name(), false);
                     }
-                    profile.getFilters().getTypes().put(type.name(), false);
                 }
                 finish();
             }
         });
     }
+
 
     private void createArrayAdapter() {
         ArrayAdapter<NoxboxType> itemArrayAdapter = new NoxboxTypeAdapter(NoxboxTypeListActivity.this, typeList);
@@ -91,7 +100,12 @@ public class NoxboxTypeListActivity extends ListActivity {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                profile.getCurrent().setType(typeList.get(i));
+                if (typeList.get(i) == NoxboxType.redirect) {
+                    openApplicationMarketPage();
+                } else {
+                    profile.getCurrent().setType(typeList.get(i));
+                }
+
                 finish();
             }
         });
@@ -101,9 +115,21 @@ public class NoxboxTypeListActivity extends ListActivity {
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                profile.getPortfolio().put(typeList.get(i).name(), new Portfolio());
+                if (typeList.get(i) == NoxboxType.redirect) {
+                    openApplicationMarketPage();
+                } else {
+                    profile.getPortfolio().put(typeList.get(i).name(), new Portfolio());
+                }
                 finish();
             }
         });
+    }
+
+    private void openApplicationMarketPage() {
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getPackageName())));
+        } catch (android.content.ActivityNotFoundException anfe) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+        }
     }
 }

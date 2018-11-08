@@ -7,7 +7,8 @@ public enum NoxboxType {
     photographer(1, R.string.photographer, R.drawable.ic_photographer, R.drawable.illustration_photographer, R.string.photographerDescription, R.string.photographerDuration, "60"),
     meditation(2, R.string.meditation, R.drawable.ic_meditation, R.drawable.illustration_meditation, R.string.meditationDescription, R.string.meditationDuration, "60"),
     water(3, R.string.water, R.drawable.ic_water, R.drawable.illustration_water, R.string.waterDescription, R.string.waterDuration, "60"),
-    plant(4, R.string.plant, R.drawable.ic_plant, R.drawable.illustration_plant, R.string.plantDescription, R.string.plantDuration, "60");
+    plant(4, R.string.plant, R.drawable.ic_plant, R.drawable.illustration_plant, R.string.plantDescription, R.string.plantDuration, "60"),
+    redirect(5, R.string.redirectToPlayMarket, R.drawable.ic_play_market, 0, 0, 0, "60");
 
     private int id;
     private int name;
@@ -63,4 +64,5 @@ public enum NoxboxType {
         }
         return nanny;
     }
+
 }
