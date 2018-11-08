@@ -165,7 +165,7 @@
     <string name="chooseAll">Choose all</string>
     <string name="ok">ok</string>
     <string name="filters">Filters</string>
-    <string name="constructorService">Constructor of service</string>
+    <string name="contractService">Contract of service</string>
     <string name="filterMaxPriceText">The maximum cost of services</string>
     <string name="filterNoviceText">Show the services of employees who do not have reviews or only with negative reviews.</string>
     <string name="filterDemandText">Show the demand for services on the map</string>
@@ -241,6 +241,7 @@
     <string name="byRating">По рейтингу</string>
     <string name="sortBy">Сортировать</string>
     <string name="services">Услуги</string>
+    <string name="redirectToPlayMarket">запросить другую услугу</string>
 
 
 </resources>

@@ -13,7 +13,6 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder;
 import com.firebase.ui.auth.AuthUI.IdpConfig.PhoneBuilder;
@@ -21,9 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import io.fabric.sdk.android.Fabric;
 import live.noxbox.BaseActivity;
-import live.noxbox.BuildConfig;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 
@@ -36,7 +33,7 @@ public class AuthActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initCrashReporting();
+
         login();
         setContentView(R.layout.activity_auth);
         ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -62,12 +59,7 @@ public class AuthActivity extends BaseActivity {
         ((TextView) findViewById(textView)).setTextColor(getResources().getColor(color));
     }
 
-    private void initCrashReporting() {
-        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
-                .disabled(BuildConfig.DEBUG)
-                .build();
-        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
-    }
+
 
     private View.OnClickListener authentificate(final AuthUI.IdpConfig.Builder provider) {
         return new View.OnClickListener() {

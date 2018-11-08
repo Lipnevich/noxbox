@@ -173,18 +173,19 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(Profile profile) {
+
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if (currentUser != null) {
+                        if(currentUser != null){
+                            AppCache.logout();
                             FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
                         }
-
                         AuthUI.getInstance()
                                 .signOut(MenuActivity.this)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-                                        AppCache.logout();
-                                        startActivity(new Intent(MenuActivity.this, AuthActivity.class));
+
+                                        startActivity(new Intent(getApplicationContext(), AuthActivity.class));
                                         finish();
                                     }
                                 });

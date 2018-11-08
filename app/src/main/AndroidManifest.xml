@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" package="live.noxbox">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="live.noxbox">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,14 +16,16 @@
         <activity
             android:name=".pages.AuthActivity"
             android:theme="@style/NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".MapActivity"
+            android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MapActivity"
-            android:theme="@style/NoActionBar" />
         <activity
             android:name=".filters.MapFiltersActivity"
             android:parentActivityName=".MapActivity" />
@@ -33,8 +36,8 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".state.cluster.ClusterItemsActivity"
-            android:theme="@style/NoActionBar"
-            android:parentActivityName=".MapActivity" />
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".profile.ProfilePerformerActivity"
             android:parentActivityName=".profile.ProfileActivity"
@@ -61,8 +64,9 @@
             android:name=".detailed.CoordinateActivity"
 
             android:theme="@style/NoActionBar" />
-        <activity android:name=".menu.HistoryActivity"
-            android:parentActivityName=".MapActivity"/>
+        <activity
+            android:name=".menu.HistoryActivity"
+            android:parentActivityName=".MapActivity" />
         <activity
             android:name=".pages.ChatActivity"
             android:theme="@style/NoActionBar"
@@ -93,9 +97,8 @@
             android:name=".tools.NotificationService"
             android:enabled="true"
             android:exported="true"
-            android:isolatedProcess="true"/>
-        <service
-            android:name=".pages.AvailableNoxboxesService"/>
+            android:isolatedProcess="true" />
+        <service android:name=".pages.AvailableNoxboxesService" />
 
         <receiver android:name=".model.NotificationType$CancelRequestListener">
             <intent-filter>

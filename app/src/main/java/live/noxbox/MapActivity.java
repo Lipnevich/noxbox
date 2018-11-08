@@ -26,15 +26,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.WeakHashMap;
 
+import io.fabric.sdk.android.Fabric;
 import live.noxbox.debug.DebugActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
@@ -42,6 +47,7 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.pages.Accepting;
+import live.noxbox.pages.AuthActivity;
 import live.noxbox.pages.AvailableServices;
 import live.noxbox.pages.Created;
 import live.noxbox.pages.LocationReceiver;
@@ -51,6 +57,7 @@ import live.noxbox.pages.Requesting;
 import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -71,6 +78,17 @@ public class MapActivity extends DebugActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initCrashReporting();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Router.startActivity(this, AuthActivity.class);
+            finish();
+            return;
+        }
+
+
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapId);
         mapFragment.getMapAsync(this);
         googleApiClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
@@ -80,9 +98,11 @@ public class MapActivity extends DebugActivity implements
         AppCache.startListening();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    private void initCrashReporting() {
+        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build();
+        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
 
     @Override
@@ -95,7 +115,7 @@ public class MapActivity extends DebugActivity implements
         draw();
     }
 
-    public static  boolean isLocationPermissionGranted(final Activity activity) {
+    public static boolean isLocationPermissionGranted(final Activity activity) {
         return ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
@@ -178,6 +198,7 @@ public class MapActivity extends DebugActivity implements
     }
 
     private LocationReceiver locationReceiver;
+
     @Override
     protected void onResume() {
         if (isLocationPermissionGranted(this)) {
@@ -276,7 +297,7 @@ public class MapActivity extends DebugActivity implements
 
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
-        if(state == NoxboxState.initial) {
+        if (state == NoxboxState.initial) {
             AppCache.stopListenNoxbox(profile.getCurrent().getId());
         } else {
             AppCache.startListenNoxbox(profile.getCurrent().getId());
