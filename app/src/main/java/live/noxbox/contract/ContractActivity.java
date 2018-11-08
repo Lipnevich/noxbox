@@ -132,7 +132,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawToolbar(final Profile profile) {
-        ((TextView) findViewById(R.id.title)).setText(R.string.constructorService);
+        ((TextView) findViewById(R.id.title)).setText(R.string.contractService);
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

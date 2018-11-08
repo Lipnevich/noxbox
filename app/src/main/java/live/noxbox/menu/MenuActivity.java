@@ -76,7 +76,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
 
     private void drawNavigation(final Activity activity, final Profile profile) {
         drawerLayout = findViewById(R.id.drawerLayout);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(@NonNull View view, float v) {
@@ -85,12 +85,11 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
 
             @Override
             public void onDrawerOpened(@NonNull View view) {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                initializeNavigationHeader(activity, profile);
             }
 
             @Override
             public void onDrawerClosed(@NonNull View view) {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
 
             @Override
@@ -106,25 +105,34 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             @Override
             public void onClick(View v) {
                 drawerLayout.openDrawer(GravityCompat.START);
-                ImageView profilePhoto = findViewById(R.id.photo);
-                if (profile.getPhoto() == null) {
-                    ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.profile_picture_blank), (profilePhoto));
-                } else {
-                    ImageManager.createCircleImageFromUrl(activity, profile.getPhoto(), profilePhoto);
-                }
-                if (profile.getName() != null) {
-                    ((TextView) findViewById(R.id.name)).setText(profile.getName());
-                }
-                ((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
-                ((TextView) findViewById(R.id.version)).setText(getResources().getString(R.string.version).concat(" ").concat(BuildConfig.VERSION_NAME));
-                profilePhoto.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
-                    }
-                });
+                initializeNavigationHeader(activity, profile);
             }
         });
+    }
+
+    private Boolean isInitial = false;
+
+    private void initializeNavigationHeader(final Activity activity, final Profile profile) {
+        if (!isInitial) {
+            ImageView profilePhoto = findViewById(R.id.photo);
+            if (profile.getPhoto() == null) {
+                ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.profile_picture_blank), (profilePhoto));
+            } else {
+                ImageManager.createCircleImageFromUrl(activity, profile.getPhoto(), profilePhoto);
+            }
+            if (profile.getName() != null) {
+                ((TextView) findViewById(R.id.name)).setText(profile.getName());
+            }
+            ((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
+            ((TextView) findViewById(R.id.version)).setText(getResources().getString(R.string.version).concat(" ").concat(BuildConfig.VERSION_NAME));
+            profilePhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
+                }
+            });
+            isInitial = true;
+        }
     }
 
     @Override
@@ -175,7 +183,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                     public void execute(Profile profile) {
 
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if(currentUser != null){
+                        if (currentUser != null) {
                             AppCache.logout();
                             FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
                         }
