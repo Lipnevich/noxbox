@@ -17,26 +17,35 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
-import android.widget.RelativeLayout;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.List;
 import java.util.WeakHashMap;
 
 import io.fabric.sdk.android.Fabric;
@@ -62,7 +71,6 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
-import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.setupMap;
 
@@ -74,12 +82,16 @@ public class MapActivity extends DebugActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationRequest locationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initCrashReporting();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -98,103 +110,49 @@ public class MapActivity extends DebugActivity implements
         AppCache.startListening();
     }
 
-    private void initCrashReporting() {
-        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
-                .disabled(BuildConfig.DEBUG)
-                .build();
-        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
-    }
+    private Marker currentLocationMarker;
+    private LocationCallback locationCallback;
 
     @Override
     public void onMapReady(GoogleMap readyMap) {
         googleMap = readyMap;
-        visibleCurrentLocation(true);
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5 * 1000);
+
+        AppCache.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(final Profile profile) {
+                locationCallback = new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        List<Location> locationList = locationResult.getLocations();
+                        if (locationList.size() > 0) {
+                            Location location = locationList.get(locationList.size() - 1);
+                            if (currentLocationMarker != null) {
+                                currentLocationMarker.remove();
+                            }
+
+                            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng);
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                            currentLocationMarker = googleMap.addMarker(markerOptions);
+
+                            profile.setPosition(new Position(location.getLatitude(), location.getLongitude()));
+                            //AppCache.fireProfile();
+                        }
+                    }
+                };
+            }
+        });
+        visibleCurrentLocation();
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveCopyrightLeft(googleMap);
         draw();
-    }
 
-    public static boolean isLocationPermissionGranted(final Activity activity) {
-        return ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    protected void visibleCurrentLocation(boolean visible) {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            googleMap.setMyLocationEnabled(true);
-            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!isLocationPermissionGranted(MapActivity.this)) {
-                        return;
-                    }
-                    AppCache.readProfile(new Task<Profile>() {
-                        @Override
-                        public void execute(Profile profile) {
-                            profile.setPosition(getCurrentPosition());
-                            AppCache.fireProfile();
-                        }
-                    });
-                }
-            });
-
-            if (!visible) {
-                return;
-            }
-            View locationButton = ((View) findViewById(new Integer(1)).getParent()).findViewById(new Integer(2));
-
-            RelativeLayout.LayoutParams layout = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-            // position on right bottom
-            layout.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-            layout.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-            layout.setMargins(0, 0, 0, dpToPx(8));
-            locationButton.setLayoutParams(layout);
-        } else {
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat.requestPermissions(MapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_PERMISSION_REQUEST_CODE);
-                }
-            });
-        }
-    }
-
-    protected boolean isGpsEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case LOCATION_PERMISSION_REQUEST_CODE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    visibleCurrentLocation(true);
-                    AppCache.readProfile(new Task<Profile>() {
-                        @Override
-                        public void execute(Profile profile) {
-                            profile.setPosition(getCurrentPosition());
-                            AppCache.fireProfile();
-                        }
-                    });
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                profile.setPosition(getCurrentPosition());
-            }
-        });
     }
 
     private LocationReceiver locationReceiver;
@@ -217,6 +175,9 @@ public class MapActivity extends DebugActivity implements
     @Override
     protected void onPause() {
         super.onPause();
+        if (mFusedLocationClient != null) {
+            mFusedLocationClient.removeLocationUpdates(locationCallback);
+        }
         unregisterReceiver(locationReceiver);
         googleApiClient.disconnect();
         AppCache.stopListen(this.getClass().getName());
@@ -230,17 +191,67 @@ public class MapActivity extends DebugActivity implements
     }
 
 
-    protected Position getCurrentPosition() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (googleApiClient.isConnected()) {
-                Position position = Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient));
-                return position;
-            } else {
-                googleApiClient.connect();
+    private void initCrashReporting() {
+        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build();
+        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
+    }
+
+
+    public static boolean isLocationPermissionGranted(final Activity activity) {
+        return ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    protected void visibleCurrentLocation() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            googleMap.setMyLocationEnabled(true);
+            startListenLocationUpdate();
+        } else {
+            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ActivityCompat.requestPermissions(MapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                }
+            });
+        }
+    }
+
+    private void startListenLocationUpdate() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            if (mFusedLocationClient != null && locationRequest != null && locationCallback != null) {
+                mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
             }
         }
-        return null;
     }
+
+    protected boolean isGpsEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    visibleCurrentLocation();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        startListenLocationUpdate();
+    }
+
 
     protected int getEstimationInMinutes(Position from, Position to, TravelMode travelMode) {
         float distanceInMeters = from.toLocation()

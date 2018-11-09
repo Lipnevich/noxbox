@@ -418,7 +418,7 @@ public class ContractActivity extends BaseActivity {
         Log.d(State.TAG + "ContractActivity", "timeRemoved: " + DateTimeFormatter.time(timeRemoved));
 
         AppCache.removeNoxbox();
-
+        AppCache.fireProfile();
         finish();
     }
 

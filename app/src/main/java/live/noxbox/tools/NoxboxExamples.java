@@ -85,6 +85,7 @@ public class NoxboxExamples {
 
             //Фильтрация услуг в зависимости от настроек
             noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
+            if(noxbox.getType() == NoxboxType.redirect) continue;
             noxboxes.add(noxbox);
         }
 

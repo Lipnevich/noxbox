@@ -11,11 +11,11 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -66,12 +66,9 @@ public class AvailableServices implements State {
     public void draw(final Profile profile) {
         if (BuildConfig.DEBUG) {
             LatLng myPosition = null;
-            if (!(ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-                Position position = Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient));
-                if (position != null) {
-                    myPosition = position.toLatLng();
-                }
+            if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                myPosition = profile.getPosition().toLatLng();
             }
 
             if (myPosition != null) {
@@ -136,7 +133,7 @@ public class AvailableServices implements State {
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
                 profile.getCurrent().setOwner(profile.publicInfo());
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    profile.getCurrent().getOwner().setPosition(Position.from(LocationServices.FusedLocationApi.getLastLocation(googleApiClient)));
+                    profile.getCurrent().getOwner().setPosition(MapActivity.getCameraPosition(googleMap));
                 }
 
                 startActivity(activity, ContractActivity.class);
