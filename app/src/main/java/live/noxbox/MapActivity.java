@@ -36,6 +36,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.WeakHashMap;
 
@@ -81,13 +82,15 @@ public class MapActivity extends DebugActivity implements
 
         initCrashReporting();
 
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Router.startActivity(this, AuthActivity.class);
             finish();
             return;
         }
-
+        Crashlytics.setUserIdentifier(user.getUid());
+        FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapId);
         mapFragment.getMapAsync(this);
