@@ -12,13 +12,11 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.AuthUI.IdpConfig.GoogleBuilder;
 import com.firebase.ui.auth.AuthUI.IdpConfig.PhoneBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.MapActivity;
@@ -85,8 +83,6 @@ public class AuthActivity extends BaseActivity {
     private void login() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            Crashlytics.setUserIdentifier(user.getUid());
-            FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
             startActivity(new Intent(this, MapActivity.class));
             finish();
         }

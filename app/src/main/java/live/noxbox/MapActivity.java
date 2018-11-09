@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 import java.util.WeakHashMap;
@@ -99,7 +100,8 @@ public class MapActivity extends DebugActivity implements
             finish();
             return;
         }
-
+        Crashlytics.setUserIdentifier(user.getUid());
+        FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapId);
         mapFragment.getMapAsync(this);

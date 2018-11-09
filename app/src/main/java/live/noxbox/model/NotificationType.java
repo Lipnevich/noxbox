@@ -321,7 +321,7 @@ public enum NotificationType {
             AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(Profile profile) {
-                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                    if (profile.equals(profile.getCurrent().getOwner())) {
                         profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
                     } else {
                         profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
@@ -368,7 +368,7 @@ public enum NotificationType {
                     // TODO (?) сохранить одно сообщение в базе
                     Message message = new Message()
                             .setMessage(getMessageText(intent, context)).setId("111");
-                    if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                    if (profile.equals(profile.getCurrent().getOwner())) {
                         profile.getCurrent().getOwnerMessages().put(message.getId(), message);
                     } else {
                         profile.getCurrent().getPartyMessages().put(message.getId(), message);
