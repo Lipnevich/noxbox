@@ -10,14 +10,19 @@ exports.welcome = functions.auth.user().onCreate(user => {
     return wallet.create(user).then(noxbox.init);
 });
 
-exports.requested = functions.firestore.document('noxboxes/{noxboxId}/timeRequested').onCreate((snap, context) => {
+exports.requested = functions.firestore.document('noxboxes/{noxboxId}/timeRequested').onCreate(async(snap, context) => {
+      var ownerId = await db.collection('noxboxes').doc(context.params.noxboxId+'/owner/id').get();
+      console.log('recipient' + ownerId);
       let pushRequested = {
-            data: {
-                 type: 'requesting'
-            },
-            topic: 'hqeaykYp2Cfd6Ys9v01kRwzid9j1'
-          };
-    });
+        data: {
+             type: 'requesting',
+             id: context.params.noxboxId
+        },
+        topic: ownerId
+      };
+      await admin.messaging().send(message);
+      console.log('push sent' + JSON.stringify(message));
+});
 
 
 exports.version = functions.https.onRequest((req, res) => {
