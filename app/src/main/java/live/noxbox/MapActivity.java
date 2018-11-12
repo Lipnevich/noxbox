@@ -177,7 +177,7 @@ public class MapActivity extends DebugActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        if (mFusedLocationClient != null) {
+        if (mFusedLocationClient != null && locationCallback != null) {
             mFusedLocationClient.removeLocationUpdates(locationCallback);
         }
         unregisterReceiver(locationReceiver);
