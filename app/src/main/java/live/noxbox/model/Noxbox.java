@@ -64,6 +64,7 @@ public class Noxbox implements Comparable<Noxbox> {
         cancellationReasonMessage = null;
         commentForDemand = null;
         commentForSupply = null;
+        timeCreated = null;
         timeRemoved = null;
         timeRequested = null;
         timeCompleted = null;

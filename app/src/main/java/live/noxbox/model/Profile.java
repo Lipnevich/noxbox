@@ -121,9 +121,6 @@ public class Profile implements Serializable {
     }
 
     public Noxbox getCurrent() {
-        if (current == null) {
-            current = new Noxbox();
-        }
         return current;
     }
 

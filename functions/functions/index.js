@@ -23,7 +23,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}')
                    type: 'requesting',
                    id: noxbox.id
               },
-              topic: noxbox.owner.id
+              topic: noxbox.id
           };
           await admin.messaging().send(pushRequested);
           console.log('push sent' + JSON.stringify(pushRequested));

@@ -82,7 +82,6 @@ public class Firestore {
 
     public static void writeNoxbox(final Noxbox current) {
         if (current.getId() == null) {
-            current.clean();
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
         }

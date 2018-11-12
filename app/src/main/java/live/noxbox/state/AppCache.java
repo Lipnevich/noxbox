@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
@@ -51,9 +53,6 @@ public class AppCache {
                     profile = newProfile;
 
                     if (profile != null && profile.getNoxboxId() != null) {
-                        if (!profile.getNoxboxId().equals(profile.getCurrent().getId())) {
-                            profile.getCurrent().setId(profile.getNoxboxId());
-                        }
                         startListenNoxbox(profile.getNoxboxId());
                     } else {
                         executeUITasks();
@@ -83,7 +82,7 @@ public class AppCache {
     }
 
     private static boolean isProfileReady() {
-        return profile != null && (profile.getNoxboxId() == null || profile.getNoxboxId().equals(profile.getCurrent().getId()));
+        return profile != null && (profile.getNoxboxId() == null || profile.getCurrent() != null);
     }
 
     public static void fireProfile() {
@@ -111,18 +110,15 @@ public class AppCache {
         }
     }
 
-    public static void clearListeners() {
+    public static void clearTasks() {
         profileListeners.clear();
         profileReaders.clear();
     }
 
     public static void logout() {
-        clearListeners();
-        if (profile.getCurrent().getId() != null) {
-            Firestore.listenNoxbox(profile.getCurrent().getId(), NONE);
-            if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.initial) {
-                removeNoxbox();
-            }
+        clearTasks();
+        if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
+            removeNoxbox();
         }
         for(String noxboxId : ids) {
             stopListenNoxbox(noxboxId);
@@ -136,6 +132,7 @@ public class AppCache {
     public static void startListenNoxbox(String noxboxId) {
         if (noxboxId == null || ids.contains(noxboxId)) return;
         ids.add(noxboxId);
+        FirebaseMessaging.getInstance().subscribeToTopic(noxboxId);
         Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
             @Override
             public void execute(Noxbox noxbox) {
@@ -158,12 +155,19 @@ public class AppCache {
     public static void noxboxCreated() {
         if (profile == null) return;
 
-        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
+        // remove previous noxbox
         removeNoxbox();
+        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
+        profile.getCurrent().setOwner(profile.publicInfo());
+        if (profile.getCurrent().getRole() == MarketRole.supply) {
+            profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
+        } else {
+            profile.getCurrent().getOwner().setPortfolio(null);
+        }
         writeNoxbox(profile.getCurrent());
         profile.setNoxboxId(profile.getCurrent().getId());
 
-        fireProfile();
+        writeProfile(profile);
         online(profile.getCurrent());
     }
 
@@ -171,9 +175,12 @@ public class AppCache {
         if (profile == null) return;
         String noxboxId = profile.getNoxboxId();
         if (noxboxId != null) {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(noxboxId);
             offline(profile.getCurrent());
             writeNoxbox(new Noxbox().setId(profile.getNoxboxId()).setTimeRemoved(System.currentTimeMillis()));
             stopListenNoxbox(noxboxId);
+            profile.setNoxboxId(null);
+            profile.getCurrent().clean();
         }
     }
 

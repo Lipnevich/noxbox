@@ -89,12 +89,12 @@ public class ContractActivity extends BaseActivity {
             public void execute(final Profile profile) {
                 if (profile == null) return;
 
-                if (profile.getCurrent() != null && profile.getCurrent().getTimeRemoved() == null) {
+                if (profile.getNoxboxId() != null) {
                     closeOrRemove.setText(R.string.remove);
                     closeOrRemove.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            removeNoxbox(profile);
+                            removeNoxbox();
                         }
                     });
                 } else {
@@ -395,15 +395,6 @@ public class ContractActivity extends BaseActivity {
     }
 
     public void postNoxbox(Profile profile) {
-        profile.getCurrent().clean();
-
-        if (profile.getCurrent().getRole() == MarketRole.supply) {
-            profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
-        } else {
-            profile.getCurrent().getOwner().setPortfolio(null);
-        }
-        profile.getCurrent().setOwner(profile.publicInfo());
-
         Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
 
         AppCache.noxboxCreated();
@@ -411,12 +402,7 @@ public class ContractActivity extends BaseActivity {
         finish();
     }
 
-    public void removeNoxbox(Profile profile) {
-        profile.getCurrent().clean();
-
-        long timeRemoved = System.currentTimeMillis();
-        Log.d(State.TAG + "ContractActivity", "timeRemoved: " + DateTimeFormatter.time(timeRemoved));
-
+    public void removeNoxbox() {
         AppCache.removeNoxbox();
         finish();
     }
