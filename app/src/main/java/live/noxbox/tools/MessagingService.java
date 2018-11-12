@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -22,6 +23,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
+import io.fabric.sdk.android.Fabric;
+import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
@@ -54,7 +57,7 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         context = getApplicationContext();
-
+        initCrashReporting();
         AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
@@ -75,6 +78,12 @@ public class MessagingService extends FirebaseMessagingService {
                 showPushNotification(notification);
             }
         });
+    }
+    private void initCrashReporting() {
+        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build();
+        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
 
     public void showPushNotification(Notification notification) {
