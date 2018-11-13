@@ -64,7 +64,7 @@ public class NotificationService extends IntentService {
         AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                NotificationType.showPerformingNotificationInBackground(getApplicationContext(), profile, new Notification()
+                NotificationType.showPerformingNotification(getApplicationContext(), profile, new Notification()
                         .setType(NotificationType.performing)
                         .setTime(START_TIME)
                         .setPrice(decimalFormat.format(totalMoney)));

@@ -27,13 +27,12 @@ import io.fabric.sdk.android.Fabric;
 import live.noxbox.R;
 import live.noxbox.model.Notification;
 import live.noxbox.model.NotificationType;
-import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
+import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.model.NotificationType.balance;
-import static live.noxbox.model.NotificationType.showPerformingNotificationInBackground;
+import static live.noxbox.model.NotificationType.showAcceptingNotification;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -57,27 +56,46 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         initCrashReporting();
         context = getApplicationContext();
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(final Profile profile) {
-                final Notification notification = Notification.create(remoteMessage.getData());
-                if (notification.getIgnore()) return;
+        Notification notification = Notification.create(remoteMessage.getData());
+        if (notification.getIgnore()) return;
 
-                if (notification.getType() == NotificationType.message) {
-                    notification.setMessage(notification.getId());
-                    notification.setName(profile.getName());
-                    notification.setTime(String.valueOf(System.currentTimeMillis()));
-                }
+        if (notification.getType() == NotificationType.accepting) {
+            notification.setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS));
+            showAcceptingNotification(context, notification,channelId);
+            return;
+        }
+        showPushNotification(notification);
 
-                if (notification.getType() == NotificationType.performing && !inForeground()) {
-                    showPerformingNotificationInBackground(context, profile, notification);
-                    return;
-                }
 
-                showPushNotification(notification);
-            }
-        });
+        //        AppCache.readProfile(new Task<Profile>() {
+//            @Override
+//            public void execute(final Profile profile) {
+//                Notification notification = Notification.create(remoteMessage.getData());
+//                if (notification.getIgnore()) return;
+//
+//                if (notification.getType() == NotificationType.accepting) {
+//                    long timeForRequestInMillis = REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
+//                    notification.setTime(String.valueOf(timeForRequestInMillis));
+//                    showAcceptingNotification(context, notification,channelId);
+//                    return;
+//                }
+//
+//                if (notification.getType() == NotificationType.message) {
+//                    notification.setMessage(notification.getId());
+//                    notification.setName(profile.getName());
+//                    notification.setTime(String.valueOf(System.currentTimeMillis()));
+//                }
+//
+//                if (notification.getType() == NotificationType.performing && !inForeground()) {
+//                    showPerformingNotification(context, profile, notification);
+//                    return;
+//                }
+//
+//                 showPushNotification(notification);
+//            }
+//        });
     }
+
     private void initCrashReporting() {
         CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
 //                .disabled(BuildConfig.DEBUG)
@@ -126,7 +144,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void notify(final Notification notification) {
 
-        builder = notification.getType().getBuilder(context, channelId, notification);
+        builder = NotificationType.getBuilder(context, channelId, notification);
 
         setProgress(builder, notification);
 

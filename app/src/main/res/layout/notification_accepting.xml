@@ -1,47 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="88dp"
-    android:background="@drawable/notification_corner">
+    android:layout_height="64dp"
+    android:background="@drawable/notification_accepting_background">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@drawable/notification_top_corner">
+    <TextView
+        android:id="@+id/title"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="#fff" />
 
-        <ImageView
-            android:id="@+id/noxbox"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/noxbox" />
-
-        <TextView
-            android:id="@+id/title"
-            style="@style/TextAppearance.Compat.Notification.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/noxbox"
-            android:textColor="#fff" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:theme="@style/CircularProgress"
-            android:visibility="visible" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/countDownTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/primary"
+        android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
+    <ImageView
+        android:id="@+id/animationMan"
+        android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_marginTop="24dp">
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="24dp"
+        android:layout_toStartOf="@+id/countDownTime" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="4dp">
+
         <Button
             android:id="@+id/accept"
             android:layout_width="wrap_content"
@@ -53,6 +46,7 @@
             android:textColor="@color/secondary"
             android:textSize="14sp"
             android:visibility="visible" />
+
         <Button
             android:id="@+id/cancel"
             android:layout_width="wrap_content"
@@ -65,15 +59,6 @@
             android:textColor="@color/secondary"
             android:textSize="14sp"
             android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/countDownTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
 
     </RelativeLayout>
 
