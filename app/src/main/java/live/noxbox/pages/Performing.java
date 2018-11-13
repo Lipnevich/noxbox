@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.MarketRole;
-import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.AppCache;
@@ -71,7 +71,7 @@ public class Performing implements State {
         drawComplete(profile);
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        final Notification notification = new Notification()
+        final NotificationData notification = new NotificationData()
                 .setType(NotificationType.performing)
                 .setTime(START_TIME)
                 .setPrice(decimalFormat.format(totalMoney));
@@ -135,7 +135,7 @@ public class Performing implements State {
                 Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
 
                 MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                Notification notification = new Notification().setType(NotificationType.completed).setPrice(getTotalSpentForNoxbox(profile, timeCompleted).toString());
+                NotificationData notification = new NotificationData().setType(NotificationType.completed).setPrice(getTotalSpentForNoxbox(profile, timeCompleted).toString());
                 if (profile.getCurrent().getOwner().equals(profile)) {
                     if (profile.getCurrent().getRole() == MarketRole.supply) {
                         notification.setMessage(activity.getResources().getString(R.string.toEarn).concat(":"));

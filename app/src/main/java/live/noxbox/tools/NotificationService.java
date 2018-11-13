@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.AppCache;
@@ -64,7 +64,7 @@ public class NotificationService extends IntentService {
         AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                NotificationType.showPerformingNotification(getApplicationContext(), profile, new Notification()
+                NotificationType.showPerformingNotification(getApplicationContext(), profile, new NotificationData()
                         .setType(NotificationType.performing)
                         .setTime(START_TIME)
                         .setPrice(decimalFormat.format(totalMoney)));

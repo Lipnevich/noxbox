@@ -24,7 +24,7 @@ import java.io.IOException;
 
 import live.noxbox.R;
 import live.noxbox.model.ImageType;
-import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
@@ -47,7 +47,7 @@ public class ImageManager {
                     @Override
                     public void execute(final Profile profile) {
                         MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                        messagingService.showPushNotification(new Notification().setType(NotificationType.photoValidationProgress));
+                        messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValidationProgress));
                         profile.setPhoto(uri.toString());
                         FacePartsDetection.execute(bitmap, profile, activity);
 
@@ -94,7 +94,7 @@ public class ImageManager {
         //TODO (vl) check photo size <= 1MB or compress to lower quality
         UploadTask uploadTask = storageRef.putBytes(baos.toByteArray());
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        final Notification notification = new Notification();
+        final NotificationData notification = new NotificationData();
         uploadTask
                 .addOnFailureListener(onFailureListener)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -123,7 +123,7 @@ public class ImageManager {
                 if (progress == 0) {
                     messagingService.showPushNotification(notification);
                 } else {
-                    notification.getType().updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                 }
 
             }

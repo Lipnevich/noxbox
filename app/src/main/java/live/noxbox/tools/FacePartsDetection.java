@@ -15,7 +15,7 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceLandmark;
 
 import java.util.List;
 
-import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.AppCache;
@@ -44,7 +44,7 @@ public class FacePartsDetection {
                     public void onSuccess(List<FirebaseVisionFace> faces) {
                         if (faces.size() != 1) {
                             profile.getAcceptance().setFailToRecognizeFace(true);
-                            buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
+                            buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                             AppCache.fireProfile();
                             return;
                         }
@@ -67,10 +67,10 @@ public class FacePartsDetection {
                         }
 
                         if (profile.getAcceptance().isAccepted()) {
-                            buildNotification(new Notification().setType(NotificationType.photoValid), activity);
+                            buildNotification(new NotificationData().setType(NotificationType.photoValid), activity);
                         } else {
                             profile.getAcceptance().setFailToRecognizeFace(true);
-                            buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
+                            buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                         }
 
                         AppCache.fireProfile();
@@ -80,13 +80,13 @@ public class FacePartsDetection {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         profile.getAcceptance().setFailToRecognizeFace(true);
-                        buildNotification(new Notification().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
+                        buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                         AppCache.fireProfile();
                     }
                 });
     }
 
-    private static void buildNotification(Notification notification, Activity activity) {
+    private static void buildNotification(NotificationData notification, Activity activity) {
         MessagingService messagingService = new MessagingService(activity.getApplicationContext());
         messagingService.showPushNotification(notification);
     }

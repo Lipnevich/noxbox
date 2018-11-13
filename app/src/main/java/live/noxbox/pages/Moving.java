@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import live.noxbox.R;
-import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
@@ -136,7 +136,7 @@ public class Moving implements State {
             profile.getCurrent().setTimeToMeet((long) (Math.ceil(getTravelTimeInMinutes(profile)) * 60000));
             AppCache.updateNoxbox();
 
-            final Notification notification = new Notification()
+            final NotificationData notification = new NotificationData()
                     .setTime(String.valueOf(profile.getCurrent().getTimeToMeet()))
                     .setType(NotificationType.moving)
                     .setMaxProgress((int) (long) profile.getCurrent().getTimeToMeet());
@@ -155,7 +155,7 @@ public class Moving implements State {
 
                 @Override
                 public void onFinish() {
-                    final Notification notification = new Notification()
+                    final NotificationData notification = new NotificationData()
                             .setType(NotificationType.confirm);
                     messagingService.showPushNotification(notification);
                 }

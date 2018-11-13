@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
-import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.State;
@@ -85,7 +85,7 @@ public class Accepting implements State {
 
 
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        final Notification notification = new Notification()
+        final NotificationData notification = new NotificationData()
                 .setType(NotificationType.accepting)
                 .setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS));
         messagingService.showPushNotification(notification);

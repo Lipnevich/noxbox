@@ -8,7 +8,7 @@ import live.noxbox.tools.InvalidAcceptance;
  * Created by nicolay.lipnevich on 5/5/2018.
  */
 
-public class Notification {
+public class NotificationData {
 
     private NotificationType type;
     private Integer icon;
@@ -19,11 +19,11 @@ public class Notification {
     private InvalidAcceptance invalidAcceptance;
 
 
-    public static Notification create(Map<String, String> data) {
+    public static NotificationData create(Map<String, String> data) {
         // TODO (vl) create custom notification for pushes from server
-        if (data.get("type") == null) return new Notification();
+        if (data.get("type") == null) return new NotificationData();
 
-        return new Notification()
+        return new NotificationData()
                 .setId(data.get("id"))
                 .setType(NotificationType.valueOf(data.get("type")))
                 .setName(data.get("name"))
@@ -43,7 +43,7 @@ public class Notification {
         return type;
     }
 
-    public Notification setType(NotificationType type) {
+    public NotificationData setType(NotificationType type) {
         this.type = type;
         return this;
     }
@@ -52,7 +52,7 @@ public class Notification {
         return estimation;
     }
 
-    public Notification setEstimation(String estimation) {
+    public NotificationData setEstimation(String estimation) {
         this.estimation = estimation;
         return this;
     }
@@ -61,7 +61,7 @@ public class Notification {
         return icon;
     }
 
-    public Notification setIcon(Integer icon) {
+    public NotificationData setIcon(Integer icon) {
         this.icon = icon;
         return this;
     }
@@ -70,7 +70,7 @@ public class Notification {
         return name;
     }
 
-    public Notification setName(String name) {
+    public NotificationData setName(String name) {
         this.name = name;
         return this;
     }
@@ -79,7 +79,7 @@ public class Notification {
         return message;
     }
 
-    public Notification setMessage(String message) {
+    public NotificationData setMessage(String message) {
         this.message = message;
         return this;
     }
@@ -88,7 +88,7 @@ public class Notification {
         return id;
     }
 
-    public Notification setId(String id) {
+    public NotificationData setId(String id) {
         this.id = id;
         return this;
     }
@@ -97,7 +97,7 @@ public class Notification {
         return price;
     }
 
-    public Notification setPrice(String price) {
+    public NotificationData setPrice(String price) {
         this.price = price;
         return this;
     }
@@ -106,7 +106,7 @@ public class Notification {
         return balance;
     }
 
-    public Notification setBalance(String balance) {
+    public NotificationData setBalance(String balance) {
         this.balance = balance;
         return this;
     }
@@ -115,7 +115,7 @@ public class Notification {
         return local;
     }
 
-    public Notification setLocal(Boolean local) {
+    public NotificationData setLocal(Boolean local) {
         this.local = local;
         return this;
     }
@@ -124,7 +124,7 @@ public class Notification {
         return previousBalance;
     }
 
-    public Notification setPreviousBalance(String previousBalance) {
+    public NotificationData setPreviousBalance(String previousBalance) {
         this.previousBalance = previousBalance;
         return this;
     }
@@ -133,7 +133,7 @@ public class Notification {
         return this.progress;
     }
 
-    public Notification setProgress(Integer progress) {
+    public NotificationData setProgress(Integer progress) {
         this.progress = progress;
         return this;
     }
@@ -142,7 +142,7 @@ public class Notification {
         return time;
     }
 
-    public Notification setTime(String time) {
+    public NotificationData setTime(String time) {
         this.time = time;
         return this;
     }
@@ -151,7 +151,7 @@ public class Notification {
         return invalidAcceptance;
     }
 
-    public Notification setInvalidAccetrance(InvalidAcceptance invalidAcceptance) {
+    public NotificationData setInvalidAccetrance(InvalidAcceptance invalidAcceptance) {
         this.invalidAcceptance = invalidAcceptance;
         return this;
     }
@@ -160,7 +160,7 @@ public class Notification {
         return maxProgress;
     }
 
-    public Notification setMaxProgress(Integer maxProgress) {
+    public NotificationData setMaxProgress(Integer maxProgress) {
         this.maxProgress = maxProgress;
         return this;
     }

@@ -25,14 +25,21 @@ import java.util.concurrent.ExecutionException;
 
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.R;
-import live.noxbox.model.Notification;
+import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
+import live.noxbox.model.Profile;
+import live.noxbox.notifications.factory.NotificationBalanceFactory;
+import live.noxbox.notifications.factory.NotificationFactory;
+import live.noxbox.notifications.factory.NotificationMessagerFactory;
+import live.noxbox.notifications.factory.NotificationRefundFactory;
+import live.noxbox.notifications.factory.NotificationStateFactory;
+import live.noxbox.notifications.factory.NotificationSupportFactory;
+import live.noxbox.notifications.factory.NotificationUploadFactory;
+import live.noxbox.notifications.model.Notification;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
-import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.model.NotificationType.balance;
-import static live.noxbox.model.NotificationType.showAcceptingNotification;
 
 /**
  * Created by nicolay.lipnevich on 4/30/2018.
@@ -44,6 +51,7 @@ public class MessagingService extends FirebaseMessagingService {
     private Context context;
 
     public static NotificationCompat.Builder builder;
+    private NotificationFactory notificationFactory;
 
     public MessagingService() {
     }
@@ -56,44 +64,48 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         initCrashReporting();
         context = getApplicationContext();
-        Notification notification = Notification.create(remoteMessage.getData());
-        if (notification.getIgnore()) return;
+        NotificationData notificationData = NotificationData.create(remoteMessage.getData());
+        if (notificationData.getIgnore()) return;
 
-        if (notification.getType() == NotificationType.accepting) {
-            notification.setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS));
-            showAcceptingNotification(context, notification,channelId);
-            return;
-        }
-        showPushNotification(notification);
+        createNotificationFactory(notificationData);
+        Notification notification = notificationFactory.createNotificationBehavior(context, notificationData);
+        //TODO(vl) читаем профиль и передаём текущий
+        notification.showNotification(context, new Profile(), notificationData, channelId);
 
+        //showPushNotification(notification);
 
-        //        AppCache.readProfile(new Task<Profile>() {
-//            @Override
-//            public void execute(final Profile profile) {
-//                Notification notification = Notification.create(remoteMessage.getData());
-//                if (notification.getIgnore()) return;
-//
-//                if (notification.getType() == NotificationType.accepting) {
-//                    long timeForRequestInMillis = REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - (System.currentTimeMillis() - profile.getCurrent().getTimeRequested());
-//                    notification.setTime(String.valueOf(timeForRequestInMillis));
-//                    showAcceptingNotification(context, notification,channelId);
-//                    return;
-//                }
-//
 //                if (notification.getType() == NotificationType.message) {
 //                    notification.setMessage(notification.getId());
 //                    notification.setName(profile.getName());
 //                    notification.setTime(String.valueOf(System.currentTimeMillis()));
 //                }
-//
-//                if (notification.getType() == NotificationType.performing && !inForeground()) {
-//                    showPerformingNotification(context, profile, notification);
-//                    return;
-//                }
-//
-//                 showPushNotification(notification);
-//            }
-//        });
+    }
+
+    private void createNotificationFactory(NotificationData notification) {
+        switch (notification.getType().getIndex()) {
+            case 0:
+                notificationFactory = new NotificationUploadFactory();
+                break;
+            case 1:
+                notificationFactory = new NotificationBalanceFactory();
+                break;
+            case 2:
+                notificationFactory = new NotificationStateFactory();
+                break;
+            case 3:
+                notificationFactory = new NotificationRefundFactory();
+                break;
+            case 4:
+                notificationFactory = new NotificationMessagerFactory();
+                break;
+            case 5:
+                notificationFactory = new NotificationSupportFactory();
+                break;
+        }
+    }
+
+    public static void removeNotifications(Context context) {
+        MessagingService.getNotificationService(context).cancelAll();
     }
 
     private void initCrashReporting() {
@@ -103,7 +115,7 @@ public class MessagingService extends FirebaseMessagingService {
         Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
 
-    public void showPushNotification(Notification notification) {
+    public void showPushNotification(NotificationData notification) {
         createChannel();
 
         cancelOtherNotifications(notification.getType());
@@ -142,7 +154,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
 
-    private void notify(final Notification notification) {
+    private void notify(final NotificationData notification) {
 
         builder = NotificationType.getBuilder(context, channelId, notification);
 
@@ -164,13 +176,13 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
 
-    private void setProgress(NotificationCompat.Builder builder, Notification notification) {
+    private void setProgress(NotificationCompat.Builder builder, NotificationData notification) {
         if (notification.getProgress() != null) {
             builder.setProgress(100, notification.getProgress(), false);
         }
     }
 
-    private Bitmap loadIcon(Notification notification) {
+    private Bitmap loadIcon(NotificationData notification) {
         try {
             if (notification.getType() == balance) {
                 return Glide.with(context).asBitmap().load(R.drawable.noxbox)
@@ -190,7 +202,7 @@ public class MessagingService extends FirebaseMessagingService {
         return null;
     }
 
-    private void loadIconAsync(Notification notification, final Task<Bitmap> task) {
+    private void loadIconAsync(NotificationData notification, final Task<Bitmap> task) {
         if (notification.getIcon() != null) {
             Glide.with(context).asBitmap()
                     .load(notification.getIcon())

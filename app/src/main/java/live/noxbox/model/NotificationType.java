@@ -9,13 +9,9 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
-import android.util.Log;
 import android.widget.RemoteViews;
-
-import com.crashlytics.android.Crashlytics;
 
 import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
@@ -31,13 +27,7 @@ import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.state.AppCache.updateNoxbox;
-import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.MessagingService.getNotificationService;
-import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
-import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
-import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
-import static live.noxbox.tools.SeparateStreamForStopwatch.seconds;
-import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.
@@ -83,25 +73,33 @@ public enum NotificationType {
         return index;
     }
 
-    public static NotificationCompat.Builder getBuilder(Context context, String channelId, Notification notification) {
-        if (notification.getType() == message && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return buildReplyNotification(context, channelId, notification);
+    public int getTitle() {
+        return title;
+    }
+
+    public int getContent() {
+        return content;
+    }
+
+    public static NotificationCompat.Builder getBuilder(Context context, String channelId, NotificationData notificationData) {
+        if (notificationData.getType() == message && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return buildReplyNotification(context, channelId, notificationData);
         }
 
         return new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setVibrate(getVibrate(notification))
-                .setContent(getCustomContentView(context, notification))
-                .setSound(getSound(context, notification.getType()))
+                .setVibrate(getVibrate(notificationData))
+                .setContent(getCustomContentView(context, notificationData))
+                .setSound(getSound(context, notificationData.getType()))
                 //.setCustomContentView(getCustomContentView(context, notification)) //24 Version and upper
-                .setOnlyAlertOnce(isAlertOnce(notification.getType()))
-                .setContentIntent(getIntent(context, notification))
-                .setAutoCancel(getAutoCancel(notification));
+                .setOnlyAlertOnce(isAlertOnce(notificationData.getType()))
+                .setContentIntent(getIntent(context, notificationData))
+                .setAutoCancel(getAutoCancel(notificationData));
     }
 
 
 
-    public static void updateNotification(Context context, final Notification notification, NotificationCompat.Builder builder) {
+    public static void updateNotification(Context context, final NotificationData notification, NotificationCompat.Builder builder) {
         if (notification.getType() != message)
             builder.setCustomContentView(getCustomContentView(context, notification));
 
@@ -112,7 +110,7 @@ public enum NotificationType {
         MessagingService.getNotificationService(context).cancelAll();
     }
 
-    private static boolean getAutoCancel(Notification notification) {
+    public static boolean getAutoCancel(NotificationData notification) {
         switch (notification.getType()) {
             case support:
             case supplierCanceled:
@@ -125,7 +123,7 @@ public enum NotificationType {
         return false;
     }
 
-    private static RemoteViews getCustomContentView(final Context context, final Notification notification) {
+    private static RemoteViews getCustomContentView(final Context context, final NotificationData notification) {
         RemoteViews remoteViews = null;
         if (notification.getType() == uploadingProgress) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_uploading_progress);
@@ -224,7 +222,7 @@ public enum NotificationType {
         return remoteViews;
     }
 
-    public static long[] getVibrate(Notification notification) {
+    public static long[] getVibrate(NotificationData notification) {
         switch (notification.getType()) {
             case uploadingProgress:
             case moving:
@@ -239,7 +237,7 @@ public enum NotificationType {
         }
     }
 
-    private static Uri getSound(Context context, NotificationType type) {
+    public static Uri getSound(Context context, NotificationType type) {
         if (type == uploadingProgress || type == performing || type == moving || type == requesting || type == accepting)
             return null;
 
@@ -252,7 +250,7 @@ public enum NotificationType {
                 + context.getResources().getResourceEntryName(sound));
     }
 
-    private static String getMessageText(Intent intent, Context context) {
+    public static String getMessageText(Intent intent, Context context) {
         Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
         if (remoteInput != null) {
             return String.valueOf(remoteInput.getCharSequence(context.getResources().getString(R.string.reply).toUpperCase()));
@@ -260,7 +258,7 @@ public enum NotificationType {
         return null;
     }
 
-    private static PendingIntent getIntent(Context context, Notification notification) {
+    public static PendingIntent getIntent(Context context, NotificationData notification) {
         if (notification.getType() == message)
             return TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(new Intent(context, ChatActivity.class))
@@ -320,11 +318,11 @@ public enum NotificationType {
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private static boolean isAlertOnce(NotificationType type) {
+    public static boolean isAlertOnce(NotificationType type) {
         return type != NotificationType.balance;
     }
 
-    public static void showLowBalanceNotification(Context context, final Profile profile, final Notification notification) {
+    public static void showLowBalanceNotification(Context context, final Profile profile, final NotificationData notification) {
         if (profile.getCurrent().getOwner().equals(profile)) {
             if (profile.getCurrent().getRole() == MarketRole.supply) {
                 notification.setType(NotificationType.lowBalance).setMessage("supply");
@@ -341,106 +339,11 @@ public enum NotificationType {
         updateNotification(context, notification, MessagingService.builder);
     }
 
-    public static void showPerformingNotification(final Context context, final Profile profile, final Notification notification) {
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                long hours = seconds / 3600;
-                long minutes = (seconds % 3600) / 60;
-                long secs = seconds % 60;
-                String time = String.format("%d:%02d:%02d", hours, minutes, secs);
-
-                if (profile.getCurrent().getTimeCompleted() == null) {
-                    seconds++;
-                    Log.e("NotificationType.class", "run()");
-                    notification.setTime(time);
-                    notification.setPrice(decimalFormat.format(totalMoney));
-
-                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
-                        updateNotification(context, notification, MessagingService.builder);
-                    } else {
-                        showLowBalanceNotification(context, profile, notification);
-                    }
-
-
-                    handler.postDelayed(this, 1000);
-                }
-            }
-        };
-        initializeStopwatch(profile, handler, runnable);
-        runTimer();
-    }
-
-    public static void showAcceptingNotification(final Context context, final Notification notification, final String channelId) {
-        final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
-        remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
-        remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-        remoteViews.setOnClickPendingIntent(R.id.accept, PendingIntent.getBroadcast(context, 0, new Intent(context, AcceptRequestListener.class), 0));
-        remoteViews.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
-
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setVibrate(getVibrate(notification))
-                .setContent(remoteViews)
-                .setSound(getSound(context, notification.getType()))
-                .setOnlyAlertOnce(isAlertOnce(notification.getType()))
-                .setContentIntent(getIntent(context, notification))
-                .setAutoCancel(getAutoCancel(notification));
-
-        getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
-
-        final long totalTime = Long.valueOf(notification.getTime()) / 1000;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (long i = totalTime; i >= 0; i--) {
-                    remoteViews.setTextViewText(R.id.countDownTime, String.valueOf(i));
-                    remoteViews.setImageViewResource(R.id.animationMan,R.drawable.request_hend_up);
-                    builder.setContent(remoteViews);
-                    getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
-                    if(i <= 0){
-                        //TODO (vl) remove notification and setTimeTimeout() in current
-                        removeNotifications(context);
-                        return;
-                    }
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        Crashlytics.logException(e);
-                    }
-                    remoteViews.setImageViewResource(R.id.animationMan,R.drawable.request_hend_down);
-                    builder.setContent(remoteViews);
-                    getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
-
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        Crashlytics.logException(e);
-                    }
-                    remoteViews.setImageViewResource(R.id.animationMan,R.drawable.request_hend_up);
-                    builder.setContent(remoteViews);
-                    getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        Crashlytics.logException(e);
-                    }
-                    remoteViews.setImageViewResource(R.id.animationMan,R.drawable.request_hend_down);
-                    builder.setContent(remoteViews);
-                    getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
-                    try {
-                        Thread.sleep(250);
-                    } catch (InterruptedException e) {
-                        Crashlytics.logException(e);
-                    }
-                }
-            }
-        }).start();
+    public static void showPerformingNotification(final Context context, final Profile profile, final NotificationData notification) {
 
     }
 
-    private static NotificationCompat.Builder buildReplyNotification(Context context, String channelId, Notification notification) {
+    private static NotificationCompat.Builder buildReplyNotification(Context context, String channelId, NotificationData notification) {
         RemoteInput remoteInput =
                 new RemoteInput.Builder(context.getResources().getString(R.string.reply).toUpperCase())
                         .setLabel(context.getResources().getString(R.string.enterMessage))
