@@ -28,7 +28,7 @@ import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.MessagingService;
+import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.state.AppCache;
 
 public class ImageManager {
@@ -124,7 +124,7 @@ public class ImageManager {
                 if (progress == 0) {
                     messagingService.showPushNotification(notification);
                 } else {
-                    NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    //NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                 }
 
             }

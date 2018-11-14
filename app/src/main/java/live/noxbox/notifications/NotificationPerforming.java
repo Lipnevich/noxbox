@@ -4,7 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
+import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import java.util.Map;
@@ -13,7 +13,9 @@ import live.noxbox.R;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.Notification;
+import live.noxbox.notifications.factory.NotificationFactory;
 
+import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
 import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
 import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
@@ -38,6 +40,8 @@ public class NotificationPerforming extends Notification {
 
     @Override
     public void show() {
+        //TODO (vl) использовать Thread
+        final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
@@ -49,15 +53,16 @@ public class NotificationPerforming extends Notification {
 
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     seconds++;
-                    Log.e("NotificationType.class", "run()");
-                    String remainTime = time;
-                    String price = decimalFormat.format(totalMoney);
+                    contentView.setTextViewText(R.id.stopwatch, time);
+                    contentView.setTextViewText(R.id.totalPayment, decimalFormat.format(totalMoney));
 
-//                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
-//                        updateNotification(context, notificationData, MessagingService.builder);
-//                    } else {
-//                        showLowBalanceNotification(context, profile, notificationData);
-//                    }
+                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
+                        updateNotification(context, builder);
+                    } else {
+                        data.remove("type");
+                        data.put("type", NotificationType.lowBalance.name());
+                        NotificationFactory.showNotification(context, profile, data);
+                    }
 
 
                     handler.postDelayed(this, 1000);

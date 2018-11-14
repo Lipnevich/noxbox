@@ -18,7 +18,7 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
-import live.noxbox.notifications.MessagingService;
+import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
 import live.noxbox.state.AppCache;
@@ -26,7 +26,7 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.notifications.MessagingService.getNotificationService;
+import static live.noxbox.notifications.util.MessagingService.getNotificationService;
 import static live.noxbox.state.AppCache.updateNoxbox;
 
 /**
@@ -41,7 +41,6 @@ public enum NotificationType {
 
     balance(1, R.string.balancePushTitle, R.string.balancePushContent),
 
-    requesting(2, R.string.requestText, R.string.requestingPushContent),
     accepting(2, R.string.acceptText, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
     confirm(2, R.string.confirm, R.string.replaceIt),
@@ -155,13 +154,6 @@ public enum NotificationType {
             remoteViews.setTextViewText(R.id.totalPayment, (notification.getPrice().concat(" ")).concat(Configuration.CURRENCY));
         }
 
-        if (notification.getType() == requesting) {
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
-            remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-            remoteViews.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
-        }
-
         if (notification.getType() == accepting) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
             remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
@@ -228,7 +220,6 @@ public enum NotificationType {
             case moving:
             case performing:
             case completed:
-            case requesting:
             case accepting:
             case lowBalance:
                 return null;
@@ -238,13 +229,11 @@ public enum NotificationType {
     }
 
     public static Uri getSound(Context context, NotificationType type) {
-        if (type == uploadingProgress || type == performing || type == moving || type == requesting || type == accepting)
+        if (type == uploadingProgress || type == performing || type == moving|| type == accepting)
             return null;
 
         int sound = R.raw.push;
-        if (type == requesting) {
-            sound = R.raw.requested;
-        }
+            //sound = R.raw.requested;
 
         return Uri.parse("android.resource://" + context.getPackageName() + "/raw/"
                 + context.getResources().getResourceEntryName(sound));
@@ -306,7 +295,6 @@ public enum NotificationType {
         }
 
         switch (notification.getType()) {
-            case requesting:
             case accepting:
             case confirm:
                 return null;
@@ -323,24 +311,9 @@ public enum NotificationType {
     }
 
     public static void showLowBalanceNotification(Context context, final Profile profile, final NotificationData notification) {
-        if (profile.getCurrent().getOwner().equals(profile)) {
-            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                notification.setType(NotificationType.lowBalance).setMessage("supply");
-            } else {
-                notification.setType(NotificationType.lowBalance).setMessage("demand");
-            }
-        } else {
-            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                notification.setType(NotificationType.lowBalance).setMessage("demand");
-            } else {
-                notification.setType(NotificationType.lowBalance).setMessage("supply");
-            }
-        }
-        updateNotification(context, notification, MessagingService.builder);
     }
 
     public static void showPerformingNotification(final Context context, final Profile profile, final NotificationData notification) {
-
     }
 
     private static NotificationCompat.Builder buildReplyNotification(Context context, String channelId, NotificationData notification) {

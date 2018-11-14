@@ -13,10 +13,8 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
-import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.MessagingService;
 import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
@@ -24,7 +22,6 @@ import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
-import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
 import static live.noxbox.state.AppCache.updateNoxbox;
 
 public class Requesting implements State {
@@ -70,12 +67,6 @@ public class Requesting implements State {
         }
 
         profile.getViewed().setParty(profile.notPublicInfo());
-        final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        final NotificationData notification = new NotificationData()
-                .setType(NotificationType.requesting)
-                .setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS));
-        messagingService.showPushNotification(notification);
-
 
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
@@ -105,9 +96,6 @@ public class Requesting implements State {
                 if (countdownTime != null) {
                     ((TextView) countdownTime.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
                 }
-                NotificationType.updateNotification(activity.getApplicationContext(),
-                        notification.setType(NotificationType.requesting).setTime(String.valueOf(millisUntilFinished / 1000)),
-                        MessagingService.builder);
             }
 
             @Override
@@ -119,12 +107,10 @@ public class Requesting implements State {
 
         MapController.buildMapMarkerListener(googleMap, profile, activity);
 
-
     }
 
     private void autoDisconnectFromService(final Profile profile) {
         if (profile.getCurrent().getTimeAccepted() == null) {
-            NotificationType.removeNotifications(activity.getApplicationContext());
             long timeTimeout = System.currentTimeMillis();
             Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
             profile.getCurrent().setTimeTimeout(timeTimeout);

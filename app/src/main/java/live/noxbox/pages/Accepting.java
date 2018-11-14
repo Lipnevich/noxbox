@@ -16,7 +16,7 @@ import live.noxbox.R;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.MessagingService;
+import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -102,9 +102,9 @@ public class Accepting implements State {
                 TextView countdownTime = acceptingView.findViewById(R.id.countdownTime);
                 if (countdownTime != null) {
                     countdownTime.setText(String.valueOf(millisUntilFinished / 1000));
-                    NotificationType.updateNotification(activity.getApplicationContext(),
-                            notification.setType(NotificationType.accepting).setTime(String.valueOf(millisUntilFinished / 1000)),
-                            MessagingService.builder);
+//                    NotificationType.updateNotification(activity.getApplicationContext(),
+//                            notification.setType(NotificationType.accepting).setTime(String.valueOf(millisUntilFinished / 1000)),
+//                            MessagingService.builder);
                 }
             }
 

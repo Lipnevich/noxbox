@@ -1,4 +1,4 @@
-package live.noxbox.notifications;
+package live.noxbox.notifications.util;
 
 import com.crashlytics.android.Crashlytics;
 

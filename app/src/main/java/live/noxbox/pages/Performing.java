@@ -17,8 +17,8 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.MessagingService;
-import live.noxbox.notifications.NotificationService;
+import live.noxbox.notifications.util.MessagingService;
+import live.noxbox.notifications.util.NotificationService;
 import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
@@ -29,7 +29,6 @@ import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.Configuration.QUARTER;
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.model.NotificationType.showLowBalanceNotification;
-import static live.noxbox.model.NotificationType.updateNotification;
 import static live.noxbox.state.AppCache.updateNoxbox;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.BalanceCalculator.getTotalSpentForNoxbox;
@@ -108,7 +107,7 @@ public class Performing implements State {
                     notification.setTime(time);
 
                     if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
-                        updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                        //updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                     } else {
                         showLowBalanceNotification(activity.getApplicationContext(), profile, notification);
                     }

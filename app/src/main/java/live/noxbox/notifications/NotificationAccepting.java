@@ -16,8 +16,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.Notification;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
-import static live.noxbox.notifications.MessagingService.getNotificationService;
-import static live.noxbox.notifications.MessagingService.removeNotifications;
 
 public class NotificationAccepting extends Notification {
     public NotificationAccepting(Context context, Profile profile, Map<String, String> data) {
@@ -41,7 +39,7 @@ public class NotificationAccepting extends Notification {
 
         getNotificationService(context).notify(type.getGroup(), builder.build());
         //TODO (vl) использовать время с момента timeRequest
-        // TODO (vl) работает ли поток при запущенном приложении
+        //TODO (vl) работает ли поток при запущенном приложении
         final long totalTime = REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS / 1000;
         new Thread(new Runnable() {
             @Override
@@ -50,7 +48,7 @@ public class NotificationAccepting extends Notification {
                     contentView.setTextViewText(R.id.countDownTime, String.valueOf(i));
                     contentView.setImageViewResource(R.id.animationMan, R.drawable.request_hend_up);
                     builder.setContent(contentView);
-                    getNotificationService(context).notify(type.getGroup(), builder.build());
+                    updateNotification(context, builder);
                     if (i <= 0) {
                         //TODO (vl) remove notification and setTimeTimeout() in current
                         removeNotifications(context);
@@ -63,7 +61,7 @@ public class NotificationAccepting extends Notification {
                     }
                     contentView.setImageViewResource(R.id.animationMan, R.drawable.request_hend_down);
                     builder.setContent(contentView);
-                    getNotificationService(context).notify(type.getGroup(), builder.build());
+                    updateNotification(context, builder);
 
                     try {
                         Thread.sleep(250);
@@ -72,7 +70,7 @@ public class NotificationAccepting extends Notification {
                     }
                     contentView.setImageViewResource(R.id.animationMan, R.drawable.request_hend_up);
                     builder.setContent(contentView);
-                    getNotificationService(context).notify(type.getGroup(), builder.build());
+                    updateNotification(context, builder);
                     try {
                         Thread.sleep(250);
                     } catch (InterruptedException e) {
@@ -80,7 +78,7 @@ public class NotificationAccepting extends Notification {
                     }
                     contentView.setImageViewResource(R.id.animationMan, R.drawable.request_hend_down);
                     builder.setContent(contentView);
-                    getNotificationService(context).notify(type.getGroup(), builder.build());
+                    updateNotification(context, builder);
                     try {
                         Thread.sleep(250);
                     } catch (InterruptedException e) {

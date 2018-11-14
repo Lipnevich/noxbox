@@ -1,4 +1,4 @@
-package live.noxbox.notifications;
+package live.noxbox.notifications.util;
 
 import android.app.IntentService;
 import android.content.Context;

@@ -86,13 +86,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name=".notifications.MessagingService" >
+        <service android:name=".notifications.util.MessagingService" >
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <service
-            android:name=".notifications.NotificationService"
+            android:name=".notifications.util.NotificationService"
             android:enabled="true"
             android:exported="true"
             android:isolatedProcess="true" />

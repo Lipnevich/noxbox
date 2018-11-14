@@ -1,4 +1,4 @@
-package live.noxbox.notifications;
+package live.noxbox.notifications.util;
 
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
@@ -104,7 +104,6 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void cancelOtherNotifications(NotificationType type) {
         HashSet<NotificationType> cancelOther = new HashSet<>(Arrays.asList(
-                NotificationType.requesting,
                 NotificationType.accepting,
                 NotificationType.supplierCanceled,
                 NotificationType.demanderCanceled,
