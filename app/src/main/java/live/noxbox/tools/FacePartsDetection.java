@@ -18,6 +18,7 @@ import java.util.List;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.MessagingService;
 import live.noxbox.state.AppCache;
 
 import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;

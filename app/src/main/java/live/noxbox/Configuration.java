@@ -19,5 +19,6 @@ public interface Configuration {
     BigDecimal QUARTER = new BigDecimal("0.25");
     double ADDRESS_SEARCH_RADIUS_IN_METERS = 100000D;
     int MAX_ZOOM_LEVEL = 18;
+    String CHANNEL_ID = "noxbox_channel";
 
 }

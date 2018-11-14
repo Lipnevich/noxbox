@@ -17,12 +17,12 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.MessagingService;
+import live.noxbox.notifications.NotificationService;
 import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
-import live.noxbox.tools.MessagingService;
-import live.noxbox.tools.NotificationService;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;

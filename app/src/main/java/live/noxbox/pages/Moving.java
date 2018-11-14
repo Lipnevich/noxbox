@@ -25,13 +25,13 @@ import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.notifications.MessagingService;
 import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
-import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 

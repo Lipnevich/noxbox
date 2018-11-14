@@ -28,6 +28,7 @@ import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.MessagingService;
 import live.noxbox.state.AppCache;
 
 public class ImageManager {

@@ -1,4 +1,4 @@
-package live.noxbox.notifications.model;
+package live.noxbox.notifications;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -7,15 +7,13 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import java.util.Map;
+
 import live.noxbox.R;
-import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.tools.MessagingService;
+import live.noxbox.notifications.factory.Notification;
 
-import static live.noxbox.model.NotificationType.showLowBalanceNotification;
-import static live.noxbox.model.NotificationType.updateNotification;
-import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
 import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
 import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
@@ -23,13 +21,14 @@ import static live.noxbox.tools.SeparateStreamForStopwatch.seconds;
 import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
 
 public class NotificationPerforming extends Notification {
-    public NotificationPerforming(Context context, NotificationData notificationData) {
+    public NotificationPerforming(Context context, Profile profile, Map<String, String> data) {
+        super(context, profile, data);
         vibrate = null;
         sound = null;
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
-        contentView.setTextViewText(R.id.countDownTime, notificationData.getTime());
-        contentView.setTextViewText(R.id.title, context.getResources().getString(notificationData.getType().getTitle()));
+        contentView.setTextViewText(R.id.countDownTime, notificationTime);
+        contentView.setTextViewText(R.id.title, context.getResources().getString(type.getTitle()));
         contentView.setOnClickPendingIntent(R.id.accept, PendingIntent.getBroadcast(context, 0, new Intent(context, NotificationType.AcceptRequestListener.class), 0));
         contentView.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, NotificationType.CancelRequestListener.class), 0));
 
@@ -38,7 +37,7 @@ public class NotificationPerforming extends Notification {
     }
 
     @Override
-    public void showNotification(final Context context, final Profile profile, final NotificationData notificationData, String channelId) {
+    public void show() {
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
             @Override
@@ -51,14 +50,14 @@ public class NotificationPerforming extends Notification {
                 if (profile.getCurrent().getTimeCompleted() == null) {
                     seconds++;
                     Log.e("NotificationType.class", "run()");
-                    notificationData.setTime(time);
-                    notificationData.setPrice(decimalFormat.format(totalMoney));
+                    String remainTime = time;
+                    String price = decimalFormat.format(totalMoney);
 
-                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
-                        updateNotification(context, notificationData, MessagingService.builder);
-                    } else {
-                        showLowBalanceNotification(context, profile, notificationData);
-                    }
+//                    if (enoughBalanceOnFiveMinutes(profile.getCurrent(), profile)) {
+//                        updateNotification(context, notificationData, MessagingService.builder);
+//                    } else {
+//                        showLowBalanceNotification(context, profile, notificationData);
+//                    }
 
 
                     handler.postDelayed(this, 1000);

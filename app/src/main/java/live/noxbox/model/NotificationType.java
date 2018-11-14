@@ -18,16 +18,16 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
+import live.noxbox.notifications.MessagingService;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
 import live.noxbox.state.AppCache;
 import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.MessagingService;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.notifications.MessagingService.getNotificationService;
 import static live.noxbox.state.AppCache.updateNoxbox;
-import static live.noxbox.tools.MessagingService.getNotificationService;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.
@@ -59,18 +59,18 @@ public enum NotificationType {
     support(5, R.string.messageFromTheSupport, R.string.replaceIt);
 
 
-    private int index;
+    private int group;
     private int title;
     private int content;
 
     NotificationType(int id, int title, int content) {
-        this.index = id;
+        this.group = id;
         this.title = title;
         this.content = content;
     }
 
-    public int getIndex() {
-        return index;
+    public int getGroup() {
+        return group;
     }
 
     public int getTitle() {
@@ -103,7 +103,7 @@ public enum NotificationType {
         if (notification.getType() != message)
             builder.setCustomContentView(getCustomContentView(context, notification));
 
-        getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
+        getNotificationService(context).notify(notification.getType().getGroup(), builder.build());
     }
 
     public static void removeNotifications(Context context) {

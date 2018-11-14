@@ -1,4 +1,4 @@
-package live.noxbox.tools;
+package live.noxbox.notifications;
 
 import android.app.IntentService;
 import android.content.Context;
@@ -9,6 +9,7 @@ import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.state.AppCache;
+import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.START_TIME;
 import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;

@@ -55,6 +55,7 @@ public class AppCache {
                     if (profile != null && profile.getNoxboxId() != null) {
                         startListenNoxbox(profile.getNoxboxId());
                     } else {
+                        profile.setCurrent(new Noxbox());
                         executeUITasks();
                     }
                 }

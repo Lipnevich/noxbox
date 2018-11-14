@@ -1,4 +1,4 @@
-package live.noxbox.tools;
+package live.noxbox.notifications;
 
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
@@ -24,18 +24,13 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import io.fabric.sdk.android.Fabric;
+import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.NotificationBalanceFactory;
 import live.noxbox.notifications.factory.NotificationFactory;
-import live.noxbox.notifications.factory.NotificationMessagerFactory;
-import live.noxbox.notifications.factory.NotificationRefundFactory;
-import live.noxbox.notifications.factory.NotificationStateFactory;
-import live.noxbox.notifications.factory.NotificationSupportFactory;
-import live.noxbox.notifications.factory.NotificationUploadFactory;
-import live.noxbox.notifications.model.Notification;
+import live.noxbox.tools.Task;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
@@ -47,11 +42,7 @@ import static live.noxbox.model.NotificationType.balance;
 
 public class MessagingService extends FirebaseMessagingService {
 
-    private final String channelId = "noxbox_channel";
     private Context context;
-
-    public static NotificationCompat.Builder builder;
-    private NotificationFactory notificationFactory;
 
     public MessagingService() {
     }
@@ -64,13 +55,8 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         initCrashReporting();
         context = getApplicationContext();
-        NotificationData notificationData = NotificationData.create(remoteMessage.getData());
-        if (notificationData.getIgnore()) return;
-
-        createNotificationFactory(notificationData);
-        Notification notification = notificationFactory.createNotificationBehavior(context, notificationData);
         //TODO(vl) читаем профиль и передаём текущий
-        notification.showNotification(context, new Profile(), notificationData, channelId);
+        NotificationFactory.showNotification(context, new Profile(), remoteMessage.getData());
 
         //showPushNotification(notification);
 
@@ -79,29 +65,6 @@ public class MessagingService extends FirebaseMessagingService {
 //                    notification.setName(profile.getName());
 //                    notification.setTime(String.valueOf(System.currentTimeMillis()));
 //                }
-    }
-
-    private void createNotificationFactory(NotificationData notification) {
-        switch (notification.getType().getIndex()) {
-            case 0:
-                notificationFactory = new NotificationUploadFactory();
-                break;
-            case 1:
-                notificationFactory = new NotificationBalanceFactory();
-                break;
-            case 2:
-                notificationFactory = new NotificationStateFactory();
-                break;
-            case 3:
-                notificationFactory = new NotificationRefundFactory();
-                break;
-            case 4:
-                notificationFactory = new NotificationMessagerFactory();
-                break;
-            case 5:
-                notificationFactory = new NotificationSupportFactory();
-                break;
-        }
     }
 
     public static void removeNotifications(Context context) {
@@ -120,10 +83,10 @@ public class MessagingService extends FirebaseMessagingService {
 
         cancelOtherNotifications(notification.getType());
         if (notification.getType() != NotificationType.moving && notification.getType() != NotificationType.message) {
-            getNotificationService(context).cancel(NotificationType.message.getIndex());
+            getNotificationService(context).cancel(NotificationType.message.getGroup());
         }
         if (notification.getProgress() != null && notification.getProgress() == 100) {
-            getNotificationService(context).cancel(notification.getType().getIndex());
+            getNotificationService(context).cancel(notification.getType().getGroup());
         } else {
             notify(notification);
         }
@@ -133,7 +96,7 @@ public class MessagingService extends FirebaseMessagingService {
     private void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getNotificationService(context).createNotificationChannel(
-                    new NotificationChannel(channelId,
+                    new NotificationChannel(Configuration.CHANNEL_ID,
                             "Noxbox channel",
                             NotificationManager.IMPORTANCE_DEFAULT));
         }
@@ -156,7 +119,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     private void notify(final NotificationData notification) {
 
-        builder = NotificationType.getBuilder(context, channelId, notification);
+        final NotificationCompat.Builder builder = NotificationType.getBuilder(context, Configuration.CHANNEL_ID, notification);
 
         setProgress(builder, notification);
 
@@ -164,7 +127,7 @@ public class MessagingService extends FirebaseMessagingService {
             @Override
             public void execute(Bitmap icon) {
                 builder.setLargeIcon(icon);
-                getNotificationService(context).notify(notification.getType().getIndex(), builder.build());
+                getNotificationService(context).notify(notification.getType().getGroup(), builder.build());
             }
         };
 

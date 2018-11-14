@@ -21,6 +21,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}')
           let pushRequested = {
               data: {
                    type: 'requesting',
+                   time: noxbox.timeRequested,
                    id: noxbox.id
               },
               topic: noxbox.id
