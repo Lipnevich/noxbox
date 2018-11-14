@@ -41,6 +41,7 @@ public class NotificationAccepting extends Notification {
 
         getNotificationService(context).notify(type.getGroup(), builder.build());
         //TODO (vl) использовать время с момента timeRequest
+        // TODO (vl) работает ли поток при запущенном приложении
         final long totalTime = REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS / 1000;
         new Thread(new Runnable() {
             @Override
