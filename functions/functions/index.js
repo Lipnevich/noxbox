@@ -20,8 +20,8 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}')
       if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
           let pushRequested = {
               data: {
-                   type: 'requesting',
-                   time: noxbox.timeRequested,
+                   type: 'accepting',
+                   time: '' + noxbox.timeRequested,
                    id: noxbox.id
               },
               topic: noxbox.id

@@ -59,6 +59,8 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox clean() {
         id = null;
+        ownerMessages.clear();
+        partyMessages.clear();
         party = null;
         estimationTime = null;
         cancellationReasonMessage = null;
