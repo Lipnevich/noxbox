@@ -30,6 +30,7 @@ import live.noxbox.state.cluster.ClusterManager;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.CLUSTER_RENDERING_FREQUENCY;
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.state.AppCache.markers;
 import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
@@ -183,7 +184,7 @@ public class AvailableServices implements State {
                         @Override
                         public void run() {
                             clusterManager.setItems(markers, profile);
-                            drawingHeandler.postDelayed(drawingRunnable, 200);
+                            drawingHeandler.postDelayed(drawingRunnable, CLUSTER_RENDERING_FREQUENCY);
                         }
                     };
 

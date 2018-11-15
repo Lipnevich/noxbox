@@ -20,5 +20,6 @@ public interface Configuration {
     double ADDRESS_SEARCH_RADIUS_IN_METERS = 100000D;
     int MAX_ZOOM_LEVEL = 18;
     String CHANNEL_ID = "noxbox_channel";
+    int CLUSTER_RENDERING_FREQUENCY = 500;
 
 }
