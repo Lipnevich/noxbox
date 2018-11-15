@@ -51,7 +51,7 @@ public class DebugActivity extends MenuActivity implements
                     DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 50;
+                            double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 20;
 
                             for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
                                 online(noxbox);

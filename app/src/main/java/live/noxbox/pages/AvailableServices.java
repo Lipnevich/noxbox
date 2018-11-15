@@ -174,7 +174,7 @@ public class AvailableServices implements State {
             AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
 
-            Log.d(TAG + "AvailableServices", "onServiceConnected()");
+            Log.d("AvailableServices", "onServiceConnected()");
 
             AppCache.readProfile(new Task<Profile>() {
                 @Override
@@ -190,13 +190,11 @@ public class AvailableServices implements State {
                     drawingHeandler.post(drawingRunnable);
                 }
             });
-
-
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            Log.d(TAG + "AvailableServices", "onServiceDisconnected()");
+            Log.d("AvailableServices", "onServiceDisconnected()");
             if (drawingHeandler != null) {
                 drawingHeandler.removeCallbacksAndMessages(drawingRunnable);
             }

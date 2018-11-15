@@ -103,15 +103,15 @@ public class IconGenerator {
 
     @NonNull
     private BitmapDescriptor createClusterItemIcon(NoxboxMarker point) {
-        if (clusterItemIcons.get(point.getNoxbox().getType()) == null){
-            BitmapDescriptor bitmapDescriptor =  BitmapDescriptorFactory.fromBitmap(
+        if (clusterItemIcons.get(point.getNoxbox().getType()) == null) {
+            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(
                     Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
                             context.getResources(),
                             point.getNoxbox().getType().getImage()),
                             112,
                             112,
                             true));
-            clusterItemIcons.put(point.getNoxbox().getType(),bitmapDescriptor);
+            clusterItemIcons.put(point.getNoxbox().getType(), bitmapDescriptor);
         }
 
 
@@ -119,17 +119,18 @@ public class IconGenerator {
     }
 
     private int getClusterIconBucket(@NonNull Cluster<NoxboxMarker> cluster) {
-        int itemCount = cluster.getItems().size();
-        if (itemCount <= CLUSTER_ICON_BUCKETS[0]) {
-            return itemCount;
-        }
-
-        for (int i = 0; i < CLUSTER_ICON_BUCKETS.length - 1; i++) {
-            if (itemCount < CLUSTER_ICON_BUCKETS[i + 1]) {
-                return CLUSTER_ICON_BUCKETS[i];
-            }
-        }
-        return CLUSTER_ICON_BUCKETS[CLUSTER_ICON_BUCKETS.length - 1];
+//        int itemCount = cluster.getItems().size();
+//        if (itemCount <= CLUSTER_ICON_BUCKETS[0]) {
+//            return itemCount;
+//        }
+//
+//        for (int i = 0; i < CLUSTER_ICON_BUCKETS.length - 1; i++) {
+//            if (itemCount < CLUSTER_ICON_BUCKETS[i + 1]) {
+//                return CLUSTER_ICON_BUCKETS[i];
+//            }
+//        }
+        //return CLUSTER_ICON_BUCKETS[CLUSTER_ICON_BUCKETS.length - 1];
+        return cluster.getItems().size();
     }
 
     @NonNull

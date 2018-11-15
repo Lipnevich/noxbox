@@ -21,14 +21,15 @@ import live.noxbox.model.WorkSchedule;
 public class NoxboxExamples {
 
     public static List<Noxbox> generateNoxboxes(Position position, int size, double delta) {
-        if(position == null) position = new Position();
+        if (position == null) position = new Position();
         List<Noxbox> noxboxes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
 
             Noxbox noxbox = new Noxbox();
 
             noxbox.setRole(MarketRole.values()[ThreadLocalRandom.current().nextInt(MarketRole.values().length)]);
-            Profile owner = new Profile().setId("1231" + i).setNoxboxId("123456" + i).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg").setName("Granny Zelda");
+            Profile owner = new Profile().setId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE))
+                    .setNoxboxId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE)).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg").setName("Granny Zelda");
 
             owner.setTravelMode(TravelMode.values()[ThreadLocalRandom.current().nextInt(TravelMode.values().length)]);
             if (owner.getTravelMode() == TravelMode.none) {
@@ -83,7 +84,7 @@ public class NoxboxExamples {
 
             //Фильтрация услуг в зависимости от настроек
             noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
-            if(noxbox.getType() == NoxboxType.redirect) continue;
+            if (noxbox.getType() == NoxboxType.redirect) continue;
             noxboxes.add(noxbox);
         }
 
