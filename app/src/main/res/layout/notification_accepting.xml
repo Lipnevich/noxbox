@@ -23,8 +23,8 @@
         android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
     <ImageView
         android:id="@+id/animationMan"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="24dp"

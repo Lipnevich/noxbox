@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.START_TIME;

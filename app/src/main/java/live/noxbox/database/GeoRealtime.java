@@ -1,4 +1,4 @@
-package live.noxbox.state;
+package live.noxbox.database;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.geofire.GeoFire;

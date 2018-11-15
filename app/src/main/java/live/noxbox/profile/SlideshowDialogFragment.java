@@ -21,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.Task;
 
@@ -53,8 +53,8 @@ public class SlideshowDialogFragment extends DialogFragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_image_slider, container, false);
-        viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        lblCount = (TextView) v.findViewById(R.id.itemCount);
+        viewPager = v.findViewById(R.id.viewpager);
+        lblCount = v.findViewById(R.id.itemCount);
 
         photos = (ArrayList<String>) getArguments().getSerializable(PHOTOS_KEY);
         selectedPosition = getArguments().getInt(POSITION_KEY);
@@ -145,7 +145,7 @@ public class SlideshowDialogFragment extends DialogFragment {
             layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.item_image_fullscreen, container, false);
 
-            ImageView imageViewPreview = (ImageView) view.findViewById(R.id.imagePreview);
+            ImageView imageViewPreview = view.findViewById(R.id.imagePreview);
 
             Glide.with(getActivity())
                     .load(photos.get(position))
@@ -164,7 +164,7 @@ public class SlideshowDialogFragment extends DialogFragment {
 
         @Override
         public boolean isViewFromObject(View view, Object obj) {
-            return view == ((View) obj);
+            return view == obj;
         }
 
 

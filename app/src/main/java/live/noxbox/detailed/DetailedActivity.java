@@ -36,6 +36,7 @@ import java.util.List;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
@@ -45,7 +46,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.profile.ImageListAdapter;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;

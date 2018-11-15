@@ -21,10 +21,10 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.contract.ContractActivity;
 import live.noxbox.contract.NoxboxTypeListActivity;
+import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
-import live.noxbox.state.GeoRealtime;
 import live.noxbox.state.State;
 import live.noxbox.state.cluster.ClusterManager;
 import live.noxbox.tools.MapController;
@@ -32,8 +32,8 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CLUSTER_RENDERING_FREQUENCY;
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
-import static live.noxbox.state.AppCache.markers;
-import static live.noxbox.state.GeoRealtime.stopListenAvailableNoxboxes;
+import static live.noxbox.database.AppCache.markers;
+import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
 

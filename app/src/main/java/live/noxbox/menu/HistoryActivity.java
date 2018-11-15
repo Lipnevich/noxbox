@@ -13,9 +13,9 @@ import java.util.List;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 public class HistoryActivity extends BaseActivity {

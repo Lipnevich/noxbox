@@ -15,11 +15,11 @@ import java.util.Map;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;

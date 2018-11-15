@@ -14,9 +14,9 @@ import android.widget.TextView;
 import live.noxbox.BaseActivity;
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.Task;
 

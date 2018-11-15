@@ -24,7 +24,7 @@ import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
-import static live.noxbox.state.AppCache.updateNoxbox;
+import static live.noxbox.database.AppCache.updateNoxbox;
 
 public class Accepting implements State {
 

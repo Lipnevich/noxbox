@@ -18,12 +18,12 @@ import java.math.BigDecimal;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Request;
 import live.noxbox.model.Wallet;
-import live.noxbox.state.AppCache;
-import live.noxbox.state.GeoRealtime;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CURRENCY;

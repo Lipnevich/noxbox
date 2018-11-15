@@ -1,4 +1,4 @@
-package live.noxbox.state;
+package live.noxbox.database;
 
 import android.util.Log;
 
@@ -17,13 +17,14 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
 
 import static com.google.common.base.Objects.equal;
-import static live.noxbox.state.Firestore.writeNoxbox;
-import static live.noxbox.state.Firestore.writeProfile;
-import static live.noxbox.state.GeoRealtime.offline;
-import static live.noxbox.state.GeoRealtime.online;
+import static live.noxbox.database.Firestore.writeNoxbox;
+import static live.noxbox.database.Firestore.writeProfile;
+import static live.noxbox.database.GeoRealtime.offline;
+import static live.noxbox.database.GeoRealtime.online;
 
 public class AppCache {
 

@@ -16,20 +16,20 @@ import java.util.concurrent.ThreadLocalRandom;
 import live.noxbox.BuildConfig;
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
-import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
 import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.state.GeoRealtime.online;
+import static live.noxbox.database.GeoRealtime.online;
 import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 import static live.noxbox.tools.DetectNullValue.areTheyNull;
 

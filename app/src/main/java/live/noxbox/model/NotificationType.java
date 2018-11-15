@@ -16,18 +16,18 @@ import android.widget.RemoteViews;
 import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
 import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.profile.ProfileActivity;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.notifications.util.MessagingService.getNotificationService;
-import static live.noxbox.state.AppCache.updateNoxbox;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.
