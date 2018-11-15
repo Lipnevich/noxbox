@@ -22,6 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
+
 public class IconGenerator {
     private static final int[] CLUSTER_ICON_BUCKETS = {10, 20, 50, 100, 500, 1000, 5000, 10000, 20000};
 
@@ -108,8 +110,8 @@ public class IconGenerator {
                     Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
                             context.getResources(),
                             point.getNoxbox().getType().getImage()),
-                            112,
-                            112,
+                            dpToPx(56),
+                            dpToPx(56),
                             true));
             clusterItemIcons.put(point.getNoxbox().getType(), bitmapDescriptor);
         }
