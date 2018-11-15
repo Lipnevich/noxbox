@@ -117,6 +117,7 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     public void onMapReady(GoogleMap readyMap) {
+        super.onMapReady(readyMap);
         googleMap = readyMap;
 
         locationRequest = LocationRequest.create();

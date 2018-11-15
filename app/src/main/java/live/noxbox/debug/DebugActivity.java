@@ -1,11 +1,20 @@
 package live.noxbox.debug;
 
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 import live.noxbox.BuildConfig;
+import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.Noxbox;
@@ -24,7 +33,8 @@ import static live.noxbox.state.GeoRealtime.online;
 import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 import static live.noxbox.tools.DetectNullValue.areTheyNull;
 
-public class DebugActivity extends MenuActivity {
+public class DebugActivity extends MenuActivity implements
+        OnMapReadyCallback {
     private static final String TAG = "DebugActivity";
 
     @Override
@@ -41,9 +51,34 @@ public class DebugActivity extends MenuActivity {
                     DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(profile.getPosition(), 150)) {
+                            double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 50;
+
+                            for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
                                 online(noxbox);
                             }
+
+                                LatLng myPosition = null;
+                                if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                                        == PackageManager.PERMISSION_GRANTED) {
+                                    //myPosition = profile.getPosition().toLatLng();
+                                    myPosition = googleMap.getCameraPosition().target;
+                                }
+
+                                if (myPosition != null) {
+
+                                    LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
+                                    LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
+                                    LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
+                                    LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
+                                    googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
+                                            coordinatesOne,
+                                            coordinatesTwo,
+                                            coordinatesThree,
+                                            coordinatesFour,
+                                            coordinatesOne)
+                                            .color(Color.RED)
+                                            .width(5));
+                                }
                         }
                     });
 
@@ -204,4 +239,11 @@ public class DebugActivity extends MenuActivity {
 
     }
 
+    private GoogleMap googleMap;
+
+    @Override
+    public void onMapReady(GoogleMap readyMap) {
+        googleMap = readyMap;
+
+    }
 }

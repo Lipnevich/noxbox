@@ -7,22 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import live.noxbox.BuildConfig;
-import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.contract.ContractActivity;
@@ -64,29 +58,7 @@ public class AvailableServices implements State {
 
     @Override
     public void draw(final Profile profile) {
-        if (BuildConfig.DEBUG) {
-            LatLng myPosition = null;
-            if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                myPosition = profile.getPosition().toLatLng();
-            }
 
-            if (myPosition != null) {
-                double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 100;
-                LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
-                LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
-                LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
-                LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
-                googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
-                        coordinatesOne,
-                        coordinatesTwo,
-                        coordinatesThree,
-                        coordinatesFour,
-                        coordinatesOne)
-                        .color(Color.RED)
-                        .width(5));
-            }
-        }
 
         startListenAvailableNoxboxes();
         if (clusterManager == null) {
