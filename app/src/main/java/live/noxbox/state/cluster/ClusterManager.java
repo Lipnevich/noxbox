@@ -22,7 +22,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MapController;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
 import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
 
 public class ClusterManager implements GoogleMap.OnCameraIdleListener {
@@ -58,6 +57,10 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     }
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
+        Boolean shouldDrawType = profile.getFilters().getTypes().get(noxbox.getType().name());
+        if (shouldDrawType != null && shouldDrawType == false)
+            return true;
+
         if (BuildConfig.DEBUG) return false;
         //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
 
@@ -65,8 +68,6 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
             return true;
 
         if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
-            return true;
-        if (!firstNonNull(profile.getFilters().getTypes().get(noxbox.getType().name()), true))
             return true;
         if (Integer.parseInt(noxbox.getPrice()) > Integer.parseInt(profile.getFilters().getPrice()))
             return true;
