@@ -16,10 +16,10 @@ import java.util.List;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
+import live.noxbox.menu.profile.ProfileActivity;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
-import live.noxbox.profile.ProfileActivity;
 import live.noxbox.tools.Task;
 
 public class NoxboxTypeListActivity extends ListActivity {

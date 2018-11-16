@@ -1,4 +1,4 @@
-package live.noxbox.profile;
+package live.noxbox.menu.profile;
 
 
 import android.content.Context;
@@ -28,10 +28,10 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.profile.ImageListAdapter.IMAGE_TYPE_KEY;
-import static live.noxbox.profile.ImageListAdapter.PHOTOS_KEY;
-import static live.noxbox.profile.ImageListAdapter.POSITION_KEY;
-import static live.noxbox.profile.ImageListAdapter.TYPE_KEY;
+import static live.noxbox.menu.profile.ImageListAdapter.IMAGE_TYPE_KEY;
+import static live.noxbox.menu.profile.ImageListAdapter.PHOTOS_KEY;
+import static live.noxbox.menu.profile.ImageListAdapter.POSITION_KEY;
+import static live.noxbox.menu.profile.ImageListAdapter.TYPE_KEY;
 import static live.noxbox.tools.ImageManager.deleteImage;
 
 public class SlideshowDialogFragment extends DialogFragment {

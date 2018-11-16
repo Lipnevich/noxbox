@@ -1,4 +1,4 @@
-package live.noxbox.profile;
+package live.noxbox.menu.profile;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

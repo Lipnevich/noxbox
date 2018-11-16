@@ -1,4 +1,4 @@
-package live.noxbox.profile;
+package live.noxbox.menu.profile;
 
 import android.content.DialogInterface;
 import android.content.Intent;

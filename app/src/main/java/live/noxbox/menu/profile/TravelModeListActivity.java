@@ -1,4 +1,4 @@
-package live.noxbox.profile;
+package live.noxbox.menu.profile;
 
 import android.app.ListActivity;
 import android.os.Bundle;
