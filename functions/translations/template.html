@@ -67,39 +67,14 @@
 
 </head>
 
-
 <body id="page-top">
-
-<!-- Modal -->
-<div class="modal fade" id="airdropModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" >
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">$airdrop1</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        $airdrop2<br/>
-        $airdrop3<br/>
-        $airdrop4
-      </div>
-      <div class="modal-footer">
-        <a target="_blank" class="btn btn-primary" href="$airdropLink">
-          $airdrop5
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
   <div class="container">
     <a class="navbar-brand shadowed js-scroll-trigger" href="#page-top">
       <img class="logo img-fluid" src="img/logo.png" alt="">
-      Noxbox</a>
+      NoxBox</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <i class="fa fa-bars"></i>
     </button>
@@ -107,9 +82,6 @@
       <ul class="navbar-nav shadowed text-uppercase ml-auto">
         <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#about">$about</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link js-scroll-trigger" href="#timeline">$timeline</a>
         </li>
         <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#product">$product</a>
@@ -130,6 +102,11 @@
       <div class="col-lg-4">
         <ul class="list-inline ">
           <li class="list-inline-item">
+            <a target="_blank" href="map.html">
+              <i class="fa fa-globe"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
             <a target="_blank" href="https://twitter.com/noxboxio">
               <i class="fa fa-twitter"></i>
             </a>
@@ -149,17 +126,15 @@
               <i class="fa fa-github"></i>
             </a>
           </li>
-          <li class="list-inline-item">
-            <a target="_blank" href="https://bitcointalk.org/index.php?topic=2971918">
-              <i class="fa fa-bitcoin"></i>
-            </a>
-          </li>
         </ul>
       </div>
       <div class="col-lg-4">
         <ul class="list-inline">
           <li class="list-inline-item">
-            <a href="index.html"><img class="img-fluid" width="32px" src="img/lang/us.svg"/></a>
+            <a href="index.html"><img class="img-fluid" width="32px" src="img/lang/ru.svg"/></a>
+          </li>
+          <li class="list-inline-item">
+            <a href="en.html"><img class="img-fluid" width="32px" src="img/lang/us.svg"/></a>
           </li>
           <li class="list-inline-item">
             <a href="id.html"><img class="img-fluid" width="32px" src="img/lang/id.svg"/></a>
@@ -173,46 +148,25 @@
           <li class="list-inline-item">
             <a href="zh.html"><img class="img-fluid" width="32px" src="img/lang/zh.svg"/></a>
           </li>
-          <li class="list-inline-item">
-            <a href="ru.html"><img class="img-fluid" width="32px" src="img/lang/ru.svg"/></a>
-          </li>
         </ul>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-8 embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="$video" allowfullscreen></iframe>
       </div>
     </div>
     <br/>
     <br/>
-
-    <div class="intro-text row">
-      <div class="col-md-12 intro-lead-in shadowed"><b>$first_desctiption</b></div>
-      <div class="col-md-12 subheading shadowed">
-        <br/>
-        <br/>
-        <br/>
-        <b><span style="color:#F39C12">$donate_us</span></br>
-          BTC : 36Gk11Sd7FwCCWbRMA2n8SvzYHrPAfXm7v</br>
-          ETH : 0x3e14acf74b9492e5abf02691754fda64d6283b8d</br>
-          Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73</br>
-          </b></h4>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-    </div>
-  </div>
-      <br/>
-      <br/>
-      <br/>
+    <br/>
  </div>
 </header>
 
 <!-- About -->
 <section id="about">
   <div class="container">
-    <div class="embed-responsive embed-responsive-16by9">
-      <iframe class="embed-responsive-item" src="$video" allowfullscreen></iframe>
-    </div>
-    <br/><br/><br/><br/>
-
     <div class="row">
       <div class="col-lg-12 text-center">
         <h2 class="section-heading">$Noxbox_title</h2>
@@ -239,236 +193,6 @@
         <img class="rounded-circle img-fluid" width="196" src="img/logo.png" alt="">
         <h4 class="service-heading">$bitcoin_payments</h4>
         <p class="text-muted">$bitcoin_payments_desc</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- Process -->
-<section id="process" class="bg-light">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <h2 class="section-heading">$process_header</h2>
-      </div>
-    </div>
-    <div class="row text-center">
-      <div class="col-md-12">
-        $process_desc
-        <br/>
-        <img class="img-fluid" src="img/time.png" width="340">
-        $process_desc2
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Advantages -->
-<section id="advantages" class="bg-light">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <h2 class="section-heading">$advantages</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12"><i class="advantages-checkbox fa fa-star"></i> $advantages_rating</div><br/><br/>
-      <div class="col-md-12"><i class="advantages-checkbox fa fa-eye"></i> $advantages_biometric</div><br/><br/>
-      <div class="col-md-12"><i class="advantages-checkbox fa fa-flash"></i> $advantages_online</div><br/><br/>
-      <div class="col-md-12"><i class="advantages-checkbox fa fa-umbrella"></i> $advantages_payment</div><br/><br/>
-      <div class="col-md-12"><i class="advantages-checkbox fa fa-leaf"></i> $advantages_price</div><br/><br/>
-      <div class="col-md-12"><i class="advantages-checkbox fa fa-globe"></i> $advantages_world</div><br/><br/>
-      <div class="col-md-12"><i class="advantages-checkbox fa fa-child"></i> $advantages_quality</div><br/>
-    </div>
-  </div>
-</section>
-
-<!-- ICO -->
-<section id="ico" class="bg-light">
-  <div class="container">
-    <div class="col-lg-12 text-center">
-      <h2 class="section-heading">$ico_structure</h2>
-      <p class="text-muted">$token_distribution</p>
-      <br>
-    </div>
-    <div class="row">
-      <div class="col-lg-3">
-        <div class="gradient1">
-          <h3>20%</h3>
-          <b>$first_ico_round</b>
-        </div><br>
-        <p align="right">$first_ico_round_desc</p><br>
-      </div>
-      <div class="col-lg-3">
-        <div class="gradient2">
-          <h3>20%</h3>
-          <b>$second_ico_round</b>
-        </div><br>
-        <p align="right">$second_ico_round_desc</p><br>
-      </div>
-      <div class="col-lg-3">
-        <div class="gradient3">
-          <h3>40%</h3>
-          <b>$final_ico_round</b>
-        </div><br>
-        <p align="right">$final_ico_round_desc</p><br>
-      </div>
-      <div class="col-lg-3">
-        <div class="gradient4">
-          <h3>20%</h3>
-          <b>$token_for_team</b>
-        </div><br>
-        <p align="right">$token_for_team_desc</p><br>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section >
-  <div class="container">
-    <div class="section-wrapper">
-      <div class="col-lg-12 text-center">
-        <h2 class="section-heading">$ico_details</h2>
-      </div>
-      <div class="row structure">
-        <div class="col-sm-12 col-md-4 col-lg-4">$nbx</div>
-        <div class="col-sm-12 col-md-8 col-lg-8">$nbx_desc</div>
-      </div>
-      <div class="row structure">
-        <div class="col-sm-12 col-md-4 col-lg-4">$tiker</div>
-        <div class="col-sm-12 col-md-8 col-lg-8"><b>$tiker_desc</b></div>
-      </div>
-      <div class="row structure">
-        <div class="col-sm-12 col-md-4 col-lg-4">$purpose</div>
-        <div class="col-sm-12 col-md-8 col-lg-8">$purpose_desc</div>
-      </div>
-      <div class="row structure">
-        <div class="col-sm-12 col-lg-4">$token_id</div>
-        <div class="col-sm-12 col-lg-8"><wrapitplease>9PVyxDPUjauYafvq83JTXvHQ8nPnxwKA7siUFcqthCDJ</wrapitplease></div>
-      </div>
-      <div class="row structure">
-        <div class="col-sm-12 col-md-4 col-lg-4">110 000 000 NBX. $total_emission</div>
-        <div class="col-sm-12 col-md-8 col-lg-8">$total_emission_desc</div>
-      </div>
-      <div class="row structure">
-        <div class="col-sm-12 col-md-4 col-lg-4">$marketplace</div>
-        <div class="col-sm-12 col-md-8 col-lg-8">Waves DEX</div>
-      </div>
-      <div class="row" style="padding-top:18px">
-        <div class="col-sm-12 col-md-4 col-lg-4">$payments</div>
-        <div class="col-sm-12 col-md-8 col-lg-8">BTC, WAVES, ETH, LTC, ZCASH, USD, EURO</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="bg-light">
-  <div class="container">
-    <div class="col-lg-12 text-center">
-      <h2 class="section-heading">$funds_distribution</h2><br/>
-    </div>
-    <div class="row">
-      <div class="com-sm-12 col-md-8 col-lg-8 text-center">
-        <img src="img/pie.png" style="max-width: 60%">
-      </div>
-      <div class="com-sm-12 col-md-4 col-lg-4">
-        <br/><br/>
-        $funds_distribution_desc
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Timeline -->
-<section id="timeline">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12 text-center">
-        <h2 class="section-heading">$timeline</h2>
-        <p class="text-muted">$noxbox_history</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-12">
-        <ul class="timeline">
-          <li>
-            <div class="timeline-image">
-              <img class="rounded-circle img-fluid" src="img/about/connect.jpg" alt="">
-            </div>
-            <div class="timeline-panel">
-              <div class="timeline-heading">
-                <h4>$december2016</h4>
-                <h5 class="subheading">$idea</h5>
-              </div>
-              <div class="timeline-body">
-                <p class="text-muted">$idea_desc</p>
-              </div>
-            </div>
-          </li>
-          <li class="timeline-inverted">
-            <div class="timeline-image">
-              <img class="rounded-circle img-fluid" src="img/about/payment.jpg" alt="">
-            </div>
-            <div class="timeline-panel">
-              <div class="timeline-heading">
-                <h4>$september2017</h4>
-                <h5 class="subheading">$bitcoin_decision</h5>
-              </div>
-              <div class="timeline-body">
-                <p class="text-muted">$bitcoin_decision_desc</p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="timeline-image">
-              <img class="rounded-circle img-fluid" src="img/about/ico.jpg" alt="">
-            </div>
-            <div class="timeline-panel">
-              <div class="timeline-heading">
-                <h4>$ico_date</h4>
-                <h5 class="subheading">$ico</h5>
-              </div>
-              <div class="timeline-body">
-                <p class="text-muted">$ico_desc</p>
-              </div>
-            </div>
-          </li>
-          <li class="timeline-inverted">
-            <div class="timeline-image">
-              <img class="rounded-circle img-fluid" src="img/about/globe.jpg" alt="">
-            </div>
-            <div class="timeline-panel">
-              <div class="timeline-heading">
-                <h4>$launch_date</h4>
-                <h5 class="subheading">$launch</h5>
-              </div>
-              <div class="timeline-body">
-                <p class="text-muted">$launch_desc</p>
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="timeline-image">
-              <img class="rounded-circle img-fluid" src="img/about/city.jpg" alt="">
-            </div>
-            <div class="timeline-panel">
-              <div class="timeline-heading">
-                <h4>$completion_date</h4>
-                <h5 class="subheading">$completion_desc</h5>
-              </div>
-            </div>
-          </li>
-          <li class="timeline-inverted">
-            <div class="timeline-image">
-              <img class="rounded-circle img-fluid" src="img/about/join.jpg" alt="">
-            </div>
-          </li>
-        </ul>
-        <div class="centered">
-          <br>
-          <p class="text-muted">$join_us</p>
-        </div>
       </div>
     </div>
   </div>
@@ -701,66 +425,16 @@
   </div>
 </section>
 
-<!--Backlinks-->
-<section id="listing" class="bg-light">
+<!-- Donate -->
+<section id="donate" class="bg-light">
   <div class="container">
-    <div class="row logos text-center">
-      <div class="col-md-3">
-        <a target="_blank" href="https://foundico.com/ico/noxbox-.html">
-          <img class="img-fluid" width="320px" src="img/listing/foundico.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://icobazaar.com/v2/noxbox">
-          <img class="img-fluid" width="256px" src="img/listing/icobazaar.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://www.coingecko.com/en/ico/noxbox">
-          <img class="img-fluid" width="196px" src="img/listing/coingecko.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://icobay.net/icos/Noxbox?is=active">
-          <img class="img-fluid" width="256px" src="img/listing/icobay.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://webcoin.today/">
-          <img class="img-fluid" width="128px" src="img/listing/webcoin.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://www.coinschedule.com/icos/e2321/noxbox-ico.html">
-          <img class="img-fluid" width="256px" src="img/listing/coinschedule.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://t.me/InsideCryptoChat">
-          <img border="0" src="img/listing/inside.png" width="96px">
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://www.listico.io/ico-calendar/first-round-of-ico">
-          <img class="img-fluid" width="196px" src="img/listing/list.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://coindelite.com/ico-detail-Noxbox">
-          <img class="img-fluid" width="96px" src="img/listing/coindelite.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://www.cryptocompare.com/coins/nbx/overview">
-          <img class="img-fluid" width="256px" src="img/listing/cryptocompare.png"/>
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a target="_blank" href="https://www.trackico.io/ico/noxbox/" title="TrackICO">
-          <img border="0" src="https://www.trackico.io/static/img/partner_logo_black.png"
-               alt="TrackICO - provider of information about the best ICOs"
-               width="196px">
-        </a>
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <b><span style="color:#F39C12">$donate_us</span></br>
+          BTC : 36Gk11Sd7FwCCWbRMA2n8SvzYHrPAfXm7v</br>
+          ETH : 0x3e14acf74b9492e5abf02691754fda64d6283b8d</br>
+          Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73</br>
+        </b>
       </div>
     </div>
   </div>
@@ -779,6 +453,11 @@
       <div class="col-md-4">
         <ul class="list-inline social-buttons">
           <li class="list-inline-item">
+            <a target="_blank" href="map.html">
+              <i class="fa fa-globe"></i>
+            </a>
+          </li>
+          <li class="list-inline-item">
             <a target="_blank" href="https://facebook.com/noxbox.io/">
               <i class="fa fa-facebook"></i>
             </a>
@@ -796,11 +475,6 @@
           <li class="list-inline-item">
             <a target="_blank" href="https://github.com/Lipnevich/noxbox">
               <i class="fa fa-github"></i>
-            </a>
-          </li>
-          <li class="list-inline-item">
-            <a target="_blank" href="https://bitcointalk.org/index.php?topic=2971918">
-              <i class="fa fa-bitcoin"></i>
             </a>
           </li>
         </ul>
@@ -827,12 +501,6 @@
     $("#change-color .bar").hover(function(){
         // $(this).toggleClass('active');
         $(this).find('.front').toggleClass('shine');
-    });
-</script>
-
-<script>
-    $(document).ready(function(){
-        $("#airdropModal").modal();
     });
 </script>
 
