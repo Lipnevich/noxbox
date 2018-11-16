@@ -1,4 +1,4 @@
-package live.noxbox.state;
+package live.noxbox.tools;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
@@ -7,7 +7,6 @@ import java.util.Map;
 
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
-import live.noxbox.tools.Task;
 
 public final class LogProperties {
 

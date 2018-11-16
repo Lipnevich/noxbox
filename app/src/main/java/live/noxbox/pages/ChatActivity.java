@@ -30,9 +30,9 @@ import java.util.List;
 import live.noxbox.BaseActivity;
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 import static android.graphics.Bitmap.createBitmap;

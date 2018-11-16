@@ -13,11 +13,11 @@ import java.util.HashMap;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
-import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 
 public class Estimating implements State {

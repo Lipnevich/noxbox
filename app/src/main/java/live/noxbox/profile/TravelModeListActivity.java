@@ -11,9 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.Task;
 
 public class TravelModeListActivity extends ListActivity {

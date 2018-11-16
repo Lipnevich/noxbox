@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 
 import io.fabric.sdk.android.Fabric;
+import live.noxbox.database.AppCache;
 import live.noxbox.debug.DebugActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
@@ -64,7 +65,6 @@ import live.noxbox.pages.LocationReceiver;
 import live.noxbox.pages.Moving;
 import live.noxbox.pages.Performing;
 import live.noxbox.pages.Requesting;
-import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;

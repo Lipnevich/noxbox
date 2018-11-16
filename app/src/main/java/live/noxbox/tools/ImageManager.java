@@ -23,13 +23,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.util.MessagingService;
-import live.noxbox.state.AppCache;
 
 public class ImageManager {
 

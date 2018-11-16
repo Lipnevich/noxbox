@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;

@@ -14,11 +14,11 @@ import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.contract.ContractActivity;
+import live.noxbox.database.AppCache;
 import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.state.cluster.NoxboxMarker;
 
 import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;

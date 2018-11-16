@@ -1,4 +1,4 @@
-package live.noxbox.state;
+package live.noxbox.database;
 
 import android.support.annotation.NonNull;
 

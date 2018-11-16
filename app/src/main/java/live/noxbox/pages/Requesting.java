@@ -13,16 +13,16 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
-import static live.noxbox.state.AppCache.updateNoxbox;
+import static live.noxbox.database.AppCache.updateNoxbox;
 
 public class Requesting implements State {
 

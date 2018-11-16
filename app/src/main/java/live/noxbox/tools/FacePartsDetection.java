@@ -15,11 +15,11 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceLandmark;
 
 import java.util.List;
 
+import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.util.MessagingService;
-import live.noxbox.state.AppCache;
 
 import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
 

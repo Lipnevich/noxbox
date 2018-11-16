@@ -21,12 +21,12 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.notifications.util.MessagingService;
-import live.noxbox.state.AppCache;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
@@ -35,7 +35,7 @@ import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.state.AppCache.updateNoxbox;
+import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.tools.MapController.moveCopyrightLeft;
 import static live.noxbox.tools.MapController.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
