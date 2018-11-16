@@ -438,12 +438,14 @@ public class ContractActivity extends BaseActivity {
         }
 
         if (similarNoxboxes.size() > 0) {
+            findViewById(R.id.buttonsRootLayout).setVisibility(View.GONE);
             findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
             similarListViews = findViewById(R.id.similarNoxboxesList);
             similarListViews.setHasFixedSize(true);
             similarListViews.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
             similarListViews.setAdapter(new ClusterAdapter(similarNoxboxes, this, profile));
         } else {
+            findViewById(R.id.buttonsRootLayout).setVisibility(View.VISIBLE);
             findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
         }
     }
