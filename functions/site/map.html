@@ -32,26 +32,24 @@
         });
 
         var script = document.createElement('script');
-        script.src = 'https://us-central1-noxbox-150813.cloudfunctions.net/availables';
+        script.src = 'https://us-central1-noxbox-project.cloudfunctions.net/map';
         document.getElementsByTagName('head')[0].appendChild(script);
       }
 
-      window.availables_callback = function(results) {
-        var icon = {
-            url: 'img/logo.png', // url
-            scaledSize: new google.maps.Size(36, 36), // scaled size
-            origin: new google.maps.Point(0,0), // origin
-            anchor: new google.maps.Point(0, 36) // anchor
-        };
-
+      window.map_callback = results => {
         var markers = [];
         for (var i = 0; i < results.length; i++) {
           var latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
-
+          var serviceType = results[i].key.split(';')[2];
           var marker = new google.maps.Marker({
             position: latLng,
             map: map,
-            icon: icon
+            icon: {
+                url: 'img/services/ic_' + serviceType + '.png', // url
+                scaledSize: new google.maps.Size(36, 36), // scaled size
+                origin: new google.maps.Point(0,0), // origin
+                anchor: new google.maps.Point(0, 36) // anchor
+            }
           });
           markers.push(marker);
         }

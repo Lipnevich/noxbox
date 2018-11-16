@@ -77,7 +77,7 @@ public class SiteI18nizer {
         }
 
         String name = file.getName().split("\\.")[0];
-        if(name.equals("en")) {
+        if(name.equals("ru")) {
             name = "index";
         }
 
