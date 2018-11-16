@@ -37,6 +37,7 @@ import java.util.List;
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
@@ -365,7 +366,14 @@ public class DetailedActivity extends AppCompatActivity {
                 profile.setCurrent(profile.getViewed());
                 profile.setNoxboxId(profile.getCurrent().getId());
                 profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+
                 AppCache.updateNoxbox();
+
+                GeoRealtime.offline(profile.getCurrent());
+                if(AppCache.markers.get(profile.getNoxboxId())!= null){
+                    AppCache.markers.remove(profile.getNoxboxId());
+                }
+
                 finish();
             }
         });
