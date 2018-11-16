@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
@@ -30,6 +32,8 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.Configuration;
@@ -38,11 +42,14 @@ import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.detailed.CoordinateActivity;
 import live.noxbox.model.MarketRole;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.state.State;
+import live.noxbox.state.cluster.ClusterAdapter;
+import live.noxbox.state.cluster.NoxboxMarker;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
@@ -62,7 +69,7 @@ public class ContractActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_constructor);
+        setContentView(R.layout.activity_contract);
 
         initializeUi();
 
@@ -129,7 +136,9 @@ public class ContractActivity extends BaseActivity {
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
         drawPublishButton(profile);
+        drawSimilarNoxboxList(profile);
     }
+
 
     private void drawToolbar(final Profile profile) {
         ((TextView) findViewById(R.id.title)).setText(R.string.contractService);
@@ -199,12 +208,16 @@ public class ContractActivity extends BaseActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
                     String price = s.toString().replaceAll(",", "\\.");
                     profile.getCurrent().setPrice(price);
+                    if(s.length() > 0){
+                        drawSimilarNoxboxList(profile);
+                    }
                 }
             };
             priceInput.addTextChangedListener(changeCountOfMoneyListener);
@@ -380,6 +393,60 @@ public class ContractActivity extends BaseActivity {
         });
     }
 
+    private List<NoxboxMarker> similarNoxboxes;
+    private List<NoxboxMarker> noxboxes;
+    private RecyclerView similarListViews;
+
+    private void drawSimilarNoxboxList(Profile profile) {
+        if (noxboxes == null) {
+            noxboxes = new ArrayList<>();
+            for (Noxbox item : AppCache.markers.values()) {
+                noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
+            }
+        }
+
+        if (similarNoxboxes != null) {
+            similarNoxboxes.clear();
+        } else {
+            similarNoxboxes = new ArrayList<>();
+        }
+
+
+        for (NoxboxMarker item : noxboxes) {
+            //type
+            if (item.getNoxbox().getType() != profile.getCurrent().getType())
+                continue;
+
+            //role
+            if (item.getNoxbox().getRole() == profile.getCurrent().getRole())
+                continue;
+
+            //travelmode
+            if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none && item.getNoxbox().getOwner().getTravelMode() == TravelMode.none)
+                continue;
+
+            //price
+            if (profile.getCurrent().getRole() == MarketRole.supply) {
+                if (Double.parseDouble(profile.getCurrent().getPrice()) > Double.parseDouble(item.getNoxbox().getPrice()))
+                    continue;
+            } else {
+                if (Double.parseDouble(profile.getCurrent().getPrice()) < Double.parseDouble(item.getNoxbox().getPrice()))
+                    continue;
+            }
+
+            similarNoxboxes.add(item);
+        }
+
+        if (similarNoxboxes.size() > 0) {
+            findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
+            similarListViews = findViewById(R.id.similarNoxboxesList);
+            similarListViews.setHasFixedSize(true);
+            similarListViews.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
+            similarListViews.setAdapter(new ClusterAdapter(similarNoxboxes, this, profile));
+        } else {
+            findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+        }
+    }
 
     private void setHeightForDropdownList(Spinner spinner) {
         try {

@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingStart="8dp"
+        android:paddingStart="16dp"
         android:paddingTop="8dp"
         android:paddingEnd="8dp"
         android:paddingBottom="8dp"
@@ -68,7 +68,6 @@
             android:id="@+id/supplyTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:textColor="@color/google_text"
             android:textSize="@dimen/text_title" />
 
@@ -82,7 +81,6 @@
             android:id="@+id/demandTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:textColor="@color/google_text"
             android:textSize="@dimen/text_title" />
 

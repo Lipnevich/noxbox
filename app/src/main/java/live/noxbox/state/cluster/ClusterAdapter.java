@@ -13,18 +13,22 @@ import android.widget.TextView;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.detailed.DetailedActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Router;
 
 public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterViewHolder> {
 
     private List<NoxboxMarker> clusterItems;
     private Activity activity;
+    private Profile profile;
 
-    public ClusterAdapter(List<NoxboxMarker> clusterItems, Activity activity) {
+    public ClusterAdapter(List<NoxboxMarker> clusterItems, Activity activity, Profile profile) {
         this.clusterItems = clusterItems;
         this.activity = activity;
+        this.profile = profile;
     }
 
 
@@ -37,7 +41,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, int i) {
+    public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, final int i) {
         String price = clusterItems.get(i).getNoxbox().getPrice();
         NoxboxType type = clusterItems.get(i).getNoxbox().getType();
         for (NoxboxType noxboxType : NoxboxType.values()) {
@@ -65,7 +69,9 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         clusterViewHolder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                profile.setViewed(clusterItems.get(i).getNoxbox());
+                Router.startActivity(activity, DetailedActivity.class);
+                activity.finish();
             }
         });
     }

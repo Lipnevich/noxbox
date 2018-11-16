@@ -242,6 +242,7 @@
     <string name="sortBy">Сортировать</string>
     <string name="services">Услуги</string>
     <string name="redirectToPlayMarket">запросить другую услугу</string>
+    <string name="similarNoxboxes">Подходящие услуги:</string>
 
 
 </resources>
