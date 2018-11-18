@@ -20,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -40,9 +41,9 @@ public class HistoryAdapter extends BaseAdapter {
     private String profileId;
     List<Noxbox> noxboxes;
 
-    public HistoryAdapter(Context context, String profileId, List<Noxbox> noxboxes) {
+    public HistoryAdapter(Context context, List<Noxbox> noxboxes) {
         this.ctx = context;
-        this.profileId = profileId;
+        this.profileId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.noxboxes = noxboxes;
         this.inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -73,7 +74,6 @@ public class HistoryAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.priceText)).setText(noxbox.getPrice());
         ((TextView) view.findViewById(R.id.performerName)).setText(noxbox.getParty().getName());
 
-        // TODO (nli) remove map from list, replace with address link to map
         MapView mapView = view.findViewById(R.id.map);
         mapView.onCreate(null);
         mapView.onResume();
@@ -94,7 +94,7 @@ public class HistoryAdapter extends BaseAdapter {
         });
 
         Glide.with(view.getContext())
-                .load(noxbox.getParty().getPhoto())
+                .load(noxbox.getNotMe(profileId).getPhoto())
                 .apply(RequestOptions.circleCropTransform())
                 .into((ImageView) view.findViewById(R.id.performerImage));
 
@@ -126,7 +126,11 @@ public class HistoryAdapter extends BaseAdapter {
     }
 
     private boolean isLiked(Noxbox noxbox) {
-        return true;//noxbox.getParty().getTimeDisliked() == null;
+        if(profileId.equals(noxbox.getOwner().getId())) {
+            return noxbox.getTimeOwnerDisliked() == null;
+        } else {
+            return noxbox.getTimePartyDisliked() == null;
+        }
     }
 
     private void showRating(ImageView view, boolean isLiked) {
