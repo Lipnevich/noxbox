@@ -155,9 +155,7 @@ public class Moving implements State {
 
                 @Override
                 public void onFinish() {
-                    final NotificationData notification = new NotificationData()
-                            .setType(NotificationType.confirm);
-                    messagingService.showPushNotification(notification);
+                    MessagingService.removeNotifications(activity.getApplicationContext());
                 }
             }.start();
         }

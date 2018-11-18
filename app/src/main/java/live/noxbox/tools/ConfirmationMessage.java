@@ -16,22 +16,20 @@ public class ConfirmationMessage {
     private static Snackbar gps;
 
     public static void messageOffline(final Activity activity) {
-        if (online == null) {
-            View content = null;
-            if (activity.getClass().getName().equals(MapActivity.class.getName())) {
-                content = activity.findViewById(R.id.coordinatorLayout);
-            } else {
-                content = activity.findViewById(android.R.id.content);
-            }
-            online = Snackbar.make(content, R.string.isOffline, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.enable, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(Settings.ACTION_SETTINGS);
-                            activity.startActivity(intent);
-                        }
-                    });
+        View content = null;
+        if (activity.getClass().getName().equals(MapActivity.class.getName())) {
+            content = activity.findViewById(R.id.coordinatorLayout);
+        } else {
+            content = activity.findViewById(android.R.id.content);
         }
+        online = Snackbar.make(content, R.string.isOffline, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.enable, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                        activity.startActivity(intent);
+                    }
+                });
         showMessage(online, activity);
     }
 

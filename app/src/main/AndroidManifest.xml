@@ -30,7 +30,7 @@
             android:name=".filters.MapFiltersActivity"
             android:parentActivityName=".MapActivity" />
         <activity
-            android:name=".profile.ProfileActivity"
+            android:name=".menu.profile.ProfileActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden" />
@@ -39,8 +39,8 @@
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name=".profile.ProfilePerformerActivity"
-            android:parentActivityName=".profile.ProfileActivity"
+            android:name=".menu.profile.ProfilePerformerActivity"
+            android:parentActivityName=".menu.profile.ProfileActivity"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".contract.ContractActivity"
@@ -52,7 +52,7 @@
             android:noHistory="true"
             android:theme="@style/DialogListActivity" />
         <activity
-            android:name=".profile.TravelModeListActivity"
+            android:name=".menu.profile.TravelModeListActivity"
             android:label="@string/travelMode"
             android:noHistory="true"
             android:theme="@style/DialogListActivity" />

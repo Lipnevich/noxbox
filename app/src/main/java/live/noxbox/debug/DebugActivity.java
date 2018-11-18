@@ -17,6 +17,7 @@ import live.noxbox.BuildConfig;
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
@@ -101,6 +102,7 @@ public class DebugActivity extends MenuActivity implements
                                         .setId("12321")
                                         .setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
                                 AppCache.updateNoxbox();
+                                GeoRealtime.offline(profile.getCurrent());
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }

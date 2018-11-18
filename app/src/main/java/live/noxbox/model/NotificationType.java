@@ -19,9 +19,9 @@ import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
+import live.noxbox.menu.profile.ProfileActivity;
 import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.pages.ChatActivity;
-import live.noxbox.profile.ProfileActivity;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
@@ -43,7 +43,6 @@ public enum NotificationType {
 
     accepting(2, R.string.acceptText, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
-    confirm(2, R.string.confirm, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
     performing(2, R.string.performing, R.string.performingPushContent),
     lowBalance(2, R.string.outOfMoney, R.string.beforeSpendingMoney),
@@ -170,10 +169,6 @@ public enum NotificationType {
             remoteViews.setOnClickPendingIntent(R.id.navigation, PendingIntent.getBroadcast(context, 0, new Intent(context, NavigationButtonListener.class), 0));
         }
 
-        if (notification.getType() == confirm) {
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_confirm);
-        }
-
         if (notification.getType() == supplierCanceled || notification.getType() == demanderCanceled) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_canceled);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
@@ -296,7 +291,6 @@ public enum NotificationType {
 
         switch (notification.getType()) {
             case accepting:
-            case confirm:
                 return null;
         }
 

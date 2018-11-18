@@ -2,13 +2,11 @@ package live.noxbox.state.cluster;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,7 +16,10 @@ import java.util.List;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
+import live.noxbox.model.Profile;
+import live.noxbox.tools.Task;
 
 public class ClusterItemsActivity extends BaseActivity {
 
@@ -39,17 +40,22 @@ public class ClusterItemsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        draw();
+        AppCache.listenProfile(this.getClass().getName(), new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                draw(profile);
+            }
+        });
 
 
     }
 
-    private void draw() {
+    private void draw(final Profile profile) {
         ((TextView) findViewById(R.id.supplyTitle)).setText("Предложение");
         ((TextView) findViewById(R.id.demandTitle)).setText("Спрос");
         separationNoxboxesByRole();
         initClusterItemsLists();
-        updateClusterItemsList();
+        updateClusterItemsList(profile);
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +65,7 @@ public class ClusterItemsActivity extends BaseActivity {
         findViewById(R.id.sort).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSettings();
+                showSettings(profile);
                 //showSortDialog();
             }
         });
@@ -93,19 +99,19 @@ public class ClusterItemsActivity extends BaseActivity {
 
     }
 
-    private void updateClusterItemsList() {
+    private void updateClusterItemsList(Profile profile) {
         if (supplyNoxboxes != null) {
-            supplyList.setAdapter(new ClusterAdapter(supplyNoxboxes, this));
+            supplyList.setAdapter(new ClusterAdapter(supplyNoxboxes, this, profile));
         }
 
         if (demandNoxboxes != null) {
-            demandList.setAdapter(new ClusterAdapter(demandNoxboxes, this));
+            demandList.setAdapter(new ClusterAdapter(demandNoxboxes, this, profile));
         }
 
     }
 
-    private void showSettings() {
-        PopupMenu popupMenu = new PopupMenu(ClusterItemsActivity.this, findViewById(R.id.sort));
+    private void showSettings(final Profile profile) {
+        final PopupMenu popupMenu = new PopupMenu(ClusterItemsActivity.this, findViewById(R.id.sort));
         popupMenu.getMenuInflater().inflate(R.menu.sort_menu, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -125,54 +131,12 @@ public class ClusterItemsActivity extends BaseActivity {
                         break;
                     }
                 }
-                updateClusterItemsList();
+                updateClusterItemsList(profile);
                 return true;
             }
         });
 
         popupMenu.show();
-    }
-
-    private void showSortDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(ClusterItemsActivity.this);
-        final View view = getLayoutInflater().inflate(R.layout.dialog_sort_cluster_items, null);
-
-        RadioButton sortByType = view.findViewById(R.id.type);
-        RadioButton sortByPrice = view.findViewById(R.id.price);
-        RadioButton sortByRating = view.findViewById(R.id.rating);
-
-        builder.setView(view);
-        final AlertDialog alertDialog = builder.create();
-
-        sortByType.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                executeSortByTypeInAlphabeticalOrder();
-                updateClusterItemsList();
-                alertDialog.cancel();
-            }
-        });
-        sortByPrice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                executeSortByPrice();
-                updateClusterItemsList();
-                alertDialog.cancel();
-            }
-        });
-        sortByRating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                executeSortByRating();
-                updateClusterItemsList();
-                alertDialog.cancel();
-            }
-        });
-
-
-        alertDialog.show();
-
     }
 
     private void executeSortByTypeInAlphabeticalOrder() {

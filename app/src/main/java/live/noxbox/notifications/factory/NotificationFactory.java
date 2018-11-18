@@ -22,7 +22,6 @@ public abstract class NotificationFactory {
             case message: new NotificationMessage(context, profile, data).show(); break;
             case moving: new NotificationMoving(context, profile, data).show(); break;
             case lowBalance: new NotificationLowBalance(context, profile, data).show(); break;
-            case confirm:
             case verifyPhoto:
             case supplierCanceled:
             case demanderCanceled:

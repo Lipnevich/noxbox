@@ -1,4 +1,4 @@
-package live.noxbox.profile;
+package live.noxbox.menu.profile;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -38,8 +38,8 @@ public class TravelModeAdapter extends ArrayAdapter<TravelMode> {
             LayoutInflater inflator = activity.getLayoutInflater();
             view = inflator.inflate(R.layout.activity_list_dialog, null);
             final TravelModeAdapter.ViewHolder viewHolder = new TravelModeAdapter.ViewHolder();
-            viewHolder.name = (TextView) view.findViewById(R.id.name);
-            viewHolder.mode = (ImageView) view.findViewById(R.id.image);
+            viewHolder.name = view.findViewById(R.id.name);
+            viewHolder.mode = view.findViewById(R.id.image);
             view.setTag(viewHolder);
             
         } else {
