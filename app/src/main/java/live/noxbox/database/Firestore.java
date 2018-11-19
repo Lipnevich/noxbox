@@ -14,15 +14,19 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.SetOptions;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Virtual;
+import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
 import static java.lang.reflect.Modifier.isStatic;
@@ -146,4 +150,20 @@ public class Firestore {
         return params;
     }
 
+    public static void readHistory(final int start, final int count, final Task<Collection<Noxbox>> task) {
+        AppCache.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile object) {
+                List<Noxbox> noxboxes = NoxboxExamples.generateNoxboxes(new Position(), count - 1, 50);
+                for(int i = start; i < start + noxboxes.size(); i++) {
+                    noxboxes.get(i - start).setTimeCompleted(System.currentTimeMillis());
+                    noxboxes.get(i - start).setParty(object);
+                    noxboxes.get(i - start).setPrice("" + i);
+
+                }
+                task.execute(noxboxes);
+            }
+        });
+
+    }
 }

@@ -46,7 +46,7 @@ public class NoxboxExamples {
             rating.getComments().put("1", new Comment("1", "Добротный паренёк!", System.currentTimeMillis(), true));
             rating.getComments().put("2", new Comment("2", "Выносливость бы повысить, слишком быстро выдыхается во время кросса.", System.currentTimeMillis(), false));
 
-            noxbox.setType(NoxboxType.values()[ThreadLocalRandom.current().nextInt(NoxboxType.values().length)]);
+            noxbox.setType(NoxboxType.values()[ThreadLocalRandom.current().nextInt(NoxboxType.values().length - 1)]);
             owner.getDemandsRating().put(noxbox.getType().name(), rating);
             owner.getSuppliesRating().put(noxbox.getType().name(), rating);
             noxbox.setOwner(owner);
@@ -84,7 +84,6 @@ public class NoxboxExamples {
 
             //Фильтрация услуг в зависимости от настроек
             noxbox.setTimeCreated(System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(-1000000, 0));
-            if (noxbox.getType() == NoxboxType.redirect) continue;
             noxboxes.add(noxbox);
         }
 
