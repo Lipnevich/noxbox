@@ -21,13 +21,6 @@ public interface InvalidAcceptance {
         }
     }
 
-    class Nose implements InvalidAcceptance {
-        @Override
-        public int getCorrectionMessage() {
-            return R.string.openYourFace;
-        }
-    }
-
     class Face implements InvalidAcceptance {
         @Override
         public int getCorrectionMessage() {

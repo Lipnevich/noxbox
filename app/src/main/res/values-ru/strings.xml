@@ -216,7 +216,7 @@
     <string name="approachFace">приблизьте лицо</string>
     <string name="none" />
     <string name="photoInvalidContent">Пожалуйста, %s</string>
-    <string name="topUpYourAcc">Пополните ваш счёт</string>
+    <string name="topUpYourBalance">Пополните ваш счёт</string>
     <string name="toPay">К оплате:</string>
     <string name="messageFromTheSupport">Сообщение от техническое поддержки</string>
     <string name="outOfMoney">Заканчиваются средства</string>

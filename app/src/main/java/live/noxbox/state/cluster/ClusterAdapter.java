@@ -42,7 +42,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
     @Override
     public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, final int i) {
-        String price = clusterItems.get(i).getNoxbox().getPrice();
+        final String price = clusterItems.get(i).getNoxbox().getPrice();
         NoxboxType type = clusterItems.get(i).getNoxbox().getType();
         for (NoxboxType noxboxType : NoxboxType.values()) {
             if (noxboxType == type) {
@@ -52,11 +52,11 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
         String rating;
         if (clusterItems.get(i).getNoxbox().getRole() == MarketRole.supply) {
-            rating =  String.valueOf(Profile.ratingToPercentage(
+            rating = String.valueOf(Profile.ratingToPercentage(
                     clusterItems.get(i).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedLikes(),
                     clusterItems.get(i).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedDislikes()));
         } else {
-            rating =  String.valueOf(Profile.ratingToPercentage(
+            rating = String.valueOf(Profile.ratingToPercentage(
                     clusterItems.get(i).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedLikes(),
                     clusterItems.get(i).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedDislikes()));
         }

@@ -59,6 +59,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
+import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.date;
 
 public class DetailedActivity extends AppCompatActivity {
@@ -105,7 +106,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void draw(Profile profile) {
-        if(profile.getViewed().getParty() == null){
+        if (profile.getViewed().getParty() == null) {
             profile.getViewed().setParty(profile.notPublicInfo());
         }
         drawToolbar(profile.getViewed());
@@ -191,7 +192,7 @@ public class DetailedActivity extends AppCompatActivity {
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name())
                 : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
 
-        if(rating == null){
+        if (rating == null) {
             rating = new Rating();
         }
         int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
@@ -337,14 +338,25 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void drawAcceptButton(final Profile profile) {
         findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
-        findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                AppCache.updateNoxbox();
-                finish();
-            }
-        });
+
+        if (!profile.getAcceptance().isAccepted()) {
+            findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openPhotoNotVerifySheetDialog(DetailedActivity.this, profile);
+                }
+            });
+        } else {
+            findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
+                    AppCache.updateNoxbox();
+                    finish();
+                }
+            });
+        }
+
     }
 
     private void drawJoinButton(final Profile profile) {
@@ -355,28 +367,39 @@ public class DetailedActivity extends AppCompatActivity {
             ((Button) findViewById(R.id.joinButton)).setText(R.string.order);
         }
 
-        findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
-                    findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
-                    BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
-                    return;
+        if (!profile.getAcceptance().isAccepted()) {
+            findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openPhotoNotVerifySheetDialog(DetailedActivity.this, profile);
                 }
-                profile.setCurrent(profile.getViewed());
-                profile.setNoxboxId(profile.getCurrent().getId());
-                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+            });
+        } else {
+            findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
+                        findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+                        BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
+                        return;
+                    }
+                    profile.setCurrent(profile.getViewed());
+                    profile.setNoxboxId(profile.getCurrent().getId());
+                    profile.getCurrent().setTimeRequested(System.currentTimeMillis());
 
-                AppCache.updateNoxbox();
+                    AppCache.updateNoxbox();
 
-                GeoRealtime.offline(profile.getCurrent());
-                if(AppCache.markers.get(profile.getNoxboxId())!= null){
-                    AppCache.markers.remove(profile.getNoxboxId());
+                    GeoRealtime.offline(profile.getCurrent());
+                    if (AppCache.markers.get(profile.getNoxboxId()) != null) {
+                        AppCache.markers.remove(profile.getNoxboxId());
+                    }
+
+                    finish();
                 }
+            });
+        }
 
-                finish();
-            }
-        });
+
     }
 
     private RadioButton longToWait;

@@ -13,25 +13,21 @@ public class Acceptance {
     private Float smileProbability = 0f;
     private Float rightEyeOpenProbability = 0f;
     private Float leftEyeOpenProbability = 0f;
-    private Boolean isNose = false;
 
     public Acceptance() {
     }
 
     @Exclude
     public Boolean isAccepted() {
-        return !failToRecognizeFace
-                && !incorrectName
-                && smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
+        if (failToRecognizeFace) return false;
+        if (!incorrectName) return false;
+        return smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && rightEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
-                && leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
-                && isNose;
+                && leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
     }
 
     @Exclude
     public InvalidAcceptance getInvalidAcceptance() {
-        if (!isNose) return new InvalidAcceptance.Nose();
-
         if (smileProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE)
             return new InvalidAcceptance.Smile();
 
@@ -76,15 +72,6 @@ public class Acceptance {
 
     public Acceptance setFailToRecognizeFace(Boolean failToRecognizeFace) {
         this.failToRecognizeFace = failToRecognizeFace;
-        return this;
-    }
-
-    public Boolean getNose() {
-        return isNose;
-    }
-
-    public Acceptance setNose(Boolean nose) {
-        isNose = nose;
         return this;
     }
 

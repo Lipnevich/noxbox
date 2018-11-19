@@ -60,6 +60,7 @@ import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
+import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 
 public class ContractActivity extends BaseActivity {
 
@@ -96,23 +97,7 @@ public class ContractActivity extends BaseActivity {
             public void execute(final Profile profile) {
                 if (profile == null) return;
 
-                if (profile.getNoxboxId() != null) {
-                    closeOrRemove.setText(R.string.remove);
-                    closeOrRemove.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            removeNoxbox();
-                        }
-                    });
-                } else {
-                    closeOrRemove.setText(R.string.cancel);
-                    closeOrRemove.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            cancelNoxboxConstructor();
-                        }
-                    });
-                }
+
                 draw(profile);
             }
         });
@@ -135,7 +120,7 @@ public class ContractActivity extends BaseActivity {
         drawHost(profile);
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
-        drawPublishButton(profile);
+        drawButtons(profile);
         drawSimilarNoxboxList(profile);
     }
 
@@ -215,7 +200,7 @@ public class ContractActivity extends BaseActivity {
                 public void afterTextChanged(Editable s) {
                     String price = s.toString().replaceAll(",", "\\.");
                     profile.getCurrent().setPrice(price);
-                    if(s.length() > 0){
+                    if (s.length() > 0) {
                         drawSimilarNoxboxList(profile);
                     }
                 }
@@ -375,19 +360,60 @@ public class ContractActivity extends BaseActivity {
         });
     }
 
+    private void drawButtons(final Profile profile) {
+
+        drawCancelOrRemoveButton(profile);
+
+        drawPublishButton(profile);
+    }
+
+    private void drawCancelOrRemoveButton(final Profile profile) {
+        if (profile.getNoxboxId() != null) {
+            closeOrRemove.setText(R.string.remove);
+            closeOrRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeNoxbox();
+                }
+            });
+        } else {
+            closeOrRemove.setText(R.string.cancel);
+            closeOrRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancelNoxboxConstructor();
+                }
+            });
+        }
+    }
+
     private void drawPublishButton(final Profile profile) {
+        final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
+
+        //варификация фотографии в профиле
+        if (!profile.getAcceptance().isAccepted()) {
+            publishButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openPhotoNotVerifySheetDialog(ContractActivity.this, profile);
+                }
+            });
+            return;
+        }
+
+
         // TODO (vl) если имя пустое или null то выводить просьбу ввести имя
-        ((LinearLayout) findViewById(R.id.publish).getParent()).setOnClickListener(new View.OnClickListener() {
+        publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
 
-                    ((LinearLayout) findViewById(R.id.publish).getParent())
-                            .setBackgroundColor(getResources().getColor(R.color.translucent));
+                    publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
 
                     BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
                 }
+
                 postNoxbox(profile);
             }
         });

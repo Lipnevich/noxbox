@@ -11,7 +11,6 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.face.FirebaseVisionFace;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
-import com.google.firebase.ml.vision.face.FirebaseVisionFaceLandmark;
 
 import java.util.List;
 
@@ -30,11 +29,10 @@ public class FacePartsDetection {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionFaceDetectorOptions options =
                 new FirebaseVisionFaceDetectorOptions.Builder()
-                        .setModeType(FirebaseVisionFaceDetectorOptions.ACCURATE_MODE)
-                        .setLandmarkType(FirebaseVisionFaceDetectorOptions.NO_LANDMARKS)
-                        .setClassificationType(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
+                        .setPerformanceMode(FirebaseVisionFaceDetectorOptions.ACCURATE)
+                        .setLandmarkMode(FirebaseVisionFaceDetectorOptions.NO_LANDMARKS)
+                        .setClassificationMode(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
                         .setMinFaceSize(MINIMUM_FACE_SIZE)
-                        .setTrackingEnabled(false)
                         .build();
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
                 .getVisionFaceDetector(options);
@@ -51,10 +49,8 @@ public class FacePartsDetection {
                         }
                         profile.getAcceptance().setFailToRecognizeFace(false);
                         FirebaseVisionFace face = faces.get(0);
-                        FirebaseVisionFaceLandmark nose = face.getLandmark(FirebaseVisionFaceLandmark.NOSE_BASE);
-                        if (nose != null) {
-                            profile.getAcceptance().setNose(true);
-                        }
+
+
 
                         // If classification was enabled:
                         if (face.getSmilingProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
