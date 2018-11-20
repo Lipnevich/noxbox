@@ -28,6 +28,13 @@ public interface InvalidAcceptance {
         }
     }
 
+    class FaceSize implements InvalidAcceptance {
+        @Override
+        public int getCorrectionMessage() {
+            return R.string.approachFace;
+        }
+    }
+
     class None implements InvalidAcceptance{
         @Override
         public int getCorrectionMessage() {

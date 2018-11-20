@@ -4,6 +4,7 @@ import com.google.firebase.database.Exclude;
 
 import live.noxbox.tools.InvalidAcceptance;
 
+import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
 import static live.noxbox.Configuration.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
 
 public class Acceptance {
@@ -13,6 +14,7 @@ public class Acceptance {
     private Float smileProbability = 0f;
     private Float rightEyeOpenProbability = 0f;
     private Float leftEyeOpenProbability = 0f;
+    private Float faceSize = 0f;
 
     public Acceptance() {
     }
@@ -21,13 +23,16 @@ public class Acceptance {
     public Boolean isAccepted() {
         if (failToRecognizeFace) return false;
         if (!incorrectName) return false;
-        return smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
+        return faceSize >= MINIMUM_FACE_SIZE
+                && smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && rightEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && leftEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
     }
 
     @Exclude
     public InvalidAcceptance getInvalidAcceptance() {
+        if (faceSize < MINIMUM_FACE_SIZE) return new InvalidAcceptance.FaceSize();
+
         if (smileProbability < MINIMUM_PROBABILITY_FOR_ACCEPTANCE)
             return new InvalidAcceptance.Smile();
 
@@ -81,6 +86,15 @@ public class Acceptance {
 
     public Acceptance setIncorrectName(Boolean incorrectName) {
         this.incorrectName = incorrectName;
+        return this;
+    }
+
+    public Float getFaceSize() {
+        return faceSize;
+    }
+
+    public Acceptance setFaceSize(Float faceSize) {
+        this.faceSize = faceSize;
         return this;
     }
 }

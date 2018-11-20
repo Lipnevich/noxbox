@@ -86,14 +86,22 @@ public class ImageManager {
     };
 
     private static void uploadImage(final Activity activity, final Bitmap bitmap, final String path, final OnSuccessListener<Uri> onSuccessListener) {
-
         final StorageReference storageRef =
                 getStorageReference().child(path + "." + Bitmap.CompressFormat.JPEG.name());
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        //TODO (vl) check photo size <= 1MB or compress to lower quality
-        UploadTask uploadTask = storageRef.putBytes(baos.toByteArray());
+
+        int quality = 100;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+        while (quality > 1) {
+            quality -= 9;
+            if (stream.toByteArray().length <= 1000000)//check photo size <= 1MB or compress to lower quality
+                break;
+            stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+        }
+
+        UploadTask uploadTask = storageRef.putBytes(stream.toByteArray());
         final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
         final NotificationData notification = new NotificationData();
         uploadTask

@@ -11,8 +11,8 @@ public interface Configuration {
     String CURRENCY = "Waves";
     int LOCATION_PERMISSION_REQUEST_CODE = 911;
     long MINIMUM_PAYMENT_TIME_MILLIS = 15 * 60 * 1000;
-    float MINIMUM_FACE_SIZE = 0.3F;
-    float MINIMUM_PROBABILITY_FOR_ACCEPTANCE = 0.3F;
+    float MINIMUM_FACE_SIZE = 0.6F;
+    float MINIMUM_PROBABILITY_FOR_ACCEPTANCE = 0.5F;
     String FIVE_MINUTES_PART_OF_HOUR = "12";
     int DEFAULT_BALANCE_SCALE = 10;
     String PRICE_FORMAT = "###.###";
