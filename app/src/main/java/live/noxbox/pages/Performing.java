@@ -13,13 +13,11 @@ import java.math.BigDecimal;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
-import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.util.MessagingService;
-import live.noxbox.notifications.util.NotificationService;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -162,21 +160,9 @@ public class Performing implements State {
         googleMap.clear();
         removeTimer();
         performingView.removeAllViews();
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                if (profile.getCurrent().getTimeStartPerforming() != null) {
-                    scheduleJob();
-                }
-            }
-        });
-
         Log.d(TAG + "Performing", "time return to AvailableService: " + DateTimeFormatter.time(System.currentTimeMillis()));
     }
 
-    private void scheduleJob() {
-        activity.startService(NotificationService.newService(activity));
-    }
 
 
     public static boolean hasMinimumServiceTimePassed(Profile profile) {

@@ -244,6 +244,7 @@
     <string name="redirectToPlayMarket">запросить другую услугу</string>
     <string name="similarNoxboxes">Подходящие услуги:</string>
     <string name="verification">Верификация</string>
+    <string name="withComission">с учётом комиссии</string>
 
 
 </resources>

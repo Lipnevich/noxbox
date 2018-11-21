@@ -26,6 +26,8 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.COMISSION_FEE;
+import static live.noxbox.Configuration.CURRENCY;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.notifications.util.MessagingService.getNotificationService;
 
@@ -94,7 +96,6 @@ public enum NotificationType {
                 .setContentIntent(getIntent(context, notificationData))
                 .setAutoCancel(getAutoCancel(notificationData));
     }
-
 
 
     public static void updateNotification(Context context, final NotificationData notification, NotificationCompat.Builder builder) {
@@ -203,7 +204,8 @@ public enum NotificationType {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.contentRole, notification.getMessage());
-            remoteViews.setTextViewText(R.id.content, notification.getPrice().concat(" ").concat(Configuration.CURRENCY));
+            String comission = " " + context.getResources().getString(R.string.withComission) + " " + COMISSION_FEE + " " + CURRENCY;
+            remoteViews.setTextViewText(R.id.content, notification.getPrice().concat(" ").concat(CURRENCY).concat(comission));
         }
 
         return remoteViews;
@@ -224,11 +226,11 @@ public enum NotificationType {
     }
 
     public static Uri getSound(Context context, NotificationType type) {
-        if (type == uploadingProgress || type == performing || type == moving|| type == accepting)
+        if (type == uploadingProgress || type == performing || type == moving || type == accepting)
             return null;
 
         int sound = R.raw.push;
-            //sound = R.raw.requested;
+        //sound = R.raw.requested;
 
         return Uri.parse("android.resource://" + context.getPackageName() + "/raw/"
                 + context.getResources().getResourceEntryName(sound));

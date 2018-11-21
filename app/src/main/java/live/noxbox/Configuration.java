@@ -21,5 +21,6 @@ public interface Configuration {
     int MAX_ZOOM_LEVEL = 18;
     String CHANNEL_ID = "noxbox_channel";
     int CLUSTER_RENDERING_FREQUENCY = 500;
+    float COMISSION_FEE = 0.1F;
 
 }

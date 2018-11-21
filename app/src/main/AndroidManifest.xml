@@ -97,11 +97,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".notifications.util.NotificationService"
-            android:enabled="true"
-            android:exported="true"
-            android:isolatedProcess="true" />
         <service android:name=".pages.AvailableNoxboxesService" />
 
         <receiver android:name=".model.NotificationType$CancelRequestListener">

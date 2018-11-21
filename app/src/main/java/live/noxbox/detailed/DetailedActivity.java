@@ -110,7 +110,7 @@ public class DetailedActivity extends AppCompatActivity {
             profile.getViewed().setParty(profile.notPublicInfo());
         }
         drawToolbar(profile.getViewed());
-        drawOtherProfile(profile);
+        drawOppositeProfile(profile);
         drawDescription(profile);
         drawWaitingTime(profile);
         drawRating(profile.getViewed());
@@ -119,7 +119,7 @@ public class DetailedActivity extends AppCompatActivity {
             drawWorkSample(profile.getViewed());
         }
 
-        drawPrice(profile.getViewed());
+        drawPrice(profile);
 
         drawButtons(profile);
     }
@@ -142,7 +142,7 @@ public class DetailedActivity extends AppCompatActivity {
                 });
     }
 
-    private void drawOtherProfile(Profile me) {
+    private void drawOppositeProfile(Profile me) {
         Profile other = me.getViewed().getNotMe(me.getId());
         if (other.getName() != null && other.getPhoto() != null) {
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
@@ -297,14 +297,18 @@ public class DetailedActivity extends AppCompatActivity {
 
     }
 
-    private void drawPrice(Noxbox noxbox) {
+    private void drawPrice(Profile profile) {
         drawDropdownElement(R.id.priceTitleLayout, R.id.priceLayout);
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
-        ((TextView) findViewById(R.id.priceTitle)).setText(getResources().getString(R.string.priceTxt) + " " + noxbox.getPrice() + " " + Configuration.CURRENCY);
-        ((TextView) findViewById(R.id.price)).setText(noxbox.getPrice());
-        ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(noxbox.getType().getDuration());
 
-        String description = getResources().getString(noxbox.getType().getDuration());
+        String priceTitle = getResources().getString(R.string.priceTxt) + " " + profile.getViewed().getPrice() + " " + Configuration.CURRENCY;
+        ((TextView) findViewById(R.id.priceTitle)).setText(priceTitle);
+        ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(profile.getViewed().getType().getDuration());
+
+        TextView priceView = findViewById(R.id.price);
+        priceView.setText(profile.getViewed().getPrice());
+
+        String description = getResources().getString(profile.getViewed().getType().getDuration());
         String serviceDescription = "";
         int countSpace = 0;
         for (int i = 0; i < description.length(); i++) {
@@ -317,9 +321,9 @@ public class DetailedActivity extends AppCompatActivity {
             }
             serviceDescription = serviceDescription.concat(String.valueOf(description.charAt(i)));
         }
-
-        ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter));
-        ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(noxbox.getType().getImage());
+        String descriptiong = getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter);
+        ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(descriptiong);
+        ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(profile.getViewed().getType().getImage());
     }
 
     private void drawButtons(Profile profile) {
