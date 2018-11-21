@@ -12,6 +12,7 @@
         android:label="@string/noxbox"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
         tools:replace="label">
         <activity
             android:name=".pages.AuthActivity"
@@ -25,6 +26,12 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".pages.confirmation.ConfirmationActivity"
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/NoActionBar">
+
         </activity>
         <activity
             android:name=".filters.MapFiltersActivity"
@@ -62,7 +69,6 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".detailed.CoordinateActivity"
-
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".menu.HistoryActivity"
@@ -86,7 +92,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name=".notifications.util.MessagingService" >
+        <service android:name=".notifications.util.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
