@@ -17,6 +17,7 @@ import java.util.List;
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.database.Firestore;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.tools.Task;
 
@@ -34,9 +35,6 @@ public class HistoryActivity extends BaseActivity {
     private Task<Collection<Noxbox>> uploadingTask = new Task<Collection<Noxbox>>() {
         @Override
         public void execute(Collection<Noxbox> items) {
-            if(items.size() > AMOUNT_PER_LOAD) {
-                requestedAmount = requestedAmount + items.size() - AMOUNT_PER_LOAD;
-            }
             historyItems.addAll(items);
             progressView.setVisibility(View.INVISIBLE);
             listView.setVisibility(View.VISIBLE);
@@ -68,7 +66,12 @@ public class HistoryActivity extends BaseActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if(firstVisibleItem >= requestedAmount - visibleItemCount * 2) {
-                    Firestore.readHistory(requestedAmount, AMOUNT_PER_LOAD, uploadingTask);
+                    long startFrom = historyItems.isEmpty() ?
+                            Long.MAX_VALUE :
+                            historyItems.get(historyItems.size() - 1).getTimeCompleted();
+
+                    // TODO (vl) use MarketRole.demand for payer's history
+                    Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, MarketRole.supply, uploadingTask);
                     requestedAmount += AMOUNT_PER_LOAD;
                 }
             }

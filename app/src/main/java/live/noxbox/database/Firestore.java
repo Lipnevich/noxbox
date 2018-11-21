@@ -11,22 +11,24 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import live.noxbox.BuildConfig;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
-import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Virtual;
-import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
 import static java.lang.reflect.Modifier.isStatic;
@@ -89,6 +91,14 @@ public class Firestore {
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
         }
+        // ids for history queries
+        if(current.getRole() == MarketRole.supply) {
+            current.setPerformerId(current.getOwner().getId());
+            current.setPayerId(current.getParty() == null ? null : current.getParty().getId());
+        } else if(current.getRole() == MarketRole.demand) {
+            current.setPerformerId(current.getParty() == null ? null : current.getParty().getId());
+            current.setPayerId(current.getOwner().getId());
+        }
 
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge());
 
@@ -109,6 +119,31 @@ public class Firestore {
                 }
             }
         });
+    }
+
+    public static void readHistory(long start, int count, MarketRole role, final Task<Collection<Noxbox>> task) {
+        noxboxes(start, count, role)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> result) {
+                Collection<Noxbox> noxboxes = new ArrayList<>();
+                if (result.isSuccessful() && result.getResult() != null) {
+                    for (QueryDocumentSnapshot document : result.getResult()) {
+                        noxboxes.add(document.toObject(Noxbox.class));
+                    }
+                }
+                task.execute(noxboxes);
+            }
+        });
+    }
+
+    private static Query noxboxes(long start, int count, MarketRole role) {
+        return db().collection("noxboxes")
+                .whereEqualTo(role.getOwnerFieldId(), FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereGreaterThan("timeCompleted", 0)
+                .orderBy("timeCompleted", Query.Direction.DESCENDING)
+                .startAt(start)
+                .limit(count);
     }
 
     // in case of null value - does not override value
@@ -150,20 +185,4 @@ public class Firestore {
         return params;
     }
 
-    public static void readHistory(final int start, final int count, final Task<Collection<Noxbox>> task) {
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile object) {
-                List<Noxbox> noxboxes = NoxboxExamples.generateNoxboxes(new Position(), count - 1, 50);
-                for(int i = start; i < start + noxboxes.size(); i++) {
-                    noxboxes.get(i - start).setTimeCompleted(System.currentTimeMillis());
-                    noxboxes.get(i - start).setParty(object);
-                    noxboxes.get(i - start).setPrice("" + i);
-
-                }
-                task.execute(noxboxes);
-            }
-        });
-
-    }
 }

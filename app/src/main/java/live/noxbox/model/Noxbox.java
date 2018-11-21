@@ -29,6 +29,9 @@ public class Noxbox implements Comparable<Noxbox> {
 
     private Profile owner;
     private Profile party;
+    private String performerId;
+    private String payerId;
+
     private Map<String, Message> ownerMessages = new HashMap<>();
     private Map<String, Message> partyMessages = new HashMap<>();
 
@@ -62,6 +65,8 @@ public class Noxbox implements Comparable<Noxbox> {
         ownerMessages.clear();
         partyMessages.clear();
         party = null;
+        performerId = null;
+        payerId = null;
         estimationTime = null;
         cancellationReasonMessage = null;
         commentForDemand = null;
@@ -420,6 +425,24 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setPartyMessages(Map<String, Message> partyMessages) {
         this.partyMessages = partyMessages;
+        return this;
+    }
+
+    public String getPerformerId() {
+        return performerId;
+    }
+
+    public Noxbox setPerformerId(String performerId) {
+        this.performerId = performerId;
+        return this;
+    }
+
+    public String getPayerId() {
+        return payerId;
+    }
+
+    public Noxbox setPayerId(String payerId) {
+        this.payerId = payerId;
         return this;
     }
 }
