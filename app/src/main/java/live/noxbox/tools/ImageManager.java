@@ -24,6 +24,7 @@ import java.io.IOException;
 
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
+import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
@@ -95,10 +96,12 @@ public class ImageManager {
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         while (quality > 1) {
             quality -= 9;
-            if (stream.toByteArray().length <= 1000000)//check photo size <= 1MB or compress to lower quality
+            if (stream.toByteArray().length <= 400000)//check photo size <= 1MB or compress to lower quality
                 break;
             stream = new ByteArrayOutputStream();
+            TimeLogger compression = new TimeLogger();
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
+            compression.makeLog("compression");
         }
 
         UploadTask uploadTask = storageRef.putBytes(stream.toByteArray());

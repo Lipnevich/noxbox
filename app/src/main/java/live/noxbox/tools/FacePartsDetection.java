@@ -19,6 +19,7 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import java.util.List;
 
 import live.noxbox.database.AppCache;
+import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -50,18 +51,19 @@ public class FacePartsDetection {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionFaceDetectorOptions options =
                 new FirebaseVisionFaceDetectorOptions.Builder()
-                        .setPerformanceMode(FirebaseVisionFaceDetectorOptions.ACCURATE)
+                        .setPerformanceMode(FirebaseVisionFaceDetectorOptions.FAST)
                         .setLandmarkMode(FirebaseVisionFaceDetectorOptions.NO_LANDMARKS)
                         .setClassificationMode(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
                         .setMinFaceSize(MINIMUM_FACE_SIZE)
                         .build();
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
                 .getVisionFaceDetector(options);
-
+        final TimeLogger detection = new TimeLogger();
         detector.detectInImage(image)
                 .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionFace>>() {
                     @Override
                     public void onSuccess(List<FirebaseVisionFace> faces) {
+                        detection.makeLog("detection");
                         if (faces.size() != 1) {
                             profile.getAcceptance().setFailToRecognizeFace(true);
                             buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
@@ -70,7 +72,7 @@ public class FacePartsDetection {
                         }
                         profile.getAcceptance().setFailToRecognizeFace(false);
 
-                        profile.getAcceptance().setFaceSize(getFaceSizeFromBitmap(bitmap, activity));//процент площади фотогарфии занимаемой лицом
+                        profile.getAcceptance().setFaceSize(0.7f);
                         FirebaseVisionFace face = faces.get(0);
 
 

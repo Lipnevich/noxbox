@@ -63,21 +63,12 @@ public class ConfirmationActivity extends BaseActivity {
     }
 
     private void drawPhoto(Profile profile, Activity activity) {
-        if (profile.getId().equals(profile.getCurrent().getOwner().getId())) {
-            Glide.with(activity).asDrawable().load(profile.getCurrent().getParty().getPhoto()).into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    ((ImageView) findViewById(R.id.photo)).setImageDrawable(resource);
-                }
+        Glide.with(activity).asDrawable().load(profile.getCurrent().getNotMe(profile.getId()).getPhoto()).into(new SimpleTarget<Drawable>() {
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                ((ImageView) findViewById(R.id.photo)).setImageDrawable(resource);
+            }
             });
-        } else {
-            Glide.with(activity).asDrawable().load(profile.getCurrent().getOwner().getPhoto()).into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                    ((ImageView) findViewById(R.id.photo)).setImageDrawable(resource);
-                }
-            });
-        }
     }
 
     private void drawConfirmButton(final Profile profile, final Activity activity) {
