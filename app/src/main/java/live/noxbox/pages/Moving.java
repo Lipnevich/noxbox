@@ -130,8 +130,8 @@ public class Moving implements State {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     if (countDownTimer != null) {
-                        notification.setTime(String.valueOf(profile.getCurrent().getTimeToMeet() - (profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
-                        notification.setProgress((int) (profile.getCurrent().getTimeToMeet() - millisUntilFinished));
+                       // notification.setTime(String.valueOf(profile.getCurrent().getTimeToMeet() - (profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
+                        //notification.setProgress((int) (profile.getCurrent().getTimeToMeet() - millisUntilFinished));
                         //NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                     }
                 }
@@ -161,6 +161,7 @@ public class Moving implements State {
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
         moveCopyrightLeft(googleMap);
         googleMap.clear();
 

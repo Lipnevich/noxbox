@@ -59,8 +59,6 @@ public class AvailableServices implements State {
 
     @Override
     public void draw(final Profile profile) {
-
-
         startListenAvailableNoxboxes();
         if (clusterManager == null) {
             clusterManager = new ClusterManager(activity, googleMap);
