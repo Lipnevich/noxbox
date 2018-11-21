@@ -7,7 +7,6 @@ import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Polyline;
@@ -37,7 +36,6 @@ public class Moving implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    private LinearLayout movingView;
 
     private CountDownTimer countDownTimer;
 
@@ -83,9 +81,6 @@ public class Moving implements State {
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.eye);
 
-        movingView = activity.findViewById(R.id.container);
-        View childMoving = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
-        movingView.addView(childMoving);
 
 
         activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
@@ -169,9 +164,6 @@ public class Moving implements State {
         moveCopyrightLeft(googleMap);
         googleMap.clear();
 
-        if (movingView != null) {
-            movingView.removeAllViews();
-        }
     }
 
     private Float getDistance(Profile profile) {
