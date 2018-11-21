@@ -68,6 +68,7 @@ public class Accepting implements State {
                 long timeAccepted = System.currentTimeMillis();
                 Log.d(TAG + "Accepting", "timeAccepted: " + DateTimeFormatter.time(timeAccepted));
                 profile.getCurrent().setTimeAccepted(timeAccepted);
+                profile.getCurrent().setOwner(profile.notPublicInfo());
                 profile.getCurrent().getOwner().setWallet(profile.getWallet());
                 updateNoxbox();
             }
