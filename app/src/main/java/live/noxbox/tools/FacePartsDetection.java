@@ -51,9 +51,9 @@ public class FacePartsDetection {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionFaceDetectorOptions options =
                 new FirebaseVisionFaceDetectorOptions.Builder()
-                        .setPerformanceMode(FirebaseVisionFaceDetectorOptions.FAST)
-                        .setLandmarkMode(FirebaseVisionFaceDetectorOptions.NO_LANDMARKS)
-                        .setClassificationMode(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
+                        .setModeType(FirebaseVisionFaceDetectorOptions.FAST_MODE)
+                        .setLandmarkType(FirebaseVisionFaceDetectorOptions.NO_LANDMARKS)
+                        .setClassificationType(FirebaseVisionFaceDetectorOptions.ALL_CLASSIFICATIONS)
                         .setMinFaceSize(MINIMUM_FACE_SIZE)
                         .build();
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()

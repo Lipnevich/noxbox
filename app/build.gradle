@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 95
-        versionName "95"
+        versionCode 97
+        versionName "97"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -53,8 +53,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:16.0.3'
     implementation 'com.google.firebase:firebase-firestore:17.1.1'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
-    implementation 'com.google.firebase:firebase-ml-vision:18.0.1'
-    implementation 'com.google.firebase:firebase-ml-vision-face-model:17.0.2'
+    // later version of ml vision is terribly slow and huge
+    implementation 'com.google.firebase:firebase-ml-vision:17.0.1'
     implementation 'com.google.firebase:firebase-perf:16.1.2'
     implementation 'com.google.firebase:firebase-storage:16.0.3'
     implementation 'com.firebaseui:firebase-ui-auth:3.3.1'

@@ -96,19 +96,15 @@ public class ContractActivity extends BaseActivity {
             @Override
             public void execute(final Profile profile) {
                 if (profile == null) return;
-
-
                 draw(profile);
             }
         });
-
     }
 
     protected boolean checkLocationPermission() {
         return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED;
     }
-
 
     private void draw(@NonNull final Profile profile) {
         drawToolbar(profile);
