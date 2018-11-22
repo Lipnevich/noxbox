@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -216,7 +218,7 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String newName = String.valueOf(s);
-                if (!profile.getName().equals(newName)) {
+                if (!Strings.nullToEmpty(profile.getName()).equals(newName)) {
                     profile.setName(newName);
                 }
             }
