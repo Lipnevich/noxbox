@@ -17,6 +17,15 @@
         android:textSize="24sp" />
 
     <TextView
+        android:id="@+id/moneyToPay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/primary"
+        android:textSize="74sp" />
+
+    <TextView
         android:id="@+id/currency"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

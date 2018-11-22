@@ -18,11 +18,12 @@ public class SeparateStreamForStopwatch {
     private static Runnable runnable;
     public static final DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT);
 
-    public static void initializeStopwatch(Profile profile, Handler handler, Runnable runnable) {
-        if (runnable == null || handler == null) return;
+    public static void initializeStopwatch(Profile profile, Handler newHandler, Runnable newRunnable) {
+        if (newHandler == null || newRunnable == null) return;
+        removeTimer();
 
-        SeparateStreamForStopwatch.runnable = runnable;
-        SeparateStreamForStopwatch.handler = handler;
+        SeparateStreamForStopwatch.runnable = newRunnable;
+        SeparateStreamForStopwatch.handler = newHandler;
 
         seconds = (int) ((System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
         totalMoney = new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
@@ -36,8 +37,8 @@ public class SeparateStreamForStopwatch {
     }
 
     public static void removeTimer() {
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
         }
         handler = null;
         runnable = null;
