@@ -3,13 +3,9 @@ package live.noxbox.tools;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.vision.Frame;
-import com.google.android.gms.vision.face.Face;
-import com.google.android.gms.vision.face.FaceDetector;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.face.FirebaseVisionFace;
@@ -29,23 +25,23 @@ import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
 
 public class FacePartsDetection {
 
-    private static float getFaceSizeFromBitmap(Bitmap bitmap, Activity activity) {
-        FaceDetector detector = new FaceDetector.Builder(activity)
-                .setTrackingEnabled(false)
-                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
-                .build();
-        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-        SparseArray<Face> faces = detector.detect(frame);
-
-        if (faces.size() == 0) return 0f;
-
-        Face face = faces.valueAt(0);
-
-        float faceArea = face.getWidth() * face.getHeight();
-        float bitmapArea = bitmap.getWidth() * bitmap.getHeight();
-
-        return faceArea / bitmapArea;
-    }
+//    private static float getFaceSizeFromBitmap(Bitmap bitmap, Activity activity) {
+//        FaceDetector detector = new FaceDetector.Builder(activity)
+//                .setTrackingEnabled(false)
+//                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+//                .build();
+//        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
+//        SparseArray<Face> faces = detector.detect(frame);
+//
+//        if (faces.size() == 0) return 0f;
+//
+//        Face face = faces.valueAt(0);
+//
+//        float faceArea = face.getWidth() * face.getHeight();
+//        float bitmapArea = bitmap.getWidth() * bitmap.getHeight();
+//
+//        return faceArea / bitmapArea;
+//    }
 
     public static void execute(final Bitmap bitmap, final Profile profile, final Activity activity) {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);

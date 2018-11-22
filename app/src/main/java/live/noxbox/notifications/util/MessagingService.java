@@ -57,14 +57,6 @@ public class MessagingService extends FirebaseMessagingService {
         context = getApplicationContext();
         //TODO(vl) читаем профиль и передаём текущий
         NotificationFactory.showNotification(context, new Profile(), remoteMessage.getData());
-
-        //showPushNotification(notification);
-
-//                if (notification.getType() == NotificationType.message) {
-//                    notification.setMessage(notification.getId());
-//                    notification.setName(profile.getName());
-//                    notification.setTime(String.valueOf(System.currentTimeMillis()));
-//                }
     }
 
     public static void removeNotifications(Context context) {

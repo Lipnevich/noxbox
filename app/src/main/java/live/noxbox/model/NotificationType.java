@@ -158,8 +158,6 @@ public enum NotificationType {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
             remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-            remoteViews.setOnClickPendingIntent(R.id.accept, PendingIntent.getBroadcast(context, 0, new Intent(context, AcceptRequestListener.class), 0));
-            remoteViews.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
 
         }
 

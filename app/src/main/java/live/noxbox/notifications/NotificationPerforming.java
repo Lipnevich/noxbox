@@ -1,8 +1,6 @@
 package live.noxbox.notifications;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
@@ -31,8 +29,6 @@ public class NotificationPerforming extends Notification {
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
         contentView.setTextViewText(R.id.countDownTime, notificationTime);
         contentView.setTextViewText(R.id.title, context.getResources().getString(type.getTitle()));
-        contentView.setOnClickPendingIntent(R.id.accept, PendingIntent.getBroadcast(context, 0, new Intent(context, NotificationType.AcceptRequestListener.class), 0));
-        contentView.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, NotificationType.CancelRequestListener.class), 0));
 
         isAlertOnce = true;
         onViewOnClickAction = null;

@@ -122,6 +122,11 @@
                 <action android:name="live.noxbox.UserInputListener" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".notifications.factory.Notification$DeleteActionIntent">
+            <intent-filter>
+                <action android:name="live.noxbox.DeleteActionIntent" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

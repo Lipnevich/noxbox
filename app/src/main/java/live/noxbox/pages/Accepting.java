@@ -13,17 +13,14 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
-import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
-import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS;
 import static live.noxbox.database.AppCache.updateNoxbox;
 
 public class Accepting implements State {
@@ -58,6 +55,7 @@ public class Accepting implements State {
                 Log.d(TAG + "Accepting", "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
                 profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
                 NotificationType.removeNotifications(activity.getApplicationContext());
+                countDownTimer.cancel();
                 updateNoxbox();
             }
         });
@@ -74,6 +72,9 @@ public class Accepting implements State {
             }
         });
 
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        MapController.buildMapMarkerListener(googleMap, profile, activity);
+
         anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
         anim.setDuration(15000);
         anim.setInterpolator(new DecelerateInterpolator());
@@ -84,28 +85,19 @@ public class Accepting implements State {
         animationDrawable.setExitFadeDuration(1200);
         animationDrawable.start();
 
-
-        final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        final NotificationData notification = new NotificationData()
-                .setType(NotificationType.accepting)
-                .setTime(String.valueOf(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS));
-        messagingService.showPushNotification(notification);
-
-
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
+        Log.e("AAAAAAAAAAAAAA", "  "+ requestTimePassed);
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
             autoDisconnectFromService(profile);
             return;
         }
+
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView countdownTime = acceptingView.findViewById(R.id.countdownTime);
                 if (countdownTime != null) {
                     countdownTime.setText(String.valueOf(millisUntilFinished / 1000));
-//                    NotificationType.updateNotification(activity.getApplicationContext(),
-//                            notification.setType(NotificationType.accepting).setTime(String.valueOf(millisUntilFinished / 1000)),
-//                            MessagingService.builder);
                 }
             }
 
@@ -117,11 +109,7 @@ public class Accepting implements State {
                     updateNoxbox();
                 }
             }
-
         }.start();
-
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        MapController.buildMapMarkerListener(googleMap, profile, activity);
     }
 
     private void autoDisconnectFromService(final Profile profile) {
