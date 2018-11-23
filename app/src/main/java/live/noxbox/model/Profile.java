@@ -70,6 +70,7 @@ public class Profile implements Serializable {
     }
 
     public String getName() {
+        if(name == null) name = "";
         return name;
     }
 

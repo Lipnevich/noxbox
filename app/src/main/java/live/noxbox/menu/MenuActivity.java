@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -120,7 +121,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             } else {
                 ImageManager.createCircleImageFromUrl(activity, profile.getPhoto(), profilePhoto);
             }
-            if (profile.getName() != null) {
+            if (!Strings.isNullOrEmpty(profile.getName())) {
                 ((TextView) findViewById(R.id.name)).setText(profile.getName());
             }
             ((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
