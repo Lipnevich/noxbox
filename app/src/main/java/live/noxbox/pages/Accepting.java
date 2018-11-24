@@ -3,6 +3,7 @@ package live.noxbox.pages;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
+import android.location.Location;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import live.noxbox.R;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
+import live.noxbox.model.TravelMode;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -64,8 +66,12 @@ public class Accepting implements State {
             @Override
             public void onClick(View v) {
                 long timeAccepted = System.currentTimeMillis();
+                long timeToMeet = (long) (Math.ceil(getTravelTimeInMinutes(profile)) * 60000);
                 Log.d(TAG + "Accepting", "timeAccepted: " + DateTimeFormatter.time(timeAccepted));
+                Log.d(TAG + "Accepting", "timeToMeet: " + DateTimeFormatter.time(timeToMeet));
+
                 profile.getCurrent().setTimeAccepted(timeAccepted);
+                profile.getCurrent().setTimeToMeet(timeToMeet);
                 profile.getCurrent().setOwner(profile.notPublicInfo());
                 profile.getCurrent().getOwner().setWallet(profile.getWallet());
                 updateNoxbox();
@@ -86,7 +92,6 @@ public class Accepting implements State {
         animationDrawable.start();
 
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
-        Log.e("AAAAAAAAAAAAAA", "  "+ requestTimePassed);
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
             autoDisconnectFromService(profile);
             return;
@@ -136,4 +141,26 @@ public class Accepting implements State {
         acceptingView.removeAllViews();
     }
 
+
+    private Float getDistance(Profile profile) {
+        double startLat = profile.getCurrent().getParty().getPosition().getLatitude();
+        double startLng = profile.getCurrent().getParty().getPosition().getLongitude();
+        double endLat = profile.getCurrent().getPosition().getLatitude();
+        double endLng = profile.getCurrent().getPosition().getLongitude();
+
+        float[] results = new float[1];
+        Location.distanceBetween(startLat, startLng, endLat, endLng, results);
+        return results[0];
+    }
+
+    private Float getTravelTimeInMinutes(Profile profile) {
+        if (profile.getCurrent().getParty().getTravelMode() != TravelMode.none && profile.getCurrent().getOwner().getTravelMode() != TravelMode.none)
+            return getDistance(profile) / profile.getCurrent().getParty().getTravelMode().getSpeedInMetersPerMinute();
+
+        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none) {
+            return getDistance(profile) / profile.getCurrent().getParty().getTravelMode().getSpeedInMetersPerMinute();
+        } else {
+            return getDistance(profile) / profile.getCurrent().getOwner().getTravelMode().getSpeedInMetersPerMinute();
+        }
+    }
 }

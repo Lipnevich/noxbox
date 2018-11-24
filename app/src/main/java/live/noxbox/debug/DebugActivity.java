@@ -11,8 +11,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import live.noxbox.BuildConfig;
 import live.noxbox.Configuration;
 import live.noxbox.R;
@@ -124,9 +122,10 @@ public class DebugActivity extends MenuActivity implements
                                     && profile.getCurrent().getTimeCreated() != null
                                     && profile.getCurrent().getTimeRequested() != null
                                     && profile.getCurrent().getTimeAccepted() == null) {
-                                profile.getCurrent().getOwner().setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg");
-                                profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
-                                profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
+//                                profile.getCurrent().getOwner().setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg");
+//                                profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
+//                                profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
+                                profile.getCurrent().setTimeToMeet(1200000L);
                                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                 AppCache.updateNoxbox();
                             } else {

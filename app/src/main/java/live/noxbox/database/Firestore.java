@@ -92,10 +92,10 @@ public class Firestore {
             current.setId(newNoxboxId);
         }
         // ids for history queries
-        if(current.getRole() == MarketRole.supply) {
+        if (current.getRole() == MarketRole.supply) {
             current.setPerformerId(current.getOwner().getId());
             current.setPayerId(current.getParty() == null ? null : current.getParty().getId());
-        } else if(current.getRole() == MarketRole.demand) {
+        } else if (current.getRole() == MarketRole.demand) {
             current.setPerformerId(current.getParty() == null ? null : current.getParty().getId());
             current.setPayerId(current.getOwner().getId());
         }

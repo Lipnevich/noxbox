@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -61,6 +60,8 @@ import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.date;
+import static live.noxbox.tools.LocationCalculator.getDistanceBetweenTwoPoints;
+import static live.noxbox.tools.LocationCalculator.getTimeInMillisBetweenUsers;
 
 public class DetailedActivity extends AppCompatActivity {
     private GyroscopeObserver gyroscopeObserver;
@@ -232,18 +233,18 @@ public class DetailedActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition()));
 
-        float[] results = new float[1];
+        TravelMode travelMode;
+        if(noxbox.getOwner().getTravelMode() == TravelMode.none){
+            travelMode = noxbox.getParty().getTravelMode();
+        }else{
+            travelMode = noxbox.getOwner().getTravelMode();
+        }
 
-        Location.distanceBetween(
-                noxbox.getOwner().getPosition().getLatitude(),
-                noxbox.getOwner().getPosition().getLongitude(),
-                noxbox.getParty().getPosition().getLatitude(),
-                noxbox.getParty().getPosition().getLongitude(),
-                results);
+        int minutes = (int) getTimeInMillisBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), travelMode) / 60000;
 
-        int minutes = (int) (results[0] / noxbox.getOwner().getTravelMode().getSpeedInMetersPerMinute());
+        int distance = getDistanceBetweenTwoPoints(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition());
         String timeTxt;
-        String distanceTxt = String.valueOf((int) results[0] / 1000) + " " + getResources().getString(R.string.km);
+        String distanceTxt = String.valueOf(distance / 1000) + " " + getResources().getString(R.string.km);
         switch (minutes % 10) {
             case 1: {
                 timeTxt = getResources().getString(R.string.minute);

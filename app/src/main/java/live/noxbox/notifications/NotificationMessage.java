@@ -38,7 +38,7 @@ public class NotificationMessage extends Notification {
         contentView.setTextViewText(R.id.title, context.getResources().getString(type.getTitle()));
         contentView.setTextViewText(R.id.name, name);
         contentView.setTextViewText(R.id.content, message);
-        contentView.setTextViewText(R.id.time, DateTimeFormatter.time(Long.parseLong(notificationTime)));
+        contentView.setTextViewText(R.id.time, DateTimeFormatter.time(Long.valueOf(notificationTime)));
 
         isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)

@@ -25,7 +25,7 @@ public class NotificationAccepting extends Notification {
         sound = getSound(context);
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
-        contentView.setTextViewText(R.id.countDownTime, notificationTime);
+        contentView.setTextViewText(R.id.countDownTime, String.valueOf(notificationTime));
         contentView.setTextViewText(R.id.title, context.getResources().getString(type.getTitle()));
 
         isAlertOnce = true;
@@ -42,19 +42,18 @@ public class NotificationAccepting extends Notification {
         //TODO (VL Оставляю доделать это завтрашнему себе VL) начиная отсчёт с timeRequesting время обратного отсчёта на двух устройствах не синхронны
         long timePassed = System.currentTimeMillis() - timeRequesting;
         final long totalTime = (REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - timePassed) / 1000;
-        runnable = new Runnable() {
+        stateRunnable = new Runnable() {
             @Override
             public void run() {
-                isThreadWorked = true;
+                isStateAcceptingThreadWorked = true;
                 for (long i = totalTime; i >= 0; i--) {
                     contentView.setTextViewText(R.id.countDownTime, String.valueOf(i));
                     contentView.setImageViewResource(R.id.animationMan, R.drawable.request_hend_up);
-                    builder.setContent(contentView);
                     updateNotification(context, builder);
 
-                    if (!isThreadWorked || i <= 0) {
+                    if (!isStateAcceptingThreadWorked || i <= 0) {
                         //TODO (vl) изменять timeTimeout
-                        thread.interrupt();
+                        stateThread.interrupt();
                         removeNotificationByGroup(context, type.getGroup());
                         return;
                     }
@@ -65,7 +64,6 @@ public class NotificationAccepting extends Notification {
                         Crashlytics.logException(e);
                     }
                     contentView.setImageViewResource(R.id.animationMan, R.drawable.request_hend_down);
-                    builder.setContent(contentView);
                     updateNotification(context, builder);
 
                     try {
@@ -74,7 +72,6 @@ public class NotificationAccepting extends Notification {
                         Crashlytics.logException(e);
                     }
                     contentView.setImageViewResource(R.id.animationMan, R.drawable.request_hend_up);
-                    builder.setContent(contentView);
                     updateNotification(context, builder);
                     try {
                         Thread.sleep(333);
@@ -85,8 +82,8 @@ public class NotificationAccepting extends Notification {
             }
         };
 
-        thread = new Thread(runnable);
-        thread.start();
+        stateThread = new Thread(stateRunnable);
+        stateThread.start();
 
     }
 

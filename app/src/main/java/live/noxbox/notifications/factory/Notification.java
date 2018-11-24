@@ -35,9 +35,11 @@ public class Notification {
     protected String notificationTime;
     protected Map<String, String> data;
 
-    protected static Thread thread;
-    protected static Runnable runnable;
-    protected static boolean isThreadWorked;
+    protected static Thread stateThread;
+    protected static Runnable stateRunnable;
+    protected static boolean isStateAcceptingThreadWorked;
+    protected static boolean isStateMovingThreadWorked;
+
 
     public Notification(Context context, Profile profile, Map<String, String> data) {
         this.context = context;
@@ -45,6 +47,10 @@ public class Notification {
         this.data = data;
         type = NotificationType.valueOf(data.get("type"));
         notificationTime = data.get("time");
+
+        removeNotifications(context);
+        isStateAcceptingThreadWorked = false;
+        isStateMovingThreadWorked = false;
     }
 
     public void show() {
@@ -89,7 +95,11 @@ public class Notification {
 
     protected void updateNotification(Context context, NotificationCompat.Builder builder) {
         if (type != NotificationType.message)
-            builder.setCustomContentView(contentView);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                builder.setCustomContentView(contentView);
+            } else {
+                builder.setContent(contentView);
+            }
 
         getNotificationService(context).notify(type.getGroup(), builder.build());
     }
@@ -106,15 +116,16 @@ public class Notification {
 
     protected PendingIntent createOnDeleteIntent(Context context, int group) {
         Intent intent = new Intent(context, DeleteActionIntent.class);
-
         return PendingIntent.getBroadcast(context.getApplicationContext(),
                 group, intent, 0);
     }
 
+
     public static class DeleteActionIntent extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            isThreadWorked = false;
+            isStateMovingThreadWorked = false;
+            isStateAcceptingThreadWorked = false;
         }
     }
 

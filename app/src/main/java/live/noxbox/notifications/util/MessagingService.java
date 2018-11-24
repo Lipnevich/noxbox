@@ -56,6 +56,9 @@ public class MessagingService extends FirebaseMessagingService {
         initCrashReporting();
         context = getApplicationContext();
         //TODO(vl) читаем профиль и передаём текущий
+//        if (!inForeground()) {
+//            NotificationFactory.showNotification(context, new Profile(), remoteMessage.getData());
+//        }
         NotificationFactory.showNotification(context, new Profile(), remoteMessage.getData());
     }
 

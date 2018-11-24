@@ -27,7 +27,7 @@ public class NotificationPerforming extends Notification {
         sound = null;
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
-        contentView.setTextViewText(R.id.countDownTime, notificationTime);
+        contentView.setTextViewText(R.id.countDownTime, String.valueOf(notificationTime));
         contentView.setTextViewText(R.id.title, context.getResources().getString(type.getTitle()));
 
         isAlertOnce = true;
