@@ -31,15 +31,13 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/navigation"
+        android:id="@+id/noxboxType"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="4dp"
-        android:src="@drawable/navigation"
-        android:tint="@color/secondary" />
+        android:layout_marginStart="4dp" />
 
 
 </RelativeLayout>

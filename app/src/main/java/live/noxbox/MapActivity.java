@@ -136,7 +136,6 @@ public class MapActivity extends DebugActivity implements
                             }
 
                             profile.setPosition(new Position(location.getLatitude(), location.getLongitude()));
-                            //AppCache.fireProfile();
                         }
                     }
                 };

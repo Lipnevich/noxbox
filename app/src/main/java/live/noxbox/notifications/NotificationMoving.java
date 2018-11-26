@@ -13,19 +13,25 @@ import java.util.Map;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.model.NotificationType;
+import live.noxbox.database.Firestore;
+import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.Notification;
+import live.noxbox.tools.Task;
 
 public class NotificationMoving extends Notification {
 
-    private long timeAccepting;
     private int maxProgress;
     private int progress;
+    private NoxboxType noxboxType;
+
 
     public NotificationMoving(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        timeAccepting = Long.parseLong(notificationTime);
+        if (profile != null) {
+            noxboxType = profile.getCurrent().getType();
+        }
         maxProgress = Integer.parseInt(data.get("timeToMeet"));
         progress = 0;
 
@@ -35,7 +41,6 @@ public class NotificationMoving extends Notification {
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
         contentView.setTextViewText(R.id.time, String.valueOf(maxProgress / 60000).concat("min"));
         contentView.setProgressBar(R.id.progress, maxProgress, progress, false);
-        contentView.setOnClickPendingIntent(R.id.navigation, PendingIntent.getBroadcast(context, 0, new Intent(context, NotificationType.NavigationButtonListener.class), 0));
 
         isAlertOnce = true;
 
@@ -48,37 +53,51 @@ public class NotificationMoving extends Notification {
 
     @Override
     public void show() {
-        final NotificationCompat.Builder builder = getNotificationCompatBuilder();
-        getNotificationService(context).notify(type.getGroup(), builder.build());
-
-        stateRunnable = new Runnable() {
+        Task<Noxbox> task = new Task<Noxbox>() {
             @Override
-            public void run() {
-                isStateMovingThreadWorked = true;
-                int totalTimeInSeconds = maxProgress / 1000;
+            public void execute(Noxbox noxbox) {
+                contentView.setImageViewResource(R.id.noxboxType, noxbox.getType().getImage());
 
-                for (int i = totalTimeInSeconds; i >= 0; i--) {
-                    contentView.setTextViewText(R.id.time, String.valueOf(i / 60).concat("min"));
-                    contentView.setProgressBar(R.id.progress, totalTimeInSeconds, totalTimeInSeconds - i, false);
+                final NotificationCompat.Builder builder = getNotificationCompatBuilder();
+                getNotificationService(context).notify(type.getGroup(), builder.build());
 
-                    if (!isStateMovingThreadWorked) {
-                        stateThread.interrupt();
-                        removeNotificationByGroup(context, type.getGroup());
-                        return;
+                //TODO (vl) обновлять время без потока
+                stateRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        isStateMovingThreadWorked = true;
+                        int totalTimeInSeconds = maxProgress / 1000;
+
+                        for (int i = totalTimeInSeconds; i >= 0; i--) {
+                            contentView.setTextViewText(R.id.time, String.valueOf(i / 60).concat("min"));
+                            contentView.setProgressBar(R.id.progress, totalTimeInSeconds, totalTimeInSeconds - i, false);
+
+                            if (!isStateMovingThreadWorked) {
+                                stateThread.interrupt();
+                                removeNotificationByGroup(context, type.getGroup());
+                                return;
+                            }
+
+                            updateNotification(context, builder);
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                Crashlytics.logException(e);
+                            }
+                        }
+
                     }
-
-                    updateNotification(context, builder);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Crashlytics.logException(e);
-                    }
-                }
-
+                };
+                stateThread = new Thread(stateRunnable);
+                stateThread.start();
             }
         };
-        stateThread = new Thread(stateRunnable);
-        stateThread.start();
 
+
+        if (profile == null) {
+            Firestore.readNoxbox(data.get("id"), task);
+        } else {
+            task.execute(profile.getCurrent());
+        }
     }
 }

@@ -28,7 +28,6 @@ import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
-import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.Task;
 
@@ -55,11 +54,9 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         initCrashReporting();
         context = getApplicationContext();
-        //TODO(vl) читаем профиль и передаём текущий
-//        if (!inForeground()) {
-//            NotificationFactory.showNotification(context, new Profile(), remoteMessage.getData());
-//        }
-        NotificationFactory.showNotification(context, new Profile(), remoteMessage.getData());
+        if (inForeground()) {
+            NotificationFactory.showNotification(context, null, remoteMessage.getData());
+        }
     }
 
     public static void removeNotifications(Context context) {

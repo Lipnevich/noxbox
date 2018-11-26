@@ -23,7 +23,6 @@ import live.noxbox.menu.profile.ProfileActivity;
 import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.COMISSION_FEE;
@@ -165,7 +164,6 @@ public enum NotificationType {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
             remoteViews.setTextViewText(R.id.time, String.valueOf((Long.parseLong(notification.getTime())) / 60000).concat("min"));
             remoteViews.setProgressBar(R.id.progress, notification.getMaxProgress(), notification.getProgress(), false);
-            remoteViews.setOnClickPendingIntent(R.id.navigation, PendingIntent.getBroadcast(context, 0, new Intent(context, NavigationButtonListener.class), 0));
         }
 
         if (notification.getType() == supplierCanceled || notification.getType() == demanderCanceled) {
@@ -360,18 +358,6 @@ public enum NotificationType {
                     profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                     AppCache.fireProfile();
                     MessagingService.getNotificationService(context).cancelAll();
-                }
-            });
-        }
-    }
-
-    public static class NavigationButtonListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    NavigatorManager.openNavigator(context, profile);
                 }
             });
         }

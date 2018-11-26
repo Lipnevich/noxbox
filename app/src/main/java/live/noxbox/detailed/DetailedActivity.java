@@ -234,9 +234,9 @@ public class DetailedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition()));
 
         TravelMode travelMode;
-        if(noxbox.getOwner().getTravelMode() == TravelMode.none){
+        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
             travelMode = noxbox.getParty().getTravelMode();
-        }else{
+        } else {
             travelMode = noxbox.getOwner().getTravelMode();
         }
 
@@ -372,37 +372,35 @@ public class DetailedActivity extends AppCompatActivity {
             ((Button) findViewById(R.id.joinButton)).setText(R.string.order);
         }
 
-        if (!profile.getAcceptance().isAccepted()) {
-            findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO (vl) если текущему пользователю нужно двигаться тогда...
+                //TODO ... запросить разрешение на определение местоположения если оно до сих пор не было получено
+                if (!profile.getAcceptance().isAccepted()) {
                     openPhotoNotVerifySheetDialog(DetailedActivity.this, profile);
+
+                    return;
                 }
-            });
-        } else {
-            findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
-                        findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
-                        BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
-                        return;
-                    }
-                    profile.setCurrent(profile.getViewed());
-                    profile.setNoxboxId(profile.getCurrent().getId());
-                    profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-
-                    AppCache.updateNoxbox();
-
-                    GeoRealtime.offline(profile.getCurrent());
-                    if (AppCache.markers.get(profile.getNoxboxId()) != null) {
-                        AppCache.markers.remove(profile.getNoxboxId());
-                    }
-
-                    finish();
+                if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
+                    findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+                    BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
+                    return;
                 }
-            });
-        }
+                profile.setCurrent(profile.getViewed());
+                profile.setNoxboxId(profile.getCurrent().getId());
+                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+
+                AppCache.updateNoxbox();
+
+                GeoRealtime.offline(profile.getCurrent());
+                if (AppCache.markers.get(profile.getNoxboxId()) != null) {
+                    AppCache.markers.remove(profile.getNoxboxId());
+                }
+
+                finish();
+            }
+        });
 
 
     }

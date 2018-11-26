@@ -101,8 +101,8 @@ public class AppCache {
     private static void executeUITasks() {
         LogProperties.update(profile, profileListeners);
 
-        for (Task<Profile> task : profileListeners.values()) {
-            task.execute(profile);
+        for (Map.Entry<String, Task<Profile>> entry : profileListeners.entrySet()) {
+            entry.getValue().execute(profile);
         }
 
         for (Iterator<Map.Entry<String, Task<Profile>>> task = profileReaders.entrySet().iterator(); task.hasNext(); ) {
@@ -191,4 +191,5 @@ public class AppCache {
         writeNoxbox(profile.getCurrent());
         executeUITasks();
     }
+
 }

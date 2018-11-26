@@ -92,7 +92,7 @@
             </LinearLayout>
 
             <android.support.v7.widget.CardView
-                android:id="@+id/navigation"
+                android:id="@+id/noxboxType"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="end|center_vertical"
