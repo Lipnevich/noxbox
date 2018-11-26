@@ -3,13 +3,14 @@ package live.noxbox.tools;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,7 +21,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
@@ -36,24 +36,27 @@ public class ImageManager {
 
 
     public static void uploadPhoto(final Activity activity, final Uri uri) {
-        final Bitmap bitmap = getBitmap(activity, uri);
-
-        if (bitmap == null) return;
-
-        createCircleImageFromBitmap(activity, bitmap, ((ImageView) activity.findViewById(R.id.profileImage)));
-
-        uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
+        getBitmap(activity, uri, new Task<Bitmap>() {
             @Override
-            public void onSuccess(final Uri uri) {
-                AppCache.readProfile(new Task<Profile>() {
+            public void execute(final Bitmap bitmap) {
+                if (bitmap == null) return;
+
+                createCircleImageFromBitmap(activity, bitmap, ((ImageView) activity.findViewById(R.id.profileImage)));
+
+                uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
                     @Override
-                    public void execute(final Profile profile) {
-                        MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                        messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValidationProgress));
-                        profile.setPhoto(uri.toString());
-                        FacePartsDetection.execute(bitmap, profile, activity);
+                    public void onSuccess(final Uri uri) {
+                        AppCache.readProfile(new Task<Profile>() {
+                            @Override
+                            public void execute(final Profile profile) {
+                                MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+                                messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValidationProgress));
+                                profile.setPhoto(uri.toString());
+                                FacePartsDetection.execute(bitmap, profile, activity);
 
 
+                            }
+                        });
                     }
                 });
             }
@@ -61,22 +64,25 @@ public class ImageManager {
     }
 
     public static void uploadImage(final Activity activity, final Uri url, final ImageType imageType, final NoxboxType type, final int index) {
-        Bitmap bitmap = getBitmap(activity, url);
-
-        if (bitmap == null) return;
-
-        uploadImage(activity, bitmap, type.name() + "/" + imageType.name() + "/" + index, new OnSuccessListener<Uri>() {
+        getBitmap(activity, url, new Task<Bitmap>() {
             @Override
-            public void onSuccess(final Uri uri) {
-                AppCache.readProfile(new Task<Profile>() {
+            public void execute(Bitmap bitmap) {
+                if (bitmap == null) return;
+                uploadImage(activity, bitmap, type.name() + "/" + imageType.name() + "/" + index, new OnSuccessListener<Uri>() {
                     @Override
-                    public void execute(Profile profile) {
-                        profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
-                        AppCache.fireProfile();
+                    public void onSuccess(final Uri uri) {
+                        AppCache.readProfile(new Task<Profile>() {
+                            @Override
+                            public void execute(Profile profile) {
+                                profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
+                                AppCache.fireProfile();
+                            }
+                        });
                     }
                 });
             }
         });
+
     }
 
     private static final OnFailureListener onFailureListener = new OnFailureListener() {
@@ -95,8 +101,8 @@ public class ImageManager {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         while (quality > 1) {
-            quality -= 9;
-            if (stream.toByteArray().length <= 400000)//check photo size <= 1MB or compress to lower quality
+            quality -= 5;
+            if (stream.toByteArray().length <= 800000)//check photo size <= 800B or compress to lower quality
                 break;
             stream = new ByteArrayOutputStream();
             TimeLogger compression = new TimeLogger();
@@ -142,14 +148,13 @@ public class ImageManager {
         });
     }
 
-
-    public static Bitmap getBitmap(final Activity activity, final Uri url) {
-        try {
-            return MediaStore.Images.Media.getBitmap(activity.getContentResolver(), url);
-        } catch (IOException e) {
-            Crashlytics.logException(e);
-        }
-        return null;
+    public static void getBitmap(Activity activity, Uri url, final Task<Bitmap> task) {
+        Glide.with(activity).asBitmap().load(url).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                task.execute(bitmap);
+            }
+        });
     }
 
     private static StorageReference getStorageReference() {
