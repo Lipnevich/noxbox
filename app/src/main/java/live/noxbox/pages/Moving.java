@@ -18,11 +18,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.HashMap;
+
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.pages.confirmation.ConfirmationActivity;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
@@ -35,6 +38,8 @@ import live.noxbox.tools.Router;
 import static android.content.Context.LOCATION_SERVICE;
 import static android.location.LocationManager.GPS_PROVIDER;
 import static android.location.LocationManager.NETWORK_PROVIDER;
+import static live.noxbox.Configuration.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE;
+import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
@@ -67,15 +72,15 @@ public class Moving implements State {
 
         //TODO (vl) если текущий пользователь движется - начать слушать его GPS и обновлять noxbox
         //TODO (vl) иначе включить слушатель профиля обнавляющий пуш
-//        if (defineLocationListener(profile)) {
-//            registerLocationListener(profile);
-//        } else {
-//            HashMap<String, String> data = new HashMap<>();
-//            data.put("type", NotificationType.moving.name());
-//            data.put("timeToMeet", profile.getCurrent().getTimeToMeet().toString());
-//
-//            NotificationFactory.showNotification(activity.getApplicationContext(), profile, data);
-//        }
+        if (defineLocationListener(profile)) {
+            registerLocationListener(profile);
+        } else {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("type", NotificationType.moving.name());
+            data.put("timeToMeet", profile.getCurrent().getTimeToMeet().toString());
+
+            NotificationFactory.showNotification(activity.getApplicationContext(), profile, data);
+        }
 
 
         Polyline polyline = googleMap.addPolyline(new PolylineOptions()
@@ -233,8 +238,8 @@ public class Moving implements State {
                 && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return;
 
-        locationManager.requestLocationUpdates(GPS_PROVIDER, 3, 12, locationListener);
-        locationManager.requestLocationUpdates(NETWORK_PROVIDER, 3, 12, locationListener);
+        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE, locationListener);
+        locationManager.requestLocationUpdates(NETWORK_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE, locationListener);
     }
 
 

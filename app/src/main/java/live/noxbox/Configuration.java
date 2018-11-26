@@ -23,4 +23,7 @@ public interface Configuration {
     int CLUSTER_RENDERING_FREQUENCY = 500;
     float COMISSION_FEE = 0.1F;
 
+    int MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE = 3;//in seconds
+    int MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE= 12;//in meters
+
 }
