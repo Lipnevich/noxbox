@@ -56,7 +56,7 @@ public class NotificationMoving extends Notification {
         Task<Noxbox> task = new Task<Noxbox>() {
             @Override
             public void execute(Noxbox noxbox) {
-                contentView.setImageViewResource(R.id.noxboxType, noxbox.getType().getImage());
+                contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImage());
 
                 final NotificationCompat.Builder builder = getNotificationCompatBuilder();
                 getNotificationService(context).notify(type.getGroup(), builder.build());

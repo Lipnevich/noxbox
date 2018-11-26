@@ -94,7 +94,7 @@ public class Moving implements State {
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.noxboxType).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
 
         if (profile.getCurrent().getOwner().equals(profile)) {
@@ -113,7 +113,7 @@ public class Moving implements State {
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.eye);
 
-        activity.findViewById(R.id.noxboxType).setOnClickListener(new View.OnClickListener() {
+        activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NavigatorManager.openNavigator(activity, profile);
@@ -176,7 +176,7 @@ public class Moving implements State {
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
-        activity.findViewById(R.id.noxboxType).setVisibility(View.GONE);
+        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
