@@ -134,7 +134,11 @@ public class AvailableServices implements State {
                 drawingHeandler.removeCallbacks(drawingRunnable);
             }
             mConnection.onServiceDisconnected(new ComponentName(activity.getApplicationContext().getPackageName(), AvailableServices.class.getName()));
-            activity.unbindService(mConnection);
+            try {
+                activity.unbindService(mConnection);
+            } catch (IllegalArgumentException e) {
+                // ignore this
+            }
             serviceIsBound = false;
         }
         if (serviceHandler != null) {

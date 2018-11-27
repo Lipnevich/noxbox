@@ -22,7 +22,6 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
-import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;
@@ -35,30 +34,13 @@ import live.noxbox.notifications.util.MessagingService;
 public class ImageManager {
 
 
-    public static void uploadPhoto(final Activity activity, final Uri uri) {
-        getBitmap(activity, uri, new Task<Bitmap>() {
+    public static void uploadPhoto(final Activity activity, final Profile profile, Bitmap bitmap) {
+        uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
             @Override
-            public void execute(final Bitmap bitmap) {
-                if (bitmap == null) return;
-
-                createCircleImageFromBitmap(activity, bitmap, ((ImageView) activity.findViewById(R.id.profileImage)));
-
-                uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(final Uri uri) {
-                        AppCache.readProfile(new Task<Profile>() {
-                            @Override
-                            public void execute(final Profile profile) {
-                                MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                                messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValidationProgress));
-                                profile.setPhoto(uri.toString());
-                                FacePartsDetection.execute(bitmap, profile, activity);
-
-
-                            }
-                        });
-                    }
-                });
+            public void onSuccess(final Uri uri) {
+                MessagingService messagingService = new MessagingService(activity.getApplicationContext());
+                messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValid));
+                profile.setPhoto(uri.toString());
             }
         });
     }
@@ -95,7 +77,6 @@ public class ImageManager {
     private static void uploadImage(final Activity activity, final Bitmap bitmap, final String path, final OnSuccessListener<Uri> onSuccessListener) {
         final StorageReference storageRef =
                 getStorageReference().child(path + "." + Bitmap.CompressFormat.JPEG.name());
-
 
         int quality = 100;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -141,7 +122,7 @@ public class ImageManager {
                 if (progress == 0) {
                     messagingService.showPushNotification(notification);
                 } else {
-                    //NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+//                    NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                 }
 
             }

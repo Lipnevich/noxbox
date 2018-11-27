@@ -2,6 +2,7 @@ package live.noxbox.menu.profile;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,14 +25,18 @@ import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.contract.NoxboxTypeListActivity;
 import live.noxbox.database.AppCache;
+import live.noxbox.model.NotificationData;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.tools.DebugMessage;
+import live.noxbox.notifications.util.MessagingService;
+import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.ImageManager.createCircleImageFromUrl;
+import static live.noxbox.tools.ImageManager.getBitmap;
 
 public class ProfileActivity extends BaseActivity {
 
@@ -291,52 +296,37 @@ public class ProfileActivity extends BaseActivity {
         ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
     }
 
-    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_IMAGE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    ImageManager.uploadPhoto(this, data.getData());
-                    AppCache.readProfile(new Task<Profile>() {
+
+        AppCache.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(final Profile profile) {
+                if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK
+                        && data != null && data.getData() != null) {
+
+                    MessagingService messagingService = new MessagingService(ProfileActivity.this.getApplicationContext());
+                    messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValidationProgress));
+                    getBitmap(ProfileActivity.this, data.getData(), new Task<Bitmap>() {
                         @Override
-                        public void execute(Profile profile) {
-                            profile.setPhoto(data.getData().toString());
+                        public void execute(Bitmap bitmap) {
+                            FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, new Task<Bitmap>() {
+                                @Override
+                                public void execute(Bitmap checked) {
+                                    ImageManager.uploadPhoto(ProfileActivity.this, profile, checked);
+                                }
+                            });
                         }
                     });
-                }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                DebugMessage.popup(this, "Cancelled");
-            }
-        }
-        if (requestCode == TravelModeListActivity.CODE) {
-
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
+                    profile.setPhoto(data.getData().toString());
+                } else if (requestCode == TravelModeListActivity.CODE) {
                     drawEditable(profile);
-                }
-            });
-
-        }
-
-        if (requestCode == NoxboxTypeListActivity.PROFILE_CODE) {
-
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
+                } else if (requestCode == NoxboxTypeListActivity.PROFILE_CODE ||
+                        requestCode == ProfilePerformerActivity.CODE) {
                     draw(profile);
                 }
-            });
-
-        }
-        if (requestCode == ProfilePerformerActivity.CODE) {
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    draw(profile);
-                }
-            });
-        }
+            }
+        });
     }
 
 }

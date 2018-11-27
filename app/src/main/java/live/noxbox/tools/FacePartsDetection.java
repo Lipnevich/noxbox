@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
+import live.noxbox.model.Acceptance;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -25,25 +27,8 @@ import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
 
 public class FacePartsDetection {
 
-//    private static float getFaceSizeFromBitmap(Bitmap bitmap, Activity activity) {
-//        FaceDetector detector = new FaceDetector.Builder(activity)
-//                .setTrackingEnabled(false)
-//                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
-//                .build();
-//        Frame frame = new Frame.Builder().setBitmap(bitmap).build();
-//        SparseArray<Face> faces = detector.detect(frame);
-//
-//        if (faces.size() == 0) return 0f;
-//
-//        Face face = faces.valueAt(0);
-//
-//        float faceArea = face.getWidth() * face.getHeight();
-//        float bitmapArea = bitmap.getWidth() * bitmap.getHeight();
-//
-//        return faceArea / bitmapArea;
-//    }
-
-    public static void execute(final Bitmap bitmap, final Profile profile, final Activity activity) {
+    public static void execute(final Bitmap bitmap, final Profile profile,
+                               final Activity activity, final Task<Bitmap> task) {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionFaceDetectorOptions options =
                 new FirebaseVisionFaceDetectorOptions.Builder()
@@ -61,32 +46,25 @@ public class FacePartsDetection {
                     public void onSuccess(List<FirebaseVisionFace> faces) {
                         detection.makeLog("detection");
                         if (faces.size() != 1) {
-                            profile.getAcceptance().setFailToRecognizeFace(true);
+                            profile.setAcceptance(new Acceptance());
                             buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
-                            AppCache.fireProfile();
-                            return;
-                        }
-                        profile.getAcceptance().setFailToRecognizeFace(false);
+                        } else {
+                            profile.getAcceptance().setFailToRecognizeFace(false);
+                            profile.getAcceptance().setFaceSize(0.7f);
 
-                        profile.getAcceptance().setFaceSize(0.7f);
-                        FirebaseVisionFace face = faces.get(0);
+                            FirebaseVisionFace face = faces.get(0);
+                            // If classification was enabled:
+                            profile.getAcceptance().setSmileProbability(face.getSmilingProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getSmilingProbability() : 0f);
 
+                            profile.getAcceptance().setRightEyeOpenProbability(face.getRightEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getRightEyeOpenProbability() : 0f);
 
-                        // If classification was enabled:
-                        if (face.getSmilingProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
-                            profile.getAcceptance().setSmileProbability(face.getSmilingProbability());
-                        }
-                        if (face.getRightEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
-                            profile.getAcceptance().setRightEyeOpenProbability(face.getRightEyeOpenProbability());
-                        }
-                        if (face.getLeftEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY) {
-                            profile.getAcceptance().setLeftEyeOpenProbability(face.getLeftEyeOpenProbability());
+                            profile.getAcceptance().setLeftEyeOpenProbability(face.getLeftEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : 0f);
                         }
 
                         if (profile.getAcceptance().isAccepted()) {
                             buildNotification(new NotificationData().setType(NotificationType.photoValid), activity);
+                            task.execute(bitmap);
                         } else {
-                            profile.getAcceptance().setFailToRecognizeFace(true);
                             buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                         }
 
@@ -96,8 +74,13 @@ public class FacePartsDetection {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Crashlytics.logException(e);
                         profile.getAcceptance().setFailToRecognizeFace(true);
-                        buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
+                        buildNotification(new NotificationData()
+                                .setType(NotificationType.photoInvalid)
+                                .setInvalidAccetrance(profile.getAcceptance()
+                                        .getInvalidAcceptance())
+                                .setMessage(e.getMessage()), activity);
                         AppCache.fireProfile();
                     }
                 });

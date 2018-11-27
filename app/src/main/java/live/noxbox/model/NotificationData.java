@@ -76,6 +76,7 @@ public class NotificationData {
     }
 
     public String getMessage() {
+        if(message == null) message = "";
         return message;
     }
 

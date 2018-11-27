@@ -143,7 +143,7 @@ public enum NotificationType {
         if (notification.getType() == photoInvalid) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_invalid_photo);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-            remoteViews.setTextViewText(R.id.content, format(context.getResources(), notification.getType().content, context.getResources().getString(notification.getInvalidAcceptance().getCorrectionMessage())));
+            remoteViews.setTextViewText(R.id.content, format(context.getResources(), notification.getType().content, context.getResources().getString(notification.getInvalidAcceptance().getCorrectionMessage())) + " " + notification.getMessage());
         }
 
         if (notification.getType() == performing) {

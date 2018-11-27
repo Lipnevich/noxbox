@@ -10,11 +10,12 @@ import static live.noxbox.Configuration.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
 public class Acceptance {
 
     private Boolean failToRecognizeFace = true;
-    private Boolean incorrectName = true;
+    private Boolean incorrectName = false;
     private Float smileProbability = 0f;
     private Float rightEyeOpenProbability = 0f;
     private Float leftEyeOpenProbability = 0f;
     private Float faceSize = 0f;
+    private String message = "";
 
     public Acceptance() {
     }
@@ -22,7 +23,7 @@ public class Acceptance {
     @Exclude
     public Boolean isAccepted() {
         if (failToRecognizeFace) return false;
-        if (!incorrectName) return false;
+//        if (incorrectName) return false;
         return faceSize >= MINIMUM_FACE_SIZE
                 && smileProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
                 && rightEyeOpenProbability > MINIMUM_PROBABILITY_FOR_ACCEPTANCE
@@ -95,6 +96,15 @@ public class Acceptance {
 
     public Acceptance setFaceSize(Float faceSize) {
         this.faceSize = faceSize;
+        return this;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Acceptance setMessage(String message) {
+        this.message = message;
         return this;
     }
 }
