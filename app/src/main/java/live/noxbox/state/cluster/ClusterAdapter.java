@@ -61,10 +61,20 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
                     clusterItems.get(i).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedDislikes()));
         }
 
+        int travelModeImage = clusterItems.get(i).getNoxbox().getOwner().getTravelMode().getImage();
+
+        String role;
+        if(clusterItems.get(i).getNoxbox().getRole() == MarketRole.supply){
+            role = activity.getResources().getString(R.string.worker);
+        }else {
+            role = activity.getResources().getString(R.string.costumer);
+        }
 
         clusterViewHolder.rating.setText(rating.concat("% ").concat(activity.getResources().getString(R.string.rating)));
         clusterViewHolder.type.setText(type.getName());
         clusterViewHolder.price.setText(price);
+        clusterViewHolder.travelModeImage.setImageResource(travelModeImage);
+        clusterViewHolder.role.setText(role);
 
         clusterViewHolder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +98,9 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         TextView price;
         TextView rating;
 
+        ImageView travelModeImage;
+        TextView role;
+
         public ClusterViewHolder(@NonNull View layout) {
             super(layout);
             rootView = layout.findViewById(R.id.rootView);
@@ -95,6 +108,9 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
             type = layout.findViewById(R.id.type);
             price = layout.findViewById(R.id.price);
             rating = layout.findViewById(R.id.rating);
+
+            travelModeImage = layout.findViewById(R.id.travelModeImage);
+            role = layout.findViewById(R.id.role);
 
         }
     }
