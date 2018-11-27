@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +35,7 @@ import com.bumptech.glide.request.transition.Transition;
 import java.util.List;
 
 import live.noxbox.Configuration;
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
@@ -55,6 +57,7 @@ import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
@@ -376,34 +379,43 @@ public class DetailedActivity extends AppCompatActivity {
         findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO (vl) если текущему пользователю нужно двигаться тогда...
-                //TODO ... запросить разрешение на определение местоположения если оно до сих пор не было получено
-                if (!profile.getAcceptance().isAccepted()) {
-                    openPhotoNotVerifySheetDialog(DetailedActivity.this, profile);
+                if (!MapActivity.isLocationPermissionGranted(DetailedActivity.this)) {
+                    ActivityCompat.requestPermissions(DetailedActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
 
-                    return;
-                }
-                if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
-                    findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
-                    BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
-                    return;
-                }
-                profile.setCurrent(profile.getViewed());
-                profile.setNoxboxId(profile.getCurrent().getId());
-                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-
-                AppCache.updateNoxbox();
-
-                GeoRealtime.offline(profile.getCurrent());
-                if (AppCache.markers.get(profile.getNoxboxId()) != null) {
-                    AppCache.markers.remove(profile.getNoxboxId());
+                } else {
+                    sendRequestToNoxbox(profile);
                 }
 
-                finish();
             }
         });
 
 
+    }
+
+    private void sendRequestToNoxbox(Profile profile) {
+        if (!profile.getAcceptance().isAccepted()) {
+            openPhotoNotVerifySheetDialog(DetailedActivity.this, profile);
+
+            return;
+        }
+        if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
+            findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+            BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
+            return;
+        }
+        profile.setCurrent(profile.getViewed());
+        profile.setNoxboxId(profile.getCurrent().getId());
+        profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+
+        AppCache.updateNoxbox();
+
+        GeoRealtime.offline(profile.getCurrent());
+        if (AppCache.markers.get(profile.getNoxboxId()) != null) {
+            AppCache.markers.remove(profile.getNoxboxId());
+        }
+
+        finish();
     }
 
     private RadioButton longToWait;
@@ -594,6 +606,22 @@ public class DetailedActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    AppCache.readProfile(new Task<Profile>() {
+                        @Override
+                        public void execute(Profile profile) {
+                            sendRequestToNoxbox(profile);
+                        }
+                    });
+                }
+            }
+        }
     }
 
 }
