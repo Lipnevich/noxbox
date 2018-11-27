@@ -28,7 +28,6 @@ import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
-import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.Task;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
@@ -54,9 +53,9 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         initCrashReporting();
         context = getApplicationContext();
-        if (!inForeground()) {
-            NotificationFactory.showNotification(context, null, remoteMessage.getData());
-        }
+        //if (!inForeground()) {
+            //NotificationFactory.showNotification(context, null, remoteMessage.getData());
+        //}
     }
 
     public static void removeNotifications(Context context) {

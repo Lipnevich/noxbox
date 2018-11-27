@@ -1,6 +1,7 @@
 package live.noxbox.tools;
 
 import android.location.Location;
+import android.util.Log;
 
 import live.noxbox.model.Position;
 import live.noxbox.model.TravelMode;
@@ -24,6 +25,7 @@ public class LocationCalculator {
                 partyPosition.getLatitude(),
                 partyPosition.getLongitude(),
                 results);
+        Log.d("DistnceBetweenTwoPoints", "" + results[0]);
 
         return (int) results[0];
     }

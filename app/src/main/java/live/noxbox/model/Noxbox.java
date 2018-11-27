@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static live.noxbox.Configuration.DEFAULT_PRICE;
+import static live.noxbox.model.MarketRole.supply;
+import static live.noxbox.model.TravelMode.none;
+
 public class Noxbox implements Comparable<Noxbox> {
 
     private String id;
@@ -88,6 +92,20 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
+    public Profile getProfileWhoComes(){
+        if(owner.getTravelMode() == none){
+            return party;
+        }else{
+            if(role == supply){
+                return owner;
+            }
+        }
+        if(party.getTravelMode() == none){
+            return owner;
+        }
+        return party;
+    }
+
     public String getId() {
         return id;
     }
@@ -117,7 +135,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public String getPrice() {
         if (price == null) {
-            price = "5";
+            price = DEFAULT_PRICE;
         }
         return price;
     }

@@ -17,6 +17,7 @@ import live.noxbox.R;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
+import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -138,6 +139,7 @@ public class Accepting implements State {
             countDownTimer.cancel();
 
         }
+        MessagingService.removeNotifications(activity);
         acceptingView.removeAllViews();
     }
 

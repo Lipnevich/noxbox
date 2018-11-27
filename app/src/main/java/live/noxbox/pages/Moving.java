@@ -26,6 +26,7 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
+import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.pages.confirmation.ConfirmationActivity;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
@@ -37,9 +38,8 @@ import live.noxbox.tools.Router;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.location.LocationManager.GPS_PROVIDER;
-import static android.location.LocationManager.NETWORK_PROVIDER;
-import static live.noxbox.Configuration.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE;
-import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE;
+import static live.noxbox.Configuration.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
+import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
@@ -186,6 +186,7 @@ public class Moving implements State {
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
+        MessagingService.removeNotifications(activity);
     }
 
     private boolean defineLocationListener(Profile profile) {
@@ -238,8 +239,8 @@ public class Moving implements State {
                 && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return;
 
-        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE, locationListener);
-        locationManager.requestLocationUpdates(NETWORK_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE, locationListener);
+        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+        //locationManager.requestLocationUpdates(NETWORK_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
     }
 
 
@@ -250,6 +251,4 @@ public class Moving implements State {
             profile.getCurrent().getParty().setPosition(new Position(location.getLatitude(), location.getLongitude()));
         }
     }
-
-
 }

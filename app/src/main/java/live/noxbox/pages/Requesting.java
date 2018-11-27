@@ -12,10 +12,14 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.util.HashMap;
+
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.factory.NotificationFactory;
+import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapController;
@@ -43,6 +47,11 @@ public class Requesting implements State {
     public void draw(final Profile profile) {
         Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
 
+        HashMap<String, String> data = new HashMap<>();
+        data.put("type", NotificationType.requesting.name());
+        data.put("time", profile.getCurrent().getTimeRequested() + "");
+        NotificationFactory.showNotification(activity.getApplicationContext(), profile, data);
+
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +68,7 @@ public class Requesting implements State {
         animationProgress.start();
 
         // TODO (vl) lead to null pointer
-        if(activity.findViewById(R.id.blinkingInfoLayout) != null) {
+        if (activity.findViewById(R.id.blinkingInfoLayout) != null) {
             animationDrawable = (AnimationDrawable) activity.findViewById(R.id.blinkingInfoLayout).getBackground();
             animationDrawable.setEnterFadeDuration(600);
             animationDrawable.setExitFadeDuration(1200);
@@ -100,6 +109,7 @@ public class Requesting implements State {
 
             @Override
             public void onFinish() {
+                MessagingService.removeNotifications(activity);
                 autoDisconnectFromService(profile);
             }
 
@@ -133,7 +143,7 @@ public class Requesting implements State {
             countDownTimer.cancel();
 
         }
-
+        MessagingService.removeNotifications(activity);
         requestingView.removeAllViews();
     }
 

@@ -22,7 +22,7 @@ public class NotificationAccepting extends Notification {
         super(context, profile, data);
         timeRequesting = Long.valueOf(notificationTime);
         vibrate = null;
-        sound = getSound(context);
+        sound = getSound();
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
         contentView.setTextViewText(R.id.countDownTime, String.valueOf(notificationTime));

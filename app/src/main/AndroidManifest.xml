@@ -99,7 +99,7 @@
         </service>
         <service android:name=".pages.AvailableNoxboxesService" />
 
-        <receiver android:name=".model.NotificationType$CancelRequestListener">
+        <receiver android:name=".notifications.factory.Notification$CancelRequestListener">
             <intent-filter>
                 <action android:name="live.noxbox.cancelRequestByClickedButton" />
             </intent-filter>

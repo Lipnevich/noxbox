@@ -14,9 +14,14 @@ import java.util.Map;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.util.MessagingService;
+import live.noxbox.tools.Task;
+
+import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.model.NotificationType.requesting;
 
 public class Notification {
 
@@ -38,7 +43,7 @@ public class Notification {
     protected static Thread stateThread;
     protected static Runnable stateRunnable;
     protected static boolean isStateAcceptingThreadWorked;
-    protected static boolean isStateMovingThreadWorked;
+    protected static boolean isStateRequestingThreadWorked;
 
 
     public Notification(Context context, Profile profile, Map<String, String> data) {
@@ -50,7 +55,7 @@ public class Notification {
 
         removeNotifications(context);
         isStateAcceptingThreadWorked = false;
-        isStateMovingThreadWorked = false;
+        isStateRequestingThreadWorked = false;
     }
 
     public void show() {
@@ -104,14 +109,29 @@ public class Notification {
         getNotificationService(context).notify(type.getGroup(), builder.build());
     }
 
-    protected Uri getSound(Context context) {
+    protected Uri getSound() {
         int sound = R.raw.push;
-//        if (type == requesting) {
-//            sound = R.raw.requested;
-//        }
+        if (type == requesting) {
+            sound = R.raw.requested;
+        }
 
         return Uri.parse("android.resource://" + context.getPackageName() + "/raw/"
                 + context.getResources().getResourceEntryName(sound));
+    }
+
+    protected long[] getVibrate() {
+        switch (type) {
+            case requesting:
+            case uploadingProgress:
+            case moving:
+            case performing:
+            case completed:
+            case accepting:
+            case lowBalance:
+                return null;
+            default:
+                return new long[]{100, 500, 200, 100, 100};
+        }
     }
 
     protected PendingIntent createOnDeleteIntent(Context context, int group) {
@@ -124,8 +144,26 @@ public class Notification {
     public static class DeleteActionIntent extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            isStateMovingThreadWorked = false;
             isStateAcceptingThreadWorked = false;
+            isStateRequestingThreadWorked = false;
+        }
+    }
+
+    public static class CancelRequestListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, Intent intent) {
+            AppCache.readProfile(new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    if (profile.equals(profile.getCurrent().getOwner())) {
+                        profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+                    } else {
+                        profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
+                    }
+                    updateNoxbox();
+                    MessagingService.getNotificationService(context).cancelAll();
+                }
+            });
         }
     }
 

@@ -58,6 +58,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.detailed.CoordinateActivity.LAT;
 import static live.noxbox.detailed.CoordinateActivity.LNG;
+import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.LocationCalculator.getDistanceBetweenTwoPoints;
@@ -234,7 +235,7 @@ public class DetailedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition()));
 
         TravelMode travelMode;
-        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+        if (noxbox.getOwner().getTravelMode() == none) {
             travelMode = noxbox.getParty().getTravelMode();
         } else {
             travelMode = noxbox.getOwner().getTravelMode();
@@ -273,11 +274,11 @@ public class DetailedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.offerTime)).setText(R.string.validityOfTheOffer);
         ((TextView) findViewById(R.id.time)).setText(displayTime);
 
-        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+        if (noxbox.getOwner().getTravelMode() == none) {
             ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
             ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
 
-        } else if (noxbox.getOwner().getTravelMode() != TravelMode.none) {
+        } else {
             ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
 
             ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);

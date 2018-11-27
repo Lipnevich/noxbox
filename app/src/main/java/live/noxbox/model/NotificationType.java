@@ -42,6 +42,7 @@ public enum NotificationType {
 
     balance(1, R.string.balancePushTitle, R.string.balancePushContent),
 
+    requesting(2, R.string.requestText, R.string.requestingPushContent),
     accepting(2, R.string.acceptText, R.string.acceptingPushContent),
     moving(2, R.string.acceptPushTitle, R.string.replaceIt),
     verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
@@ -209,6 +210,7 @@ public enum NotificationType {
 
     public static long[] getVibrate(NotificationData notification) {
         switch (notification.getType()) {
+            case requesting:
             case uploadingProgress:
             case moving:
             case performing:
@@ -331,23 +333,7 @@ public enum NotificationType {
                 .addAction(action);
     }
 
-    public static class CancelRequestListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, Intent intent) {
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    if (profile.equals(profile.getCurrent().getOwner())) {
-                        profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
-                    } else {
-                        profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
-                    }
-                    updateNoxbox();
-                    MessagingService.getNotificationService(context).cancelAll();
-                }
-            });
-        }
-    }
+
 
     public static class AcceptRequestListener extends BroadcastReceiver {
         @Override

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:layout_gravity="center"
-    android:background="@drawable/notification_moving_background">
+    android:background="@drawable/notification_accepting_background">
 
     <LinearLayout
         android:id="@+id/progressLineLayout"
@@ -11,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginEnd="48dp"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/time"
@@ -20,14 +19,16 @@
             android:layout_marginStart="16dp"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_title" />
-
+        <!--style="@style/HorizontalProgressBarNotificationStyle"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:progressDrawable="@drawable/notification_moving_progress_line"-->
+        <!--android:layout_width="match_parent"-->
         <ProgressBar
             android:id="@+id/progress"
-            style="@style/HorizontalProgressBarNotificationStyle"
-            android:layout_width="match_parent"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:progressDrawable="@drawable/notification_moving_progress_line" />
+            android:layout_gravity="center_vertical" />
     </LinearLayout>
 
     <ImageView
@@ -36,8 +37,8 @@
         android:layout_height="36dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="4dp" />
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp" />
 
 
 </RelativeLayout>
