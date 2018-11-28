@@ -47,9 +47,9 @@ public class NotificationMoving extends Notification {
             @Override
             public void execute(Noxbox noxbox) {
                 removeNotificationByGroup(context, type.getGroup());
-                if (maxProgressInSeconds == 0) {
-                    maxProgressInSeconds = (int) getTimeInMillisBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()) / 1000;
-                }
+//                if (maxProgressInSeconds == 0) {
+//                    maxProgressInSeconds = (int) getTimeInMillisBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()) / 1000;
+//                }
 
                 progressInSeconds =  maxProgressInSeconds - ((int) getTimeInMillisBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()) / 1000);
 
@@ -64,7 +64,7 @@ public class NotificationMoving extends Notification {
 
 
         if (profile == null) {
-            Firestore.readNoxbox(data.get("id"), task);
+            Firestore.readNoxbox(noxbixId, task);
         } else {
             task.execute(profile.getCurrent());
         }

@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.RemoteInput;
 import android.widget.RemoteViews;
 
 import java.util.Map;
@@ -15,7 +17,10 @@ import java.util.Map;
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.Firestore;
+import live.noxbox.model.Message;
 import live.noxbox.model.NotificationType;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.tools.Task;
@@ -39,6 +44,7 @@ public class Notification {
     protected NotificationType type;
     protected String notificationTime;
     protected Map<String, String> data;
+    protected String noxbixId;
 
     protected static Thread stateThread;
     protected static Runnable stateRunnable;
@@ -52,10 +58,10 @@ public class Notification {
         this.data = data;
         type = NotificationType.valueOf(data.get("type"));
         notificationTime = data.get("time");
+        noxbixId = data.get("id");
 
         removeNotifications(context);
         isStateAcceptingThreadWorked = false;
-        isStateRequestingThreadWorked = false;
     }
 
     public void show() {
@@ -145,7 +151,6 @@ public class Notification {
         @Override
         public void onReceive(final Context context, Intent intent) {
             isStateAcceptingThreadWorked = false;
-            isStateRequestingThreadWorked = false;
         }
     }
 
@@ -165,6 +170,45 @@ public class Notification {
                 }
             });
         }
+    }
+
+    public static class UserInputListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            Firestore.listenProfile(new Task<Profile>() {
+                @Override
+                public void execute(final Profile profile) {
+                    // TODO (?) сохранить одно сообщение в базе
+
+                    Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
+                        @Override
+                        public void execute(Noxbox noxbox) {
+                            long sendTime = System.currentTimeMillis();
+                            Message message = new Message()
+                                    .setMessage(getMessageText(intent, context)).setId("" + sendTime).setTime(sendTime);
+                            if (profile.equals(noxbox.getOwner())) {
+                                noxbox.getOwnerMessages().put(message.getId(), message);
+                            } else {
+                                noxbox.getPartyMessages().put(message.getId(), message);
+                            }
+                            Firestore.writeNoxbox(noxbox);
+                            removeNotifications(context);
+                        }
+                    });
+
+
+                }
+            });
+        }
+
+    }
+
+    private static String getMessageText(Intent intent, Context context) {
+        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+        if (remoteInput != null) {
+            return String.valueOf(remoteInput.getCharSequence(context.getResources().getString(R.string.reply).toUpperCase()));
+        }
+        return null;
     }
 
 }

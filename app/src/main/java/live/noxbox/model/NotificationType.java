@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.widget.RemoteViews;
@@ -20,6 +19,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
 import live.noxbox.menu.profile.ProfileActivity;
+import live.noxbox.notifications.factory.Notification;
 import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.pages.ChatActivity;
 import live.noxbox.tools.DateTimeFormatter;
@@ -27,7 +27,6 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.COMISSION_FEE;
 import static live.noxbox.Configuration.CURRENCY;
-import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.notifications.util.MessagingService.getNotificationService;
 
 /**
@@ -234,13 +233,7 @@ public enum NotificationType {
                 + context.getResources().getResourceEntryName(sound));
     }
 
-    public static String getMessageText(Intent intent, Context context) {
-        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
-        if (remoteInput != null) {
-            return String.valueOf(remoteInput.getCharSequence(context.getResources().getString(R.string.reply).toUpperCase()));
-        }
-        return null;
-    }
+
 
     public static PendingIntent getIntent(Context context, NotificationData notification) {
         if (notification.getType() == message)
@@ -318,7 +311,7 @@ public enum NotificationType {
                         .build();
 
         PendingIntent replyPendingIntent =
-                PendingIntent.getBroadcast(context, 0, new Intent(context, UserInputListener.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.getBroadcast(context, 0, new Intent(context, Notification.UserInputListener.class), PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Action action =
                 new NotificationCompat.Action.Builder(R.mipmap.ic_launcher,
@@ -349,27 +342,7 @@ public enum NotificationType {
         }
     }
 
-    public static class UserInputListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    // TODO (?) сохранить одно сообщение в базе
-                    Message message = new Message()
-                            .setMessage(getMessageText(intent, context)).setId("111");
-                    if (profile.equals(profile.getCurrent().getOwner())) {
-                        profile.getCurrent().getOwnerMessages().put(message.getId(), message);
-                    } else {
-                        profile.getCurrent().getPartyMessages().put(message.getId(), message);
-                    }
-                    updateNoxbox();
-                    removeNotifications(context);
-                }
-            });
-        }
 
-    }
 
     private static String format(Resources resources, int resource, Object... args) {
         return String.format(resources.getString(resource), args);

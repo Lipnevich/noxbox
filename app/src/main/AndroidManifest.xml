@@ -111,7 +111,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".model.NotificationType$UserInputListener">
+        <receiver android:name=".notifications.factory.Notification$UserInputListener">
             <intent-filter>
                 <action android:name="live.noxbox.UserInputListener" />
             </intent-filter>

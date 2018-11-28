@@ -150,21 +150,14 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawOppositeProfile(Profile me) {
         Profile other = me.getViewed().getNotMe(me.getId());
         if (other.getName() != null && other.getPhoto() != null) {
-            findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
 
             ImageManager.createCircleImageFromUrl(this, other.getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
             ((TextView) findViewById(R.id.profileName)).setText(other.getName());
-        } else {
-            findViewById(R.id.profileLayout).setVisibility(View.GONE);
         }
 
     }
 
     private void drawDescription(Profile profile) {
-        if (profile.getViewed().getTimeAccepted() != null) {
-            findViewById(R.id.descriptionLayout).setVisibility(View.GONE);
-        }
-
         drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
         changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
 
