@@ -16,9 +16,19 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}')
       const noxbox = change.after.data();
       console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
       console.log('Noxbox updated ' + JSON.stringify(noxbox));
-
-      if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
-          let pushRequested = {
+        if(!previousNoxbox.timeAccepted && noxbox.timeAccepted) {
+                let pushMoving = {
+                    data: {
+                         type: 'moving',
+                         id: noxbox.id
+                    },
+                    topic: noxbox.id
+                };
+                await admin.messaging().send(pushMoving);
+                console.log('push sent' + JSON.stringify(pushMoving));
+        }
+      if(!previousNoxbox.timeRequested && !noxbox.timeAccepted && noxbox.timeRequested ) {
+          let pushAccepted = {
               data: {
                    type: 'accepting',
                    time: '' + noxbox.timeRequested,
@@ -26,8 +36,8 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}')
               },
               topic: noxbox.id
           };
-          await admin.messaging().send(pushRequested);
-          console.log('push sent' + JSON.stringify(pushRequested));
+          await admin.messaging().send(pushAccepted);
+          console.log('push sent' + JSON.stringify(pushAccepted));
       }
 });
 
