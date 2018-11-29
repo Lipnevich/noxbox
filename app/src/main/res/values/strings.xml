@@ -247,6 +247,9 @@
     <string name="withComission">с учётом комиссии</string>
     <string name="worker">Работник</string>
     <string name="costumer">Заказчик</string>
+    <string name="waterSupplier">Water supplier</string>
+    <string name="guru">Guru</string>
+    <string name="gardener">Gardener</string>
 
 
 </resources>

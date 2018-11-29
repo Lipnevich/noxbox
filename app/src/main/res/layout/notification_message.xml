@@ -2,71 +2,55 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:background="@drawable/notification_corner">
+    android:background="@drawable/notification_accepting_background">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="64dp">
 
-        <ImageView
-            android:id="@+id/photo"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/unknown_profile" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/profession"
             style="@style/TextAppearance.Compat.Notification.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_marginStart="8dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/photo"
-            android:layout_toStartOf="@+id/reply"
+            android:layout_marginEnd="4dp"
+            android:layout_toStartOf="@+id/photo"
             android:gravity="start"
             android:lines="1"
-            android:textColor="#fff" />
+            android:text="Superman"
+            android:textColor="@color/secondary"
+            android:textSize="@dimen/text_size"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/time"
+            android:id="@+id/message"
             style="@style/TextAppearance.Compat.Notification.Info"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="8dp"
-            android:gravity="end"
-            android:textColor="#fff" />
-
-        <TextView
-            android:id="@+id/content"
-            style="@style/TextAppearance.Compat.Notification.Info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/name"
-            android:layout_marginBottom="4dp"
+            android:layout_below="@+id/profession"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_toEndOf="@+id/photo"
-            android:layout_toStartOf="@+id/reply"
+            android:layout_marginBottom="4dp"
+            android:layout_toStartOf="@+id/photo"
             android:lines="1"
-            android:textColor="#fff" />
+            android:text="New message hellohellohellohelloh"
+            android:textColor="@color/secondary"
+            android:textSize="@dimen/text_size" />
 
 
         <ImageView
-            android:id="@+id/reply"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:id="@+id/photo"
+            android:layout_width="84dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/time"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="4dp"
-            android:src="@drawable/chat" />
-
+            android:layout_marginTop="-46dp"
+            android:layout_marginBottom="-34dp"
+            android:src="@drawable/human" />
     </RelativeLayout>
 </RelativeLayout>

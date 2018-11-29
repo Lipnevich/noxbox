@@ -12,24 +12,23 @@ import android.widget.RemoteViews;
 import java.util.Map;
 
 import live.noxbox.R;
-import live.noxbox.database.Firestore;
-import live.noxbox.model.Message;
-import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.Notification;
 import live.noxbox.pages.ChatActivity;
-import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CHANNEL_ID;
 
 public class NotificationMessage extends Notification {
 
-    private String name;
-    private Message message;
+    private String profession;
+    private String message;
 
     public NotificationMessage(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
+        profession = context.getResources().getString(NoxboxType.valueOf(data.get("noxboxType")).getProfession());
+        message = data.get("message");
+
         vibrate = getVibrate();
         sound = getSound();
 
@@ -44,49 +43,15 @@ public class NotificationMessage extends Notification {
 
     @Override
     public void show() {
-        Firestore.readNoxbox(noxbixId, new Task<Noxbox>() {
-            @Override
-            public void execute(Noxbox noxbox) {
-                message = getLastMessage(noxbox);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    getNotificationService(context).notify(type.getGroup(), buildReplyNotification(context).build());
-                } else {
-                    contentView.setTextViewText(R.id.name, name);
-                    contentView.setTextViewText(R.id.content, message.getMessage());
-                    contentView.setTextViewText(R.id.time, DateTimeFormatter.time(message.getTime()));
-                    final NotificationCompat.Builder builder = getNotificationCompatBuilder();
-                    getNotificationService(context).notify(type.getGroup(), builder.build());
-                }
-
-            }
-        });
-
-    }
-
-    private Message getLastMessage(Noxbox noxbox) {
-        Message message = new Message().setTime(0L);
-        Map<String, Message> ownerMessages = noxbox.getOwnerMessages();
-        Map<String, Message> partyMessages = noxbox.getPartyMessages();
-
-
-        for (Map.Entry<String, Message> ownerMessage : ownerMessages.entrySet()) {
-            Message current = ownerMessage.getValue();
-            if (message.getTime() < current.getTime()) {
-                message = current;
-                name = noxbox.getOwner().getName();
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getNotificationService(context).notify(type.getGroup(), buildReplyNotification(context).build());
+        } else {
+            contentView.setTextViewText(R.id.profession, profession);
+            contentView.setTextViewText(R.id.message, message);
+            final NotificationCompat.Builder builder = getNotificationCompatBuilder();
+            getNotificationService(context).notify(type.getGroup(), builder.build());
         }
 
-        for (Map.Entry<String, Message> partyMessage : partyMessages.entrySet()) {
-            Message current = partyMessage.getValue();
-            if (message.getTime() < current.getTime()) {
-                message = current;
-                name = noxbox.getParty().getName();
-            }
-        }
-
-        return message;
     }
 
 
@@ -108,8 +73,8 @@ public class NotificationMessage extends Notification {
 
         return new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(name)
-                .setContentText(message.getMessage())
+                .setContentTitle(profession)
+                .setContentText(message)
                 .addAction(action);
     }
 }

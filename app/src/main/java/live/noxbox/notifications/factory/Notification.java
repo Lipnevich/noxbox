@@ -26,9 +26,9 @@ import live.noxbox.notifications.util.MessagingService;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.updateNoxbox;
-import static live.noxbox.model.NotificationType.requesting;
+import static live.noxbox.model.NotificationType.accepting;
 
-public class Notification {
+public abstract class Notification {
 
     //need initialize for NotificationCompat.Builder
     protected long[] vibrate;
@@ -45,11 +45,9 @@ public class Notification {
     protected String notificationTime;
     protected Map<String, String> data;
     protected String noxbixId;
-
     protected static Thread stateThread;
     protected static Runnable stateRunnable;
     protected static boolean isStateAcceptingThreadWorked;
-    protected static boolean isStateRequestingThreadWorked;
 
 
     public Notification(Context context, Profile profile, Map<String, String> data) {
@@ -117,8 +115,8 @@ public class Notification {
 
     protected Uri getSound() {
         int sound = R.raw.push;
-        if (type == requesting) {
-            sound = R.raw.requested;
+        if (type == accepting) {
+            sound = R.raw.accepting;
         }
 
         return Uri.parse("android.resource://" + context.getPackageName() + "/raw/"
@@ -126,18 +124,7 @@ public class Notification {
     }
 
     protected long[] getVibrate() {
-        switch (type) {
-            case requesting:
-            case uploadingProgress:
-            case moving:
-            case performing:
-            case completed:
-            case accepting:
-            case lowBalance:
-                return null;
-            default:
-                return new long[]{100, 500, 200, 100, 100};
-        }
+        return new long[]{100, 500, 200, 100, 100};
     }
 
     protected PendingIntent createOnDeleteIntent(Context context, int group) {

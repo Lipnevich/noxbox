@@ -38,13 +38,11 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         await admin.messaging().send(pushMoving);
         console.log('push sent' + JSON.stringify(pushMoving));
     } else if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || previousNoxbox.ownerMessages.length < noxbox.ownerMessages.length)) {
-        let ownerMessage = noxbox.ownerMessages[noxbox.ownerMessages.length - 1];
         let pushMessage = {
             data: {
                  type: 'message',
-                 time: ownerMessage.time,
-                 message: ownerMessage.message,
-                 name: noxbox.owner.name,
+                 noxboxType: noxbox.type,
+                 message: noxbox.ownerMessages[noxbox.ownerMessages.length - 1].message,
                  id: noxbox.id
             },
             topic: noxbox.party.id
@@ -52,13 +50,11 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         await admin.messaging().send(pushMessage);
         console.log('push sent' + JSON.stringify(pushMessage));
     } else if(noxbox.partyMessages && (!previousNoxbox.partyMessages || previousNoxbox.partyMessages.length < noxbox.partyMessages.length)){
-        let partyMessage = noxbox.partyMessages[noxbox.partyMessages.length - 1];
         let pushMessage = {
             data: {
                  type: 'message',
-                 time: partyMessage.time,
-                 message: partyMessage.message,
-                 name: noxbox.party.name,
+                 noxboxType: noxbox.type,
+                 message:noxbox.partyMessages[noxbox.partyMessages.length - 1].message,
                  id: noxbox.id
             },
             topic: noxbox.owner.id
