@@ -9,7 +9,7 @@
                     android:right="1dp"
                     android:top="1dp">
                     <shape>
-                        <corners android:radius="0dp" />
+                        <corners android:radius="8dp" />
                     </shape>
                 </item>
             </layer-list>
