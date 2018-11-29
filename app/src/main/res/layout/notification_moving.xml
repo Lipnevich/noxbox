@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:text="Progress"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_title" />
 
@@ -27,12 +28,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="4dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            android:max="15"
-            android:progress="10"
+            android:progressBackgroundTint="@color/google_text"
+            android:indeterminateDrawable="@color/google_text"
+            android:indeterminate="true"
             android:progressDrawable="@drawable/notification_moving_progress_line" />
     </LinearLayout>
 
