@@ -7,52 +7,66 @@ const wallet = require('./wallet-functions');
 const version = 1.1;
 
 exports.welcome = functions.auth.user().onCreate(user => {
-return wallet.create(user).then(noxbox.init);
+    return wallet.create(user).then(noxbox.init);
 });
 
 exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUpdate(async(change, context) => {
-  const previousNoxbox = change.before.data();
-  const noxbox = change.after.data();
-  console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
-  console.log('Noxbox updated ' + JSON.stringify(noxbox));
-if(noxbox.timeAccepted && (!noxbox.timeOwnerVerified || !noxbox.timePartyVerified) && (noxbox.ownerMessages || noxbox.partyMessages)) {
-    let pushMessage = {
-        data: {
-             type: 'message',
-             id: noxbox.id
-        },
-        topic: noxbox.id
-    };
-    await admin.messaging().send(pushMessage);
-    console.log('push sent' + JSON.stringify(pushMessage));
-    }
-
-if(!previousNoxbox.timeAccepted && noxbox.timeAccepted && !noxbox.ownerMessages && !noxbox.partyMessages) {
-    let pushMoving = {
-        data: {
-             type: 'moving',
-                 id: noxbox.id
+    const previousNoxbox = change.before.data();
+    const noxbox = change.after.data();
+    console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
+    console.log('Noxbox updated ' + JSON.stringify(noxbox));
+    if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
+        let pushAccepted = {
+            data: {
+                type: 'accepting',
+                time: '' + noxbox.timeRequested,
+                id: noxbox.id
             },
-            topic: noxbox.id
+            topic: noxbox.owner.id
         };
+        await admin.messaging().send(pushAccepted);
+        console.log('push sent' + JSON.stringify(pushAccepted));
+    } else if(!previousNoxbox.timeAccepted && noxbox.timeAccepted) {
+        let pushMoving = {
+            data: {
+                type: 'moving',
+                id: noxbox.id
+            },
+            topic: noxbox.party.id
+        };
+
         await admin.messaging().send(pushMoving);
         console.log('push sent' + JSON.stringify(pushMoving));
+    } else if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || previousNoxbox.ownerMessages.length < noxbox.ownerMessages.length)) {
+        let ownerMessage = noxbox.ownerMessages[noxbox.ownerMessages.length - 1];
+        let pushMessage = {
+            data: {
+                 type: 'message',
+                 time: ownerMessage.time,
+                 message: ownerMessage.message,
+                 name: noxbox.owner.name,
+                 id: noxbox.id
+            },
+            topic: noxbox.party.id
+        };
+        await admin.messaging().send(pushMessage);
+        console.log('push sent' + JSON.stringify(pushMessage));
+    } else if(noxbox.partyMessages && (!previousNoxbox.partyMessages || previousNoxbox.partyMessages.length < noxbox.partyMessages.length)){
+        let partyMessage = noxbox.partyMessages[noxbox.partyMessages.length - 1];
+        let pushMessage = {
+            data: {
+                 type: 'message',
+                 time: partyMessage.time,
+                 message: partyMessage.message,
+                 name: noxbox.party.name,
+                 id: noxbox.id
+            },
+            topic: noxbox.owner.id
+        };
+        await admin.messaging().send(pushMessage);
+        console.log('push sent' + JSON.stringify(pushMessage));
     }
-
-  if(!previousNoxbox.timeRequested && !noxbox.timeAccepted && noxbox.timeRequested ) {
-      let pushAccepted = {
-          data: {
-               type: 'accepting',
-               time: '' + noxbox.timeRequested,
-               id: noxbox.id
-          },
-          topic: noxbox.id
-      };
-      await admin.messaging().send(pushAccepted);
-      console.log('push sent' + JSON.stringify(pushAccepted));
-  }
 });
-
 
 exports.map = functions.https.onRequest((req, res) => {
 admin.database().ref('geo').once('value').then(allServices => {

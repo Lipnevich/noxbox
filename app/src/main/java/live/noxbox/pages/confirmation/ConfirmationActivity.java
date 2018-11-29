@@ -78,7 +78,7 @@ public class ConfirmationActivity extends BaseActivity {
             @Override
             public void execute(Object object) {
                 long timeVerified = System.currentTimeMillis();
-                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                if (profile.equals(profile.getCurrent().getOwner())) {
                     Log.d(TAG, "timeOwnerVerified: " + DateTimeFormatter.time(timeVerified));
                     profile.getCurrent().setTimeOwnerVerified(timeVerified);
                 } else {
