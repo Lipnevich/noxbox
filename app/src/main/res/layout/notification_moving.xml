@@ -32,9 +32,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="4dp"
-            android:progressBackgroundTint="@color/google_text"
-            android:indeterminateDrawable="@color/google_text"
-            android:indeterminate="true"
             android:progressDrawable="@drawable/notification_moving_progress_line" />
     </LinearLayout>
 
