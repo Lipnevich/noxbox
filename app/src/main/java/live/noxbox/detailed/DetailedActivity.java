@@ -65,7 +65,7 @@ import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.LocationCalculator.getDistanceBetweenTwoPoints;
-import static live.noxbox.tools.LocationCalculator.getTimeInMillisBetweenUsers;
+import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class DetailedActivity extends AppCompatActivity {
     private GyroscopeObserver gyroscopeObserver;
@@ -237,7 +237,7 @@ public class DetailedActivity extends AppCompatActivity {
             travelMode = noxbox.getOwner().getTravelMode();
         }
 
-        int minutes = (int) getTimeInMillisBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), travelMode) / 60000;
+        int minutes = (int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), travelMode);
 
         int distance = getDistanceBetweenTwoPoints(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition());
         String timeTxt;

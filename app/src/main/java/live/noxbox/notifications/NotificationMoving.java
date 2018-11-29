@@ -17,12 +17,12 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.Notification;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.tools.LocationCalculator.getTimeInMillisBetweenUsers;
+import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class NotificationMoving extends Notification {
 
-    private int maxProgressInSeconds;
-    private int progressInSeconds;
+    private final int maxProgressInMinutes = 15;
+    private int progressInMinutes;
 
 
     public NotificationMoving(Context context, Profile profile, Map<String, String> data) {
@@ -47,15 +47,15 @@ public class NotificationMoving extends Notification {
             @Override
             public void execute(Noxbox noxbox) {
                 removeNotificationByGroup(context, type.getGroup());
-//                if (maxProgressInSeconds == 0) {
-//                    maxProgressInSeconds = (int) getTimeInMillisBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()) / 1000;
+//                if (maxProgressInMinutes == 0) {
+//                    maxProgressInMinutes = (int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()) / 1000;
 //                }
 
-                progressInSeconds =  maxProgressInSeconds - ((int) getTimeInMillisBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()) / 1000);
-
+                progressInMinutes = ((int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()));
+                progressInMinutes = Math.max(Math.min(progressInMinutes, 1), maxProgressInMinutes);
                 contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImage());
-                contentView.setTextViewText(R.id.time, String.valueOf(progressInSeconds / 60 + 1).concat("min"));
-                //contentView.setProgressBar(R.id.progress, maxProgressInSeconds, progressInSeconds, false);
+                contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movement, "" + progressInMinutes)));
+                contentView.setProgressBar(R.id.progress, maxProgressInMinutes, maxProgressInMinutes - progressInMinutes, false);
 
                 final NotificationCompat.Builder builder = getNotificationCompatBuilder();
                 getNotificationService(context).notify(type.getGroup(), builder.build());

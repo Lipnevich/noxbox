@@ -25,7 +25,10 @@
     <string name="meditation">Уроки медитации</string>
     <string name="water">Питьевая вода</string>
     <string name="plant">Посадка саженцев</string>
-
+    <!--Professions-->
+    <string name="waterSupplier">Water supplier</string>
+    <string name="guru">Guru</string>
+    <string name="gardener">Gardener</string>
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
@@ -245,9 +248,7 @@
     <string name="withComission">с учётом комиссии</string>
     <string name="worker">Работник</string>
     <string name="costumer">Заказчик</string>
-    <string name="waterSupplier">Water supplier</string>
-    <string name="guru">Guru</string>
-    <string name="gardener">Gardener</string>
+    <string name="movement">Arrive in %1$s minutes</string>
 
 
 </resources>

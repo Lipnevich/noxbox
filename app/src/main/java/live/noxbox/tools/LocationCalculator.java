@@ -8,11 +8,11 @@ import live.noxbox.model.TravelMode;
 
 public class LocationCalculator {
 
-    public static long getTimeInMillisBetweenUsers(Position ownerPosition, Position partyPosition, TravelMode travelMode) {
+    public static long getTimeInMinutesBetweenUsers(Position ownerPosition, Position partyPosition, TravelMode travelMode) {
 
         int minutes = getDistanceBetweenTwoPoints(ownerPosition, partyPosition) / travelMode.getSpeedInMetersPerMinute();
 
-        return minutes * 60000;
+        return minutes;
 
     }
 

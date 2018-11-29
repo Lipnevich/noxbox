@@ -9,8 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="48dp"
-        android:orientation="horizontal">
+        android:layout_marginEnd="24dp"
+        android:layout_toStartOf="@+id/noxboxTypeImage"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/time"
@@ -19,26 +20,31 @@
             android:layout_marginStart="16dp"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_title" />
-        <!--style="@style/HorizontalProgressBarNotificationStyle"-->
-        <!--android:layout_marginStart="16dp"-->
-        <!--android:progressDrawable="@drawable/notification_moving_progress_line"-->
-        <!--android:layout_width="match_parent"-->
+
         <ProgressBar
             android:id="@+id/progress"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
+            style="@style/HorizontalProgressBarNotificationStyle"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="4dp"
+            android:max="15"
+            android:progress="10"
+            android:progressDrawable="@drawable/notification_moving_progress_line" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/noxboxTypeImage"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="4dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_photographer" />
 
 
 </RelativeLayout>

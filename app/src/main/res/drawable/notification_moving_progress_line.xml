@@ -10,6 +10,8 @@
                     android:bottom="2dp">
                     <shape>
                         <corners android:radius="8dp" />
+                        <stroke android:color="@color/google_text" android:width="2dp"/>
+                        <solid android:color="@color/google_text"/>
                     </shape>
                 </item>
             </layer-list>
