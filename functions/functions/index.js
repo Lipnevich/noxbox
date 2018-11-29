@@ -43,6 +43,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
+                 name: noxbox.role === 'demand' ? noxbox.owner.name : '',
                  message: latestMessage(noxbox.ownerMessages).message,
                  id: noxbox.id
             },
@@ -55,6 +56,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
+                 name: noxbox.role === 'supply' ? noxbox.party.name : '',
                  message: latestMessage(noxbox.partyMessages).message,
                  id: noxbox.id
             },
