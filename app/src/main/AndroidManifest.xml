@@ -76,6 +76,7 @@
         <activity
             android:name=".pages.ChatActivity"
             android:theme="@style/NoActionBar"
+            android:parentActivityName=".MapActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".menu.WalletActivity"
