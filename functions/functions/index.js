@@ -15,6 +15,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     const noxbox = change.after.data();
     console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
+
     if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
         let pushAccepted = {
             data: {
@@ -37,24 +38,25 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         await admin.messaging().send(pushMoving);
         console.log('push sent' + JSON.stringify(pushMoving));
-    } else if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || previousNoxbox.ownerMessages.length < noxbox.ownerMessages.length)) {
+    } else if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || Object.keys(previousNoxbox.ownerMessages).length < Object.keys(noxbox.ownerMessages).length)) {
         let pushMessage = {
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
-                 message: noxbox.ownerMessages[noxbox.ownerMessages.length - 1].message,
+                 message: latestMessage(noxbox.ownerMessages).message,
+                 role:
                  id: noxbox.id
             },
             topic: noxbox.party.id
         };
         await admin.messaging().send(pushMessage);
         console.log('push sent' + JSON.stringify(pushMessage));
-    } else if(noxbox.partyMessages && (!previousNoxbox.partyMessages || previousNoxbox.partyMessages.length < noxbox.partyMessages.length)){
+    } else if(noxbox.partyMessages && (!previousNoxbox.partyMessages || Object.keys(previousNoxbox.partyMessages).length < Object.keys(noxbox.partyMessages).length)){
         let pushMessage = {
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
-                 message:noxbox.partyMessages[noxbox.partyMessages.length - 1].message,
+                 message: latestMessage(noxbox.partyMessages).message,
                  id: noxbox.id
             },
             topic: noxbox.owner.id
@@ -63,6 +65,16 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         console.log('push sent' + JSON.stringify(pushMessage));
     }
 });
+
+function latestMessage(messages) {
+    let message;
+    for(time in messages) {
+        if(!message || messages[time].time > message.time) {
+            message = messages[time];
+        }
+    }
+    return message;
+}
 
 exports.map = functions.https.onRequest((req, res) => {
 admin.database().ref('geo').once('value').then(allServices => {
