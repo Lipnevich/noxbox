@@ -44,7 +44,6 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
                  type: 'message',
                  noxboxType: noxbox.type,
                  message: latestMessage(noxbox.ownerMessages).message,
-                 role:
                  id: noxbox.id
             },
             topic: noxbox.party.id
