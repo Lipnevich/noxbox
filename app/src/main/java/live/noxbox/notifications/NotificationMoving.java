@@ -64,7 +64,7 @@ public class NotificationMoving extends Notification {
 
 
         if (profile == null) {
-            Firestore.readNoxbox(noxbixId, task);
+            Firestore.readNoxbox(noxboxId, task);
         } else {
             task.execute(profile.getCurrent());
         }

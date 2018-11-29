@@ -44,7 +44,7 @@ public abstract class Notification {
     protected NotificationType type;
     protected String notificationTime;
     protected Map<String, String> data;
-    protected String noxbixId;
+    protected String noxboxId;
     protected static Thread stateThread;
     protected static Runnable stateRunnable;
     protected static boolean isStateAcceptingThreadWorked;
@@ -56,7 +56,7 @@ public abstract class Notification {
         this.data = data;
         type = NotificationType.valueOf(data.get("type"));
         notificationTime = data.get("time");
-        noxbixId = data.get("id");
+        noxboxId = data.get("id");
 
         removeNotifications(context);
         isStateAcceptingThreadWorked = false;
