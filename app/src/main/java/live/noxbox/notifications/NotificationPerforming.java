@@ -57,7 +57,7 @@ public class NotificationPerforming extends Notification {
                     } else {
                         data.remove("type");
                         data.put("type", NotificationType.lowBalance.name());
-                        NotificationFactory.showNotification(context, profile, data);
+                        NotificationFactory.buildNotification(context, profile, data);
                     }
 
 

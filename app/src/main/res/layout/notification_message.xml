@@ -16,7 +16,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
             android:layout_toStartOf="@+id/photo"
             android:gravity="start"
@@ -29,7 +28,7 @@
         <TextView
             android:id="@+id/message"
             style="@style/TextAppearance.Compat.Notification.Info"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profession"
             android:layout_alignParentStart="true"

@@ -19,18 +19,19 @@ import android.widget.TextView;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import live.noxbox.BaseActivity;
 import live.noxbox.R;
 import live.noxbox.contract.NoxboxTypeListActivity;
 import live.noxbox.database.AppCache;
-import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.notifications.util.MessagingService;
+import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
@@ -163,7 +164,7 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawMenuAddingPerformer(final Profile profile) {
-        if (profile.getPortfolio().values().size() == NoxboxType.values().length){
+        if (profile.getPortfolio().values().size() == NoxboxType.values().length) {
             findViewById(R.id.addLayout).setVisibility(View.GONE);
             return;
         }
@@ -305,8 +306,10 @@ public class ProfileActivity extends BaseActivity {
                 if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK
                         && data != null && data.getData() != null) {
 
-                    MessagingService messagingService = new MessagingService(ProfileActivity.this.getApplicationContext());
-                    messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValidationProgress));
+                    Map<String, String> notificationData = new HashMap<>();
+                    notificationData.put("type", NotificationType.photoValidationProgress.name());
+                    NotificationFactory.buildNotification(ProfileActivity.this.getApplicationContext(), null, notificationData).show();
+
                     getBitmap(ProfileActivity.this, data.getData(), new Task<Bitmap>() {
                         @Override
                         public void execute(Bitmap bitmap) {

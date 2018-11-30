@@ -20,7 +20,7 @@
             android:layout_marginStart="16dp"
             android:text="Progress"
             android:textColor="@color/secondary"
-            android:textSize="@dimen/text_title" />
+            android:textSize="@dimen/text_size" />
 
         <ProgressBar
             android:id="@+id/progress"

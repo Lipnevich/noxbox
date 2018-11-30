@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,11 +59,15 @@ public abstract class Notification {
         notificationTime = data.get("time");
         noxboxId = data.get("id");
 
+
         removeNotifications(context);
         isStateAcceptingThreadWorked = false;
     }
 
     public void show() {
+    }
+
+    public void update(Map<String, String> data) {
     }
 
     protected NotificationCompat.Builder getNotificationCompatBuilder() {
@@ -196,6 +201,10 @@ public abstract class Notification {
             return String.valueOf(remoteInput.getCharSequence(context.getResources().getString(R.string.reply).toUpperCase()));
         }
         return null;
+    }
+
+    protected String format(Resources resources, int resource, Object... args) {
+        return String.format(resources.getString(resource), args);
     }
 
 }

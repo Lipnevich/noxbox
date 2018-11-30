@@ -21,15 +21,19 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import live.noxbox.database.AppCache;
+import live.noxbox.database.Firestore;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;
-import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.util.MessagingService;
+import live.noxbox.notifications.factory.Notification;
+import live.noxbox.notifications.factory.NotificationFactory;
 
 public class ImageManager {
 
@@ -38,9 +42,11 @@ public class ImageManager {
         uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
-                MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                messagingService.showPushNotification(new NotificationData().setType(NotificationType.photoValid));
+                Map<String, String> data = new HashMap<>();
+                data.put("type", NotificationType.photoValid.name());
+                NotificationFactory.buildNotification(activity.getApplicationContext(), null, data).show();
                 profile.setPhoto(uri.toString());
+                Firestore.writeProfile(profile);
             }
         });
     }
@@ -91,9 +97,12 @@ public class ImageManager {
             compression.makeLog("compression");
         }
 
+        final Map<String, String> data = new HashMap<>();
+        data.put("type", NotificationType.uploadingProgress.name());
+        data.put("progress", String.valueOf(0));
+        final Notification notificationUploadingProgress = NotificationFactory.buildNotification(activity.getApplicationContext(), null, data);
+        notificationUploadingProgress.show();
         UploadTask uploadTask = storageRef.putBytes(stream.toByteArray());
-        final MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        final NotificationData notification = new NotificationData();
         uploadTask
                 .addOnFailureListener(onFailureListener)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -103,30 +112,26 @@ public class ImageManager {
                         storageRef.getDownloadUrl()
                                 .addOnSuccessListener(onSuccessListener)
                                 .addOnFailureListener(onFailureListener);
+
                     }
-                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            private final long time = System.currentTimeMillis();
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    private final long time = System.currentTimeMillis();
 
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
 
-                notification.setType(NotificationType.uploadingProgress).setProgress(progress).setMaxProgress(100);
 
-                if (progress != 0) {
-                    int passedSeconds = (int) (System.currentTimeMillis() - time) / 1000;
-                    int secPerPercent = passedSeconds / progress;
-                    int remainSeconds = (secPerPercent * (100 - progress));
-                    notification.setTime(String.valueOf(remainSeconds));
-                }
-                if (progress == 0) {
-                    messagingService.showPushNotification(notification);
-                } else {
-//                    NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
-                }
+                        if (progress != 0) {
+                            int passedSeconds = (int) (System.currentTimeMillis() - time) / 1000;
+                            int secPerPercent = passedSeconds / progress;
+                            int remainSeconds = (secPerPercent * (100 - progress));
+                        }
+                        notificationUploadingProgress.update(Collections.singletonMap("progress", String.valueOf(progress)));
 
-            }
-        });
+                    }
+                });
     }
 
     public static void getBitmap(Activity activity, Uri url, final Task<Bitmap> task) {

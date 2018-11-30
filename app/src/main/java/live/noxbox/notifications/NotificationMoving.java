@@ -47,9 +47,6 @@ public class NotificationMoving extends Notification {
             @Override
             public void execute(Noxbox noxbox) {
                 removeNotificationByGroup(context, type.getGroup());
-//                if (maxProgressInMinutes == 0) {
-//                    maxProgressInMinutes = (int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()) / 1000;
-//                }
 
                 progressInMinutes = ((int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()));
                 progressInMinutes = Math.min(progressInMinutes, maxProgressInMinutes - 1);

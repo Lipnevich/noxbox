@@ -79,7 +79,7 @@ public class Moving implements State {
             data.put("type", NotificationType.moving.name());
             data.put("timeToMeet", profile.getCurrent().getTimeToMeet().toString());
 
-            NotificationFactory.showNotification(activity.getApplicationContext(), profile, data);
+            NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
         }
 
 

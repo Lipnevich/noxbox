@@ -55,7 +55,7 @@ public MessagingService(Context context) {
         initCrashReporting();
         context = getApplicationContext();
         //if (!inForeground()) {
-        NotificationFactory.showNotification(context, null, remoteMessage.getData());
+        NotificationFactory.buildNotification(context, null, remoteMessage.getData()).show();
         //}
     }
 
