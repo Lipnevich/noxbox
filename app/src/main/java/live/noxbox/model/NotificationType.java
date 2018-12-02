@@ -126,7 +126,11 @@ public enum NotificationType {
         if (notification.getType() == uploadingProgress) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_uploading_progress);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-            remoteViews.setTextViewText(R.id.uploadingProgress, format(context.getResources(), notification.getType().content, notification.getProgress()));
+            if(notification.getProgress().equals(notification.getMaxProgress())) {
+                remoteViews.setTextViewText(R.id.uploadingProgress, context.getResources().getString(R.string.uploadingComplete));
+            } else {
+                remoteViews.setTextViewText(R.id.uploadingProgress, format(context.getResources(), notification.getType().content, notification.getProgress()));
+            }
             remoteViews.setProgressBar(R.id.progress, notification.getMaxProgress(), notification.getProgress(), false);
         }
         if (notification.getType() == photoValidationProgress) {

@@ -79,6 +79,7 @@ public class ImageManager {
                 getStorageReference().child(path + "." + Bitmap.CompressFormat.JPEG.name());
 
         int quality = 100;
+        // TODO (nli) обрезать фото по опознанному лицу до ужатия
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         while (quality > 1) {
@@ -111,6 +112,8 @@ public class ImageManager {
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 int progress = (int) ((100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount());
 
+
+
                 notification.setType(NotificationType.uploadingProgress).setProgress(progress).setMaxProgress(100);
 
                 if (progress != 0) {
@@ -124,7 +127,6 @@ public class ImageManager {
                 } else {
 //                    NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
                 }
-
             }
         });
     }
