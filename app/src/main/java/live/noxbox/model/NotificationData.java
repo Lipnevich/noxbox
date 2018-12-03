@@ -2,8 +2,6 @@ package live.noxbox.model;
 
 import java.util.Map;
 
-import live.noxbox.tools.InvalidAcceptance;
-
 /**
  * Created by nicolay.lipnevich on 5/5/2018.
  */

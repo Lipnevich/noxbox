@@ -146,7 +146,7 @@ public enum NotificationType {
         if (notification.getType() == photoInvalid) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_invalid_photo);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-            remoteViews.setTextViewText(R.id.content, format(context.getResources(), notification.getType().content, context.getResources().getString(notification.getInvalidAcceptance().getCorrectionMessage())) + " " + notification.getMessage());
+            //remoteViews.setTextViewText(R.id.content, format(context.getResources(), notification.getType().content, context.getResources().getString(notification.getInvalidAcceptance().getCorrectionMessage())) + " " + notification.getMessage());
         }
 
         if (notification.getType() == performing) {
@@ -236,7 +236,6 @@ public enum NotificationType {
         return Uri.parse("android.resource://" + context.getPackageName() + "/raw/"
                 + context.getResources().getResourceEntryName(sound));
     }
-
 
 
     public static PendingIntent getIntent(Context context, NotificationData notification) {
@@ -331,7 +330,6 @@ public enum NotificationType {
     }
 
 
-
     public static class AcceptRequestListener extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
@@ -345,7 +343,6 @@ public enum NotificationType {
             });
         }
     }
-
 
 
     private static String format(Resources resources, int resource, Object... args) {

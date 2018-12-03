@@ -13,15 +13,16 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFace;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetector;
 import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Acceptance;
-import live.noxbox.model.NotificationData;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.util.MessagingService;
+import live.noxbox.notifications.factory.NotificationFactory;
 
 import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
 
@@ -45,9 +46,12 @@ public class FacePartsDetection {
                     @Override
                     public void onSuccess(List<FirebaseVisionFace> faces) {
                         detection.makeLog("detection");
+
+                        Map<String, String> data = new HashMap<>();
+
+
                         if (faces.size() != 1) {
                             profile.setAcceptance(new Acceptance());
-                            buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
                         } else {
                             profile.getAcceptance().setFailToRecognizeFace(false);
                             profile.getAcceptance().setFaceSize(0.7f);
@@ -62,10 +66,12 @@ public class FacePartsDetection {
                         }
 
                         if (profile.getAcceptance().isAccepted()) {
-                            buildNotification(new NotificationData().setType(NotificationType.photoValid), activity);
+                            data.put("type", NotificationType.photoValid.name());
+                            NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                             task.execute(bitmap);
                         } else {
-                            buildNotification(new NotificationData().setType(NotificationType.photoInvalid).setInvalidAccetrance(profile.getAcceptance().getInvalidAcceptance()), activity);
+                            data.put("type", NotificationType.photoInvalid.name());
+                            NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                         }
 
                         AppCache.fireProfile();
@@ -76,18 +82,14 @@ public class FacePartsDetection {
                     public void onFailure(@NonNull Exception e) {
                         Crashlytics.logException(e);
                         profile.getAcceptance().setFailToRecognizeFace(true);
-                        buildNotification(new NotificationData()
-                                .setType(NotificationType.photoInvalid)
-                                .setInvalidAccetrance(profile.getAcceptance()
-                                        .getInvalidAcceptance())
-                                .setMessage(e.getMessage()), activity);
+
+                        Map<String, String> data = new HashMap<>();
+                        data.put("type", NotificationType.photoInvalid.name());
+                        NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
+
                         AppCache.fireProfile();
                     }
                 });
     }
 
-    private static void buildNotification(NotificationData notification, Activity activity) {
-        MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-        messagingService.showPushNotification(notification);
-    }
 }

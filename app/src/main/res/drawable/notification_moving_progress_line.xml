@@ -4,14 +4,12 @@
         <clip>
             <layer-list>
                 <item
-                    android:left="2dp"
-                    android:top="2dp"
-                    android:right="2dp"
-                    android:bottom="2dp">
+                    android:bottom="1dp"
+                    android:left="1dp"
+                    android:right="1dp"
+                    android:top="1dp">
                     <shape>
                         <corners android:radius="8dp" />
-                        <stroke android:color="@color/google_text" android:width="2dp"/>
-                        <solid android:color="@color/google_text"/>
                     </shape>
                 </item>
             </layer-list>
