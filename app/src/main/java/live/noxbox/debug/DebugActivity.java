@@ -11,6 +11,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import live.noxbox.BuildConfig;
@@ -19,11 +24,13 @@ import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.MenuActivity;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
+import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.state.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.DebugMessage;
@@ -38,6 +45,12 @@ public class DebugActivity extends MenuActivity implements
         OnMapReadyCallback {
     private static final String TAG = "DebugActivity";
 
+    private List<NotificationType> photoPushes = Arrays.asList(NotificationType.photoUploadingProgress,
+            NotificationType.photoValidationProgress,
+            NotificationType.photoValid, NotificationType.photoInvalid);
+    private Iterator<NotificationType> iterator = photoPushes.iterator();
+
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -49,39 +62,51 @@ public class DebugActivity extends MenuActivity implements
 
                     DebugActivity.this.findViewById(R.id.debugLayout).setVisibility(View.VISIBLE);
 
-                    DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
+
+                    DebugActivity.this.findViewById(R.id.debugPush).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 20;
-
-                            for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
-                                online(noxbox);
-                            }
-
-                                LatLng myPosition = null;
-                                if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                                        == PackageManager.PERMISSION_GRANTED) {
-                                    //myPosition = profile.getPosition().toLatLng();
-                                    myPosition = googleMap.getCameraPosition().target;
-                                }
-
-                                if (myPosition != null) {
-
-                                    LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
-                                    LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
-                                    LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
-                                    LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
-                                    googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
-                                            coordinatesOne,
-                                            coordinatesTwo,
-                                            coordinatesThree,
-                                            coordinatesFour,
-                                            coordinatesOne)
-                                            .color(Color.RED)
-                                            .width(5));
-                                }
+                            Map<String, String> data = new HashMap<>();
+                            if(!iterator.hasNext()) iterator = photoPushes.iterator();
+                            data.put("type", iterator.next().name());
+                            data.put("progress", "" + 50);
+                            NotificationFactory.buildNotification(DebugActivity.this, profile, data).show();
                         }
                     });
+
+                    DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 20;
+
+                                    for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
+                                        online(noxbox);
+                                    }
+
+                                    LatLng myPosition = null;
+                                    if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                                            == PackageManager.PERMISSION_GRANTED) {
+                                        //myPosition = profile.getPosition().toLatLng();
+                                        myPosition = googleMap.getCameraPosition().target;
+                                    }
+
+                                    if (myPosition != null) {
+
+                                        LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
+                                        LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
+                                        LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
+                                        LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
+                                        googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
+                                                coordinatesOne,
+                                                coordinatesTwo,
+                                                coordinatesThree,
+                                                coordinatesFour,
+                                                coordinatesOne)
+                                                .color(Color.RED)
+                                                .width(5));
+                                    }
+                                }
+                            });
 
                     findViewById(R.id.debugRequest).setOnClickListener(new View.OnClickListener() {
                         @Override

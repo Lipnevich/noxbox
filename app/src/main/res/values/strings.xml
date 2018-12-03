@@ -252,6 +252,6 @@
     <string name="worker">Работник</string>
     <string name="costumer">Заказчик</string>
     <string name="movement">Arrive in ~%1$s minutes</string>
-
+    <string name="uploadingComplete">Uploading complete</string>
 
 </resources>

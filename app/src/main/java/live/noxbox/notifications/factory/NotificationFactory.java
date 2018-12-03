@@ -40,7 +40,7 @@ public abstract class NotificationFactory {
 
             case completed:
 
-            case uploadingProgress:
+            case photoUploadingProgress:
                 return new NotificationUploadingProgress(context, profile, data);
             case photoValid:
                 return new NotificationPhotoValid(context, profile, data);

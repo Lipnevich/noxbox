@@ -164,10 +164,19 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/debugPush"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Generate Push"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_size" />
+                
+                <TextView
                     android:id="@+id/debugGenerateNoxboxes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="Generate Noxboxes"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
@@ -176,7 +185,7 @@
                     android:id="@+id/debugRequest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="Request"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
@@ -185,7 +194,7 @@
                     android:id="@+id/debugAccept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="Accept"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
@@ -195,7 +204,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="Verify Photo"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
@@ -205,7 +214,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="Reject Photo"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
@@ -215,7 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="Complete"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />

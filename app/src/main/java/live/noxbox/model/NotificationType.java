@@ -34,7 +34,7 @@ import static live.noxbox.notifications.util.MessagingService.getNotificationSer
  */
 public enum NotificationType {
 
-    uploadingProgress(0, R.string.uploadingStarted, R.string.uploadingProgressTitle),
+    photoUploadingProgress(0, R.string.uploadingStarted, R.string.uploadingProgressTitle),
     photoValidationProgress(0, R.string.noxbox, R.string.photoValidationProgressContent),
     photoValid(0, R.string.noxbox, R.string.photoValidContent),
     photoInvalid(0, R.string.photoInvalidTitle, R.string.photoInvalidContent),
@@ -123,7 +123,7 @@ public enum NotificationType {
 
     private static RemoteViews getCustomContentView(final Context context, final NotificationData notification) {
         RemoteViews remoteViews = null;
-        if (notification.getType() == uploadingProgress) {
+        if (notification.getType() == photoUploadingProgress) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_uploading_progress);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             if(notification.getProgress().equals(notification.getMaxProgress())) {
@@ -214,7 +214,7 @@ public enum NotificationType {
     public static long[] getVibrate(NotificationData notification) {
         switch (notification.getType()) {
             case requesting:
-            case uploadingProgress:
+            case photoUploadingProgress:
             case moving:
             case performing:
             case completed:
@@ -227,7 +227,7 @@ public enum NotificationType {
     }
 
     public static Uri getSound(Context context, NotificationType type) {
-        if (type == uploadingProgress || type == performing || type == moving || type == accepting)
+        if (type == photoUploadingProgress || type == performing || type == moving || type == accepting)
             return null;
 
         int sound = R.raw.push;
