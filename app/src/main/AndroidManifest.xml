@@ -75,12 +75,22 @@
             android:parentActivityName=".MapActivity" />
         <activity
             android:name=".pages.ChatActivity"
-            android:theme="@style/NoActionBar"
             android:parentActivityName=".MapActivity"
+            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".menu.WalletActivity"
             android:parentActivityName=".MapActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity
+            android:name=".application.AboutApplicationActivity"
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".application.tutorial.TutorialActivity"
+            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <meta-data

@@ -65,7 +65,7 @@ public class HistoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, final View convertView, ViewGroup parent) {
-        final View view = convertView != null ? convertView : inflater.inflate(R.layout.history_item, parent, false);
+        final View view = convertView != null ? convertView : inflater.inflate(R.layout.item_history, parent, false);
 
         final Noxbox noxbox = (Noxbox) getItem(position);
 

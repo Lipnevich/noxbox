@@ -45,7 +45,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.chat_item, parent, false);
+                .inflate(R.layout.item_chat, parent, false);
 
         CardView card = v.findViewById(R.id.chat_card);
         if(!isOwner(position)) {

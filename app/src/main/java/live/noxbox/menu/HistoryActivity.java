@@ -45,7 +45,7 @@ public class HistoryActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.history);
+        setContentView(R.layout.activity_history);
         setTitle(R.string.history);
 
         int size = 384;
@@ -70,7 +70,7 @@ public class HistoryActivity extends BaseActivity {
                             Long.MAX_VALUE :
                             historyItems.get(historyItems.size() - 1).getTimeCompleted();
 
-                    // TODO (vl) use MarketRole.demand for payer's history
+                    // TODO (vl) use MarketRole.demand for payer's activity_history
                     Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, MarketRole.supply, uploadingTask);
                     requestedAmount += AMOUNT_PER_LOAD;
                 }

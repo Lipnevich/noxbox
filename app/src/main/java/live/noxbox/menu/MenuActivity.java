@@ -36,6 +36,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import live.noxbox.BaseActivity;
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
+import live.noxbox.application.AboutApplicationActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.filters.MapFiltersActivity;
 import live.noxbox.menu.profile.ProfileActivity;
@@ -178,6 +179,10 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 Router.startActivityForResult(this, WalletActivity.class, WalletActivity.CODE);
                 break;
             }
+            case R.id.navigation_about_app: {
+                Router.startActivity(this, AboutApplicationActivity.class);
+                break;
+            }
             case R.id.navigation_logout: {
                 AppCache.readProfile(new Task<Profile>() {
                     @Override
@@ -200,7 +205,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                                 });
                     }
                 });
-
             }
         }
         return true;

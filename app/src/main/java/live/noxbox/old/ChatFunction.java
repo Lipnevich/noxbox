@@ -33,8 +33,8 @@ public abstract class ChatFunction {
 
     protected ImageView getChatIcon() {
         if(chatIcon == null) {
-            chatIcon = findViewById(R.id.chat);
-            chatIcon.setImageResource(R.drawable.chat);
+            chatIcon = findViewById(R.id.activity_chat);
+            chatIcon.setImageResource(R.drawable.activity_chat);
         }
 
         chatIcon.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +80,7 @@ public abstract class ChatFunction {
             if(hasNewMessages(getCurrentNoxbox())) {
                 drawNewMessageSign();
             } else {
-                getChatIcon().setImageResource(R.drawable.chat);
+                getChatIcon().setImageResource(R.drawable.activity_chat);
             }
 //            listenEvents();
         }

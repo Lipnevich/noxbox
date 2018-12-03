@@ -91,7 +91,7 @@ public class Firestore {
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
         }
-        // ids for history queries
+        // ids for activity_history queries
         if (current.getRole() == MarketRole.supply) {
             current.setPerformerId(current.getOwner().getId());
             current.setPayerId(current.getParty() == null ? null : current.getParty().getId());

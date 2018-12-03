@@ -37,13 +37,13 @@ public class AuthIntegrationTest {
         // become requested
         // open detailed view
         // accept
-        // open chat and send message
+        // open activity_chat and send message
         // verify
         // become verified
         // complete
         // check balance
-        // check history
-        // comment in history
+        // check activity_history
+        // comment in activity_history
     }
 
     @Test

@@ -53,7 +53,7 @@ public class ChatActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.chat);
+        setContentView(R.layout.activity_chat);
 
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override

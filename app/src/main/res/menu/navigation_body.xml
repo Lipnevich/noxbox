@@ -18,9 +18,14 @@
             android:icon="@drawable/wallet"
             android:title="@string/wallet" />
         <item
+            android:id="@+id/navigation_about_app"
+            android:icon="@drawable/ic_about_application"
+            android:title="@string/aboutApp" />
+        <item
             android:id="@+id/navigation_logout"
             android:icon="@drawable/logout"
             android:title="@string/logout" />
+
     </group>
 
 

@@ -250,6 +250,9 @@
     <string name="costumer">Заказчик</string>
     <string name="movement">Arrive in ~%1$s minutes</string>
     <string name="uploadingComplete">Uploading complete</string>
+    <string name="aboutApp">О приложении</string>
+    <string name="start_promo_video">Start Promo Video</string>
+    <string name="tutorial">Tutorial</string>
 
 
 </resources>
