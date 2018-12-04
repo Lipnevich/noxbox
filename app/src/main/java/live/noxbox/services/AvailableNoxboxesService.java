@@ -36,7 +36,7 @@ public class AvailableNoxboxesService extends Service {
     }
 
     public class LocalBinder extends Binder {
-        AvailableNoxboxesService getService() {
+        public AvailableNoxboxesService getService() {
             return new AvailableNoxboxesService();
         }
     }

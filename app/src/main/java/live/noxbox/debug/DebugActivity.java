@@ -33,6 +33,7 @@ import live.noxbox.model.Wallet;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.states.State;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
