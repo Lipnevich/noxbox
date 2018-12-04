@@ -15,7 +15,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="label">
         <activity
-            android:name=".pages.AuthActivity"
+            android:name=".activities.AuthActivity"
             android:theme="@style/NoActionBar">
 
         </activity>
@@ -28,13 +28,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".pages.confirmation.ConfirmationActivity"
+            android:name=".activities.ConfirmationActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar">
 
         </activity>
         <activity
-            android:name=".filters.MapFiltersActivity"
+            android:name=".menu.filters.MapFiltersActivity"
             android:parentActivityName=".MapActivity" />
         <activity
             android:name=".menu.profile.ProfileActivity"
@@ -42,7 +42,7 @@
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".state.cluster.ClusterItemsActivity"
+            android:name=".cluster.ClusterItemsActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar" />
         <activity
@@ -50,11 +50,11 @@
             android:parentActivityName=".menu.profile.ProfileActivity"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name=".contract.ContractActivity"
+            android:name=".activities.contract.ContractActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".contract.NoxboxTypeListActivity"
+            android:name=".activities.contract.NoxboxTypeListActivity"
             android:label="@string/selectService"
             android:noHistory="true"
             android:theme="@style/DialogListActivity" />
@@ -64,17 +64,17 @@
             android:noHistory="true"
             android:theme="@style/DialogListActivity" />
         <activity
-            android:name=".detailed.DetailedActivity"
+            android:name=".activities.detailed.DetailedActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name=".detailed.CoordinateActivity"
+            android:name=".activities.detailed.CoordinateActivity"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".menu.HistoryActivity"
             android:parentActivityName=".MapActivity" />
         <activity
-            android:name=".pages.ChatActivity"
+            android:name=".activities.ChatActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
@@ -84,12 +84,12 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".application.AboutApplicationActivity"
+            android:name=".menu.about.AboutApplicationActivity"
             android:parentActivityName=".MapActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".application.tutorial.TutorialActivity"
+            android:name=".menu.about.tutorial.TutorialActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
@@ -103,14 +103,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <service android:name=".notifications.util.MessagingService">
+        <service android:name=".services.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".pages.AvailableNoxboxesService" />
+        <service android:name=".services.AvailableNoxboxesService" />
 
-        <receiver android:name=".notifications.factory.Notification$CancelRequestListener">
+        <receiver android:name=".notifications.Notification$CancelRequestListener">
             <intent-filter>
                 <action android:name="live.noxbox.cancelRequestByClickedButton" />
             </intent-filter>
@@ -122,12 +122,12 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".notifications.factory.Notification$UserInputListener">
+        <receiver android:name=".notifications.Notification$UserInputListener">
             <intent-filter>
                 <action android:name="live.noxbox.UserInputListener" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".notifications.factory.Notification$DeleteActionIntent">
+        <receiver android:name=".notifications.Notification$DeleteActionIntent">
             <intent-filter>
                 <action android:name="live.noxbox.DeleteActionIntent" />
             </intent-filter>

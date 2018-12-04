@@ -8,7 +8,6 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.Notification;
 
 public class NotificationPhotoValid extends Notification {
     public NotificationPhotoValid(Context context, Profile profile, Map<String, String> data) {

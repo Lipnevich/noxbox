@@ -32,7 +32,7 @@ import live.noxbox.model.ImageType;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.Notification;
+import live.noxbox.notifications.Notification;
 import live.noxbox.notifications.factory.NotificationFactory;
 
 public class ImageManager {

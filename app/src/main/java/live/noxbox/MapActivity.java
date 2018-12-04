@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 
 import io.fabric.sdk.android.Fabric;
+import live.noxbox.activities.AuthActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.DebugActivity;
 import live.noxbox.debug.TimeLogger;
@@ -55,23 +56,22 @@ import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.pages.Accepting;
-import live.noxbox.pages.AuthActivity;
-import live.noxbox.pages.AvailableServices;
-import live.noxbox.pages.Created;
-import live.noxbox.pages.LocationReceiver;
-import live.noxbox.pages.Moving;
-import live.noxbox.pages.Performing;
-import live.noxbox.pages.Requesting;
-import live.noxbox.state.State;
+import live.noxbox.services.LocationReceiver;
+import live.noxbox.states.Accepting;
+import live.noxbox.states.AvailableNoxboxes;
+import live.noxbox.states.Created;
+import live.noxbox.states.Moving;
+import live.noxbox.states.Performing;
+import live.noxbox.states.Requesting;
+import live.noxbox.states.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
-import static live.noxbox.tools.MapController.moveCopyrightLeft;
-import static live.noxbox.tools.MapController.setupMap;
+import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
+import static live.noxbox.tools.MapOperator.setupMap;
 
 public class MapActivity extends DebugActivity implements
         OnMapReadyCallback,
@@ -315,7 +315,7 @@ public class MapActivity extends DebugActivity implements
 
         switch (state) {
             case initial:
-                newState = new AvailableServices(googleMap, googleApiClient, this);
+                newState = new AvailableNoxboxes(googleMap, googleApiClient, this);
                 break;
             case created:
                 newState = new Created(googleMap, this);

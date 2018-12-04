@@ -6,6 +6,7 @@ import java.util.Map;
 
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.Notification;
 import live.noxbox.notifications.NotificationAccepting;
 import live.noxbox.notifications.NotificationLowBalance;
 import live.noxbox.notifications.NotificationMessage;

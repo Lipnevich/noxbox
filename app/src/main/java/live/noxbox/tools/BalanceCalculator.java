@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.pages.Performing;
+import live.noxbox.states.Performing;
 
 import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.Configuration.FIVE_MINUTES_PART_OF_HOUR;

@@ -15,19 +15,19 @@ import android.widget.RemoteViews;
 import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.activities.ChatActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.menu.HistoryActivity;
 import live.noxbox.menu.WalletActivity;
 import live.noxbox.menu.profile.ProfileActivity;
-import live.noxbox.notifications.factory.Notification;
-import live.noxbox.notifications.util.MessagingService;
-import live.noxbox.pages.ChatActivity;
+import live.noxbox.notifications.Notification;
+import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.COMISSION_FEE;
 import static live.noxbox.Configuration.CURRENCY;
-import static live.noxbox.notifications.util.MessagingService.getNotificationService;
+import static live.noxbox.services.MessagingService.getNotificationService;
 
 /**
  * Created by nicolay.lipnevich on 13/05/2017.

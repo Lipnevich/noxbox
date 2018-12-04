@@ -13,7 +13,6 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.Notification;
 
 public class NotificationLowBalance extends Notification {
     private String message;

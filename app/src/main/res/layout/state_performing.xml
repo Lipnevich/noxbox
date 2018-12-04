@@ -53,7 +53,7 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
-            <live.noxbox.pages.SwipeButton
+            <live.noxbox.tools.SwipeButton
                 android:id="@+id/completeSwipeButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"

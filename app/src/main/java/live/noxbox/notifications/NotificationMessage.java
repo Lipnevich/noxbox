@@ -13,10 +13,9 @@ import com.google.common.base.Strings;
 import java.util.Map;
 
 import live.noxbox.R;
+import live.noxbox.activities.ChatActivity;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.Notification;
-import live.noxbox.pages.ChatActivity;
 
 import static live.noxbox.Configuration.CHANNEL_ID;
 

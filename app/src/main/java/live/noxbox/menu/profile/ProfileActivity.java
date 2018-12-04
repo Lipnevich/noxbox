@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import live.noxbox.BaseActivity;
 import live.noxbox.R;
-import live.noxbox.contract.NoxboxTypeListActivity;
+import live.noxbox.activities.BaseActivity;
+import live.noxbox.activities.contract.NoxboxTypeListActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;

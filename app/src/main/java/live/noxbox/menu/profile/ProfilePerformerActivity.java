@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import live.noxbox.BaseActivity;
 import live.noxbox.R;
+import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;

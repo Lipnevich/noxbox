@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import live.noxbox.R;
+import live.noxbox.debug.DebugMessage;
 import live.noxbox.menu.profile.ProfileActivity;
 import live.noxbox.model.Profile;
 

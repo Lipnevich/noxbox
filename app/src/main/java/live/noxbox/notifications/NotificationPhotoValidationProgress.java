@@ -8,7 +8,6 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.Notification;
 
 public class NotificationPhotoValidationProgress extends Notification {
     public NotificationPhotoValidationProgress(Context context, Profile profile, Map<String, String> data) {

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import live.noxbox.BaseActivity;
 import live.noxbox.R;
+import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;

@@ -14,7 +14,6 @@ import live.noxbox.R;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.Notification;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;

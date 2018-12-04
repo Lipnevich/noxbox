@@ -31,15 +31,13 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
 import live.noxbox.notifications.factory.NotificationFactory;
-import live.noxbox.state.State;
+import live.noxbox.states.State;
 import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.DebugMessage;
-import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
+import static live.noxbox.cluster.DetectNullValue.areTheyNull;
 import static live.noxbox.database.GeoRealtime.online;
-import static live.noxbox.tools.DetectNullValue.areNotTheyNull;
-import static live.noxbox.tools.DetectNullValue.areTheyNull;
 
 public class DebugActivity extends MenuActivity implements
         OnMapReadyCallback {

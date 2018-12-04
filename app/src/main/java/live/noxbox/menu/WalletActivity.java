@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import java.math.BigDecimal;
 
-import live.noxbox.BaseActivity;
 import live.noxbox.R;
+import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.NotificationType;

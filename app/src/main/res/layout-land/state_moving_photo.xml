@@ -70,7 +70,7 @@
                         android:textColor="@color/google_text"
                         android:textSize="@dimen/text_size" />
 
-                    <live.noxbox.pages.SwipeButton
+                    <live.noxbox.tools.SwipeButton
                         android:id="@+id/swipeButtonConfirm"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
@@ -80,7 +80,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_weight="1" />
 
-                    <live.noxbox.pages.SwipeButton
+                    <live.noxbox.tools.SwipeButton
                         android:id="@+id/swipeButtonWrongPhoto"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"

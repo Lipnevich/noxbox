@@ -10,7 +10,6 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.factory.Notification;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 
