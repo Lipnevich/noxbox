@@ -1,4 +1,4 @@
-package live.noxbox.tools;
+package live.noxbox.debug;
 
 import java.util.ArrayList;
 import java.util.HashMap;

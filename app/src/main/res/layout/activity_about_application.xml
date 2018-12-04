@@ -55,7 +55,7 @@
                 android:layout_marginTop="56dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:text="Tutorial"
+                android:text="@string/tutorial"
                 android:textColor="@color/primary"
                 android:textSize="@dimen/text_title"
                 android:textStyle="bold" />

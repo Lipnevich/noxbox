@@ -89,6 +89,7 @@
     <string name="privacyPolicy">Privacy Policy</string>
     <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
+    <string name="promoVideoLink">https://www.youtube.com/watch?v=E_Q1wTN27jk</string>
     <!--contract-->
     <string name="i">I</string>
     <string name="want">want</string>
@@ -256,5 +257,6 @@
     <string name="aboutApp">About application</string>
     <string name="start_promo_video">Start Promo Video</string>
     <string name="tutorial">Tutorial</string>
+
 
 </resources>

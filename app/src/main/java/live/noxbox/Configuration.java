@@ -27,6 +27,4 @@ public interface Configuration {
     int MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS = 12;
 
     String DEFAULT_PRICE = "5";
-
-    String PROMO_VIDEO_URL = "https://www.youtube.com/watch?v=5vDMkpgZ9Yk";
 }

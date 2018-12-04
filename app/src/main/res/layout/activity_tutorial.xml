@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/secondary"
+                android:text="@string/tutorial"
                 android:textSize="@dimen/text_size" />
 
 

@@ -87,6 +87,7 @@
     <string name="privacyPolicy">Политикой конфиденциальности</string>
     <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
+    <string name="promoVideoLink">"https://www.youtube.com/watch?v=5vDMkpgZ9Yk"</string>
     <!--contract-->
     <string name="i">Я</string>
     <string name="want">хочу</string>
@@ -230,7 +231,7 @@
     <string name="noxboxCompleted">Услуга завершена</string>
     <string name="toEarn">Заработано</string>
     <string name="spent">Потрачено</string>
-    <string name="version">Версия</string>
+    <string name="version">Версия </string>
     <string name="nannyDescription">Добрая и заботливая няня с огнем в глазам и теплом в руках</string>
     <string name="photographerDescription">Фотограф качественно снимающий и быстро готовящий фотографии</string>
     <string name="meditationDescription">Коллективная медитация и лекция от Дады</string>
@@ -252,7 +253,7 @@
     <string name="uploadingComplete">Uploading complete</string>
     <string name="aboutApp">О приложении</string>
     <string name="start_promo_video">Start Promo Video</string>
-    <string name="tutorial">Tutorial</string>
+    <string name="tutorial">Обучение</string>
 
 
 </resources>

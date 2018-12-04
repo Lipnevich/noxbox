@@ -13,8 +13,6 @@ import live.noxbox.activities.BaseActivity;
 import live.noxbox.menu.about.tutorial.TutorialActivity;
 import live.noxbox.tools.Router;
 
-import static live.noxbox.Configuration.PROMO_VIDEO_URL;
-
 public class AboutApplicationActivity extends BaseActivity {
 
     @Override
@@ -22,8 +20,7 @@ public class AboutApplicationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_application);
         drawToolbar();
-        //TODO (VL) change text after version code 1.0
-        ((TextView) findViewById(R.id.version)).setText(getString(R.string.version) + " 0." + BuildConfig.VERSION_CODE);
+        ((TextView) findViewById(R.id.version)).setText(getString(R.string.version) + BuildConfig.VERSION_NAME);
     }
 
     @Override
@@ -32,7 +29,7 @@ public class AboutApplicationActivity extends BaseActivity {
         findViewById(R.id.promoVideoView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(PROMO_VIDEO_URL)));
+                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.promoVideoLink))));
             }
         });
         findViewById(R.id.tutorialViewPager).setOnClickListener(new View.OnClickListener() {

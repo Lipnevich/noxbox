@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.TextView;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
@@ -20,7 +19,6 @@ public class TutorialActivity extends BaseActivity {
     }
 
     private void drawToolbar() {
-        ((TextView) findViewById(R.id.title)).setText(R.string.tutorial);
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
