@@ -33,7 +33,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
@@ -120,13 +119,12 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             if (profile.getPhoto() == null) {
                 ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.profile_picture_blank), (profilePhoto));
             } else {
-                ImageManager.createCircleImageFromUrl(activity, profile.getPhoto(), profilePhoto);
+                ImageManager.createCircleProfileImageFromUrl(activity, profile.getPhoto(), profilePhoto);
             }
             if (!Strings.isNullOrEmpty(profile.getName())) {
                 ((TextView) findViewById(R.id.name)).setText(profile.getName());
             }
             ((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
-            ((TextView) findViewById(R.id.version)).setText(getResources().getString(R.string.version).concat(" ").concat(BuildConfig.VERSION_NAME));
             profilePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

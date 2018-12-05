@@ -29,7 +29,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/profile"
+        android:src="@drawable/human_profile"
         android:tint="@color/primary" />
 
 </LinearLayout>

@@ -20,7 +20,7 @@ public class AboutApplicationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_application);
         drawToolbar();
-        ((TextView) findViewById(R.id.version)).setText(getString(R.string.version) + BuildConfig.VERSION_NAME);
+        ((TextView) findViewById(R.id.version)).setText(getString(R.string.version) + " " + BuildConfig.VERSION_NAME);
     }
 
     @Override
@@ -38,6 +38,19 @@ public class AboutApplicationActivity extends BaseActivity {
                 Router.startActivity(AboutApplicationActivity.this, TutorialActivity.class);
             }
         });
+        findViewById(R.id.rules).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.rulesLink))));
+            }
+        });
+        findViewById(R.id.privacyPolicy).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.privacyPolicyLink))));
+            }
+        });
+
     }
 
     private void drawToolbar() {

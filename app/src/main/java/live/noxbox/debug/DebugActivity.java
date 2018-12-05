@@ -33,7 +33,6 @@ import live.noxbox.model.Wallet;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.states.State;
 import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.NoxboxExamples;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
@@ -85,7 +84,7 @@ public class DebugActivity extends MenuActivity implements
                                     LatLng myPosition = null;
                                     if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                                             == PackageManager.PERMISSION_GRANTED) {
-                                        //myPosition = profile.getPosition().toLatLng();
+                                        //myPosition = human_profile.getPosition().toLatLng();
                                         myPosition = googleMap.getCameraPosition().target;
                                     }
 

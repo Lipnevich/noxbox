@@ -151,7 +151,7 @@ public class DetailedActivity extends AppCompatActivity {
         Profile other = me.getViewed().getNotMe(me.getId());
         if (other.getName() != null && other.getPhoto() != null) {
 
-            ImageManager.createCircleImageFromUrl(this, other.getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
+            ImageManager.createCircleProfileImageFromUrl(this, other.getPhoto(), ((ImageView) findViewById(R.id.profileImage)));
             ((TextView) findViewById(R.id.profileName)).setText(other.getName());
         }
 

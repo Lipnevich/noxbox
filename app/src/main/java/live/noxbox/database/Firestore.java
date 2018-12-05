@@ -50,7 +50,7 @@ public class Firestore {
         return db().collection("noxboxes").document(noxboxId);
     }
 
-    // Current profile
+    // Current human_profile
     private static ListenerRegistration profileListener;
     public static void listenProfile(@NonNull final Task<Profile> task) {
         if(profileListener != null) profileListener.remove();

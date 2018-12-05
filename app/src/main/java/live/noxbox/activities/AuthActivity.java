@@ -89,12 +89,12 @@ public class AuthActivity extends BaseActivity {
     }
 
     private void drawAgreement() {
-        String termOfServices = getString(R.string.termOfServices);
-        String privacyPolicy = getString(R.string.privacyPolicy);
+        String termOfServices = getString(R.string.authRules);
+        String privacyPolicy = getString(R.string.authPrivacyPolicy);
 
         SpannableStringBuilder agreement = new SpannableStringBuilder(getString(R.string.agreement,
                 termOfServices, privacyPolicy));
-        createLink(agreement, termOfServices, R.string.termsOfServiceLink);
+        createLink(agreement, termOfServices, R.string.rulesLink);
         createLink(agreement, privacyPolicy, R.string.privacyPolicyLink);
 
         TextView view = findViewById(R.id.agreementView);

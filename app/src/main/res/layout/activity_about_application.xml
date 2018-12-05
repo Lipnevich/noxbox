@@ -76,6 +76,32 @@
 
             <include layout="@layout/item_about_application_devider" />
 
+            <TextView
+                android:id="@+id/rules"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/rules"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold" />
+
+            <include layout="@layout/item_about_application_devider" />
+
+            <TextView
+                android:id="@+id/privacyPolicy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/privacyPolicy"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
 

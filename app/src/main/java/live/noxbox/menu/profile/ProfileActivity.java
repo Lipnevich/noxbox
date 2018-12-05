@@ -1,6 +1,7 @@
 package live.noxbox.menu.profile;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,15 +38,13 @@ import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.tools.ImageManager.createCircleImageFromUrl;
+import static live.noxbox.tools.ImageManager.createCircleProfileImageFromUrl;
 import static live.noxbox.tools.ImageManager.getBitmap;
 
 public class ProfileActivity extends BaseActivity {
 
     public static final int CODE = 1006;
     public static final int SELECT_IMAGE = 1007;
-
-    private static boolean isEditable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,11 +58,7 @@ public class ProfileActivity extends BaseActivity {
         AppCache.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                if (isEditable) {
-                    drawEditable(profile);
-                } else {
-                    draw(profile);
-                }
+                draw(profile);
             }
         });
 
@@ -80,65 +76,6 @@ public class ProfileActivity extends BaseActivity {
         AppCache.stopListen(this.getClass().getName());
     }
 
-    private void draw(final Profile profile) {
-        findViewById(R.id.editProfile).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isEditable = true;
-                drawEditable(profile);
-            }
-        });
-        ((ImageView) findViewById(R.id.editProfile)).setImageResource(R.drawable.edit);
-        drawPhoto(profile);
-        drawName(profile);
-        drawTravelMode(profile);
-        drawHost(profile);
-        drawPortfolioEditingMenu(profile);
-        drawMenuAddingPerformer(profile);
-    }
-
-    private void drawPhoto(final Profile profile) {
-        findViewById(R.id.profileImage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-
-        if (profile.getPhoto() != null) {
-            createCircleImageFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profileImage));
-        } else {
-            ((ImageView) findViewById(R.id.profileImage)).setImageResource(R.drawable.unknown_profile);
-        }
-    }
-
-    private void drawName(Profile profile) {
-        ((EditText) findViewById(R.id.editName)).setText(profile.getName());
-        findViewById(R.id.editName).setEnabled(false);
-    }
-
-    private void drawTravelMode(final Profile profile) {
-        setTravelModeStatus(profile);
-        findViewById(R.id.travelModeLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        findViewById(R.id.editTravelMode).setVisibility(View.GONE);
-    }
-
-    private void drawHost(final Profile profile) {
-
-        findViewById(R.id.hostLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-        setHostStatus(profile.getTravelMode() == TravelMode.none || profile.getHost(), profile);
-
-        findViewById(R.id.switchHost).setVisibility(View.GONE);
-    }
 
     private void drawPortfolioEditingMenu(final Profile profile) {
 
@@ -181,16 +118,7 @@ public class ProfileActivity extends BaseActivity {
     }
 
 
-    private void drawEditable(final Profile profile) {
-        findViewById(R.id.editProfile).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isEditable = false;
-                AppCache.fireProfile();
-                draw(profile);
-            }
-        });
-        ((ImageView) findViewById(R.id.editProfile)).setImageResource(R.drawable.yes);
+    private void draw(final Profile profile) {
         drawEditPhoto(profile);
         drawEditName(profile);
         drawEditTravelMode(profile);
@@ -200,8 +128,7 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawEditPhoto(final Profile profile) {
-        createCircleImageFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profileImage));
-        findViewById(R.id.profileImage).setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -209,13 +136,26 @@ public class ProfileActivity extends BaseActivity {
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
             }
-        });
+        };
+        if (profile.getPhoto() != null)
+            createCircleProfileImageFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profileImage));
+        findViewById(R.id.editPhoto).setOnClickListener(listener);
+        findViewById(R.id.profileImage).setOnClickListener(listener);
 
     }
 
     private void drawEditName(final Profile profile) {
-        findViewById(R.id.editName).setEnabled(true);
-        ((EditText) findViewById(R.id.editName)).addTextChangedListener(new TextWatcher() {
+        findViewById(R.id.editName).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText name = findViewById(R.id.name);
+                name.requestFocus();
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+        findViewById(R.id.name).setEnabled(true);
+        ((EditText) findViewById(R.id.name)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -323,7 +263,7 @@ public class ProfileActivity extends BaseActivity {
                     });
                     profile.setPhoto(data.getData().toString());
                 } else if (requestCode == TravelModeListActivity.CODE) {
-                    drawEditable(profile);
+                    draw(profile);
                 } else if (requestCode == NoxboxTypeListActivity.PROFILE_CODE ||
                         requestCode == ProfilePerformerActivity.CODE) {
                     draw(profile);

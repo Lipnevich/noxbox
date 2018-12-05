@@ -55,49 +55,71 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <ImageView
-                                android:id="@+id/editProfile"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:background="?attr/selectableItemBackground"
-                                android:padding="16dp"
-                                android:src="@drawable/edit"
-                                android:tint="@color/secondary" />
+                            <!--<ImageView-->
+                                <!--android:id="@+id/editProfile"-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_alignParentEnd="true"-->
+                                <!--android:background="?attr/selectableItemBackground"-->
+                                <!--android:padding="16dp"-->
+                                <!--android:src="@drawable/edit"-->
+                                <!--android:tint="@color/secondary" />-->
                         </RelativeLayout>
 
 
                     </LinearLayout>
                 </android.support.v7.widget.Toolbar>
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/primary"
-                    android:orientation="vertical">
+                    android:layout_height="216dp"
+                    android:background="@color/primary">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/profileImage"
                         android:layout_width="172dp"
                         android:layout_height="172dp"
-                        android:layout_gravity="center_horizontal" />
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/human_profile"/>
 
-
-                    <EditText
+                    <ImageView
+                        android:id="@+id/editPhoto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="16dp"
+                        android:layout_marginTop="-16dp"
+                        android:src="@drawable/edit"
+                        android:layout_alignParentEnd="true"
+                        android:tint="@color/secondary" />
+                    <ImageView
                         android:id="@+id/editName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="8dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="16dp"
+                        android:src="@drawable/edit"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:tint="@color/secondary" />
+
+                    <EditText
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/profileImage"
                         android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         android:background="@android:color/transparent"
                         android:inputType="text"
+                        android:maxLength="50"
+                        android:text="Mr.Noxbox"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/secondary"
-                        android:maxLength="50"
                         android:textCursorDrawable="@color/secondary" />
 
-                </LinearLayout>
+                </RelativeLayout>
 
 
             </LinearLayout>

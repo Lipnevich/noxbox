@@ -133,21 +133,21 @@ public class ContractActivity extends BaseActivity {
 
     private void drawRole(final Profile profile) {
         ((TextView) findViewById(R.id.textProfile)).setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
-        final TextView textView = findViewById(R.id.textRole);
+        final TextView role = findViewById(R.id.textRole);
         SpannableStringBuilder spanTxt =
                 new SpannableStringBuilder(getResources().getString(profile.getCurrent().getRole().getName()));
         spanTxt.setSpan(new ClickableSpan() {
             @Override
-            public void onClick(View widget) {
-                createRoleList(profile, textView);
+            public void onClick(View view) {
+                createRoleList(profile, role);
             }
         }, spanTxt.length() - getResources().getString(profile.getCurrent().getRole().getName()).length(), spanTxt.length(), 0);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        role.setMovementMethod(LinkMovementMethod.getInstance());
+        role.setText(spanTxt, TextView.BufferType.SPANNABLE);
         findViewById(R.id.arrowRole).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createRoleList(profile, textView);
+                createRoleList(profile, role);
             }
         });
     }
