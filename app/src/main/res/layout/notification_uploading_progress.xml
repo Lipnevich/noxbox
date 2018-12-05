@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:background="@drawable/notification_accepting_background">
+    android:background="@drawable/notification_horizontal_gradient_background">
 
 
     <RelativeLayout

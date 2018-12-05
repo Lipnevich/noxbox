@@ -4,7 +4,7 @@ admin.initializeApp(functions.config().firebase);
 
 const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
-const version = 1.1;
+const version = 100;
 
 exports.welcome = functions.auth.user().onCreate(user => {
     return wallet.create(user).then(noxbox.init);
@@ -13,22 +13,11 @@ exports.welcome = functions.auth.user().onCreate(user => {
 exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUpdate(async(change, context) => {
     const previousNoxbox = change.before.data();
     const noxbox = change.after.data();
+    console.log('Version code ' + JSON.stringify(version));
     console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
 
-   if(noxbox.timeOwnerVerified && noxbox.timePartyVerified){
-           let pushMessage = {
-                       data: {
-                            type: 'performing',
-                            noxboxType: noxbox.type,
-                            price: noxbox.price,
-                            id: noxbox.id
-                       },
-                       topic: noxbox.id
-                   };
-                   await admin.messaging().send(pushMessage);
-                   console.log('push sent' + JSON.stringify(pushMessage));
-    } else if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
+   if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
         let pushAccepted = {
             data: {
                 type: 'accepting',

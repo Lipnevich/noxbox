@@ -12,7 +12,7 @@
     <dimen name="text_search">20sp</dimen>
     <dimen name="text_size_secondary">14sp</dimen>
 
-    <!--profile page dimen's-->
+    <!--human_profile page dimen's-->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>

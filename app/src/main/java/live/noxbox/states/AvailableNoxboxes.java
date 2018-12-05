@@ -101,6 +101,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                profile.getCurrent().clean();
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
                 profile.getCurrent().setOwner(profile.publicInfo());
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -174,7 +175,7 @@ public class AvailableNoxboxes implements State {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             AvailableNoxboxesService.LocalBinder binder = (AvailableNoxboxesService.LocalBinder) service;
-            AvailableNoxboxesService availableNoxboxesService = binder.getService();
+           // AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
 
             Log.d("AvailableNoxboxes", "onServiceConnected()");

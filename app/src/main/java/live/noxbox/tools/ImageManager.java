@@ -39,7 +39,7 @@ public class ImageManager {
 
 
     public static void uploadPhoto(final Activity activity, final Profile profile, Bitmap bitmap) {
-        uploadImage(activity, bitmap, "photos/profile", new OnSuccessListener<Uri>() {
+        uploadImage(activity, bitmap, "photos/human_profile", new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
                 Map<String, String> data = new HashMap<>();
@@ -159,7 +159,7 @@ public class ImageManager {
     }
 
 
-    public static void createCircleImageFromUrl(Activity activity, String url, ImageView image) {
+    public static void createCircleProfileImageFromUrl(Activity activity, String url, ImageView image) {
         Glide.with(activity)
                 .asDrawable()
                 .load(url)

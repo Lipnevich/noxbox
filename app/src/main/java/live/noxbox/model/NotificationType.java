@@ -150,7 +150,7 @@ public enum NotificationType {
         }
 
         if (notification.getType() == performing) {
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_perfirming);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_performing);
             remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.timeHasPassed, context.getResources().getString(notification.getType().content));
             remoteViews.setTextViewText(R.id.stopwatch, notification.getTime());

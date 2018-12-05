@@ -85,11 +85,14 @@
     <string name="isGps">No GPS signal</string>
     <!--line agreement-->
     <string name="agreement">I agree to the %1$s and %2$s</string>
-    <string name="termOfServices">Term of services</string>
-    <string name="privacyPolicy">Privacy Policy</string>
-    <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
+    <string name="authRules">Term of services</string>
+    <string name="authPrivacyPolicy">Privacy Policy</string>
+    <string name="rulesLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
     <string name="promoVideoLink">https://www.youtube.com/watch?v=E_Q1wTN27jk</string>
+
+    <string name="rules">Rules</string>
+    <string name="privacyPolicy">Policy</string>
     <!--contract-->
     <string name="i">I</string>
     <string name="want">want</string>
@@ -255,8 +258,9 @@
     <string name="movement">Arrive in ~%1$s minutes</string>
     <string name="uploadingComplete">Uploading complete</string>
     <string name="aboutApp">About application</string>
-    <string name="start_promo_video">Start Promo Video</string>
+    <string name="start_promo_video">Promo Video</string>
     <string name="tutorial">Tutorial</string>
+    <string name="termsOfConditions">Terms of Conditions</string>
 
 
 </resources>

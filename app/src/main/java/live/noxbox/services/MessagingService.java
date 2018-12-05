@@ -54,9 +54,9 @@ public MessagingService(Context context) {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         initCrashReporting();
         context = getApplicationContext();
-        //if (!inForeground()) {
-        NotificationFactory.buildNotification(context, null, remoteMessage.getData()).show();
-        //}
+        if (!inForeground()) {
+            NotificationFactory.buildNotification(context, null, remoteMessage.getData()).show();
+        }
     }
 
     public static void removeNotifications(Context context) {

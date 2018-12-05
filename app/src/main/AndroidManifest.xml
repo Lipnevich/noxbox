@@ -92,6 +92,10 @@
             android:name=".menu.about.tutorial.TutorialActivity"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".menu.about.RulesActivity"
+            android:theme="@style/NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"

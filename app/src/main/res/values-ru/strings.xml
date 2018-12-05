@@ -83,11 +83,14 @@
     <string name="isGps">Нет сигнала GPS</string>
     <!--строка соглашения-->
     <string name="agreement">Я прочел и согласен с %1$s и %2$s</string>
-    <string name="termOfServices">Правилами пользования</string>
-    <string name="privacyPolicy">Политикой конфиденциальности</string>
-    <string name="termsOfServiceLink">https://noxbox.io/TermsAndConditions.html</string>
+    <string name="authRules">Правилами пользования</string>
+    <string name="authPrivacyPolicy">Политикой конфиденциальности</string>
+    <string name="rulesLink">https://noxbox.io/TermsAndConditions.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
     <string name="promoVideoLink">"https://www.youtube.com/watch?v=5vDMkpgZ9Yk"</string>
+
+    <string name="rules">Правила</string>
+    <string name="privacyPolicy">Политика</string>
     <!--contract-->
     <string name="i">Я</string>
     <string name="want">хочу</string>
@@ -252,8 +255,9 @@
     <string name="movement">Arrive in ~%1$s minutes</string>
     <string name="uploadingComplete">Uploading complete</string>
     <string name="aboutApp">О приложении</string>
-    <string name="start_promo_video">Start Promo Video</string>
+    <string name="start_promo_video">Промо Ролик</string>
     <string name="tutorial">Обучение</string>
+    <string name="termsOfConditions">Terms of Conditions</string>
 
 
 </resources>
