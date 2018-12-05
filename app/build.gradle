@@ -4,13 +4,12 @@ apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.2'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 100
-        versionName "Near Live"
+        versionCode 101
+        versionName "101"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

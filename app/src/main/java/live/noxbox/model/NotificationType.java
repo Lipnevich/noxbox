@@ -35,8 +35,8 @@ import static live.noxbox.services.MessagingService.getNotificationService;
 public enum NotificationType {
 
     photoUploadingProgress(0, R.string.uploadingStarted, R.string.uploadingProgressTitle),
-    photoValidationProgress(0, R.string.noxbox, R.string.photoValidationProgressContent),
-    photoValid(0, R.string.noxbox, R.string.photoValidContent),
+    photoValidationProgress(0, R.string.NoxBox, R.string.photoValidationProgressContent),
+    photoValid(0, R.string.NoxBox, R.string.photoValidContent),
     photoInvalid(0, R.string.photoInvalidTitle, R.string.photoInvalidContent),
 
     balance(1, R.string.balancePushTitle, R.string.balancePushContent),

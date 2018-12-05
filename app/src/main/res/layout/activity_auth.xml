@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="12dp"
-        android:text="@string/noxbox"
+        android:text="@string/NoxBox"
         android:textColor="@color/secondary"
         android:textSize="36sp" />
 

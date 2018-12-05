@@ -1,5 +1,5 @@
 <resources>
-    <string name="noxbox">NoxBox</string>
+    <string name="NoxBox">NoxBox</string>
     <string name="permissionRequired">Необходимо разрешение</string>
     <string name="completeText">Завершить</string>
     <string name="ratingTitle">Оцените работу</string>
@@ -85,7 +85,7 @@
     <string name="agreement">Я прочел и согласен с %1$s и %2$s</string>
     <string name="authRules">Правилами пользования</string>
     <string name="authPrivacyPolicy">Политикой конфиденциальности</string>
-    <string name="rulesLink">https://noxbox.io/TermsAndConditions.html</string>
+    <string name="rulesLink">https://noxbox.io/rules.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
     <string name="promoVideoLink">"https://www.youtube.com/watch?v=5vDMkpgZ9Yk"</string>
 

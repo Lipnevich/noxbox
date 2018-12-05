@@ -15,6 +15,7 @@
         android:src="@drawable/human_profile"/>
 
     <TextView
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/text_title"
@@ -24,7 +25,6 @@
         android:text="Mr.Noxbox"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="16dp"
-        android:id="@+id/username"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"/>
 

@@ -154,6 +154,9 @@ public class ProfileActivity extends BaseActivity {
                 inputMethodManager.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
             }
         });
+        if (!Strings.isNullOrEmpty(profile.getName())) {
+            ((TextView) findViewById(R.id.name)).setText(profile.getName());
+        }
         findViewById(R.id.name).setEnabled(true);
         ((EditText) findViewById(R.id.name)).addTextChangedListener(new TextWatcher() {
             @Override

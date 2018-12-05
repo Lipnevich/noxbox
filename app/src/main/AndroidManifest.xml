@@ -9,7 +9,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/noxbox"
+        android:label="@string/NoxBox"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
