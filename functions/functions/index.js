@@ -16,7 +16,19 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
 
-    if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
+   if(noxbox.timeOwnerVerified && noxbox.timePartyVerified){
+           let pushMessage = {
+                       data: {
+                            type: 'performing',
+                            noxboxType: noxbox.type,
+                            price: noxbox.price,
+                            id: noxbox.id
+                       },
+                       topic: noxbox.id
+                   };
+                   await admin.messaging().send(pushMessage);
+                   console.log('push sent' + JSON.stringify(pushMessage));
+    } else if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
         let pushAccepted = {
             data: {
                 type: 'accepting',
@@ -38,7 +50,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         await admin.messaging().send(pushMoving);
         console.log('push sent' + JSON.stringify(pushMoving));
-    } else if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || Object.keys(previousNoxbox.ownerMessages).length < Object.keys(noxbox.ownerMessages).length)) {
+    } else  if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || Object.keys(previousNoxbox.ownerMessages).length < Object.keys(noxbox.ownerMessages).length)) {
         let pushMessage = {
             data: {
                  type: 'message',
