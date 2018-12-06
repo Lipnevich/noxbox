@@ -261,6 +261,7 @@
     <string name="start_promo_video">Promo Video</string>
     <string name="tutorial">Tutorial</string>
     <string name="address">Address</string>
+    <string name="noxboxCanceled">Service was canceled</string>
 
 
 </resources>

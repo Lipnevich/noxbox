@@ -34,37 +34,34 @@ import static live.noxbox.services.MessagingService.getNotificationService;
  */
 public enum NotificationType {
 
-    photoUploadingProgress(0, R.string.uploadingStarted, R.string.uploadingProgressTitle),
-    photoValidationProgress(0, R.string.NoxBox, R.string.photoValidationProgressContent),
-    photoValid(0, R.string.NoxBox, R.string.photoValidContent),
-    photoInvalid(0, R.string.photoInvalidTitle, R.string.photoInvalidContent),
+    photoUploadingProgress(0, R.string.uploadingProgressTitle),
+    photoValidationProgress(0, R.string.photoValidationProgressContent),
+    photoValid(0, R.string.photoValidContent),
+    photoInvalid(0, R.string.photoInvalidContent),
 
-    balance(1, R.string.balancePushTitle, R.string.balancePushContent),
+    balance(1, R.string.balancePushContent),
 
-    requesting(2, R.string.requestText, R.string.requestingPushContent),
-    accepting(2, R.string.acceptText, R.string.acceptingPushContent),
-    moving(2, R.string.acceptPushTitle, R.string.replaceIt),
-    verifyPhoto(2, R.string.replaceIt, R.string.replaceIt),
-    performing(2, R.string.performing, R.string.performingPushContent),
-    lowBalance(2, R.string.outOfMoney, R.string.beforeSpendingMoney),
-    completed(2, R.string.noxboxCompleted, R.string.completedPushContent),
-    supplierCanceled(2, R.string.supplierCancelPushTitle, R.string.supplierCanceledPushContent),
-    demanderCanceled(2, R.string.demanderCancelPushTitle, R.string.demanderCanceledPushContent),
+    requesting(2, R.string.requestingPushContent),
+    accepting(2, R.string.acceptingPushContent),
+    moving(2, R.string.replaceIt),
+    verifyPhoto(2, R.string.replaceIt),
+    performing(2, R.string.performingPushContent),
+    lowBalance(2, R.string.beforeSpendingMoney),
+    completed(2, R.string.completedPushContent),
+    canceled(2, R.string.noxboxCanceled),
 
-    refund(3, R.string.replaceIt, R.string.replaceIt),
+    refund(3, R.string.replaceIt),
 
-    message(4, R.string.newMessage, R.string.replaceIt),
+    message(4, R.string.replaceIt),
 
-    support(5, R.string.messageFromTheSupport, R.string.replaceIt);
+    support(5, R.string.replaceIt);
 
 
     private int group;
-    private int title;
     private int content;
 
-    NotificationType(int id, int title, int content) {
+    NotificationType(int id, int content) {
         this.group = id;
-        this.title = title;
         this.content = content;
     }
 
@@ -72,9 +69,6 @@ public enum NotificationType {
         return group;
     }
 
-    public int getTitle() {
-        return title;
-    }
 
     public int getContent() {
         return content;
@@ -111,8 +105,6 @@ public enum NotificationType {
     public static boolean getAutoCancel(NotificationData notification) {
         switch (notification.getType()) {
             case support:
-            case supplierCanceled:
-            case demanderCanceled:
             case message:
             case balance:
             case completed:
@@ -125,8 +117,7 @@ public enum NotificationType {
         RemoteViews remoteViews = null;
         if (notification.getType() == photoUploadingProgress) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_uploading_progress);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
-            if(notification.getProgress().equals(notification.getMaxProgress())) {
+            if (notification.getProgress().equals(notification.getMaxProgress())) {
                 remoteViews.setTextViewText(R.id.uploadingProgress, context.getResources().getString(R.string.uploadingComplete));
             } else {
                 remoteViews.setTextViewText(R.id.uploadingProgress, format(context.getResources(), notification.getType().content, notification.getProgress()));
@@ -135,23 +126,19 @@ public enum NotificationType {
         }
         if (notification.getType() == photoValidationProgress) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_photo_validation_progress);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
         }
         if (notification.getType() == photoValid) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_valid_photo);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
         }
         if (notification.getType() == photoInvalid) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_invalid_photo);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             //remoteViews.setTextViewText(R.id.content, format(context.getResources(), notification.getType().content, context.getResources().getString(notification.getInvalidAcceptance().getCorrectionMessage())) + " " + notification.getMessage());
         }
 
         if (notification.getType() == performing) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_performing);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.timeHasPassed, context.getResources().getString(notification.getType().content));
             remoteViews.setTextViewText(R.id.stopwatch, notification.getTime());
             remoteViews.setTextViewText(R.id.totalPayment, (notification.getPrice().concat(" ")).concat(Configuration.CURRENCY));
@@ -160,7 +147,6 @@ public enum NotificationType {
         if (notification.getType() == accepting) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
             remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
 
         }
 
@@ -170,39 +156,33 @@ public enum NotificationType {
             remoteViews.setProgressBar(R.id.progress, notification.getMaxProgress(), notification.getProgress(), false);
         }
 
-        if (notification.getType() == supplierCanceled || notification.getType() == demanderCanceled) {
+        if (notification.getType() == canceled) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_canceled);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
         }
 
         if (notification.getType() == support) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_support);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, notification.getMessage());
         }
 
         if (notification.getType() == lowBalance) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_low_balance);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, context.getResources().getString(notification.getType().content));
         }
         if (notification.getType() == message) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_message);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.name, notification.getName());
             remoteViews.setTextViewText(R.id.content, notification.getMessage());
             remoteViews.setTextViewText(R.id.time, DateTimeFormatter.time(Long.parseLong(notification.getTime())));
         }
         if (notification.getType() == balance) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_balance);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.content, notification.getBalance());
 
         }
         if (notification.getType() == completed) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
-            remoteViews.setTextViewText(R.id.title, context.getResources().getString(notification.getType().title));
             remoteViews.setTextViewText(R.id.contentRole, notification.getMessage());
             String comission = " " + context.getResources().getString(R.string.withComission) + " " + COMISSION_FEE + " " + CURRENCY;
             remoteViews.setTextViewText(R.id.content, notification.getPrice().concat(" ").concat(CURRENCY).concat(comission));
@@ -256,7 +236,7 @@ public enum NotificationType {
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (notification.getType() == demanderCanceled || notification.getType() == supplierCanceled)
+        if (notification.getType() == canceled)
             return TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

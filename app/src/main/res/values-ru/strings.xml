@@ -258,5 +258,6 @@
     <string name="start_promo_video">Видео</string>
     <string name="tutorial">Обучение</string>
     <string name="address">Address</string>
+    <string name="noxboxCanceled">Service was canceled</string>
 
 </resources>

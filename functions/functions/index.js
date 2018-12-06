@@ -4,7 +4,7 @@ admin.initializeApp(functions.config().firebase);
 
 const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
-const version = 100;
+const version = 101;
 
 exports.welcome = functions.auth.user().onCreate(user => {
     return wallet.create(user).then(noxbox.init);
@@ -17,8 +17,9 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
 
-   if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
-        let pushAccepted = {
+
+    if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
+        let push = {
             data: {
                 type: 'accepting',
                 time: '' + noxbox.timeRequested,
@@ -26,21 +27,21 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             },
             topic: noxbox.owner.id
         };
-        await admin.messaging().send(pushAccepted);
-        console.log('push sent' + JSON.stringify(pushAccepted));
+        await admin.messaging().send(push);
+        console.log('push sent' + JSON.stringify(push));
     } else if(!previousNoxbox.timeAccepted && noxbox.timeAccepted) {
-        let pushMoving = {
+        let push = {
             data: {
                 type: 'moving',
                 id: noxbox.id
             },
-            topic: noxbox.party.id
+            topic: noxbox.id
         };
 
-        await admin.messaging().send(pushMoving);
-        console.log('push sent' + JSON.stringify(pushMoving));
+        await admin.messaging().send(push);
+        console.log('push sent' + JSON.stringify(push));
     } else  if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || Object.keys(previousNoxbox.ownerMessages).length < Object.keys(noxbox.ownerMessages).length)) {
-        let pushMessage = {
+        let push = {
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
@@ -50,10 +51,10 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             },
             topic: noxbox.party.id
         };
-        await admin.messaging().send(pushMessage);
-        console.log('push sent' + JSON.stringify(pushMessage));
+        await admin.messaging().send(push);
+        console.log('push sent' + JSON.stringify(push));
     } else if(noxbox.partyMessages && (!previousNoxbox.partyMessages || Object.keys(previousNoxbox.partyMessages).length < Object.keys(noxbox.partyMessages).length)){
-        let pushMessage = {
+        let push = {
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
@@ -63,9 +64,54 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             },
             topic: noxbox.owner.id
         };
-        await admin.messaging().send(pushMessage);
-        console.log('push sent' + JSON.stringify(pushMessage));
-    }
+        await admin.messaging().send(push);
+        console.log('push sent' + JSON.stringify(push));
+    }else if((!previousNoxbox.timeOwnerVerified || !previousNoxbox.timePartyVerified) && noxbox.timeOwnerVerified && noxbox.timePartyVerified){
+        let push = {
+                  data: {
+                      type: 'performing',
+                      time: '' + noxbox.timeRequested,
+                      id: noxbox.id
+                  },
+                  topic: noxbox.owner.id
+              };
+            await admin.messaging().send(push);
+            console.log('push sent' + JSON.stringify(push));
+    }else if(!previousNoxbox.timeCompleted && noxbox.timeCompleted){
+        let push = {
+                  data: {
+                      type: 'completed',
+                      time: '' + noxbox.timeCompleted,
+                      id: noxbox.id
+                  },
+                  topic: noxbox.id
+              };
+            await admin.messaging().send(push);
+            console.log('push sent' + JSON.stringify(push));
+
+    }else if(!previousNoxbox.timeCanceledByOwner && !previousNoxbox.timeCanceledByParty && noxbox.timeCanceledByOwner){
+        let push = {
+                          data: {
+                              type: 'canceled',
+                              id: noxbox.id
+                          },
+                          topic: noxbox.party.id
+                      };
+                    await admin.messaging().send(push);
+                    console.log('push sent' + JSON.stringify(push));
+
+    }else if(!previousNoxbox.timeCanceledByOwner && !previousNoxbox.timeCanceledByParty && noxbox.timeCanceledByParty){
+             let push = {
+                               data: {
+                                   type: 'canceled',
+                                   id: noxbox.id
+                               },
+                               topic: noxbox.owner.id
+                           };
+                         await admin.messaging().send(push);
+                         console.log('push sent' + JSON.stringify(push));
+
+         }
 });
 
 function latestMessage(messages) {
