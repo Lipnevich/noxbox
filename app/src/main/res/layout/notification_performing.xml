@@ -76,7 +76,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
             android:autoStart="true"
-            android:flipInterval="500"
+            android:flipInterval="1000"
             android:measureAllChildren="true">
 
             <ImageView

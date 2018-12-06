@@ -146,7 +146,6 @@ public enum NotificationType {
 
         if (notification.getType() == accepting) {
             remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
-            remoteViews.setTextViewText(R.id.countDownTime, notification.getTime());
 
         }
 
