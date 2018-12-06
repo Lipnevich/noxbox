@@ -5,7 +5,7 @@
     android:background="@drawable/notification_horizontal_gradient_background">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/content"
         style="@style/TextAppearance.Compat.Notification.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,13 +22,26 @@
         android:layout_marginEnd="8dp"
         android:textColor="@color/primary"
         android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
-    <ImageView
-        android:id="@+id/animationMan"
-        android:layout_width="wrap_content"
-        android:layout_height="64dp"
+
+    <ViewFlipper
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="24dp"
-        android:layout_toStartOf="@+id/countDownTime" />
+        android:layout_marginEnd="8dp"
+        android:measureAllChildren="true"
+        android:flipInterval="500"
+        android:autoStart="true"
+        >
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/request_hend_up" />
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/request_hend_down" />
+    </ViewFlipper>
 
 </RelativeLayout>

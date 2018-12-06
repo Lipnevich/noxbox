@@ -46,9 +46,6 @@ public abstract class Notification {
     protected String notificationTime;
     protected Map<String, String> data;
     protected String noxboxId;
-    protected static Thread stateThread;
-    protected static Runnable stateRunnable;
-    protected static boolean isStateAcceptingThreadWorked;
 
 
     public Notification(Context context, Profile profile, Map<String, String> data) {
@@ -61,7 +58,6 @@ public abstract class Notification {
 
 
         removeNotifications(context);
-        isStateAcceptingThreadWorked = false;
     }
 
     public void show() {
@@ -142,7 +138,7 @@ public abstract class Notification {
     public static class DeleteActionIntent extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            isStateAcceptingThreadWorked = false;
+            removeNotifications(context);
         }
     }
 

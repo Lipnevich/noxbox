@@ -23,7 +23,6 @@ public class NotificationLowBalance extends Notification {
         sound = getSound();
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_low_balance);
-        contentView.setTextViewText(R.id.title, context.getResources().getString(type.getTitle()));
         contentView.setTextViewText(R.id.content, context.getResources().getString(type.getContent()));
 
         isAlertOnce = true;

@@ -22,28 +22,31 @@
 
         <ViewFlipper
             android:id="@+id/hourglass"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="32dp"
             android:measureAllChildren="true"
             android:flipInterval="500"
             android:autoStart="true">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="94dp"
+                android:layout_height="94dp"
+                android:layout_marginTop="-31dp"
                 android:src="@drawable/hourglass_one" />
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="94dp"
+                android:layout_height="94dp"
+                android:layout_marginTop="-31dp"
                 android:src="@drawable/hourglass_two" />
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="94dp"
+                android:layout_height="94dp"
+                android:layout_marginTop="-31dp"
                 android:src="@drawable/hourglass_three" />
 
         </ViewFlipper>

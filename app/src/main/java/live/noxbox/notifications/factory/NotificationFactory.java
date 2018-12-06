@@ -37,8 +37,7 @@ public abstract class NotificationFactory {
             case lowBalance:
                 return new NotificationLowBalance(context, profile, data);
             case verifyPhoto:
-            case supplierCanceled:
-            case demanderCanceled:
+            case canceled:
 
             case completed:
 
