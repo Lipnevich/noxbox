@@ -141,6 +141,7 @@ public class Requesting implements State {
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer.onFinish();
+            countDownTimer = null;
 
         }
         MessagingService.removeNotifications(activity);

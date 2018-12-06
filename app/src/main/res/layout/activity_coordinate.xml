@@ -10,12 +10,13 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="70dp"
+            android:layout_marginEnd="20dp"
             android:elevation="10dp"
             android:orientation="horizontal">
 
@@ -34,9 +35,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="8dp"
                 android:hint="@string/search"
-                android:textColorHint="@color/secondary"
                 android:maxLines="1"
                 android:textColor="@color/primary"
+                android:textColorHint="@color/secondary"
                 android:textSize="@dimen/text_search" />
         </LinearLayout>
 
@@ -51,7 +52,8 @@
             android:layout_marginTop="16dp"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/back"
+            android:src="@drawable/arrow_back"
+            android:tint="@color/primary"
             android:visibility="visible" />
 
 
@@ -68,9 +70,9 @@
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="32dp"
-            android:layout_marginEnd="32dp"
             android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/button_corner"
             android:enabled="true"
             android:gravity="center_horizontal|center_vertical"

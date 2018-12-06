@@ -12,20 +12,24 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
+import live.noxbox.R;
 import live.noxbox.model.Position;
 
 public class AddressManager {
 
-    public static String provideAddressByPosition(Context context, Position position){
+    public static String provideAddressByPosition(Context context, Position position) {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses;
         String address = "";
         String city = "";
         DecimalFormat numberFormat = new DecimalFormat("##.0000");
+
+        if (position == null) return context.getString(R.string.address);
+
         try {
             addresses = geocoder.getFromLocation(position.getLatitude(), position.getLongitude(), 1);
 
-            if(addresses.size() > 0) {
+            if (addresses.size() > 0) {
                 address = addresses.get(0).getAddressLine(0);
                 city = addresses.get(0).getLocality();
             }

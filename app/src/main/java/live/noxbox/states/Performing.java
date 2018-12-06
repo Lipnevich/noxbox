@@ -154,7 +154,7 @@ public class Performing implements State {
                         notification.setMessage(activity.getResources().getString(R.string.spent).concat(":"));
                     }
                 }
-                messagingService.showPushNotification(notification);
+               // messagingService.showPushNotification(notification);
                 profile.getCurrent().setTimeCompleted(timeCompleted);
                 updateNoxbox();
             }

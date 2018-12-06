@@ -56,14 +56,14 @@
                             android:layout_height="wrap_content">
 
                             <!--<ImageView-->
-                                <!--android:id="@+id/editProfile"-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:layout_alignParentEnd="true"-->
-                                <!--android:background="?attr/selectableItemBackground"-->
-                                <!--android:padding="16dp"-->
-                                <!--android:src="@drawable/edit"-->
-                                <!--android:tint="@color/secondary" />-->
+                            <!--android:id="@+id/editProfile"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_alignParentEnd="true"-->
+                            <!--android:background="?attr/selectableItemBackground"-->
+                            <!--android:padding="16dp"-->
+                            <!--android:src="@drawable/edit"-->
+                            <!--android:tint="@color/secondary" />-->
                         </RelativeLayout>
 
 
@@ -75,40 +75,41 @@
                     android:layout_height="216dp"
                     android:background="@color/primary">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/profileImage"
+                    <ImageView
+                        android:id="@+id/profilePhoto"
                         android:layout_width="172dp"
                         android:layout_height="172dp"
                         android:layout_centerHorizontal="true"
-                        android:src="@drawable/human_profile"/>
+                        android:src="@drawable/human_profile" />
 
                     <ImageView
                         android:id="@+id/editPhoto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="-16dp"
                         android:background="?attr/selectableItemBackground"
                         android:padding="16dp"
-                        android:layout_marginTop="-16dp"
                         android:src="@drawable/edit"
-                        android:layout_alignParentEnd="true"
                         android:tint="@color/secondary" />
+
                     <ImageView
                         android:id="@+id/editName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
                         android:background="?attr/selectableItemBackground"
                         android:padding="16dp"
                         android:src="@drawable/edit"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
                         android:tint="@color/secondary" />
 
                     <EditText
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_below="@id/profilePhoto"
                         android:layout_centerHorizontal="true"
-                        android:layout_below="@id/profileImage"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:background="@android:color/transparent"

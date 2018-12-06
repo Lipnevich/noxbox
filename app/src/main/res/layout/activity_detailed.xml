@@ -59,7 +59,7 @@
                 android:visibility="gone">
 
                 <ImageView
-                    android:id="@+id/profileImage"
+                    android:id="@+id/profilePhoto"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:layout_gravity="center_vertical"

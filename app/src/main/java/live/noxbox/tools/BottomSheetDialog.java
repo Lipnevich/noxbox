@@ -41,7 +41,7 @@ public class BottomSheetDialog {
         final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
         dialog.setContentView(view);
 
-        view.findViewById(R.id.profileImage).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.profilePhoto).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Router.startActivity(activity, ProfileActivity.class);

@@ -52,7 +52,9 @@
         <activity
             android:name=".activities.contract.ContractActivity"
             android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:launchMode="singleTop"
+            />
         <activity
             android:name=".activities.contract.NoxboxTypeListActivity"
             android:label="@string/selectService"
@@ -66,7 +68,8 @@
         <activity
             android:name=".activities.detailed.DetailedActivity"
             android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/NoActionBar"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".activities.detailed.CoordinateActivity"
             android:theme="@style/NoActionBar" />

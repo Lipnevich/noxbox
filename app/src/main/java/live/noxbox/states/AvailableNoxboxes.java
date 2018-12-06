@@ -101,6 +101,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("AAAA","OLOLOLOLO");
                 profile.getCurrent().clean();
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
                 profile.getCurrent().setOwner(profile.publicInfo());

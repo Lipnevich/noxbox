@@ -11,7 +11,8 @@
             android:title="@string/history" />
         <item
             android:id="@+id/navigation_profile"
-            android:icon="@drawable/human_profile"
+            android:icon="@drawable/profile"
+
             android:title="@string/profile" />
         <item
             android:id="@+id/navigation_wallet"

@@ -38,7 +38,7 @@ import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.tools.ImageManager.createCircleProfileImageFromUrl;
+import static live.noxbox.tools.ImageManager.createCircleProfilePhotoFromUrl;
 import static live.noxbox.tools.ImageManager.getBitmap;
 
 public class ProfileActivity extends BaseActivity {
@@ -117,7 +117,6 @@ public class ProfileActivity extends BaseActivity {
         });
     }
 
-
     private void draw(final Profile profile) {
         drawEditPhoto(profile);
         drawEditName(profile);
@@ -137,10 +136,10 @@ public class ProfileActivity extends BaseActivity {
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
             }
         };
-        if (profile.getPhoto() != null)
-            createCircleProfileImageFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profileImage));
+        createCircleProfilePhotoFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profilePhoto));
+
         findViewById(R.id.editPhoto).setOnClickListener(listener);
-        findViewById(R.id.profileImage).setOnClickListener(listener);
+        findViewById(R.id.profilePhoto).setOnClickListener(listener);
 
     }
 
@@ -154,7 +153,7 @@ public class ProfileActivity extends BaseActivity {
                 inputMethodManager.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
             }
         });
-        TextView nameView = (TextView) findViewById(R.id.name);
+        TextView nameView = findViewById(R.id.name);
         if (!Strings.isNullOrEmpty(profile.getName())) {
             nameView.setText(profile.getName());
         }

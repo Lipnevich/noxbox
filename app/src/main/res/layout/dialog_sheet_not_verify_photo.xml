@@ -23,7 +23,7 @@
         android:textSize="@dimen/text_size_secondary" />
 
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/profilePhoto"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"

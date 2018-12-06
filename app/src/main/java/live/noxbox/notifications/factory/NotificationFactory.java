@@ -52,7 +52,12 @@ public abstract class NotificationFactory {
                 return new NotificationPhotoValidationProgress(context, profile, data);
             default:
                 DebugMessage.popup(context, "Unknown notification type " + type);
-                return
+                return new Notification(context, profile, data) {
+                    @Override
+                    public void show() {
+
+                    }
+                };
         }
     }
 

@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.Firestore;
 import live.noxbox.debug.TimeLogger;
@@ -159,19 +160,31 @@ public class ImageManager {
     }
 
 
-    public static void createCircleProfileImageFromUrl(Activity activity, String url, ImageView image) {
-        Glide.with(activity)
-                .asDrawable()
-                .load(url)
-                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                .apply(RequestOptions.circleCropTransform())
-                .into(image);
+    public static void createCircleProfilePhotoFromUrl(Activity activity, String url, ImageView image) {
+        if (url != null)
+            Glide.with(activity)
+                    .asDrawable()
+                    .load(url)
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(image);
+        else
+            createPlaceholderForProfilePhoto(activity, image);
     }
 
     public static void createCircleImageFromBitmap(Activity activity, Bitmap bitmap, ImageView image) {
         Glide.with(activity)
                 .asDrawable()
                 .load(bitmap)
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                .apply(RequestOptions.circleCropTransform())
+                .into(image);
+    }
+
+    private static void createPlaceholderForProfilePhoto(Activity activity, ImageView image) {
+        Glide.with(activity)
+                .asDrawable()
+                .load(R.drawable.human_profile)
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                 .apply(RequestOptions.circleCropTransform())
                 .into(image);

@@ -66,14 +66,6 @@
                 android:src="@drawable/filter"
                 android:tint="@color/primary" />
 
-            <ImageView
-                android:id="@+id/check"
-                style="@style/IconButtonStyle"
-                android:layout_gravity="start|top"
-                android:layout_marginStart="13dp"
-                android:layout_marginTop="84dp"
-                android:src="@drawable/check" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

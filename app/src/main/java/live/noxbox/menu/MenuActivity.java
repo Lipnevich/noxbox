@@ -117,9 +117,9 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         if (!isInitial) {
             ImageView profilePhoto = findViewById(R.id.photo);
             if (profile.getPhoto() == null) {
-                ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.profile_picture_blank), (profilePhoto));
+                ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.human_profile), (profilePhoto));
             } else {
-                ImageManager.createCircleProfileImageFromUrl(activity, profile.getPhoto(), profilePhoto);
+                ImageManager.createCircleProfilePhotoFromUrl(activity, profile.getPhoto(), profilePhoto);
             }
             if (!Strings.isNullOrEmpty(profile.getName())) {
                 ((TextView) findViewById(R.id.name)).setText(profile.getName());

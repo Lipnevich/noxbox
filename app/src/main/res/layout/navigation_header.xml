@@ -1,38 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="wrap_content"
     android:background="@color/primary"
-    android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/profile_picture_blank"
-        android:layout_marginTop="16dp" />
+        android:layout_centerVertical="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/photo"
-        android:layout_marginEnd="8dp"
-        android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
-        android:textColor="@color/secondary" />
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/photo"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/rating"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/name"
-        android:layout_marginEnd="8dp"
-        android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
-        android:textColor="@color/secondary" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="start"
+            android:lines="2"
+            android:text="@string/name"
+            android:textColor="#FFF"
+            android:textSize="@dimen/text_title"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="101%"
+            android:textColor="@color/secondary"
+            android:textSize="@dimen/text_size" />
+    </LinearLayout>
+
 
 </RelativeLayout>
