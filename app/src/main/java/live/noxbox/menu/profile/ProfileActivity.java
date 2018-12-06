@@ -154,11 +154,12 @@ public class ProfileActivity extends BaseActivity {
                 inputMethodManager.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
             }
         });
+        TextView nameView = (TextView) findViewById(R.id.name);
         if (!Strings.isNullOrEmpty(profile.getName())) {
-            ((TextView) findViewById(R.id.name)).setText(profile.getName());
+            nameView.setText(profile.getName());
         }
-        findViewById(R.id.name).setEnabled(true);
-        ((EditText) findViewById(R.id.name)).addTextChangedListener(new TextWatcher() {
+        nameView.setEnabled(true);
+        nameView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 

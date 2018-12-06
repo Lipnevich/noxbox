@@ -26,6 +26,7 @@ import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
@@ -43,9 +44,7 @@ public class DebugActivity extends MenuActivity implements
         OnMapReadyCallback {
     private static final String TAG = "DebugActivity";
 
-    private List<NotificationType> photoPushes = Arrays.asList(NotificationType.photoUploadingProgress,
-            NotificationType.photoValidationProgress,
-            NotificationType.photoValid, NotificationType.photoInvalid);
+    private List<NotificationType> photoPushes = Arrays.asList(NotificationType.values());
     private Iterator<NotificationType> iterator = photoPushes.iterator();
 
 
@@ -68,6 +67,12 @@ public class DebugActivity extends MenuActivity implements
                             if(!iterator.hasNext()) iterator = photoPushes.iterator();
                             data.put("type", iterator.next().name());
                             data.put("progress", "" + 50);
+                            data.put("price", "" + 555);
+                            data.put("name", "Long Long Long Party Name");
+                            data.put("noxboxType", NoxboxType.photographer.name());
+                            data.put("message", "Let me speak from my heart");
+                            data.put("noxboxId", "0pEHvCumSPbOCFSLFWIA");
+
                             NotificationFactory.buildNotification(DebugActivity.this, profile, data).show();
                         }
                     });
