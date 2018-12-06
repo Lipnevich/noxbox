@@ -4,6 +4,7 @@ import android.content.Context;
 
 import java.util.Map;
 
+import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.Notification;
@@ -49,9 +50,9 @@ public abstract class NotificationFactory {
                 return new NotificationPhotoInvalid(context, profile, data);
             case photoValidationProgress:
                 return new NotificationPhotoValidationProgress(context, profile, data);
-
             default:
-                throw new UnsupportedOperationException();
+                DebugMessage.popup(context, "Unknown notification type " + type);
+                return
         }
     }
 

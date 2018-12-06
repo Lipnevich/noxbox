@@ -68,6 +68,7 @@ public class DebugActivity extends MenuActivity implements
                             data.put("type", iterator.next().name());
                             data.put("progress", "" + 50);
                             data.put("price", "" + 555);
+                            data.put("time", "" + System.currentTimeMillis());
                             data.put("name", "Long Long Long Party Name");
                             data.put("noxboxType", NoxboxType.photographer.name());
                             data.put("message", "Let me speak from my heart");
