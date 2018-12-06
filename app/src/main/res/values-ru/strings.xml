@@ -27,8 +27,8 @@
     <string name="plant">Посадка саженцев</string>
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
-    <string name="guru">Guru</string>
-    <string name="gardener">Gardener</string>
+    <string name="guru">Учитель</string>
+    <string name="gardener">Садовник</string>
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
@@ -83,8 +83,8 @@
     <string name="isGps">Нет сигнала GPS</string>
     <!--строка соглашения-->
     <string name="agreement">Я прочел и согласен с %1$s и %2$s</string>
-    <string name="authRules">Правилами пользования</string>
-    <string name="authPrivacyPolicy">Политикой конфиденциальности</string>
+    <string name="authRules">Правилами</string>
+    <string name="authPrivacyPolicy">Политиками</string>
     <string name="rulesLink">https://noxbox.io/rules.html</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
     <string name="promoVideoLink">"https://www.youtube.com/watch?v=5vDMkpgZ9Yk"</string>
@@ -183,10 +183,10 @@
     <string name="certificates">Сертификаты</string>
     <string name="workAtHome">Работа на месте</string>
     <string name="chooseTravelMode">Способ передвижения</string>
-    <string name="uploadingProgressTitle">Uploading image %s%%</string>
-    <string name="uploadingProgressContent">%s seconds left</string>
-    <string name="name">Name</string>
-    <string name="uploadingStarted">Uploading started</string>
+    <string name="uploadingProgressTitle">Загрузка фото %s%%</string>
+    <string name="uploadingProgressContent">%s секунд осталось</string>
+    <string name="name">Имя</string>
+    <string name="uploadingStarted">Загрузка началась</string>
     <string name="haveHost">приму у себя</string>
     <string name="notHaveHost">нет</string>
     <string name="serviceProvided">Предоставляемые услуги:</string>
@@ -197,8 +197,8 @@
     <string name="wantDeleteImage">Удалить изображение?</string>
     <string name="note">Внимание!</string>
     <string name="deleteSection">Удалить раздел?</string>
-    <string name="confirm">Confirm</string>
-    <string name="performing">Performing</string>
+    <string name="confirm">Подтвертить</string>
+    <string name="performing">Исполниние</string>
     <string name="performingPushContent">Прошло времени:</string>
     <string name="cancelReason">Причина отмены:</string>
     <string name="substandardWork">Некачественная работа</string>
@@ -209,10 +209,10 @@
     <string name="notLikeThat">Не похож</string>
     <string name="confirmThatYouSeePersonFromPhoto">Подтвердите что видите человека с фотографии</string>
     <string name="inProcess">В процессе</string>
-    <string name="pleaseWriteComment">Please write comment...</string>
-    <string name="pleaseRatePerformer">Please rate your performer</string>
-    <string name="commentSuccessfullySent">Comment successfully sent!</string>
-    <string name="join">Join</string>
+    <string name="pleaseWriteComment">Ваш комментарий...</string>
+    <string name="pleaseRatePerformer">Пожалуйста оцените исполнителя</string>
+    <string name="commentSuccessfullySent">Комментарий был отправлен</string>
+    <string name="join">Присоединиться</string>
     <string name="replaceIt">Заменить текст!!!</string>
     <string name="photoValidationProgressContent">Проверка фотографии...</string>
     <string name="photoValidContent">Фотография успешно обработана!</string>
@@ -229,8 +229,8 @@
     <string name="outOfMoney">Заканчиваются средства</string>
     <string name="beforeSpendingMoney">До израсходования средств на балансе заказчика осталось 5 минут</string>
     <string name="newMessage">Новое сообщение!</string>
-    <string name="reply">reply</string>
-    <string name="messageSent">Message sent</string>
+    <string name="reply">повторить</string>
+    <string name="messageSent">Сообщение отправлено</string>
     <string name="noxboxCompleted">Услуга завершена</string>
     <string name="toEarn">Заработано</string>
     <string name="spent">Потрачено</string>
@@ -252,12 +252,10 @@
     <string name="withComission">с учётом комиссии</string>
     <string name="worker">Работник</string>
     <string name="costumer">Заказчик</string>
-    <string name="movement">Arrive in ~%1$s minutes</string>
-    <string name="uploadingComplete">Uploading complete</string>
+    <string name="movement">Прибытие через ~%1$s минут</string>
+    <string name="uploadingComplete">Загрузка завершена</string>
     <string name="aboutApp">О приложении</string>
-    <string name="start_promo_video">Промо Ролик</string>
+    <string name="start_promo_video">Видео</string>
     <string name="tutorial">Обучение</string>
-    <string name="termsOfConditions">Terms of Conditions</string>
-
 
 </resources>
