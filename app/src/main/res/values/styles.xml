@@ -31,8 +31,8 @@
     </style>
 
     <style name="IconButtonStyle">
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
         <item name="android:visibility">gone</item>
     </style>
 

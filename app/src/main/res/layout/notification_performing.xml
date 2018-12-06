@@ -13,8 +13,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="58dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="58dp"
             android:orientation="vertical">
 
 
@@ -70,28 +70,34 @@
 
         <ViewFlipper
             android:id="@+id/origami"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="80dp"
+            android:layout_height="64dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:autoStart="true"
             android:flipInterval="500"
             android:measureAllChildren="true">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="92dp"
+                android:layout_height="92dp"
+                android:layout_marginStart="-10dp"
+                android:layout_marginTop="-30dp"
                 android:src="@drawable/ic_performing_origami_first" />
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="92dp"
+                android:layout_height="92dp"
+                android:layout_marginStart="-10dp"
+                android:layout_marginTop="-30dp"
                 android:src="@drawable/ic_performing_origami_second" />
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="92dp"
+                android:layout_height="92dp"
+                android:layout_marginStart="-11dp"
+                android:layout_marginTop="-30dp"
                 android:src="@drawable/ic_performing_origami_third" />
 
         </ViewFlipper>

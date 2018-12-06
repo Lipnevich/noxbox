@@ -4,44 +4,41 @@
     android:layout_height="64dp"
     android:background="@drawable/notification_horizontal_gradient_background">
 
-    <TextView
-        android:id="@+id/content"
-        style="@style/TextAppearance.Compat.Notification.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:textColor="#fff" />
 
-    <TextView
-        android:id="@+id/countDownTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:textColor="@color/primary"
-        android:textAppearance="@style/TextAppearance.Compat.Notification.Title" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp">
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="16dp"
+            android:textSize="@dimen/text_size"
+            android:textColor="@color/secondary" />
+        <ViewFlipper
+            android:layout_width="82dp"
+            android:layout_height="64dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:measureAllChildren="true"
+            android:flipInterval="500"
+            android:autoStart="true"
+            >
+            <ImageView
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:layout_marginTop="-20dp"
+                android:src="@drawable/request_hand_up" />
 
-    <ViewFlipper
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:measureAllChildren="true"
-        android:flipInterval="500"
-        android:autoStart="true"
-        >
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/request_hend_up" />
+            <ImageView
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:layout_marginTop="-20dp"
+                android:src="@drawable/request_hand_down" />
+        </ViewFlipper>
+    </RelativeLayout>
 
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/request_hend_down" />
-    </ViewFlipper>
 
 </RelativeLayout>
