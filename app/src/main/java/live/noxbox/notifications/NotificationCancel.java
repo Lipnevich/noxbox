@@ -9,11 +9,11 @@ import android.widget.RemoteViews;
 
 import java.util.Map;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.activities.ChatActivity;
 import live.noxbox.model.Profile;
 
-public class NotificationCancel extends Notification{
+public class NotificationCancel extends Notification {
 
     public NotificationCancel(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
@@ -21,13 +21,16 @@ public class NotificationCancel extends Notification{
         vibrate = getVibrate();
         sound = getSound();
 
-        contentView = new RemoteViews(context.getPackageName(), R.layout.notification_message);
+        contentView = new RemoteViews(context.getPackageName(), R.layout.notification_canceled);
+        contentView.setTextViewText(R.id.content, context.getString(type.getContent()));
 
         isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
-                .addNextIntentWithParentStack(new Intent(context, ChatActivity.class))
+                .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         isAutoCancel = true;
+
+        deleteIntent = createOnDeleteIntent(context, type.getGroup());
     }
 
     @Override

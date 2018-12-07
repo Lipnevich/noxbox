@@ -81,6 +81,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
                   data: {
                       type: 'completed',
                       time: '' + noxbox.timeCompleted,
+                      price: '' + noxbox.price,
                       id: noxbox.id
                   },
                   topic: noxbox.id

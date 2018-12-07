@@ -105,6 +105,7 @@ public class Performing implements State {
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
                     }
 
+                    data.put("price", decimalFormat.format(totalMoney));
                     data.put("time", time);
 
                     if (enoughBalanceOnFiveMinutes(profile.getCurrent())) {

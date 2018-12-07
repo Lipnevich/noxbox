@@ -9,6 +9,8 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.Notification;
 import live.noxbox.notifications.NotificationAccepting;
+import live.noxbox.notifications.NotificationCancel;
+import live.noxbox.notifications.NotificationComplete;
 import live.noxbox.notifications.NotificationLowBalance;
 import live.noxbox.notifications.NotificationMessage;
 import live.noxbox.notifications.NotificationMoving;
@@ -36,11 +38,10 @@ public abstract class NotificationFactory {
                 return new NotificationMoving(context, profile, data);
             case lowBalance:
                 return new NotificationLowBalance(context, profile, data);
-            case verifyPhoto:
             case canceled:
-
+                return new NotificationCancel(context, profile, data);
             case completed:
-
+                return new NotificationComplete(context, profile, data);
             case photoUploadingProgress:
                 return new NotificationUploadingProgress(context, profile, data);
             case photoValid:
@@ -49,6 +50,7 @@ public abstract class NotificationFactory {
                 return new NotificationPhotoInvalid(context, profile, data);
             case photoValidationProgress:
                 return new NotificationPhotoValidationProgress(context, profile, data);
+
             default:
                 DebugMessage.popup(context, "Unknown notification type " + type);
                 return new Notification(context, profile, data) {

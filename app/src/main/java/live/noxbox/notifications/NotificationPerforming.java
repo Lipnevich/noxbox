@@ -38,7 +38,6 @@ public class NotificationPerforming extends Notification {
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_performing);
         contentView.setTextViewText(R.id.timeHasPassed, context.getResources().getString(type.getContent()));
         contentView.setTextViewText(R.id.stopwatch, START_TIME);
-        contentView.setTextViewText(R.id.totalPayment, ("0".concat(" ")).concat(Configuration.CURRENCY));
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
 
