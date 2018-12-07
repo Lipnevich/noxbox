@@ -70,7 +70,6 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         let push = {
                   data: {
                       type: 'performing',
-                      time: '' + noxbox.timeRequested,
                       id: noxbox.id
                   },
                   topic: noxbox.owner.id

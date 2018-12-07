@@ -10,6 +10,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import io.fabric.sdk.android.Fabric;
+import live.noxbox.notifications.Notification;
 import live.noxbox.notifications.factory.NotificationFactory;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
@@ -35,7 +36,8 @@ public class MessagingService extends FirebaseMessagingService {
         initCrashReporting();
         context = getApplicationContext();
         if (!inForeground()) {
-            NotificationFactory.buildNotification(context, null, remoteMessage.getData()).show();
+            Notification notification = NotificationFactory.buildNotification(context, null, remoteMessage.getData());
+            notification.show();
         }
     }
 
@@ -55,7 +57,7 @@ public class MessagingService extends FirebaseMessagingService {
     }
 
 
-    private static boolean inForeground() {
+    public static boolean inForeground() {
         ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
         ActivityManager.getMyMemoryState(appProcessInfo);
         return (appProcessInfo.importance == IMPORTANCE_FOREGROUND

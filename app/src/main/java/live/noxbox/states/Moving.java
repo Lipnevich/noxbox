@@ -147,15 +147,12 @@ public class Moving implements State {
             @Override
             public void onTick(long millisUntilFinished) {
                 if (countDownTimer != null) {
-                    //notification.setTime(String.valueOf(human_profile.getCurrent().getTimeToMeet() - (human_profile.getCurrent().getTimeToMeet() - millisUntilFinished)));
-                    //notification.setProgress((int) (human_profile.getCurrent().getTimeToMeet() - millisUntilFinished));
-                    //NotificationType.updateNotification(activity.getApplicationContext(), notification, MessagingService.builder);
+                    //TODO (?!?!?!?) НУЖЕН ЛИ ЭТОТ ТАЙМЕР
                 }
             }
 
             @Override
             public void onFinish() {
-                //MessagingService.removeNotifications(activity.getApplicationContext());
             }
         }.start();
 

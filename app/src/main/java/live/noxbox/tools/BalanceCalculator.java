@@ -21,9 +21,9 @@ public class BalanceCalculator {
         return minimalPrice.compareTo(walletBalance) < 0;
     }
 
-    public static boolean enoughBalanceOnFiveMinutes(Noxbox noxbox, Profile profile) {
+    public static boolean enoughBalanceOnFiveMinutes(Noxbox noxbox) {
         BigDecimal priceForFiveMinutes = new BigDecimal(noxbox.getPrice()).divide(new BigDecimal(FIVE_MINUTES_PART_OF_HOUR), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        BigDecimal pricePerSecond = new BigDecimal(profile.getCurrent().getPrice()).divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal pricePerSecond = new BigDecimal(noxbox.getPrice()).divide(new BigDecimal(noxbox.getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         pricePerSecond = pricePerSecond.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
         BigDecimal secondsPassed = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(noxbox.getTimeStartPerforming())));
         secondsPassed = secondsPassed.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);

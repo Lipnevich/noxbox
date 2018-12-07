@@ -28,8 +28,8 @@
                     android:id="@+id/timeHasPassed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Времени прошло: "
                     android:textColor="@color/secondary"
+                    android:text="@string/timePassed"
                     android:textSize="@dimen/text_size" />
 
                 <TextView
