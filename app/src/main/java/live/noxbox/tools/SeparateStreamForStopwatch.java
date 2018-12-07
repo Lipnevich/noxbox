@@ -13,7 +13,7 @@ import static live.noxbox.Configuration.QUARTER;
 public class SeparateStreamForStopwatch {
 
     public static long seconds = 0;
-    public static BigDecimal totalMoney;
+    public static BigDecimal totalMoney = BigDecimal.ZERO;
     private static Handler handler;
     private static Runnable runnable;
     public static final DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT);

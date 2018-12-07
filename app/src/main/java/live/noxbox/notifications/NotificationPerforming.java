@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import com.google.common.base.MoreObjects;
+
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -110,8 +112,8 @@ public class NotificationPerforming extends Notification {
 
     @Override
     public void update(Map<String, String> data) {
-        contentView.setTextViewText(R.id.stopwatch, data.get("time"));
-        contentView.setTextViewText(R.id.totalPayment, (data.get("price").concat(" ")).concat(Configuration.CURRENCY));
+        contentView.setTextViewText(R.id.stopwatch, MoreObjects.firstNonNull(data.get("time"), "0"));
+        contentView.setTextViewText(R.id.totalPayment, (MoreObjects.firstNonNull(data.get("price"), "0").concat(" ")).concat(Configuration.CURRENCY));
         updateNotification(context, builder);
     }
 }
