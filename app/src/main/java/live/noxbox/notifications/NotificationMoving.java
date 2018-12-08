@@ -47,12 +47,13 @@ public class NotificationMoving extends Notification {
             public void execute(Noxbox noxbox) {
                 removeNotificationByGroup(context, type.getGroup());
 
-                progressInMinutes = ((int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()));
-                progressInMinutes = Math.min(progressInMinutes, maxProgressInMinutes - 1);
-                contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImage());
-                contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movement, "" + progressInMinutes)));
-                contentView.setProgressBar(R.id.progress, maxProgressInMinutes, Math.max(maxProgressInMinutes - progressInMinutes, 1), false);
-
+                if(noxbox.getOwner() != null && noxbox.getParty() != null) {
+                    progressInMinutes = ((int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()));
+                    progressInMinutes = Math.min(progressInMinutes, maxProgressInMinutes - 1);
+                    contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImage());
+                    contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movement, "" + progressInMinutes)));
+                    contentView.setProgressBar(R.id.progress, maxProgressInMinutes, Math.max(maxProgressInMinutes - progressInMinutes, 1), false);
+                }
                 final NotificationCompat.Builder builder = getNotificationCompatBuilder();
                 getNotificationService(context).notify(type.getGroup(), builder.build());
             }
