@@ -72,8 +72,7 @@ public class DebugActivity extends MenuActivity implements
                             data.put("name", "Long Long Long Party Name");
                             data.put("noxboxType", NoxboxType.photographer.name());
                             data.put("message", "Let me speak from my heart");
-                            data.put("noxboxId", "0pEHvCumSPbOCFSLFWIA");
-
+                            data.put("id", "0pEHvCumSPbOCFSLFWIA");
                             NotificationFactory.buildNotification(DebugActivity.this, profile, data).show();
                         }
                     });
@@ -129,13 +128,12 @@ public class DebugActivity extends MenuActivity implements
                                         .setHost(false)
                                         .setName("Granny Smith")
                                         .setId("12321")
-                                        .setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg"));
+                                        .setPhoto(NoxboxExamples.PHOTO_MOCK));
                                 AppCache.updateNoxbox();
                                 GeoRealtime.offline(profile.getCurrent());
                             } else {
                                 DebugMessage.popup(DebugActivity.this, "Not possible to request");
                             }
-
 
                             Log.d(State.TAG + TAG, "debugRequest");
                             Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
@@ -153,7 +151,7 @@ public class DebugActivity extends MenuActivity implements
                                     && profile.getCurrent().getTimeCreated() != null
                                     && profile.getCurrent().getTimeRequested() != null
                                     && profile.getCurrent().getTimeAccepted() == null) {
-                                profile.getCurrent().getOwner().setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg");
+                                profile.getCurrent().getOwner().setPhoto(NoxboxExamples.PHOTO_MOCK);
                                 profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
                                 profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
                                 profile.getCurrent().setTimeToMeet(1200000L);

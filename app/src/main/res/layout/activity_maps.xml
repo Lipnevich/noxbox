@@ -160,7 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Generate Push"
+                    android:text="@string/generatePush"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
                 
@@ -169,7 +169,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Generate Noxboxes"
+                    android:text="@string/generateNoxboxes"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
 
@@ -178,7 +178,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Request"
+                    android:text="@string/request"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
 
@@ -187,7 +187,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="Accept"
+                    android:text="@string/accept"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
 
@@ -197,7 +197,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
                     android:layout_marginTop="20dp"
-                    android:text="Verify Photo"
+                    android:text="@string/verifyPhoto"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
 
@@ -207,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
                     android:layout_marginTop="20dp"
-                    android:text="Reject Photo"
+                    android:text="@string/rejectPhoto"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
 
@@ -217,7 +217,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
                     android:layout_marginTop="20dp"
-                    android:text="Complete"
+                    android:text="@string/complete"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
             </LinearLayout>

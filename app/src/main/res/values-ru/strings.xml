@@ -262,5 +262,12 @@
     <string name="timePassed">Времени прошло:</string>
     <string name="serviceIsPerforming">Service is performing</string>
     <string name="serviceWasCanceled">Service was canceled</string>
+    <string name="generatePush">Оповести</string>
+    <string name="generateNoxboxes">Создай</string>
+    <string name="request">Вызови</string>
+    <string name="accept">Прими</string>
+    <string name="verifyPhoto">Подтверди</string>
+    <string name="rejectPhoto">Откажи</string>
+    <string name="complete">Заверши</string>
 
 </resources>

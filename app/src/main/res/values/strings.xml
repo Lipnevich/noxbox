@@ -262,6 +262,13 @@
     <string name="tutorial">Tutorial</string>
     <string name="address">Address</string>
     <string name="noxboxCanceled">Service was canceled</string>
+    <string name="generatePush">Generate push</string>
+    <string name="generateNoxboxes">Generate Noxboxes</string>
+    <string name="request">Request</string>
+    <string name="accept">Accept</string>
+    <string name="verifyPhoto">Verify Photo</string>
+    <string name="rejectPhoto">Reject Photo</string>
+    <string name="complete">Complete</string>
     <string name="timePassed">Времени прошло:</string>
     <string name="serviceIsPerforming">Service is performing</string>
     <string name="serviceWasCanceled">Service was canceled</string>

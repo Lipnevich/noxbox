@@ -20,6 +20,9 @@ import live.noxbox.model.WorkSchedule;
 
 public class NoxboxExamples {
 
+    public final static String PHOTO_MOCK = "https://firebasestorage.googleapis.com/v0/b/noxbox-project.appspot.com/o/zelda.jpg?alt=media&token=a6aaa08e-69f9-440c-98f5-c5e1aaba5a2a";
+
+
     public static List<Noxbox> generateNoxboxes(Position position, int size, double delta) {
         if (position == null) position = new Position();
         List<Noxbox> noxboxes = new ArrayList<>(size);
@@ -29,7 +32,7 @@ public class NoxboxExamples {
 
             noxbox.setRole(MarketRole.values()[ThreadLocalRandom.current().nextInt(MarketRole.values().length)]);
             Profile owner = new Profile().setId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE))
-                    .setNoxboxId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE)).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto("http://fit4brain.com/wp-content/uploads/2014/06/zelda.jpg").setName("Granny Zelda");
+                    .setNoxboxId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE)).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto(PHOTO_MOCK).setName("Granny Zelda");
 
             owner.setTravelMode(TravelMode.values()[ThreadLocalRandom.current().nextInt(TravelMode.values().length)]);
             if (owner.getTravelMode() == TravelMode.none) {

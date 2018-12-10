@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Map;
 
 import live.noxbox.R;
@@ -16,7 +18,7 @@ public class NotificationUploadingProgress extends Notification {
 
     public NotificationUploadingProgress(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        progress = Integer.valueOf(data.get("progress"));
+        progress = Integer.valueOf(MoreObjects.firstNonNull(data.get("progress"), "0"));
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_uploading_progress);
         contentView.setTextViewText(R.id.uploadingProgress, format(context.getResources(), type.getContent(), progress));
