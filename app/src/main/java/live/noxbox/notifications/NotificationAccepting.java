@@ -16,8 +16,6 @@ public class NotificationAccepting extends Notification {
     public NotificationAccepting(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
         timeRequesting = Long.valueOf(notificationTime);
-        vibrate = null;
-        sound = getSound();
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
         contentView.setTextViewText(R.id.content, context.getResources().getString(type.getContent()));

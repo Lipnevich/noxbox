@@ -32,21 +32,21 @@
             android:autoStart="true">
 
             <ImageView
-                android:layout_width="92dp"
-                android:layout_height="92dp"
-                android:layout_marginTop="-30dp"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:layout_marginTop="-22dp"
                 android:src="@drawable/hourglass_one" />
 
             <ImageView
-                android:layout_width="92dp"
-                android:layout_height="92dp"
-                android:layout_marginTop="-30dp"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:layout_marginTop="-22dp"
                 android:src="@drawable/hourglass_two" />
 
             <ImageView
-                android:layout_width="92dp"
-                android:layout_height="92dp"
-                android:layout_marginTop="-30dp"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:layout_marginTop="-22dp"
                 android:src="@drawable/hourglass_three" />
 
         </ViewFlipper>

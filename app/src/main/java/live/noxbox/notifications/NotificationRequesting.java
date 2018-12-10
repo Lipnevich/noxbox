@@ -15,8 +15,6 @@ public class NotificationRequesting extends Notification {
 
     public NotificationRequesting(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        vibrate = getVibrate();
-        sound = getSound();
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
         contentView.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));

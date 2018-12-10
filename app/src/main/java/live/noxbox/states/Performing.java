@@ -1,27 +1,21 @@
 package live.noxbox.states;
 
 import android.app.Activity;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.DecimalFormat;
 
 import live.noxbox.Configuration;
 import live.noxbox.R;
-import live.noxbox.model.MarketRole;
-import live.noxbox.model.NotificationData;
-import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.notifications.Notification;
-import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
@@ -29,22 +23,21 @@ import live.noxbox.tools.SwipeButton;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
+import static live.noxbox.Configuration.PRICE_FORMAT;
 import static live.noxbox.Configuration.QUARTER;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
-import static live.noxbox.tools.BalanceCalculator.getTotalSpentForNoxbox;
-import static live.noxbox.tools.SeparateStreamForStopwatch.decimalFormat;
-import static live.noxbox.tools.SeparateStreamForStopwatch.initializeStopwatch;
-import static live.noxbox.tools.SeparateStreamForStopwatch.removeTimer;
-import static live.noxbox.tools.SeparateStreamForStopwatch.runTimer;
-import static live.noxbox.tools.SeparateStreamForStopwatch.seconds;
-import static live.noxbox.tools.SeparateStreamForStopwatch.totalMoney;
+import static live.noxbox.tools.SeparateStreamForStopwatch.startHandler;
+import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
 public class Performing implements State {
 
     private Activity activity;
     private GoogleMap googleMap;
     private LinearLayout performingView;
+    private static long seconds = 0;
+    private static BigDecimal totalMoney;
+    private static final DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT);
 
     public Performing(final Activity activity, final GoogleMap googleMap) {
         this.activity = activity;
@@ -70,18 +63,12 @@ public class Performing implements State {
         totalMoney = totalMoney.multiply(QUARTER);
         drawComplete(profile);
 
-        final Map<String, String> data = new HashMap<>();
-        data.put("type", NotificationType.performing.name());
-        data.put("id", profile.getNoxboxId());
-
-        final Notification notificationPerformin = NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
-        notificationPerformin.show();
         final long timeStartPerforming = profile.getCurrent().getTimeStartPerforming();
-
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
+        seconds = (int) ((System.currentTimeMillis() - timeStartPerforming) / 1000);
+        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
+        final Task task = new Task() {
             @Override
-            public void run() {
+            public void execute(Object object) {
                 long hours = seconds / 3600;
                 long minutes = (seconds % 3600) / 60;
                 long secs = seconds % 60;
@@ -93,36 +80,35 @@ public class Performing implements State {
 
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     if (hasMinimumServiceTimePassed(profile.getCurrent())) {
-                        BigDecimal pricePerHour = new BigDecimal(profile.getCurrent().getPrice());
-                        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-                        BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-                        BigDecimal timeFromStartPerformingInMillis = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
-                        BigDecimal timeFromStartPerformingInSeconds = timeFromStartPerformingInMillis.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-                        totalMoney = timeFromStartPerformingInSeconds.multiply(pricePerSecond);
+                        calculateTotalAmount(profile);
 
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
                     } else {
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
                     }
 
-                    data.put("price", decimalFormat.format(totalMoney));
-                    data.put("time", time);
 
-                    if (enoughBalanceOnFiveMinutes(profile.getCurrent())) {
-                        notificationPerformin.update(data);
-                    } else {
+                    if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
                         //showLowBalanceNotification(activity.getApplicationContext(), human_profile, notification);
                         return;
-                    }
-
-                    handler.postDelayed(this, 1000);
+                    } 
+                    Log.d("PerformingRunnable:", this.toString());
+                    Crashlytics.setString(this.toString(), "PerformingRunnable");
                 }
             }
         };
 
-        initializeStopwatch(profile, handler, runnable);
+        startHandler(task, 1000);
 
-        runTimer();
+    }
+
+    private BigDecimal calculateTotalAmount(Profile profile) {
+        BigDecimal pricePerHour = new BigDecimal(profile.getCurrent().getPrice());
+        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal timeFromStartPerformingInMillis = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
+        BigDecimal timeFromStartPerformingInSeconds = timeFromStartPerformingInMillis.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        return timeFromStartPerformingInSeconds.multiply(pricePerSecond);
     }
 
     private void drawComplete(final Profile profile) {
@@ -136,22 +122,11 @@ public class Performing implements State {
 
                 Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
 
-                MessagingService messagingService = new MessagingService(activity.getApplicationContext());
-                NotificationData notification = new NotificationData().setType(NotificationType.completed).setPrice(getTotalSpentForNoxbox(profile.getCurrent(), timeCompleted).toString());
-                if (profile.getCurrent().getOwner().equals(profile)) {
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        notification.setMessage(activity.getResources().getString(R.string.toEarn).concat(":"));
-                    } else {
-                        notification.setMessage(activity.getResources().getString(R.string.spent).concat(":"));
-                    }
-                } else {
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        notification.setMessage(activity.getResources().getString(R.string.toEarn).concat(":"));
-                    } else {
-                        notification.setMessage(activity.getResources().getString(R.string.spent).concat(":"));
-                    }
-                }
-               // messagingService.showPushNotification(notification);
+                //Map<String, String> data = new HashMap<>();
+                //data.put("type", NotificationType.completed.name());
+                //data.put("price", getTotalSpentForNoxbox(profile.getCurrent(), timeCompleted).toString());
+                //data.put("time", "" + timeCompleted);
+                //NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                 profile.getCurrent().setTimeCompleted(timeCompleted);
                 updateNoxbox();
             }
@@ -163,7 +138,7 @@ public class Performing implements State {
     public void clear() {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         googleMap.clear();
-        removeTimer();
+        stopHandler();
         performingView.removeAllViews();
         MessagingService.removeNotifications(activity);
         Log.d(TAG + "Performing", "time return to AvailableService: " + DateTimeFormatter.time(System.currentTimeMillis()));

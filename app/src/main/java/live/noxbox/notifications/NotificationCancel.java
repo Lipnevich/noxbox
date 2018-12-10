@@ -18,9 +18,6 @@ public class NotificationCancel extends Notification {
     public NotificationCancel(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
 
-        vibrate = getVibrate();
-        sound = getSound();
-
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_canceled);
         contentView.setTextViewText(R.id.content, context.getString(type.getContent()));
 

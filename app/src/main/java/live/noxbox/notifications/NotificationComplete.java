@@ -26,9 +26,6 @@ public class NotificationComplete extends Notification {
     public NotificationComplete(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
 
-        vibrate = getVibrate();
-        sound = getSound();
-
         price = data.get("price");
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_completed);

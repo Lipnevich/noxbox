@@ -15,9 +15,17 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:textStyle="bold"
-            android:text="Услуга была отменена"
+            android:text="@string/serviceWasCanceled"
             android:textSize="@dimen/text_size"
             android:textColor="@color/secondary" />
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_cancel_notification"
+            android:layout_alignParentEnd="true"/>
     </RelativeLayout>
+
+
 
 </RelativeLayout>

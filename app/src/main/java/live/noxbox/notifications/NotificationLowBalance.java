@@ -19,8 +19,6 @@ public class NotificationLowBalance extends Notification {
 
     public NotificationLowBalance(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        vibrate = null;
-        sound = getSound();
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_low_balance);
         contentView.setTextViewText(R.id.content, context.getResources().getString(type.getContent()));

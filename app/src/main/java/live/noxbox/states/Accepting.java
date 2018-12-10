@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
-import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.services.MessagingService;
@@ -56,7 +55,6 @@ public class Accepting implements State {
                 long timeCanceled = System.currentTimeMillis();
                 Log.d(TAG + "Accepting", "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
                 profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
-                NotificationType.removeNotifications(activity.getApplicationContext());
                 countDownTimer.cancel();
                 updateNoxbox();
             }
@@ -109,7 +107,6 @@ public class Accepting implements State {
             @Override
             public void onFinish() {
                 if (profile.getCurrent().getTimeAccepted() == null) {
-                    NotificationType.removeNotifications(activity.getApplicationContext());
                     profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
                     updateNoxbox();
                 }
@@ -119,7 +116,6 @@ public class Accepting implements State {
 
     private void autoDisconnectFromService(final Profile profile) {
         if (profile.getCurrent().getTimeAccepted() == null) {
-            NotificationType.removeNotifications(activity.getApplicationContext());
             profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
             updateNoxbox();
         }

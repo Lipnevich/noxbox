@@ -26,9 +26,6 @@ public class NotificationMoving extends Notification {
 
     public NotificationMoving(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        vibrate = null;
-        sound = null;
-
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
 
         isAlertOnce = true;

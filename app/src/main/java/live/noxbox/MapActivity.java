@@ -108,6 +108,7 @@ public class MapActivity extends DebugActivity implements
                 .build();
         googleApiClient.connect();
         AppCache.startListening();
+
     }
 
     private Marker currentLocationMarker;

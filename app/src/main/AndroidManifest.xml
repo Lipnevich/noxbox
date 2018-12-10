@@ -123,12 +123,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".model.NotificationType$AcceptRequestListener">
-            <intent-filter>
-                <action android:name="live.noxbox.acceptRequestByClickedButton" />
-            </intent-filter>
-        </receiver>
-
         <receiver android:name=".notifications.Notification$UserInputListener">
             <intent-filter>
                 <action android:name="live.noxbox.UserInputListener" />
@@ -139,7 +133,11 @@
                 <action android:name="live.noxbox.DeleteActionIntent" />
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".notifications.Notification$SupportNotificationListener">
+            <intent-filter>
+                <action android:name="live.noxbox.SupportActionIntent" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

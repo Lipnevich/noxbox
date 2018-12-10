@@ -18,9 +18,6 @@ public class NotificationUploadingProgress extends Notification {
         super(context, profile, data);
         progress = Integer.valueOf(data.get("progress"));
 
-        vibrate = getVibrate();
-        sound = getSound();
-
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_uploading_progress);
         contentView.setTextViewText(R.id.uploadingProgress, format(context.getResources(), type.getContent(), progress));
         contentView.setProgressBar(R.id.progress, maxProgress, progress, false);

@@ -31,9 +31,6 @@ public class NotificationMessage extends Notification {
         profession = context.getResources().getString(NoxboxType.valueOf(data.get("noxboxType")).getProfession());
         message = data.get("message");
 
-        vibrate = getVibrate();
-        sound = getSound();
-
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_message);
 
         isAlertOnce = true;

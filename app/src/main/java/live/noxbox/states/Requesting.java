@@ -85,7 +85,6 @@ public class Requesting implements State {
             @Override
             public void onClick(View v) {
                 Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
-                NotificationType.removeNotifications(activity.getApplicationContext());
                 profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
                 updateNoxbox();
             }

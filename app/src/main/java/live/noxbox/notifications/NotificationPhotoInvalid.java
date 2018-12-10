@@ -16,8 +16,6 @@ public class NotificationPhotoInvalid extends Notification {
 
     public NotificationPhotoInvalid(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        vibrate = getVibrate();
-        sound = getSound();
 
         invalidAcceptance = profile.getAcceptance().getInvalidAcceptance();
 

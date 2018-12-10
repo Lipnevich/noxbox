@@ -12,8 +12,6 @@ import live.noxbox.model.Profile;
 public class NotificationPhotoValid extends Notification {
     public NotificationPhotoValid(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        vibrate = getVibrate();
-        sound = getSound();
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_valid_photo);
         contentView.setTextViewText(R.id.message, context.getResources().getString(type.getContent()));

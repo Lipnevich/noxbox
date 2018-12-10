@@ -28,6 +28,7 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
 import live.noxbox.tools.MapOperator;
+import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CLUSTER_RENDERING_FREQUENCY;
@@ -36,6 +37,7 @@ import static live.noxbox.database.AppCache.markers;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
+import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
 public class AvailableNoxboxes implements State {
 
@@ -48,6 +50,8 @@ public class AvailableNoxboxes implements State {
     private Handler serviceHandler;
     private Runnable serviceRunnable;
 
+    private static boolean serviceIsBound = false;
+
     public AvailableNoxboxes(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
         this.googleMap = googleMap;
         this.googleApiClient = googleApiClient;
@@ -55,7 +59,7 @@ public class AvailableNoxboxes implements State {
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
     }
 
-    private static boolean serviceIsBound = false;
+
 
     @Override
     public void draw(final Profile profile) {
@@ -101,7 +105,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("AAAA","OLOLOLOLO");
+                profile.setNoxboxId(null);
                 profile.getCurrent().clean();
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
                 profile.getCurrent().setOwner(profile.publicInfo());
@@ -131,10 +135,7 @@ public class AvailableNoxboxes implements State {
     public void clear() {
         //service clear
         if (serviceIsBound) {
-            if (drawingHeandler != null) {
-                drawingHeandler.removeCallbacksAndMessages(drawingRunnable);
-                drawingHeandler.removeCallbacks(drawingRunnable);
-            }
+            stopHandler();
             mConnection.onServiceDisconnected(new ComponentName(activity.getApplicationContext().getPackageName(), AvailableNoxboxes.class.getName()));
             try {
                 activity.unbindService(mConnection);
@@ -169,14 +170,12 @@ public class AvailableNoxboxes implements State {
         stopListenAvailableNoxboxes();
     }
 
-    private Handler drawingHeandler = new Handler();
-    private Runnable drawingRunnable;
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             AvailableNoxboxesService.LocalBinder binder = (AvailableNoxboxesService.LocalBinder) service;
-           // AvailableNoxboxesService availableNoxboxesService = binder.getService();
+            // AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
 
             Log.d("AvailableNoxboxes", "onServiceConnected()");
@@ -184,15 +183,14 @@ public class AvailableNoxboxes implements State {
             AppCache.readProfile(new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
-                    drawingRunnable = new Runnable() {
+                    Task task = new Task() {
                         @Override
-                        public void run() {
+                        public void execute(Object object) {
                             clusterManager.setItems(markers, profile);
-                            drawingHeandler.postDelayed(drawingRunnable, CLUSTER_RENDERING_FREQUENCY);
                         }
                     };
 
-                    drawingHeandler.post(drawingRunnable);
+                    SeparateStreamForStopwatch.startHandler(task, CLUSTER_RENDERING_FREQUENCY);
                 }
             });
         }
@@ -200,9 +198,7 @@ public class AvailableNoxboxes implements State {
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             Log.d("AvailableNoxboxes", "onServiceDisconnected()");
-            if (drawingHeandler != null) {
-                drawingHeandler.removeCallbacksAndMessages(drawingRunnable);
-            }
+            SeparateStreamForStopwatch.stopHandler();
             serviceIsBound = false;
         }
     };

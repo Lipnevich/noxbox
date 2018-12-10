@@ -169,7 +169,6 @@ public class Moving implements State {
             countDownTimer = null;
         }
         MapOperator.clearMapMarkerListener(googleMap);
-        NotificationType.removeNotifications(activity.getApplicationContext());
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);

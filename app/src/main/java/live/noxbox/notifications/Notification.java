@@ -56,6 +56,8 @@ public abstract class Notification {
         notificationTime = data.get("time");
         noxboxId = data.get("id");
 
+        this.vibrate = getVibrate();
+        this.sound = getSound();
 
         removeNotifications(context);
     }
@@ -187,6 +189,17 @@ public abstract class Notification {
 
                 }
             });
+        }
+
+    }
+    public static class SupportNotificationListener extends BroadcastReceiver {
+        @Override
+        public void onReceive(final Context context, final Intent intent) {
+            try {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + context.getPackageName())));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + context.getPackageName())));
+            }
         }
 
     }
