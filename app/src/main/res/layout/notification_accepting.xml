@@ -24,18 +24,16 @@
             android:layout_marginEnd="16dp"
             android:measureAllChildren="true"
             android:flipInterval="500"
-            android:autoStart="true"
-            >
+            android:autoStart="true">
+
             <ImageView
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:layout_marginTop="-20dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:src="@drawable/request_hand_up" />
 
             <ImageView
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:layout_marginTop="-20dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:src="@drawable/request_hand_down" />
         </ViewFlipper>
     </RelativeLayout>

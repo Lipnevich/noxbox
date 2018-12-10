@@ -91,7 +91,7 @@ public class Performing implements State {
                     if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
                         //showLowBalanceNotification(activity.getApplicationContext(), human_profile, notification);
                         return;
-                    } 
+                    }
                     Log.d("PerformingRunnable:", this.toString());
                     Crashlytics.setString(this.toString(), "PerformingRunnable");
                 }
