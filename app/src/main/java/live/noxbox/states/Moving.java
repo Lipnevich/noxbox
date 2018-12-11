@@ -12,6 +12,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Polyline;
@@ -42,6 +44,7 @@ import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
+import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
@@ -54,6 +57,9 @@ public class Moving implements State {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
+    private LinearLayout movingView;
+    private View childMovingView;
+    private TextView timeView;
 
     public Moving(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
@@ -67,6 +73,12 @@ public class Moving implements State {
         Log.d(TAG + "Moving", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         Log.d(TAG + "Moving", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
 
+        movingView = activity.findViewById(R.id.container);
+        childMovingView = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
+        movingView.addView(childMovingView);
+        timeView = childMovingView.findViewById(R.id.timeView);
+        updateTimeView(profile);
+
         if (defineLocationListener(profile)) {
             registerLocationListener(profile);
         } else {
@@ -77,13 +89,12 @@ public class Moving implements State {
             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
         }
 
-
+        //TODO (vl) добавить маркер другого участника оранжевые, линия от одного к другому (?)
         Polyline polyline = googleMap.addPolyline(new PolylineOptions()
                 .add(profile.getPosition().toLatLng(), profile.getCurrent().getPosition().toLatLng())
                 .width(5)
                 .color(Color.GREEN)
                 .geodesic(true));
-
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         MarkerCreator.createPartyMarker(profile.getCurrent().getParty(), googleMap, activity.getResources());
 
@@ -189,6 +200,7 @@ public class Moving implements State {
             @Override
             public void onLocationChanged(Location location) {
                 updatePosition(profile, location);
+                updateTimeView(profile);
                 AppCache.updateNoxbox();
             }
 
@@ -216,6 +228,12 @@ public class Moving implements State {
         //locationManager.requestLocationUpdates(NETWORK_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
     }
 
+    private void updateTimeView(Profile profile) {
+        if (movingView != null && childMovingView != null && timeView != null) {
+            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getOwner().getPosition(), profile.getCurrent().getParty().getPosition(), profile.getCurrent().getProfileWhoComes().getTravelMode()));
+            timeView.setText(activity.getResources().getString(R.string.movement, "" + progressInMinutes));
+        }
+    }
 
     private void updatePosition(Profile profile, Location location) {
         if (profile.equals(profile.getCurrent().getOwner())) {
