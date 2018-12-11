@@ -4,10 +4,15 @@ import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.Map;
 
 import live.noxbox.R;
+import live.noxbox.database.Firestore;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Task;
 
 public class NotificationAccepting extends Notification {
 
@@ -30,7 +35,28 @@ public class NotificationAccepting extends Notification {
     public void show() {
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 60; i++) {
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Crashlytics.logException(e);
+                    }
+                }
+                Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
+                    @Override
+                    public void execute(Noxbox noxbox) {
+                        if (noxbox.getTimeAccepted() == null) {
+                            noxbox.setTimeTimeout(System.currentTimeMillis());
+                            Firestore.writeNoxbox(noxbox);
+                        }
+                    }
+                });
+            }
+        }).start();
     }
-
-
 }
