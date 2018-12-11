@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -25,7 +24,6 @@ public class TutorialActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
-        drawToolbar();
 
         final PanoramaImageView panoramaImageView = findViewById(R.id.tutorialBackground);
         gyroscopeObserver = new GyroscopeObserver();
@@ -47,15 +45,6 @@ public class TutorialActivity extends BaseActivity {
                     }
                 });
 
-    }
-
-    private void drawToolbar() {
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     @Override
