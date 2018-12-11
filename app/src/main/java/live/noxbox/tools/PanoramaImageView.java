@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
-import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 
 
 public class PanoramaImageView extends AppCompatImageView {
@@ -63,26 +63,31 @@ public class PanoramaImageView extends AppCompatImageView {
             super.onDraw(canvas);
             return;
         }
+        float currentOffsetX = 0;
+        float currentOffsetY = 0;
+
         if (getDrawable() != null) {
             mDrawableWidth = getDrawable().getIntrinsicWidth();
             mDrawableHeight = getDrawable().getIntrinsicHeight();
 
             float imgScaleX = (float) mHeight / (float) mDrawableHeight;
             float imgScaleY = (float) mWidth / (float) mDrawableWidth;
-            mMaxOffsetY = -Math.abs((mDrawableHeight * imgScaleY - mHeight) * 0.5f);
-            mMaxOffsetX = -Math.abs((mDrawableWidth * imgScaleX - mWidth) * 0.5f);
+            if (getResources().getConfiguration().orientation == ORIENTATION_PORTRAIT) {
+                mMaxOffsetY = Math.abs((mDrawableWidth * imgScaleX - mWidth) * 0.1f);
+                mMaxOffsetX = Math.abs((mDrawableHeight * imgScaleY - mHeight) * 0.5f);
+                currentOffsetX = mMaxOffsetX * mProgressY;
+                currentOffsetY = mMaxOffsetY * mProgressX;
+            } else {
+                mMaxOffsetY = Math.abs((mDrawableHeight * imgScaleY - mHeight) * 0.5f);
+                mMaxOffsetX = Math.abs((mDrawableWidth * imgScaleX - mWidth) * 0.1f);
+                currentOffsetX = mMaxOffsetX * mProgressX;
+                currentOffsetY = mMaxOffsetY * mProgressY;
+            }
+
         }
 
         canvas.save();
-        float currentOffsetX = Math.abs(mMaxOffsetX * mProgressX);
-        float currentOffsetY = Math.abs(mMaxOffsetY * mProgressY);
-
-
-        if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
-            canvas.translate(currentOffsetX, currentOffsetY);
-        } else {
-            canvas.translate(currentOffsetY, currentOffsetX);
-        }
+        canvas.translate(currentOffsetX, currentOffsetY);
         super.onDraw(canvas);
         canvas.restore();
     }

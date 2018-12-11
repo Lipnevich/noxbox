@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -28,7 +27,7 @@ public class TutorialActivity extends BaseActivity {
         setContentView(R.layout.activity_tutorial);
         drawToolbar();
 
-        PanoramaImageView panoramaImageView = findViewById(R.id.tutorialBackground);
+        final PanoramaImageView panoramaImageView = findViewById(R.id.tutorialBackground);
         gyroscopeObserver = new GyroscopeObserver();
         // Set the maximum radian the device should rotate to show image's bounds.
         // It should be set between 0 and π/2.
@@ -36,9 +35,17 @@ public class TutorialActivity extends BaseActivity {
         gyroscopeObserver.setMaxRotateRadian(Math.PI / 4);
         gyroscopeObserver.addPanoramaImageView(panoramaImageView);
 
-
-
         ((ViewPager) findViewById(R.id.viewpager)).setAdapter(new TutorialAdapter(getSupportFragmentManager()));
+        Glide.with(this)
+                .asDrawable()
+                .load(R.drawable.tutorial_background)
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        panoramaImageView.setImageDrawable(resource);
+                    }
+                });
 
     }
 
@@ -55,16 +62,7 @@ public class TutorialActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         gyroscopeObserver.register(this);
-        Glide.with(this)
-                .asDrawable()
-                .load(R.drawable.tutorial_background)
-                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-                .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        ((ImageView) findViewById(R.id.tutorialBackground)).setImageDrawable(resource);
-                    }
-                });
+
     }
 
     @Override
