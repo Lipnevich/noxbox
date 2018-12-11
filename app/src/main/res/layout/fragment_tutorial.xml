@@ -14,6 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="@dimen/text_title"
-        android:textColor="@color/secondary" />
+        android:textColor="@color/secondary"
+        android:textSize="@dimen/text_title" />
 </RelativeLayout>

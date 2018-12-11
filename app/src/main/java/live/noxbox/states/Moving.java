@@ -8,7 +8,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -52,8 +51,6 @@ public class Moving implements State {
     private GoogleMap googleMap;
     private Activity activity;
 
-    private CountDownTimer countDownTimer;
-
     private LocationManager locationManager;
     private LocationListener locationListener;
 
@@ -70,8 +67,6 @@ public class Moving implements State {
         Log.d(TAG + "Moving", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         Log.d(TAG + "Moving", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
 
-        //TODO (vl) если текущий пользователь движется - начать слушать его GPS и обновлять noxbox
-        //TODO (vl) иначе включить слушатель профиля обнавляющий пуш
         if (defineLocationListener(profile)) {
             registerLocationListener(profile);
         } else {
@@ -143,20 +138,6 @@ public class Moving implements State {
             }
         });
 
-        countDownTimer = new CountDownTimer(profile.getCurrent().getTimeToMeet(), 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (countDownTimer != null) {
-                    //TODO (?!?!?!?) НУЖЕН ЛИ ЭТОТ ТАЙМЕР
-                }
-            }
-
-            @Override
-            public void onFinish() {
-            }
-        }.start();
-
-
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
         moveCopyrightRight(googleMap);
     }
@@ -164,10 +145,6 @@ public class Moving implements State {
 
     @Override
     public void clear() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
-        }
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);

@@ -26,16 +26,16 @@ public class AboutApplicationActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        findViewById(R.id.promoVideoView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.promoVideoLink))));
-            }
-        });
         findViewById(R.id.tutorialViewPager).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Router.startActivity(AboutApplicationActivity.this, TutorialActivity.class);
+            }
+        });
+        findViewById(R.id.promoVideoView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.promoVideoLink))));
             }
         });
         findViewById(R.id.rules).setOnClickListener(new View.OnClickListener() {

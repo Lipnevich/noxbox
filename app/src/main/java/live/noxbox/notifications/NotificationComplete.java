@@ -7,12 +7,13 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.database.Firestore;
 import live.noxbox.menu.HistoryActivity;
-import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
@@ -46,38 +47,29 @@ public class NotificationComplete extends Notification {
 
     @Override
     public void show() {
-        Firestore.listenProfile(new Task<Profile>() {
-            @Override
-            public void execute(final Profile profile) {
-                Firestore.readNoxbox(noxboxId, new Task<Noxbox>() {
-                    @Override
-                    public void execute(final Noxbox noxbox) {
-                        final NotificationCompat.Builder builder = getNotificationCompatBuilder();
-                        if(noxbox.getTimeCompleted() != null){
-                            String message;
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            final String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                            if (noxbox.getOwner().equals(profile)) {
-                                if (noxbox.getRole() == MarketRole.supply) {
-                                    message = context.getResources().getString(R.string.toEarn).concat(":");
-                                } else {
-                                    message = context.getResources().getString(R.string.spent).concat(":");
-                                }
-                            } else {
-                                if (noxbox.getRole() == MarketRole.supply) {
-                                    message = context.getResources().getString(R.string.toEarn).concat(":");
-                                } else {
-                                    message = context.getResources().getString(R.string.spent).concat(":");
-                                }
-                            }
+            Firestore.readNoxbox(noxboxId, new Task<Noxbox>() {
+                @Override
+                public void execute(final Noxbox noxbox) {
+                    final NotificationCompat.Builder builder = getNotificationCompatBuilder();
+                    if (noxbox.getTimeCompleted() != null) {
+                        String message;
 
-                            contentView.setTextViewText(R.id.contentRole, message);
-                            getNotificationService(context).notify(type.getGroup(), builder.build());
-
+                        if (noxbox.getPerformer().getId().equals(currentUserId)) {
+                            message = context.getResources().getString(R.string.toEarn).concat(":");
+                        } else {
+                            message = context.getResources().getString(R.string.spent).concat(":");
                         }
+
+                        contentView.setTextViewText(R.id.contentRole, message);
+                        getNotificationService(context).notify(type.getGroup(), builder.build());
+
                     }
-                });
-            }
-        });
+                }
+            });
+        }
 
 
     }

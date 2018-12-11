@@ -51,10 +51,9 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".activities.contract.ContractActivity"
-            android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="stateHidden"
             android:launchMode="singleTop"
-            />
+            android:theme="@style/NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.contract.NoxboxTypeListActivity"
             android:label="@string/selectService"
@@ -67,9 +66,9 @@
             android:theme="@style/DialogListActivity" />
         <activity
             android:name=".activities.detailed.DetailedActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar"
-            android:launchMode="singleTop"/>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".activities.detailed.CoordinateActivity"
             android:theme="@style/NoActionBar" />
@@ -123,11 +122,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".notifications.Notification$UserInputListener">
-            <intent-filter>
-                <action android:name="live.noxbox.UserInputListener" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".notifications.Notification$DeleteActionIntent">
             <intent-filter>
                 <action android:name="live.noxbox.DeleteActionIntent" />

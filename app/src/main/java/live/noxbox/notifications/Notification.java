@@ -18,10 +18,7 @@ import java.util.Map;
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.Firestore;
-import live.noxbox.model.Message;
 import live.noxbox.model.NotificationType;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.Task;
@@ -162,36 +159,7 @@ public abstract class Notification {
         }
     }
 
-    public static class UserInputListener extends BroadcastReceiver {
-        @Override
-        public void onReceive(final Context context, final Intent intent) {
-            Firestore.listenProfile(new Task<Profile>() {
-                @Override
-                public void execute(final Profile profile) {
-                    // TODO (?) сохранить одно сообщение в базе
 
-                    Firestore.listenNoxbox(profile.getNoxboxId(), new Task<Noxbox>() {
-                        @Override
-                        public void execute(Noxbox noxbox) {
-                            long sendTime = System.currentTimeMillis();
-                            Message message = new Message()
-                                    .setMessage(getMessageText(intent, context)).setId("" + sendTime).setTime(sendTime);
-                            if (profile.equals(noxbox.getOwner())) {
-                                noxbox.getOwnerMessages().put(message.getId(), message);
-                            } else {
-                                noxbox.getPartyMessages().put(message.getId(), message);
-                            }
-                            Firestore.writeNoxbox(noxbox);
-                            removeNotifications(context);
-                        }
-                    });
-
-
-                }
-            });
-        }
-
-    }
     public static class SupportNotificationListener extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, final Intent intent) {

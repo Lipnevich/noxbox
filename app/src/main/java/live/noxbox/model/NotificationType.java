@@ -21,7 +21,7 @@ public enum NotificationType {
     performing(2, R.string.performingPushContent),
     lowBalance(2, R.string.beforeSpendingMoney),
     completed(2, R.string.completedPushContent),
-    canceled(2, R.string.noxboxCanceled),
+    canceled(2, R.string.serviceWasCanceled),
 
     refund(3, R.string.replaceIt),
 

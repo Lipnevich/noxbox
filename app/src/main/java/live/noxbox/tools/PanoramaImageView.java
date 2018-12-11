@@ -55,8 +55,6 @@ public class PanoramaImageView extends AppCompatImageView {
 
         mWidth = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
         mHeight = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
-
-
     }
 
     @Override
@@ -71,18 +69,18 @@ public class PanoramaImageView extends AppCompatImageView {
 
             float imgScaleX = (float) mHeight / (float) mDrawableHeight;
             float imgScaleY = (float) mWidth / (float) mDrawableWidth;
-            mMaxOffsetY = Math.abs((mDrawableHeight * imgScaleY - mHeight) * 0.5f);
-            mMaxOffsetX = Math.abs((mDrawableWidth * imgScaleX - mWidth) * 0.5f);
+            mMaxOffsetY = -Math.abs((mDrawableHeight * imgScaleY - mHeight) * 0.5f);
+            mMaxOffsetX = -Math.abs((mDrawableWidth * imgScaleX - mWidth) * 0.5f);
         }
 
         canvas.save();
-        float currentOffsetX = mMaxOffsetX * mProgressX;
-        float currentOffsetY = mMaxOffsetY * mProgressY;
+        float currentOffsetX = Math.abs(mMaxOffsetX * mProgressX);
+        float currentOffsetY = Math.abs(mMaxOffsetY * mProgressY);
 
 
         if (getResources().getConfiguration().orientation == ORIENTATION_LANDSCAPE) {
             canvas.translate(currentOffsetX, currentOffsetY);
-        }else{
+        } else {
             canvas.translate(currentOffsetY, currentOffsetX);
         }
         super.onDraw(canvas);

@@ -257,11 +257,10 @@
     <string name="aboutApp">О приложении</string>
     <string name="start_promo_video">Видео</string>
     <string name="tutorial">Обучение</string>
-    <string name="address">Address</string>
-    <string name="noxboxCanceled">Service was canceled</string>
+    <string name="address">Адрес</string>
     <string name="timePassed">Времени прошло:</string>
-    <string name="serviceIsPerforming">Service is performing</string>
-    <string name="serviceWasCanceled">Service was canceled</string>
+    <string name="serviceIsPerforming">Услуга выполняется</string>
+    <string name="serviceWasCanceled">Услуга была отменена</string>
     <string name="generatePush">Оповести</string>
     <string name="generateNoxboxes">Создай</string>
     <string name="request">Вызови</string>

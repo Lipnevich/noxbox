@@ -36,27 +36,20 @@ public class NotificationAccepting extends Notification {
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 60; i++) {
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            Crashlytics.logException(e);
+        }
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Crashlytics.logException(e);
-                    }
+        Firestore.readNoxbox(noxboxId, new Task<Noxbox>() {
+            @Override
+            public void execute(Noxbox noxbox) {
+                if (noxbox.getTimeAccepted() == null) {
+                    noxbox.setTimeTimeout(System.currentTimeMillis());
+                    Firestore.writeNoxbox(noxbox);
                 }
-                Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
-                    @Override
-                    public void execute(Noxbox noxbox) {
-                        if (noxbox.getTimeAccepted() == null) {
-                            noxbox.setTimeTimeout(System.currentTimeMillis());
-                            Firestore.writeNoxbox(noxbox);
-                        }
-                    }
-                });
             }
-        }).start();
+        });
     }
 }

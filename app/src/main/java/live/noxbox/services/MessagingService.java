@@ -35,10 +35,8 @@ public class MessagingService extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         initCrashReporting();
         context = getApplicationContext();
-        if (inForeground()) {
-            Notification notification = NotificationFactory.buildNotification(context, null, remoteMessage.getData());
-            notification.show();
-        }
+        Notification notification = NotificationFactory.buildNotification(context, null, remoteMessage.getData());
+        notification.show();
     }
 
     public static void removeNotifications(Context context) {
