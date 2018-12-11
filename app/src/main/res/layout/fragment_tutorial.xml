@@ -9,7 +9,7 @@
         android:layout_height="1024dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="-256dp"
-        android:layout_marginBottom="-62dp"
+        android:layout_marginBottom="-128dp"
         android:src="@drawable/ic_men_and_planet" />
 
     <TextView
