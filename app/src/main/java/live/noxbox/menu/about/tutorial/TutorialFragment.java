@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import live.noxbox.R;
@@ -15,16 +16,16 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         View view = inflater.inflate(R.layout.fragment_tutorial, container, false);
 
         ((TextView) view.findViewById(R.id.text)).setText(getArguments().getString("text"));
-        view.findViewById(R.id.image).setBackgroundColor(getArguments().getInt("color"));
+        ((ImageView) view.findViewById(R.id.image)).setImageResource(getArguments().getInt("image"));
 
         return view;
     }
 
-    public static TutorialFragment newInstance(String text, int color) {
+    public static TutorialFragment newInstance(String text, int image) {
         TutorialFragment tutorialFragment = new TutorialFragment();
         Bundle bundle = new Bundle();
         bundle.putString("text", text);
-        bundle.putInt("color", color);
+        bundle.putInt("image", image);
 
         tutorialFragment.setArguments(bundle);
 
