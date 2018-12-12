@@ -66,22 +66,35 @@
                 android:src="@drawable/filter"
                 android:tint="@color/primary" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:layout_marginTop="13dp"
-                android:layout_marginEnd="13dp">
+            <FrameLayout
+                android:layout_width="77dp"
+                android:layout_height="77dp"
+                android:layout_gravity="end|top">
 
                 <ImageView
                     android:id="@+id/chat"
                     style="@style/IconButtonStyle"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
+                    android:layout_gravity="center"
                     android:layout_marginStart="13dp"
+                    android:layout_marginEnd="13dp"
                     android:src="@drawable/chat" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/totalUnread"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="48dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@drawable/chat_badge_background"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/text_size_secondary"
+                    android:visibility="gone" />
+
+            </FrameLayout>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/navigation"
@@ -101,6 +114,8 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
                     android:src="@drawable/navigation"
                     android:tint="@color/secondary"
                     android:visibility="visible" />
@@ -163,7 +178,7 @@
                     android:text="@string/generatePush"
                     android:textColor="@color/primary"
                     android:textSize="@dimen/text_size" />
-                
+
                 <TextView
                     android:id="@+id/debugGenerateNoxboxes"
                     android:layout_width="wrap_content"
@@ -233,9 +248,9 @@
         android:layout_gravity="start"
         android:clickable="true"
         android:fitsSystemWindows="true"
-        android:theme="@style/NavigationViewStyle"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        android:theme="@style/NavigationViewStyle"
         app:headerLayout="@layout/navigation_header"
         app:itemIconTint="@color/primary"
         app:itemTextColor="@color/primary"

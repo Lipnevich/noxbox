@@ -2,6 +2,7 @@ package live.noxbox.menu;
 
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -58,6 +59,8 @@ public class HistoryActivity extends BaseActivity {
         listView = findViewById(R.id.historyView);
         historyAdapter = new HistoryAdapter(HistoryActivity.this, historyItems);
         listView.setAdapter(historyAdapter);
+        RecyclerView recyclerView = new RecyclerView(HistoryActivity.this);
+
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override

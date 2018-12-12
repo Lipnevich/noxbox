@@ -3,7 +3,6 @@ package live.noxbox.states;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,16 +15,29 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.Gap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.PatternItem;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.activities.ChatActivity;
 import live.noxbox.activities.ConfirmationActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.DebugMessage;
+import live.noxbox.model.Message;
 import live.noxbox.model.NotificationType;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
@@ -56,15 +68,46 @@ public class Moving implements State {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    private static LinearLayout movingView;
+    private LinearLayout movingView;
     private View childMovingView;
     private TextView timeView;
+
+    private Marker memberWhoMoving;
+    private Polyline polyline;
+
+    private TextView totalUnreadView;
 
     public Moving(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
+    }
+
+    private void drawUnreadedMessagesIndicator(Map<String, Message> messages, String currentUserId) {
+        boolean isUndread = false;
+        int totalUnread = 0;
+
+        Iterator iterator = messages.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry)iterator.next();
+            Message message = (Message)entry.getValue();
+            if (message.getWasRead()){
+                isUndread = true;
+                totalUnread += 1;
+            }
+        }
+        totalUnreadView = activity.findViewById(R.id.totalUnread);
+        if (isUndread) {
+            totalUnreadView.setVisibility(View.VISIBLE);
+            if (totalUnread <= 9) {
+                totalUnreadView.setText("" + totalUnread);
+            } else {
+                totalUnreadView.setText(9 + "+");
+            }
+        } else {
+            totalUnreadView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -79,6 +122,13 @@ public class Moving implements State {
         timeView = childMovingView.findViewById(R.id.timeView);
         updateTimeView(profile);
 
+        if (profile.getCurrent().getOwner().equals(profile)) {
+            drawUnreadedMessagesIndicator(profile.getCurrent().getPartyMessages(), profile.getId());
+        } else {
+            drawUnreadedMessagesIndicator(profile.getCurrent().getOwnerMessages(), profile.getId());
+        }
+
+
         if (defineLocationListener(profile)) {
             registerLocationListener(profile);
         } else {
@@ -89,13 +139,14 @@ public class Moving implements State {
             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
         }
 
-        googleMap.addPolyline(new PolylineOptions()
-                .add(profile.getPosition().toLatLng(), profile.getCurrent().getNotMe(profile.getId()).getPosition().toLatLng())
-                .width(5)
-                .color(Color.GREEN)
-                .geodesic(true));
+        drawCurveLineOnMap(profile);
+
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
-        MarkerCreator.createNotMeMarker(profile.getCurrent().getNotMe(profile.getId()), googleMap, activity.getResources());
+        if (memberWhoMoving == null) {
+            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes(), googleMap, activity.getResources());
+        } else {
+            memberWhoMoving.setPosition(profile.getCurrent().getProfileWhoComes().getPosition().toLatLng());
+        }
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
@@ -152,6 +203,53 @@ public class Moving implements State {
         moveCopyrightRight(googleMap);
     }
 
+    private void drawCurveLineOnMap(Profile profile) {
+        Noxbox current = profile.getCurrent();
+        current.getProfileWhoComes();
+
+        LatLng start = current.getProfileWhoComes().getPosition().toLatLng();
+        LatLng end = current.getPosition().toLatLng();
+
+        double cLat = ((start.latitude + end.latitude) / 2);
+        double cLon = ((start.longitude + end.longitude) / 2);
+
+        //add skew and arcHeight to move the midPoint
+        if (Math.abs(start.longitude - end.longitude) < 0.0001) {
+            cLon -= 0.0195;
+        } else {
+            cLat += 0.0195;
+        }
+
+        ArrayList<LatLng> points = new ArrayList<LatLng>();
+        double tDelta = 1.0 / 50;
+        for (double t = 0; t <= 1.0; t += tDelta) {
+            double oneMinusT = (1.0 - t);
+            double t2 = Math.pow(t, 2);
+            double lon = oneMinusT * oneMinusT * start.longitude
+                    + 2 * oneMinusT * t * cLon
+                    + t2 * end.longitude;
+            double lat = oneMinusT * oneMinusT * start.latitude
+                    + 2 * oneMinusT * t * cLat
+                    + t2 * end.latitude;
+            points.add(new LatLng(lat, lon));
+        }
+
+        PolylineOptions polylineOptions = new PolylineOptions()
+                .width(9)
+                .color(activity.getResources().getColor(R.color.primary))
+                .geodesic(true)
+                .addAll(points);
+        List<PatternItem> pattern = Arrays.asList(
+                new Dot(), new Gap(10));
+
+        if (polyline != null)
+            polyline.remove();
+
+        polyline = googleMap.addPolyline(polylineOptions);
+        polyline.setPattern(pattern);
+        polyline.setGeodesic(true);
+
+    }
 
     @Override
     public void clear() {
@@ -163,6 +261,9 @@ public class Moving implements State {
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        if (totalUnreadView != null) {
+            totalUnreadView.setVisibility(View.GONE);
+        }
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
         moveCopyrightLeft(googleMap);
 

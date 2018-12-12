@@ -205,7 +205,7 @@ public class ChatActivity extends BaseActivity {
         long time = System.currentTimeMillis();
 
         Message message = new Message().setMessage(trimmedText).setWasRead(true)
-                .setId("" + time).setTime(time).setMyMessage(true);
+                .setId("" + time).setTime(time);
         if(profile.equals(profile.getCurrent().getOwner())) {
             profile.getCurrent().getOwnerMessages().put(message.getId(), message);
         } else {

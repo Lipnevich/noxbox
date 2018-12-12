@@ -1,8 +1,6 @@
 package live.noxbox.notifications;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -17,7 +15,6 @@ public class NotificationRequesting extends Notification {
         super(context, profile, data);
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
-        contentView.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, CancelRequestListener.class), 0));
 
         isAlertOnce = true;
 

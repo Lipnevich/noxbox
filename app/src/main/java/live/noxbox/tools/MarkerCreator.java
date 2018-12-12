@@ -24,7 +24,7 @@ public class MarkerCreator {
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(noxbox.getPosition().toLatLng())
                 .icon(BitmapDescriptorFactory.fromBitmap(resizedImage))
-                .anchor(0.5f, 1f);
+                .anchor(0.5f, 0.5f);
 
         Marker marker = googleMap.addMarker(markerOptions);
 
@@ -33,7 +33,7 @@ public class MarkerCreator {
         return marker;
     }
 
-    public static Marker createNotMeMarker(Profile notMe, GoogleMap googleMap, Resources resources) {
+    public static Marker createMovingMemberMarker(Profile notMe, GoogleMap googleMap, Resources resources) {
         Drawable drawable = resources.getDrawable(notMe.getTravelMode().getImage());
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
                 drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -44,7 +44,7 @@ public class MarkerCreator {
         
 
 
-        Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(28), dpToPx(28), false);
+        Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(42), dpToPx(42), false);
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(notMe.getPosition().toLatLng())
                 .icon(BitmapDescriptorFactory.fromBitmap(resizedImage))

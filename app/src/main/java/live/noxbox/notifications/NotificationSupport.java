@@ -1,8 +1,6 @@
 package live.noxbox.notifications;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -22,7 +20,6 @@ public class NotificationSupport extends Notification {
 
         contentView  = new RemoteViews(context.getPackageName(), R.layout.notification_support);
         contentView.setTextViewText(R.id.content, message);
-        contentView.setOnClickPendingIntent(R.id.cancel, PendingIntent.getBroadcast(context, 0, new Intent(context, SupportNotificationListener.class), 0));
 
         onViewOnClickAction = createOnDeleteIntent(context, type.getGroup());
     }
