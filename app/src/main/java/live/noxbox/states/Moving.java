@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.HashMap;
@@ -57,7 +56,7 @@ public class Moving implements State {
     private LocationManager locationManager;
     private LocationListener locationListener;
 
-    private LinearLayout movingView;
+    private static LinearLayout movingView;
     private View childMovingView;
     private TextView timeView;
 
@@ -74,6 +73,7 @@ public class Moving implements State {
         Log.d(TAG + "Moving", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
 
         movingView = activity.findViewById(R.id.container);
+        movingView.removeAllViews();
         childMovingView = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
         movingView.addView(childMovingView);
         timeView = childMovingView.findViewById(R.id.timeView);
@@ -89,14 +89,13 @@ public class Moving implements State {
             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
         }
 
-        //TODO (vl) добавить маркер другого участника оранжевые, линия от одного к другому (?)
-        Polyline polyline = googleMap.addPolyline(new PolylineOptions()
-                .add(profile.getPosition().toLatLng(), profile.getCurrent().getPosition().toLatLng())
+        googleMap.addPolyline(new PolylineOptions()
+                .add(profile.getPosition().toLatLng(), profile.getCurrent().getNotMe(profile.getId()).getPosition().toLatLng())
                 .width(5)
                 .color(Color.GREEN)
                 .geodesic(true));
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
-        MarkerCreator.createPartyMarker(profile.getCurrent().getParty(), googleMap, activity.getResources());
+        MarkerCreator.createNotMeMarker(profile.getCurrent().getNotMe(profile.getId()), googleMap, activity.getResources());
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
