@@ -20,7 +20,6 @@
             android:layout_toStartOf="@+id/photo"
             android:gravity="start"
             android:lines="1"
-            android:text="Superman"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_size"
             android:textStyle="bold" />
@@ -37,7 +36,6 @@
             android:layout_marginBottom="4dp"
             android:layout_toStartOf="@+id/photo"
             android:lines="1"
-            android:text="New message hellohellohellohelloh"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_size" />
 

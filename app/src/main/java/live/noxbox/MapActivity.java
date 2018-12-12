@@ -39,7 +39,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -111,7 +110,6 @@ public class MapActivity extends DebugActivity implements
 
     }
 
-    private Marker currentLocationMarker;
     private LocationCallback locationCallback;
 
     @Override
@@ -132,9 +130,6 @@ public class MapActivity extends DebugActivity implements
                         List<Location> locationList = locationResult.getLocations();
                         if (locationList.size() > 0) {
                             Location location = locationList.get(locationList.size() - 1);
-                            if (currentLocationMarker != null) {
-                                currentLocationMarker.remove();
-                            }
 
                             profile.setPosition(new Position(location.getLatitude(), location.getLongitude()));
                         }
@@ -305,6 +300,7 @@ public class MapActivity extends DebugActivity implements
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
         if (state == NoxboxState.initial) {
             AppCache.stopListenNoxbox(profile.getCurrent().getId());
+            states.clear();
         } else {
             AppCache.startListenNoxbox(profile.getCurrent().getId());
         }

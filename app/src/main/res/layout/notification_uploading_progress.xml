@@ -39,7 +39,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-26dp"
-            android:src="@drawable/ic_uploading_photo" />
+            android:src="@drawable/ic_notification_uploading_photo" />
     </RelativeLayout>
 
 

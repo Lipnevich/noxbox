@@ -212,12 +212,12 @@
     <string name="notLikeThat">Does not match photo</string>
     <string name="confirmThatYouSeePersonFromPhoto">Verify that you see real person and he match the photo</string>
     <string name="inProcess">In progress</string>
-    <string name="pleaseWriteComment">Please write comment...</string>
+    <string name="pleaseWriteComment">Please write comment…</string>
     <string name="pleaseRatePerformer">Please rate your performer</string>
     <string name="commentSuccessfullySent">Comment successfully sent!</string>
     <string name="join">Join</string>
     <string name="replaceIt">Replace it!!!</string>
-    <string name="photoValidationProgressContent">Photo verifying...</string>
+    <string name="photoValidationProgressContent">Photo verifying…</string>
     <string name="photoValidContent">You are ready for NoxBox now!</string>
     <string name="photoInvalidTitle">Incorrect photo</string>
     <string name="smile">smile</string>
@@ -271,6 +271,7 @@
     <string name="timePassed">Time passed:</string>
     <string name="serviceIsPerforming">Service is performing</string>
     <string name="serviceWasCanceled">Service was canceled</string>
+    <string name="requestInProgress">Request in progress…</string>
 
 
 </resources>

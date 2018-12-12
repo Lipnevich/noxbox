@@ -8,17 +8,17 @@
         android:layout_width="match_parent"
         android:layout_height="64dp">
 
-        <Button
-            android:id="@+id/cancel"
+        <TextView
+            android:id="@+id/content"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:background="#ffa530"
-            android:text="@string/cancelText"
+            android:layout_toStartOf="@+id/hourglass"
+            android:text="@string/requestInProgress"
             android:textColor="@color/secondary"
-            android:textSize="14sp"
-            android:visibility="visible" />
+            android:textSize="@dimen/text_size" />
 
         <ViewFlipper
             android:id="@+id/hourglass"
@@ -35,19 +35,19 @@
                 android:layout_width="82dp"
                 android:layout_height="82dp"
                 android:layout_marginTop="-22dp"
-                android:src="@drawable/hourglass_one" />
+                android:src="@drawable/ic_notification_hourglass_one" />
 
             <ImageView
                 android:layout_width="82dp"
                 android:layout_height="82dp"
                 android:layout_marginTop="-22dp"
-                android:src="@drawable/hourglass_two" />
+                android:src="@drawable/ic_notification_hourglass_two" />
 
             <ImageView
                 android:layout_width="82dp"
                 android:layout_height="82dp"
                 android:layout_marginTop="-22dp"
-                android:src="@drawable/hourglass_three" />
+                android:src="@drawable/ic_notification_hourglass_three" />
 
         </ViewFlipper>
 

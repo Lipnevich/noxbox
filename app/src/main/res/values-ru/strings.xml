@@ -209,12 +209,12 @@
     <string name="notLikeThat">Не похож</string>
     <string name="confirmThatYouSeePersonFromPhoto">Подтвердите что видите человека с фотографии</string>
     <string name="inProcess">В процессе</string>
-    <string name="pleaseWriteComment">Ваш комментарий...</string>
+    <string name="pleaseWriteComment">Ваш комментарий…</string>
     <string name="pleaseRatePerformer">Пожалуйста оцените исполнителя</string>
     <string name="commentSuccessfullySent">Комментарий был отправлен</string>
     <string name="join">Присоединиться</string>
     <string name="replaceIt">Заменить текст!!!</string>
-    <string name="photoValidationProgressContent">Проверка фотографии...</string>
+    <string name="photoValidationProgressContent">Проверка фотографии…</string>
     <string name="photoValidContent">Фотография успешно обработана!</string>
     <string name="photoInvalidTitle">Фотография не соответствует требованиям</string>
     <string name="smile">улыбнитесь</string>
@@ -268,5 +268,6 @@
     <string name="verifyPhoto">Подтверди</string>
     <string name="rejectPhoto">Откажи</string>
     <string name="complete">Заверши</string>
+    <string name="requestInProgress">Происходит запрос…</string>
 
 </resources>

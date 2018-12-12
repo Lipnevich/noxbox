@@ -21,7 +21,7 @@
             android:layout_width="84dp"
             android:layout_height="64dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/human_balance" />
+            android:src="@drawable/ic_notification_human_balance" />
     </RelativeLayout>
 
 </RelativeLayout>

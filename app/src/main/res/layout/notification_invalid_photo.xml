@@ -26,7 +26,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-26dp"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_photo_face_close" />
+            android:src="@drawable/ic_notification_photo_face_close" />
 
     </RelativeLayout>
 
