@@ -85,27 +85,29 @@ public class Moving implements State {
     }
 
     private void drawUnreadedMessagesIndicator(Map<String, Message> messages, String currentUserId) {
-        boolean isUndread = false;
         int totalUnread = 0;
+
+        totalUnreadView = activity.findViewById(R.id.totalUnread);
 
         Iterator iterator = messages.entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry)iterator.next();
-            Message message = (Message)entry.getValue();
-            if (message.getWasRead()){
-                isUndread = true;
+            Map.Entry entry = (Map.Entry) iterator.next();
+            Message message = (Message) entry.getValue();
+            if (!message.getWasRead()) {
+
+            }
+            if (!message.getWasRead()) {
                 totalUnread += 1;
+                totalUnreadView.setVisibility(View.VISIBLE);
+                if (totalUnread <= 9) {
+                    totalUnreadView.setText("" + totalUnread);
+                } else {
+                    totalUnreadView.setText(9 + "+");
+                }
             }
         }
-        totalUnreadView = activity.findViewById(R.id.totalUnread);
-        if (isUndread) {
-            totalUnreadView.setVisibility(View.VISIBLE);
-            if (totalUnread <= 9) {
-                totalUnreadView.setText("" + totalUnread);
-            } else {
-                totalUnreadView.setText(9 + "+");
-            }
-        } else {
+
+        if (totalUnread == 0) {
             totalUnreadView.setVisibility(View.GONE);
         }
     }

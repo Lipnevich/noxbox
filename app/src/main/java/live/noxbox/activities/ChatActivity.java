@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -31,6 +30,7 @@ import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
@@ -63,36 +63,36 @@ public class ChatActivity extends BaseActivity {
 
         chatList = findViewById(R.id.chat_list);
         chatList.setHasFixedSize(true);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        chatList.setLayoutManager(manager);
+        chatList.setLayoutManager(new LinearLayoutManager(this));
 
         final DisplayMetrics screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
 
         Glide.with(getApplicationContext())
-            .asBitmap()
-            .load(R.drawable.view)
-            .apply(diskCacheStrategyOf(BuildConfig.DEBUG ? DiskCacheStrategy.NONE : DiskCacheStrategy.RESOURCE))
-            .into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap picture, Transition<? super Bitmap> transition) {
-                    // here I was thinking about some cool lib for processing background images in the Android
-                    // with cropping selecting area without image collisions on all possible screens,
-                    // active on screen rotate, with resizing and even blur!
+                .asBitmap()
+                .load(R.drawable.view)
+                .apply(diskCacheStrategyOf(BuildConfig.DEBUG ? DiskCacheStrategy.NONE : DiskCacheStrategy.RESOURCE))
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap picture, Transition<? super Bitmap> transition) {
+                        // here I was thinking about some cool lib for processing background images in the Android
+                        // with cropping selecting area without image collisions on all possible screens,
+                        // active on screen rotate, with resizing and even blur!
 
-                    double koef = ((double)screen.heightPixels) / ((double)screen.widthPixels);
-                    int width = width(picture, koef);
-                    int height = height(picture, width, koef);
-                    Bitmap background;
-                    if(koef > 1) {
-                        // vertical layout
-                        background = blur(0, resize(screen, right(picture, width, height)));
-                    } else {
-                        // horizontal layout
-                        background = blur(0, resize(screen, left(picture, width, height)));
+                        double koef = ((double) screen.heightPixels) / ((double) screen.widthPixels);
+                        int width = width(picture, koef);
+                        int height = height(picture, width, koef);
+                        Bitmap background;
+                        if (koef > 1) {
+                            // vertical layout
+                            background = blur(0, resize(screen, right(picture, width, height)));
+                        } else {
+                            // horizontal layout
+                            background = blur(0, resize(screen, left(picture, width, height)));
+                        }
+                        getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
                     }
-                    getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), background));
-        }});
+                });
     }
 
     @Override
@@ -100,10 +100,11 @@ public class ChatActivity extends BaseActivity {
         super.onResume();
         AppCache.listenProfile(ChatActivity.class.getName(), new Task<Profile>() {
             @Override
-            public void execute(Profile profile) {
+            public void execute(final Profile profile) {
                 draw(profile);
             }
         });
+
     }
 
     @Override
@@ -114,7 +115,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void draw(final Profile profile) {
-        if(!messages.isEmpty()
+        if (!messages.isEmpty()
                 && messages.size() == profile.getCurrent().getChat(profile.getId()).size()) {
             return;
         }
@@ -122,12 +123,13 @@ public class ChatActivity extends BaseActivity {
         getWindowManager().getDefaultDisplay().getMetrics(screen);
 
         TextView interlocutorName = findViewById(R.id.chat_opponent_name);
-        interlocutorName.setText(getInterlocutorName(profile));
+        interlocutorName.setText(profile.getCurrent().getNotMe(profile.getId()).getName());
 
         initMessages(profile);
-        chatAdapter = new ChatAdapter(screen, messages);
+        chatAdapter = new ChatAdapter(screen, messages, profile, profile.getCurrent(), this.getApplicationContext());
         chatList.setAdapter(chatAdapter);
         chatList.smoothScrollToPosition(View.FOCUS_DOWN);
+
 
         text = findViewById(R.id.type_message);
         text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -149,16 +151,16 @@ public class ChatActivity extends BaseActivity {
     }
 
     private int height(Bitmap picture, int width, double koef) {
-        int height = (int)(width * koef);
-        if(picture.getHeight() < height) {
+        int height = (int) (width * koef);
+        if (picture.getHeight() < height) {
             height = picture.getHeight();
         }
         return height;
     }
 
     private int width(Bitmap picture, double koef) {
-        int width = (int)(picture.getHeight() / koef);
-        if(picture.getWidth() < width) {
+        int width = (int) (picture.getHeight() / koef);
+        if (picture.getWidth() < width) {
             width = picture.getWidth();
         }
         return width;
@@ -169,7 +171,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private Bitmap blur(int blurRadius, Bitmap picture) {
-        if(blurRadius == 0) return picture;
+        if (blurRadius == 0) return picture;
 
         RenderScript rs = RenderScript.create(getApplicationContext());
 
@@ -199,14 +201,14 @@ public class ChatActivity extends BaseActivity {
 
     private void send(Profile profile) {
         String trimmedText = text.getText().toString().trim();
-        if(TextUtils.isEmpty(trimmedText)) return;
+        if (TextUtils.isEmpty(trimmedText)) return;
         sound();
 
         long time = System.currentTimeMillis();
 
-        Message message = new Message().setMessage(trimmedText).setWasRead(true)
+        Message message = new Message().setMessage(trimmedText).setWasRead(false)
                 .setId("" + time).setTime(time);
-        if(profile.equals(profile.getCurrent().getOwner())) {
+        if (profile.equals(profile.getCurrent().getOwner())) {
             profile.getCurrent().getOwnerMessages().put(message.getId(), message);
         } else {
             profile.getCurrent().getPartyMessages().put(message.getId(), message);
@@ -231,7 +233,7 @@ public class ChatActivity extends BaseActivity {
     private List<Message> initMessages(Profile profile) {
         messages.clear();
 
-        if(profile.getCurrent() != null) {
+        if (profile.getCurrent() != null) {
             messages.addAll(profile.getCurrent().getChat(profile.getId()));
             sort(messages);
         }
@@ -239,8 +241,15 @@ public class ChatActivity extends BaseActivity {
         return messages;
     }
 
-    private String getInterlocutorName(@NonNull Profile profile) {
-        return profile.getCurrent().getNotMe(profile.getId()).getName();
+    private List<Message> initMessages(Noxbox noxbox, String profileId) {
+        messages.clear();
+
+        if (noxbox != null) {
+            messages.addAll(noxbox.getChat(profileId));
+            sort(messages);
+        }
+
+        return messages;
     }
 
 }
