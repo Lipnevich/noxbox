@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,6 +110,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         }
 
         if(position == messages.size() - 1){
+            Log.d("ChatAdapter","updateNoxbox()");
             AppCache.updateNoxbox();
         }
 
