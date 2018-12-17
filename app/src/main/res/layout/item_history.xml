@@ -1,103 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
 
     <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/calendar"
-        android:tint="@color/primary"
         android:id="@+id/dateImage"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"/>
+        android:src="@drawable/calendar"
+        android:tint="@color/primary" />
 
     <TextView
-        android:text="02.04.1985"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/dateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/dateImage"
-        android:layout_marginStart="8dp"/>
+        android:text="02.04.1985"
+        android:textSize="20sp" />
 
     <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/clock"
-        android:tint="@color/primary"
         android:id="@+id/timeView"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/dateText"
-        android:layout_marginStart="8dp"/>
-
-    <TextView
-        android:text="9:30"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/timeText"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/timeView"
-        android:layout_marginStart="8dp"/>
-
-    <ImageView
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/currency"
-        android:id="@+id/currencyImage"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/priceText"
-        android:layout_marginEnd="8dp"
-        />
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/dateText"
+        android:src="@drawable/clock"
+        android:tint="@color/primary" />
 
     <TextView
-        android:text="5.55"
-        android:textSize="20sp"
+        android:id="@+id/timeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/timeView"
+        android:text="9:30"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/currencyImage"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/priceText"
+        android:src="@drawable/currency" />
+
+    <TextView
         android:id="@+id/priceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        />
+        android:text="5.55"
+        android:textSize="20sp" />
 
     <ImageView
+        android:id="@+id/performerImage"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:src="@drawable/human_profile"
-        android:id="@+id/performerImage"
         android:layout_below="@+id/dateImage"
         android:layout_alignParentStart="true"
         android:padding="8dp"
-        />
+        android:src="@drawable/human_profile" />
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
-        android:layout_height="96dp"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/dateImage"
-        android:padding="4dp"
-        android:layout_toEndOf="@+id/performerImage"
-        android:layout_toStartOf="@+id/rateBox"/>
+    <!--<com.google.android.gms.maps.MapView-->
+        <!--android:id="@+id/map"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="96dp"-->
+        <!--android:layout_below="@+id/dateImage"-->
+        <!--android:layout_toStartOf="@+id/rateBox"-->
+        <!--android:layout_toEndOf="@+id/performerImage"-->
+        <!--android:padding="4dp" />-->
 
     <TextView
-        android:text="Nicolay Lipnevich"
-        android:textSize="20sp"
+        android:id="@+id/performerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/performerName"
         android:layout_below="@+id/performerImage"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:text="Nicolay Lipnevich"
+        android:textSize="20sp" />
 
     <ImageView
+        android:id="@+id/rateBox"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        android:id="@+id/rateBox"
-        android:src="@drawable/like"
-        android:padding="24dp"
         android:layout_below="@+id/currencyImage"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:padding="24dp"
+        android:src="@drawable/like" />
 
 </RelativeLayout>
