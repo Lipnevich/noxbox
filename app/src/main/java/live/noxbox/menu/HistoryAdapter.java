@@ -30,6 +30,7 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.DateTimeFormatter.date;
+import static live.noxbox.tools.DateTimeFormatter.time;
 
 /**
  * Created by nicolay.lipnevich on 22/06/2017.
@@ -120,16 +121,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         final Noxbox noxbox = historyItems.get(position);
 
         if (noxbox.getTimeCompleted() != null) {
-            viewHolder.time.setText(date(noxbox.getTimeCompleted()));
+            viewHolder.time.setText(time(noxbox.getTimeCompleted()));
             viewHolder.date.setText(date(noxbox.getTimeCompleted()));
         } else if (noxbox.getTimeCanceledByParty() != null) {
-            viewHolder.time.setText(date(noxbox.getTimeCanceledByParty()));
+            viewHolder.time.setText(time(noxbox.getTimeCanceledByParty()));
             viewHolder.date.setText(date(noxbox.getTimeCanceledByParty()));
         } else if (noxbox.getTimeCanceledByOwner() != null) {
-            viewHolder.time.setText(date(noxbox.getTimeCanceledByOwner()));
+            viewHolder.time.setText(time(noxbox.getTimeCanceledByOwner()));
             viewHolder.date.setText(date(noxbox.getTimeCanceledByOwner()));
         } else if (noxbox.getTimeTimeout() != null) {
-            viewHolder.date.setText(date(noxbox.getTimeTimeout()));
+            viewHolder.time.setText(time(noxbox.getTimeTimeout()));
             viewHolder.date.setText(date(noxbox.getTimeTimeout()));
         }
 
