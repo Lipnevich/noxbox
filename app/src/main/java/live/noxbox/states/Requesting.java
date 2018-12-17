@@ -45,6 +45,11 @@ public class Requesting implements State {
     @Override
     public void draw(final Profile profile) {
         Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+        long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
+        if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
+            autoDisconnectFromService(profile);
+            return;
+        }
 
         HashMap<String, String> data = new HashMap<>();
         data.put("type", NotificationType.requesting.name());
@@ -66,9 +71,9 @@ public class Requesting implements State {
         animationProgress.setInterpolator(new DecelerateInterpolator());
         animationProgress.start();
 
-        // TODO (vl) lead to null pointer
-        if (activity.findViewById(R.id.blinkingInfoLayout) != null) {
-            animationDrawable = (AnimationDrawable) activity.findViewById(R.id.blinkingInfoLayout).getBackground();
+        View blinkingInfo = activity.findViewById(R.id.blinkingInfoLayout);
+        if (blinkingInfo != null) {
+            animationDrawable = (AnimationDrawable) blinkingInfo.getBackground();
             animationDrawable.setEnterFadeDuration(600);
             animationDrawable.setExitFadeDuration(1200);
             animationDrawable.start();
@@ -90,18 +95,12 @@ public class Requesting implements State {
             }
         });
 
-        long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
-        if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
-            autoDisconnectFromService(profile);
-            return;
-        }
-
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TextView countdownTime = requestingView.findViewById(R.id.countdownTime);
                 if (countdownTime != null) {
-                    ((TextView) countdownTime.findViewById(R.id.countdownTime)).setText(String.valueOf(millisUntilFinished / 1000));
+                    countdownTime.setText(String.valueOf(millisUntilFinished / 1000));
                 }
             }
 
@@ -114,7 +113,6 @@ public class Requesting implements State {
         }.start();
 
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
-
     }
 
     private void autoDisconnectFromService(final Profile profile) {
@@ -139,9 +137,7 @@ public class Requesting implements State {
         }
         if (countDownTimer != null) {
             countDownTimer.cancel();
-            countDownTimer.onFinish();
             countDownTimer = null;
-
         }
         MessagingService.removeNotifications(activity);
         requestingView.removeAllViews();
