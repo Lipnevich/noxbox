@@ -74,6 +74,7 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".menu.HistoryActivity"
+            android:theme="@style/NoActionBar"
             android:parentActivityName=".MapActivity" />
         <activity
             android:name=".activities.ChatActivity"

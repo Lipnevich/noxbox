@@ -269,5 +269,7 @@
     <string name="rejectPhoto">Откажи</string>
     <string name="complete">Заверши</string>
     <string name="requestInProgress">Происходит запрос…</string>
+    <string name="performed">Исполнено</string>
+    <string name="received">Получено</string>
 
 </resources>

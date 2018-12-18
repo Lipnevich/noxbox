@@ -46,7 +46,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private static final int AMOUNT_PER_LOAD = 10;
 
 
-    public HistoryAdapter(Context context, final List<Noxbox> historyItems, RecyclerView currentRecyclerView) {
+    public HistoryAdapter(Context context, final List<Noxbox> historyItems, RecyclerView currentRecyclerView, final MarketRole role) {
         this.ctx = context;
         this.profileId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.historyItems = historyItems;
@@ -71,7 +71,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 }
             }
         };
-        Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, MarketRole.supply, uploadingTask);
+        Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
 
         if (currentRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
             final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) currentRecyclerView.getLayoutManager();
@@ -86,8 +86,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         long startFrom = historyItems.isEmpty() ?
                                 Long.MAX_VALUE :
                                 historyItems.get(historyItems.size() - 1).getTimeCompleted();
-                        // TODO (vl) use MarketRole.demand for payer's activity_history
-                        Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, MarketRole.supply, uploadingTask);
+                        Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
                     }
                 }
             });
@@ -190,7 +189,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return historyItems.size();
     }
 
-    static class HistoryViewHolder extends RecyclerView.ViewHolder {
+     class HistoryViewHolder extends RecyclerView.ViewHolder {
         //ItemViewHolder
         TextView date;
         TextView time;
@@ -208,7 +207,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
     }
 
-    static class ItemViewHolder extends HistoryViewHolder {
+     class ItemViewHolder extends HistoryViewHolder {
 
         public ItemViewHolder(@NonNull View layout) {
             super(layout);
@@ -222,7 +221,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
     }
 
-    static class ProgressViewHolder extends HistoryViewHolder {
+     class ProgressViewHolder extends HistoryViewHolder {
 
 
         public ProgressViewHolder(@NonNull View layout) {

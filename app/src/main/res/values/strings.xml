@@ -272,6 +272,8 @@
     <string name="serviceIsPerforming">Service is performing</string>
     <string name="serviceWasCanceled">Service was canceled</string>
     <string name="requestInProgress">Request in progress…</string>
+    <string name="performed">Исполнено</string>
+    <string name="received">Получено</string>
 
 
 </resources>
