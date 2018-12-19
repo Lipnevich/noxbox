@@ -83,10 +83,11 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
         AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
-                profile.setViewed(clusterItem.getNoxbox());
-                if (googleMap.getCameraPosition() != null) {
+                if (googleMap.getCameraPosition() != null && googleMap.getCameraPosition().target != null) {
                     profile.setPosition(Position.from(googleMap.getCameraPosition().target));
                 }
+                profile.setViewed(clusterItem.getNoxbox());
+                profile.getViewed().setParty(profile.privateInfo());
                 Router.startActivity(activity, DetailedActivity.class);
             }
         });
