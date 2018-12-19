@@ -16,14 +16,18 @@ import live.noxbox.tools.Task;
 
 public class NotificationAccepting extends Notification {
 
-    private long timeRequesting;
+    private String name;
 
     public NotificationAccepting(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-        timeRequesting = Long.valueOf(notificationTime);
+
+        if(profile != null){
+            name = profile.getCurrent().getParty().getName();
+        }else {
+            name = data.get("name");
+        }
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
-        contentView.setTextViewText(R.id.content, context.getResources().getString(type.getContent()));
 
         isAlertOnce = true;
         onViewOnClickAction = null;

@@ -165,7 +165,7 @@ public class Profile implements Serializable {
                 .setHost(host);
     }
 
-    public Profile notPublicInfo() {
+    public Profile privateInfo() {
         return publicInfo().setName(name).setPhoto(photo);
     }
 

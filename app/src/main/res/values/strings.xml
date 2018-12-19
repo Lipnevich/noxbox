@@ -4,8 +4,7 @@
     <string name="completeText">Complete</string>
     <string name="ratingTitle">Rate</string>
     <string name="requestText">Request</string>
-    <string name="requestPushTitle">Request incoming</string>
-    <string name="requestingPushContent">%s is requesting you. Estimation %s minutes</string>
+    <string name="requestingPushContent">Waiting for an answer…</string>
     <string name="goOnlineText">Go online</string>
     <string name="acceptText">Accept</string>
     <string name="goOfflineText">Go Offline</string>
@@ -66,7 +65,7 @@
     <string name="logout">Logout</string>
     <string name="logoutPrompt">Are you sure you want to logout?</string>
     <string name="acceptPushTitle">Request accepted</string>
-    <string name="acceptingPushContent">%s will arrive in %s minutes</string>
+    <string name="acceptingPushContent">Member was found</string>
     <string name="supplierCancelPushTitle">Request declined</string>
     <string name="supplierCanceledPushContent">Please try to request again</string>
     <string name="demanderCancelPushTitle">Request canceled</string>
@@ -234,9 +233,9 @@
     <string name="newMessage">New message!</string>
     <string name="reply">reply</string>
     <string name="messageSent">Message sent</string>
-    <string name="noxboxCompleted">Service complete</string>
-    <string name="toEarn">earn</string>
-    <string name="spent">spent</string>
+    <string name="noxboxCompleted">All the best!</string>
+    <string name="toEarn">Earned</string>
+    <string name="spent">Spent</string>
     <string name="version">Version</string>
     <string name="nannyDescription">Best of the best of the best nanny</string>
     <string name="photographerDescription">Best of the best of the best photographer</string>
@@ -271,9 +270,9 @@
     <string name="timePassed">Time passed:</string>
     <string name="serviceIsPerforming">Service is performing</string>
     <string name="serviceWasCanceled">Service was canceled</string>
-    <string name="requestInProgress">Request in progress…</string>
-    <string name="performed">Исполнено</string>
-    <string name="received">Получено</string>
+    <string name="performed">Performed</string>
+    <string name="received">Received</string>
+    <string name="greetings">Greetings!</string>
 
 
 </resources>

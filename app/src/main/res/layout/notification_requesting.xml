@@ -16,7 +16,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toStartOf="@+id/hourglass"
-            android:text="@string/requestInProgress"
+            android:text="@string/requestingPushContent"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_size" />
 

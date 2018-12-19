@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
-    android:background="@drawable/notification_horizontal_gradient_background">
+    android:background="@drawable/notification_photo_verify_background">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="-26dp"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_notification_photo_face_close" />
+            android:src="@drawable/ic_notification_open_eyes" />
 
     </RelativeLayout>
 

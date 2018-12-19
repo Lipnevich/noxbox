@@ -61,10 +61,9 @@
     <string name="sendPrompt">Вы уверены что хотите перевести Ваши деньги?</string>
     <string name="logout">Выход</string>
     <string name="logoutPrompt">Вы уверены что хотите выйти?</string>
-    <string name="requestPushTitle">Поступил заказ</string>
-    <string name="requestingPushContent">%s ожидает подтверждения. Время пути %s минут</string>
+    <string name="requestingPushContent">Ожидание ответа…</string>
     <string name="acceptPushTitle">В пути</string>
-    <string name="acceptingPushContent">%s прибудет через %s минуты</string>
+    <string name="acceptingPushContent">Найден участник</string>
     <string name="supplierCancelPushTitle">Запрос отклонен</string>
     <string name="supplierCanceledPushContent">Пожалуйста попробуйте снова</string>
     <string name="demanderCancelPushTitle">Запрос отменен</string>
@@ -231,7 +230,7 @@
     <string name="newMessage">Новое сообщение!</string>
     <string name="reply">повторить</string>
     <string name="messageSent">Сообщение отправлено</string>
-    <string name="noxboxCompleted">Услуга завершена</string>
+    <string name="noxboxCompleted">Всего наилучшего!</string>
     <string name="toEarn">Заработано</string>
     <string name="spent">Потрачено</string>
     <string name="version">Версия </string>
@@ -268,8 +267,8 @@
     <string name="verifyPhoto">Подтверди</string>
     <string name="rejectPhoto">Откажи</string>
     <string name="complete">Заверши</string>
-    <string name="requestInProgress">Происходит запрос…</string>
     <string name="performed">Исполнено</string>
     <string name="received">Получено</string>
+    <string name="greetings">Приветствую!</string>
 
 </resources>

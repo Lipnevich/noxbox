@@ -80,6 +80,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
             @Override
             public void onClick(View v) {
                 profile.setViewed(clusterItems.get(i).getNoxbox());
+                profile.getViewed().setParty(profile.privateInfo());
                 Router.startActivity(activity, DetailedActivity.class);
                 activity.finish();
             }

@@ -4,8 +4,4 @@
         AIzaSyBQ0cNnA8vGwCBCvnPu2ERTnB7ZOhxUvgI
     </string>
 
-    <!--used for path finding in http get requests to directions google api-->
-    <string name="google_directions_key" translatable="false">
-        AIzaSyArShVxHFrGDuU_mTVMddB1ToPTsMjjrb0
-    </string>
 </resources>

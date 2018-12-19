@@ -79,7 +79,7 @@ public class Requesting implements State {
             animationDrawable.start();
         }
 
-        profile.getViewed().setParty(profile.notPublicInfo());
+        profile.getViewed().setParty(profile.privateInfo());
 
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);

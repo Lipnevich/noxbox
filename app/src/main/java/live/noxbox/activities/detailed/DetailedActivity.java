@@ -111,9 +111,6 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void draw(Profile profile) {
-        if (profile.getViewed().getParty() == null) {
-            profile.getViewed().setParty(profile.notPublicInfo());
-        }
         drawToolbar(profile.getViewed());
         drawOppositeProfile(profile);
         drawDescription(profile);
@@ -154,7 +151,6 @@ public class DetailedActivity extends AppCompatActivity {
             ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), ((ImageView) findViewById(R.id.profilePhoto)));
             ((TextView) findViewById(R.id.profileName)).setText(other.getName());
         }
-
     }
 
     private void drawDescription(Profile profile) {

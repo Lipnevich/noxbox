@@ -9,16 +9,38 @@
         android:layout_width="match_parent"
         android:layout_height="64dp">
 
-        <TextView
-            android:id="@+id/content"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:textColor="@color/secondary"
-            android:textSize="@dimen/text_size" />
+            android:layout_toStartOf="@+id/flipper"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/hello"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/greetings"
+                android:textColor="@color/secondary"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:maxLines="1"
+                android:text="@string/acceptingPushContent"
+                android:textColor="@color/secondary"
+                android:textSize="@dimen/text_size" />
+
+        </LinearLayout>
 
         <ViewFlipper
+            android:id="@+id/flipper"
             android:layout_width="84dp"
             android:layout_height="64dp"
             android:layout_alignParentEnd="true"
@@ -31,12 +53,12 @@
             <ImageView
                 android:layout_width="84dp"
                 android:layout_height="64dp"
-                android:src="@drawable/request_hand_up" />
+                android:src="@drawable/ic_notification_request_hand_up" />
 
             <ImageView
                 android:layout_width="84dp"
                 android:layout_height="64dp"
-                android:src="@drawable/request_hand_down" />
+                android:src="@drawable/ic_notification_request_hand_down" />
         </ViewFlipper>
     </RelativeLayout>
 

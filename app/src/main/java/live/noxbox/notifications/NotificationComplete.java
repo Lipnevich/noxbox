@@ -18,7 +18,6 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.COMISSION_FEE;
 import static live.noxbox.Configuration.CURRENCY;
 
 public class NotificationComplete extends Notification {
@@ -30,11 +29,7 @@ public class NotificationComplete extends Notification {
         price = data.get("price");
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
-        contentView.setTextViewText(R.id.content, context.getString(type.getContent()));
-
-        String comission = " " + context.getResources().getString(R.string.withComission) + " " + COMISSION_FEE + " " + CURRENCY;
-        contentView.setTextViewText(R.id.content, price.concat(" ").concat(CURRENCY).concat(comission));
-
+        contentView.setTextViewText(R.id.content, context.getString(type.getContent()) + " " + price + " " + CURRENCY);
 
         isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
@@ -58,9 +53,11 @@ public class NotificationComplete extends Notification {
                         String message;
 
                         if (noxbox.getPerformer().getId().equals(currentUserId)) {
-                            message = context.getResources().getString(R.string.toEarn).concat(":");
+                            message = context.getResources().getString(R.string.toEarn);
+                            contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_balance);
                         } else {
-                            message = context.getResources().getString(R.string.spent).concat(":");
+                            message = context.getResources().getString(R.string.spent);
+                            contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_like);
                         }
 
                         contentView.setTextViewText(R.id.contentRole, message);
