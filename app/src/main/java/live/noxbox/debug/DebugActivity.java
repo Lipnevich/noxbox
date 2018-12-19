@@ -52,222 +52,221 @@ public class DebugActivity extends MenuActivity implements
     protected void onResume() {
         super.onResume();
         if (true || BuildConfig.DEBUG) {
-            AppCache.readProfile(new Task<Profile>() {
+            DebugActivity.this.findViewById(R.id.debugLayout).setVisibility(View.VISIBLE);
+
+            setOnClickListener(R.id.debugPush, new Task<Profile>() {
                 @Override
-                public void execute(final Profile profile) {
-                    profile.getWallet().setBalance("10000000");
+                public void execute(Profile profile) {
+                    Map<String, String> data = new HashMap<>();
+                    if(!iterator.hasNext()) iterator = photoPushes.iterator();
+                    data.put("type", iterator.next().name());
+                    data.put("progress", "" + 50);
+                    data.put("price", "" + 555);
+                    data.put("time", "" + System.currentTimeMillis());
+                    data.put("name", "Long Long Long Party Name");
+                    data.put("noxboxType", NoxboxType.photographer.name());
+                    data.put("message", "Let me speak from my heart");
+                    data.put("id", "0pEHvCumSPbOCFSLFWIA");
+                    NotificationFactory.buildNotification(DebugActivity.this, profile, data).show();
+                }
+            });
 
-                    DebugActivity.this.findViewById(R.id.debugLayout).setVisibility(View.VISIBLE);
+            setOnClickListener(R.id.debugGenerateNoxboxes, new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 20;
 
+                    for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
+                        online(noxbox);
+                    }
 
-                    DebugActivity.this.findViewById(R.id.debugPush).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Map<String, String> data = new HashMap<>();
-                            if(!iterator.hasNext()) iterator = photoPushes.iterator();
-                            data.put("type", iterator.next().name());
-                            data.put("progress", "" + 50);
-                            data.put("price", "" + 555);
-                            data.put("time", "" + System.currentTimeMillis());
-                            data.put("name", "Long Long Long Party Name");
-                            data.put("noxboxType", NoxboxType.photographer.name());
-                            data.put("message", "Let me speak from my heart");
-                            data.put("id", "0pEHvCumSPbOCFSLFWIA");
-                            NotificationFactory.buildNotification(DebugActivity.this, profile, data).show();
+                    LatLng myPosition = null;
+                    if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        myPosition = googleMap.getCameraPosition().target;
+                    }
+
+                    if (myPosition != null) {
+
+                        LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
+                        LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
+                        LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
+                        LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
+                        googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
+                                coordinatesOne,
+                                coordinatesTwo,
+                                coordinatesThree,
+                                coordinatesFour,
+                                coordinatesOne)
+                                .color(Color.RED)
+                                .width(5));
+                    }
+                }
+            });
+
+            setOnClickListener(R.id.debugRequest, new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    if (areNotTheyNull(profile.getCurrent(), profile.getCurrent().getOwner(), profile.getCurrent().getTimeCreated())
+                            && profile.getCurrent().getTimeRequested() == null) {
+                        // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
+
+                        profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+                        profile.getCurrent().setParty(new Profile()
+                                .setWallet(new Wallet().setBalance("1000000"))
+                                .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
+                                .setNoxboxId(profile.getCurrent().getId())
+                                .setTravelMode(TravelMode.driving)
+                                .setHost(false)
+                                .setName("Granny Smith")
+                                .setId("12321")
+                                .setPhoto(NoxboxExamples.PHOTO_MOCK));
+                        AppCache.updateNoxbox();
+                        GeoRealtime.offline(profile.getCurrent());
+                    } else {
+                        DebugMessage.popup(DebugActivity.this, "Not possible to request");
+                    }
+
+                    Log.d(State.TAG + TAG, "debugRequest");
+                    Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                    Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                    Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                }
+            });
+
+            setOnClickListener(R.id.debugAccept, new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    if (profile.getCurrent() != null && !profile.equals(profile.getCurrent().getOwner())
+                            && profile.getCurrent().getTimeCreated() != null
+                            && profile.getCurrent().getTimeRequested() != null
+                            && profile.getCurrent().getTimeAccepted() == null) {
+                        profile.getCurrent().getOwner().setPhoto(NoxboxExamples.PHOTO_MOCK);
+                        profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
+                        profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
+                        profile.getCurrent().setTimeToMeet(1200000L);
+                        profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
+                        AppCache.updateNoxbox();
+                    } else {
+                        DebugMessage.popup(DebugActivity.this, "Not possible to accept");
+                    }
+                    Log.d(State.TAG + TAG, "debugAccept");
+                    Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                    Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                    Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                    Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+                }
+            });
+
+            setOnClickListener(R.id.debugPhotoReject, new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    if (profile.getCurrent() != null
+                            && profile.getCurrent().getTimeCreated() != null
+                            && profile.getCurrent().getTimeRequested() != null
+                            && profile.getCurrent().getTimeAccepted() != null
+                            && profile.getCurrent().getTimeCompleted() == null) {
+                        if (profile.equals(profile.getCurrent().getOwner())) {
+                            profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+                        } else {
+                            profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
                         }
-                    });
+                        AppCache.updateNoxbox();
+                    } else {
+                        DebugMessage.popup(DebugActivity.this, "Not possible to reject");
+                    }
 
-                    DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 20;
+                    Log.d(State.TAG + TAG, "debugPhotoReject");
+                    Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                    Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                    Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                    Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+                    if (profile.equals(profile.getCurrent().getOwner())) {
+                        Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByParty()));
+                    } else {
+                        Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByOwner()));
+                    }
+                }
+            });
 
-                                    for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
-                                        online(noxbox);
-                                    }
+            setOnClickListener(R.id.debugPhotoVerify, new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    if (areNotTheyNull(
+                            profile.getCurrent(),
+                            profile.getCurrent().getTimeCreated(),
+                            profile.getCurrent().getTimeRequested(),
+                            profile.getCurrent().getTimeAccepted())
+                            && areTheyNull(
+                            profile.getCurrent().getTimeStartPerforming(),
+                            profile.getCurrent().getTimeCompleted())) {
 
-                                    LatLng myPosition = null;
-                                    if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                                            == PackageManager.PERMISSION_GRANTED) {
-                                        //myPosition = human_profile.getPosition().toLatLng();
-                                        myPosition = googleMap.getCameraPosition().target;
-                                    }
-
-                                    if (myPosition != null) {
-
-                                        LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
-                                        LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
-                                        LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
-                                        LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
-                                        googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
-                                                coordinatesOne,
-                                                coordinatesTwo,
-                                                coordinatesThree,
-                                                coordinatesFour,
-                                                coordinatesOne)
-                                                .color(Color.RED)
-                                                .width(5));
-                                    }
-                                }
-                            });
-
-                    findViewById(R.id.debugRequest).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            if (areNotTheyNull(profile.getCurrent(), profile.getCurrent().getOwner(), profile.getCurrent().getTimeCreated())
-                                    && profile.getCurrent().getTimeRequested() == null) {
-                                // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
-
-                                profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                                profile.getCurrent().setParty(new Profile()
-                                        .setWallet(new Wallet().setBalance("1000000"))
-                                        .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
-                                        .setNoxboxId(profile.getCurrent().getId())
-                                        .setTravelMode(TravelMode.driving)
-                                        .setHost(false)
-                                        .setName("Granny Smith")
-                                        .setId("12321")
-                                        .setPhoto(NoxboxExamples.PHOTO_MOCK));
-                                AppCache.updateNoxbox();
-                                GeoRealtime.offline(profile.getCurrent());
-                            } else {
-                                DebugMessage.popup(DebugActivity.this, "Not possible to request");
-                            }
-
-                            Log.d(State.TAG + TAG, "debugRequest");
-                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
-                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
-                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-
-
+                        if (profile.equals(profile.getCurrent().getOwner())) {
+                            profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
+                        } else {
+                            profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
                         }
-                    });
+                        AppCache.updateNoxbox();
+                    } else {
+                        DebugMessage.popup(DebugActivity.this, "Not possible to verify");
+                    }
+                    Log.d(State.TAG + TAG, "debugPhotoVerify");
+                    Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                    Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                    Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                    Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+                    if (profile.equals(profile.getCurrent().getOwner())) {
+                        Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
+                    } else {
+                        Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
+                    }
+                }
+            });
 
-                    findViewById(R.id.debugAccept).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (profile.getCurrent() != null && !profile.equals(profile.getCurrent().getOwner())
-                                    && profile.getCurrent().getTimeCreated() != null
-                                    && profile.getCurrent().getTimeRequested() != null
-                                    && profile.getCurrent().getTimeAccepted() == null) {
-                                profile.getCurrent().getOwner().setPhoto(NoxboxExamples.PHOTO_MOCK);
-                                profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
-                                profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
-                                profile.getCurrent().setTimeToMeet(1200000L);
-                                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                                AppCache.updateNoxbox();
-                            } else {
-                                DebugMessage.popup(DebugActivity.this, "Not possible to accept");
-                            }
-                            Log.d(State.TAG + TAG, "debugAccept");
-                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
-                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
-                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                        }
-                    });
-
-                    findViewById(R.id.debugPhotoReject).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (profile.getCurrent() != null
-                                    && profile.getCurrent().getTimeCreated() != null
-                                    && profile.getCurrent().getTimeRequested() != null
-                                    && profile.getCurrent().getTimeAccepted() != null
-                                    && profile.getCurrent().getTimeCompleted() == null) {
-                                if (profile.equals(profile.getCurrent().getOwner())) {
-                                    profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
-                                } else {
-                                    profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
-                                }
-                                AppCache.updateNoxbox();
-                            } else {
-                                DebugMessage.popup(DebugActivity.this, "Not possible to reject");
-                            }
-
-                            Log.d(State.TAG + TAG, "debugPhotoReject");
-                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
-                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
-                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                            if (profile.equals(profile.getCurrent().getOwner())) {
-                                Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByParty()));
-                            } else {
-                                Log.d(State.TAG + TAG, "timeCanceled: " + DateTimeFormatter.time(profile.getCurrent().getTimeCanceledByOwner()));
-                            }
-
-                        }
-                    });
-
-                    findViewById(R.id.debugPhotoVerify).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (areNotTheyNull(
-                                    profile.getCurrent(),
-                                    profile.getCurrent().getTimeCreated(),
-                                    profile.getCurrent().getTimeRequested(),
-                                    profile.getCurrent().getTimeAccepted())
-                                    && areTheyNull(
-                                    profile.getCurrent().getTimeStartPerforming(),
-                                    profile.getCurrent().getTimeCompleted())) {
-
-                                if (profile.equals(profile.getCurrent().getOwner())) {
-                                    profile.getCurrent().setTimePartyVerified(System.currentTimeMillis());
-                                } else {
-                                    profile.getCurrent().setTimeOwnerVerified(System.currentTimeMillis());
-                                }
-                                AppCache.updateNoxbox();
-                            } else {
-                                DebugMessage.popup(DebugActivity.this, "Not possible to verify");
-                            }
-                            Log.d(State.TAG + TAG, "debugPhotoVerify");
-                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
-                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
-                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                            if (profile.equals(profile.getCurrent().getOwner())) {
-                                Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
-                            } else {
-                                Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
-                            }
-
-                        }
-                    });
-
-                    findViewById(R.id.debugComplete).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (profile.getCurrent() != null
-                                    && profile.getCurrent().getTimeCreated() != null
-                                    && profile.getCurrent().getTimeRequested() != null
-                                    && profile.getCurrent().getTimeAccepted() != null
-                                    && profile.getCurrent().getTimeCompleted() == null) {
-                                profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
-                                AppCache.updateNoxbox();
-                            } else {
-                                DebugMessage.popup(DebugActivity.this, "Not possible to complete");
-                            }
-                            Log.d(State.TAG + TAG, "debugComplete");
-                            Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
-                            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
-                            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-                            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                            if (profile.equals(profile.getCurrent().getOwner())) {
-                                Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
-                            } else {
-                                Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
-                            }
-                            Log.d(State.TAG + TAG, "timeCompleted: " + DateTimeFormatter.time(profile.getCurrent().getTimeCompleted()));
-                        }
-                    });
-
+            setOnClickListener(R.id.debugComplete, new Task<Profile>() {
+                @Override
+                public void execute(Profile profile) {
+                    if (profile.getCurrent() != null
+                            && profile.getCurrent().getTimeCreated() != null
+                            && profile.getCurrent().getTimeRequested() != null
+                            && profile.getCurrent().getTimeAccepted() != null
+                            && profile.getCurrent().getTimeCompleted() == null) {
+                        profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
+                        AppCache.updateNoxbox();
+                    } else {
+                        DebugMessage.popup(DebugActivity.this, "Not possible to complete");
+                    }
+                    Log.d(State.TAG + TAG, "debugComplete");
+                    Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
+                    Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
+                    Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
+                    Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
+                    if (profile.equals(profile.getCurrent().getOwner())) {
+                        Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
+                    } else {
+                        Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
+                    }
+                    Log.d(State.TAG + TAG, "timeCompleted: " + DateTimeFormatter.time(profile.getCurrent().getTimeCompleted()));
                 }
             });
         }
-
-
     }
+
+    private void setOnClickListener(int button, final Task<Profile> task) {
+        findViewById(button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppCache.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(final Profile profile) {
+                        profile.getWallet().setBalance("10000000");
+                        task.execute(profile);
+                    }
+                });
+            }
+        });
+    }
+
 
     private GoogleMap googleMap;
 
