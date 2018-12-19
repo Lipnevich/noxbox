@@ -60,7 +60,7 @@ public class NotificationComplete extends Notification {
                             contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_like);
                         }
 
-                        contentView.setTextViewText(R.id.contentRole, message);
+                        contentView.setTextViewText(R.id.content, message);
                         getNotificationService(context).notify(type.getGroup(), builder.build());
 
                     }
