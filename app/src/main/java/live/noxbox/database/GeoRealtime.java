@@ -122,6 +122,7 @@ public class GeoRealtime {
                     Noxbox noxbox = parseKey(key);
                     if (noxbox != null) {
                         noxbox.setPosition(Position.from(location));
+                        noxbox.getOwner().setPosition(Position.from(location));
                         noxboxes.put(noxbox.getId(), noxbox);
                     }
                 }
