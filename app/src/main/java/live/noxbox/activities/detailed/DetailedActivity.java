@@ -31,6 +31,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -101,12 +102,7 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         AppCache.stopListen(DetailedActivity.class.getName());
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                AppCache.stopListenNoxbox(profile.getViewed().getId());
-            }
-        });
+        AppCache.stopListenNoxbox(FirebaseAuth.getInstance().getCurrentUser().getUid());
         gyroscopeObserver.unregister();
     }
 
@@ -116,14 +112,14 @@ public class DetailedActivity extends AppCompatActivity {
         drawDescription(profile);
         drawWaitingTime(profile);
         drawRating(profile.getViewed());
+        drawPrice(profile);
+        drawButtons(profile);
         if (profile.getViewed().getRole() == MarketRole.supply) {
             drawCertificate(profile.getViewed());
             drawWorkSample(profile.getViewed());
         }
 
-        drawPrice(profile);
 
-        drawButtons(profile);
     }
 
     private void drawToolbar(Noxbox noxbox) {
@@ -170,6 +166,7 @@ public class DetailedActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
             }
         }
+        ((ImageView) findViewById(R.id.typeImage)).setImageResource(profile.getViewed().getType().getImage());
         ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
 
 
@@ -192,13 +189,10 @@ public class DetailedActivity extends AppCompatActivity {
         int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
         if (percentage >= 95) {
             ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.GREEN);
-            ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.GREEN);
         } else if (percentage > 90) {
             ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.YELLOW);
-            ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.YELLOW);
         } else {
             ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.RED);
-            ((ImageView) findViewById(R.id.ratingTitleImage)).setColorFilter(Color.RED);
         }
 
         ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
