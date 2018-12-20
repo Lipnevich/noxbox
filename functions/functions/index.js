@@ -77,11 +77,12 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             await admin.messaging().send(push);
             console.log('push sent' + JSON.stringify(push));
     }else if(!previousNoxbox.timeCompleted && noxbox.timeCompleted){
+        // TODO (nli) calculate total and send money first
         let push = {
                   data: {
                       type: 'completed',
                       time: '' + noxbox.timeCompleted,
-                      price: '' + noxbox.price,
+                      total: '' + noxbox.price,
                       id: noxbox.id
                   },
                   topic: noxbox.id
