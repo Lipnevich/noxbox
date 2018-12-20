@@ -2,6 +2,7 @@ package live.noxbox.activities;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -19,21 +20,31 @@ import java.util.Date;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
+import live.noxbox.model.Profile;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private List<Message> messages;
     private DisplayMetrics metrics;
     private Context context;
-    private Long wasRead;
+    private Profile profile;
+    private Long wasRead = 0L;
+    private boolean needToUpdateNoxbox = false;
 
 
-    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, Context context, Long wasRead) {
+    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, Context context, Profile profile) {
         this.messages = messages;
         this.metrics = metrics;
         this.context = context;
-        this.wasRead = wasRead == null ? 0 : wasRead;
+        this.profile = profile;
+        if (profile.getCurrent().getOwner().equals(profile)) {
+            wasRead = profile.getCurrent().getChat().getPartyReadTime();
+        } else {
+            wasRead = profile.getCurrent().getChat().getOwnerReadTime();
+        }
+        //this.wasRead = wasRead == null ? 0 : wasRead;
     }
 
     @Override
@@ -52,64 +63,91 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-        LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_chat, parent, false);
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false));
+    }
 
-        CardView card = v.findViewById(R.id.chat_card);
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        LinearLayout rootLayout = viewHolder.rootLayout;
+        CardView messageCard = viewHolder.messageCard;
+        LinearLayout innerLayout = viewHolder.innerLayout;
+        TextView messageView = viewHolder.message;
+        TextView timeView = viewHolder.time;
+        ImageView checkedView = viewHolder.checked;
+
         if (!isMyMessage(position)) {
-            v.setHorizontalGravity(Gravity.START);
-            card.setCardBackgroundColor(parent.getResources().getColor(R.color.message));
+            rootLayout.setHorizontalGravity(Gravity.START);
+            messageCard.setCardBackgroundColor(context.getResources().getColor(R.color.message));
         }
 
         Message message = messages.get(position);
 
-        TextView text = v.findViewById(R.id.message_id);
-        text.setText(message.getMessage());
-        TextView time = v.findViewById(R.id.time_id);
-        time.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(message.getTime())));
-        ImageView checked = v.findViewById(R.id.checked);
+        messageView.setText(message.getMessage());
+        timeView.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(message.getTime())));
 
-        if (isMyMessage(position)) {
-            checked.setVisibility(View.VISIBLE);
-            if (wasRead(message)) {
-                checked.setColorFilter(context.getResources().getColor(R.color.primary));
-            } else {
-                checked.setColorFilter(context.getResources().getColor(R.color.divider));
-            }
-        }else{
 
-        }
-
-        LayoutParams cardParams = (LayoutParams) card.getLayoutParams();
+        LayoutParams cardParams = (LayoutParams) messageCard.getLayoutParams();
         if (position == 0) {
             cardParams.topMargin *= 5;
-            card.setLayoutParams(cardParams);
+            messageCard.setLayoutParams(cardParams);
         }
 
-        if (isTooLong(text)) {
+        if (isTooLong(messageView)) {
             cardParams.width = 0;
             cardParams.weight = 90;
-            card.setLayoutParams(cardParams);
+            messageCard.setLayoutParams(cardParams);
 
-            ((LinearLayout) v.findViewById(R.id.chat_card_layout)).setOrientation(LinearLayout.VERTICAL);
+            innerLayout.setOrientation(LinearLayout.VERTICAL);
 
-            time.setGravity(Gravity.END);
-            text.setPadding(0, 18, 0, -2);
-            time.setPadding(0, -2, 0, 18);
-            LayoutParams timeParams = (LayoutParams) time.getLayoutParams();
+            timeView.setGravity(Gravity.END);
+            messageView.setPadding(0, 18, 0, -2);
+            timeView.setPadding(0, -2, 0, 18);
+            LayoutParams timeParams = (LayoutParams) timeView.getLayoutParams();
             timeParams.topMargin = 0;
-            time.setLayoutParams(timeParams);
+            timeView.setLayoutParams(timeParams);
         }
 
-        return new ViewHolder(v);
+        if (messages.size() - 1 == position) {
+            Message lastNotMyMessage = null;
+            for (Message m : messages) {
+                if (!m.isMyMessage()) {
+                    lastNotMyMessage = m;
+                }
+            }
+
+            if (profile.getCurrent().getOwner().equals(profile)) {
+                wasRead = profile.getCurrent().getChat().getPartyReadTime();
+                if (lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getOwnerReadTime()) {
+                    profile.getCurrent().getChat().setOwnerReadTime(System.currentTimeMillis());
+                    needToUpdateNoxbox = true;
+                }
+            } else {
+                wasRead = profile.getCurrent().getChat().getOwnerReadTime();
+                if (lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getPartyReadTime()) {
+                    profile.getCurrent().getChat().setPartyReadTime(System.currentTimeMillis());
+                    needToUpdateNoxbox = true;
+                }
+            }
+        }
+
+        if (isMyMessage(position)) {
+            checkedView.setVisibility(View.VISIBLE);
+            if (wasRead(message)) {
+                checkedView.setColorFilter(context.getResources().getColor(R.color.primary));
+            } else {
+                checkedView.setColorFilter(context.getResources().getColor(R.color.divider));
+            }
+        }
+
+        if (needToUpdateNoxbox) {
+            AppCache.updateNoxbox();
+            needToUpdateNoxbox = false;
+        }
+
     }
 
     private boolean wasRead(Message message) {
         return message.getTime() < wasRead;
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
     }
 
     private boolean isTooLong(TextView text) {
@@ -124,11 +162,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public LinearLayout item;
+        LinearLayout rootLayout;
+        CardView messageCard;
+        LinearLayout innerLayout;
+        TextView message;
+        TextView time;
+        ImageView checked;
 
-        public ViewHolder(LinearLayout v) {
-            super(v);
-            item = v;
+        public ViewHolder(@NonNull View layout) {
+            super(layout);
+            rootLayout = layout.findViewById(R.id.rootLayout);
+            messageCard = layout.findViewById(R.id.chat_card);
+            innerLayout = layout.findViewById(R.id.chat_card_layout);
+            message = layout.findViewById(R.id.message);
+            time = layout.findViewById(R.id.time);
+            checked = layout.findViewById(R.id.checked);
         }
     }
 

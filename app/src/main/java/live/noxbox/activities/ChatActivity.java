@@ -30,7 +30,6 @@ import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
@@ -113,10 +112,6 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void draw(final Profile profile) {
-        if (!messages.isEmpty()
-                && messages.size() == profile.getCurrent().getMessages(profile.getId()).size()) {
-            return;
-        }
         final DisplayMetrics screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
 
@@ -125,29 +120,7 @@ public class ChatActivity extends BaseActivity {
 
         initMessages(profile);
 
-        Message lastNotMyMessage = null;
-        for (Message m : messages) {
-            if (!m.isMyMessage()) {
-                lastNotMyMessage = m;
-            }
-        }
-
-        Long timeWasRead;
-        if (profile.getCurrent().getOwner().equals(profile)) {
-            timeWasRead = profile.getCurrent().getChat().getPartyReadTime();
-            if (lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getOwnerReadTime()) {
-                profile.getCurrent().getChat().setOwnerReadTime(System.currentTimeMillis());
-                AppCache.updateNoxbox();
-            }
-        } else {
-            timeWasRead = profile.getCurrent().getChat().getOwnerReadTime();
-            if (lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getPartyReadTime()) {
-                profile.getCurrent().getChat().setPartyReadTime(System.currentTimeMillis());
-                AppCache.updateNoxbox();
-            }
-        }
-
-        chatAdapter = new ChatAdapter(screen, messages, this.getApplicationContext(), timeWasRead);
+        chatAdapter = new ChatAdapter(screen, messages, this.getApplicationContext(), profile);
         chatList.setAdapter(chatAdapter);
         chatList.smoothScrollToPosition(View.FOCUS_DOWN);
 
@@ -251,23 +224,32 @@ public class ChatActivity extends BaseActivity {
     }
 
     private List<Message> initMessages(Profile profile) {
-        messages.clear();
+        //messages.clear();
 
         if (profile.getCurrent() != null) {
-            messages.addAll(profile.getCurrent().getMessages(profile.getId()));
+
+            List<Message> remoteMessages = profile.getCurrent().getMessages(profile.getId());
+            List<Message> newMessages = new ArrayList<>();
+            for (Message fromRemote : remoteMessages) {
+                boolean wasFind = false;
+                for (Message fromLocale : messages) {
+                    if (fromLocale.getTime().equals(fromRemote.getTime())) {
+                        wasFind = true;
+                    }
+                }
+
+                if (!wasFind) {
+                    newMessages.add(fromRemote);
+                }
+            }
+            for (Message newMessage : newMessages) {
+                messages.add(newMessage);
+            }
+
+            //messages.addAll(remoteMessages);
             sort(messages);
         }
 
-        return messages;
-    }
-
-    private List<Message> initMessages(Noxbox noxbox, String profileId) {
-        messages.clear();
-
-        if (noxbox != null) {
-            messages.addAll(noxbox.getMessages(profileId));
-            sort(messages);
-        }
 
         return messages;
     }
