@@ -19,10 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
-import live.noxbox.model.Profile;
-import live.noxbox.tools.Task;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
@@ -37,19 +34,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         this.metrics = metrics;
         this.context = context;
         this.wasRead = wasRead;
-
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                if (profile.getCurrent().getOwner().equals(profile)) {
-                    profile.getCurrent().getChat().setOwnerReadTime(System.currentTimeMillis());
-                } else {
-                    profile.getCurrent().getChat().setPartyReadTime(System.currentTimeMillis());
-                }
-                AppCache.updateNoxbox();
-            }
-        });
-
     }
 
     @Override
