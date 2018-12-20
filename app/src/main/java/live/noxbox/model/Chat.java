@@ -35,6 +35,9 @@ public class Chat {
     }
 
     public Long getOwnerReadTime() {
+        if(ownerReadTime == null){
+            ownerReadTime = 0L;
+        }
         return ownerReadTime;
     }
 
@@ -44,6 +47,9 @@ public class Chat {
     }
 
     public Long getPartyReadTime() {
+        if(partyReadTime == null){
+            partyReadTime = 0L;
+        }
         return partyReadTime;
     }
 

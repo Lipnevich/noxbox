@@ -135,13 +135,13 @@ public class ChatActivity extends BaseActivity {
         Long timeWasRead;
         if (profile.getCurrent().getOwner().equals(profile)) {
             timeWasRead = profile.getCurrent().getChat().getPartyReadTime();
-            if(lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getOwnerReadTime()){
+            if (lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getOwnerReadTime()) {
                 profile.getCurrent().getChat().setOwnerReadTime(System.currentTimeMillis());
                 AppCache.updateNoxbox();
             }
         } else {
             timeWasRead = profile.getCurrent().getChat().getOwnerReadTime();
-            if(lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getPartyReadTime()){
+            if (lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getPartyReadTime()) {
                 profile.getCurrent().getChat().setPartyReadTime(System.currentTimeMillis());
                 AppCache.updateNoxbox();
             }

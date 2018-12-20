@@ -76,6 +76,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             } else {
                 checked.setColorFilter(context.getResources().getColor(R.color.divider));
             }
+        }else{
+
         }
 
         LayoutParams cardParams = (LayoutParams) card.getLayoutParams();
