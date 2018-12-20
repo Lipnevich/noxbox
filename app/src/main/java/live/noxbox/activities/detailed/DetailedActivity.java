@@ -93,6 +93,9 @@ public class DetailedActivity extends AppCompatActivity {
             @Override
             public void execute(Profile profile) {
                 AppCache.startListenNoxbox(profile.getViewed().getId());
+                if(profile.getViewed().getParty() == null){
+                    profile.getViewed().setParty(profile.privateInfo());
+                }
                 draw(profile);
             }
         });

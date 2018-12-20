@@ -21,15 +21,14 @@ import live.noxbox.tools.Task;
 import static live.noxbox.Configuration.CURRENCY;
 
 public class NotificationComplete extends Notification {
-    private String price;
+    private String total;
 
     public NotificationComplete(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
 
-        price = data.get("price");
+        total = data.get("total");
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
-        contentView.setTextViewText(R.id.content, context.getString(type.getContent()) + " " + price + " " + CURRENCY);
 
         isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
@@ -59,8 +58,7 @@ public class NotificationComplete extends Notification {
                             message = context.getResources().getString(R.string.spent);
                             contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_like);
                         }
-
-                        contentView.setTextViewText(R.id.content, message);
+                        contentView.setTextViewText(R.id.content, message + " " + total + " " + CURRENCY);
                         getNotificationService(context).notify(type.getGroup(), builder.build());
 
                     }

@@ -270,6 +270,7 @@ public class Moving implements State {
         moveCopyrightLeft(googleMap);
 
         googleMap.clear();
+        memberWhoMoving = null;
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }

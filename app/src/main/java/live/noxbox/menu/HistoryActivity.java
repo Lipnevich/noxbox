@@ -34,10 +34,7 @@ public class HistoryActivity extends BaseActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         HistoryFragmentAdapter adapter = new HistoryFragmentAdapter(getSupportFragmentManager(), this);
-        //adapter.addFragment(new HistorySupplyFragment());
-        //adapter.addFragment(new HistoryDemandFragment());
         viewPager.setAdapter(adapter);
-
     }
 
     @Override

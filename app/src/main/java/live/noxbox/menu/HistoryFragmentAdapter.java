@@ -15,7 +15,6 @@ public class HistoryFragmentAdapter extends FragmentPagerAdapter {
 
     private Context context;
     private Integer[] tabTitles = new Integer[]{R.string.performed, R.string.received};
-    private final List<Fragment> fragments = new ArrayList<>();
 
     public HistoryFragmentAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -29,7 +28,6 @@ public class HistoryFragmentAdapter extends FragmentPagerAdapter {
         } else {
             return new HistoryDemandFragment();
         }
-        //return fragments.get(position);
     }
 
     @Nullable
@@ -43,7 +41,4 @@ public class HistoryFragmentAdapter extends FragmentPagerAdapter {
         return 2;
     }
 
-    public void addFragment(Fragment fragment){
-        fragments.add(fragment);
-    }
 }
