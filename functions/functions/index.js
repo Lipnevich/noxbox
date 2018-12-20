@@ -22,7 +22,6 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         let push = {
             data: {
                 type: 'accepting',
-                time: '' + noxbox.timeRequested,
                 id: noxbox.id
             },
             topic: noxbox.owner.id
@@ -40,26 +39,26 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         await admin.messaging().send(push);
         console.log('push sent' + JSON.stringify(push));
-    } else  if(noxbox.ownerMessages && (!previousNoxbox.ownerMessages || Object.keys(previousNoxbox.ownerMessages).length < Object.keys(noxbox.ownerMessages).length)) {
+    } else  if(noxbox.chat && noxbox.chat.ownerMessages && (!previousNoxbox.chat.ownerMessages || Object.keys(previousNoxbox.chat.ownerMessages).length < Object.keys(noxbox.chat.ownerMessages).length)) {
         let push = {
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
                  name: noxbox.role === 'demand' ? noxbox.owner.name : '',
-                 message: latestMessage(noxbox.ownerMessages).message,
+                 message: latestMessage(noxbox.chat.ownerMessages).message,
                  id: noxbox.id
             },
             topic: noxbox.party.id
         };
         await admin.messaging().send(push);
         console.log('push sent' + JSON.stringify(push));
-    } else if(noxbox.partyMessages && (!previousNoxbox.partyMessages || Object.keys(previousNoxbox.partyMessages).length < Object.keys(noxbox.partyMessages).length)){
+    } else if(noxbox.chat && noxbox.chat.partyMessages && (!previousNoxbox.chat.partyMessages || Object.keys(previousNoxbox.chat.partyMessages).length < Object.keys(noxbox.chat.partyMessages).length)){
         let push = {
             data: {
                  type: 'message',
                  noxboxType: noxbox.type,
                  name: noxbox.role === 'supply' ? noxbox.party.name : '',
-                 message: latestMessage(noxbox.partyMessages).message,
+                 message: latestMessage(noxbox.chat.partyMessages).message,
                  id: noxbox.id
             },
             topic: noxbox.owner.id

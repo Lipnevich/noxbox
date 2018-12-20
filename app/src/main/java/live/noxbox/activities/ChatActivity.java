@@ -104,19 +104,17 @@ public class ChatActivity extends BaseActivity {
                 draw(profile);
             }
         });
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         AppCache.stopListen(ChatActivity.class.getName());
-        AppCache.updateNoxbox();
     }
 
     private void draw(final Profile profile) {
         if (!messages.isEmpty()
-                && messages.size() == profile.getCurrent().getChat(profile.getId()).size()) {
+                && messages.size() == profile.getCurrent().getMessages(profile.getId()).size()) {
             return;
         }
         final DisplayMetrics screen = new DisplayMetrics();
@@ -126,10 +124,32 @@ public class ChatActivity extends BaseActivity {
         interlocutorName.setText(profile.getCurrent().getNotMe(profile.getId()).getName());
 
         initMessages(profile);
-        chatAdapter = new ChatAdapter(screen, messages, profile, profile.getCurrent(), this.getApplicationContext());
+
+        Message lastNotMyMessage = null;
+        for (Message m : messages) {
+            if (!m.isMyMessage()) {
+                lastNotMyMessage = m;
+            }
+        }
+
+        Long timeWasRead;
+        if (profile.getCurrent().getOwner().equals(profile)) {
+            timeWasRead = profile.getCurrent().getChat().getPartyReadTime();
+            if(lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getOwnerReadTime()){
+                profile.getCurrent().getChat().setOwnerReadTime(System.currentTimeMillis());
+                AppCache.updateNoxbox();
+            }
+        } else {
+            timeWasRead = profile.getCurrent().getChat().getOwnerReadTime();
+            if(lastNotMyMessage != null && lastNotMyMessage.getTime() > profile.getCurrent().getChat().getPartyReadTime()){
+                profile.getCurrent().getChat().setPartyReadTime(System.currentTimeMillis());
+                AppCache.updateNoxbox();
+            }
+        }
+
+        chatAdapter = new ChatAdapter(screen, messages, this.getApplicationContext(), timeWasRead);
         chatList.setAdapter(chatAdapter);
         chatList.smoothScrollToPosition(View.FOCUS_DOWN);
-
 
         text = findViewById(R.id.type_message);
         text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -206,12 +226,12 @@ public class ChatActivity extends BaseActivity {
 
         long time = System.currentTimeMillis();
 
-        Message message = new Message().setMessage(trimmedText).setWasRead(false)
+        Message message = new Message().setMessage(trimmedText)
                 .setId("" + time).setTime(time);
         if (profile.equals(profile.getCurrent().getOwner())) {
-            profile.getCurrent().getOwnerMessages().put(message.getId(), message);
+            profile.getCurrent().getChat().getOwnerMessages().put(message.getId(), message);
         } else {
-            profile.getCurrent().getPartyMessages().put(message.getId(), message);
+            profile.getCurrent().getChat().getPartyMessages().put(message.getId(), message);
         }
         text.setText("");
         add(message);
@@ -234,7 +254,7 @@ public class ChatActivity extends BaseActivity {
         messages.clear();
 
         if (profile.getCurrent() != null) {
-            messages.addAll(profile.getCurrent().getChat(profile.getId()));
+            messages.addAll(profile.getCurrent().getMessages(profile.getId()));
             sort(messages);
         }
 
@@ -245,7 +265,7 @@ public class ChatActivity extends BaseActivity {
         messages.clear();
 
         if (noxbox != null) {
-            messages.addAll(noxbox.getChat(profileId));
+            messages.addAll(noxbox.getMessages(profileId));
             sort(messages);
         }
 

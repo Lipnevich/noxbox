@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,24 +21,35 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Task;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     private List<Message> messages;
     private DisplayMetrics metrics;
-    private Profile profile;
-    private Noxbox noxbox;
     private Context context;
+    private Long wasRead;
 
 
-    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, Profile profile, Noxbox noxbox, Context context) {
+    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, Context context, Long wasRead) {
         this.messages = messages;
         this.metrics = metrics;
-        this.noxbox = noxbox;
-        this.profile = profile;
         this.context = context;
+        this.wasRead = wasRead;
+
+        AppCache.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
+                if (profile.getCurrent().getOwner().equals(profile)) {
+                    profile.getCurrent().getChat().setOwnerReadTime(System.currentTimeMillis());
+                } else {
+                    profile.getCurrent().getChat().setPartyReadTime(System.currentTimeMillis());
+                }
+                AppCache.updateNoxbox();
+            }
+        });
+
     }
 
     @Override
@@ -75,17 +85,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         time.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(message.getTime())));
         ImageView checked = v.findViewById(R.id.checked);
 
-        if (!isMyMessage(position)) {
-            if (!message.getWasRead()) {
-                message.setWasRead(true);
-            }
-        } else {
+        if (isMyMessage(position)) {
             checked.setVisibility(View.VISIBLE);
-            if (message.getWasRead()) {
+            if (wasRead(message)) {
                 checked.setColorFilter(context.getResources().getColor(R.color.primary));
             } else {
                 checked.setColorFilter(context.getResources().getColor(R.color.divider));
             }
+        }else{
+
         }
 
         LayoutParams cardParams = (LayoutParams) card.getLayoutParams();
@@ -109,12 +117,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             time.setLayoutParams(timeParams);
         }
 
-        if(position == messages.size() - 1){
-            Log.d("ChatAdapter","updateNoxbox()");
-            AppCache.updateNoxbox();
-        }
-
         return new ViewHolder(v);
+    }
+
+    private boolean wasRead(Message message) {
+        return message.getTime() < wasRead;
     }
 
     @Override

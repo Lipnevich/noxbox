@@ -17,9 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static live.noxbox.Configuration.DEFAULT_PRICE;
 import static live.noxbox.model.MarketRole.supply;
@@ -36,8 +34,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String performerId;
     private String payerId;
 
-    private Map<String, Message> ownerMessages = new HashMap<>();
-    private Map<String, Message> partyMessages = new HashMap<>();
+    private Chat chat;
 
     private Position position;
     private String price;
@@ -66,8 +63,10 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox clean() {
         id = null;
-        ownerMessages.clear();
-        partyMessages.clear();
+        getChat().getOwnerMessages().clear();
+        getChat().getPartyMessages().clear();
+        getChat().setOwnerReadTime(null);
+        getChat().setPartyReadTime(null);
         party = null;
         performerId = null;
         payerId = null;
@@ -400,17 +399,29 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public List<Message> getChat(String profileId) {
+    public Chat getChat() {
+        if(chat == null){
+            chat = new Chat();
+        }
+        return chat;
+    }
+
+    public Noxbox setChat(Chat chat) {
+        this.chat = chat;
+        return this;
+    }
+
+    public List<Message> getMessages(String profileId) {
         List<Message> chat = new ArrayList<>();
-        Collection<Message> myMessages = getPartyMessages().values();
+        Collection<Message> myMessages = getChat().getPartyMessages().values();
         if(profileId.equals(getOwner().getId())) {
-            myMessages = getOwnerMessages().values();
+            myMessages = getChat().getOwnerMessages().values();
         }
         for(Message message : myMessages) {
             message.setMyMessage(true);
         }
-        chat.addAll(getPartyMessages().values());
-        chat.addAll(getOwnerMessages().values());
+        chat.addAll(getChat().getPartyMessages().values());
+        chat.addAll(getChat().getOwnerMessages().values());
 
         Collections.sort(chat, new Comparator<Message>() {
             @Override
@@ -422,29 +433,7 @@ public class Noxbox implements Comparable<Noxbox> {
         return chat;
     }
 
-    public Map<String, Message> getOwnerMessages() {
-        if(ownerMessages == null) {
-            ownerMessages = new HashMap<>();
-        }
-        return ownerMessages;
-    }
 
-    public Noxbox setOwnerMessages(Map<String, Message> ownerMessages) {
-        this.ownerMessages = ownerMessages;
-        return this;
-    }
-
-    public Map<String, Message> getPartyMessages() {
-        if(partyMessages == null) {
-            partyMessages = new HashMap<>();
-        }
-        return partyMessages;
-    }
-
-    public Noxbox setPartyMessages(Map<String, Message> partyMessages) {
-        this.partyMessages = partyMessages;
-        return this;
-    }
 
     public String getPerformerId() {
         return performerId;
