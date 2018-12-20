@@ -24,7 +24,7 @@ import live.noxbox.services.MessagingService;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.updateNoxbox;
-import static live.noxbox.model.NotificationType.accepting;
+import static live.noxbox.model.NotificationType.message;
 
 public abstract class Notification {
 
@@ -115,8 +115,8 @@ public abstract class Notification {
 
     protected Uri getSound() {
         int sound = R.raw.push;
-        if (type == accepting) {
-            sound = R.raw.accepting;
+        if (type == message) {
+            sound = R.raw.message;
         }
 
         return Uri.parse("android.resource://" + context.getPackageName() + "/raw/"
