@@ -33,7 +33,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         this.messages = messages;
         this.metrics = metrics;
         this.context = context;
-        this.wasRead = wasRead;
+        this.wasRead = wasRead == null ? 0 : wasRead;
     }
 
     @Override
@@ -76,8 +76,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             } else {
                 checked.setColorFilter(context.getResources().getColor(R.color.divider));
             }
-        }else{
-
         }
 
         LayoutParams cardParams = (LayoutParams) card.getLayoutParams();
