@@ -84,8 +84,8 @@ public class Moving implements State {
 
     }
 
-    private void drawUnreadedMessagesIndicator(Map<String, Message> messages, String currentUserId) {
-        int totalUnread = 0;
+    private void drawUnreadMessagesIndicator(Map<String, Message> messages, Long readTime) {
+        Integer totalUnread = 0;
 
         totalUnreadView = activity.findViewById(R.id.totalUnread);
 
@@ -93,16 +93,14 @@ public class Moving implements State {
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             Message message = (Message) entry.getValue();
-            if (!message.getWasRead()) {
 
-            }
-            if (!message.getWasRead()) {
-                totalUnread += 1;
+            if (message.getTime() > readTime) {
+                totalUnread++;
                 totalUnreadView.setVisibility(View.VISIBLE);
                 if (totalUnread <= 9) {
-                    totalUnreadView.setText("" + totalUnread);
+                    totalUnreadView.setText(totalUnread.toString());
                 } else {
-                    totalUnreadView.setText(9 + "+");
+                    totalUnreadView.setText("9+");
                 }
             }
         }
@@ -125,9 +123,9 @@ public class Moving implements State {
         updateTimeView(profile);
 
         if (profile.getCurrent().getOwner().equals(profile)) {
-            drawUnreadedMessagesIndicator(profile.getCurrent().getPartyMessages(), profile.getId());
+            drawUnreadMessagesIndicator(profile.getCurrent().getChat().getPartyMessages(), profile.getCurrent().getChat().getOwnerReadTime());
         } else {
-            drawUnreadedMessagesIndicator(profile.getCurrent().getOwnerMessages(), profile.getId());
+            drawUnreadMessagesIndicator(profile.getCurrent().getChat().getOwnerMessages(), profile.getCurrent().getChat().getPartyReadTime());
         }
 
 
