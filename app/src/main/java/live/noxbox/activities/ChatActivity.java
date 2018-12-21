@@ -46,6 +46,7 @@ public class ChatActivity extends BaseActivity {
     private RecyclerView chatList;
     private TextView text;
     private ChatAdapter chatAdapter;
+    private long timeWasRead = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,21 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void draw(final Profile profile) {
+
+        if (profile.getCurrent().getOwner().equals(profile)) {
+            if (timeWasRead == profile.getCurrent().getChat().getPartyReadTime() && messages.size() == profile.getCurrent().getMessages(profile.getId()).size()) {
+                return;
+            }
+            timeWasRead = profile.getCurrent().getChat().getPartyReadTime();
+        } else {
+            if (timeWasRead == profile.getCurrent().getChat().getOwnerReadTime() && messages.size() == profile.getCurrent().getMessages(profile.getId()).size()) {
+                return;
+            }
+            timeWasRead = profile.getCurrent().getChat().getOwnerReadTime();
+        }
+
+
+
         final DisplayMetrics screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
 
