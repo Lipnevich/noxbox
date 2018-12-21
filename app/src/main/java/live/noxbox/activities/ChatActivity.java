@@ -46,7 +46,7 @@ public class ChatActivity extends BaseActivity {
     private RecyclerView chatList;
     private TextView text;
     private ChatAdapter chatAdapter;
-    private long timeWasRead = 0L;
+    private long timeWasRead = -1L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

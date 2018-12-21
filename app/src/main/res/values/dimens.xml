@@ -6,6 +6,7 @@
     <dimen name="image_width">120dp</dimen>
     <dimen name="image_final_width">38dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="text_warning">12sp</dimen>
     <dimen name="text_title">22sp</dimen>
     <dimen name="text_title_large">34sp</dimen>
     <dimen name="text_size">18sp</dimen>

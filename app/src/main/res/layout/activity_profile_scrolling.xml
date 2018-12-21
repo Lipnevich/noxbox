@@ -11,6 +11,58 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/nameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <ImageView
+                android:id="@+id/nameImage"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/human"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/textInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profilePhoto"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_toEndOf="@id/nameImage"
+                android:layout_toStartOf="@id/editName">
+
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter your name"
+                    android:inputType="text"
+                    android:maxLength="50"
+                    android:textSize="@dimen/text_size"
+                    android:textColor="@color/google_text"
+                    android:textCursorDrawable="@color/primary" />
+            </android.support.design.widget.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/editName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/edit"
+                android:visibility="visible" />
+        </RelativeLayout>
+
+        <include layout="@layout/item_divider" />
+
+        <RelativeLayout
             android:id="@+id/travelModeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -116,27 +168,31 @@
             android:text="@string/serviceProvided"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_color_secondary" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/noxboxTypeList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
             <LinearLayout
                 android:id="@+id/serviceNotProvidedLayout"
-                android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="64dp"
                 android:orientation="vertical"
-                android:layout_marginStart="64dp">
+                android:visibility="invisible">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/text_color_secondary"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/serviceIsMissing" />
+                    android:text="@string/serviceIsMissing"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/text_color_secondary" />
             </LinearLayout>
 
         </FrameLayout>
@@ -151,9 +207,9 @@
             android:layout_marginBottom="8dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:paddingBottom="@dimen/activity_horizontal_margin"
             android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_horizontal_margin">
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin">
 
 
             <ImageView
@@ -168,12 +224,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/addTravelModeLayout"
-                android:layout_centerVertical="true"
                 android:text="@string/addProvidedService"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </RelativeLayout>
 
     </LinearLayout>

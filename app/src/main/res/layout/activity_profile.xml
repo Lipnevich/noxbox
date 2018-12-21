@@ -51,28 +51,12 @@
                             android:textColor="@color/secondary"
                             android:textSize="@dimen/text_size" />
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <!--<ImageView-->
-                            <!--android:id="@+id/editProfile"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_alignParentEnd="true"-->
-                            <!--android:background="?attr/selectableItemBackground"-->
-                            <!--android:padding="16dp"-->
-                            <!--android:src="@drawable/edit"-->
-                            <!--android:tint="@color/secondary" />-->
-                        </RelativeLayout>
-
-
                     </LinearLayout>
                 </android.support.v7.widget.Toolbar>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="216dp"
+                    android:layout_height="wrap_content"
                     android:background="@color/primary">
 
                     <ImageView
@@ -80,7 +64,22 @@
                         android:layout_width="172dp"
                         android:layout_height="172dp"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
                         android:src="@drawable/human_profile" />
+
+                    <TextView
+                        android:id="@+id/invalidPhotoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/profilePhoto"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Please upload normally photo"
+                        android:textColor="@color/warning"
+                        android:textSize="@dimen/text_warning"
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/editPhoto"
@@ -93,35 +92,8 @@
                         android:src="@drawable/edit"
                         android:tint="@color/secondary" />
 
-                    <ImageView
-                        android:id="@+id/editName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:background="?attr/selectableItemBackground"
-                        android:padding="16dp"
-                        android:src="@drawable/edit"
-                        android:tint="@color/secondary" />
-
-                    <EditText
-                        android:id="@+id/name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/profilePhoto"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="@android:color/transparent"
-                        android:inputType="text"
-                        android:maxLength="50"
-                        android:text="Mr.Noxbox"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/secondary"
-                        android:textCursorDrawable="@color/secondary" />
 
                 </RelativeLayout>
-
 
             </LinearLayout>
         </android.support.v7.widget.CardView>

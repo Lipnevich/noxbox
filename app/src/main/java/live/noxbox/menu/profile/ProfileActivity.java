@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -76,7 +79,6 @@ public class ProfileActivity extends BaseActivity {
         AppCache.stopListen(this.getClass().getName());
     }
 
-
     private void drawPortfolioEditingMenu(final Profile profile) {
 
         List<NoxboxType> typeList = new ArrayList<>();
@@ -100,6 +102,15 @@ public class ProfileActivity extends BaseActivity {
 
     }
 
+    private void draw(final Profile profile) {
+        drawEditPhoto(profile);
+        drawEditName(profile);
+        drawEditTravelMode(profile);
+        drawEditHost(profile);
+        drawPortfolioEditingMenu(profile);
+        drawMenuAddingPerformer(profile);
+    }
+
     private void drawMenuAddingPerformer(final Profile profile) {
         if (profile.getPortfolio().values().size() == NoxboxType.values().length) {
             findViewById(R.id.addLayout).setVisibility(View.GONE);
@@ -117,15 +128,6 @@ public class ProfileActivity extends BaseActivity {
         });
     }
 
-    private void draw(final Profile profile) {
-        drawEditPhoto(profile);
-        drawEditName(profile);
-        drawEditTravelMode(profile);
-        drawEditHost(profile);
-        drawPortfolioEditingMenu(profile);
-        drawMenuAddingPerformer(profile);
-    }
-
     private void drawEditPhoto(final Profile profile) {
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -136,29 +138,54 @@ public class ProfileActivity extends BaseActivity {
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
             }
         };
+
         createCircleProfilePhotoFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profilePhoto));
 
         findViewById(R.id.editPhoto).setOnClickListener(listener);
-        findViewById(R.id.profilePhoto).setOnClickListener(listener);
+        ImageView profilePhoto = findViewById(R.id.profilePhoto);
+        profilePhoto.setOnClickListener(listener);
 
+        checkPhotoAcceptance(profile);
+
+    }
+    private void checkPhotoAcceptance(Profile profile){
+        ImageView profilePhoto = findViewById(R.id.profilePhoto);
+        if (!profile.getAcceptance().isAccepted()) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)profilePhoto.getLayoutParams();
+            params.setMargins(0, 16, 0, 0); //substitute parameters for left, top, right, bottom
+            profilePhoto.setLayoutParams(params);
+            findViewById(R.id.invalidPhotoText).setVisibility(View.VISIBLE);
+        }else{
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)profilePhoto.getLayoutParams();
+            params.setMargins(0, 16, 0, 16); //substitute parameters for left, top, right, bottom
+            profilePhoto.setLayoutParams(params);
+            findViewById(R.id.invalidPhotoText).setVisibility(View.GONE);
+        }
     }
 
     private void drawEditName(final Profile profile) {
+        final EditText name = findViewById(R.id.name);
+        name.getBackground().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         findViewById(R.id.editName).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText name = findViewById(R.id.name);
                 name.requestFocus();
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
             }
         });
-        TextView nameView = findViewById(R.id.name);
+
         if (!Strings.isNullOrEmpty(profile.getName())) {
-            nameView.setText(profile.getName());
+            name.setText(profile.getName());
         }
-        nameView.setEnabled(true);
-        nameView.addTextChangedListener(new TextWatcher() {
+
+        final TextInputLayout inputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
+        if (profile.getName() == null || profile.getName().length() < 1) {
+            inputLayout.setErrorEnabled(true);
+            inputLayout.setError("You need to enter a name");
+        }
+        name.setEnabled(true);
+        name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -170,6 +197,13 @@ public class ProfileActivity extends BaseActivity {
                 if (!Strings.nullToEmpty(profile.getName()).equals(newName)) {
                     profile.setName(newName);
                 }
+
+                if (s.length() == 0) {
+                    inputLayout.setErrorEnabled(true);
+                    inputLayout.setError("You need to enter a name");
+                } else {
+                    inputLayout.setErrorEnabled(false);
+                }
             }
 
             @Override
@@ -180,8 +214,6 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawEditTravelMode(final Profile profile) {
-
-
         if (profile.getTravelMode() == TravelMode.none) {
             findViewById(R.id.hostLayout).setEnabled(false);
             findViewById(R.id.switchHost).setEnabled(false);
@@ -260,6 +292,7 @@ public class ProfileActivity extends BaseActivity {
                                 @Override
                                 public void execute(Bitmap checked) {
                                     ImageManager.uploadPhoto(ProfileActivity.this, profile, checked);
+                                    checkPhotoAcceptance(profile);
                                 }
                             });
                         }
