@@ -36,8 +36,24 @@ public class BottomSheetDialog {
         dialog.show();
     }
 
-    public static void openPhotoNotVerifySheetDialog(final Activity activity, final Profile profile) {
+    public static void openPhotoNotVerifySheetDialog(final Activity activity) {
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_not_verify_photo, null);
+        final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
+        dialog.setContentView(view);
+
+        view.findViewById(R.id.profilePhoto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Router.startActivity(activity, ProfileActivity.class);
+                activity.finish();
+            }
+        });
+        dialog.show();
+    }
+
+
+    public static void openNameNotVerifySheetDialog(final Activity activity, final  Profile profile){
+        View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_not_verify_name, null);
         final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
         dialog.setContentView(view);
 

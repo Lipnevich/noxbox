@@ -51,7 +51,6 @@ import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
-import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.ImageManager;
@@ -63,7 +62,9 @@ import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
 import static live.noxbox.model.TravelMode.none;
+import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
+import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.LocationCalculator.getDistanceBetweenTwoPoints;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
@@ -93,7 +94,7 @@ public class DetailedActivity extends AppCompatActivity {
             @Override
             public void execute(Profile profile) {
                 AppCache.startListenNoxbox(profile.getViewed().getId());
-                if(profile.getViewed().getParty() == null){
+                if (profile.getViewed().getParty() == null) {
                     profile.getViewed().setParty(profile.privateInfo());
                 }
                 draw(profile);
@@ -338,7 +339,7 @@ public class DetailedActivity extends AppCompatActivity {
             findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openPhotoNotVerifySheetDialog(DetailedActivity.this, profile);
+                    openPhotoNotVerifySheetDialog(DetailedActivity.this);
                 }
             });
         } else {
@@ -381,15 +382,20 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void sendRequestToNoxbox(Profile profile) {
         if (!profile.getAcceptance().isAccepted()) {
-            openPhotoNotVerifySheetDialog(DetailedActivity.this, profile);
-
+            openPhotoNotVerifySheetDialog(DetailedActivity.this);
             return;
         }
         if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
             findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
-            BottomSheetDialog.openWalletAddressSheetDialog(DetailedActivity.this, profile);
+            openWalletAddressSheetDialog(DetailedActivity.this, profile);
             return;
         }
+
+        if (profile.getName() != null && profile.getName().length() == 0) {
+            openNameNotVerifySheetDialog(DetailedActivity.this, profile);
+            return;
+        }
+
         profile.setCurrent(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
         profile.getCurrent().setTimeRequested(System.currentTimeMillis());

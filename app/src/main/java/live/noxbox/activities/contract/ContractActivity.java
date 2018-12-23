@@ -60,6 +60,7 @@ import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
+import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 
 public class ContractActivity extends BaseActivity {
@@ -386,30 +387,22 @@ public class ContractActivity extends BaseActivity {
     private void drawPublishButton(final Profile profile) {
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
 
-        //варификация фотографии в профиле
-        if (!profile.getAcceptance().isAccepted()) {
-            publishButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openPhotoNotVerifySheetDialog(ContractActivity.this, profile);
-                }
-            });
-            return;
-        }
-
-
-        // TODO (vl) если имя пустое или null то выводить просьбу ввести имя
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
-
                     publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
-
                     BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
                 }
-
+                if (!profile.getAcceptance().isAccepted()) {
+                    openPhotoNotVerifySheetDialog(ContractActivity.this);
+                    return;
+                }
+                if (profile.getName() != null && profile.getName().length() == 0) {
+                    openNameNotVerifySheetDialog(ContractActivity.this, profile);
+                    return;
+                }
                 postNoxbox(profile);
             }
         });
