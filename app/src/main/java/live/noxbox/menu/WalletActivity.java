@@ -26,7 +26,6 @@ import live.noxbox.model.Request;
 import live.noxbox.model.Wallet;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.CURRENCY;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
@@ -81,13 +80,13 @@ public class WalletActivity extends BaseActivity {
         balance = scale(balance.subtract(frozenMoney));
 
         TextView balanceLabel = findViewById(R.id.balance_label_id);
-        balanceLabel.setText(String.format(getResources().getString(R.string.balance), CURRENCY));
+        balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));
 
         TextView balanceText = findViewById(R.id.balance_id);
         balanceText.setText(format(balance));
 
         TextView frozenLabel = findViewById(R.id.frozen_money_label_id);
-        frozenLabel.setText(String.format(getResources().getString(R.string.frozenMoney), CURRENCY));
+        frozenLabel.setText(String.format(getResources().getString(R.string.frozenMoney), getString(R.string.currency)));
 
         TextView frozenText = findViewById(R.id.frozen_money_id);
         frozenText.setText(format(frozenMoney));

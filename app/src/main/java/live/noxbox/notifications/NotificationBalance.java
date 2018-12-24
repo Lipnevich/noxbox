@@ -10,8 +10,6 @@ import java.util.Map;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 
-import static live.noxbox.Configuration.CURRENCY;
-
 public class NotificationBalance extends Notification {
 
     private String balance;
@@ -20,7 +18,8 @@ public class NotificationBalance extends Notification {
         super(context, profile, data);
         balance = data.get("balance");
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_balance);
-        contentView.setTextViewText(R.id.content, "Your current balance: " + balance + CURRENCY);
+        contentView.setTextViewText(R.id.content, "Your current balance: "
+                + balance + " " + context.getString(R.string.currency));
 
         onViewOnClickAction = PendingIntent.getActivity(context, 0, context.getPackageManager()
                         .getLaunchIntentForPackage(context.getPackageName()),

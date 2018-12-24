@@ -35,7 +35,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
-import live.noxbox.Configuration;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
@@ -293,7 +292,7 @@ public class DetailedActivity extends AppCompatActivity {
         drawDropdownElement(R.id.priceTitleLayout, R.id.priceLayout);
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
 
-        String priceTitle = getResources().getString(R.string.priceTxt) + " " + profile.getViewed().getPrice() + " " + Configuration.CURRENCY;
+        String priceTitle = getResources().getString(R.string.priceTxt) + " " + profile.getViewed().getPrice() + " " + getString(R.string.currency);
         ((TextView) findViewById(R.id.priceTitle)).setText(priceTitle);
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(profile.getViewed().getType().getDuration());
 

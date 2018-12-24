@@ -18,8 +18,6 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.CURRENCY;
-
 public class NotificationComplete extends Notification {
     private String total;
 
@@ -58,7 +56,8 @@ public class NotificationComplete extends Notification {
                             message = context.getResources().getString(R.string.spent);
                             contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_like);
                         }
-                        contentView.setTextViewText(R.id.content, message + " " + total + " " + CURRENCY);
+                        contentView.setTextViewText(R.id.content, message + " " + total
+                                + " " + context.getString(R.string.currency));
                         getNotificationService(context).notify(type.getGroup(), builder.build());
 
                     }
