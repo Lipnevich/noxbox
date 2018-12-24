@@ -20,7 +20,8 @@ public class NotificationPhotoInvalid extends Notification {
         invalidAcceptance = profile.getAcceptance().getInvalidAcceptance();
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_invalid_photo);
-        contentView.setTextViewText(R.id.message, context.getResources().getString(invalidAcceptance.getContent()));
+        contentView.setTextViewText(R.id.message, context.getString(R.string.photoInvalidContent,
+                context.getString(invalidAcceptance.getContent())));
         contentView.setImageViewResource(R.id.invalidPhotoImage, invalidAcceptance.getImage());
     }
 

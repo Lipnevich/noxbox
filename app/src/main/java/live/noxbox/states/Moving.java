@@ -37,7 +37,6 @@ import live.noxbox.database.AppCache;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Message;
 import live.noxbox.model.NotificationType;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
@@ -204,11 +203,8 @@ public class Moving implements State {
     }
 
     private void drawCurveLineOnMap(Profile profile) {
-        Noxbox current = profile.getCurrent();
-        current.getProfileWhoComes();
-
-        LatLng start = current.getProfileWhoComes().getPosition().toLatLng();
-        LatLng end = current.getPosition().toLatLng();
+        LatLng start = profile.getCurrent().getParty().getPosition().toLatLng();
+        LatLng end = profile.getCurrent().getOwner().getPosition().toLatLng();
 
         double cLat = ((start.latitude + end.latitude) / 2);
         double cLon = ((start.longitude + end.longitude) / 2);
@@ -220,6 +216,7 @@ public class Moving implements State {
             cLat += 0.0195;
         }
 
+        // TODO (nli) исправить для малых дистанций
         ArrayList<LatLng> points = new ArrayList<LatLng>();
         double tDelta = 1.0 / 50;
         for (double t = 0; t <= 1.0; t += tDelta) {
@@ -327,7 +324,6 @@ public class Moving implements State {
             return;
 
         locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
-        //locationManager.requestLocationUpdates(NETWORK_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
     }
 
     private void updateTimeView(Profile profile) {
