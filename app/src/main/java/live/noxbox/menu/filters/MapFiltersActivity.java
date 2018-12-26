@@ -11,7 +11,6 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
@@ -132,7 +131,7 @@ public class MapFiltersActivity extends BaseActivity {
         } else if(profile.getFilters().getPrice().equals("100")){
 
         } else {
-            priceText.setText(profile.getFilters().getPrice() + Configuration.CURRENCY);
+            priceText.setText(profile.getFilters().getPrice() + getString(R.string.currency));
             price.setProgress(Integer.parseInt(profile.getFilters().getPrice()));
         }
         price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -140,7 +139,7 @@ public class MapFiltersActivity extends BaseActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (progress == 0) {
                     profile.getFilters().setPrice("1");
-                    priceText.setText("1 " + Configuration.CURRENCY);
+                    priceText.setText("1 " + getString(R.string.currency));
                     return;
                 }
                 if (progress == 100) {
@@ -149,7 +148,7 @@ public class MapFiltersActivity extends BaseActivity {
                     return;
                 }
                 profile.getFilters().setPrice(String.valueOf(progress));
-                priceText.setText(progress + " " + Configuration.CURRENCY);
+                priceText.setText(progress + " " + getString(R.string.currency));
             }
 
             @Override

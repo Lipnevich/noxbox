@@ -25,7 +25,7 @@ public class LocationCalculator {
                 partyPosition.getLatitude(),
                 partyPosition.getLongitude(),
                 results);
-        Log.d("DistnceBetweenTwoPoints", "" + results[0]);
+        Log.d("DistBetweenTwoPoints", "" + results[0]);
 
         return (int) results[0];
     }

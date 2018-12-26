@@ -35,7 +35,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.activities.detailed.CoordinateActivity;
@@ -86,8 +85,7 @@ public class ContractActivity extends BaseActivity {
 
     private void initializeUi() {
         closeOrRemove = findViewById(R.id.closeOrRemove);
-        String currency = Configuration.CURRENCY + ".";
-        ((TextView) findViewById(R.id.textCurrency)).setText(currency);
+        ((TextView) findViewById(R.id.textCurrency)).setText(getString(R.string.currency));
     }
 
     @Override

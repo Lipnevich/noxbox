@@ -8,7 +8,6 @@ public interface Configuration {
     String START_TIME = "00:00:00";
     double RADIUS_IN_METERS = 50 * 1000;
     int MIN_RATE_IN_PERCENTAGE = 90;
-    String CURRENCY = "Waves";
     int LOCATION_PERMISSION_REQUEST_CODE = 911;
     long MINIMUM_PAYMENT_TIME_MILLIS = 15 * 60 * 1000;
     float MINIMUM_FACE_SIZE = 0.3F;

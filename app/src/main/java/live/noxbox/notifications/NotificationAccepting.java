@@ -20,16 +20,8 @@ import live.noxbox.tools.Task;
 
 public class NotificationAccepting extends Notification {
 
-    private String name;
-
     public NotificationAccepting(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-
-        if(profile != null){
-            name = profile.getCurrent().getParty().getName();
-        }else {
-            name = data.get("name");
-        }
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
 
