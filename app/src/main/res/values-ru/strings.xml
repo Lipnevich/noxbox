@@ -270,8 +270,9 @@
     <string name="performed">Исполнено</string>
     <string name="received">Получено</string>
     <string name="greetings">Приветствую!</string>
-    <string name="userPhotoDidNotVerify">Фотография профиля не прошла проверку</string>
-    <string name="moveToProfile">Переход в профиль:</string>
-    <string name="userNameDidNotVerify">Имя профиля не прошло проверку</string>
+    <string name="moveToProfile">Открыть профиль</string>
+    <string name="userNameWasNotVerified">Имя профиля не прошло проверку</string>
+    <string name="pleaseUploadNewPhoto">Пожалуйста обновите фото</string>
+    <string name="selectPhoto">Выберите фото</string>
 
 </resources>

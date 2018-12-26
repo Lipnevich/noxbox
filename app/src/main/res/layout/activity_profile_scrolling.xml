@@ -60,7 +60,6 @@
                 android:visibility="visible" />
         </RelativeLayout>
 
-        <include layout="@layout/item_divider" />
 
         <RelativeLayout
             android:id="@+id/travelModeLayout"

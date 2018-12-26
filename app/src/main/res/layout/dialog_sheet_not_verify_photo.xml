@@ -5,30 +5,21 @@
     android:orientation="vertical"
     android:padding="4dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/userPhotoDidNotVerify"
-        android:textColor="@color/google_text"
-        android:textSize="@dimen/text_size_secondary" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/google_text"
-        android:text="@string/moveToProfile"
-        android:textSize="@dimen/text_size_secondary" />
 
     <ImageView
         android:id="@+id/profilePhoto"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/human_profile"/>
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/human_profile" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/pleaseUploadNewPhoto"
+        android:textColor="@color/google_text"
+        android:textSize="@dimen/text_size_secondary" />
 </LinearLayout>

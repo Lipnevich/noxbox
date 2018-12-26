@@ -76,10 +76,10 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Please upload normally photo"
-                        android:textColor="@color/warning"
+                        android:text="@string/pleaseUploadNewPhoto"
+                        android:textColor="@color/secondary"
                         android:textSize="@dimen/text_warning"
-                        android:visibility="gone" />
+                        android:visibility="invisible" />
 
                     <ImageView
                         android:id="@+id/editPhoto"

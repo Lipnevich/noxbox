@@ -129,6 +129,8 @@ public class MapFiltersActivity extends BaseActivity {
         if (profile.getFilters().getPrice().equals("0")) {
             priceText.setText(R.string.max);
             price.setProgress(100);
+        } else if(profile.getFilters().getPrice().equals("100")){
+
         } else {
             priceText.setText(profile.getFilters().getPrice() + Configuration.CURRENCY);
             price.setProgress(Integer.parseInt(profile.getFilters().getPrice()));

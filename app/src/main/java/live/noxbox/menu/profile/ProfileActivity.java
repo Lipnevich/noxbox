@@ -135,7 +135,7 @@ public class ProfileActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE);
+                startActivityForResult(Intent.createChooser(intent, getString(R.string.selectPhoto)), SELECT_IMAGE);
             }
         };
 
@@ -148,18 +148,21 @@ public class ProfileActivity extends BaseActivity {
         checkPhotoAcceptance(profile);
 
     }
-    private void checkPhotoAcceptance(Profile profile){
+
+    private void checkPhotoAcceptance(Profile profile) {
         ImageView profilePhoto = findViewById(R.id.profilePhoto);
+
         if (!profile.getAcceptance().isAccepted()) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)profilePhoto.getLayoutParams();
+            ((TextView) findViewById(R.id.invalidPhotoText)).setText("* " + getString(R.string.photoInvalidContent, getString(profile.getAcceptance().getInvalidAcceptance().getContent())));
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
             params.setMargins(0, 16, 0, 0); //substitute parameters for left, top, right, bottom
             profilePhoto.setLayoutParams(params);
             findViewById(R.id.invalidPhotoText).setVisibility(View.VISIBLE);
-        }else{
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)profilePhoto.getLayoutParams();
+        } else {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
             params.setMargins(0, 16, 0, 16); //substitute parameters for left, top, right, bottom
             profilePhoto.setLayoutParams(params);
-            findViewById(R.id.invalidPhotoText).setVisibility(View.GONE);
+            findViewById(R.id.invalidPhotoText).setVisibility(View.INVISIBLE);
         }
     }
 
@@ -182,7 +185,7 @@ public class ProfileActivity extends BaseActivity {
         final TextInputLayout inputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
         if (profile.getName() == null || profile.getName().length() < 1) {
             inputLayout.setErrorEnabled(true);
-            inputLayout.setError("You need to enter a name");
+            inputLayout.setError("* " + getString(R.string.userNameWasNotVerified));
         }
         name.setEnabled(true);
         name.addTextChangedListener(new TextWatcher() {
@@ -200,7 +203,7 @@ public class ProfileActivity extends BaseActivity {
 
                 if (s.length() == 0) {
                     inputLayout.setErrorEnabled(true);
-                    inputLayout.setError("You need to enter a name");
+                    inputLayout.setError("* " + getString(R.string.userNameWasNotVerified));
                 } else {
                     inputLayout.setErrorEnabled(false);
                 }
@@ -238,6 +241,8 @@ public class ProfileActivity extends BaseActivity {
     private void drawEditHost(final Profile profile) {
         findViewById(R.id.switchHost).setVisibility(View.VISIBLE);
         ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
+        setHostStatus(profile.getHost(), profile);
+
         findViewById(R.id.hostLayout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

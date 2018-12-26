@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/userNameDidNotVerify"
+        android:text="@string/userNameWasNotVerified"
         android:textColor="@color/google_text"
         android:textSize="@dimen/text_size_secondary" />
 
