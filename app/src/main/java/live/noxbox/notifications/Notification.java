@@ -28,6 +28,7 @@ import static live.noxbox.model.NotificationType.message;
 
 public abstract class Notification {
 
+
     //need initialize for NotificationCompat.Builder
     protected long[] vibrate;
     protected Uri sound;
@@ -43,7 +44,6 @@ public abstract class Notification {
     protected String notificationTime;
     protected Map<String, String> data;
     protected String noxboxId;
-
 
     public Notification(Context context, Profile profile, Map<String, String> data) {
         this.context = context;

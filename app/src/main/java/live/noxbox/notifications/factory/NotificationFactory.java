@@ -1,6 +1,9 @@
 package live.noxbox.notifications.factory;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 
 import java.util.Map;
 
@@ -23,9 +26,13 @@ import live.noxbox.notifications.NotificationRequesting;
 import live.noxbox.notifications.NotificationSupport;
 import live.noxbox.notifications.NotificationUploadingProgress;
 
+import static live.noxbox.Configuration.CHANNEL_ID;
+import static live.noxbox.services.MessagingService.getNotificationService;
+
 public abstract class NotificationFactory {
 
     public static Notification buildNotification(Context context, Profile profile, Map<String, String> data) {
+        createChannel(context);
         NotificationType type = NotificationType.valueOf(data.get("type"));
         switch (type) {
             case requesting:
@@ -64,6 +71,22 @@ public abstract class NotificationFactory {
 
                     }
                 };
+        }
+    }
+
+
+    private static void createChannel(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel notificationChannel = getNotificationService(context).getNotificationChannel(CHANNEL_ID);
+
+
+            if (notificationChannel == null) {
+                notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, importance);
+                getNotificationService(context).createNotificationChannel(notificationChannel);
+            }
+
+
         }
     }
 
