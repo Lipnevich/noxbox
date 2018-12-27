@@ -1,14 +1,11 @@
 package live.noxbox.states;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -46,11 +43,13 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.Task;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.location.LocationManager.GPS_PROVIDER;
 import static live.noxbox.Configuration.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
-import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS;
+import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
+import static live.noxbox.MapActivity.isLocationPermissionGranted;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
@@ -64,8 +63,8 @@ public class Moving implements State {
     private GoogleMap googleMap;
     private Activity activity;
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    private static LocationManager locationManager;
+    private static LocationListener locationListener;
 
     private LinearLayout movingView;
     private View childMovingView;
@@ -127,14 +126,11 @@ public class Moving implements State {
             drawUnreadMessagesIndicator(profile.getCurrent().getChat().getOwnerMessages(), profile.getCurrent().getChat().getPartyReadTime());
         }
 
-
-        if (defineLocationListener(profile)) {
-            registerLocationListener(profile);
+        if (defineProfileLocationListener(profile)) {
+            registerLocationListener();
         } else {
             HashMap<String, String> data = new HashMap<>();
             data.put("type", NotificationType.moving.name());
-            data.put("timeToMeet", profile.getCurrent().getTimeToMeet().toString());
-
             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
         }
 
@@ -268,11 +264,13 @@ public class Moving implements State {
         memberWhoMoving = null;
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
+            locationListener = null;
+            locationManager = null;
         }
         MessagingService.removeNotifications(activity);
     }
 
-    private boolean defineLocationListener(Profile profile) {
+    private boolean defineProfileLocationListener(Profile profile) {
         if (profile.equals(profile.getCurrent().getOwner())) {
             if (profile.getCurrent().getOwner().getTravelMode() != none) {
                 if (profile.getCurrent().getRole() == supply) {
@@ -293,37 +291,43 @@ public class Moving implements State {
         return false;
     }
 
-    private void registerLocationListener(final Profile profile) {
+    private void registerLocationListener() {
+        if (locationManager != null && locationListener != null) return;
+
         locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
-            public void onLocationChanged(Location location) {
-                updatePosition(profile, location);
-                updateTimeView(profile);
-                AppCache.updateNoxbox();
+            public void onLocationChanged(final Location location) {
+                AppCache.readProfile(new Task<Profile>() {
+                    @Override
+                    public void execute(Profile profile) {
+                        Log.d(State.TAG + " Moving", location.toString());
+                        DebugMessage.popup(activity, location.getLatitude() + " : " + location.getLongitude());
+                        updatePosition(profile, location);
+                        updateTimeView(profile);
+                        AppCache.updateNoxbox();
+                    }
+                });
+
             }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
             }
 
             @Override
             public void onProviderEnabled(String provider) {
-
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-
             }
         };
 
-        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        if (!isLocationPermissionGranted(activity))
             return;
-
-        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_RECEIVE_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+        //todo (vl) You need to go to check updates for user location in outside
+        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
     }
 
     private void updateTimeView(Profile profile) {

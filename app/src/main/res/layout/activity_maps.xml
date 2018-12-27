@@ -67,26 +67,24 @@
                 android:tint="@color/primary" />
 
             <FrameLayout
-                android:layout_width="77dp"
-                android:layout_height="77dp"
+                android:layout_width="78dp"
+                android:layout_height="78dp"
                 android:layout_gravity="end|top">
 
                 <ImageView
                     android:id="@+id/chat"
                     style="@style/IconButtonStyle"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
                     android:layout_gravity="center"
-                    android:layout_marginStart="13dp"
-                    android:layout_marginEnd="13dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="12dp"
                     android:src="@drawable/chat" />
 
                 <TextView
                     android:id="@+id/totalUnread"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginStart="48dp"
-                    android:layout_marginTop="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="56dp"
                     android:background="@drawable/chat_badge_background"
                     android:gravity="center"
                     android:textAlignment="center"

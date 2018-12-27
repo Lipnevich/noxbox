@@ -13,14 +13,15 @@
  */
 package live.noxbox;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -30,10 +31,6 @@ import android.view.View;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -43,12 +40,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.List;
+import java.util.Calendar;
 import java.util.WeakHashMap;
 
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.Firestore;
 import live.noxbox.debug.DebugActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
@@ -68,6 +66,7 @@ import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
@@ -80,8 +79,6 @@ public class MapActivity extends DebugActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private LocationRequest locationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +86,6 @@ public class MapActivity extends DebugActivity implements
 
         initCrashReporting();
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -106,35 +102,56 @@ public class MapActivity extends DebugActivity implements
                 .addConnectionCallbacks(this)
                 .build();
         googleApiClient.connect();
+
         AppCache.startListening();
+
 
     }
 
-    private LocationCallback locationCallback;
 
     @Override
     public void onMapReady(GoogleMap readyMap) {
         super.onMapReady(readyMap);
         googleMap = readyMap;
 
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5 * 1000);
-
         AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
-                locationCallback = new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        List<Location> locationList = locationResult.getLocations();
-                        if (locationList.size() > 0) {
-                            Location location = locationList.get(locationList.size() - 1);
+                if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
 
-                            profile.setPosition(new Position(location.getLatitude(), location.getLongitude()));
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (locationManager == null)
+                    return;
+
+
+                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS * 1000) {
+                    profile.setPosition(Position.from(location));
+                    Firestore.writeProfile(profile);
+                } else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            profile.setPosition(Position.from(location));
+                            Firestore.writeProfile(profile);
                         }
-                    }
-                };
+
+                        @Override
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String provider) {
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String provider) {
+                        }
+                    });
+                }
             }
         });
         visibleCurrentLocation();
@@ -165,9 +182,6 @@ public class MapActivity extends DebugActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        if (mFusedLocationClient != null && locationCallback != null) {
-            mFusedLocationClient.removeLocationUpdates(locationCallback);
-        }
         unregisterReceiver(locationReceiver);
         googleApiClient.disconnect();
         AppCache.stopListen(this.getClass().getName());
@@ -198,7 +212,6 @@ public class MapActivity extends DebugActivity implements
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             googleMap.setMyLocationEnabled(true);
-            startListenLocationUpdate();
         } else {
             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
             findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
@@ -208,15 +221,6 @@ public class MapActivity extends DebugActivity implements
                             LOCATION_PERMISSION_REQUEST_CODE);
                 }
             });
-        }
-    }
-
-    private void startListenLocationUpdate() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            if (mFusedLocationClient != null && locationRequest != null && locationCallback != null) {
-                mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-            }
         }
     }
 
@@ -239,7 +243,6 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        startListenLocationUpdate();
     }
 
 

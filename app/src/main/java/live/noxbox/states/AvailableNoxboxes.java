@@ -23,7 +23,6 @@ import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.contract.NoxboxTypeListActivity;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
@@ -33,7 +32,9 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.CLUSTER_RENDERING_FREQUENCY;
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.MapActivity.getCameraPosition;
 import static live.noxbox.database.AppCache.markers;
+import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.Router.startActivityForResult;
@@ -63,7 +64,7 @@ public class AvailableNoxboxes implements State {
 
     @Override
     public void draw(final Profile profile) {
-        startListenAvailableNoxboxes();
+        startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), markers);
         if (clusterManager == null) {
             clusterManager = new ClusterManager(activity, googleMap);
         }
@@ -71,7 +72,7 @@ public class AvailableNoxboxes implements State {
         googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                startListenAvailableNoxboxes();
+                startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), markers);
             }
         });
         MapOperator.moveCopyrightRight(googleMap);
@@ -110,7 +111,7 @@ public class AvailableNoxboxes implements State {
                 profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
                 profile.getCurrent().setOwner(profile.publicInfo());
                 if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    profile.getCurrent().getOwner().setPosition(MapActivity.getCameraPosition(googleMap));
+                    profile.getCurrent().getOwner().setPosition(getCameraPosition(googleMap));
                 }
 
                 startActivity(activity, ContractActivity.class);
@@ -202,11 +203,6 @@ public class AvailableNoxboxes implements State {
             serviceIsBound = false;
         }
     };
-
-    private void startListenAvailableNoxboxes() {
-        GeoRealtime.startListenAvailableNoxboxes(MapActivity.getCameraPosition(googleMap).toGeoLocation(), markers);
-
-    }
 
 
 }
