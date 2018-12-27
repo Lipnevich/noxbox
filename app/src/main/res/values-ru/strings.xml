@@ -84,7 +84,7 @@
     <string name="agreement">Я прочел и согласен с %1$s и %2$s</string>
     <string name="authRules">Правилами</string>
     <string name="authPrivacyPolicy">Политиками</string>
-    <string name="rulesLink">https://noxbox.io/rules.html</string>
+    <string name="rulesLink">https://noxbox.io/rules.pdf</string>
     <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicyRu.pdf</string>
     <string name="promoVideoLink">"https://www.youtube.com/watch?v=5vDMkpgZ9Yk"</string>
 

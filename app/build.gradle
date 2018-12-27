@@ -8,7 +8,7 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 109
+        versionCode 110
         versionName "Redhumka"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
