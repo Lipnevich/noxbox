@@ -206,6 +206,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     private void showYearDivider(HistoryViewHolder viewHolder, int position) {
+        //TODO (vl) когда прокручиваем снизу вверх появляется год для текущего года
         if (position > 0 && position < historyItems.size() && !year(historyItems.get(position - 1).getTimeCompleted()).equals(year(historyItems.get(position).getTimeCompleted()))) {
             viewHolder.layoutYearDivider.setVisibility(View.VISIBLE);
             viewHolder.textYear.setText(year(historyItems.get(position).getTimeCompleted()));
