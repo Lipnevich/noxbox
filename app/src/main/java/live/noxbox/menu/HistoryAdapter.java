@@ -32,7 +32,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
+import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.MarketRole;
@@ -41,6 +43,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.DateTimeFormatter.time;
+import static live.noxbox.tools.DateTimeFormatter.year;
 
 /**
  * Created by nicolay.lipnevich on 22/06/2017.
@@ -75,6 +78,28 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         noxboxes.add(noxbox);
                     }
                 }
+
+                //for debbuging yearsBorder
+                if (BuildConfig.DEBUG) {
+                    Long[] datesInMillis = new Long[]{1505117471000L, 1507709471000L, 1510387871000L, 1473581471000L, 1476173471000L, 1478851871000L, 1481443871000L, 1441959071000L, 1410419471000L};
+                    if (!noxboxes.isEmpty()) {
+                        for (int i = 0; i < datesInMillis.length; i++) {
+                            Noxbox noxbox = new Noxbox().setId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE));
+                            noxbox.setParty(noxboxes.get(0).getParty());
+                            noxbox.setOwner(noxboxes.get(0).getOwner());
+                            noxbox.setType(noxboxes.get(0).getType());
+                            noxbox.setPosition(noxboxes.get(0).getPosition());
+                            noxbox.setPrice(noxboxes.get(0).getPrice());
+                            noxbox.setRole(noxboxes.get(0).getRole());
+                            noxbox.setWorkSchedule(noxboxes.get(0).getWorkSchedule());
+                            noxbox.setTimeCompleted(datesInMillis[i]);
+
+                            uniqueValue.add(noxbox);
+                            noxboxes.add(noxbox);
+                        }
+                    }
+                }
+
                 if (noxboxes.size() > 0) {
                     historyItems.addAll(noxboxes);
                     notifyDataSetChanged();
@@ -129,24 +154,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         final Noxbox noxbox = historyItems.get(position);
 
-        if (noxbox.getTimeCompleted() != null) {
-            viewHolder.time.setText(time(noxbox.getTimeCompleted()));
-            viewHolder.date.setText(date(noxbox.getTimeCompleted()));
-        } else if (noxbox.getTimeCanceledByParty() != null) {
-            viewHolder.time.setText(time(noxbox.getTimeCanceledByParty()));
-            viewHolder.date.setText(date(noxbox.getTimeCanceledByParty()));
-        } else if (noxbox.getTimeCanceledByOwner() != null) {
-            viewHolder.time.setText(time(noxbox.getTimeCanceledByOwner()));
-            viewHolder.date.setText(date(noxbox.getTimeCanceledByOwner()));
-        } else if (noxbox.getTimeTimeout() != null) {
-            viewHolder.time.setText(time(noxbox.getTimeTimeout()));
-            viewHolder.date.setText(date(noxbox.getTimeTimeout()));
-        }
+        viewHolder.time.setText(time(noxbox.getTimeCompleted()));
+        viewHolder.date.setText(date(noxbox.getTimeCompleted()) + ",");
+        showYearDivider(viewHolder, position);
+
 
         viewHolder.price.setText(noxbox.getPrice() + " " + context.getResources().getString(R.string.currency));
         viewHolder.performerName.setText(noxbox.getNotMe(profileId).getName());
-
-
+        viewHolder.noxboxType.setText(noxbox.getType().getName());
 
         Glide.with(context)
                 .load(noxbox.getNotMe(profileId).getPhoto())
@@ -176,40 +191,52 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             });
         }
 
-
         viewHolder.rootHistoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(viewHolder.ratingLayout.getVisibility() == View.GONE){
-                    viewHolder.ratingLayout.setVisibility(View.VISIBLE);
-                    viewHolder.mapView.onCreate(null);
-                    viewHolder.mapView.onResume();
-                    viewHolder.mapView.getMapAsync(new OnMapReadyCallback() {
-                        @Override
-                        public void onMapReady(GoogleMap googleMap) {
-                            MapsInitializer.initialize(context);
-                            GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                                    .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
-                                    .position(noxbox.getPosition().toLatLng(), 48, 48)
-                                    .anchor(0.5f, 1)
-                                    .zIndex(1000);
-                            GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
-                            marker.setDimensions(960, 960);
-
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
-                        }
-                    });
-                }else{
-                    viewHolder.ratingLayout.setVisibility(View.GONE);
+                if (viewHolder.expandableHistoryLayout.getVisibility() == View.GONE) {
+                    showMapView(viewHolder, noxbox);
+                } else {
+                    viewHolder.expandableHistoryLayout.setVisibility(View.GONE);
                     viewHolder.mapView.removeAllViews();
                 }
 
             }
         });
-
-
     }
 
+    private void showYearDivider(HistoryViewHolder viewHolder, int position) {
+        if (position > 0 && position < historyItems.size() && !year(historyItems.get(position - 1).getTimeCompleted()).equals(year(historyItems.get(position).getTimeCompleted()))) {
+            viewHolder.layoutYearDivider.setVisibility(View.VISIBLE);
+            viewHolder.textYear.setText(year(historyItems.get(position).getTimeCompleted()));
+        }
+    }
+
+
+    private void showMapView(HistoryViewHolder viewHolder, final Noxbox noxbox) {
+        viewHolder.expandableHistoryLayout.setVisibility(View.VISIBLE);
+        viewHolder.mapView.onCreate(null);
+        viewHolder.mapView.onResume();
+        viewHolder.mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                MapsInitializer.initialize(context);
+                GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+                        .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
+                        .position(noxbox.getPosition().toLatLng(), 48, 48)
+                        .anchor(0.5f, 1)
+                        .zIndex(1000);
+                GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
+                marker.setDimensions(960, 960);
+
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
+
+                googleMap.getUiSettings().setAllGesturesEnabled(false);
+                googleMap.getUiSettings().setScrollGesturesEnabled(false);
+                googleMap.getUiSettings().setZoomGesturesEnabled(false);
+            }
+        });
+    }
 
     @Override
     public int getItemCount() {
@@ -221,13 +248,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         //ItemViewHolder
         TextView date;
         TextView time;
+        TextView noxboxType;
         TextView price;
         ImageView performerPhoto;
         TextView performerName;
         MapView mapView;
         ImageView rateNoxbox;
+        LinearLayout expandableHistoryLayout;
 
-        LinearLayout ratingLayout;
+        //include part
+        LinearLayout layoutYearDivider;
+        TextView textYear;
+
         //ProgressViewHolder
         ProgressBar progressBar;
 
@@ -244,11 +276,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             date = layout.findViewById(R.id.dateText);
             time = layout.findViewById(R.id.timeText);
             price = layout.findViewById(R.id.priceText);
+            noxboxType = layout.findViewById(R.id.noxboxType);
             performerPhoto = layout.findViewById(R.id.performerImage);
             performerName = layout.findViewById(R.id.performerName);
             mapView = layout.findViewById(R.id.map);
             rateNoxbox = layout.findViewById(R.id.rateBox);
-            ratingLayout = layout.findViewById(R.id.ratingLayout);
+            expandableHistoryLayout = layout.findViewById(R.id.expandableHistoryLayout);
+
+            layoutYearDivider = layout.findViewById(R.id.layoutYearDivider);
+            textYear = layout.findViewById(R.id.textYear);
         }
     }
 

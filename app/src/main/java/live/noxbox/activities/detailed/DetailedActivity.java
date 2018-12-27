@@ -64,7 +64,6 @@ import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
-import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.LocationCalculator.getDistanceBetweenTwoPoints;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
@@ -171,12 +170,6 @@ public class DetailedActivity extends AppCompatActivity {
         }
         ((ImageView) findViewById(R.id.typeImage)).setImageResource(profile.getViewed().getType().getImage());
         ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
-
-
-        if (profile.getViewed().getTimeCreated() != null) {
-            ((TextView) findViewById(R.id.date)).setText(getText(R.string.dateRegistrationService) + " " + date(profile.getViewed().getTimeCreated()));
-        }
-
     }
 
     private void drawRating(Noxbox viewed) {

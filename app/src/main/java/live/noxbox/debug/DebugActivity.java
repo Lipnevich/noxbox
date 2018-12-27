@@ -46,7 +46,14 @@ public class DebugActivity extends MenuActivity implements
 
     private List<NotificationType> photoPushes = Arrays.asList(NotificationType.values());
     private Iterator<NotificationType> iterator = photoPushes.iterator();
-
+    private Profile party = new Profile()
+            .setWallet(new Wallet().setBalance("1000000"))
+            .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
+            .setTravelMode(TravelMode.driving)
+            .setHost(true)
+            .setName("Granny Smith")
+            .setId("12321")
+            .setPhoto(NoxboxExamples.PHOTO_MOCK);
 
     @Override
     protected void onResume() {
@@ -58,7 +65,7 @@ public class DebugActivity extends MenuActivity implements
                 @Override
                 public void execute(Profile profile) {
                     Map<String, String> data = new HashMap<>();
-                    if(!iterator.hasNext()) iterator = photoPushes.iterator();
+                    if (!iterator.hasNext()) iterator = photoPushes.iterator();
                     data.put("type", iterator.next().name());
                     data.put("progress", "" + 50);
                     data.put("price", "" + 555);
@@ -112,15 +119,7 @@ public class DebugActivity extends MenuActivity implements
                         // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
 
                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-                        profile.getCurrent().setParty(new Profile()
-                                .setWallet(new Wallet().setBalance("1000000"))
-                                .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
-                                .setNoxboxId(profile.getCurrent().getId())
-                                .setTravelMode(TravelMode.driving)
-                                .setHost(false)
-                                .setName("Granny Smith")
-                                .setId("12321")
-                                .setPhoto(NoxboxExamples.PHOTO_MOCK));
+                        profile.getCurrent().setParty(party.setNoxboxId(profile.getCurrent().getId()));
                         AppCache.updateNoxbox();
                         GeoRealtime.offline(profile.getCurrent());
                     } else {

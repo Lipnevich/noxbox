@@ -93,9 +93,9 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="4dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:src="@drawable/ic_photographer" />
 
                     <TextView
@@ -123,8 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone"
-                    >
+                    android:visibility="gone">
 
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
@@ -158,20 +157,7 @@
                                 android:textColor="@color/google_text"
                                 android:textSize="@dimen/text_title" />
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
 
-                                <TextView
-                                    android:id="@+id/date"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="end"
-                                    android:lineSpacingExtra="8dp"
-                                    android:textColor="@color/google_text"
-                                    android:textSize="@dimen/text_size_secondary" />
-                            </LinearLayout>
                         </LinearLayout>
                     </android.support.v7.widget.CardView>
 
@@ -196,9 +182,9 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="4dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
                         android:src="@drawable/bike"
                         android:tint="@color/secondary" />
 
@@ -318,9 +304,9 @@
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
                         app:cardCornerRadius="20dp">
 
                         <LinearLayout
@@ -392,11 +378,11 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="4dp"
                         android:layout_marginStart="24dp"
                         android:layout_marginTop="4dp"
-                        android:tint="@color/secondary"
-                        android:src="@drawable/star" />
+                        android:layout_marginBottom="4dp"
+                        android:src="@drawable/star"
+                        android:tint="@color/secondary" />
 
 
                     <TextView
@@ -429,8 +415,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
                         android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
                         android:orientation="horizontal">
 
                         <LinearLayout
@@ -533,9 +519,9 @@
                         android:layout_marginTop="8dp"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
-                        android:paddingBottom="@dimen/activity_horizontal_margin"
                         android:paddingStart="@dimen/activity_horizontal_margin"
                         android:paddingTop="@dimen/activity_horizontal_margin"
+                        android:paddingBottom="@dimen/activity_horizontal_margin"
                         android:visibility="gone">
 
                         <ImageView
@@ -589,9 +575,9 @@
                         android:layout_marginTop="8dp"
                         android:background="?attr/selectableItemBackground"
                         android:clickable="true"
-                        android:paddingBottom="@dimen/activity_horizontal_margin"
                         android:paddingStart="@dimen/activity_horizontal_margin"
                         android:paddingTop="@dimen/activity_horizontal_margin"
+                        android:paddingBottom="@dimen/activity_horizontal_margin"
                         android:visibility="gone">
 
                         <ImageView
@@ -660,11 +646,11 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="4dp"
                         android:layout_marginStart="24dp"
                         android:layout_marginTop="4dp"
-                        android:tint="@color/secondary"
-                        android:src="@drawable/coin" />
+                        android:layout_marginBottom="4dp"
+                        android:src="@drawable/coin"
+                        android:tint="@color/secondary" />
 
                     <TextView
                         android:id="@+id/priceTitle"
@@ -727,8 +713,8 @@
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="8dp"
                                     android:layout_marginStart="8dp"
+                                    android:layout_marginBottom="8dp"
                                     android:layout_weight="4"
                                     android:orientation="vertical">
 
@@ -780,9 +766,9 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginEnd="8dp"
                                 android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="8dp"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -803,8 +789,8 @@
                 android:layout_height="36dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:layout_margin="8dp"
-                android:layout_marginBottom="4dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="4dp"
                 android:background="@drawable/button_corner"
                 android:enabled="true"
                 android:gravity="center_horizontal|center_vertical"
@@ -819,8 +805,8 @@
                 android:layout_height="36dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:layout_margin="8dp"
-                android:layout_marginBottom="4dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="4dp"
                 android:background="@drawable/button_corner"
                 android:enabled="true"
                 android:gravity="center_horizontal|center_vertical"
@@ -835,8 +821,8 @@
                 android:layout_height="36dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:layout_margin="8dp"
-                android:layout_marginBottom="4dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginBottom="4dp"
                 android:background="@drawable/button_corner"
                 android:enabled="true"
                 android:gravity="center_horizontal|center_vertical"

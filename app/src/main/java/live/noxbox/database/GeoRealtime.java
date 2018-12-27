@@ -60,8 +60,7 @@ public class GeoRealtime {
                 + delimiter + currentNoxbox.getOwner().getHost()
                 + delimiter + currentNoxbox.getOwner().getFilters().getAllowNovices()
                 + delimiter + ownerRating.getReceivedLikes()
-                + delimiter + ownerRating.getReceivedDislikes()
-                ;
+                + delimiter + ownerRating.getReceivedDislikes();
     }
 
     private static Noxbox parseKey(String key) {
