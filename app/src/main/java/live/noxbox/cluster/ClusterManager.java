@@ -38,8 +38,6 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     private final Executor executor = Executors.newSingleThreadExecutor();
     private final QuadTree quadTree = new QuadTree(QUAD_TREE_BUCKET_CAPACITY);
 
-    private int minClusterSize = DEFAULT_MIN_CLUSTER_SIZE;
-
     public ClusterManager(@NonNull Activity activity, @NonNull GoogleMap googleMap) {
         this.googleMap = googleMap;
         this.renderer = new live.noxbox.cluster.ClusterRenderer(activity, googleMap);
@@ -49,6 +47,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         List<NoxboxMarker> clusterItems = new ArrayList<>();
         if (areNotTheyNull(noxboxItems)) {
             for (Noxbox noxbox : noxboxItems.values()) {
+                // TODO (nli) filter it in appear time and after profile's filter update
                 if (isFiltered(profile, noxbox)) continue;
                 clusterItems.add(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             }
@@ -163,7 +162,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
                     continue;
                 }
 
-                if (points.size() >= minClusterSize) {
+                if (points.size() >= DEFAULT_MIN_CLUSTER_SIZE) {
 
                     LatLng center = MapOperator.getCenterBetweenSomeLocations(points);
                     clusters.add(new live.noxbox.cluster.Cluster<NoxboxMarker>(center.latitude, center.longitude,

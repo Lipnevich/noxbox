@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import live.noxbox.R;
+
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class SwipeButton extends RelativeLayout {
     private ImageView slidingButton;
@@ -66,7 +69,7 @@ public class SwipeButton extends RelativeLayout {
 
         LayoutParams layoutParamsView = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+                WRAP_CONTENT);
 
         layoutParamsView.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
 
@@ -77,9 +80,9 @@ public class SwipeButton extends RelativeLayout {
         final TextView centerText = new TextView(context);
         this.centerText = centerText;
 
-        LayoutParams layoutParams = new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        centerText.setTextSize(TypedValue.COMPLEX_UNIT_SP,30);
+
+        LayoutParams layoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
 
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         centerText.setText(text);
@@ -103,8 +106,8 @@ public class SwipeButton extends RelativeLayout {
         slidingButton.setPadding(35, 35, 35, 35);
 
         LayoutParams layoutParamsButton = new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+                WRAP_CONTENT,
+                WRAP_CONTENT);
 
         layoutParamsButton.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
         layoutParamsButton.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);

@@ -159,80 +159,84 @@
                 android:visibility="visible" />
 
             <LinearLayout
-                android:id="@+id/debugLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|top"
+                android:layout_gravity="start|center"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="80dp"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/debugPush"
+                    android:id="@+id/debugNotify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="32dp"
                     android:text="@string/generatePush"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size" />
+                    android:textColor="@color/debug"
+                    android:textSize="@dimen/text_title"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/debugGenerateNoxboxes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="32dp"
                     android:text="@string/generateNoxboxes"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size" />
+                    android:textColor="@color/debug"
+                    android:textSize="@dimen/text_title"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/debugRequest"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="32dp"
                     android:text="@string/request"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size" />
+                    android:textColor="@color/debug"
+                    android:textSize="@dimen/text_title"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/debugAccept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="32dp"
                     android:text="@string/accept"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size" />
+                    android:textColor="@color/debug"
+                    android:textSize="@dimen/text_title"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/debugPhotoVerify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="32dp"
                     android:text="@string/verifyPhoto"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size" />
+                    android:textColor="@color/debug"
+                    android:textSize="@dimen/text_title"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/debugPhotoReject"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="32dp"
                     android:text="@string/rejectPhoto"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size" />
+                    android:textColor="@color/debug"
+                    android:textSize="@dimen/text_title"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/debugComplete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|top"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="32dp"
                     android:text="@string/complete"
-                    android:textColor="@color/primary"
-                    android:textSize="@dimen/text_size" />
+                    android:textColor="@color/debug"
+                    android:textSize="@dimen/text_title"
+                    android:visibility="gone"/>
             </LinearLayout>
 
         </fragment>

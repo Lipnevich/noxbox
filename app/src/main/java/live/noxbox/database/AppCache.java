@@ -29,7 +29,7 @@ import static live.noxbox.database.GeoRealtime.online;
 public class AppCache {
 
     private static Profile profile;
-    public static Map<String, Noxbox> markers = new ConcurrentHashMap<>();
+    public static Map<String, Noxbox> availableNoxboxes = new ConcurrentHashMap<>();
 
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();

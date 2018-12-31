@@ -12,19 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Dot;
-import com.google.android.gms.maps.model.Gap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.PatternItem;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import live.noxbox.R;
@@ -54,6 +45,7 @@ import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
+import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
@@ -71,7 +63,6 @@ public class Moving implements State {
     private TextView timeView;
 
     private Marker memberWhoMoving;
-    private Polyline polyline;
 
     private TextView totalUnreadView;
 
@@ -134,7 +125,7 @@ public class Moving implements State {
             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
         }
 
-        drawCurveLineOnMap(profile);
+        drawPath(activity, googleMap, profile);
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         if (memberWhoMoving == null) {
@@ -196,52 +187,6 @@ public class Moving implements State {
 
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
         moveCopyrightRight(googleMap);
-    }
-
-    private void drawCurveLineOnMap(Profile profile) {
-        LatLng start = profile.getCurrent().getParty().getPosition().toLatLng();
-        LatLng end = profile.getCurrent().getOwner().getPosition().toLatLng();
-
-        double cLat = ((start.latitude + end.latitude) / 2);
-        double cLon = ((start.longitude + end.longitude) / 2);
-
-        //add skew and arcHeight to move the midPoint
-        if (Math.abs(start.longitude - end.longitude) < 0.0001) {
-            cLon -= 0.0195;
-        } else {
-            cLat += 0.0195;
-        }
-
-        // TODO (nli) исправить для малых дистанций
-        ArrayList<LatLng> points = new ArrayList<LatLng>();
-        double tDelta = 1.0 / 50;
-        for (double t = 0; t <= 1.0; t += tDelta) {
-            double oneMinusT = (1.0 - t);
-            double t2 = Math.pow(t, 2);
-            double lon = oneMinusT * oneMinusT * start.longitude
-                    + 2 * oneMinusT * t * cLon
-                    + t2 * end.longitude;
-            double lat = oneMinusT * oneMinusT * start.latitude
-                    + 2 * oneMinusT * t * cLat
-                    + t2 * end.latitude;
-            points.add(new LatLng(lat, lon));
-        }
-
-        PolylineOptions polylineOptions = new PolylineOptions()
-                .width(9)
-                .color(activity.getResources().getColor(R.color.primary))
-                .geodesic(true)
-                .addAll(points);
-        List<PatternItem> pattern = Arrays.asList(
-                new Dot(), new Gap(10));
-
-        if (polyline != null)
-            polyline.remove();
-
-        polyline = googleMap.addPolyline(polylineOptions);
-        polyline.setPattern(pattern);
-        polyline.setGeodesic(true);
-
     }
 
     @Override

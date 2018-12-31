@@ -4,10 +4,9 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
-
-import com.crashlytics.android.Crashlytics;
 
 import java.util.Map;
 
@@ -38,20 +37,20 @@ public class NotificationAccepting extends Notification {
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
 
-        try {
-            Thread.sleep(60000);
-        } catch (InterruptedException e) {
-            Crashlytics.logException(e);
-        }
-
-        Firestore.readNoxbox(noxboxId, new Task<Noxbox>() {
-            @Override
-            public void execute(Noxbox noxbox) {
-                if (noxbox.getTimeAccepted() == null) {
-                    noxbox.setTimeTimeout(System.currentTimeMillis());
-                    Firestore.writeNoxbox(noxbox);
-                }
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                Firestore.readNoxbox(noxboxId, new Task<Noxbox>() {
+                    @Override
+                    public void execute(Noxbox noxbox) {
+                        if (noxbox.getTimeAccepted() == null) {
+                            noxbox.setTimeTimeout(System.currentTimeMillis());
+                            Firestore.writeNoxbox(noxbox);
+                        }
+                    }
+                });
             }
-        });
+        }, 60000);
+
+
     }
 }

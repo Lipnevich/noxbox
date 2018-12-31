@@ -7,8 +7,8 @@ import live.noxbox.R;
  */
 public enum NotificationType {
 
-    photoUploadingProgress(0, R.string.uploadingProgressTitle),
     photoValidationProgress(0, R.string.photoValidationProgressContent),
+    photoUploadingProgress(0, R.string.uploadingProgressTitle),
     photoValid(0, R.string.photoValidContent),
     photoInvalid(0, R.string.photoInvalidContent),
 

@@ -395,8 +395,8 @@ public class DetailedActivity extends AppCompatActivity {
         AppCache.updateNoxbox();
 
         GeoRealtime.offline(profile.getCurrent());
-        if (AppCache.markers.get(profile.getNoxboxId()) != null) {
-            AppCache.markers.remove(profile.getNoxboxId());
+        if (AppCache.availableNoxboxes.get(profile.getNoxboxId()) != null) {
+            AppCache.availableNoxboxes.remove(profile.getNoxboxId());
         }
 
         finish();
@@ -586,6 +586,7 @@ public class DetailedActivity extends AppCompatActivity {
                 if (requestCode == COORDINATE && resultCode == RESULT_OK) {
                     final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
                     profile.getViewed().setPosition(position);
+                    profile.getViewed().getProfileWhoComes();
                 }
             }
         });

@@ -23,6 +23,7 @@ import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.tools.MapOperator.drawPath;
 
 public class Accepting implements State {
 
@@ -44,6 +45,8 @@ public class Accepting implements State {
         Log.d(TAG + "Accepting", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
+        drawPath(activity, googleMap, profile);
+
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);

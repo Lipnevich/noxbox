@@ -413,7 +413,7 @@ public class ContractActivity extends BaseActivity {
     private void drawSimilarNoxboxList(Profile profile) {
         if (noxboxes == null) {
             noxboxes = new ArrayList<>();
-            for (Noxbox item : AppCache.markers.values()) {
+            for (Noxbox item : AppCache.availableNoxboxes.values()) {
                 noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
             }
         }

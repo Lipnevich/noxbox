@@ -15,4 +15,5 @@
     <color name="secondary_detailed">#fffc46</color>
     <color name="text_color_secondary">#6d6a5f</color>
     <color name="warning">#ff3739</color>
+    <color name="debug">#00ff00</color>
 </resources>

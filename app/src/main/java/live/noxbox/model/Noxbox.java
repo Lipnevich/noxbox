@@ -91,10 +91,18 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
+    public Profile getProfileWhoWait() {
+        if(getProfileWhoComes().equals(owner)) {
+            return party;
+        } else {
+            return owner;
+        }
+    }
+
     public Profile getProfileWhoComes(){
         if(owner.getTravelMode() == none){
             return party;
-        }else{
+        } else {
             if(role == supply){
                 return owner;
             }
