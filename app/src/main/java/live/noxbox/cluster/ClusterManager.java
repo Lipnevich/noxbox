@@ -16,13 +16,17 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import live.noxbox.BuildConfig;
+import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MapOperator;
 
+import static live.noxbox.Configuration.CLUSTER_RENDERING_MAX_FREQUENCY;
+import static live.noxbox.Configuration.CLUSTER_RENDERING_MIN_FREQUENCY;
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
+import static live.noxbox.states.AvailableNoxboxes.clusterRenderingFrequency;
 
 public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
@@ -32,8 +36,8 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     private GoogleMap googleMap;
     private live.noxbox.cluster.ClusterRenderer renderer;
 
-    private AsyncTask quadTreeTask;
-    private AsyncTask clusterTask;
+    private static AsyncTask quadTreeTask;
+    private static AsyncTask clusterTask;
 
     private final Executor executor = Executors.newSingleThreadExecutor();
     private final QuadTree quadTree = new QuadTree(QUAD_TREE_BUCKET_CAPACITY);
@@ -86,10 +90,11 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
     private void buildQuadTree(@NonNull List<NoxboxMarker> clusterItems) {
         if (quadTreeTask != null) {
-            quadTreeTask.cancel(true);
+            clusterRenderingFrequency = Math.min(CLUSTER_RENDERING_MIN_FREQUENCY, clusterRenderingFrequency + 100);
+        } else {
+            clusterRenderingFrequency = Math.max(CLUSTER_RENDERING_MAX_FREQUENCY, clusterRenderingFrequency - 100);
+            quadTreeTask = new QuadTreeTask(clusterItems).executeOnExecutor(executor);
         }
-
-        quadTreeTask = new QuadTreeTask(clusterItems).executeOnExecutor(executor);
     }
 
     @Override
@@ -99,12 +104,14 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
 
     private void cluster() {
-        if (clusterTask != null) {
-            clusterTask.cancel(true);
+        if (clusterTask == null) {
+            clusterTask = new ClusterTask(googleMap.getProjection().getVisibleRegion().latLngBounds,
+                googleMap.getCameraPosition().zoom).executeOnExecutor(executor);
+            clusterRenderingFrequency = Math.max(CLUSTER_RENDERING_MAX_FREQUENCY, clusterRenderingFrequency - 100);
+        } else {
+            clusterRenderingFrequency = Math.min(CLUSTER_RENDERING_MIN_FREQUENCY, clusterRenderingFrequency + 100);
         }
 
-        clusterTask = new ClusterTask(googleMap.getProjection().getVisibleRegion().latLngBounds,
-                googleMap.getCameraPosition().zoom).executeOnExecutor(executor);
     }
 
     @NonNull
@@ -191,10 +198,12 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
         @Override
         protected Void doInBackground(Void... params) {
+            TimeLogger timeLogger = new TimeLogger();
             quadTree.clear();
             for (NoxboxMarker clusterItem : mClusterItems) {
                 quadTree.insert(clusterItem);
             }
+            timeLogger.makeLog("Build tree " + mClusterItems.size());
             return null;
         }
 
@@ -217,7 +226,10 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
         @Override
         protected List<live.noxbox.cluster.Cluster<NoxboxMarker>> doInBackground(Void... params) {
-            return getClusters(mLatLngBounds, mZoomLevel);
+            TimeLogger timeLogger = new TimeLogger();
+            List<Cluster<NoxboxMarker>> clusters = getClusters(mLatLngBounds, mZoomLevel);
+            timeLogger.makeLog("Get clusters " + clusters.size());
+            return clusters;
         }
 
         @Override

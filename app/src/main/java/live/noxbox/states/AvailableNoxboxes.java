@@ -30,7 +30,6 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.CLUSTER_RENDERING_FREQUENCY;
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.MapActivity.getCameraPosition;
 import static live.noxbox.database.AppCache.availableNoxboxes;
@@ -45,6 +44,7 @@ public class AvailableNoxboxes implements State {
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private Activity activity;
+    public static volatile int clusterRenderingFrequency = 400;
 
     private ClusterManager clusterManager;
 
@@ -191,7 +191,7 @@ public class AvailableNoxboxes implements State {
                         }
                     };
 
-                    SeparateStreamForStopwatch.startHandler(task, CLUSTER_RENDERING_FREQUENCY);
+                    SeparateStreamForStopwatch.startHandler(task, clusterRenderingFrequency);
                 }
             });
         }
