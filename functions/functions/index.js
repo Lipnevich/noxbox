@@ -137,8 +137,14 @@ admin.database().ref('geo').once('value').then(allServices => {
 });
 });
 
+exports.refund = functions.https.onCall((data, context) => {
+    console.log('auth', context.auth.token.name);
+    return { text: 'Money were refunded' };
+});
+
+
 exports.version = functions.https.onRequest((req, res) => {
-res.status(200).send('Version ' + version);
+    res.status(200).send('Version ' + version);
 });
 
 

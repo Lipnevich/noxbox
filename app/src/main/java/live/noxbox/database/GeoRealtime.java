@@ -16,7 +16,6 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Rating;
-import live.noxbox.model.Request;
 import live.noxbox.model.TravelMode;
 
 public class GeoRealtime {
@@ -91,12 +90,6 @@ public class GeoRealtime {
             Crashlytics.logException(someOneRenamedEnum);
         }
         return null;
-    }
-
-    public static void sendRequest(Request request) {
-//        requests().child(getProfile().getId()).child(request.getType().toString())
-//                .setValue(objectToMap(request.setId(getProfile().getId())
-//                        .setPush(MessagingService.generatePush(request))));
     }
 
     // consumer

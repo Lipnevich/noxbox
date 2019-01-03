@@ -14,15 +14,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.functions.FirebaseFunctions;
+
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.GeoRealtime;
-import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
-import live.noxbox.model.Request;
 import live.noxbox.model.Wallet;
 import live.noxbox.tools.Task;
 
@@ -63,9 +64,17 @@ public class WalletActivity extends BaseActivity {
             profile.getWallet().setAddressToRefund(address);
         }
 
-        GeoRealtime.sendRequest(new Request()
-                .setType(NotificationType.refund)
-                .setAddress(profile.getWallet().getAddressToRefund()));
+        Map<String, Object> data = new HashMap<>();
+        data.put("addressToRefund", address);
+
+        FirebaseFunctions.getInstance()
+                .getHttpsCallable("refund")
+                .call(data)
+                .continueWith(task -> {
+                    String result = (String) task.getResult().getData();
+                    return result;
+                });
+
     }
 
     private void recalculateBalance(final Profile profile) {
