@@ -137,10 +137,9 @@ public class SwipeButton extends RelativeLayout {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:// нажатие
                         Log.d("SwipeButton", "ACTION_DOWN");
-                        if(initialX > 0.15){
+                        if(event.getX() > slidingButton.getWidth()){
                             return false;
                         }
-
                         return true;
                     case MotionEvent.ACTION_MOVE:// движение
                         if (initialX == 0) {

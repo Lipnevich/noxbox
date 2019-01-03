@@ -65,6 +65,7 @@ public class DebugActivity extends MenuActivity implements
             AppCache.listenProfile(DebugActivity.class.getName(), new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
+                    profile.getWallet().setBalance("10000000");
                     // TODO (nli) не одна из этих кнопок не должна работать для финальной версии базы
                     // отдельно отмечу генерацию услух, тут нужны правила в Realtime Database
 
