@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -80,7 +81,7 @@ public class SwipeButton extends RelativeLayout {
         final TextView centerText = new TextView(context);
         this.centerText = centerText;
 
-        centerText.setTextSize(TypedValue.COMPLEX_UNIT_SP,30);
+        centerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
 
         LayoutParams layoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
 
@@ -135,6 +136,11 @@ public class SwipeButton extends RelativeLayout {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:// нажатие
+                        Log.d("SwipeButton", "ACTION_DOWN");
+                        if(initialX > 0.15){
+                            return false;
+                        }
+
                         return true;
                     case MotionEvent.ACTION_MOVE:// движение
                         if (initialX == 0) {
