@@ -155,7 +155,7 @@
     <string name="travelTime">Travel time</string>
     <string name="distance">Distance</string>
     <string name="priceClarificationBefore">Is indicated cost</string>
-    <string name="priceClarificationAfter">performance of the service, the payment will be calculated per minute depending on the actual execution time.</string>
+    <string name="priceClarificationAfter">performance of the service, the payment will be calculated per second depending on the actual execution time.</string>
     <string name="ending">s</string>
     <string name="byAddress">By address</string>
     <string name="search">enter your address</string>
