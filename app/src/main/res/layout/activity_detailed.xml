@@ -217,7 +217,7 @@
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
+                        android:layout_margin="12dp"
                         app:cardCornerRadius="20dp">
 
                         <LinearLayout
@@ -304,8 +304,8 @@
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginEnd="12dp"
                         android:layout_marginBottom="8dp"
                         app:cardCornerRadius="20dp">
 
@@ -678,7 +678,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
@@ -696,24 +696,20 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal">
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
 
-                                    <ImageView
-                                        android:id="@+id/typeImageInPrice"
-                                        android:layout_width="42dp"
-                                        android:layout_height="42dp"
-                                        android:layout_marginStart="8dp"
-                                        android:layout_marginTop="8dp" />
-                                </LinearLayout>
+                                <ImageView
+                                    android:id="@+id/typeImageInPrice"
+                                    android:layout_width="46dp"
+                                    android:layout_height="42dp"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_marginTop="8dp"
+                                    android:src="@drawable/ic_nanny" />
 
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="8dp"
+                                    android:layout_marginTop="8dp"
                                     android:layout_marginBottom="8dp"
                                     android:layout_weight="4"
                                     android:orientation="vertical">
@@ -722,7 +718,7 @@
                                         android:id="@+id/descriptionTextInPrice"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="8dp"
+
                                         android:textColor="@color/google_text"
                                         android:textSize="@dimen/text_size" />
                                 </LinearLayout>
@@ -730,36 +726,17 @@
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
                                     android:layout_weight="2"
                                     android:orientation="vertical">
 
-                                    <LinearLayout
+                                    <TextView
+                                        android:id="@+id/price"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginTop="8dp"
-                                        android:orientation="horizontal">
-
-                                        <LinearLayout
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="end">
-
-                                            <TextView
-                                                android:id="@+id/price"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_gravity="center_vertical"
-                                                android:textColor="#16bed9"
-                                                android:textSize="28sp" />
-
-                                            <ImageView
-                                                android:layout_width="42dp"
-                                                android:layout_height="42dp"
-                                                android:layout_gravity="center_vertical"
-                                                android:layout_marginStart="2dp"
-                                                android:src="@drawable/currency" />
-                                        </LinearLayout>
-                                    </LinearLayout>
+                                        android:layout_gravity="center_vertical|center_horizontal"
+                                        android:textColor="@color/primary"
+                                        android:textSize="@dimen/text_title" />
                                 </LinearLayout>
                             </LinearLayout>
 
