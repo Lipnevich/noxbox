@@ -24,8 +24,6 @@ import live.noxbox.tools.MarkerCreator;
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.tools.MapOperator.drawPath;
-import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
-import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 
 public class Accepting implements State {
 
@@ -45,7 +43,7 @@ public class Accepting implements State {
     @Override
     public void draw(final Profile profile) {
         Log.d(TAG + "Accepting", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-        moveCopyrightRight(googleMap);
+
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         drawPath(activity, googleMap, profile);
 
@@ -128,7 +126,6 @@ public class Accepting implements State {
 
     @Override
     public void clear() {
-        moveCopyrightLeft(googleMap);
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
         googleMap.getUiSettings().setScrollGesturesEnabled(true);

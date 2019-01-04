@@ -134,4 +134,16 @@
         <item name="android:textSize">@dimen/text_title</item>
     </style>
 
+
+    <!--Full screen history fragment-->
+    <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@color/secondary</item>
+    </style>
+
+
 </resources>

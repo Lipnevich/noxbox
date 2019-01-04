@@ -1,9 +1,8 @@
 package live.noxbox.menu;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,14 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -51,7 +43,7 @@ import static live.noxbox.tools.DateTimeFormatter.year;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
 
-    private Context context;
+    private HistoryActivity activity;
     private String profileId;
     private List<Noxbox> historyItems;
     private Set<Noxbox> uniqueValue = new HashSet<>();
@@ -59,8 +51,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private static final int AMOUNT_PER_LOAD = 10;
 
 
-    public HistoryAdapter(Context context, final List<Noxbox> historyItems, RecyclerView currentRecyclerView, final MarketRole role) {
-        this.context = context;
+    public HistoryAdapter(HistoryActivity activity, final List<Noxbox> historyItems, RecyclerView currentRecyclerView, final MarketRole role) {
+        this.activity = activity;
         this.profileId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.historyItems = historyItems;
 
@@ -138,9 +130,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         HistoryViewHolder viewHolder;
         if (viewType == 1) {
-            viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.item_history, parent, false));
+            viewHolder = new ItemViewHolder(LayoutInflater.from(activity).inflate(R.layout.item_history, parent, false));
         } else {
-            viewHolder = new ProgressViewHolder(LayoutInflater.from(context).inflate(R.layout.item_progress, parent, false));
+            viewHolder = new ProgressViewHolder(LayoutInflater.from(activity).inflate(R.layout.item_progress, parent, false));
         }
         return viewHolder;
     }
@@ -158,51 +150,30 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         viewHolder.date.setText(date(noxbox.getTimeCompleted()) + ",");
         showYearDivider(viewHolder, position);
 
-
-        viewHolder.price.setText(noxbox.getPrice() + " " + context.getResources().getString(R.string.currency));
         viewHolder.performerName.setText(noxbox.getNotMe(profileId).getName());
         viewHolder.noxboxType.setText(noxbox.getType().getName());
 
-        Glide.with(context)
+        Glide.with(activity)
                 .load(noxbox.getNotMe(profileId).getPhoto())
                 .apply(RequestOptions.circleCropTransform())
                 .into(viewHolder.performerPhoto);
 
-        boolean isLiked = isLiked(noxbox);
-        showRating(viewHolder.rateNoxbox, isLiked);
-        if (isLiked) {
-            viewHolder.rateNoxbox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View view) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.NoxboxAlertDialogStyle);
-                    builder.setTitle(context.getResources().getString(R.string.dislikePrompt));
-                    builder.setPositiveButton(context.getResources().getString(R.string.dislike),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    view.setOnClickListener(null);
-                                    showRating((ImageView) view, false);
-//                                    dislikeNoxbox(profileId, noxbox);
-                                }
-                            });
-                    builder.setNegativeButton(android.R.string.cancel, null);
-                    builder.show();
-                }
-            });
-        }
+        viewHolder.rootHistoryLayout.setOnClickListener(view1 -> onClick(viewHolder, noxbox));
+    }
 
-        viewHolder.rootHistoryLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (viewHolder.expandableHistoryLayout.getVisibility() == View.GONE) {
-                    showMapView(viewHolder, noxbox);
-                } else {
-                    viewHolder.expandableHistoryLayout.setVisibility(View.GONE);
-                    viewHolder.mapView.removeAllViews();
-                }
-
-            }
-        });
+    private void onClick(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
+//        if (viewHolder.expandableHistoryLayout.getVisibility() == View.GONE) {
+//            showMapView(viewHolder, noxbox);
+//        } else {
+//            viewHolder.expandableHistoryLayout.setVisibility(View.GONE);
+//            viewHolder.mapView.removeAllViews();
+//        }
+        HistoryFullScreenFragment.curretnItemHistory = noxbox;
+        DialogFragment dialog = new HistoryFullScreenFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("profileId", profileId);
+        dialog.setArguments(bundle);
+        dialog.show(activity.getSupportFragmentManager(), HistoryFullScreenFragment.TAG);
     }
 
     private void showYearDivider(HistoryViewHolder viewHolder, int position) {
@@ -214,30 +185,30 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
 
-    private void showMapView(HistoryViewHolder viewHolder, final Noxbox noxbox) {
-        viewHolder.expandableHistoryLayout.setVisibility(View.VISIBLE);
-        viewHolder.mapView.onCreate(null);
-        viewHolder.mapView.onResume();
-        viewHolder.mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                MapsInitializer.initialize(context);
-                GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                        .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
-                        .position(noxbox.getPosition().toLatLng(), 48, 48)
-                        .anchor(0.5f, 1)
-                        .zIndex(1000);
-                GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
-                marker.setDimensions(960, 960);
-
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
-
-                googleMap.getUiSettings().setAllGesturesEnabled(false);
-                googleMap.getUiSettings().setScrollGesturesEnabled(false);
-                googleMap.getUiSettings().setZoomGesturesEnabled(false);
-            }
-        });
-    }
+//    private void showMapView(HistoryViewHolder viewHolder, final Noxbox noxbox) {
+//        viewHolder.expandableHistoryLayout.setVisibility(View.VISIBLE);
+//        viewHolder.mapView.onCreate(null);
+//        viewHolder.mapView.onResume();
+//        viewHolder.mapView.getMapAsync(new OnMapReadyCallback() {
+//            @Override
+//            public void onMapReady(GoogleMap googleMap) {
+//                MapsInitializer.initialize(activity);
+//                GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+//                        .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
+//                        .position(noxbox.getPosition().toLatLng(), 48, 48)
+//                        .anchor(0.5f, 1)
+//                        .zIndex(1000);
+//                GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
+//                marker.setDimensions(960, 960);
+//
+//                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
+//
+//                googleMap.getUiSettings().setAllGesturesEnabled(false);
+//                googleMap.getUiSettings().setScrollGesturesEnabled(false);
+//                googleMap.getUiSettings().setZoomGesturesEnabled(false);
+//            }
+//        });
+//    }
 
     @Override
     public int getItemCount() {
@@ -298,19 +269,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
     }
 
-    private boolean isLiked(Noxbox noxbox) {
-        if (profileId.equals(noxbox.getOwner().getId())) {
-            return noxbox.getTimeOwnerDisliked() == null;
-        } else {
-            return noxbox.getTimePartyDisliked() == null;
-        }
-    }
 
-    private void showRating(ImageView view, boolean isLiked) {
-        if (isLiked) {
-            view.setImageResource(R.drawable.like);
-        } else {
-            view.setImageResource(R.drawable.dislike);
-        }
-    }
+
+
 }

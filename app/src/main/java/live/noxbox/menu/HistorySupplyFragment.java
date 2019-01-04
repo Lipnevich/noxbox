@@ -34,7 +34,7 @@ public class HistorySupplyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         RecyclerView listItems = view.findViewById(R.id.recyclerView);
         listItems.setLayoutManager(linearLayoutManager);
-        HistoryAdapter adapter = new HistoryAdapter(getActivity(), new ArrayList<Noxbox>(), listItems, MarketRole.supply);
+        HistoryAdapter adapter = new HistoryAdapter((HistoryActivity) getActivity(), new ArrayList<Noxbox>(), listItems, MarketRole.supply);
         listItems.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         return view;

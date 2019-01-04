@@ -3,14 +3,13 @@ package live.noxbox.menu;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import live.noxbox.R;
-import live.noxbox.activities.BaseActivity;
 
-public class HistoryActivity extends BaseActivity {
+public class HistoryActivity extends FragmentActivity {
 
     public static final int CODE = 1002;
 
@@ -18,7 +17,8 @@ public class HistoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportFragmentManager();
+        //setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 //        int size = 384;
 //        progressView = findViewById(R.id.progressView);
 //        Glide.with(this).asGif()

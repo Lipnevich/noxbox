@@ -26,6 +26,8 @@ import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
+import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 
 public class Requesting implements State {
 
@@ -44,6 +46,8 @@ public class Requesting implements State {
 
     @Override
     public void draw(final Profile profile) {
+        moveCopyrightRight(googleMap);
+
         Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
@@ -127,6 +131,7 @@ public class Requesting implements State {
 
     @Override
     public void clear() {
+        moveCopyrightLeft(googleMap);
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
