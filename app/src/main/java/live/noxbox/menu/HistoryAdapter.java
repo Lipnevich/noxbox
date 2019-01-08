@@ -162,13 +162,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     private void onClick(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
-//        if (viewHolder.expandableHistoryLayout.getVisibility() == View.GONE) {
-//            showMapView(viewHolder, noxbox);
-//        } else {
-//            viewHolder.expandableHistoryLayout.setVisibility(View.GONE);
-//            viewHolder.mapView.removeAllViews();
-//        }
-        HistoryFullScreenFragment.curretnItemHistory = noxbox;
+        HistoryFullScreenFragment.currentItemHistory = noxbox;
         DialogFragment dialog = new HistoryFullScreenFragment();
         Bundle bundle = new Bundle();
         bundle.putString("profileId", profileId);
@@ -183,32 +177,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             viewHolder.textYear.setText(year(historyItems.get(position).getTimeCompleted()));
         }
     }
-
-
-//    private void showMapView(HistoryViewHolder viewHolder, final Noxbox noxbox) {
-//        viewHolder.expandableHistoryLayout.setVisibility(View.VISIBLE);
-//        viewHolder.mapView.onCreate(null);
-//        viewHolder.mapView.onResume();
-//        viewHolder.mapView.getMapAsync(new OnMapReadyCallback() {
-//            @Override
-//            public void onMapReady(GoogleMap googleMap) {
-//                MapsInitializer.initialize(activity);
-//                GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-//                        .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
-//                        .position(noxbox.getPosition().toLatLng(), 48, 48)
-//                        .anchor(0.5f, 1)
-//                        .zIndex(1000);
-//                GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
-//                marker.setDimensions(960, 960);
-//
-//                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
-//
-//                googleMap.getUiSettings().setAllGesturesEnabled(false);
-//                googleMap.getUiSettings().setScrollGesturesEnabled(false);
-//                googleMap.getUiSettings().setZoomGesturesEnabled(false);
-//            }
-//        });
-//    }
 
     @Override
     public int getItemCount() {
@@ -226,7 +194,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         TextView performerName;
         MapView mapView;
         ImageView rateNoxbox;
-        LinearLayout expandableHistoryLayout;
 
         //include part
         LinearLayout layoutYearDivider;
@@ -253,7 +220,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             performerName = layout.findViewById(R.id.performerName);
             mapView = layout.findViewById(R.id.map);
             rateNoxbox = layout.findViewById(R.id.rateBox);
-            expandableHistoryLayout = layout.findViewById(R.id.expandableHistoryLayout);
 
             layoutYearDivider = layout.findViewById(R.id.layoutYearDivider);
             textYear = layout.findViewById(R.id.textYear);

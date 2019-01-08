@@ -8,6 +8,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -30,7 +31,7 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
-import live.noxbox.activities.contract.NoxboxTypeListActivity;
+import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
@@ -41,6 +42,7 @@ import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
 import static live.noxbox.tools.ImageManager.createCircleProfilePhotoFromUrl;
 import static live.noxbox.tools.ImageManager.getBitmap;
 
@@ -121,9 +123,14 @@ public class ProfileActivity extends BaseActivity {
         findViewById(R.id.addLayout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, NoxboxTypeListActivity.class);
-                intent.putExtra(ProfileActivity.class.getName(), NoxboxTypeListActivity.class.getName());
-                startActivityForResult(intent, NoxboxTypeListActivity.PROFILE_CODE);
+                //Intent intent = new Intent(ProfileActivity.this, NoxboxTypeListActivity.class);
+                //intent.putExtra(ProfileActivity.class.getName(), NoxboxTypeListActivity.class.getName());
+                //startActivityForResult(intent, NoxboxTypeListActivity.PROFILE_CODE);
+                DialogFragment dialog = new NoxboxTypeListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("key", PROFILE_CODE);
+                dialog.setArguments(bundle);
+                dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
             }
         });
     }
@@ -304,9 +311,6 @@ public class ProfileActivity extends BaseActivity {
                     });
                     profile.setPhoto(data.getData().toString());
                 } else if (requestCode == TravelModeListActivity.CODE) {
-                    draw(profile);
-                } else if (requestCode == NoxboxTypeListActivity.PROFILE_CODE ||
-                        requestCode == ProfilePerformerActivity.CODE) {
                     draw(profile);
                 }
             }

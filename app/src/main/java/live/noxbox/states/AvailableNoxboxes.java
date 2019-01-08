@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -20,7 +23,7 @@ import com.google.android.gms.maps.model.Marker;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
-import live.noxbox.activities.contract.NoxboxTypeListActivity;
+import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Position;
@@ -32,11 +35,11 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.MapActivity.getCameraPosition;
+import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.Router.startActivity;
-import static live.noxbox.tools.Router.startActivityForResult;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
 public class AvailableNoxboxes implements State {
@@ -59,7 +62,6 @@ public class AvailableNoxboxes implements State {
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
     }
-
 
 
     @Override
@@ -97,9 +99,12 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, NoxboxTypeListActivity.class);
-                intent.putExtra(MapActivity.class.getName(), NoxboxTypeListActivity.class.getName());
-                startActivityForResult(activity, intent, NoxboxTypeListActivity.MAP_CODE);
+                //TODO (vl) при повторном выборе услуги в фильтрах не происходит перерисовка услуг соответствующих выбранной
+                DialogFragment dialog = new NoxboxTypeListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("key", MAP_CODE);
+                dialog.setArguments(bundle);
+                dialog.show(((FragmentActivity) activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
             }
         });
 

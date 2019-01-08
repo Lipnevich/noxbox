@@ -28,7 +28,7 @@ public class HistoryFullScreenFragment extends DialogFragment {
     public static String TAG = "FullScreenDialog";
     private String profileId;
 
-    public static Noxbox curretnItemHistory;
+    public static Noxbox currentItemHistory;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,11 +52,11 @@ public class HistoryFullScreenFragment extends DialogFragment {
             }
         });
 
-        attachMapView(view.findViewById(R.id.map), curretnItemHistory);
+        attachMapView(view.findViewById(R.id.map), currentItemHistory);
 
-        attachPrice(view.findViewById(R.id.priceText), curretnItemHistory);
+        attachPrice(view.findViewById(R.id.priceText), currentItemHistory);
 
-        boolean isLiked = isLiked(curretnItemHistory, profileId);
+        boolean isLiked = isLiked(currentItemHistory, profileId);
         ImageView rateBox = view.findViewById(R.id.rateBox);
         attachRating(rateBox, isLiked);
         if (isLiked) {

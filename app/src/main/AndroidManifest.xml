@@ -56,11 +56,6 @@
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".activities.contract.NoxboxTypeListActivity"
-            android:label="@string/selectService"
-            android:noHistory="true"
-            android:theme="@style/DialogListActivity" />
-        <activity
             android:name=".menu.profile.TravelModeListActivity"
             android:label="@string/travelMode"
             android:noHistory="true"

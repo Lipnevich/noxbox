@@ -40,7 +40,7 @@ public class ImageManager {
 
 
     public static void uploadPhoto(final Activity activity, final Profile profile, Bitmap bitmap) {
-        uploadImage(activity, bitmap, "profile/" + System.currentTimeMillis() , new OnSuccessListener<Uri>() {
+        uploadImage(activity, bitmap, "profile/" + System.currentTimeMillis(), new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(final Uri uri) {
                 Map<String, String> data = new HashMap<>();
@@ -189,4 +189,5 @@ public class ImageManager {
                 .apply(RequestOptions.circleCropTransform())
                 .into(image);
     }
+
 }

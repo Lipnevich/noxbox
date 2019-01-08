@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -56,6 +57,7 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
@@ -272,9 +274,13 @@ public class ContractActivity extends BaseActivity {
 
     }
 
-    protected void startDialogList() {
-        Intent intent = new Intent(this, NoxboxTypeListActivity.class);
-        startActivity(intent);
+    private void startDialogList() {
+        //TODO (vl) надо придумать как вызывать перерисовку(draw()) из списко во фрагменте
+        DialogFragment dialog = new NoxboxTypeListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("key", CONTRACT_CODE);
+        dialog.setArguments(bundle);
+        dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
     }
 
     protected void createRoleList(final Profile profile, View textView) {

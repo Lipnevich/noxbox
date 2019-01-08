@@ -60,7 +60,7 @@
                 android:textSize="@dimen/text_title"
                 android:textStyle="bold" />
 
-            <include layout="@layout/item_about_application_devider" />
+            <include layout="@layout/item_divider_about_application" />
 
             <TextView
                 android:id="@+id/promoVideoView"
@@ -74,7 +74,7 @@
                 android:textSize="@dimen/text_title"
                 android:textStyle="bold" />
 
-            <include layout="@layout/item_about_application_devider" />
+            <include layout="@layout/item_divider_about_application" />
 
             <TextView
                 android:id="@+id/rules"
@@ -88,7 +88,7 @@
                 android:textSize="@dimen/text_title"
                 android:textStyle="bold" />
 
-            <include layout="@layout/item_about_application_devider" />
+            <include layout="@layout/item_divider_about_application" />
 
             <TextView
                 android:id="@+id/privacyPolicy"
