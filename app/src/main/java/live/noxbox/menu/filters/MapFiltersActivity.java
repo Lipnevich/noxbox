@@ -99,10 +99,8 @@ public class MapFiltersActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 profile.getFilters().setDemand(isChecked);
-                if (isChecked) {
-                    supply.setClickable(true);
-                } else {
-                    supply.setClickable(false);
+                if (!isChecked && supply != null) {
+                    supply.setChecked(true);
                 }
             }
         });
@@ -114,10 +112,8 @@ public class MapFiltersActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 profile.getFilters().setSupply(isChecked);
-                if (isChecked) {
-                    demand.setClickable(true);
-                } else {
-                    demand.setClickable(false);
+                if (!isChecked && demand != null) {
+                    demand.setChecked(true);
                 }
 
             }
