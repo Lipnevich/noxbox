@@ -2,6 +2,7 @@ package live.noxbox.activities.contract;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -93,7 +94,7 @@ public class ContractActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.readProfile(new Task<Profile>() {
+        AppCache.listenProfile(ContractActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
                 if (profile == null) return;
@@ -118,7 +119,8 @@ public class ContractActivity extends BaseActivity {
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
         drawButtons(profile);
-        drawSimilarNoxboxList(profile);
+        //drawSimilarNoxboxList(profile);
+
     }
 
 
@@ -176,7 +178,6 @@ public class ContractActivity extends BaseActivity {
     private void drawTypeDescription(Profile profile) {
         ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDuration()).concat("."));
     }
-
 
     private TextWatcher changeCountOfMoneyListener;
 
@@ -251,27 +252,40 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawAddress(Profile profile) {
-        final TextView address = findViewById(R.id.textAddress);
-
-        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none || profile.getCurrent().getOwner().getHost()) {
-            SpannableStringBuilder spanTxt =
-                    new SpannableStringBuilder(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition()));
-            spanTxt.append(" ");
-            spanTxt.append(getString(R.string.change));
-            spanTxt.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    ContractActivity.this.startActivityForResult(new Intent(ContractActivity.this, CoordinateActivity.class), COORDINATE);
+        AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                String address;
+                if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none || profile.getCurrent().getOwner().getHost()) {
+                    address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition());
+                } else {
+                    address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition()) + " " + getResources().getString(R.string.change);
                 }
-            }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
-            address.setMovementMethod(LinkMovementMethod.getInstance());
-            address.setText(spanTxt, TextView.BufferType.SPANNABLE);
 
-        } else {
-            address.setText(AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition()) + " " + getResources().getString(R.string.change));
-        }
+                return address;
+            }
 
-
+            @Override
+            protected void onPostExecute(String address) {
+                final TextView addressView = findViewById(R.id.textAddress);
+                if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none || profile.getCurrent().getOwner().getHost()) {
+                    SpannableStringBuilder spanTxt =
+                            new SpannableStringBuilder(address);
+                    spanTxt.append(" ");
+                    spanTxt.append(getString(R.string.change));
+                    spanTxt.setSpan(new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            ContractActivity.this.startActivityForResult(new Intent(ContractActivity.this, CoordinateActivity.class), COORDINATE);
+                        }
+                    }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
+                    addressView.setMovementMethod(LinkMovementMethod.getInstance());
+                    addressView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+                } else {
+                    addressView.setText(address);
+                }
+            }
+        }.execute();
     }
 
     private void startDialogList() {
@@ -309,7 +323,6 @@ public class ContractActivity extends BaseActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 profile.getCurrent().getOwner().setTravelMode(TravelMode.byId(item.getItemId()));
                 if (profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
-                    //если человек хочет двигаться путь разрешит отслеживать своё местоположение
                     if (checkLocationPermission()) {
                         ActivityCompat.requestPermissions(ContractActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                     }
@@ -412,61 +425,70 @@ public class ContractActivity extends BaseActivity {
         });
     }
 
-    private List<NoxboxMarker> similarNoxboxes;
+
     private List<NoxboxMarker> noxboxes;
     private RecyclerView similarListViews;
 
     private void drawSimilarNoxboxList(Profile profile) {
-        if (noxboxes == null) {
-            noxboxes = new ArrayList<>();
-            for (Noxbox item : AppCache.availableNoxboxes.values()) {
-                noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
+        new AsyncTask<Void, Void, List<NoxboxMarker>>() {
+            @Override
+            protected List<NoxboxMarker> doInBackground(Void... voids) {
+                List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
+                if (noxboxes == null) {
+                    noxboxes = new ArrayList<>();
+                    for (Noxbox item : AppCache.availableNoxboxes.values()) {
+                        noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
+                    }
+                }
+
+                for (NoxboxMarker item : noxboxes) {
+                    //type
+                    if (item.getNoxbox().getType() != profile.getCurrent().getType()) {
+                        continue;
+                    }
+
+                    //role
+                    if (item.getNoxbox().getRole() == profile.getCurrent().getRole()) {
+                        continue;
+                    }
+
+                    //travelmode
+                    if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none && item.getNoxbox().getOwner().getTravelMode() == TravelMode.none) {
+                        continue;
+                    }
+
+                    //price
+                    if (profile.getCurrent().getRole() == MarketRole.supply) {
+                        if (Double.parseDouble(profile.getCurrent().getPrice()) > Double.parseDouble(item.getNoxbox().getPrice())) {
+                            continue;
+                        }
+                    } else {
+                        if (Double.parseDouble(profile.getCurrent().getPrice()) < Double.parseDouble(item.getNoxbox().getPrice())) {
+                            continue;
+                        }
+                    }
+
+                    similarNoxboxes.add(item);
+                }
+                return similarNoxboxes;
             }
-        }
 
-        if (similarNoxboxes != null) {
-            similarNoxboxes.clear();
-        } else {
-            similarNoxboxes = new ArrayList<>();
-        }
+            @Override
+            protected void onPostExecute(List<NoxboxMarker> similarNoxboxes) {
+                if (similarNoxboxes.size() > 0) {
+                    findViewById(R.id.buttonsRootLayout).setVisibility(View.GONE);
+                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
 
-
-        for (NoxboxMarker item : noxboxes) {
-            //type
-            if (item.getNoxbox().getType() != profile.getCurrent().getType())
-                continue;
-
-            //role
-            if (item.getNoxbox().getRole() == profile.getCurrent().getRole())
-                continue;
-
-            //travelmode
-            if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none && item.getNoxbox().getOwner().getTravelMode() == TravelMode.none)
-                continue;
-
-            //price
-            if (profile.getCurrent().getRole() == MarketRole.supply) {
-                if (Double.parseDouble(profile.getCurrent().getPrice()) > Double.parseDouble(item.getNoxbox().getPrice()))
-                    continue;
-            } else {
-                if (Double.parseDouble(profile.getCurrent().getPrice()) < Double.parseDouble(item.getNoxbox().getPrice()))
-                    continue;
+                    similarListViews = findViewById(R.id.similarNoxboxesList);
+                    similarListViews.setHasFixedSize(true);
+                    similarListViews.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
+                    similarListViews.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this, profile));
+                } else {
+                    findViewById(R.id.buttonsRootLayout).setVisibility(View.VISIBLE);
+                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+                }
             }
-
-            similarNoxboxes.add(item);
-        }
-
-        if (similarNoxboxes.size() > 0) {
-            findViewById(R.id.buttonsRootLayout).setVisibility(View.GONE);
-            findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
-            similarListViews = findViewById(R.id.similarNoxboxesList);
-            similarListViews.setHasFixedSize(true);
-            similarListViews.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
-            similarListViews.setAdapter(new ClusterAdapter(similarNoxboxes, this, profile));
-        } else {
-            findViewById(R.id.buttonsRootLayout).setVisibility(View.VISIBLE);
-            findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
-        }
+        }.execute();
     }
 
     private void setHeightForDropdownList(Spinner spinner) {

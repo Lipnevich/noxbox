@@ -3,10 +3,8 @@ package live.noxbox.activities.detailed;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -26,11 +24,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -64,7 +57,6 @@ import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
-import static live.noxbox.tools.LocationCalculator.getDistanceBetweenTwoPoints;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class DetailedActivity extends AppCompatActivity {
@@ -109,6 +101,8 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void draw(Profile profile) {
+
+
         drawToolbar(profile.getViewed());
         drawOppositeProfile(profile);
         drawDescription(profile);
@@ -116,12 +110,11 @@ public class DetailedActivity extends AppCompatActivity {
         drawRating(profile.getViewed());
         drawPrice(profile);
         drawButtons(profile);
+
         if (profile.getViewed().getRole() == MarketRole.supply) {
             drawCertificate(profile.getViewed());
             drawWorkSample(profile.getViewed());
         }
-
-
     }
 
     private void drawToolbar(Noxbox noxbox) {
@@ -130,16 +123,19 @@ public class DetailedActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
 
-        Glide.with(this)
-                .asDrawable()
-                .load(noxbox.getType().getIllustration())
-                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-                .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        ((ImageView) findViewById(R.id.illustration)).setImageDrawable(resource);
-                    }
-                });
+
+        ((ImageView) findViewById(R.id.illustration)).setImageResource(noxbox.getType().getIllustration());
+
+//        Glide.with(DetailedActivity.this)
+//                .asDrawable()
+//                .load(noxbox.getType().getIllustration())
+//                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+//                .into(new SimpleTarget<Drawable>() {
+//                    @Override
+//                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+//                        ((ImageView) findViewById(R.id.illustration)).setImageDrawable(drawable);
+//                    }
+//                });
     }
 
     private void drawOppositeProfile(Profile me) {
@@ -204,7 +200,7 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void drawWaitingTime(final Profile profile) {
         final Noxbox noxbox = profile.getViewed();
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(DetailedActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -214,7 +210,18 @@ public class DetailedActivity extends AppCompatActivity {
         ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
         ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
 
-        ((TextView) findViewById(R.id.address)).setText(AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition()));
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                String address = AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition());
+                return address;
+            }
+
+            @Override
+            protected void onPostExecute(String address) {
+                ((TextView) findViewById(R.id.address)).setText(address);
+            }
+        }.execute();
 
         TravelMode travelMode;
         if (noxbox.getOwner().getTravelMode() == none) {
@@ -222,12 +229,9 @@ public class DetailedActivity extends AppCompatActivity {
         } else {
             travelMode = noxbox.getOwner().getTravelMode();
         }
-
         int minutes = (int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), travelMode);
 
-        int distance = getDistanceBetweenTwoPoints(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition());
         String timeTxt;
-        String distanceTxt = String.valueOf(distance / 1000) + " " + getResources().getString(R.string.km);
         switch (minutes % 10) {
             case 1: {
                 timeTxt = getResources().getString(R.string.minute);
@@ -277,8 +281,6 @@ public class DetailedActivity extends AppCompatActivity {
                 });
             }
         }
-
-
     }
 
     private void drawPrice(Profile profile) {
@@ -338,6 +340,7 @@ public class DetailedActivity extends AppCompatActivity {
             findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    v.setVisibility(View.GONE);
                     profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                     AppCache.updateNoxbox();
                     finish();
@@ -363,6 +366,7 @@ public class DetailedActivity extends AppCompatActivity {
                             LOCATION_PERMISSION_REQUEST_CODE);
 
                 } else {
+                    v.setVisibility(View.GONE);
                     sendRequestToNoxbox(profile);
                 }
 
@@ -411,6 +415,7 @@ public class DetailedActivity extends AppCompatActivity {
     private String cancellationReason;
 
     private void drawCancelButton(final Profile profile) {
+        if (profile.getCurrent().getTimeAccepted() != null) return;
         findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
         findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
             @Override
