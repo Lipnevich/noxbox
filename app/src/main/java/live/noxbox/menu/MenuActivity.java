@@ -129,6 +129,10 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 @Override
                 public void onClick(View v) {
                     Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
+                    if(drawerLayout != null){
+                        drawerLayout.closeDrawers();
+                    }
+                    isInitial = false;
                 }
             });
             isInitial = true;
@@ -205,6 +209,11 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 });
             }
         }
+
+        if (drawerLayout != null) {
+            drawerLayout.closeDrawers();
+        }
+        isInitial = false;
         return true;
     }
 
