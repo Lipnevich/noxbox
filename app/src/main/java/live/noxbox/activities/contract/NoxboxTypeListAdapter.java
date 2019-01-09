@@ -31,6 +31,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
+import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.PlayMarketManager.openApplicationMarketPage;
 
 public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAdapter.ViewHolder> {
@@ -126,18 +127,19 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
             }
         }
 
+
+       // availableNoxboxes.clear();
+        stopListenAvailableNoxboxes();
         AppCache.fireProfile();
         rootFragment.dismiss();
     }
 
     private void executeInTheMap(int position) {
         for (NoxboxType type : NoxboxType.values()) {
-            if (type == noxboxTypes.get(position)) {
-                profile.getFilters().getTypes().put(type.name(), true);
-                continue;
-            }
             profile.getFilters().getTypes().put(type.name(), false);
         }
+        profile.getFilters().getTypes().put(noxboxTypes.get(position).name(), true);
+
     }
 
     private void executeInTheProfile(int position) {

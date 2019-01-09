@@ -61,7 +61,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
         Boolean shouldDrawType = profile.getFilters().getTypes().get(noxbox.getType().name());
-        if (shouldDrawType != null && shouldDrawType == false)
+        if (shouldDrawType != null && !shouldDrawType)
             return true;
 
         if (BuildConfig.DEBUG) return false;

@@ -41,32 +41,29 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, final int i) {
-        final String price = clusterItems.get(i).getNoxbox().getPrice();
-        NoxboxType type = clusterItems.get(i).getNoxbox().getType();
-        for (NoxboxType noxboxType : NoxboxType.values()) {
-            if (noxboxType == type) {
-                clusterViewHolder.icon.setImageResource(noxboxType.getImage());
-            }
-        }
+    public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, final int position) {
+        final String price = clusterItems.get(position).getNoxbox().getPrice();
+        NoxboxType type = clusterItems.get(position).getNoxbox().getType();
+
+        clusterViewHolder.icon.setImageResource(type.getImage());
 
         String rating;
-        if (clusterItems.get(i).getNoxbox().getRole() == MarketRole.supply) {
+        if (clusterItems.get(position).getNoxbox().getRole() == MarketRole.supply) {
             rating = String.valueOf(Profile.ratingToPercentage(
-                    clusterItems.get(i).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedLikes(),
-                    clusterItems.get(i).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedDislikes()));
+                    clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedLikes(),
+                    clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedDislikes()));
         } else {
             rating = String.valueOf(Profile.ratingToPercentage(
-                    clusterItems.get(i).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedLikes(),
-                    clusterItems.get(i).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedDislikes()));
+                    clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedLikes(),
+                    clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedDislikes()));
         }
 
-        int travelModeImage = clusterItems.get(i).getNoxbox().getOwner().getTravelMode().getImage();
+        int travelModeImage = clusterItems.get(position).getNoxbox().getOwner().getTravelMode().getImage();
 
         String role;
-        if(clusterItems.get(i).getNoxbox().getRole() == MarketRole.supply){
+        if (clusterItems.get(position).getNoxbox().getRole() == MarketRole.supply) {
             role = activity.getResources().getString(R.string.worker);
-        }else {
+        } else {
             role = activity.getResources().getString(R.string.costumer);
         }
 
@@ -79,7 +76,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         clusterViewHolder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.setViewed(clusterItems.get(i).getNoxbox());
+                profile.setViewed(clusterItems.get(position).getNoxbox());
                 profile.getViewed().setParty(profile.privateInfo());
                 Router.startActivity(activity, DetailedActivity.class);
                 activity.finish();
