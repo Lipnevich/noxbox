@@ -17,4 +17,12 @@ exports.init = async function (request) {
     return request;
 }
 
+exports.seed = async function (request) {
+    let wallet = await db.collection('seeds').doc(request.id).get();
+
+    request.encrypted = wallet.seed;
+
+    return request;
+}
+
 

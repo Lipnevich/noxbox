@@ -65,10 +65,10 @@ public class WalletActivity extends BaseActivity {
         }
 
         Map<String, Object> data = new HashMap<>();
-        data.put("addressToRefund", address);
+        data.put("addressToTransfer", address);
 
         FirebaseFunctions.getInstance()
-                .getHttpsCallable("refund")
+                .getHttpsCallable("transfer")
                 .call(data)
                 .continueWith(task -> {
                     String result = (String) task.getResult().getData();
