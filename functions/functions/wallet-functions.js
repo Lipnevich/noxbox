@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const BigDecimal = require('big.js');
-const WavesAPI = require('@waves/waves-api');
+const WavesAPI = require('waves-api');
 
 const Waves = WavesAPI.create(WavesAPI.MAINNET_CONFIG);
 const password = functions.config().keys.seedpass ? functions.config().keys.seedpass : 'Salt';
@@ -22,10 +22,11 @@ exports.create = async request => {
 exports.send = async request => {
     request.seed = Waves.Seed.fromExistingPhrase(Waves.Seed.decryptSeedPhrase(request.encrypted, password));
 
-    let balance = await Waves.API.Node.v1.addresses.balance(seed.address);
-    if(balance == '0') return;
+    let response = await Waves.API.Node.v1.addresses.balance(request.seed.address);
+    console.log('Balance', response.balance);
+    if(!response || response.balance == '0') return;
 
-    request.transferable = '' + new BigDecimal('' + balance).div(wavesDecimals).minus(wavesFee);
+    request.transferable = '' + new BigDecimal('' + response.balance).div(wavesDecimals).minus(wavesFee);
     console.log('Transferable ', request.transferable);
 
     return transfer(request);
@@ -41,9 +42,9 @@ transfer = async request => {
     };
 
     transferData.recipient = request.addressToTransfer,
-    transferData.amount = '' + new BigDecimal(request.transferable).times(decimals);
+    transferData.amount = '' + new BigDecimal(request.transferable).times(wavesDecimals);
 
     await Waves.API.Node.v1.assets.transfer(transferData, request.seed.keyPair);
-    console.log('Money was transfered');
+    console.log('Money was transferred');
 
 }

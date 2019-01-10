@@ -4,7 +4,7 @@ admin.initializeApp(functions.config().firebase);
 
 const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
-const version = 112;
+const version = 113;
 
 exports.welcome = functions.auth.user().onCreate(user => {
     return wallet.create(user).then(noxbox.init);
@@ -138,9 +138,9 @@ admin.database().ref('geo').once('value').then(allServices => {
 });
 
 exports.transfer = functions.https.onCall(async (data, context) => {
-    console.log('id', context.auth.token.id);
+    console.log('id', context.auth.uid);
     console.log('addressToTransfer', data.addressToTransfer);
-    return noxbox.seed({id : context.auth.token.id, addressToTransfer : data.addressToTransfer})
+    return noxbox.seed({id : context.auth.uid, addressToTransfer : data.addressToTransfer})
         .then(wallet.send);
 });
 
