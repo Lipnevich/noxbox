@@ -64,16 +64,6 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         if (shouldDrawType != null && !shouldDrawType)
             return true;
 
-        if (BuildConfig.DEBUG) return false;
-        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
-
-        if (!profile.getFilters().getAllowNovices())
-            return true;
-
-        if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
-            return true;
-        if (Integer.parseInt(noxbox.getPrice()) > Integer.parseInt(profile.getFilters().getPrice()))
-            return true;
         if (noxbox.getRole() == MarketRole.demand && !profile.getFilters().getDemand())
             return true;
 
@@ -84,6 +74,17 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none) {
             return true;
         }
+
+        if (BuildConfig.DEBUG) return false;
+        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
+
+        if (!profile.getFilters().getAllowNovices())
+            return true;
+
+        if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
+            return true;
+        if (Integer.parseInt(noxbox.getPrice()) > Integer.parseInt(profile.getFilters().getPrice()))
+            return true;
 
         return !noxbox.getOwner().getHost() && !profile.getHost();
     }
