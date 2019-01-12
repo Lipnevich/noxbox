@@ -20,7 +20,7 @@ exports.init = async function (request) {
 exports.seed = async function (request) {
     let wallet = await db.collection('seeds').doc(request.id).get();
 
-    request.encrypted = wallet.seed;
+    request.encrypted = wallet.data().seed;
 
     return request;
 }
