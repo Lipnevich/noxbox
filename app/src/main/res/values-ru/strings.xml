@@ -46,9 +46,9 @@
     <string name="servicesAvailable">услуг доступно</string>
     <string name="serviceUnavailable">Hедостаточно денег для услуги. Пожалуйста, переведите %s</string>
     <string name="walletAddress">Ваш кошелек</string>
-    <string name="addressToRefund">Адрес на который Вы хотите перевести деньги</string>
-    <string name="refund">Возврат</string>
-    <string name="refundPrompt">Вы уверены что хотите вернуть Ваши деньги?</string>
+    <string name="addressToTransfer">Адрес на который Вы хотите перевести деньги</string>
+    <string name="transfer">Перевести</string>
+    <string name="transferPrompt">Вы уверены что хотите перевести Ваши деньги?</string>
     <string name="cancelPrompt">Вы уверены что хотите отменить?</string>
     <string name="yes">да</string>
     <string name="no">нет</string>

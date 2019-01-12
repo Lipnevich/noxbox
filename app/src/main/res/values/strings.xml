@@ -49,9 +49,9 @@
     <string name="servicesAvailable">services available</string>
     <string name="serviceUnavailable">Not enough money for service. Please send at least %s</string>
     <string name="walletAddress">Your wallet</string>
-    <string name="addressToRefund">Address to which you want to transfer money</string>
-    <string name="refund">refund</string>
-    <string name="refundPrompt">Are you sure you want to refund your money?</string>
+    <string name="addressToTransfer">Address to which you want to transfer money</string>
+    <string name="transfer">Transfer</string>
+    <string name="transferPrompt">Are you sure you want to transfer your money?</string>
     <string name="cancelPrompt">Are you sure you want to cancel?</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
@@ -76,7 +76,7 @@
     <string name="balancePushTitle">Balance updated</string>
     <string name="qrPushTitle">Performer working</string>
     <string name="qrPushBody">%s happy to provide you a service</string>
-    <string name="enterMessage">Type a message...</string>
+    <string name="enterMessage">Type a message…</string>
     <string name="addressInClipBoard">Address copied to clipboard</string>
     <string name="chat">Chat</string>
     <string name="isOffline">No network connection</string>

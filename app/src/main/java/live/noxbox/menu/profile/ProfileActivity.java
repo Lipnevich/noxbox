@@ -40,6 +40,7 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
+import live.noxbox.tools.ProgressDialogManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
@@ -81,29 +82,6 @@ public class ProfileActivity extends BaseActivity {
         AppCache.stopListen(this.getClass().getName());
     }
 
-    private void drawPortfolioEditingMenu(final Profile profile) {
-
-        List<NoxboxType> typeList = new ArrayList<>();
-        for (NoxboxType type : NoxboxType.values()) {
-            if (profile.getPortfolio().get(type.name()) != null) {
-                typeList.add(type);
-            }
-        }
-        if (typeList.size() >= 1) {
-            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.INVISIBLE);
-            findViewById(R.id.serviceProvidedText).setVisibility(View.VISIBLE);
-            RecyclerView recyclerView = findViewById(R.id.noxboxTypeList);
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            recyclerView.setAdapter(new PortfolioNoxboxTypeAdapter(typeList, ProfileActivity.this));
-        } else {
-            findViewById(R.id.noxboxTypeList).setVisibility(View.GONE);
-            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.VISIBLE);
-            findViewById(R.id.serviceProvidedText).setVisibility(View.GONE);
-        }
-
-    }
-
     private void draw(final Profile profile) {
         drawEditPhoto(profile);
         drawEditName(profile);
@@ -111,28 +89,6 @@ public class ProfileActivity extends BaseActivity {
         drawEditHost(profile);
         drawPortfolioEditingMenu(profile);
         drawMenuAddingPerformer(profile);
-    }
-
-    private void drawMenuAddingPerformer(final Profile profile) {
-        if (profile.getPortfolio().values().size() == NoxboxType.values().length) {
-            findViewById(R.id.addLayout).setVisibility(View.GONE);
-            return;
-        }
-
-        findViewById(R.id.addLayout).setVisibility(View.VISIBLE);
-        findViewById(R.id.addLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Intent intent = new Intent(ProfileActivity.this, NoxboxTypeListActivity.class);
-                //intent.putExtra(ProfileActivity.class.getName(), NoxboxTypeListActivity.class.getName());
-                //startActivityForResult(intent, NoxboxTypeListActivity.PROFILE_CODE);
-                DialogFragment dialog = new NoxboxTypeListFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("key", PROFILE_CODE);
-                dialog.setArguments(bundle);
-                dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
-            }
-        });
     }
 
     private void drawEditPhoto(final Profile profile) {
@@ -154,23 +110,6 @@ public class ProfileActivity extends BaseActivity {
 
         checkPhotoAcceptance(profile);
 
-    }
-
-    private void checkPhotoAcceptance(Profile profile) {
-        ImageView profilePhoto = findViewById(R.id.profilePhoto);
-
-        if (!profile.getAcceptance().isAccepted()) {
-            ((TextView) findViewById(R.id.invalidPhotoText)).setText("* " + getString(R.string.photoInvalidContent, getString(profile.getAcceptance().getInvalidAcceptance().getContent())));
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
-            params.setMargins(0, 16, 0, 0); //substitute parameters for left, top, right, bottom
-            profilePhoto.setLayoutParams(params);
-            findViewById(R.id.invalidPhotoText).setVisibility(View.VISIBLE);
-        } else {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
-            params.setMargins(0, 16, 0, 16); //substitute parameters for left, top, right, bottom
-            profilePhoto.setLayoutParams(params);
-            findViewById(R.id.invalidPhotoText).setVisibility(View.INVISIBLE);
-        }
     }
 
     private void drawEditName(final Profile profile) {
@@ -268,6 +207,70 @@ public class ProfileActivity extends BaseActivity {
         });
     }
 
+    private void drawPortfolioEditingMenu(final Profile profile) {
+
+        List<NoxboxType> typeList = new ArrayList<>();
+        for (NoxboxType type : NoxboxType.values()) {
+            if (profile.getPortfolio().get(type.name()) != null) {
+                typeList.add(type);
+            }
+        }
+        if (typeList.size() >= 1) {
+            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.INVISIBLE);
+            findViewById(R.id.serviceProvidedText).setVisibility(View.VISIBLE);
+            RecyclerView recyclerView = findViewById(R.id.noxboxTypeList);
+            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            recyclerView.setAdapter(new PortfolioNoxboxTypeAdapter(typeList, ProfileActivity.this));
+        } else {
+            findViewById(R.id.noxboxTypeList).setVisibility(View.GONE);
+            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.VISIBLE);
+            findViewById(R.id.serviceProvidedText).setVisibility(View.GONE);
+        }
+
+    }
+
+
+    private void drawMenuAddingPerformer(final Profile profile) {
+        if (profile.getPortfolio().values().size() == NoxboxType.values().length) {
+            findViewById(R.id.addLayout).setVisibility(View.GONE);
+            return;
+        }
+
+        findViewById(R.id.addLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.addLayout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Intent intent = new Intent(ProfileActivity.this, NoxboxTypeListActivity.class);
+                //intent.putExtra(ProfileActivity.class.getName(), NoxboxTypeListActivity.class.getName());
+                //startActivityForResult(intent, NoxboxTypeListActivity.PROFILE_CODE);
+                DialogFragment dialog = new NoxboxTypeListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("key", PROFILE_CODE);
+                dialog.setArguments(bundle);
+                dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+            }
+        });
+    }
+
+
+    private void checkPhotoAcceptance(Profile profile) {
+        ImageView profilePhoto = findViewById(R.id.profilePhoto);
+
+        if (!profile.getAcceptance().isAccepted()) {
+            ((TextView) findViewById(R.id.invalidPhotoText)).setText("* " + getString(R.string.photoInvalidContent, getString(profile.getAcceptance().getInvalidAcceptance().getContent())));
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
+            params.setMargins(0, 16, 0, 0); //substitute parameters for left, top, right, bottom
+            profilePhoto.setLayoutParams(params);
+            findViewById(R.id.invalidPhotoText).setVisibility(View.VISIBLE);
+        } else {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
+            params.setMargins(0, 16, 0, 16); //substitute parameters for left, top, right, bottom
+            profilePhoto.setLayoutParams(params);
+            findViewById(R.id.invalidPhotoText).setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void setTravelModeStatus(Profile profile) {
         ((TextView) findViewById(R.id.travelModeName)).setText(getText(profile.getTravelMode().getName()));
         ((ImageView) findViewById(R.id.travelModeImage)).setImageResource(profile.getTravelMode().getImage());
@@ -290,8 +293,16 @@ public class ProfileActivity extends BaseActivity {
         AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
+
                 if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK
                         && data != null && data.getData() != null) {
+//                    ProgressDialog progressDialog = new ProgressDialog(ProfileActivity.this);
+//                    progressDialog.setMessage("Фотография проходит проверку");
+//                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//                    progressDialog.setIndeterminate(true);
+//                    progressDialog.
+//                    progressDialog.show();
+                    ProgressDialogManager.showProgress(ProfileActivity.this, "Фотография проходит проверку");
 
                     Map<String, String> notificationData = new HashMap<>();
                     notificationData.put("type", NotificationType.photoValidationProgress.name());
@@ -302,17 +313,20 @@ public class ProfileActivity extends BaseActivity {
                         public void execute(Bitmap bitmap) {
                             FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, new Task<Bitmap>() {
                                 @Override
-                                public void execute(Bitmap checked) {
-                                    ImageManager.uploadPhoto(ProfileActivity.this, profile, checked);
+                                public void execute(Bitmap checking) {
+                                    ImageManager.uploadPhoto(ProfileActivity.this, profile, checking);
                                     checkPhotoAcceptance(profile);
                                 }
                             });
                         }
                     });
                     profile.setPhoto(data.getData().toString());
+                    draw(profile);
+
                 } else if (requestCode == TravelModeListActivity.CODE) {
                     draw(profile);
                 }
+
             }
         });
     }

@@ -2,104 +2,88 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
     android:layout_alignParentTop="true"
-    android:fillViewport="true"
-    android:layout_alignParentStart="true">
+    android:fillViewport="true">
 
-<RelativeLayout android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:padding="15dp"
-              android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/balance_label_id"
-        android:textSize="24sp"
-        android:text="@string/yourBalance"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:orientation="vertical"
+        android:padding="15dp">
 
-    <TextView
-        android:id="@+id/balance_id"
-        android:text="0"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primary"
-        android:textSize="84sp"
-        android:layout_below="@id/balance_label_id"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:text="@string/frozenMoney"
-        android:textSize="24sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/frozen_money_label_id"
-        android:layout_below="@+id/balance_id"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:text="0"
-        android:textSize="48sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/frozen_money_id"
-        android:layout_below="@+id/frozen_money_label_id"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/wallet_address_title"
-        android:textSize="20sp"
-        android:text="@string/walletAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:layout_below="@+id/frozen_money_id"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/wallet_address_id"
-        android:layout_below="@+id/wallet_address_title"
-        android:layout_centerHorizontal="true"/>
-
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/copy_to_clipboard"
-        android:tint="@color/primary"
-        android:id="@+id/copy_to_clipboard_id"
-        android:layout_marginTop="8dp"
-        android:layout_below="@+id/wallet_address_id"
-        android:layout_centerHorizontal="true"/>
-
-
-    <RelativeLayout android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/copy_to_clipboard_id"
-                    android:layout_alignParentBottom="true">
-        <Button
-            android:text="@string/send"
+        <TextView
+            android:id="@+id/balance_label_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/send_button_id"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="@string/yourBalance"
+            android:textSize="24sp" />
 
-        <EditText
-            android:id="@+id/address_to_send_id"
+        <TextView
+            android:id="@+id/balance_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/balance_label_id"
+            android:layout_centerHorizontal="true"
+            android:text="0"
+            android:textColor="@color/primary"
+            android:textSize="84sp" />
+
+        <TextView
+            android:id="@+id/wallet_address_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/balance_id"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="18dp"
+            android:text="@string/walletAddress"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/wallet_address_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wallet_address_title"
+            android:layout_centerHorizontal="true"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/copy_to_clipboard_id"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_below="@+id/wallet_address_id"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/copy_to_clipboard"
+            android:tint="@color/primary" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="@string/addressToRefund"
-            android:textSize="16sp"
-            android:layout_alignTop="@+id/send_button_id"
-            android:layout_toStartOf="@+id/send_button_id"/>
+            android:layout_below="@+id/copy_to_clipboard_id"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/send_button_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/button_corner"
+                android:padding="4dp"
+                android:text="@string/transfer"
+                android:textAlignment="center"
+                android:textColor="@color/secondary" />
+
+            <EditText
+                android:id="@+id/address_to_send_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/addressToTransfer"
+                android:inputType="text"
+                android:textSize="16sp" />
+        </LinearLayout>
+
     </RelativeLayout>
-
-
-</RelativeLayout>
 </ScrollView>

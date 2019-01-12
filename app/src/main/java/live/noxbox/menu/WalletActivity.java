@@ -57,7 +57,7 @@ public class WalletActivity extends BaseActivity {
 //        GeoRealtime.sendRequest(new Request().setType(NotificationType.balance));
     }
 
-    private void refund(Profile profile, String address) {
+    private void transfer(Profile profile, String address) {
         if(TextUtils.isEmpty(address)) return;
 
         if(!address.equals(profile.getWallet().getAddressToRefund())) {
@@ -94,12 +94,6 @@ public class WalletActivity extends BaseActivity {
         TextView balanceText = findViewById(R.id.balance_id);
         balanceText.setText(format(balance));
 
-        TextView frozenLabel = findViewById(R.id.frozen_money_label_id);
-        frozenLabel.setText(String.format(getResources().getString(R.string.frozenMoney), getString(R.string.currency)));
-
-        TextView frozenText = findViewById(R.id.frozen_money_id);
-        frozenText.setText(format(frozenMoney));
-
         View.OnClickListener addressToClipboardListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,11 +124,11 @@ public class WalletActivity extends BaseActivity {
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(WalletActivity.this, R.style.NoxboxAlertDialogStyle);
                 builder.setTitle(getResources().getString(R.string.sendPrompt));
-                builder.setPositiveButton(getResources().getString(R.string.refund),
+                builder.setPositiveButton(getResources().getString(R.string.transfer),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                refund(profile, addressToSendEditor.getText().toString());
+                                transfer(profile, addressToSendEditor.getText().toString());
                             }
                         });
                 builder.setNegativeButton(android.R.string.cancel, null);
