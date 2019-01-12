@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import live.noxbox.R;
+import live.noxbox.menu.profile.ProfilePerformerActivity;
+import live.noxbox.tools.Router;
 
 public class HistoryActivity extends FragmentActivity {
 
@@ -43,7 +45,7 @@ public class HistoryActivity extends FragmentActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(HistoryActivity.this);
             }
         });
     }

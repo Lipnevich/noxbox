@@ -79,7 +79,6 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
                 profile.setViewed(clusterItems.get(position).getNoxbox());
                 profile.getViewed().setParty(profile.privateInfo());
                 Router.startActivity(activity, DetailedActivity.class);
-                activity.finish();
             }
         });
     }

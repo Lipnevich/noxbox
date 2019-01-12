@@ -22,6 +22,7 @@ import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.ImageManager;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.ImageManager.deleteFolderByType;
@@ -74,7 +75,7 @@ public class ProfilePerformerActivity extends BaseActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(ProfilePerformerActivity.this);
             }
         });
         findViewById(R.id.deleteSection).setOnClickListener(new View.OnClickListener() {
@@ -88,7 +89,7 @@ public class ProfilePerformerActivity extends BaseActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 profile.getPortfolio().remove(type.name());
                                 deleteFolderByType(type);
-                                finish();
+                                Router.finishActivity(ProfilePerformerActivity.this);
                             }
                         });
             }

@@ -46,6 +46,7 @@ import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.ADDRESS_SEARCH_RADIUS_IN_METERS;
@@ -73,7 +74,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(CoordinateActivity.this);
             }
         });
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
@@ -134,7 +135,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
                 intent.putExtra(LAT, latLng.latitude);
                 intent.putExtra(LNG, latLng.longitude);
                 setResult(RESULT_OK, intent);
-                finish();
+                Router.finishActivity(CoordinateActivity.this);
             }
         });
     }

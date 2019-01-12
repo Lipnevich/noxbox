@@ -55,6 +55,7 @@ import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -129,7 +130,7 @@ public class ContractActivity extends BaseActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(ContractActivity.this);
             }
         });
     }
@@ -509,16 +510,16 @@ public class ContractActivity extends BaseActivity {
 
         AppCache.noxboxCreated();
 
-        finish();
+        Router.finishActivity(ContractActivity.this);
     }
 
     public void removeNoxbox() {
         AppCache.removeNoxbox();
-        finish();
+        Router.finishActivity(ContractActivity.this);
     }
 
     private void cancelNoxboxConstructor() {
-        finish();
+        Router.finishActivity(ContractActivity.this);
     }
 
     @Override

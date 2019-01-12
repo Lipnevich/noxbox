@@ -31,6 +31,7 @@ import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static android.graphics.Bitmap.createBitmap;
@@ -57,7 +58,7 @@ public class ChatActivity extends BaseActivity {
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(ChatActivity.this);
             }
         });
 

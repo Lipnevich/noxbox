@@ -4,13 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
 
 import live.noxbox.services.NetworkReceiver;
+import live.noxbox.tools.Router;
 
 public abstract class BaseActivity extends AppCompatActivity {
     protected BroadcastReceiver networkReceiver;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -26,5 +29,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         } catch (IllegalArgumentException e) {
             Crashlytics.logException(e);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                Router.finishActivity(this);
+                break;
+        }
+        return true;
     }
 }

@@ -17,9 +17,11 @@ import com.bumptech.glide.request.transition.Transition;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.R;
+import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.updateNoxbox;
@@ -57,7 +59,7 @@ public class ConfirmationActivity extends BaseActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(ConfirmationActivity.this);
             }
         });
     }
@@ -108,7 +110,7 @@ public class ConfirmationActivity extends BaseActivity {
                             profile.getCurrent().setTimePartyVerified(timeVerified);
                         }
                         updateNoxbox();
-                        finish();
+                        Router.finishActivity(ConfirmationActivity.this);
                     }
                 }, 1000);
             }
@@ -152,7 +154,7 @@ public class ConfirmationActivity extends BaseActivity {
                             profile.getCurrent().setTimeCanceledByParty(timeCanceled);
                         }
                         updateNoxbox();
-                        finish();
+                        Router.finishActivity(ConfirmationActivity.this);
                     }
                 }, 1000);
             }

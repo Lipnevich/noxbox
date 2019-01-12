@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -55,6 +56,7 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.PanoramaImageView;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
@@ -69,6 +71,7 @@ import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class DetailedActivity extends AppCompatActivity {
     private GyroscopeObserver gyroscopeObserver;
+    private Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,7 @@ public class DetailedActivity extends AppCompatActivity {
                     profile.getViewed().setParty(profile.privateInfo());
                 }
                 draw(profile);
+
             }
         });
     }
@@ -109,6 +113,7 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void draw(Profile profile) {
+        this.profile = profile;
         drawToolbar(profile.getViewed());
         drawOppositeProfile(profile);
         drawDescription(profile);
@@ -128,7 +133,6 @@ public class DetailedActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
-
 
         //((ImageView) findViewById(R.id.illustration)).setImageResource(noxbox.getType().getIllustration());
 
@@ -349,7 +353,7 @@ public class DetailedActivity extends AppCompatActivity {
                     v.setVisibility(View.GONE);
                     profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                     AppCache.updateNoxbox();
-                    finish();
+                    Router.finishActivity(DetailedActivity.this);
                 }
             });
         }
@@ -409,7 +413,7 @@ public class DetailedActivity extends AppCompatActivity {
             AppCache.availableNoxboxes.remove(profile.getNoxboxId());
         }
 
-        finish();
+        Router.finishActivity(DetailedActivity.this);
     }
 
     private RadioButton longToWait;
@@ -511,7 +515,7 @@ public class DetailedActivity extends AppCompatActivity {
                         profile.getViewed().setCancellationReasonMessage(cancellationReason);
                         AppCache.updateNoxbox();
                         alertDialog.cancel();
-                        finish();
+                        Router.finishActivity(DetailedActivity.this);
                     }
                 });
 
@@ -577,15 +581,26 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                profile.setViewed(null);
-                finish();
-            }
-        });
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                switch (NoxboxState.getState(profile.getViewed(), profile)) {
+                    case created:
+                        profile.setViewed(null);
+                        break;
+                    case accepting:
+                    case moving:
+                    case requesting:
+                        break;
+                }
+
+                Router.finishActivity(DetailedActivity.this);
+                break;
+
+        }
+
+        return true;
     }
 
     @Override

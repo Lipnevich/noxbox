@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
@@ -227,5 +229,16 @@ public class MapFiltersActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                Router.finishActivity(MapFiltersActivity.this);
+                break;
+        }
+        return true;
     }
 }

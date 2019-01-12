@@ -16,9 +16,11 @@ import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
+import live.noxbox.activities.ConfirmationActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 public class ClusterItemsActivity extends BaseActivity {
@@ -59,7 +61,7 @@ public class ClusterItemsActivity extends BaseActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(ClusterItemsActivity.this);
             }
         });
         findViewById(R.id.sort).setOnClickListener(new View.OnClickListener() {

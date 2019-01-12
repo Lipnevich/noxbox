@@ -11,6 +11,7 @@ import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.menu.about.tutorial.TutorialActivity;
+import live.noxbox.menu.profile.ProfilePerformerActivity;
 import live.noxbox.tools.Router;
 
 public class AboutApplicationActivity extends BaseActivity {
@@ -58,7 +59,7 @@ public class AboutApplicationActivity extends BaseActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(AboutApplicationActivity.this);
             }
         });
     }

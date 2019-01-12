@@ -45,7 +45,7 @@ public class BottomSheetDialog {
             @Override
             public void onClick(View v) {
                 Router.startActivity(activity, ProfileActivity.class);
-                activity.finish();
+                Router.finishActivity(activity);
             }
         });
         dialog.show();
@@ -61,7 +61,7 @@ public class BottomSheetDialog {
             @Override
             public void onClick(View v) {
                 Router.startActivity(activity, ProfileActivity.class);
-                activity.finish();
+                Router.finishActivity(activity);
             }
         });
         dialog.show();

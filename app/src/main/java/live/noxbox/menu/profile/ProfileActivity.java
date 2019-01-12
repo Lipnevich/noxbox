@@ -41,6 +41,7 @@ import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.ProgressDialogManager;
+import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
@@ -71,7 +72,7 @@ public class ProfileActivity extends BaseActivity {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Router.finishActivity(ProfileActivity.this);
             }
         });
     }

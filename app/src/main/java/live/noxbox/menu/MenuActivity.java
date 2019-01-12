@@ -129,7 +129,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 @Override
                 public void onClick(View v) {
                     Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
-                    if(drawerLayout != null){
+                    if (drawerLayout != null) {
                         drawerLayout.closeDrawers();
                     }
                     isInitial = false;
@@ -202,7 +202,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
 
                                         startActivity(new Intent(getApplicationContext(), AuthActivity.class));
-                                        finish();
+                                        Router.finishActivity(MenuActivity.this);
                                     }
                                 });
                     }
