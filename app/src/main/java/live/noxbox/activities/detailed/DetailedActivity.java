@@ -3,8 +3,11 @@ package live.noxbox.activities.detailed;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +27,11 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
@@ -101,8 +109,6 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void draw(Profile profile) {
-
-
         drawToolbar(profile.getViewed());
         drawOppositeProfile(profile);
         drawDescription(profile);
@@ -124,18 +130,18 @@ public class DetailedActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(noxbox.getType().getName());
 
 
-        ((ImageView) findViewById(R.id.illustration)).setImageResource(noxbox.getType().getIllustration());
+        //((ImageView) findViewById(R.id.illustration)).setImageResource(noxbox.getType().getIllustration());
 
-//        Glide.with(DetailedActivity.this)
-//                .asDrawable()
-//                .load(noxbox.getType().getIllustration())
-//                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-//                .into(new SimpleTarget<Drawable>() {
-//                    @Override
-//                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
-//                        ((ImageView) findViewById(R.id.illustration)).setImageDrawable(drawable);
-//                    }
-//                });
+        Glide.with(DetailedActivity.this)
+                .asDrawable()
+                .load(noxbox.getType().getIllustration())
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                        ((ImageView) findViewById(R.id.illustration)).setImageDrawable(drawable);
+                    }
+                });
     }
 
     private void drawOppositeProfile(Profile me) {
@@ -159,9 +165,9 @@ public class DetailedActivity extends AppCompatActivity {
             }
         } else {
             if (profile.getViewed().getOwner().equals(profile)) {
-                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
-            } else {
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
+            } else {
+                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
             }
         }
         ((ImageView) findViewById(R.id.typeImage)).setImageResource(profile.getViewed().getType().getImage());
@@ -352,10 +358,10 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void drawJoinButton(final Profile profile) {
         findViewById(R.id.joinButton).setVisibility(View.VISIBLE);
-        if (profile.getViewed().getRole() == MarketRole.demand) {
-            ((Button) findViewById(R.id.joinButton)).setText(R.string.proceed);
-        } else if (profile.getViewed().getRole() == MarketRole.supply) {
+        if (profile.getViewed().getRole() == MarketRole.supply) {
             ((Button) findViewById(R.id.joinButton)).setText(R.string.order);
+        } else {
+            ((Button) findViewById(R.id.joinButton)).setText(R.string.proceed);
         }
 
         findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
