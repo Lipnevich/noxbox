@@ -69,12 +69,14 @@ public class FacePartsDetection {
                             data.put("type", NotificationType.photoValid.name());
                             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                             task.execute(bitmap);
+
                         } else {
                             data.put("type", NotificationType.photoInvalid.name());
                             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                         }
 
                         AppCache.fireProfile();
+                        ProgressDialogManager.hideProgress();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -88,6 +90,7 @@ public class FacePartsDetection {
                         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
 
                         AppCache.fireProfile();
+                        ProgressDialogManager.hideProgress();
                     }
                 });
     }

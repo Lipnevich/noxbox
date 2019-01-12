@@ -46,8 +46,9 @@ public class ImageManager {
                 Map<String, String> data = new HashMap<>();
                 data.put("type", NotificationType.photoValid.name());
                 NotificationFactory.buildNotification(activity.getApplicationContext(), null, data).show();
-                profile.setPhoto(uri.toString());
+                //profile.setPhoto(uri.toString());
                 Firestore.writeProfile(profile);
+                ProgressDialogManager.hideProgress();
             }
         });
     }
