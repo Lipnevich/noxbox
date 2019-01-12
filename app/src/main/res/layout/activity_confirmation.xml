@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -36,6 +37,7 @@
 
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -81,22 +83,40 @@
                     android:textSize="@dimen/text_size" />
 
 
-                <live.noxbox.tools.SwipeButton
+                <!--<live.noxbox.tools.SwipeButton-->
+                <!--android:id="@+id/swipeButtonConfirm"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginEnd="40dp" />-->
+
+                <in.shadowfax.proswipebutton.ProSwipeButton
                     android:id="@+id/swipeButtonConfirm"
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="40dp" />
-
-                <live.noxbox.tools.SwipeButton
-                    android:id="@+id/swipeButtonWrongPhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="40dp"
-                    android:layout_marginBottom="10dp" />
+                    app:bg_color="#00b700" />
+
+                <in.shadowfax.proswipebutton.ProSwipeButton
+                    android:id="@+id/swipeButtonWrongPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="40dp"
+                    android:layout_marginBottom="10dp"
+                    app:bg_color="#ff0000" />
+                <!--<live.noxbox.tools.SwipeButton-->
+                <!--android:id="@+id/swipeButtonWrongPhoto"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_marginStart="16dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginEnd="40dp"-->
+                <!--android:layout_marginBottom="10dp" />-->
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
+import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Configuration;
 import live.noxbox.R;
 import live.noxbox.model.Noxbox;
@@ -19,7 +20,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
-import live.noxbox.tools.SwipeButton;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
@@ -112,25 +112,45 @@ public class Performing implements State {
     }
 
     private void drawComplete(final Profile profile) {
-        SwipeButton completeSwipeButton = performingView.findViewById(R.id.completeSwipeButton);
-        completeSwipeButton.setText(activity.getResources().getString(R.string.completeText));
-        completeSwipeButton.setParametrs(activity.getDrawable(R.drawable.yes), activity.getResources().getString(R.string.completeText), activity);
-        completeSwipeButton.setOnTouchListener(completeSwipeButton.getButtonTouchListener(new Task<Object>() {
+//        SwipeButton completeSwipeButton = performingView.findViewById(R.id.completeSwipeButton);
+//        completeSwipeButton.setText(activity.getResources().getString(R.string.completeText));
+//        completeSwipeButton.setParametrs(activity.getDrawable(R.drawable.yes), activity.getResources().getString(R.string.completeText), activity);
+//        completeSwipeButton.setOnTouchListener(completeSwipeButton.getButtonTouchListener(new Task<Object>() {
+//            @Override
+//            public void execute(Object object) {
+//                long timeCompleted = System.currentTimeMillis();
+//
+//                Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
+//
+//                //Map<String, String> data = new HashMap<>();
+//                //data.put("type", NotificationType.completed.name());
+//                //data.put("price", getTotalSpentForNoxbox(profile.getCurrent(), timeCompleted).toString());
+//                //data.put("time", "" + timeCompleted);
+//                //NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
+//                profile.getCurrent().setTimeCompleted(timeCompleted);
+//                updateNoxbox();
+//            }
+//        }));
+        ProSwipeButton proSwipeBtn = (ProSwipeButton) activity.findViewById(R.id.proSwipeButton);
+        proSwipeBtn.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
             @Override
-            public void execute(Object object) {
-                long timeCompleted = System.currentTimeMillis();
+            public void onSwipeConfirm() {
+                // user has swiped the btn. Perform your async operation now
+                new android.os.Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // task success! show TICK icon in ProSwipeButton
+                        proSwipeBtn.showResultIcon(true); // false if task failed
+                        long timeCompleted = System.currentTimeMillis();
 
-                Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
+                        Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
 
-                //Map<String, String> data = new HashMap<>();
-                //data.put("type", NotificationType.completed.name());
-                //data.put("price", getTotalSpentForNoxbox(profile.getCurrent(), timeCompleted).toString());
-                //data.put("time", "" + timeCompleted);
-                //NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
-                profile.getCurrent().setTimeCompleted(timeCompleted);
-                updateNoxbox();
+                        profile.getCurrent().setTimeCompleted(timeCompleted);
+                        updateNoxbox();
+                    }
+                }, 2000);
             }
-        }));
+        });
     }
 
 

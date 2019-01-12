@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/performingScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -53,14 +54,23 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
-            <live.noxbox.tools.SwipeButton
-                android:id="@+id/completeSwipeButton"
+            <!--<live.noxbox.tools.SwipeButton-->
+            <!--android:id="@+id/completeSwipeButton"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_marginBottom="32dp"-->
+            <!--android:layout_marginEnd="70dp"-->
+            <!--android:layout_marginStart="70dp" />-->
+            <in.shadowfax.proswipebutton.ProSwipeButton
+                android:id="@+id/proSwipeButton"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:layout_margin="8dp"
                 android:layout_marginBottom="32dp"
-                android:layout_marginEnd="70dp"
-                android:layout_marginStart="70dp" />
+                app:bg_color="@color/primary"
+                app:btn_text="@string/complete" />
         </LinearLayout>
 
     </RelativeLayout>

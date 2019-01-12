@@ -71,6 +71,8 @@ dependencies {
 
     implementation 'com.gjiazhe:PanoramaImageView:1.0'
 
+    implementation 'in.shadowfax:proswipebutton:1.1'
+
     //material
     //implementation 'com.google.android.material:material:1.0.0-alpha3'
     //test
