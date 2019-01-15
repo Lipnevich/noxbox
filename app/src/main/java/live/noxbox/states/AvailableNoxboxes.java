@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -20,12 +22,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.List;
+
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
+import live.noxbox.debug.GMailSender;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
@@ -63,6 +68,13 @@ public class AvailableNoxboxes implements State {
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
     }
 
+    private boolean hasGPSDevice(Context context) {
+        final LocationManager mgr = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (mgr == null) return false;
+        final List<String> providers = mgr.getAllProviders();
+        if (providers == null) return false;
+        return providers.contains(LocationManager.GPS_PROVIDER);
+    }
 
     @Override
     public void draw(final Profile profile) {
@@ -83,6 +95,42 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+
+        activity.findViewById(R.id.pointerImage).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                String deviceModel = android.os.Build.MODEL;
+                String deviceBrand = Build.BRAND;
+                String deviceBootloader = Build.BOOTLOADER;
+                String deviceOverallNameProduct = Build.PRODUCT;
+                String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
+
+//
+//                Intent i = new Intent(Intent.ACTION_SEND);
+//                i.setType("message/rfc822");
+//                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"vladviva5991@gmail.com"});
+//                i.putExtra(Intent.EXTRA_SUBJECT, "systemInfo");
+//                i.putExtra(Intent.EXTRA_TEXT, "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "Bootloader: " + deviceBootloader + " | " + "OverallNameProduct: " + deviceOverallNameProduct + " | " + "hasGpsDevice: " + hasGpsDevice);
+//                try {
+//                    activity.startActivity(Intent.createChooser(i, "Send mail..."));
+//                    Toast.makeText(activity, "Информация об ошибке отправлена", Toast.LENGTH_LONG).show();
+//                } catch (android.content.ActivityNotFoundException ex) {
+//                    Toast.makeText(activity, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+//                }
+
+                try {
+                    GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
+                    sender.sendMail("This is Subject",
+                            "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "Bootloader: " + deviceBootloader + " | " + "OverallNameProduct: " + deviceOverallNameProduct + " | " + "hasGpsDevice: " + hasGpsDevice,
+                            "testnoxbox2018@gmail.com",
+                            "vladviva5991@gmail.com");
+                } catch (Exception e) {
+                    Log.e("SendMail", e.getMessage(), e);
+                }
+
+                return true;
+            }
+        });
 
         activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
             @Override

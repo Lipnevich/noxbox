@@ -24,7 +24,7 @@
     <string name="photographer">Фотограф</string>
     <string name="meditation">Уроки медитации</string>
     <string name="water">Питьевая вода</string>
-    <string name="plant">Посадка саженцев</string>
+    <string name="plant">Садовник</string>
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
     <string name="guru">Учитель</string>
@@ -74,7 +74,7 @@
     <string name="balancePushTitle">Баланс изменился</string>
     <string name="qrPushTitle">Работаю</string>
     <string name="qrPushBody">%s рад оказать Вам услугу</string>
-    <string name="enterMessage">Введите сообщение...</string>
+    <string name="enterMessage">Введите сообщениеc</string>
     <string name="addressInClipBoard">Адрес скопирован</string>
     <string name="chat">Чат</string>
     <string name="isOffline">Нет подключения к сети</string>

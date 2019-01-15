@@ -41,6 +41,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private NoxboxType type;
     private MarketRole role;
     private WorkSchedule workSchedule;
+    private String ownerComment;
     private String estimationTime;
 
     // Noxbox specific data
@@ -60,6 +61,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private String cancellationReasonMessage;
     private String commentForDemand;
     private String commentForSupply;
+
+
 
     public Noxbox clean() {
         id = null;
@@ -458,6 +461,18 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setPayerId(String payerId) {
         this.payerId = payerId;
+        return this;
+    }
+
+    public String getOwnerComment() {
+        if(ownerComment == null){
+            ownerComment = "";
+        }
+        return ownerComment;
+    }
+
+    public Noxbox setOwnerComment(String ownerComment) {
+        this.ownerComment = ownerComment;
         return this;
     }
 }

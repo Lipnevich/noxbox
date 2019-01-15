@@ -49,7 +49,7 @@ public class MapFiltersActivity extends BaseActivity {
         novice = findViewById(R.id.novice);
         demand = findViewById(R.id.demand);
         supply = findViewById(R.id.supply);
-        price = findViewById(R.id.price);
+        price = findViewById(R.id.priceBar);
         priceText = findViewById(R.id.priceText);
         typeLayout = findViewById(R.id.types);
 
@@ -123,30 +123,30 @@ public class MapFiltersActivity extends BaseActivity {
     }
 
     private void drawPrice(final Profile profile) {
-        if (profile.getFilters().getPrice().equals("0")) {
-            priceText.setText(R.string.max);
+        if (Integer.parseInt(profile.getFilters().getPrice()) >= 100) {
             price.setProgress(100);
-        } else if(profile.getFilters().getPrice().equals("100")){
-
+            priceText.setText(getResources().getString(R.string.max));
         } else {
-            priceText.setText(profile.getFilters().getPrice() + getString(R.string.currency));
+            priceText.setText(profile.getFilters().getPrice().concat(getResources().getString(R.string.currency)));
             price.setProgress(Integer.parseInt(profile.getFilters().getPrice()));
         }
         price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (progress == 0) {
-                    profile.getFilters().setPrice("1");
-                    priceText.setText("1 " + getString(R.string.currency));
-                    return;
+                if (fromUser) {
+                    if (progress == 0) {
+                        profile.getFilters().setPrice("1");
+                        priceText.setText("1 " + getString(R.string.currency));
+                        return;
+                    }
+                    if (progress == 100) {
+                        profile.getFilters().setPrice("100000000");
+                        priceText.setText(R.string.max);
+                        return;
+                    }
+                    profile.getFilters().setPrice(String.valueOf(progress));
+                    priceText.setText(progress + " " + getResources().getString(R.string.currency));
                 }
-                if (progress == 100) {
-                    profile.getFilters().setPrice("0");
-                    priceText.setText(R.string.max);
-                    return;
-                }
-                profile.getFilters().setPrice(String.valueOf(progress));
-                priceText.setText(progress + " " + getString(R.string.currency));
             }
 
             @Override

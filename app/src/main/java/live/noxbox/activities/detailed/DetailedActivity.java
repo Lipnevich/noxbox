@@ -117,6 +117,7 @@ public class DetailedActivity extends AppCompatActivity {
         drawToolbar(profile.getViewed());
         drawOppositeProfile(profile);
         drawDescription(profile);
+        drawOwnerComment(profile);
         drawWaitingTime(profile);
         drawRating(profile.getViewed());
         drawPrice(profile);
@@ -176,6 +177,19 @@ public class DetailedActivity extends AppCompatActivity {
         }
         ((ImageView) findViewById(R.id.typeImage)).setImageResource(profile.getViewed().getType().getImage());
         ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
+    }
+
+    private void drawOwnerComment(Profile me) {
+        if (!me.getViewed().getOwner().equals(me)) {
+            if (me.getViewed().getOwnerComment().length() > 0) {
+                ((TextView) findViewById(R.id.ownerComment)).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.ownerComment)).setText(me.getViewed().getOwnerComment());
+            } else {
+
+                findViewById(R.id.commentView).setVisibility(View.GONE);
+            }
+        }
+
     }
 
     private void drawRating(Noxbox viewed) {
@@ -529,6 +543,7 @@ public class DetailedActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (findViewById(contentId).isShown()) {
                     findViewById(contentId).setVisibility(View.GONE);
+                    findViewById(contentId).setElevation(0);
                     findViewById(contentId).startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up));
                 } else {
                     findViewById(contentId).setVisibility(View.VISIBLE);

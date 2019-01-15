@@ -119,10 +119,13 @@ public class ContractActivity extends BaseActivity {
         drawHost(profile);
         drawAddress(profile);
         drawNoxboxTimeSwitch(profile);
+        drawCommentView(profile);
         drawButtons(profile);
         //drawSimilarNoxboxList(profile);
 
     }
+
+
 
 
     private void drawToolbar(final Profile profile) {
@@ -371,6 +374,26 @@ public class ContractActivity extends BaseActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
+    private void drawCommentView(Profile profile) {
+        EditText editComment = findViewById(R.id.editComment);
+        editComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                profile.getCurrent().setOwnerComment(s.toString());
             }
         });
     }
