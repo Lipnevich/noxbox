@@ -39,7 +39,6 @@ public class MapFiltersActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle(R.string.filters);
         setContentView(R.layout.activity_filters);
 
         initialize();
@@ -78,11 +77,22 @@ public class MapFiltersActivity extends BaseActivity {
     }
 
     private void draw(final Profile profile) {
+        drawToolbar();
         drawNovice(profile);
         drawDemand(profile);
         drawSupply(profile);
         drawPrice(profile);
         drawTypeList(profile);
+    }
+
+    private void drawToolbar(){
+        ((TextView) findViewById(R.id.title)).setText(R.string.filters);
+        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Router.finishActivity(MapFiltersActivity.this);
+            }
+        });
     }
 
     private void drawNovice(final Profile profile) {
