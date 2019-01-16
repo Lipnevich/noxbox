@@ -46,11 +46,16 @@ public class MapOperator {
                         builder.include(profile.getCurrent().getProfileWhoComes().getPosition().toLatLng());
                         builder.include(profile.getCurrent().getPosition().toLatLng());
                         LatLngBounds latLngBounds = builder.build();
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                                 latLngBounds,
                                 context.getResources().getDisplayMetrics().widthPixels,
                                 context.getResources().getDisplayMetrics().heightPixels,
                                 dpToPx(68)));
+//                        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
+//                                latLngBounds,
+//                                context.getResources().getDisplayMetrics().widthPixels,
+//                                context.getResources().getDisplayMetrics().heightPixels,
+//                                dpToPx(68)));
                         break;
 
                     case created:
@@ -58,7 +63,7 @@ public class MapOperator {
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
                         break;
                     default:
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
                 }
             }
         });
