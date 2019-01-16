@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import live.noxbox.R;
-import live.noxbox.menu.profile.ProfilePerformerActivity;
 import live.noxbox.tools.Router;
 
 public class HistoryActivity extends FragmentActivity {

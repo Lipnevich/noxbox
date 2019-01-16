@@ -17,12 +17,12 @@
         tools:replace="label">
         <activity
             android:name=".activities.AuthActivity"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/MapTheme">
 
         </activity>
         <activity
             android:name=".MapActivity"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/MapTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,7 +36,8 @@
         </activity>
         <activity
             android:name=".menu.filters.MapFiltersActivity"
-            android:parentActivityName=".MapActivity" />
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".menu.profile.ProfileActivity"
             android:parentActivityName=".MapActivity"

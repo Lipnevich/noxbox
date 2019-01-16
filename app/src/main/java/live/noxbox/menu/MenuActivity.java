@@ -47,6 +47,7 @@ import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
+import static live.noxbox.tools.DisplayMetricsConservations.getStatusBarHeight;
 
 public abstract class MenuActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
@@ -120,8 +121,8 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         if (!isInitial) {
             ImageView profilePhoto = findViewById(R.id.photo);
 
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(96, 96);
-            layoutParams.setMargins(dpToPx(16), dpToPx(64)  + getStatusBarHeight(), 0, dpToPx(16));
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(96), dpToPx(96));
+            layoutParams.setMargins(dpToPx(16), dpToPx(32)  + getStatusBarHeight(getApplicationContext()), 0, dpToPx(16));
             profilePhoto.setLayoutParams(layoutParams);
 
 
@@ -226,13 +227,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         return true;
     }
 
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
+
 
 }
