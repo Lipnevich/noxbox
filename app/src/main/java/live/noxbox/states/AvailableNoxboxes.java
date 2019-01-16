@@ -129,7 +129,7 @@ public class AvailableNoxboxes implements State {
                             sender.sendMail("This is Subject",
                                     mail,
                                     "testnoxbox2018@gmail.com",
-                                    "vladviva5991@gmail.com");
+                                    "support@noxbox.life");
                         } catch (Exception e) {
                             Log.e("GMailSender.class", e.getMessage(), e);
                         }

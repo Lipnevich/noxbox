@@ -40,9 +40,13 @@ public class AuthActivity extends BaseActivity {
                 if (isChecked) {
                     colorText(R.id.textGoogleAuth, R.color.secondary);
                     colorText(R.id.textPhoneAuth, R.color.secondary);
+                    findViewById(R.id.googleAuth).setVisibility(View.VISIBLE);
+                    findViewById(R.id.phoneAuth).setVisibility(View.VISIBLE);
                 } else {
                     colorText(R.id.textGoogleAuth, R.color.google_text);
                     colorText(R.id.textPhoneAuth, R.color.google_text);
+                    findViewById(R.id.googleAuth).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.phoneAuth).setVisibility(View.INVISIBLE);
                 }
 
             }

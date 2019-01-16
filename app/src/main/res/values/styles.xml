@@ -96,6 +96,7 @@
         <item name="cardElevation">0dp</item>
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:clickable">false</item>
+        <item name="android:visibility">invisible</item>
     </style>
 
     <style name="TextViewAuthButtonStyle" parent="@android:style/Widget.TextView">
