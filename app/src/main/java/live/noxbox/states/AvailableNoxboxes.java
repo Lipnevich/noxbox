@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
@@ -117,17 +119,26 @@ public class AvailableNoxboxes implements State {
 //                } catch (android.content.ActivityNotFoundException ex) {
 //                    Toast.makeText(activity, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
 //                }
+                String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "Bootloader: " + deviceBootloader + " | " + "OverallNameProduct: " + deviceOverallNameProduct + " | " + "hasGpsDevice: " + hasGpsDevice;
 
-                try {
-                    GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
-                    sender.sendMail("This is Subject",
-                            "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "Bootloader: " + deviceBootloader + " | " + "OverallNameProduct: " + deviceOverallNameProduct + " | " + "hasGpsDevice: " + hasGpsDevice,
-                            "testnoxbox2018@gmail.com",
-                            "vladviva5991@gmail.com");
-                } catch (Exception e) {
-                    Log.e("SendMail", e.getMessage(), e);
-                }
+                AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        try {
+                            GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
+                            sender.sendMail("This is Subject",
+                                    mail,
+                                    "testnoxbox2018@gmail.com",
+                                    "vladviva5991@gmail.com");
+                        } catch (Exception e) {
+                            Log.e("GMailSender.class", e.getMessage(), e);
+                        }
+                        return null;
+                    }
+                }.execute();
 
+
+                Toast.makeText(activity, "Информация об ошибке отправлена", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
