@@ -126,10 +126,10 @@ public class AvailableNoxboxes implements State {
                     protected Void doInBackground(Void... voids) {
                         try {
                             GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
-                            sender.sendMail("This is Subject",
+                            sender.sendMail("deviceInfo",
                                     mail,
-                                    "testnoxbox2018@gmail.com",
-                                    "support@noxbox.life");
+                                    "NoxBoxApp",
+                                    "support@noxbox.live");
                         } catch (Exception e) {
                             Log.e("GMailSender.class", e.getMessage(), e);
                         }
