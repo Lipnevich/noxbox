@@ -24,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -44,6 +45,8 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
+
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public abstract class MenuActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
@@ -116,6 +119,12 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     private void initializeNavigationHeader(final Activity activity, final Profile profile) {
         if (!isInitial) {
             ImageView profilePhoto = findViewById(R.id.photo);
+
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(96, 96);
+            layoutParams.setMargins(dpToPx(16), dpToPx(64)  + getStatusBarHeight(), 0, dpToPx(16));
+            profilePhoto.setLayoutParams(layoutParams);
+
+
             if (profile.getPhoto() == null) {
                 ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.human_profile), (profilePhoto));
             } else {
@@ -215,6 +224,15 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         }
         isInitial = false;
         return true;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
 }
