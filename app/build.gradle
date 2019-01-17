@@ -70,6 +70,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'com.gjiazhe:PanoramaImageView:1.0'
     implementation 'in.shadowfax:proswipebutton:1.1'
+
+    implementation 'com.android.volley:volley:1.1.1'
     //material
     //implementation 'com.google.android.material:material:1.0.0-alpha3'
     //test

@@ -14,7 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.functions.FirebaseFunctions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -36,19 +46,15 @@ public class WalletActivity extends BaseActivity {
 
     private EditText addressToSendEditor;
 
+    private static final String TAG = WalletActivity.class.getName();
+    private StringRequest stringRequest;
+    private RequestQueue requestQueue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wallet);
         setTitle(R.string.wallet);
-
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                recalculateBalance(profile);
-            }
-        });
-
         addressToSendEditor = findViewById(R.id.address_to_send_id);
 //        if(getProfile() != null && getProfile().getAddressToRefund() != null) {
 //            addressToSendEditor.setText(getProfile().getAddressToRefund());
@@ -57,10 +63,32 @@ public class WalletActivity extends BaseActivity {
 //        GeoRealtime.sendRequest(new Request().setType(NotificationType.balance));
     }
 
-    private void transfer(Profile profile, String address) {
-        if(TextUtils.isEmpty(address)) return;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppCache.readProfile(new Task<Profile>() {
+            @Override
+            public void execute(Profile profile) {
 
-        if(!address.equals(profile.getWallet().getAddressToRefund())) {
+                recalculateBalance(profile);
+
+
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (requestQueue != null) {
+            requestQueue.cancelAll(TAG);
+        }
+    }
+
+    private void transfer(Profile profile, String address) {
+        if (TextUtils.isEmpty(address)) return;
+
+        if (!address.equals(profile.getWallet().getAddressToRefund())) {
             profile.getWallet().setAddressToRefund(address);
         }
 
@@ -78,67 +106,99 @@ public class WalletActivity extends BaseActivity {
     }
 
     private void recalculateBalance(final Profile profile) {
-        if(profile.getWallet().getAddressToRefund() != null) {
+        if (profile.getWallet().getAddressToRefund() != null) {
             addressToSendEditor.setText(profile.getWallet().getAddressToRefund());
         }
         // TODO (nli) send request to blockchain directly instead
+        requestQueue = Volley.newRequestQueue(WalletActivity.this);
+        String url = "https://nodes.wavesplatform.com/addresses/balance/";
+        url = url.concat(profile.getWallet().getAddress());
 
-        final Wallet wallet = profile.getWallet();
-        BigDecimal balance = wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO;
-        BigDecimal frozenMoney = wallet.getFrozenMoney() != null ? new BigDecimal(wallet.getFrozenMoney()) : BigDecimal.ZERO;
-        balance = scale(balance.subtract(frozenMoney));
+        stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Toast.makeText(WalletActivity.this, response, Toast.LENGTH_LONG).show();
 
-        TextView balanceLabel = findViewById(R.id.balance_label_id);
-        balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));
+                        JSONObject jObject = null;
+                        String walletBalance = null;
+                        try {
+                            jObject = new JSONObject(response);
+                            walletBalance = jObject.getString("balance");
+                            profile.getWallet().setBalance(walletBalance);
 
-        TextView balanceText = findViewById(R.id.balance_id);
-        balanceText.setText(format(balance));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-        View.OnClickListener addressToClipboardListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(wallet.getAddress() == null) return;
+                        final Wallet wallet = profile.getWallet();
+                        BigDecimal balance = wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO;
+                        BigDecimal frozenMoney = wallet.getFrozenMoney() != null ? new BigDecimal(wallet.getFrozenMoney()) : BigDecimal.ZERO;
+                        balance = scale(balance.subtract(frozenMoney));
 
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                if(clipboard == null) return;
+                        TextView balanceLabel = findViewById(R.id.balance_label_id);
+                        balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));
 
-                clipboard.setPrimaryClip(ClipData.newPlainText("walletAddress", wallet.getAddress()));
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.addressInClipBoard), Toast.LENGTH_SHORT).show();
-            }
-        };
+                        TextView balanceText = findViewById(R.id.balance_id);
+                        balanceText.setText(format(balance));
 
-        TextView walletAddress = findViewById(R.id.wallet_address_id);
-        walletAddress.setText(wallet.getAddress() != null ? wallet.getAddress() : "Not created yet");
-        walletAddress.setOnClickListener(addressToClipboardListener);
-
-        ImageView copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
-        copyToClipboard.setVisibility(wallet.getAddress() != null ? View.VISIBLE : View.INVISIBLE);
-        copyToClipboard.setOnClickListener(addressToClipboardListener);
-
-        Button sendButton = findViewById(R.id.send_button_id);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(TextUtils.isEmpty(addressToSendEditor.getText())) {
-                    return;
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(WalletActivity.this, R.style.NoxboxAlertDialogStyle);
-                builder.setTitle(getResources().getString(R.string.sendPrompt));
-                builder.setPositiveButton(getResources().getString(R.string.transfer),
-                        new DialogInterface.OnClickListener() {
+                        View.OnClickListener addressToClipboardListener = new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                transfer(profile, addressToSendEditor.getText().toString());
+                            public void onClick(View v) {
+                                if (wallet.getAddress() == null) return;
+
+                                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                if (clipboard == null) return;
+
+                                clipboard.setPrimaryClip(ClipData.newPlainText("walletAddress", wallet.getAddress()));
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.addressInClipBoard), Toast.LENGTH_SHORT).show();
+                            }
+                        };
+
+                        TextView walletAddress = findViewById(R.id.wallet_address_id);
+                        walletAddress.setText(wallet.getAddress() != null ? wallet.getAddress() : "Not created yet");
+                        walletAddress.setOnClickListener(addressToClipboardListener);
+
+                        ImageView copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
+                        copyToClipboard.setVisibility(wallet.getAddress() != null ? View.VISIBLE : View.INVISIBLE);
+                        copyToClipboard.setOnClickListener(addressToClipboardListener);
+
+                        Button sendButton = findViewById(R.id.send_button_id);
+                        sendButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (TextUtils.isEmpty(addressToSendEditor.getText())) {
+                                    return;
+                                }
+                                AlertDialog.Builder builder = new AlertDialog.Builder(WalletActivity.this, R.style.NoxboxAlertDialogStyle);
+                                builder.setTitle(getResources().getString(R.string.sendPrompt));
+                                builder.setPositiveButton(getResources().getString(R.string.transfer),
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                transfer(profile, addressToSendEditor.getText().toString());
+                                            }
+                                        });
+                                builder.setNegativeButton(android.R.string.cancel, null);
+                                builder.show();
                             }
                         });
-                builder.setNegativeButton(android.R.string.cancel, null);
-                builder.show();
+                        sendButton.setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
+
+                        EditText addressToSendEditor = findViewById(R.id.address_to_send_id);
+                        addressToSendEditor.setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Crashlytics.logException(error);
             }
         });
-        sendButton.setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
 
-        EditText addressToSendEditor = findViewById(R.id.address_to_send_id);
-        addressToSendEditor.setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
+        requestQueue.add(stringRequest);
+
+
     }
 
 }

@@ -103,33 +103,19 @@ public class AvailableNoxboxes implements State {
             public boolean onLongClick(View v) {
                 String deviceModel = android.os.Build.MODEL;
                 String deviceBrand = Build.BRAND;
-                String deviceBootloader = Build.BOOTLOADER;
-                String deviceOverallNameProduct = Build.PRODUCT;
                 String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
 
-//
-//                Intent i = new Intent(Intent.ACTION_SEND);
-//                i.setType("message/rfc822");
-//                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"vladviva5991@gmail.com"});
-//                i.putExtra(Intent.EXTRA_SUBJECT, "systemInfo");
-//                i.putExtra(Intent.EXTRA_TEXT, "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "Bootloader: " + deviceBootloader + " | " + "OverallNameProduct: " + deviceOverallNameProduct + " | " + "hasGpsDevice: " + hasGpsDevice);
-//                try {
-//                    activity.startActivity(Intent.createChooser(i, "Send mail..."));
-//                    Toast.makeText(activity, "Информация об ошибке отправлена", Toast.LENGTH_LONG).show();
-//                } catch (android.content.ActivityNotFoundException ex) {
-//                    Toast.makeText(activity, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-//                }
-                String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "Bootloader: " + deviceBootloader + " | " + "OverallNameProduct: " + deviceOverallNameProduct + " | " + "hasGpsDevice: " + hasGpsDevice;
+                String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | "  + "hasGpsDevice: " + hasGpsDevice + " | " + " userId: " + profile.getId();
 
                 AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected Void doInBackground(Void... voids) {
                         try {
                             GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
-                            sender.sendMail("This is Subject",
+                            sender.sendMail("deviceInfo",
                                     mail,
                                     "testnoxbox2018@gmail.com",
-                                    "support@noxbox.life");
+                                    "support@noxbox.live");
                         } catch (Exception e) {
                             Log.e("GMailSender.class", e.getMessage(), e);
                         }
