@@ -103,6 +103,8 @@ public class AvailableNoxboxes implements State {
             public boolean onLongClick(View v) {
                 String deviceModel = android.os.Build.MODEL;
                 String deviceBrand = Build.BRAND;
+                String deviceBootloader = Build.BOOTLOADER;
+                String deviceOverallNameProduct = Build.PRODUCT;
                 String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
 
                 String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | "  + "hasGpsDevice: " + hasGpsDevice + " | " + " userId: " + profile.getId();
