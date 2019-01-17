@@ -14,7 +14,6 @@ public interface Configuration {
     float MINIMUM_PROBABILITY_FOR_ACCEPTANCE = 0.2F;
     String FIVE_MINUTES_PART_OF_HOUR = "12";
     int DEFAULT_BALANCE_SCALE = 10;
-    String PRICE_FORMAT = "###.###";
     BigDecimal QUARTER = new BigDecimal("0.25");
     double ADDRESS_SEARCH_RADIUS_IN_METERS = 100000D;
     int MAX_ZOOM_LEVEL = 18;

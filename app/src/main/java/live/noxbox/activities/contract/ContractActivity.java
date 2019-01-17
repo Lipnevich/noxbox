@@ -63,6 +63,7 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CO
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
+import static live.noxbox.tools.BalanceChecker.updateBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 
@@ -100,6 +101,7 @@ public class ContractActivity extends BaseActivity {
             public void execute(final Profile profile) {
                 if (profile == null) return;
                 draw(profile);
+                updateBalance(profile, ContractActivity.this);
             }
         });
     }
@@ -124,9 +126,6 @@ public class ContractActivity extends BaseActivity {
         //drawSimilarNoxboxList(profile);
 
     }
-
-
-
 
     private void drawToolbar(final Profile profile) {
         ((TextView) findViewById(R.id.title)).setText(R.string.contractService);

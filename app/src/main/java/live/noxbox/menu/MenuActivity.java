@@ -41,6 +41,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.menu.about.AboutApplicationActivity;
 import live.noxbox.menu.filters.MapFiltersActivity;
 import live.noxbox.menu.profile.ProfileActivity;
+import live.noxbox.menu.wallet.WalletActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
@@ -65,6 +66,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             @Override
             public void execute(Profile profile) {
                 draw(MenuActivity.this, profile);
+
             }
         });
     }
@@ -122,7 +124,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             ImageView profilePhoto = findViewById(R.id.photo);
 
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(96), dpToPx(96));
-            layoutParams.setMargins(dpToPx(16), dpToPx(32)  + getStatusBarHeight(getApplicationContext()), 0, dpToPx(16));
+            layoutParams.setMargins(dpToPx(16), dpToPx(32) + getStatusBarHeight(getApplicationContext()), 0, dpToPx(16));
             profilePhoto.setLayoutParams(layoutParams);
 
 
@@ -226,7 +228,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         isInitial = false;
         return true;
     }
-
 
 
 }

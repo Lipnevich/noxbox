@@ -10,7 +10,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Configuration;
@@ -23,10 +22,10 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
-import static live.noxbox.Configuration.PRICE_FORMAT;
 import static live.noxbox.Configuration.QUARTER;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
+import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.SeparateStreamForStopwatch.startHandler;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
@@ -37,7 +36,6 @@ public class Performing implements State {
     private LinearLayout performingView;
     private static long seconds = 0;
     private static BigDecimal totalMoney;
-    private static final DecimalFormat decimalFormat = new DecimalFormat(PRICE_FORMAT);
 
     public Performing(final Activity activity, final GoogleMap googleMap) {
         this.activity = activity;
@@ -81,10 +79,9 @@ public class Performing implements State {
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     if (hasMinimumServiceTimePassed(profile.getCurrent())) {
                         calculateTotalAmount(profile);
-
-                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
+                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(format(totalMoney));
                     } else {
-                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(decimalFormat.format(totalMoney));
+                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(format(totalMoney));
                     }
 
 

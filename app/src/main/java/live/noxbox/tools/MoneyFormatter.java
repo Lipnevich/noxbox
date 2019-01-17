@@ -6,7 +6,7 @@ import java.util.Locale;
 
 public class MoneyFormatter {
 
-    private static final int SCALE = 3;
+    private static final int SCALE = 2;
 
     public static String format(BigDecimal number) {
         return format(number, SCALE);

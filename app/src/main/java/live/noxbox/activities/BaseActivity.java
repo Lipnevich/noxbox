@@ -11,6 +11,8 @@ import com.crashlytics.android.Crashlytics;
 import live.noxbox.services.NetworkReceiver;
 import live.noxbox.tools.Router;
 
+import static live.noxbox.tools.BalanceChecker.cancelBalanceUpdate;
+
 public abstract class BaseActivity extends AppCompatActivity {
     protected BroadcastReceiver networkReceiver;
 
@@ -19,6 +21,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onResume();
         networkReceiver = new NetworkReceiver(this);
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cancelBalanceUpdate();
     }
 
     @Override

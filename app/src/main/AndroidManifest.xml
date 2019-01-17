@@ -79,7 +79,7 @@
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name=".menu.WalletActivity"
+            android:name=".menu.wallet.WalletActivity"
             android:parentActivityName=".MapActivity"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
