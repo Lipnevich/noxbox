@@ -25,10 +25,12 @@
     <string name="meditation">Уроки медитации</string>
     <string name="water">Питьевая вода</string>
     <string name="plant">Садовник</string>
+
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
     <string name="guru">Учитель</string>
     <string name="gardener">Садовник</string>
+    <string name="hairdresser">Парикмахер</string>
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
@@ -274,5 +276,6 @@
     <string name="userNameWasNotVerified">Имя профиля не прошло проверку</string>
     <string name="pleaseUploadNewPhoto">Пожалуйста обновите фото</string>
     <string name="selectPhoto">Выберите фото</string>
+    <string name="haircut">Стрижка</string>
 
 </resources>

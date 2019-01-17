@@ -37,6 +37,7 @@
     <string name="waterSupplier">Water supplier</string>
     <string name="guru">Guru</string>
     <string name="gardener">Gardener</string>
+    <string name="hairdresser">Hairdresser</string>
 
     <string name="tirefitting">Tire fitting</string>
     <string name="sendMessage">Send message</string>
@@ -277,6 +278,7 @@
     <string name="userNameWasNotVerified">Profile name was not verified</string>
     <string name="pleaseUploadNewPhoto">Please update your photo</string>
     <string name="selectPhoto">Select Photo</string>
+    <string name="haircut">Стрижка</string>
 
 
 </resources>
