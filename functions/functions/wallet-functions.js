@@ -23,10 +23,14 @@ exports.send = async request => {
     request.seed = Waves.Seed.fromExistingPhrase(Waves.Seed.decryptSeedPhrase(request.encrypted, password));
 
     let response = await Waves.API.Node.v1.addresses.balance(request.seed.address);
-    console.log('Balance', response.balance);
-    if(!response || response.balance == '0') return;
 
-    request.transferable = '' + new BigDecimal('' + response.balance).div(wavesDecimals).minus(wavesFee);
+    if(!request.transferable) {
+        if(!response || response.balance == '0') return;
+        request.transferable = new BigDecimal('' + response.balance).div(wavesDecimals).minus(wavesFee);
+    } else {
+        if(response.balance.lt(request.transferable)) request.transferable = response.balance;
+        request.transferable = request.transferable.minus(wavesFee);
+    }
     console.log('Transferable ', request.transferable);
 
     return transfer(request);
@@ -42,9 +46,14 @@ transfer = async request => {
     };
 
     transferData.recipient = request.addressToTransfer,
-    transferData.amount = '' + new BigDecimal(request.transferable).times(wavesDecimals);
+    transferData.amount = request.transferable.times(wavesDecimals);
 
     await Waves.API.Node.v1.assets.transfer(transferData, request.seed.keyPair);
     console.log('Money was transferred');
 
+}
+
+exports.balance = async address => {
+    let response = await Waves.API.Node.v1.addresses.balance(request.seed.address);
+    return new BigDecimal('' + response.balance);
 }

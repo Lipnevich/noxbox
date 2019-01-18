@@ -21,7 +21,7 @@ public class BalanceChecker {
     private static RequestQueue requestQueue;
     private static final String TAG = BalanceChecker.class.getName();
 
-    public static void updateBalance(Profile profile, Context context) {
+    public static void checkBalance(Profile profile, Context context, Task<BigDecimal> afterBalanceCheck) {
         if (requestQueue != null && stringRequest != null) {
             requestQueue.add(stringRequest);
             return;
@@ -36,13 +36,20 @@ public class BalanceChecker {
                 jObject = new JSONObject(response);
                 walletBalance = jObject.getString("balance");
                 BigDecimal balance = new BigDecimal(walletBalance).divide(new BigDecimal("100000000"));
-                profile.getWallet().setBalance(balance.toString());
+                afterBalanceCheck.execute(balance);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }, error -> Crashlytics.logException(error));
+        }, Crashlytics::logException);
         stringRequest.setTag(TAG);
         requestQueue.add(stringRequest);
+
+    }
+
+    public static void checkBalance(Profile profile, Context context) {
+        checkBalance(profile, context, balance -> {
+            profile.getWallet().setBalance(balance.toString());
+        });
     }
 
     public static void cancelBalanceUpdate() {

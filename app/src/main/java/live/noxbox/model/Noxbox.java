@@ -38,6 +38,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     private Position position;
     private String price;
+    private String total;
     private NoxboxType type;
     private MarketRole role;
     private WorkSchedule workSchedule;
@@ -122,6 +123,15 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public Noxbox setTotal(String total) {
+        this.total = total;
         return this;
     }
 

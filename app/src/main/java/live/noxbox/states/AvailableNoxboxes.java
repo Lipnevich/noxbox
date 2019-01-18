@@ -33,7 +33,6 @@ import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.GMailSender;
-import live.noxbox.debug.Screenshot;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
@@ -47,7 +46,6 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
-import static live.noxbox.debug.Screenshot.saveToInternalStorage;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
@@ -108,8 +106,6 @@ public class AvailableNoxboxes implements State {
                 String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
 
                 String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | "  + "hasGpsDevice: " + hasGpsDevice + " | " + " userId: " + profile.getId();
-
-                saveToInternalStorage(Screenshot.takeScreenshot(activity), activity);
 
                 AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                     @Override

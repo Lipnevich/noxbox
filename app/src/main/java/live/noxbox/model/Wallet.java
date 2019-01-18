@@ -5,13 +5,11 @@ import java.io.Serializable;
 public class Wallet implements Serializable {
 
     private String balance;
-    private String frozenMoney;
     private String address;
     private String addressToRefund;
 
     public Wallet() {
         this.balance = "0";
-        this.frozenMoney = "0";
     }
 
     public String getAddress() {
@@ -29,15 +27,6 @@ public class Wallet implements Serializable {
 
     public Wallet setBalance(String balance) {
         this.balance = balance;
-        return this;
-    }
-
-    public String getFrozenMoney() {
-        return frozenMoney;
-    }
-
-    public Wallet setFrozenMoney(String frozenMoney) {
-        this.frozenMoney = frozenMoney;
         return this;
     }
 

@@ -1,9 +1,7 @@
 package live.noxbox.debug;
 
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Vibrator;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -50,12 +48,12 @@ public class DebugActivity extends MenuActivity implements
     private List<NotificationType> photoPushes = Arrays.asList(NotificationType.values());
     private Iterator<NotificationType> iterator = photoPushes.iterator();
     private Profile party = new Profile()
+            .setId("12321")
             .setWallet(new Wallet().setBalance("1000000"))
             .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
             .setTravelMode(TravelMode.driving)
             .setHost(true)
             .setName("Granny Smith")
-            .setId("12321")
             .setPhoto(NoxboxExamples.PHOTO_MOCK);
 
     @Override
@@ -65,10 +63,6 @@ public class DebugActivity extends MenuActivity implements
             AppCache.listenProfile(DebugActivity.class.getName(), new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
-                    profile.getWallet().setBalance("10000000");
-                    // TODO (nli) не одна из этих кнопок не должна работать для финальной версии базы
-                    // отдельно отмечу генерацию услух, тут нужны правила в Realtime Database
-
                     DebugActivity.this.findViewById(R.id.debugNotify).setVisibility(View.GONE);
                     DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.GONE);
                     DebugActivity.this.findViewById(R.id.debugRequest).setVisibility(View.GONE);
@@ -297,9 +291,6 @@ public class DebugActivity extends MenuActivity implements
                 AppCache.readProfile(new Task<Profile>() {
                     @Override
                     public void execute(final Profile profile) {
-                        profile.getWallet().setBalance("10000000");
-                        Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                        vibe.vibrate(100);
                         task.execute(profile);
                     }
                 });

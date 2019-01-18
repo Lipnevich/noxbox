@@ -202,7 +202,7 @@
     <string name="deleteSection">Delete service?</string>
     <string name="confirm">Confirm</string>
     <string name="performing">Performing</string>
-    <string name="performingPushContent">Time:</string>
+    <string name="performingPushContent">Time</string>
     <string name="cancelReason">Reason:</string>
     <string name="substandardWork">Bab result</string>
     <string name="own">Other</string>

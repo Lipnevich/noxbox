@@ -1,13 +1,10 @@
-package live.noxbox.menu;
+package live.noxbox.menu.history;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import live.noxbox.R;
 

@@ -1,12 +1,13 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
 const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
 const version = 113;
 
-exports.welcome = functions.auth.user().onCreate(user => {
+exports.welcome = functions.auth.user().onCreate(async user => {
     return wallet.create(user).then(noxbox.init);
 });
 
@@ -17,7 +18,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
 
-
+    // TODO (nli) order completed, canceled, any stopped
     if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
         let push = {
             data: {
@@ -29,14 +30,30 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         await admin.messaging().send(push);
         console.log('push sent' + JSON.stringify(push));
     } else if(!previousNoxbox.timeAccepted && noxbox.timeAccepted) {
-        let push = {
-            data: {
-                type: 'moving',
-                id: noxbox.id
-            },
-            topic: noxbox.id
-        };
+        let payer = noxbox.role == 'demand' ? noxbox.owner : noxbox.party;
+        let balance = await wallet.balance(payer.wallet.address);
 
+        let push;
+        if(balance.lt(new BigDecimal(noxbox.price).div(4))) {
+            // not enough money for quoter hour
+            let push = {
+                data: {
+                   //type: 'shouldWeBanHackers',
+                   //type: 'bigBrotherIsWatchingYou',
+                   type: 'canceled',
+                   id: noxbox.id
+                },
+                topic: noxbox.id
+            };
+        } else {
+            push = {
+                data: {
+                    type: 'moving',
+                    id: noxbox.id
+                },
+                topic: noxbox.id
+            };
+        }
         await admin.messaging().send(push);
         console.log('push sent' + JSON.stringify(push));
     } else  if(noxbox.chat && noxbox.chat.ownerMessages && (!previousNoxbox.chat.ownerMessages || Object.keys(previousNoxbox.chat.ownerMessages).length < Object.keys(noxbox.chat.ownerMessages).length)) {
@@ -76,12 +93,30 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             await admin.messaging().send(push);
             console.log('push sent' + JSON.stringify(push));
     }else if(!previousNoxbox.timeCompleted && noxbox.timeCompleted){
-        // TODO (nli) calculate total and send money first
+        let timeStart = noxbox.timeOwnerVerified > noxbox.timePartyVerified ? noxbox.timeOwnerVerified : noxbox.timePartyVerified;
+        let timeSpent = Date.now() - timeStart;
+        let payer = noxbox.role == 'demand' ? noxbox.owner : noxbox.party;
+        let performer = noxbox.role == 'demand' ? noxbox.party : noxbox.owner;
+        let balance = new BigDecimal(payer.wallet.balance);
+        let moneyToPay = new BigDecimal('' + timeSpent)
+            .div(60 * 60 * 1000)
+            .mul(new BigDecimal(noxbox.price));
+
+        let request = { };
+        request.id = context.auth.uid;
+        request.addressToTransfer = performer.wallet.address;
+        request.encrypted = await noxbox.seed(payer.id);
+        request.transferable = moneyToPay;
+
+        await wallet.transfer(request);
+
+        noxbox.total = request.transferable;
+
         let push = {
                   data: {
                       type: 'completed',
                       time: '' + noxbox.timeCompleted,
-                      total: '' + noxbox.price,
+                      total: '' + moneyToPay,
                       id: noxbox.id
                   },
                   topic: noxbox.id
@@ -91,27 +126,26 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
     }else if(!previousNoxbox.timeCanceledByOwner && !previousNoxbox.timeCanceledByParty && noxbox.timeCanceledByOwner){
         let push = {
-                          data: {
-                              type: 'canceled',
-                              id: noxbox.id
-                          },
-                          topic: noxbox.party.id
-                      };
-                    await admin.messaging().send(push);
-                    console.log('push sent' + JSON.stringify(push));
+              data: {
+                  type: 'canceled',
+                  id: noxbox.id
+              },
+              topic: noxbox.party.id
+          };
+        await admin.messaging().send(push);
+        console.log('push sent' + JSON.stringify(push));
 
     }else if(!previousNoxbox.timeCanceledByOwner && !previousNoxbox.timeCanceledByParty && noxbox.timeCanceledByParty){
-             let push = {
-                               data: {
-                                   type: 'canceled',
-                                   id: noxbox.id
-                               },
-                               topic: noxbox.owner.id
-                           };
-                         await admin.messaging().send(push);
-                         console.log('push sent' + JSON.stringify(push));
-
-         }
+         let push = {
+               data: {
+                   type: 'canceled',
+                   id: noxbox.id
+               },
+               topic: noxbox.owner.id
+           };
+         await admin.messaging().send(push);
+         console.log('push sent' + JSON.stringify(push));
+     }
 });
 
 function latestMessage(messages) {
@@ -140,8 +174,11 @@ admin.database().ref('geo').once('value').then(allServices => {
 exports.transfer = functions.https.onCall(async (data, context) => {
     console.log('id', context.auth.uid);
     console.log('addressToTransfer', data.addressToTransfer);
-    return noxbox.seed({id : context.auth.uid, addressToTransfer : data.addressToTransfer})
-        .then(wallet.send);
+    // TODO (nli) firestore noxboxes query if current noxbox present
+    let request = { id : context.auth.uid,
+                    addressToTransfer : data.addressToTransfer};
+    request.encrypted = await noxbox.seed(context.auth.uid);
+    return wallet.send(request);
 });
 
 

@@ -17,7 +17,6 @@ import com.bumptech.glide.request.transition.Transition;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.R;
-import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DateTimeFormatter;
@@ -100,7 +99,6 @@ public class ConfirmationActivity extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        proSwipeBtn.showResultIcon(true);
                         long timeVerified = System.currentTimeMillis();
                         if (profile.equals(profile.getCurrent().getOwner())) {
                             Log.d(TAG, "timeOwnerVerified: " + DateTimeFormatter.time(timeVerified));
@@ -143,8 +141,6 @@ public class ConfirmationActivity extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-                        proSwipeBtn.showResultIcon(true);
                         long timeCanceled = System.currentTimeMillis();
                         if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
                             Log.d(TAG, "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));

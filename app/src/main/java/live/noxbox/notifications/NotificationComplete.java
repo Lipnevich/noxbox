@@ -13,7 +13,7 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.database.Firestore;
-import live.noxbox.menu.HistoryActivity;
+import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;

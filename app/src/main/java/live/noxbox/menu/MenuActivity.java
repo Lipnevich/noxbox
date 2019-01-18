@@ -40,6 +40,7 @@ import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.menu.about.AboutApplicationActivity;
 import live.noxbox.menu.filters.MapFiltersActivity;
+import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.menu.profile.ProfileActivity;
 import live.noxbox.menu.wallet.WalletActivity;
 import live.noxbox.model.Profile;

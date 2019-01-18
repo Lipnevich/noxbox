@@ -54,11 +54,6 @@ public class WalletActivity extends BaseActivity {
         setContentView(R.layout.activity_wallet);
         setTitle(R.string.wallet);
         addressToSendEditor = findViewById(R.id.address_to_send_id);
-//        if(getProfile() != null && getProfile().getAddressToRefund() != null) {
-//            addressToSendEditor.setText(getProfile().getAddressToRefund());
-//        }
-        // TODO (nli) send request to blockchain directly instead
-//        GeoRealtime.sendRequest(new Request().setType(NotificationType.balance));
         AppCache.readProfile(new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
@@ -155,12 +150,10 @@ public class WalletActivity extends BaseActivity {
         if (profile.getWallet().getAddressToRefund() != null) {
             addressToSendEditor.setText(profile.getWallet().getAddressToRefund());
         }
-        // TODO (nli) send request to blockchain directly instead
 
         final Wallet wallet = profile.getWallet();
         BigDecimal balance = wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO;
-        BigDecimal frozenMoney = wallet.getFrozenMoney() != null ? new BigDecimal(wallet.getFrozenMoney()) : BigDecimal.ZERO;
-        balance = scale(balance.subtract(frozenMoney));
+        balance = scale(balance);
 
         TextView balanceLabel = findViewById(R.id.balance_label_id);
         balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));

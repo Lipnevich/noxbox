@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 112
-        versionName "112"
+        versionCode 115
+        versionName "115"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -70,7 +70,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'com.gjiazhe:PanoramaImageView:1.0'
     implementation 'in.shadowfax:proswipebutton:1.1'
-
     implementation 'com.android.volley:volley:1.1.1'
     //material
     //implementation 'com.google.android.material:material:1.0.0-alpha3'

@@ -67,7 +67,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
-import static live.noxbox.tools.BalanceChecker.updateBalance;
+import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
@@ -105,7 +105,7 @@ public class MapActivity extends DebugActivity implements
         googleApiClient.connect();
 
         AppCache.startListening();
-        AppCache.readProfile(profile -> updateBalance(profile, MapActivity.this));
+        AppCache.readProfile(profile -> checkBalance(profile, MapActivity.this));
 
     }
 

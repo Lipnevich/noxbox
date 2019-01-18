@@ -1,4 +1,4 @@
-package live.noxbox.menu;
+package live.noxbox.menu.history;
 
 
 import android.os.Bundle;

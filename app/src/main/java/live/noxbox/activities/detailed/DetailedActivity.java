@@ -64,7 +64,7 @@ import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
 import static live.noxbox.model.TravelMode.none;
-import static live.noxbox.tools.BalanceChecker.updateBalance;
+import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
@@ -100,7 +100,7 @@ public class DetailedActivity extends AppCompatActivity {
                     profile.getViewed().setParty(profile.privateInfo());
                 }
                 draw(profile);
-                updateBalance(profile, DetailedActivity.this);
+                checkBalance(profile, DetailedActivity.this);
             }
         });
     }

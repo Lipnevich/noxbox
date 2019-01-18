@@ -84,9 +84,12 @@ public class Performing implements State {
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(format(totalMoney));
                     }
 
-
+                    // TODO (vl) по клику на экран, обновляем баланс и максимальное время из блокчейна
                     if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
-                        //showLowBalanceNotification(activity.getApplicationContext(), human_profile, notification);
+                        // TODO (vl) единожды
+                        // TODO (vl) обновляем баланс и максимальное время из блокчейна
+                        // TODO (vl) перенести в фабрику
+//                        showLowBalanceNotification(activity.getApplicationContext(), human_profile, notification);
                         return;
                     }
                     Log.d("PerformingRunnable:", this.toString());
@@ -136,8 +139,6 @@ public class Performing implements State {
                 new android.os.Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        // task success! show TICK icon in ProSwipeButton
-                        proSwipeBtn.showResultIcon(true); // false if task failed
                         long timeCompleted = System.currentTimeMillis();
 
                         Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));

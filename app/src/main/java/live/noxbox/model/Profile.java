@@ -166,7 +166,7 @@ public class Profile implements Serializable {
     }
 
     public Profile privateInfo() {
-        return publicInfo().setName(name).setPhoto(photo);
+        return publicInfo().setWallet(wallet).setName(name).setPhoto(photo);
     }
 
     public Noxbox getViewed() {

@@ -13,7 +13,11 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import java.math.BigDecimal;
+
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.services.MessagingService;
@@ -23,6 +27,8 @@ import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.tools.BalanceCalculator.enoughBalance;
+import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.MapOperator.drawPath;
 
 public class Accepting implements State {
@@ -38,6 +44,23 @@ public class Accepting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+
+        AppCache.readProfile(profile -> {
+            if(profile.getCurrent().getRole() == MarketRole.demand &&
+                !enoughBalance(profile.getCurrent(), profile.getCurrent().getParty())) {
+                    checkBalance(profile.getCurrent().getParty(), activity, balance -> {
+
+                    profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
+                    if(balance.compareTo(BigDecimal.ZERO) == 0) {
+                        profile.getCurrent().setCancellationReasonMessage("Zero balance " + balance + " on payer account");
+                    } else {
+                        profile.getCurrent().setCancellationReasonMessage("Low balance " + balance + " on payer account");
+                    }
+                    updateNoxbox();
+                });
+            }
+        });
+
     }
 
     @Override

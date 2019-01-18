@@ -1,4 +1,4 @@
-package live.noxbox.menu;
+package live.noxbox.menu.history;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -54,7 +54,7 @@ public class HistoryFullScreenFragment extends DialogFragment {
 
         attachMapView(view.findViewById(R.id.map), currentItemHistory);
 
-        attachPrice(view.findViewById(R.id.priceText), currentItemHistory);
+        attachTotal(view.findViewById(R.id.priceText), currentItemHistory);
 
         boolean isLiked = isLiked(currentItemHistory, profileId);
         ImageView rateBox = view.findViewById(R.id.rateBox);
@@ -83,8 +83,8 @@ public class HistoryFullScreenFragment extends DialogFragment {
         return view;
     }
 
-    private void attachPrice(TextView price, Noxbox curretnItemHistory) {
-        price.setText(curretnItemHistory.getPrice());
+    private void attachTotal(TextView total, Noxbox noxbox) {
+        total.setText(noxbox.getTotal());
     }
 
     @Override
