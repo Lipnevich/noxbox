@@ -1,7 +1,5 @@
 package live.noxbox.debug;
 
-import android.util.Log;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,12 +9,18 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 
 public class GMailSender extends javax.mail.Authenticator {
@@ -32,6 +36,32 @@ public class GMailSender extends javax.mail.Authenticator {
             this.user = user;
             this.password = password;
 
+
+            //session = Session.getDefaultInstance(props, this);
+        }
+
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(user, password);
+        }
+
+        public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {
+//            try{
+//                MimeMessage message = new MimeMessage(session);
+//                DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
+//                message.setSender(new InternetAddress(sender));
+//                message.setSubject(subject);
+//                message.setDataHandler(handler);
+//                if (recipients.indexOf(',') > 0)
+//                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
+//                else
+//                    message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
+//
+//                Transport.send(message);
+//            }catch(Exception e){
+//                Log.e("sendMail()", e.toString());
+//            }
+
+
             Properties props = new Properties();
             props.setProperty("mail.transport.protocol", "smtp");
             props.setProperty("mail.host", mailhost);
@@ -43,28 +73,44 @@ public class GMailSender extends javax.mail.Authenticator {
             props.put("mail.smtp.socketFactory.fallback", "false");
             props.setProperty("mail.smtp.quitwait", "false");
 
-            session = Session.getDefaultInstance(props, this);
-        }
+            Session session = Session.getInstance(props,
+                    new javax.mail.Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(user, password);
+                        }
+                    });
 
-        protected PasswordAuthentication getPasswordAuthentication() {
-            return new PasswordAuthentication(user, password);
-        }
+            try {
+                Message message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(sender));
 
-        public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {
-            try{
-                MimeMessage message = new MimeMessage(session);
-                DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));
-                message.setSender(new InternetAddress(sender));
+                message.setRecipients(Message.RecipientType.TO,
+                        InternetAddress.parse(recipients));
+
                 message.setSubject(subject);
-                message.setDataHandler(handler);
-                if (recipients.indexOf(',') > 0)
-                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));
-                else
-                    message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
+
+                    BodyPart messageBodyPart = new MimeBodyPart();
+                messageBodyPart.setText(body);
+
+                Multipart multipart = new MimeMultipart();
+
+                multipart.addBodyPart(messageBodyPart);
+
+                messageBodyPart = new MimeBodyPart();
+                String filename = Screenshot.filePath;
+                DataSource source = new FileDataSource(filename);
+                messageBodyPart.setDataHandler(new DataHandler(source));
+                messageBodyPart.setFileName(filename);
+                multipart.addBodyPart(messageBodyPart);
+
+                message.setContent(multipart);
 
                 Transport.send(message);
-            }catch(Exception e){
-                Log.e("sendMail()", e.toString());
+
+                System.out.println("Sent message successfully....");
+
+            } catch (MessagingException e) {
+                throw new RuntimeException(e);
             }
         }
 

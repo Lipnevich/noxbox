@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -33,6 +34,7 @@ import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.GMailSender;
+import live.noxbox.debug.Screenshot;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
@@ -103,11 +105,12 @@ public class AvailableNoxboxes implements State {
             public boolean onLongClick(View v) {
                 String deviceModel = android.os.Build.MODEL;
                 String deviceBrand = Build.BRAND;
-                String deviceBootloader = Build.BOOTLOADER;
-                String deviceOverallNameProduct = Build.PRODUCT;
                 String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
 
                 String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | "  + "hasGpsDevice: " + hasGpsDevice + " | " + " userId: " + profile.getId();
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(Screenshot.takeScreenshot(activity));
+
+                activity.findViewById(R.id.screen).setBackgroundDrawable(bitmapDrawable);
 
                 AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                     @Override
