@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -48,6 +47,7 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
+import static live.noxbox.debug.Screenshot.saveToInternalStorage;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
@@ -108,9 +108,8 @@ public class AvailableNoxboxes implements State {
                 String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
 
                 String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | "  + "hasGpsDevice: " + hasGpsDevice + " | " + " userId: " + profile.getId();
-                BitmapDrawable bitmapDrawable = new BitmapDrawable(Screenshot.takeScreenshot(activity));
 
-                activity.findViewById(R.id.screen).setBackgroundDrawable(bitmapDrawable);
+                saveToInternalStorage(Screenshot.takeScreenshot(activity), activity);
 
                 AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                     @Override

@@ -148,11 +148,6 @@
                     android:visibility="gone"
                     app:fabSize="auto"
                     app:maxImageSize="48dp" />
-                <ImageView
-                    android:id="@+id/screen"
-                    android:layout_width="74dp"
-                    android:layout_height="92dp"
-                    android:layout_gravity="center_horizontal|bottom"/>
 
             </android.support.design.widget.CoordinatorLayout>
 

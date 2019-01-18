@@ -19,12 +19,10 @@ public class Screenshot {
         Bitmap bitmap = Bitmap.createBitmap(rootView.getDrawingCache());
         rootView.setDrawingCacheEnabled(false);
 
-        saveToInternalStorage(bitmap, activity);
-
         return bitmap;
     }
 
-    private static String saveToInternalStorage(Bitmap bitmapImage, Context context) {
+    public static String saveToInternalStorage(Bitmap bitmapImage, Context context) {
         ContextWrapper cw = new ContextWrapper(context);
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         File mypath = new File(directory, System.currentTimeMillis() + ".jpg");
