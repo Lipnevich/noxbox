@@ -33,8 +33,8 @@ import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Wallet;
-import live.noxbox.tools.Task;
 
+import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
@@ -43,13 +43,13 @@ public class WalletActivity extends BaseActivity {
     public static final int CODE = 1003;
 
     private static final String TAG = WalletActivity.class.getName();
+    private static long lastTransferredTime;
 
     private EditText addressToSendEditor;
     private TextView balanceLabel;
     private TextView walletAddress;
     private ImageView copyToClipboard;
     private Button sendButton;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,12 +101,7 @@ public class WalletActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                updateBalance(profile);
-            }
-        });
+        AppCache.readProfile(profile -> updateBalance(profile));
     }
 
 
@@ -119,38 +114,39 @@ public class WalletActivity extends BaseActivity {
             requestQueue.add(stringRequest);
         }
     };
-    private long lastTransferTime;
 
     private void updateBalance(Profile profile) {
 
-        if (requestQueue != null && stringRequest != null) {
-            handler.postDelayed(runnable, 3000);
-            return;
-        }
-        requestQueue = Volley.newRequestQueue(WalletActivity.this);
-        String url = "https://nodes.wavesplatform.com/addresses/balance/";
-        url = url.concat(profile.getWallet().getAddress());
-
-        stringRequest = new StringRequest(Request.Method.GET, url, response -> {
-            if (System.currentTimeMillis() - lastTransferTime > 10000) {
-                JSONObject jObject = null;
-                String walletBalance = null;
-                try {
-                    jObject = new JSONObject(response);
-                    walletBalance = jObject.getString("balance");
-                    BigDecimal balance = new BigDecimal(walletBalance).divide(new BigDecimal("100000000"));
-                    profile.getWallet().setBalance(balance.toString());
-                    draw(profile);
-                    updateBalance(profile);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                updateBalance(profile);
+            if (requestQueue != null && stringRequest != null) {
+                handler.postDelayed(runnable, 3000);
+                return;
             }
-        }, error -> Crashlytics.logException(error));
-        stringRequest.setTag(TAG);
-        requestQueue.add(stringRequest);
+            requestQueue = Volley.newRequestQueue(WalletActivity.this);
+            String url = "https://nodes.wavesplatform.com/addresses/balance/";
+            url = url.concat(profile.getWallet().getAddress());
+            
+            stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+                if (System.currentTimeMillis() - lastTransferredTime > 15000) {
+                    JSONObject jObject = null;
+                    String walletBalance = null;
+                    try {
+                        jObject = new JSONObject(response);
+                        walletBalance = jObject.getString("balance");
+                        BigDecimal balance = new BigDecimal(walletBalance).divide(new BigDecimal("100000000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_DOWN);
+                        profile.getWallet().setBalance(balance.toString());
+                        draw(profile);
+                        updateBalance(profile);
+                    } catch (JSONException e) {
+                        Crashlytics.logException(e);
+                    }
+                } else {
+                    updateBalance(profile);
+                }
+            }, Crashlytics::logException);
+            stringRequest.setTag(TAG);
+            requestQueue.add(stringRequest);
+
+
     }
 
     @Override
@@ -162,6 +158,7 @@ public class WalletActivity extends BaseActivity {
     private void transfer(Profile profile, String address) {
         if (TextUtils.isEmpty(address)) return;
 
+
         if (!address.equals(profile.getWallet().getAddressToRefund())) {
             profile.getWallet().setAddressToRefund(address);
         }
@@ -171,14 +168,10 @@ public class WalletActivity extends BaseActivity {
 
         FirebaseFunctions.getInstance()
                 .getHttpsCallable("transfer")
-                .call(data)
-                .continueWith(task -> {
-                    String result = (String) task.getResult().getData();
-                    return result;
-                });
+                .call(data);
         profile.getWallet().setBalance("0");
         draw(profile);
-        lastTransferTime = System.currentTimeMillis();
+        lastTransferredTime = System.currentTimeMillis();
     }
 
 

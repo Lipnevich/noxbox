@@ -207,7 +207,7 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/balance_id"
+            android:id="@+id/balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/balance_label_id"
@@ -220,7 +220,7 @@
             android:id="@+id/wallet_address_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/balance_id"
+            android:layout_below="@+id/balance"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="18dp"
             android:text="@string/walletAddress"
@@ -250,7 +250,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_alignParentBottom="true"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="vertical">
 
             <EditText
@@ -271,6 +271,7 @@
                 android:padding="4dp"
                 android:text="@string/transfer"
                 android:textAlignment="center"
+                android:visibility="visible"
                 android:textColor="@color/secondary" />
         </LinearLayout>
 
