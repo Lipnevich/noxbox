@@ -61,19 +61,10 @@ public class ProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(ProfileActivity.class.getName(), new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                draw(profile);
-            }
-        });
+        AppCache.listenProfile(ProfileActivity.class.getName(), profile -> draw(profile));
 
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.finishActivity(ProfileActivity.this);
-            }
-        });
+        findViewById(R.id.homeButton).setOnClickListener(v ->
+                Router.finishActivity(ProfileActivity.this));
     }
 
     @Override
