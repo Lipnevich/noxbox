@@ -27,7 +27,6 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.Firestore;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NotificationType;
@@ -46,8 +45,6 @@ public class ImageManager {
             data.put("type", NotificationType.photoValid.name());
             buildNotification(activity.getApplicationContext(), null, data).show();
             profile.setPhoto(uri.toString());
-
-            Firestore.writeProfile(profile);
             AppCache.fireProfile();
             ProgressDialogManager.hideProgress();
         });
