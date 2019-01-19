@@ -31,7 +31,7 @@ exports.send = async request => {
         if(response.balance.lt(request.transferable)) request.transferable = response.balance;
         request.transferable = request.transferable.minus(wavesFee);
     }
-    console.log('Transferable ', request.transferable);
+    console.log('Transferable ' + request.transferable);
 
     return transfer(request);
 }
@@ -46,7 +46,7 @@ transfer = async request => {
     };
 
     transferData.recipient = request.addressToTransfer,
-    transferData.amount = request.transferable.times(wavesDecimals);
+    transferData.amount = '' + request.transferable.times(wavesDecimals);
 
     await Waves.API.Node.v1.assets.transfer(transferData, request.seed.keyPair);
     console.log('Money was transferred');

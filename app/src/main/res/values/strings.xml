@@ -278,7 +278,7 @@
     <string name="userNameWasNotVerified">Profile name was not verified</string>
     <string name="pleaseUploadNewPhoto">Please update your photo</string>
     <string name="selectPhoto">Select Photo</string>
-    <string name="haircut">Стрижка</string>
+    <string name="haircut">Haircut</string>
 
 
 </resources>

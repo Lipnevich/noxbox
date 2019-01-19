@@ -40,7 +40,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.Calendar;
 import java.util.WeakHashMap;
 
 import io.fabric.sdk.android.Fabric;
@@ -129,13 +128,14 @@ public class MapActivity extends DebugActivity implements
 
 
                 Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null && location.getTime() > Calendar.getInstance().getTimeInMillis() - MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS * 1000) {
+                if (location != null && location.getTime() > System.currentTimeMillis() - MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS * 1000) {
                     profile.setPosition(Position.from(location));
                     Firestore.writeProfile(profile);
                 } else {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, new LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
+                            locationManager.removeUpdates(this);
                             profile.setPosition(Position.from(location));
                             Firestore.writeProfile(profile);
                         }
@@ -185,6 +185,7 @@ public class MapActivity extends DebugActivity implements
         super.onPause();
         unregisterReceiver(locationReceiver);
         googleApiClient.disconnect();
+
         AppCache.stopListen(this.getClass().getName());
     }
 

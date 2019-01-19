@@ -5,7 +5,7 @@ admin.initializeApp(functions.config().firebase);
 
 const noxbox = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
-const version = 113;
+const version = 1;
 
 exports.welcome = functions.auth.user().onCreate(async user => {
     return wallet.create(user).then(noxbox.init);
@@ -35,7 +35,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         let push;
         if(balance.lt(new BigDecimal(noxbox.price).div(4))) {
-            // not enough money for quoter hour
+            console.log('Not enough money for quoter hour', balance);
             let push = {
                 data: {
                    //type: 'shouldWeBanHackers',
@@ -46,6 +46,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
                 topic: noxbox.id
             };
         } else {
+            console.log('Enough money for quoter hour', balance);
             push = {
                 data: {
                     type: 'moving',
@@ -97,7 +98,6 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         let timeSpent = Date.now() - timeStart;
         let payer = noxbox.role == 'demand' ? noxbox.owner : noxbox.party;
         let performer = noxbox.role == 'demand' ? noxbox.party : noxbox.owner;
-        let balance = new BigDecimal(payer.wallet.balance);
         let moneyToPay = new BigDecimal('' + timeSpent)
             .div(60 * 60 * 1000)
             .mul(new BigDecimal(noxbox.price));
@@ -108,7 +108,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         request.encrypted = await noxbox.seed(payer.id);
         request.transferable = moneyToPay;
 
-        await wallet.transfer(request);
+        await wallet.send(request);
 
         noxbox.total = request.transferable;
 

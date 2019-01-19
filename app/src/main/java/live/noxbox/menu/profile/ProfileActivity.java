@@ -3,7 +3,6 @@ package live.noxbox.menu.profile;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -297,32 +296,20 @@ public class ProfileActivity extends BaseActivity {
 
                 if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK
                         && data != null && data.getData() != null) {
-//                    ProgressDialog progressDialog = new ProgressDialog(ProfileActivity.this);
-//                    progressDialog.setMessage("Фотография проходит проверку");
-//                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//                    progressDialog.setIndeterminate(true);
-//                    progressDialog.
-//                    progressDialog.show();
                     ProgressDialogManager.showProgress(ProfileActivity.this, "Фотография проходит проверку");
 
                     Map<String, String> notificationData = new HashMap<>();
                     notificationData.put("type", NotificationType.photoValidationProgress.name());
                     NotificationFactory.buildNotification(ProfileActivity.this.getApplicationContext(), null, notificationData).show();
 
-                    getBitmap(ProfileActivity.this, data.getData(), new Task<Bitmap>() {
-                        @Override
-                        public void execute(Bitmap bitmap) {
-                            FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, new Task<Bitmap>() {
-                                @Override
-                                public void execute(Bitmap checking) {
-                                    ImageManager.uploadPhoto(ProfileActivity.this, profile, checking);
-                                    checkPhotoAcceptance(profile);
-                                }
-                            });
-                        }
-                    });
-                    profile.setPhoto(data.getData().toString());
-                    draw(profile);
+                    getBitmap(ProfileActivity.this, data.getData(), bitmap ->
+                            FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
+                                ImageManager.uploadPhoto(ProfileActivity.this, profile, checking);
+                                checkPhotoAcceptance(profile);
+                            }));
+
+                    createCircleProfilePhotoFromUrl(ProfileActivity.this, profile.getPhoto(), findViewById(R.id.profilePhoto));
+
 
                 } else if (requestCode == TravelModeListActivity.CODE) {
                     draw(profile);

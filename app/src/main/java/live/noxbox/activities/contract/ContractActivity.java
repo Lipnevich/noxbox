@@ -78,14 +78,6 @@ public class ContractActivity extends BaseActivity {
         setContentView(R.layout.activity_contract);
 
         initializeUi();
-
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                profile.getCurrent().setGeoId(GeoRealtime.createKey(profile.getCurrent()));
-            }
-        });
-
     }
 
     private void initializeUi() {
@@ -96,14 +88,18 @@ public class ContractActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(ContractActivity.class.getName(), new Task<Profile>() {
-            @Override
-            public void execute(final Profile profile) {
-                if (profile == null) return;
-                draw(profile);
-                checkBalance(profile, ContractActivity.this);
-            }
+        AppCache.listenProfile(ContractActivity.class.getName(), profile -> {
+            if (profile == null) return;
+            profile.getCurrent().setGeoId(GeoRealtime.createKey(profile.getCurrent()));
+            draw(profile);
+            checkBalance(profile, ContractActivity.this);
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppCache.stopListen(ContractActivity.class.getName());
     }
 
     protected boolean checkLocationPermission() {
@@ -123,8 +119,6 @@ public class ContractActivity extends BaseActivity {
         drawNoxboxTimeSwitch(profile);
         drawCommentView(profile);
         drawButtons(profile);
-        //drawSimilarNoxboxList(profile);
-
     }
 
     private void drawToolbar(final Profile profile) {

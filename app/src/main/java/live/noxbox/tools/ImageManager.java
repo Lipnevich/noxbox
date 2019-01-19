@@ -34,7 +34,8 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.Notification;
-import live.noxbox.notifications.factory.NotificationFactory;
+
+import static live.noxbox.notifications.factory.NotificationFactory.buildNotification;
 
 public class ImageManager {
 
@@ -45,8 +46,8 @@ public class ImageManager {
             public void onSuccess(final Uri uri) {
                 Map<String, String> data = new HashMap<>();
                 data.put("type", NotificationType.photoValid.name());
-                NotificationFactory.buildNotification(activity.getApplicationContext(), null, data).show();
-                //profile.setPhoto(uri.toString());
+                buildNotification(activity.getApplicationContext(), null, data).show();
+                profile.setPhoto(uri.toString());
                 Firestore.writeProfile(profile);
                 ProgressDialogManager.hideProgress();
             }
@@ -102,7 +103,7 @@ public class ImageManager {
         final Map<String, String> data = new HashMap<>();
         data.put("type", NotificationType.photoUploadingProgress.name());
         data.put("progress", String.valueOf(0));
-        final Notification notificationUploadingProgress = NotificationFactory.buildNotification(activity.getApplicationContext(), null, data);
+        final Notification notificationUploadingProgress = buildNotification(activity.getApplicationContext(), null, data);
         notificationUploadingProgress.show();
         UploadTask uploadTask = storageRef.putBytes(stream.toByteArray());
         uploadTask
