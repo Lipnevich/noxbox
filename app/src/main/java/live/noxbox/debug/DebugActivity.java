@@ -39,6 +39,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
 import static live.noxbox.cluster.DetectNullValue.areTheyNull;
+import static live.noxbox.database.AppCache.readProfile;
 import static live.noxbox.database.GeoRealtime.online;
 
 public class DebugActivity extends MenuActivity implements
@@ -285,16 +286,9 @@ public class DebugActivity extends MenuActivity implements
     }
 
     private void setOnClickListener(int button, final Task<Profile> task) {
-        findViewById(button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppCache.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(final Profile profile) {
-                        task.execute(profile);
-                    }
-                });
-            }
+        findViewById(button).setOnLongClickListener(v -> {
+            readProfile(task::execute);
+            return true;
         });
     }
 

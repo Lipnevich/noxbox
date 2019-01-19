@@ -5,7 +5,7 @@ admin.initializeApp(functions.config().firebase);
 
 const storage = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
-const version = 1;
+const version = 2;
 
 exports.welcome = functions.auth.user().onCreate(async user => {
     return wallet.create(user).then(storage.init);
