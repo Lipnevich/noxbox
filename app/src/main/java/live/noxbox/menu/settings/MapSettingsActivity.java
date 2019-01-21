@@ -1,9 +1,9 @@
-package live.noxbox.menu.filters;
+package live.noxbox.menu.settings;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -15,15 +15,13 @@ import android.widget.TextView;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
-import live.noxbox.debug.DebugMessage;
-import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
+import static live.noxbox.menu.settings.NoxboxTypeSelectionFragment.SETTINGS_CODE;
 
-public class MapFiltersActivity extends BaseActivity {
+public class MapSettingsActivity extends BaseActivity {
 
     public static final int CODE = 1005;
 
@@ -39,7 +37,7 @@ public class MapFiltersActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_filters);
+        setContentView(R.layout.activity_settings);
 
         initialize();
     }
@@ -50,7 +48,7 @@ public class MapFiltersActivity extends BaseActivity {
         supply = findViewById(R.id.supply);
         price = findViewById(R.id.priceBar);
         priceText = findViewById(R.id.priceText);
-        typeLayout = findViewById(R.id.types);
+        typeLayout = findViewById(R.id.typeLayout);
 
 
         ((TextView) findViewById(R.id.noviceTitle)).setText(getResources().getString(R.string.novice));
@@ -61,7 +59,7 @@ public class MapFiltersActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(MapFiltersActivity.class.getName(), new Task<Profile>() {
+        AppCache.listenProfile(MapSettingsActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
                 draw(profile);
@@ -85,12 +83,12 @@ public class MapFiltersActivity extends BaseActivity {
         drawTypeList(profile);
     }
 
-    private void drawToolbar(){
-        ((TextView) findViewById(R.id.title)).setText(R.string.filters);
+    private void drawToolbar() {
+        ((TextView) findViewById(R.id.title)).setText(R.string.settings);
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Router.finishActivity(MapFiltersActivity.this);
+                Router.finishActivity(MapSettingsActivity.this);
             }
         });
     }
@@ -169,74 +167,16 @@ public class MapFiltersActivity extends BaseActivity {
         });
     }
 
-    private int totalChecked;
 
     private void drawTypeList(final Profile profile) {
-
-        typesName = new String[NoxboxType.values().length];
-        typesChecked = new boolean[NoxboxType.values().length];
-        for (NoxboxType type : NoxboxType.values()) {
-            typesName[type.getId()] = getResources().getString(type.getName());
-            typesChecked[type.getId()] = firstNonNull(profile.getFilters().getTypes().get(type.name()), true);
-            if (typesChecked[type.getId()]) {
-                totalChecked++;
-            }
-        }
-        DebugMessage.popup(this, String.valueOf(totalChecked));
-
-
         typeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(MapFiltersActivity.this)
-                        .setTitle(getResources().getString(R.string.service).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.service).substring(1)))
-                        .setCancelable(false)
-                        .setMultiChoiceItems(typesName, typesChecked, new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                if (isChecked) {
-                                    totalChecked++;
-                                } else {
-                                    totalChecked--;
-                                }
-                                typesChecked[which] = isChecked;
-
-                            }
-                        })
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                for (NoxboxType type : NoxboxType.values()) {
-                                    profile.getFilters().getTypes().put(type.name(), typesChecked[type.getId()]);
-                                }
-                                if (totalChecked == 0) {
-                                    totalChecked++;
-                                    typesChecked[0] = true;
-                                    profile.getFilters().getTypes().put(NoxboxType.byId(0).name(), true);
-                                }
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                for (NoxboxType type : NoxboxType.values()) {
-                                    typesChecked[type.getId()] = firstNonNull(profile.getFilters().getTypes().get(type.name()), true);
-                                }
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNeutralButton(R.string.chooseAll, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                for (NoxboxType type : NoxboxType.values()) {
-                                    typesChecked[type.getId()] = true;
-                                    profile.getFilters().getTypes().put(type.name(), true);
-                                }
-                            }
-                        })
-                        .create()
-                        .show();
-
+                DialogFragment dialog = new NoxboxTypeSelectionFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("key", SETTINGS_CODE);
+                dialog.setArguments(bundle);
+                dialog.show(((FragmentActivity) MapSettingsActivity.this).getSupportFragmentManager(), NoxboxTypeSelectionFragment.TAG);
             }
         });
     }
@@ -246,7 +186,7 @@ public class MapFiltersActivity extends BaseActivity {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:
-                Router.finishActivity(MapFiltersActivity.this);
+                Router.finishActivity(MapSettingsActivity.this);
                 break;
         }
         return true;

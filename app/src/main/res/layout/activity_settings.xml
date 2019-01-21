@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
@@ -81,6 +81,11 @@
         </FrameLayout>
     </LinearLayout>
 
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
+
     <!--DEMAND-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -124,6 +129,10 @@
         </FrameLayout>
     </LinearLayout>
 
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
     <!--SUPPLY-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -167,6 +176,10 @@
 
     </LinearLayout>
 
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
     <!--TOTAL MONEY-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -246,10 +259,14 @@
 
     </LinearLayout>
 
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
 
     <!--TYPES LIST-->
     <LinearLayout
-        android:id="@+id/types"
+        android:id="@+id/typeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -278,11 +295,19 @@
                 android:textSize="@dimen/text_size_secondary" />
         </LinearLayout>
 
-        <LinearLayout
+
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:orientation="vertical" />
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/settings"
+                android:tint="@color/google_text"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
     </LinearLayout>
 

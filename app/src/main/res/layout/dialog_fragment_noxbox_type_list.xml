@@ -4,27 +4,30 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     android:orientation="vertical">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="@color/primary">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
             android:layout_gravity="center_vertical"
-            android:textSize="21sp"
-            android:textColor="@color/secondary"
+            android:layout_marginStart="12dp"
             android:text="@string/selectService"
-            />
+            android:textColor="@color/secondary"
+            android:textSize="21sp" />
     </FrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listOfServices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        >
+        android:scrollbars="vertical">
 
     </android.support.v7.widget.RecyclerView>
+
+
 
 </LinearLayout>

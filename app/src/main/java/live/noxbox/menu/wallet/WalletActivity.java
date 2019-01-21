@@ -124,7 +124,7 @@ public class WalletActivity extends BaseActivity {
             requestQueue = Volley.newRequestQueue(WalletActivity.this);
             String url = "https://nodes.wavesplatform.com/addresses/balance/";
             url = url.concat(profile.getWallet().getAddress());
-            
+
             stringRequest = new StringRequest(Request.Method.GET, url, response -> {
                 if (System.currentTimeMillis() - lastTransferredTime > 15000) {
                     JSONObject jObject = null;

@@ -19,7 +19,7 @@ public class NoxboxTypeListFragment extends DialogFragment {
     public static final int MAP_CODE = 1010;
     public static final int CONTRACT_CODE = 1011;
     public static final int PROFILE_CODE = 1012;
-    public static final String TAG = "NoxboxTypeListDialog";
+    public static final String TAG = NoxboxTypeListFragment.class.getName();
 
     private int key;
 
@@ -33,7 +33,7 @@ public class NoxboxTypeListFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_noxbox_type_list, container, false);
+        View view = inflater.inflate(R.layout.dialog_fragment_noxbox_type_list, container, false);
 
         List<NoxboxType> noxboxTypes = new ArrayList<NoxboxType>(Arrays.asList(NoxboxType.values()));
         RecyclerView noxboxTypeList = view.findViewById(R.id.listOfServices);

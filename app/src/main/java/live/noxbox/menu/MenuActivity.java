@@ -39,7 +39,7 @@ import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.menu.about.AboutApplicationActivity;
-import live.noxbox.menu.filters.MapFiltersActivity;
+import live.noxbox.menu.settings.MapSettingsActivity;
 import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.menu.profile.ProfileActivity;
 import live.noxbox.menu.wallet.WalletActivity;
@@ -180,8 +180,12 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.navigation_filters: {
-                Router.startActivityForResult(this, MapFiltersActivity.class, MapFiltersActivity.CODE);
+//            case R.id.navigation_filters: {
+//                Router.startActivityForResult(this, MapSettingsActivity.class, MapSettingsActivity.CODE);
+//                break;
+//            }
+            case R.id.navigation_settings: {
+                Router.startActivityForResult(this, MapSettingsActivity.class, MapSettingsActivity.CODE);
                 break;
             }
             case R.id.navigation_history: {
