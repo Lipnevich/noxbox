@@ -95,20 +95,23 @@
                     android:id="@+id/swipeButtonConfirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginEnd="40dp"
-                    app:bg_color="#00b700" />
+                    android:layout_marginEnd="16dp"
+                    app:bg_color="#00b700"
+                    app:btn_text="@string/confirm" />
 
                 <in.shadowfax.proswipebutton.ProSwipeButton
                     android:id="@+id/swipeButtonWrongPhoto"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="40dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="10dp"
-                    app:bg_color="#ff0000" />
+                    app:bg_color="#ff0000"
+                    app:btn_text="@string/notLikeThat" />
                 <!--<live.noxbox.tools.SwipeButton-->
                 <!--android:id="@+id/swipeButtonWrongPhoto"-->
                 <!--android:layout_width="match_parent"-->

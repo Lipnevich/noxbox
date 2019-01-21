@@ -2,6 +2,7 @@
 <resources>
     <color name="primary">#FF9100</color>
     <color name="translucent">#5d7e7e7e</color>
+    <color name="fullTranslucent">#00ffffff</color>
     <color name="secondary">#fff</color>
     <color name="divider">#949191</color>
     <color name="message">#CDFCE8</color>

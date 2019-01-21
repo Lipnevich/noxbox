@@ -96,6 +96,7 @@ public class ConfirmationActivity extends BaseActivity {
             @Override
             public void onSwipeConfirm() {
                 findViewById(R.id.swipeButtonWrongPhoto).setVisibility(View.GONE);
+                proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -110,7 +111,7 @@ public class ConfirmationActivity extends BaseActivity {
                         updateNoxbox();
                         Router.finishActivity(ConfirmationActivity.this);
                     }
-                }, 1000);
+                }, 0);
             }
         });
     }
@@ -133,11 +134,12 @@ public class ConfirmationActivity extends BaseActivity {
 //                finish();
 //            }
 //        }));
-        ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonWrongPhoto);
+        final ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonWrongPhoto);
         proSwipeBtn.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
             @Override
             public void onSwipeConfirm() {
                 findViewById(R.id.swipeButtonConfirm).setVisibility(View.GONE);
+                proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -152,7 +154,7 @@ public class ConfirmationActivity extends BaseActivity {
                         updateNoxbox();
                         Router.finishActivity(ConfirmationActivity.this);
                     }
-                }, 1000);
+                }, 0);
             }
         });
     }

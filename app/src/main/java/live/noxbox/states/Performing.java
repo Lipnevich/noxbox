@@ -135,7 +135,7 @@ public class Performing implements State {
         proSwipeBtn.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
             @Override
             public void onSwipeConfirm() {
-                // user has swiped the btn. Perform your async operation now
+                proSwipeBtn.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
                 new android.os.Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -146,7 +146,7 @@ public class Performing implements State {
                         profile.getCurrent().setTimeCompleted(timeCompleted);
                         updateNoxbox();
                     }
-                }, 2000);
+                }, 0);
             }
         });
     }
