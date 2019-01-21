@@ -83,6 +83,8 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     }
 
     private void drawNavigation(final Activity activity, final Profile profile) {
+        if (profile == null) return;
+
         drawerLayout = findViewById(R.id.drawerLayout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
