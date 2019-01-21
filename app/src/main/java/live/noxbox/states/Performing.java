@@ -10,13 +10,17 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Configuration;
 import live.noxbox.R;
+import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
+import live.noxbox.tools.BalanceChecker;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Task;
@@ -86,10 +90,20 @@ public class Performing implements State {
 
                     // TODO (vl) по клику на экран, обновляем баланс и максимальное время из блокчейна
                     if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
-                        // TODO (vl) единожды
-                        // TODO (vl) обновляем баланс и максимальное время из блокчейна
-                        // TODO (vl) перенести в фабрику
-//                        showLowBalanceNotification(activity.getApplicationContext(), human_profile, notification);
+                        BalanceChecker.checkBalance(profile, activity, new Task<BigDecimal>() {
+                            @Override
+                            public void execute(BigDecimal object) {
+                                // TODO (vl) обновляем максимальное время из блокчейна
+
+                                HashMap<String, String> data = new HashMap<>();
+                                data.put("type", NotificationType.lowBalance.name());
+                                NotificationFactory.buildNotification(activity, profile, data).show();
+                            }
+                        });
+
+
+
+                        stopHandler();
                         return;
                     }
                     Log.d("PerformingRunnable:", this.toString());

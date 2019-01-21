@@ -26,6 +26,7 @@ public class NotificationMoving extends Notification {
 
     public NotificationMoving(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
+
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_moving);
 
         isAlertOnce = true;
@@ -42,9 +43,19 @@ public class NotificationMoving extends Notification {
         Task<Noxbox> task = new Task<Noxbox>() {
             @Override
             public void execute(Noxbox noxbox) {
-                removeNotificationByGroup(context, type.getGroup());
+                if (noxbox != null && (
+                        (noxbox.getTimePartyVerified() != null && noxbox.getTimeOwnerVerified() != null)
+                                || noxbox.getTimeCompleted() != null
+                                || noxbox.getTimeCanceledByParty() != null
+                                || noxbox.getTimeCanceledByOwner() != null))
+                    return;
 
-                if(noxbox.getOwner() != null && noxbox.getParty() != null) {
+                removeNotificationByGroup(context, type.getGroup());
+                if (noxbox != null && ((noxbox.getTimeOwnerVerified() != null && noxbox.getTimePartyVerified() != null)
+                        || noxbox.getTimeCanceledByOwner() != null || noxbox.getTimeCanceledByParty() != null))
+                    return;
+
+                if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {
                     progressInMinutes = ((int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()));
                     progressInMinutes = Math.max(1, Math.min(progressInMinutes, maxProgressInMinutes - 1));
                     contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImage());

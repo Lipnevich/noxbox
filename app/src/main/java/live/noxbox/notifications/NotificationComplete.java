@@ -19,9 +19,10 @@ import live.noxbox.tools.MoneyFormatter;
 
 public class NotificationComplete extends Notification {
     private String total;
-
+    private Map<String, String> data;
     public NotificationComplete(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
+        this.data = data;
 
         total = data.get("total");
 

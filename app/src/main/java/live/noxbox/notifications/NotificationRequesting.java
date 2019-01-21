@@ -25,12 +25,16 @@ public class NotificationRequesting extends Notification {
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
+
+
     }
 
     @Override
     public void show() {
+        if(profile.getCurrent() != null && profile.getCurrent().getTimeAccepted() != null)
+            return;
+
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
-
     }
 }

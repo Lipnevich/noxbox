@@ -18,8 +18,12 @@ import live.noxbox.tools.Task;
 
 public class NotificationAccepting extends Notification {
 
+    private String timeAccepted;
+
     public NotificationAccepting(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
+
+        timeAccepted = data.get("timeAccepted");
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
 
@@ -29,10 +33,15 @@ public class NotificationAccepting extends Notification {
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
+
+
     }
 
     @Override
     public void show() {
+        if (timeAccepted != null && timeAccepted.length() == 0)
+            return;
+
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
         try {

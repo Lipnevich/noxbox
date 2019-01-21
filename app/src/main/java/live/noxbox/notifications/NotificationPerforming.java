@@ -11,13 +11,18 @@ import java.util.Map;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.database.Firestore;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.Task;
 
 public class NotificationPerforming extends Notification {
 
+    private Map<String, String> data;
 
     public NotificationPerforming(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
+        this.data = data;
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_performing);
 
@@ -35,8 +40,22 @@ public class NotificationPerforming extends Notification {
 
     @Override
     public void show() {
-        builder = getNotificationCompatBuilder();
-        getNotificationService(context).notify(type.getGroup(), builder.build());
+        Task<Noxbox> task = new Task<Noxbox>() {
+            @Override
+            public void execute(Noxbox noxbox) {
+                if (noxbox != null && noxbox.getTimeCompleted() != null)
+                    return;
+
+                builder = getNotificationCompatBuilder();
+                getNotificationService(context).notify(type.getGroup(), builder.build());
+            }
+        };
+
+        if (profile == null) {
+            Firestore.readNoxbox(noxboxId, task);
+        } else {
+            task.execute(profile.getCurrent());
+        }
     }
 
     @Override
