@@ -73,6 +73,7 @@ public class Noxbox implements Comparable<Noxbox> {
         getChat().setPartyReadTime(null);
         party = null;
         performerId = null;
+        ownerComment = null;
         payerId = null;
         estimationTime = null;
         cancellationReasonMessage = null;

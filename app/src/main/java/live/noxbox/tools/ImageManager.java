@@ -27,7 +27,6 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.Firestore;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NotificationType;
@@ -41,16 +40,13 @@ public class ImageManager {
 
 
     public static void uploadPhoto(final Activity activity, final Profile profile, Bitmap bitmap) {
-        uploadImage(activity, bitmap, "profile/" + System.currentTimeMillis(), new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(final Uri uri) {
-                Map<String, String> data = new HashMap<>();
-                data.put("type", NotificationType.photoValid.name());
-                buildNotification(activity.getApplicationContext(), null, data).show();
-                profile.setPhoto(uri.toString());
-                Firestore.writeProfile(profile);
-                ProgressDialogManager.hideProgress();
-            }
+        uploadImage(activity, bitmap, "profile/" + System.currentTimeMillis(), uri -> {
+            Map<String, String> data = new HashMap<>();
+            data.put("type", NotificationType.photoValid.name());
+            buildNotification(activity.getApplicationContext(), null, data).show();
+            profile.setPhoto(uri.toString());
+            AppCache.fireProfile();
+            ProgressDialogManager.hideProgress();
         });
     }
 

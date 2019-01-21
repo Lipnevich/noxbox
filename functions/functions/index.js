@@ -3,12 +3,12 @@ const admin = require('firebase-admin');
 const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
-const noxbox = require('./noxbox-functions');
+const storage = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
-const version = 1;
+const version = 2;
 
 exports.welcome = functions.auth.user().onCreate(async user => {
-    return wallet.create(user).then(noxbox.init);
+    return wallet.create(user).then(storage.init);
 });
 
 exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUpdate(async(change, context) => {
@@ -103,9 +103,9 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             .mul(new BigDecimal(noxbox.price));
 
         let request = { };
-        request.id = context.auth.uid;
         request.addressToTransfer = performer.wallet.address;
-        request.encrypted = await noxbox.seed(payer.id);
+        request.encrypted = await storage.seed(payer.id);
+        request.minPayment = new BigDecimal(noxbox.price).div(4);
         request.transferable = moneyToPay;
 
         await wallet.send(request);
@@ -116,7 +116,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
                   data: {
                       type: 'completed',
                       time: '' + noxbox.timeCompleted,
-                      total: '' + moneyToPay,
+                      total: '' + request.transferable,
                       id: noxbox.id
                   },
                   topic: noxbox.id
@@ -175,9 +175,8 @@ exports.transfer = functions.https.onCall(async (data, context) => {
     console.log('id', context.auth.uid);
     console.log('addressToTransfer', data.addressToTransfer);
     // TODO (nli) firestore noxboxes query if current noxbox present
-    let request = { id : context.auth.uid,
-                    addressToTransfer : data.addressToTransfer};
-    request.encrypted = await noxbox.seed(context.auth.uid);
+    let request = { addressToTransfer : data.addressToTransfer};
+    request.encrypted = await storage.seed(context.auth.uid);
     return wallet.send(request);
 });
 

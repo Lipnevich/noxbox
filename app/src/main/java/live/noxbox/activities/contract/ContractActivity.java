@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.common.base.Strings;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -373,6 +374,9 @@ public class ContractActivity extends BaseActivity {
 
     private void drawCommentView(Profile profile) {
         EditText editComment = findViewById(R.id.editComment);
+        if(!Strings.isNullOrEmpty(profile.getCurrent().getOwnerComment())) {
+            editComment.setText(profile.getCurrent().getOwnerComment());
+        }
         editComment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

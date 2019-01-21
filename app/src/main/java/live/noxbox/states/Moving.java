@@ -101,6 +101,7 @@ public class Moving implements State {
 
     @Override
     public void draw(final Profile profile) {
+        // TODO (vl) glide upload in daemon other person photo and store in cache
         Log.d(TAG + "Moving", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         Log.d(TAG + "Moving", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
 

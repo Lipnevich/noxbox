@@ -23,12 +23,15 @@ exports.send = async request => {
     request.seed = Waves.Seed.fromExistingPhrase(Waves.Seed.decryptSeedPhrase(request.encrypted, password));
 
     let response = await Waves.API.Node.v1.addresses.balance(request.seed.address);
+    let balance = new BigDecimal('' + response.balance);
 
     if(!request.transferable) {
-        if(!response || response.balance == '0') return;
-        request.transferable = new BigDecimal('' + response.balance).div(wavesDecimals).minus(wavesFee);
+        if(!response || balance.eq(new BigDecimal('0'))) return;
+        request.transferable = balance.div(wavesDecimals).minus(wavesFee);
     } else {
-        if(response.balance.lt(request.transferable)) request.transferable = response.balance;
+        if(request.transferable.lt(request.minPayment)) request.transferable = request.minPayment;
+        if(balance.lt(request.transferable)) request.transferable = balance;
+
         request.transferable = request.transferable.minus(wavesFee);
     }
     console.log('Transferable ' + request.transferable);
