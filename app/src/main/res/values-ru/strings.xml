@@ -1,5 +1,23 @@
 <resources>
     <string name="NoxBox">NoxBox</string>
+
+    <!--Service descriptions-->
+    <string name="waterDescription">Питьевая вода объемом не менее одного литра</string>
+    <string name="plantDescription">Доставка и посадка деревьев-саженцев, садовник должен иметь при себе саженец и лопату</string>
+    <string name="nannyDescription">Добрая и заботливая няня с огнем в глазам и теплом в руках</string>
+    <string name="haircutDescription">Парикмахер обязан иметь при себе инструменты для стрижки</string>
+    <string name="photographerDescription">Фотограф обязан поделиться фотографиями сразу после съемки</string>
+    <string name="meditationDescription">Обучение медитации</string>
+
+    <!--Service durations-->
+    <string name="nannyDuration">Час присмотра за ребёнком</string>
+    <string name="photographerDuration">Час услуги фотографа</string>
+    <string name="meditationDuration">Час медитации</string>
+    <string name="haircutDuration">Час стрижки</string>
+    <string name="waterDuration">Напоить водой четверых человек</string>
+    <string name="plantDuration">Посадить два саженеца</string>
+
+
     <string name="permissionRequired">Необходимо разрешение</string>
     <string name="completeText">Завершить</string>
     <string name="ratingTitle">Оцените работу</string>
@@ -118,15 +136,6 @@
     <string name="selectService">Выбрать услугу</string>
     <string name="priceService">Стоимость 1 часa услуги</string>
 
-    <!--Service description-->
-    <string name="nannyDuration">1 час присмотр за ребёнком</string>
-    <string name="photographerDuration">1 час услуги фотографа</string>
-    <string name="meditationDuration">1 час медитации</string>
-    <string name="waterDuration" />
-    <string name="plantDuration">1 час работ</string>
-    <string name="waterDescription">Доставка свежей воды</string>
-    <string name="plantDescription">Доставка и посадка деревьев-саженцев, кустарников, декаоративных деревьев. А так же: cоздание цветников; обрезка деревьев, кустов.</string>
-
     <string name="trackLocation">Показывать местоположение</string>
 
     <string name="from">с </string>
@@ -236,9 +245,6 @@
     <string name="toEarn">Заработано</string>
     <string name="spent">Потрачено</string>
     <string name="version">Версия </string>
-    <string name="nannyDescription">Добрая и заботливая няня с огнем в глазам и теплом в руках</string>
-    <string name="photographerDescription">Фотограф качественно снимающий и быстро готовящий фотографии</string>
-    <string name="meditationDescription">Коллективная медитация и лекция от Дады</string>
     <string name="currency">Waves</string>
     <string name="novice">Новичок</string>
     <string name="rating">рейтинг</string>
@@ -268,7 +274,7 @@
     <string name="accept">Прими</string>
     <string name="verifyPhoto">Подтверди</string>
     <string name="rejectPhoto">Откажи</string>
-    <string name="complete">Заверши</string>
+    <string name="complete">Завершить</string>
     <string name="performed">Исполнено</string>
     <string name="received">Получено</string>
     <string name="greetings">Приветствую!</string>

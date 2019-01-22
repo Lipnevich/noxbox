@@ -174,7 +174,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawTypeDescription(Profile profile) {
-        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDuration()).concat("."));
+        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDescription()).concat("."));
     }
 
     private TextWatcher changeCountOfMoneyListener;
