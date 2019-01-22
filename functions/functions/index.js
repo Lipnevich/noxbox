@@ -5,7 +5,7 @@ admin.initializeApp(functions.config().firebase);
 
 const storage = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
-const version = 2;
+const version = 3;
 
 exports.welcome = functions.auth.user().onCreate(async user => {
     return wallet.create(user).then(storage.init);
@@ -97,8 +97,10 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     }else if(!previousNoxbox.timeCompleted && noxbox.timeCompleted){
         let timeStart = noxbox.timeOwnerVerified > noxbox.timePartyVerified ? noxbox.timeOwnerVerified : noxbox.timePartyVerified;
         let timeSpent = Date.now() - timeStart;
-        let payer = noxbox.role == 'demand' ? noxbox.owner : noxbox.party;
-        let performer = noxbox.role == 'demand' ? noxbox.party : noxbox.owner;
+        let payer = noxbox.role === 'demand' ? noxbox.owner : noxbox.party;
+        console.log('payer', payer);
+        let performer = noxbox.role === 'demand' ? noxbox.party : noxbox.owner;
+        console.log('performer', performer);
         let moneyToPay = new BigDecimal('' + timeSpent)
             .div(60 * 60 * 1000)
             .mul(new BigDecimal(noxbox.price));
