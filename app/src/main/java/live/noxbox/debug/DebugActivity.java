@@ -60,7 +60,7 @@ public class DebugActivity extends MenuActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (true || BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             AppCache.listenProfile(DebugActivity.class.getName(), new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {

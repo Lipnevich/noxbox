@@ -6,6 +6,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,8 +29,9 @@ import static live.noxbox.database.GeoRealtime.online;
 
 public class AppCache {
 
-    private static Profile profile;
     public static Map<String, Noxbox> availableNoxboxes = new ConcurrentHashMap<>();
+    public static BigDecimal wavesToUsd;
+    private static Profile profile;
 
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
@@ -189,6 +191,15 @@ public class AppCache {
         if (profile == null) return;
         writeNoxbox(profile.getCurrent());
         executeUITasks();
+    }
+
+    public static String showPriceInUsd(String currency, String price) {
+        if(wavesToUsd != null) {
+            BigDecimal priceInWaves = new BigDecimal(price);
+            BigDecimal priceInUSD = priceInWaves.multiply(wavesToUsd);
+            return currency + " (" + priceInUSD + "$)";
+        }
+        return "";
     }
 
 }

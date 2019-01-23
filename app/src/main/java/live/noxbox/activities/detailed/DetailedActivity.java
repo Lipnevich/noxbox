@@ -315,6 +315,7 @@ public class DetailedActivity extends AppCompatActivity {
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
 
         String priceTitle = getResources().getString(R.string.priceTxt) + " " + profile.getViewed().getPrice() + " " + getString(R.string.currency);
+        priceTitle = AppCache.showPriceInUsd(priceTitle, profile.getViewed().getPrice());
         ((TextView) findViewById(R.id.priceTitle)).setText(priceTitle);
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(profile.getViewed().getType().getDuration());
 

@@ -16,9 +16,17 @@ public class BalanceCalculator {
     public static boolean enoughBalance(Noxbox noxbox, Profile profile) {
         BigDecimal minimalPrice = new BigDecimal(noxbox.getPrice());
         minimalPrice = minimalPrice.multiply(QUARTER);
-        BigDecimal walletBalance = new BigDecimal(profile.getWallet().getBalance());
+        BigDecimal walletBalance = valueOrZero(profile.getWallet().getBalance());
 
         return minimalPrice.compareTo(walletBalance) < 0;
+    }
+
+    private static BigDecimal valueOrZero(String text) {
+        try {
+            return new BigDecimal(text);
+        } catch (NumberFormatException e) {
+            return BigDecimal.ZERO;
+        }
     }
 
     public static boolean enoughBalanceOnFiveMinutes(Noxbox noxbox) {

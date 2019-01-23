@@ -61,6 +61,7 @@ import live.noxbox.states.Performing;
 import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
@@ -106,6 +107,7 @@ public class MapActivity extends DebugActivity implements
         AppCache.startListening();
         AppCache.readProfile(profile -> checkBalance(profile, MapActivity.this));
 
+        ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
     }
 
 

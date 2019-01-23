@@ -1,5 +1,22 @@
 <resources>
     <string name="NoxBox">NoxBox</string>
+
+    <!--Service descriptions-->
+    <string name="waterDescription">At least liter of water must be delivered</string>
+    <string name="plantDescription">Gardener must has seedling and shovel</string>
+    <string name="nannyDescription">Nanny must be polite and kind</string>
+    <string name="photographerDescription">Photographer must share photos in the end of photo session</string>
+    <string name="meditationDescription">Meditation and lection</string>
+    <string name="haircutDescription">Hairdresser must has tools for cutting hair</string>
+
+    <!--Service durations -->
+    <string name="nannyDuration">Hour of childcare</string>
+    <string name="photographerDuration">Hour of photographing</string>
+    <string name="waterDuration">Duration of drinking 4 glasses of water</string>
+    <string name="meditationDuration">Hour of meditation lesson</string>
+    <string name="plantDuration">Duration of planting 2 saplings</string>
+    <string name="haircutDuration">Hour of haircutting</string>
+
     <string name="permissionRequired">Permission required</string>
     <string name="completeText">Complete</string>
     <string name="ratingTitle">Rate</string>
@@ -30,8 +47,8 @@
     <string name="nanny">Nanny</string>
     <string name="photographer">Photographer</string>
     <string name="meditation">Meditation lessons</string>
-    <string name="water">Питьевая вода</string>
-    <string name="plant">Посадка саженцев</string>
+    <string name="water">Drinking water</string>
+    <string name="plant">Plant a sapling</string>
 
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
@@ -119,16 +136,6 @@
     <string name="selectService">Select service</string>
     <string name="priceService">Price of services:</string>
     <string name="priceOneHourOfService">Price 1 hour services</string>
-
-    <!--Service description-->Description
-    <string name="nannyDuration">1 hours childcare</string>
-    <string name="photographerDuration">1 hour photographer service</string>
-    <string name="meditationDuration">1 час медитации</string>
-    <string name="waterDuration" />
-    <string name="plantDuration">1 час работ</string>
-    <string name="waterDescription">Доставка свежей воды</string>
-    <string name="plantDescription">Доставка и посадка деревьев-саженцев, кустарников, декоративных деревьев. А так же: cоздание цветников; обрезка деревьев, кустов.</string>
-
 
     <string name="trackLocation">Track location</string>
 
@@ -239,9 +246,6 @@
     <string name="toEarn">Earned</string>
     <string name="spent">Spent</string>
     <string name="version">Version</string>
-    <string name="nannyDescription">Best of the best of the best nanny</string>
-    <string name="photographerDescription">Best of the best of the best photographer</string>
-    <string name="meditationDescription">Meditation and lection</string>
     <string name="currency">Waves</string>
     <string name="novice">Novice</string>
     <string name="rating">Rating</string>
