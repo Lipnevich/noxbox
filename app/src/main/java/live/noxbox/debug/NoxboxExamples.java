@@ -81,7 +81,7 @@ public class NoxboxExamples {
                 images.put(ImageType.certificates.name(), new ArrayList<String>(certificatesList));
 
                 Map<String, Portfolio> portfolioMap = new HashMap<>();
-                portfolioMap.put(noxbox.getType().name(), new Portfolio(new HashMap<String, List<String>>(images)));
+                portfolioMap.put(noxbox.getType().name(), new Portfolio(new HashMap<String, List<String>>(images), System.currentTimeMillis()));
                 noxbox.getOwner().setPortfolio(portfolioMap);
             }
 

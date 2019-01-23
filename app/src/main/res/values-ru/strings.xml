@@ -116,13 +116,14 @@
     <string name="startTime">Начало рабочего времени:</string>
     <string name="endTime">Конец рабочего времени:</string>
     <string name="selectService">Выбрать услугу</string>
-    <string name="priceService">Стоимость 1 часa услуги</string>
+    <string name="priceService">Стоимость услуги:</string>
+    <string name="priceOneHourOfService">Стоимость 1 часa услуги</string>
 
     <!--Service description-->
     <string name="nannyDuration">1 час присмотр за ребёнком</string>
     <string name="photographerDuration">1 час услуги фотографа</string>
     <string name="meditationDuration">1 час медитации</string>
-    <string name="waterDuration" />
+    <string name="waterDuration">Доставка свежей воды</string>
     <string name="plantDuration">1 час работ</string>
     <string name="waterDescription">Доставка свежей воды</string>
     <string name="plantDescription">Доставка и посадка деревьев-саженцев, кустарников, декаоративных деревьев. А так же: cоздание цветников; обрезка деревьев, кустов.</string>
@@ -176,7 +177,7 @@
     <string name="filterNoviceText">Показывать услуги работников не имеющих отзывов или только с отрицательными отзывами</string>
     <string name="filterDemandText">Показывать спрос на услуги на карте</string>
     <string name="filterSupplyText">Показывать предложения услуг на карте</string>
-    <string name="noxboxType">Тип услуги</string>
+    <string name="noxboxType">Виды услуг</string>
     <string name="filterTypeServiceText">Услуги которые вы хотели бы видеть на карте</string>
     <string name="max">любая</string>
     <string name="profile">Профиль</string>

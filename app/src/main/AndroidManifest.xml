@@ -21,6 +21,7 @@
         </activity>
         <activity
             android:name=".MapActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/MapTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

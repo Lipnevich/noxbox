@@ -160,7 +160,6 @@ public class AppCache {
         // remove previous noxbox
         removeNoxbox();
         profile.getCurrent().setTimeCreated(System.currentTimeMillis());
-        profile.getCurrent().setOwner(profile.publicInfo());
         if (profile.getCurrent().getRole() == MarketRole.supply) {
             profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
         } else {

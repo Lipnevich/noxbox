@@ -41,7 +41,7 @@ public class MarkerCreator {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
 
-        
+
 
 
         Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(42), dpToPx(42), false);

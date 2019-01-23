@@ -7,17 +7,17 @@
 
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/photo"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/photo"
         android:orientation="vertical">
 
         <TextView
@@ -26,23 +26,24 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:gravity="start"
-            android:lines="2"
+            android:lines="1"
             android:text="@string/name"
             android:textColor="#FFF"
             android:textSize="@dimen/text_title"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/rating"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:text="101%"
-            android:textColor="@color/secondary"
-            android:textSize="@dimen/text_size" />
+        <!--<TextView-->
+        <!--android:id="@+id/rating"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:text="101%"-->
+        <!--android:textColor="@color/secondary"-->
+        <!--android:textSize="@dimen/text_size" />-->
     </LinearLayout>
 
 

@@ -96,7 +96,8 @@ public class Accepting implements State {
 
                 profile.getCurrent().setTimeAccepted(timeAccepted);
                 profile.getCurrent().setTimeToMeet(timeToMeet);
-                profile.getCurrent().setOwner(profile.privateInfo());
+                profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
+                profile.getCurrent().getOwner().setName(profile.getName());
                 profile.getCurrent().getOwner().setWallet(profile.getWallet());
                 updateNoxbox();
             }

@@ -6,9 +6,15 @@ import java.util.Map;
 
 public class Portfolio {
     private Map<String, List<String>> images = new HashMap<>();
+    private Long timeCreated;
 
-    public Portfolio(Map<String, List<String>> images) {
+    public Portfolio(Map<String, List<String>> images, Long timeCreated) {
         this.images = images;
+        this.timeCreated = timeCreated;
+    }
+
+    public Portfolio(Long timeCreated){
+        this.timeCreated = timeCreated;
     }
 
     public Portfolio() { }
@@ -22,4 +28,15 @@ public class Portfolio {
         return this;
     }
 
+    public Long getTimeCreated() {
+        if(timeCreated == null){
+            timeCreated = 0L;
+        }
+        return timeCreated;
+    }
+
+    public Portfolio setTimeCreated(Long timeCreated) {
+        this.timeCreated = timeCreated;
+        return this;
+    }
 }

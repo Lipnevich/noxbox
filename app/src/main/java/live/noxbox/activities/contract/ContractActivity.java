@@ -113,6 +113,7 @@ public class ContractActivity extends BaseActivity {
         drawRole(profile);
         drawType(profile);
         drawTypeDescription(profile);
+        drawTextPayment(profile);
         drawPrice(profile);
         drawTravelMode(profile);
         drawHost(profile);
@@ -175,6 +176,17 @@ public class ContractActivity extends BaseActivity {
 
     private void drawTypeDescription(Profile profile) {
         ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDuration()).concat("."));
+    }
+
+    private void drawTextPayment(Profile profile) {
+        switch (profile.getCurrent().getType()) {
+            case water:
+                ((TextView) findViewById(R.id.textPayment)).setText(R.string.priceService);
+                break;
+            default:
+                ((TextView) findViewById(R.id.textPayment)).setText(R.string.priceOneHourOfService);
+        }
+
     }
 
     private TextWatcher changeCountOfMoneyListener;
@@ -319,15 +331,18 @@ public class ContractActivity extends BaseActivity {
         }
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                profile.getCurrent().getOwner().setTravelMode(TravelMode.byId(item.getItemId()));
-                if (profile.getCurrent().getOwner().getTravelMode() != TravelMode.none) {
+                TravelMode travelMode = TravelMode.byId(item.getItemId());
+                profile.getCurrent().getOwner().setTravelMode(travelMode);
+
+
+                if (travelMode == TravelMode.none) {
+                    profile.getCurrent().getOwner().setHost(true);
+                    ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
+                    ((CheckBox) findViewById(R.id.isHost)).setEnabled(false);
+                } else {
                     if (checkLocationPermission()) {
                         ActivityCompat.requestPermissions(ContractActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
                     }
-                } else {
-                    profile.getCurrent().getOwner().setHost(true);
-                    ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
-                    findViewById(R.id.isHost).setEnabled(false);
                 }
                 draw(profile);
                 return true;

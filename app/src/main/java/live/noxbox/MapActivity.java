@@ -163,6 +163,11 @@ public class MapActivity extends DebugActivity implements
 
     }
 
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     private LocationReceiver locationReceiver;
 
     @Override

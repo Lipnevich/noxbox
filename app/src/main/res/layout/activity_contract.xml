@@ -153,7 +153,6 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="2dp"
                             android:gravity="center_vertical"
-                            android:text="@string/priceService"
                             android:textSize="@dimen/text_size" />
 
                         <LinearLayout

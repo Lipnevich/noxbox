@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
@@ -40,7 +41,7 @@ public class ProfilePerformerActivity extends BaseActivity {
         Intent intent = getIntent();
         type = NoxboxType.byId(intent.getIntExtra(ProfileActivity.class.getName(), 0));
         setContentView(R.layout.activity_profile_performer);
-        ((TextView) findViewById(R.id.title)).setText(type.getName());
+
     }
 
     @Override
@@ -50,11 +51,11 @@ public class ProfilePerformerActivity extends BaseActivity {
             @Override
             public void execute(Profile profile) {
                 if (profile.getPortfolio().get(type.name()) == null) {
-                    profile.getPortfolio().put(type.name(), new Portfolio());
+                    profile.getPortfolio().put(type.name(), new Portfolio(System.currentTimeMillis()));
                 }
-                for(ImageType imageType : ImageType.values()) {
+                for (ImageType imageType : ImageType.values()) {
                     Map<String, List<String>> images = profile.getPortfolio().get(type.name()).getImages();
-                    if(images.get(imageType.name()) == null) {
+                    if (images.get(imageType.name()) == null) {
                         images.put(imageType.name(), new ArrayList<String>());
                     }
                 }
@@ -69,15 +70,25 @@ public class ProfilePerformerActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         AppCache.stopListen(this.getClass().getName());
+        AppCache.fireProfile();
     }
 
     private void draw(final Profile profile) {
+        drawToolbar(profile);
+        drawCertificate(profile);
+        drawWorkSample(profile);
+    }
+
+    private void drawToolbar(Profile profile) {
         findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Router.finishActivity(ProfilePerformerActivity.this);
             }
         });
+
+        ((TextView) findViewById(R.id.title)).setText(type.getName());
+
         findViewById(R.id.deleteSection).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,17 +98,13 @@ public class ProfilePerformerActivity extends BaseActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                profile.getPortfolio().remove(type.name());
+                                Objects.requireNonNull(profile.getPortfolio().get(type.name())).setTimeCreated(0L);
                                 deleteFolderByType(type);
                                 Router.finishActivity(ProfilePerformerActivity.this);
                             }
                         });
             }
         });
-
-        drawCertificate(profile);
-        drawWorkSample(profile);
-
     }
 
     private void drawCertificate(final Profile profile) {

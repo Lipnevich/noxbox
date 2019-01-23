@@ -1,9 +1,7 @@
 package live.noxbox.activities.contract;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,12 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 
 import java.util.List;
 
@@ -74,16 +66,16 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
         viewHolder.noxboxTypeName.setText(noxboxTypes.get(position).getName());
 
-        Glide.with(activity)
-                .load(noxboxTypes.get(position).getImage())
-                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-                .into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
-                        viewHolder.noxboxTypeImage.setImageDrawable(drawable);
-                    }
-                });
-
+//        Glide.with(activity)
+//                .load(noxboxTypes.get(position).getImage())
+//                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+//                .into(new SimpleTarget<Drawable>() {
+//                    @Override
+//                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+//                        viewHolder.noxboxTypeImage.setImageDrawable(drawable);
+//                    }
+//                });
+        viewHolder.noxboxTypeImage.setImageResource(noxboxTypes.get(position).getImage());
         viewHolder.itemLayout.setOnClickListener(view -> onClick(position));
     }
 
@@ -143,7 +135,7 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
     }
 
     private void executeInTheProfile(int position) {
-        profile.getPortfolio().put(noxboxTypes.get(position).name(), new Portfolio());
+        profile.getPortfolio().put(noxboxTypes.get(position).name(), new Portfolio(System.currentTimeMillis()));
     }
 
     private void executeInTheContract(int position) {

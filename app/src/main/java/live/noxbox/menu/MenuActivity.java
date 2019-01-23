@@ -15,6 +15,7 @@ package live.noxbox.menu;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -127,7 +128,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             ImageView profilePhoto = findViewById(R.id.photo);
 
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(96), dpToPx(96));
-            layoutParams.setMargins(dpToPx(16), dpToPx(32) + getStatusBarHeight(getApplicationContext()), 0, dpToPx(16));
+            layoutParams.setMargins(dpToPx(16), dpToPx(32) + getStatusBarHeight(getApplicationContext()), 0, 0);
             profilePhoto.setLayoutParams(layoutParams);
 
 
@@ -139,7 +140,9 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             if (!Strings.isNullOrEmpty(profile.getName())) {
                 ((TextView) findViewById(R.id.name)).setText(profile.getName());
             }
-            ((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
+
+            //((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
+
             profilePhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -154,18 +157,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        if (requestCode == WalletActivity.CODE) {
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    draw(MenuActivity.this, profile);
-                }
-            });
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -175,6 +167,13 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (drawerLayout == null) return;
+        drawerLayout.closeDrawers();
     }
 
     @Override

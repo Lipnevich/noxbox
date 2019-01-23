@@ -61,7 +61,7 @@
         </RelativeLayout>
 
 
-        <RelativeLayout
+       <!-- <RelativeLayout
             android:id="@+id/travelModeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                 android:layout_centerVertical="true"
                 android:src="@drawable/edit"
                 android:visibility="gone" />
-        </RelativeLayout>
+        </RelativeLayout>-->
 
         <RelativeLayout
             android:id="@+id/hostLayout"
@@ -164,6 +164,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="8dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:text="@string/serviceProvided"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_color_secondary" />
