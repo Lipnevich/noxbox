@@ -194,4 +194,13 @@ public class AppCache {
         executeUITasks();
     }
 
+    public static String showPriceInUsd(String currency, String price) {
+        if(wavesToUsd != null) {
+            BigDecimal priceInWaves = new BigDecimal(price);
+            BigDecimal priceInUSD = priceInWaves.multiply(wavesToUsd);
+            return currency + " (" + priceInUSD + "$)";
+        }
+        return "";
+    }
+
 }

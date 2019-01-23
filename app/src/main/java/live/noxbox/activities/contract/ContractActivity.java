@@ -35,7 +35,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.common.base.Strings;
 
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +64,7 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CO
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
+import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
@@ -199,18 +199,19 @@ public class ContractActivity extends BaseActivity {
                     profile.getCurrent().setPrice(price);
                     if (s.length() > 0) {
                         drawSimilarNoxboxList(profile);
+                        ((TextView) findViewById(R.id.textCurrency))
+                                .setText(showPriceInUsd(getString(R.string.currency),
+                                        profile.getCurrent().getPrice()));
                     }
                 }
             };
             priceInput.addTextChangedListener(changeCountOfMoneyListener);
         }
         priceInput.setText(profile.getCurrent().getPrice());
-        if(AppCache.wavesToUsd != null) {
-            String currency = getString(R.string.currency);
-            BigDecimal price = new BigDecimal(profile.getCurrent().getPrice());
-            BigDecimal priceInUSD = price.multiply(AppCache.wavesToUsd);
-            ((TextView) findViewById(R.id.textCurrency)).setText(currency + " (" + priceInUSD + "$)");
-        }
+
+        ((TextView) findViewById(R.id.textCurrency))
+                .setText(showPriceInUsd(getString(R.string.currency),
+                        profile.getCurrent().getPrice()));
     }
 
     private void drawTravelMode(final Profile profile) {
