@@ -35,6 +35,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.common.base.Strings;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,6 +205,12 @@ public class ContractActivity extends BaseActivity {
             priceInput.addTextChangedListener(changeCountOfMoneyListener);
         }
         priceInput.setText(profile.getCurrent().getPrice());
+        if(AppCache.wavesToUsd != null) {
+            String currency = getString(R.string.currency);
+            BigDecimal price = new BigDecimal(profile.getCurrent().getPrice());
+            BigDecimal priceInUSD = price.multiply(AppCache.wavesToUsd);
+            ((TextView) findViewById(R.id.textCurrency)).setText(currency + " (" + priceInUSD + "$)");
+        }
     }
 
     private void drawTravelMode(final Profile profile) {
