@@ -23,8 +23,8 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MapOperator;
 
-import static live.noxbox.Configuration.CLUSTER_RENDERING_MAX_FREQUENCY;
-import static live.noxbox.Configuration.CLUSTER_RENDERING_MIN_FREQUENCY;
+import static live.noxbox.Constants.CLUSTER_RENDERING_MAX_FREQUENCY;
+import static live.noxbox.Constants.CLUSTER_RENDERING_MIN_FREQUENCY;
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
 import static live.noxbox.states.AvailableNoxboxes.clusterRenderingFrequency;
 

@@ -59,7 +59,7 @@ import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;

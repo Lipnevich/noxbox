@@ -34,7 +34,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Wallet;
 
-import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
+import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
 

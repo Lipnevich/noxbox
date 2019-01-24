@@ -289,6 +289,10 @@
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
     <string name="gotIt">GOT IT</string>
+    <string name="toOrder">To order</string>
+    <string name="toFind">To find</string>
+    <string name="getStarted">Get started</string>
+    <string name="getComplete">Get complete</string>
 
 
 </resources>

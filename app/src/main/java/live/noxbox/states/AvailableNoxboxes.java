@@ -40,7 +40,7 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.MapActivity.getCameraPosition;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;

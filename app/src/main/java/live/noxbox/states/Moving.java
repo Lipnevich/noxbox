@@ -38,8 +38,8 @@ import live.noxbox.tools.Task;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.location.LocationManager.GPS_PROVIDER;
-import static live.noxbox.Configuration.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
-import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
+import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
+import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.MapActivity.isLocationPermissionGranted;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;

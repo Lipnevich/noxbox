@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static live.noxbox.Configuration.DEFAULT_PRICE;
+import static live.noxbox.Constants.DEFAULT_PRICE;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
 

@@ -10,7 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Map;
 
-import live.noxbox.Configuration;
+import live.noxbox.Constants;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
@@ -107,7 +107,7 @@ public class GeoRealtime {
         if (geoQuery != null) {
             geoQuery.setCenter(geoLocation);
         } else {
-            geoQuery = geo().queryAtLocation(geoLocation, Configuration.RADIUS_IN_METERS / 1000);
+            geoQuery = geo().queryAtLocation(geoLocation, Constants.RADIUS_IN_METERS / 1000);
             geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {

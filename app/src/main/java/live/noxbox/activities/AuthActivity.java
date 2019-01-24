@@ -9,7 +9,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -34,21 +33,17 @@ public class AuthActivity extends BaseActivity {
 
         login();
         setContentView(R.layout.activity_auth);
-        ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    colorText(R.id.textGoogleAuth, R.color.secondary);
-                    colorText(R.id.textPhoneAuth, R.color.secondary);
-                    findViewById(R.id.googleAuth).setVisibility(View.VISIBLE);
-                    findViewById(R.id.phoneAuth).setVisibility(View.VISIBLE);
-                } else {
-                    colorText(R.id.textGoogleAuth, R.color.google_text);
-                    colorText(R.id.textPhoneAuth, R.color.google_text);
-                    findViewById(R.id.googleAuth).setVisibility(View.INVISIBLE);
-                    findViewById(R.id.phoneAuth).setVisibility(View.INVISIBLE);
-                }
-
+        ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                colorText(R.id.textGoogleAuth, R.color.secondary);
+                colorText(R.id.textPhoneAuth, R.color.secondary);
+                findViewById(R.id.googleAuth).setVisibility(View.VISIBLE);
+                findViewById(R.id.phoneAuth).setVisibility(View.VISIBLE);
+            } else {
+                colorText(R.id.textGoogleAuth, R.color.google_text);
+                colorText(R.id.textPhoneAuth, R.color.google_text);
+                findViewById(R.id.googleAuth).setVisibility(View.INVISIBLE);
+                findViewById(R.id.phoneAuth).setVisibility(View.INVISIBLE);
             }
 
         });
@@ -64,16 +59,13 @@ public class AuthActivity extends BaseActivity {
 
 
     private View.OnClickListener authentificate(final AuthUI.IdpConfig.Builder provider) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetworkReceiver.isOnline(AuthActivity.this) && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
-                    Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
-                            .setIsSmartLockEnabled(false)
-                            .setAvailableProviders(singletonList(provider.build()))
-                            .build();
-                    startActivityForResult(intent, REQUEST_CODE);
-                }
+        return v -> {
+            if (NetworkReceiver.isOnline(AuthActivity.this) && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
+                Intent intent = AuthUI.getInstance().createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
+                        .setAvailableProviders(singletonList(provider.build()))
+                        .build();
+                startActivityForResult(intent, REQUEST_CODE);
             }
         };
     }

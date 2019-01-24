@@ -28,7 +28,7 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
 
-import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;
+import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
 

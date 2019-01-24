@@ -31,7 +31,7 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.MAX_ZOOM_LEVEL;
+import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
 
 public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
 

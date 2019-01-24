@@ -26,7 +26,7 @@ import live.noxbox.notifications.NotificationRequesting;
 import live.noxbox.notifications.NotificationSupport;
 import live.noxbox.notifications.NotificationUploadingProgress;
 
-import static live.noxbox.Configuration.CHANNEL_ID;
+import static live.noxbox.Constants.CHANNEL_ID;
 import static live.noxbox.services.MessagingService.getNotificationService;
 
 public abstract class NotificationFactory {

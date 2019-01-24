@@ -289,5 +289,9 @@
     <string name="skip">ПРОПУСТИТЬ</string>
     <string name="next">СЛЕДУЮЩАЯ</string>
     <string name="gotIt">ЗАВЕРШИТЬ</string>
+    <string name="toOrder">Заказывайте</string>
+    <string name="toFind">Находите</string>
+    <string name="getStarted">Приступайте</string>
+    <string name="getComplete">Завершайте</string>
 
 </resources>

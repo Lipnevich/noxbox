@@ -61,7 +61,7 @@ public class NotificationPerforming extends Notification {
     @Override
     public void update(Map<String, String> data) {
         //contentView.setTextViewText(R.id.stopwatch, data.get("time"));
-        //contentView.setTextViewText(R.id.totalPayment, (data.get("price").concat(" ")).concat(Configuration.CURRENCY));
+        //contentView.setTextViewText(R.id.totalPayment, (data.get("price").concat(" ")).concat(Constants.CURRENCY));
         updateNotification(context, builder);
     }
 }

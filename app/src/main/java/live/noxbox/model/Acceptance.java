@@ -2,8 +2,8 @@ package live.noxbox.model;
 
 import com.google.firebase.database.Exclude;
 
-import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
-import static live.noxbox.Configuration.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
+import static live.noxbox.Constants.MINIMUM_FACE_SIZE;
+import static live.noxbox.Constants.MINIMUM_PROBABILITY_FOR_ACCEPTANCE;
 
 public class Acceptance {
 

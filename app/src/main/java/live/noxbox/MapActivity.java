@@ -65,8 +65,8 @@ import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.LOCATION_PERMISSION_REQUEST_CODE;
-import static live.noxbox.Configuration.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;

@@ -15,7 +15,7 @@ import android.widget.RemoteViews;
 
 import java.util.Map;
 
-import live.noxbox.Configuration;
+import live.noxbox.Constants;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
@@ -67,7 +67,7 @@ public abstract class Notification {
 
     protected NotificationCompat.Builder getNotificationCompatBuilder() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return new NotificationCompat.Builder(context, Configuration.CHANNEL_ID)
+            return new NotificationCompat.Builder(context, Constants.CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setVibrate(vibrate)
                     .setCustomContentView(contentView)
@@ -77,7 +77,7 @@ public abstract class Notification {
                     .setDeleteIntent(deleteIntent)
                     .setAutoCancel(isAutoCancel);
         } else {
-            return new NotificationCompat.Builder(context, Configuration.CHANNEL_ID)
+            return new NotificationCompat.Builder(context, Constants.CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setVibrate(vibrate)
                     .setContent(contentView)

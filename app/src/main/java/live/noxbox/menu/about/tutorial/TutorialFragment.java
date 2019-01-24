@@ -1,5 +1,6 @@
 package live.noxbox.menu.about.tutorial;
 
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -15,17 +16,26 @@ import android.widget.TextView;
 
 import live.noxbox.R;
 
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
+
 public class TutorialFragment extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tutorial, container, false);
-        String text = getArguments().getString("text");
+        String text = getResources().getString(getArguments().getInt("text"));
         int mainImageResource = getArguments().getInt("image");
 
+        float displayWidth;
+        float displayHeight;
         DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
-        float displayWidth = displayMetrics.widthPixels / displayMetrics.density;
-        float displayHeight = displayMetrics.heightPixels / displayMetrics.density;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            displayWidth = displayMetrics.widthPixels / displayMetrics.density;
+            displayHeight = displayMetrics.heightPixels / displayMetrics.density;
+        } else {
+            displayWidth = displayMetrics.heightPixels / displayMetrics.density;
+            displayHeight = displayMetrics.widthPixels / displayMetrics.density;
+        }
 
         ImageView mainImage = view.findViewById(R.id.image);
         float heightDp = (float) (displayWidth * 1.42);//todo (vl) 143% value need to use for define a height of the image (we are using 230% at the moment)
@@ -36,14 +46,15 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         mainImage.setLayoutParams(mainImageParams);
 
         ImageView tapeImage = view.findViewById(R.id.tape);
-        RelativeLayout.LayoutParams tapeParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 72);
-        tapeParams.setMargins(24, 0, 24, 0);
+        RelativeLayout.LayoutParams tapeParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (displayWidth * 0.25));
+        tapeParams.setMargins( dpToPx(24), 0,  dpToPx(24), 0);
         tapeImage.setLayoutParams(tapeParams);
 
         TextView informationText = view.findViewById(R.id.text);
         informationText.setText(text);
         RelativeLayout.LayoutParams informationParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         informationParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        informationParams.setMargins(0, dpToPx((int) (tapeImage.getHeight() * 0.4)), 0, 0);
         informationText.setLayoutParams(informationParams);
 
         LinearLayout underRootLayout = view.findViewById(R.id.underRootLayout);
@@ -89,10 +100,10 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         return Bitmap.createBitmap(sourceBitmap, minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
     }
 
-    public static TutorialFragment newInstance(String text, int image) {
+    public static TutorialFragment newInstance(int text, int image) {
         TutorialFragment tutorialFragment = new TutorialFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("text", text);
+        bundle.putInt("text", text);
         bundle.putInt("image", image);
 
         tutorialFragment.setArguments(bundle);

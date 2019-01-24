@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
-import live.noxbox.Configuration;
+import live.noxbox.Constants;
 import live.noxbox.R;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
@@ -25,8 +25,8 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
-import static live.noxbox.Configuration.QUARTER;
+import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
+import static live.noxbox.Constants.QUARTER;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.MoneyFormatter.format;
@@ -182,7 +182,7 @@ public class Performing implements State {
 
         if (startTime == null) return false;
 
-        return startTime < System.currentTimeMillis() - Configuration.MINIMUM_PAYMENT_TIME_MILLIS;
+        return startTime < System.currentTimeMillis() - Constants.MINIMUM_PAYMENT_TIME_MILLIS;
 
     }
 }

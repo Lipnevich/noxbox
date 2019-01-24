@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import live.noxbox.BuildConfig;
-import live.noxbox.Configuration;
+import live.noxbox.Constants;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
@@ -97,7 +97,7 @@ public class DebugActivity extends MenuActivity implements
                             setOnClickListener(R.id.debugGenerateNoxboxes, new Task<Profile>() {
                                 @Override
                                 public void execute(Profile profile) {
-                                    double delta = (360 * Configuration.RADIUS_IN_METERS / 40075000) / 20;
+                                    double delta = (360 * Constants.RADIUS_IN_METERS / 40075000) / 20;
 
                                     for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
                                         online(noxbox);

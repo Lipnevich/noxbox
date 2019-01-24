@@ -49,7 +49,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Configuration.ADDRESS_SEARCH_RADIUS_IN_METERS;
+import static live.noxbox.Constants.ADDRESS_SEARCH_RADIUS_IN_METERS;
 import static live.noxbox.tools.MapOperator.setupMap;
 
 public class CoordinateActivity extends BaseActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {

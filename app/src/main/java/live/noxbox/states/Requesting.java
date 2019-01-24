@@ -24,7 +24,7 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
-import static live.noxbox.Configuration.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
+import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.moveCopyrightRight;

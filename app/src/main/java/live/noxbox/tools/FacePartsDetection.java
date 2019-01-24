@@ -24,7 +24,7 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 
-import static live.noxbox.Configuration.MINIMUM_FACE_SIZE;
+import static live.noxbox.Constants.MINIMUM_FACE_SIZE;
 
 public class FacePartsDetection {
 

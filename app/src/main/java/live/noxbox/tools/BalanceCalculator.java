@@ -7,9 +7,9 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.states.Performing;
 
-import static live.noxbox.Configuration.DEFAULT_BALANCE_SCALE;
-import static live.noxbox.Configuration.FIVE_MINUTES_PART_OF_HOUR;
-import static live.noxbox.Configuration.QUARTER;
+import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
+import static live.noxbox.Constants.FIVE_MINUTES_PART_OF_HOUR;
+import static live.noxbox.Constants.QUARTER;
 
 public class BalanceCalculator {
 
