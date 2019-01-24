@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <live.noxbox.tools.PanoramaImageView
             android:id="@+id/tutorialBackground"
             android:layout_width="match_parent"
@@ -18,14 +19,50 @@
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_alignTop="@id/tutorialBackground"
-            android:layout_alignBottom="@id/tutorialBackground"
             android:layout_alignStart="@id/tutorialBackground"
+            android:layout_alignTop="@id/tutorialBackground"
             android:layout_alignEnd="@id/tutorialBackground"
+            android:layout_alignBottom="@id/tutorialBackground"
+            android:layout_gravity="center"
             android:scaleType="fitXY"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true">
 
-</LinearLayout>
+        <Button
+            android:id="@+id/skip"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="4dp"
+            android:background="@null"
+            android:text="SKIP"
+            android:textColor="@color/primary"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/intro"
+            android:layout_width="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:background="@null"
+            android:text="NEXT"
+            android:textColor="@color/primary"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

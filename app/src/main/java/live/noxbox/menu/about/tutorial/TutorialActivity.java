@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -20,6 +22,9 @@ import live.noxbox.tools.PanoramaImageView;
 
 public class TutorialActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
+    private ImageView intro;
+    private Button skip;
+    private Button next;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,6 +32,11 @@ public class TutorialActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_tutorial);
+
+        intro = findViewById(R.id.intro);
+        intro.setImageResource(R.drawable.tutorial_intro_one);
+        skip = findViewById(R.id.skip);
+        next = findViewById(R.id.next);
 
         final PanoramaImageView panoramaImageView = findViewById(R.id.tutorialBackground);
         gyroscopeObserver = new GyroscopeObserver();
@@ -37,9 +47,42 @@ public class TutorialActivity extends BaseActivity {
         gyroscopeObserver.addPanoramaImageView(panoramaImageView);
 
         ((ViewPager) findViewById(R.id.viewpager)).setAdapter(new TutorialAdapter(getSupportFragmentManager()));
+        ((ViewPager) findViewById(R.id.viewpager)).addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch (position) {
+                    case 0:
+                        intro.setImageResource(R.drawable.tutorial_intro_one);
+                        next.setText("NEXT");
+                        break;
+                    case 1:
+                        intro.setImageResource(R.drawable.tutorial_intro_two);
+                        next.setText("NEXT");
+                        break;
+                    case 2:
+                        intro.setImageResource(R.drawable.tutorial_intro_three);
+                        next.setText("NEXT");
+                        break;
+                    case 3:
+                        intro.setImageResource(R.drawable.tutorial_intro_four);
+                        next.setText("GOT IT");
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
         Glide.with(this)
                 .asDrawable()
-                .load(R.drawable.tutorial_background)
+                .load(R.drawable.tutorial_background_with_comets)
                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                 .into(new SimpleTarget<Drawable>() {
                     @Override

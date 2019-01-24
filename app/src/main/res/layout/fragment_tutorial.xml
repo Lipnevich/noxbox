@@ -3,25 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="1024dp"
-        android:layout_height="1024dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="-256dp"
-        android:layout_marginBottom="-128dp"
-        android:src="@drawable/ic_men_and_planet" />
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/underRootLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="8dp"
-        android:maxLines="4"
-        android:text="Предлагайте и получайте услуги"
-        android:textAlignment="center"
-        android:textColor="@color/secondary"
-        android:textSize="@dimen/text_title_large" />
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="-1dp"
+            android:layout_height="-1dp"
+            android:src="@drawable/ic_men_and_planet" />
+
+        <RelativeLayout
+            android:id="@+id/tapeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/tape"
+                android:layout_width="-1dp"
+                android:layout_height="-1dp"
+                android:src="@drawable/tutorial_tape" />
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="-1dp"
+                android:layout_height="-1dp"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/text_size" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+
 </RelativeLayout>
