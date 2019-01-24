@@ -7,8 +7,9 @@ public class Filters {
 
     private Boolean supply = true;
     private Boolean demand = true;
+    private Boolean badWorker = true;
     private Boolean allowNovices = true;
-    private String maxPrice = "100";
+    private Integer price;
     private Map<String, Boolean> types = new HashMap<>();
 
     {
@@ -20,10 +21,10 @@ public class Filters {
     public Filters() {
     }
 
-    public Filters(Boolean supply, boolean demand, String price, Map<String, Boolean> types) {
+    public Filters(Boolean supply, boolean demand, Integer price, Map<String, Boolean> types) {
         this.supply = supply;
         this.demand = demand;
-        this.maxPrice = price;
+        this.price = price;
         this.types = types;
     }
 
@@ -51,15 +52,15 @@ public class Filters {
         return this;
     }
 
-    public String getPrice() {
-        if (maxPrice == null) {
-            maxPrice = "0";
+    public Integer getPrice() {
+        if (price == null) {
+            price = 0;
         }
-        return maxPrice;
+        return price;
     }
 
-    public Filters setPrice(String price) {
-        this.maxPrice = price;
+    public Filters setPrice(Integer price) {
+        this.price = price;
         return this;
     }
 
@@ -78,6 +79,15 @@ public class Filters {
 
     public Filters setAllowNovices(Boolean allowNovices) {
         this.allowNovices = allowNovices;
+        return this;
+    }
+
+    public Boolean getBadWorker() {
+        return badWorker;
+    }
+
+    public Filters setBadWorker(Boolean badWorker) {
+        this.badWorker = badWorker;
         return this;
     }
 }

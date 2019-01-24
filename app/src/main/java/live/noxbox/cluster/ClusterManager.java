@@ -85,7 +85,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
         if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
             return true;
-        if (Integer.parseInt(noxbox.getPrice()) > Integer.parseInt(profile.getFilters().getPrice()))
+        if (Integer.parseInt(noxbox.getPrice()) > profile.getFilters().getPrice())
             return true;
 
         return !noxbox.getOwner().getHost() && !profile.getHost();

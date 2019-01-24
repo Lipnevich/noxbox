@@ -5,8 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -17,7 +15,6 @@ import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.menu.settings.NoxboxTypeSelectionFragment.SETTINGS_CODE;
 
@@ -26,6 +23,7 @@ public class MapSettingsActivity extends BaseActivity {
     public static final int CODE = 1005;
 
     private Switch novice;
+    private Switch badWorker;
     private Switch demand;
     private Switch supply;
     private SeekBar price;
@@ -43,6 +41,7 @@ public class MapSettingsActivity extends BaseActivity {
     }
 
     private void initialize() {
+        badWorker = findViewById(R.id.badWorker);
         novice = findViewById(R.id.novice);
         demand = findViewById(R.id.demand);
         supply = findViewById(R.id.supply);
@@ -50,7 +49,7 @@ public class MapSettingsActivity extends BaseActivity {
         priceText = findViewById(R.id.priceText);
         typeLayout = findViewById(R.id.typeLayout);
 
-
+        ((TextView) findViewById(R.id.badWorkerTitle)).setText(getResources().getString(R.string.badWorker));
         ((TextView) findViewById(R.id.noviceTitle)).setText(getResources().getString(R.string.novice));
         ((TextView) findViewById(R.id.demandTitle)).setText(getResources().getString(R.string.demand).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.demand).substring(1)));
         ((TextView) findViewById(R.id.supplyTitle)).setText(getResources().getString(R.string.supply).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.supply).substring(1)));
@@ -59,12 +58,7 @@ public class MapSettingsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(MapSettingsActivity.class.getName(), new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                draw(profile);
-            }
-        });
+        AppCache.listenProfile(MapSettingsActivity.class.getName(), profile -> draw(profile));
     }
 
     @Override
@@ -76,6 +70,7 @@ public class MapSettingsActivity extends BaseActivity {
 
     private void draw(final Profile profile) {
         drawToolbar();
+        drawBadWorker(profile);
         drawNovice(profile);
         drawDemand(profile);
         drawSupply(profile);
@@ -83,76 +78,61 @@ public class MapSettingsActivity extends BaseActivity {
         drawTypeList(profile);
     }
 
+
     private void drawToolbar() {
         ((TextView) findViewById(R.id.title)).setText(R.string.settings);
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.finishActivity(MapSettingsActivity.this);
-            }
-        });
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(MapSettingsActivity.this));
+    }
+
+    private void drawBadWorker(Profile profile) {
+        badWorker.setChecked(profile.getFilters().getBadWorker());
+        badWorker.setOnCheckedChangeListener((buttonView, isChecked) -> profile.getFilters().setBadWorker(isChecked));
+
     }
 
     private void drawNovice(final Profile profile) {
         novice.setChecked(profile.getFilters().getAllowNovices());
-        novice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                profile.getFilters().setAllowNovices(isChecked);
-            }
-        });
+        novice.setOnCheckedChangeListener((buttonView, isChecked) -> profile.getFilters().setAllowNovices(isChecked));
     }
 
     private void drawDemand(final Profile profile) {
         demand.setChecked(profile.getFilters().getDemand());
-        demand.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                profile.getFilters().setDemand(isChecked);
-                if (!isChecked && supply != null) {
-                    supply.setChecked(true);
-                }
+        demand.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            profile.getFilters().setDemand(isChecked);
+            if (!isChecked && supply != null) {
+                supply.setChecked(true);
             }
         });
     }
 
     private void drawSupply(final Profile profile) {
         supply.setChecked(profile.getFilters().getSupply());
-        supply.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                profile.getFilters().setSupply(isChecked);
-                if (!isChecked && demand != null) {
-                    demand.setChecked(true);
-                }
-
+        supply.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            profile.getFilters().setSupply(isChecked);
+            if (!isChecked && demand != null) {
+                demand.setChecked(true);
             }
+
         });
     }
 
     private void drawPrice(final Profile profile) {
-        if (Integer.parseInt(profile.getFilters().getPrice()) >= 100) {
-            price.setProgress(100);
-            priceText.setText(getResources().getString(R.string.max));
-        } else {
-            priceText.setText(profile.getFilters().getPrice().concat(getResources().getString(R.string.currency)));
-            price.setProgress(Integer.parseInt(profile.getFilters().getPrice()));
-        }
+        price.setMax(100);
         price.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     if (progress == 0) {
-                        profile.getFilters().setPrice("1");
+                        profile.getFilters().setPrice(1);
                         priceText.setText("1 " + getString(R.string.currency));
                         return;
                     }
                     if (progress == 100) {
-                        profile.getFilters().setPrice("100000000");
+                        profile.getFilters().setPrice(100000000);
                         priceText.setText(R.string.max);
                         return;
                     }
-                    profile.getFilters().setPrice(String.valueOf(progress));
+                    profile.getFilters().setPrice(progress);
                     priceText.setText(progress + " " + getResources().getString(R.string.currency));
                 }
             }
@@ -165,19 +145,24 @@ public class MapSettingsActivity extends BaseActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+
+        if (profile.getFilters().getPrice() >= 100) {
+            price.setProgress(100);
+            priceText.setText(getResources().getString(R.string.max));
+        } else {
+            priceText.setText(profile.getFilters().getPrice() + "" + getResources().getString(R.string.currency));
+            price.setProgress(profile.getFilters().getPrice());
+        }
     }
 
 
     private void drawTypeList(final Profile profile) {
-        typeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogFragment dialog = new NoxboxTypeSelectionFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("key", SETTINGS_CODE);
-                dialog.setArguments(bundle);
-                dialog.show(((FragmentActivity) MapSettingsActivity.this).getSupportFragmentManager(), NoxboxTypeSelectionFragment.TAG);
-            }
+        typeLayout.setOnClickListener(v -> {
+            DialogFragment dialog = new NoxboxTypeSelectionFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("key", SETTINGS_CODE);
+            dialog.setArguments(bundle);
+            dialog.show(((FragmentActivity) MapSettingsActivity.this).getSupportFragmentManager(), NoxboxTypeSelectionFragment.TAG);
         });
     }
 

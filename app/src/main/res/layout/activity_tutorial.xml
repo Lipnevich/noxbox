@@ -41,6 +41,7 @@
             android:layout_marginStart="4dp"
             android:background="@null"
             android:text="SKIP"
+            android:textSize="@dimen/text_size"
             android:textColor="@color/primary"
             android:visibility="visible" />
 
@@ -59,6 +60,7 @@
             android:layout_marginEnd="4dp"
             android:background="@null"
             android:text="NEXT"
+            android:textSize="@dimen/text_size"
             android:textColor="@color/primary"
             android:visibility="visible" />
 

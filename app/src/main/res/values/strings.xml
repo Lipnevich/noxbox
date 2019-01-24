@@ -183,11 +183,11 @@
     <string name="filters">Filters</string>
     <string name="contractService">Contract of service</string>
     <string name="filterMaxPriceText">The maximum cost of services</string>
-    <string name="filterNoviceText">Show the services of employees who do not have reviews or only with negative reviews.</string>
-    <string name="filterDemandText">Show the demand for services on the map</string>
-    <string name="filterSupplyText">Show service offers on the map</string>
+    <string name="filterNoviceText">Отображать новичков</string>
+    <string name="filterDemandText">Display the demand of all types of services</string>
+    <string name="filterSupplyText">Display offer of all types of services</string>
     <string name="noxboxType">Service type</string>
-    <string name="filterTypeServiceText">Services that you would like to see on the map</string>
+    <string name="filterTypeServiceText">Filter types of services displayed on the map</string>
     <string name="max">any</string>
     <string name="profile">Profile</string>
     <string name="workSamples">Work Samples</string>
@@ -284,6 +284,8 @@
     <string name="pleaseUploadNewPhoto">Please update your photo</string>
     <string name="selectPhoto">Select Photo</string>
     <string name="haircut">Haircut</string>
+    <string name="filterLowRatingPerformers">Отображать Работников с отрицательными отзывами</string>
+    <string name="badWorker">Плохой работник</string>
 
 
 </resources>
