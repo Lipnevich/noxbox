@@ -158,7 +158,7 @@ public class Noxbox implements Comparable<Noxbox> {
         if (price == null) {
             price = DEFAULT_PRICE;
         }
-        return price;
+        return price.replaceAll(",", "\\.");
     }
 
     public Noxbox setPrice(String price) {

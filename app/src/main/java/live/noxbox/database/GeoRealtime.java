@@ -54,7 +54,7 @@ public class GeoRealtime {
         return currentNoxbox.getId()
                 + delimiter + currentNoxbox.getRole()
                 + delimiter + currentNoxbox.getType()
-                + delimiter + currentNoxbox.getPrice()
+                + delimiter + currentNoxbox.getPrice().replaceAll("\\.", ",")
                 + delimiter + currentNoxbox.getOwner().getTravelMode()
                 + delimiter + currentNoxbox.getOwner().getHost()
                 + delimiter + currentNoxbox.getOwner().getFilters().getAllowNovices()

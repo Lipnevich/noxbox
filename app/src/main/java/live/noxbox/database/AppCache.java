@@ -124,7 +124,7 @@ public class AppCache {
         if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
             removeNoxbox();
         }
-        for(String noxboxId : ids) {
+        for (String noxboxId : ids) {
             stopListenNoxbox(noxboxId);
         }
         Firestore.listenProfile(NONE);
@@ -140,7 +140,7 @@ public class AppCache {
         Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
             @Override
             public void execute(Noxbox noxbox) {
-                if(noxbox.getId().equals(profile.getNoxboxId())) {
+                if (noxbox.getId().equals(profile.getNoxboxId())) {
                     profile.setCurrent(noxbox);
                 } else {
                     profile.setViewed(noxbox);
@@ -194,8 +194,8 @@ public class AppCache {
     }
 
     public static String showPriceInUsd(String currency, String price) {
-        if(wavesToUsd != null) {
-            BigDecimal priceInWaves = new BigDecimal(price);
+        if (wavesToUsd != null) {
+            BigDecimal priceInWaves = new BigDecimal(price.replaceAll(",", "\\."));
             BigDecimal priceInUSD = priceInWaves.multiply(wavesToUsd);
             return currency + " (" + priceInUSD + "$)";
         }

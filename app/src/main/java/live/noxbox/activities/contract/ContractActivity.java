@@ -147,12 +147,7 @@ public class ContractActivity extends BaseActivity {
         }, spanTxt.length() - getResources().getString(profile.getCurrent().getRole().getName()).length(), spanTxt.length(), 0);
         role.setMovementMethod(LinkMovementMethod.getInstance());
         role.setText(spanTxt, TextView.BufferType.SPANNABLE);
-        findViewById(R.id.arrowRole).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createRoleList(profile, role);
-            }
-        });
+        findViewById(R.id.arrowRole).setOnClickListener(v -> createRoleList(profile, role));
     }
 
     private void drawType(Profile profile) {
@@ -167,12 +162,7 @@ public class ContractActivity extends BaseActivity {
         }, spanTxt.length() - (getResources().getString(profile.getCurrent().getType().getName())).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
-        findViewById(R.id.arrowNoxboxType).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startDialogList();
-            }
-        });
+        findViewById(R.id.arrowNoxboxType).setOnClickListener(v -> startDialogList());
     }
 
     private void drawTypeDescription(Profile profile) {
@@ -207,7 +197,7 @@ public class ContractActivity extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    String price = s.toString().replaceAll(",", "\\.");
+                    String price = s.toString().replaceAll("\\.", ",");
                     profile.getCurrent().setPrice(price);
                     if (s.length() > 0) {
                         drawSimilarNoxboxList(profile);
