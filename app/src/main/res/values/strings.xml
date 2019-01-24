@@ -286,6 +286,9 @@
     <string name="haircut">Haircut</string>
     <string name="filterLowRatingPerformers">Отображать Работников с отрицательными отзывами</string>
     <string name="badWorker">Плохой работник</string>
+    <string name="skip">SKIP</string>
+    <string name="next">NEXT</string>
+    <string name="gotIt">GOT IT</string>
 
 
 </resources>

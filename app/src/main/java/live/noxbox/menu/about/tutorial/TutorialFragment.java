@@ -28,7 +28,7 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         float displayHeight = displayMetrics.heightPixels / displayMetrics.density;
 
         ImageView mainImage = view.findViewById(R.id.image);
-        float heightDp = (float) (displayWidth * 1.43);//todo (vl) 143% value need to use for define a height of the image (we are using 230% at the moment)
+        float heightDp = (float) (displayWidth * 1.42);//todo (vl) 143% value need to use for define a height of the image (we are using 230% at the moment)
         LinearLayout.LayoutParams mainImageParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (heightDp));
         Drawable mainImageDrawable = getResources().getDrawable(mainImageResource);
         Bitmap mainImageBitmap = drawableToBitmap(mainImageDrawable);
@@ -50,7 +50,6 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         RelativeLayout.LayoutParams underRootLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         underRootLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         underRootLayout.setLayoutParams(underRootLayoutParams);
-
 
         return view;
     }

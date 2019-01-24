@@ -1,10 +1,13 @@
 package live.noxbox.menu.about.tutorial;
 
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,14 +20,55 @@ import com.bumptech.glide.request.transition.Transition;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
+import live.noxbox.debug.GMailSender;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.PanoramaImageView;
+import live.noxbox.tools.Router;
+
+import static live.noxbox.debug.Screenshot.saveToInternalStorage;
+import static live.noxbox.debug.Screenshot.takeScreenshot;
 
 public class TutorialActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
+    private ViewPager viewPager;
     private ImageView intro;
     private Button skip;
     private Button next;
+
+    private View.OnClickListener skipOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (viewPager != null) {
+                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+            }
+        }
+    };
+
+    private View.OnClickListener gotItOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (viewPager != null) {
+                saveToInternalStorage(takeScreenshot(TutorialActivity.this), TutorialActivity.this);
+                String mail = "TutorialActivity Screenshot";
+                AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        try {
+                            GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
+                            sender.sendMail("deviceInfo",
+                                    mail,
+                                    "testnoxbox2018@gmail.com",
+                                    "support@noxbox.live");
+                        } catch (Exception e) {
+                            Log.e("GMailSender.class", e.getMessage(), e);
+                        }
+                        return null;
+                    }
+                }.execute();
+                Router.finishActivity(TutorialActivity.this);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,9 +77,11 @@ public class TutorialActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_tutorial);
 
+        viewPager = findViewById(R.id.viewpager);
         intro = findViewById(R.id.intro);
         intro.setImageResource(R.drawable.tutorial_intro_one);
         skip = findViewById(R.id.skip);
+        skip.setOnClickListener(gotItOnClickListener);
         next = findViewById(R.id.next);
 
         final PanoramaImageView panoramaImageView = findViewById(R.id.tutorialBackground);
@@ -43,11 +89,11 @@ public class TutorialActivity extends BaseActivity {
         // Set the maximum radian the device should rotate to show image's bounds.
         // It should be set between 0 and π/2.
         // The default value is π/9.
-        gyroscopeObserver.setMaxRotateRadian(Math.PI / 4);
+        gyroscopeObserver.setMaxRotateRadian(Math.PI / 2);
         gyroscopeObserver.addPanoramaImageView(panoramaImageView);
 
-        ((ViewPager) findViewById(R.id.viewpager)).setAdapter(new TutorialAdapter(getSupportFragmentManager()));
-        ((ViewPager) findViewById(R.id.viewpager)).addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.setAdapter(new TutorialAdapter(getSupportFragmentManager()));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
 
@@ -58,19 +104,23 @@ public class TutorialActivity extends BaseActivity {
                 switch (position) {
                     case 0:
                         intro.setImageResource(R.drawable.tutorial_intro_one);
-                        next.setText("NEXT");
+                        next.setText(R.string.next);
+                        next.setOnClickListener(skipOnClickListener);
                         break;
                     case 1:
                         intro.setImageResource(R.drawable.tutorial_intro_two);
-                        next.setText("NEXT");
+                        next.setText(R.string.next);
+                        next.setOnClickListener(skipOnClickListener);
                         break;
                     case 2:
                         intro.setImageResource(R.drawable.tutorial_intro_three);
-                        next.setText("NEXT");
+                        next.setText(R.string.next);
+                        next.setOnClickListener(skipOnClickListener);
                         break;
                     case 3:
                         intro.setImageResource(R.drawable.tutorial_intro_four);
-                        next.setText("GOT IT");
+                        next.setText(R.string.gotIt);
+                        next.setOnClickListener(gotItOnClickListener);
                         break;
                 }
             }
@@ -96,6 +146,7 @@ public class TutorialActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         gyroscopeObserver.register(this);
 
     }

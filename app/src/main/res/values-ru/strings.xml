@@ -286,5 +286,8 @@
     <string name="haircut">Стрижка</string>
     <string name="filterLowRatingPerformers">Отображать Работников с отрицательными отзывами</string>
     <string name="badWorker">Плохой работник</string>
+    <string name="skip">ПРОПУСТИТЬ</string>
+    <string name="next">СЛЕДУЮЩАЯ</string>
+    <string name="gotIt">ЗАВЕРШИТЬ</string>
 
 </resources>
