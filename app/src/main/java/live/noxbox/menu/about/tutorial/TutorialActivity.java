@@ -35,7 +35,7 @@ public class TutorialActivity extends BaseActivity {
     private Button skip;
     private Button next;
 
-    private View.OnClickListener skipOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener nextOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (viewPager != null) {
@@ -83,6 +83,7 @@ public class TutorialActivity extends BaseActivity {
         skip = findViewById(R.id.skip);
         skip.setOnClickListener(gotItOnClickListener);
         next = findViewById(R.id.next);
+        next.setOnClickListener(nextOnClickListener);
 
         final PanoramaImageView panoramaImageView = findViewById(R.id.tutorialBackground);
         gyroscopeObserver = new GyroscopeObserver();
@@ -105,17 +106,17 @@ public class TutorialActivity extends BaseActivity {
                     case 0:
                         intro.setImageResource(R.drawable.tutorial_intro_one);
                         next.setText(R.string.next);
-                        next.setOnClickListener(skipOnClickListener);
+                        next.setOnClickListener(nextOnClickListener);
                         break;
                     case 1:
                         intro.setImageResource(R.drawable.tutorial_intro_two);
                         next.setText(R.string.next);
-                        next.setOnClickListener(skipOnClickListener);
+                        next.setOnClickListener(nextOnClickListener);
                         break;
                     case 2:
                         intro.setImageResource(R.drawable.tutorial_intro_three);
                         next.setText(R.string.next);
-                        next.setOnClickListener(skipOnClickListener);
+                        next.setOnClickListener(nextOnClickListener);
                         break;
                     case 3:
                         intro.setImageResource(R.drawable.tutorial_intro_four);
