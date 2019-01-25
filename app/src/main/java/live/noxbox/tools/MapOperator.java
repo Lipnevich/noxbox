@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -35,36 +34,28 @@ import static live.noxbox.tools.Router.startActivity;
 public class MapOperator {
 
     public static void buildMapPosition(final GoogleMap googleMap, final Context context) {
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(final Profile profile) {
-                switch (NoxboxState.getState(profile.getCurrent(), profile)) {
-                    case requesting:
-                    case accepting:
-                    case moving:
-                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                        builder.include(profile.getCurrent().getProfileWhoComes().getPosition().toLatLng());
-                        builder.include(profile.getCurrent().getPosition().toLatLng());
-                        LatLngBounds latLngBounds = builder.build();
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                                latLngBounds,
-                                context.getResources().getDisplayMetrics().widthPixels,
-                                context.getResources().getDisplayMetrics().heightPixels,
-                                dpToPx(68)));
-//                        googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(
-//                                latLngBounds,
-//                                context.getResources().getDisplayMetrics().widthPixels,
-//                                context.getResources().getDisplayMetrics().heightPixels,
-//                                dpToPx(68)));
-                        break;
+        AppCache.readProfile(profile -> {
+            switch (NoxboxState.getState(profile.getCurrent(), profile)) {
+                case requesting:
+                case accepting:
+                case moving:
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    builder.include(profile.getCurrent().getProfileWhoComes().getPosition().toLatLng());
+                    builder.include(profile.getCurrent().getPosition().toLatLng());
+                    LatLngBounds latLngBounds = builder.build();
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                            latLngBounds,
+                            context.getResources().getDisplayMetrics().widthPixels,
+                            context.getResources().getDisplayMetrics().heightPixels,
+                            dpToPx(68)));
+                    break;
 
-                    case created:
-                    case performing:
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
-                        break;
-                    default:
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
-                }
+                case created:
+                case performing:
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
+                    break;
+                default:
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
             }
         });
     }
@@ -73,56 +64,37 @@ public class MapOperator {
     public static void buildMapMarkerListener(GoogleMap googleMap, final Profile profile, final Activity activity) {
         switch (NoxboxState.getState(profile.getCurrent(), profile)) {
             case created:
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        startActivity(activity, ContractActivity.class);
-                        return true;
-                    }
+                googleMap.setOnMarkerClickListener(marker -> {
+                    startActivity(activity, ContractActivity.class);
+                    return true;
                 });
                 break;
 
             case requesting:
             case accepting:
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        profile.setViewed((Noxbox) marker.getTag());
-                        startActivity(activity, DetailedActivity.class);
-                        return true;
-                    }
+                googleMap.setOnMarkerClickListener(marker -> {
+                    profile.setViewed((Noxbox) marker.getTag());
+                    startActivity(activity, DetailedActivity.class);
+                    return true;
                 });
                 break;
 
             case moving:
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        profile.setViewed((Noxbox) marker.getTag());
-                        startActivity(activity, DetailedActivity.class);
-                        return true;
-                    }
+                googleMap.setOnMarkerClickListener(marker -> {
+                    profile.setViewed((Noxbox) marker.getTag());
+                    startActivity(activity, DetailedActivity.class);
+                    return true;
                 });
                 break;
 
             default:
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        return true;
-                    }
-                });
+                googleMap.setOnMarkerClickListener(marker -> true);
         }
 
     }
 
     public static void clearMapMarkerListener(GoogleMap googleMap) {
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                return true;
-            }
-        });
+        googleMap.setOnMarkerClickListener(marker -> true);
     }
 
     public static void moveCopyrightRight(GoogleMap googleMap) {

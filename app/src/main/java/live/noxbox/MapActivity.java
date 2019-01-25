@@ -13,29 +13,28 @@
  */
 package live.noxbox;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -51,7 +50,6 @@ import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
-import live.noxbox.model.TravelMode;
 import live.noxbox.services.LocationReceiver;
 import live.noxbox.states.Accepting;
 import live.noxbox.states.AvailableNoxboxes;
@@ -62,11 +60,11 @@ import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.ExchangeRate;
+import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
-import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
@@ -80,6 +78,11 @@ public class MapActivity extends DebugActivity implements
 
     protected GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Location lastKnownLocation;
+
+    public static boolean locationPermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,8 @@ public class MapActivity extends DebugActivity implements
         Crashlytics.setUserIdentifier(user.getUid());
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapId);
         mapFragment.getMapAsync(this);
         googleApiClient = new GoogleApiClient.Builder(this).addApi(LocationServices.API)
@@ -109,68 +114,6 @@ public class MapActivity extends DebugActivity implements
 
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
     }
-
-
-    @Override
-    public void onMapReady(GoogleMap readyMap) {
-        super.onMapReady(readyMap);
-        googleMap = readyMap;
-
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(final Profile profile) {
-                if (ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(MapActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-
-                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                if (locationManager == null)
-                    return;
-
-
-                Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null && location.getTime() > System.currentTimeMillis() - MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS * 1000) {
-                    profile.setPosition(Position.from(location));
-                    Firestore.writeProfile(profile);
-                } else {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000, 5, new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                            locationManager.removeUpdates(this);
-                            profile.setPosition(Position.from(location));
-                            Firestore.writeProfile(profile);
-                        }
-
-                        @Override
-                        public void onStatusChanged(String provider, int status, Bundle extras) {
-                        }
-
-                        @Override
-                        public void onProviderEnabled(String provider) {
-                        }
-
-                        @Override
-                        public void onProviderDisabled(String provider) {
-                        }
-                    });
-                }
-            }
-        });
-        visibleCurrentLocation();
-        setupMap(this, googleMap);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        moveCopyrightLeft(googleMap);
-        draw();
-
-    }
-
-    @Override
-    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    private LocationReceiver locationReceiver;
 
     @Override
     protected void onResume() {
@@ -203,33 +146,34 @@ public class MapActivity extends DebugActivity implements
     }
 
 
-    private void initCrashReporting() {
-        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
-                .disabled(BuildConfig.DEBUG)
-                .build();
-        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
+    @Override
+    public void onMapReady(GoogleMap readyMap) {
+        super.onMapReady(readyMap);
+        googleMap = readyMap;
+
+        AppCache.readProfile(profile -> {
+            updateLocationUI();
+            getDeviceLocation(profile);
+        });
+        //visibleCurrentLocation();
+        setupMap(this, googleMap);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        moveCopyrightLeft(googleMap);
+        draw();
+
     }
+
+    @Override
+    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private LocationReceiver locationReceiver;
 
 
     public static boolean isLocationPermissionGranted(final Activity activity) {
         return ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    protected void visibleCurrentLocation() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            googleMap.setMyLocationEnabled(true);
-        } else {
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-            findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ActivityCompat.requestPermissions(MapActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_PERMISSION_REQUEST_CODE);
-                }
-            });
-        }
     }
 
     protected boolean isGpsEnabled() {
@@ -240,29 +184,73 @@ public class MapActivity extends DebugActivity implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        locationPermissionGranted = false;
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    visibleCurrentLocation();
+                    locationPermissionGranted = true;
+                    AppCache.readProfile(this::getDeviceLocation);
                 }
             }
         }
+        updateLocationUI();
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    private void updateLocationUI() {
+        if (googleMap == null)
+            return;
+
+        try {
+            if (locationPermissionGranted) {
+                googleMap.setMyLocationEnabled(true);
+            } else {
+                googleMap.setMyLocationEnabled(false);
+                lastKnownLocation = null;
+            }
+        } catch (SecurityException e) {
+           Crashlytics.logException(e);
+        }
     }
 
+//    protected int getEstimationInMinutes(Position from, Position to, TravelMode travelMode) {
+//        float distanceInMeters = from.toLocation()
+//                .distanceTo(to.toLocation());
+//        int estimationInMinutes = (int) (distanceInMeters / travelMode.getSpeedInMetersPerMinute());
+//        return estimationInMinutes > 0 ? estimationInMinutes : 1;
+//    }
 
-    protected int getEstimationInMinutes(Position from, Position to, TravelMode travelMode) {
-        float distanceInMeters = from.toLocation()
-                .distanceTo(to.toLocation());
-        int estimationInMinutes = (int) (distanceInMeters / travelMode.getSpeedInMetersPerMinute());
-        return estimationInMinutes > 0 ? estimationInMinutes : 1;
+    public static void getLocationPermission(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        }
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
+    public void getDeviceLocation(Profile profile) {
+        try {
+            if (locationPermissionGranted) {
+                com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, (OnCompleteListener) task -> {
+                    if (task.isSuccessful()) {
+                        lastKnownLocation = (Location) task.getResult();
+
+                        profile.setPosition(Position.from(new LatLng(lastKnownLocation.getLatitude(),
+                                lastKnownLocation.getLongitude())));
+                        MapOperator.buildMapPosition(googleMap, getApplicationContext());
+                        Firestore.writeProfile(profile);
+                    } else {
+                        Crashlytics.logException(task.getException());
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Crashlytics.logException(e);
+        }
     }
 
     public static Position getCameraPosition(GoogleMap googleMap) {
@@ -365,5 +353,20 @@ public class MapActivity extends DebugActivity implements
     @Override
     public void onBackPressed() {
         // ignore it
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+    }
+
+    private void initCrashReporting() {
+        CrashlyticsCore crashlyticsCore = new CrashlyticsCore.Builder()
+                .disabled(BuildConfig.DEBUG)
+                .build();
+        Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
 }

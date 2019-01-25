@@ -34,7 +34,6 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.location.LocationManager.GPS_PROVIDER;
@@ -156,19 +155,11 @@ public class Moving implements State {
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.eye);
 
-        activity.findViewById(R.id.navigation).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavigatorManager.openNavigator(activity, profile);
-            }
-        });
+        activity.findViewById(R.id.navigation).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
 
-        activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DebugMessage.popup(activity, "way and points");
-                MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-            }
+        activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
+            DebugMessage.popup(activity, "way and points");
+            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
         });
 
 
@@ -179,12 +170,7 @@ public class Moving implements State {
             }
         });
 
-        activity.findViewById(R.id.chat).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(activity, ChatActivity.class);
-            }
-        });
+        activity.findViewById(R.id.chat).setOnClickListener(v -> startActivity(activity, ChatActivity.class));
 
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
         moveCopyrightRight(googleMap);
@@ -244,15 +230,12 @@ public class Moving implements State {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
-                AppCache.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        Log.d(State.TAG + " Moving", location.toString());
-                        DebugMessage.popup(activity, location.getLatitude() + " : " + location.getLongitude());
-                        updatePosition(profile, location);
-                        updateTimeView(profile);
-                        AppCache.updateNoxbox();
-                    }
+                AppCache.readProfile(profile -> {
+                    Log.d(State.TAG + " Moving", location.toString());
+                    DebugMessage.popup(activity, location.getLatitude() + " : " + location.getLongitude());
+                    updatePosition(profile, location);
+                    updateTimeView(profile);
+                    AppCache.updateNoxbox();
                 });
 
             }

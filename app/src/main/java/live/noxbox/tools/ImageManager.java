@@ -3,7 +3,6 @@ package live.noxbox.tools;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -72,12 +71,7 @@ public class ImageManager {
 
     }
 
-    private static final OnFailureListener onFailureListener = new OnFailureListener() {
-        @Override
-        public void onFailure(@NonNull Exception e) {
-            Crashlytics.logException(e);
-        }
-    };
+    private static final OnFailureListener onFailureListener = e -> Crashlytics.logException(e);
 
     private static void uploadImage(final Activity activity, final Bitmap bitmap, final String path, final OnSuccessListener<Uri> onSuccessListener) {
         final StorageReference storageRef =

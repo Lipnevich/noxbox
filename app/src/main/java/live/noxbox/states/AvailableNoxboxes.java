@@ -1,28 +1,22 @@
 package live.noxbox.states;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
@@ -40,8 +34,8 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.MapActivity.getCameraPosition;
+import static live.noxbox.MapActivity.getLocationPermission;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
@@ -55,7 +49,7 @@ public class AvailableNoxboxes implements State {
 
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-    private Activity activity;
+    private MapActivity activity;
     public static volatile int clusterRenderingFrequency = 400;
 
     private ClusterManager clusterManager;
@@ -65,7 +59,7 @@ public class AvailableNoxboxes implements State {
 
     private static boolean serviceIsBound = false;
 
-    public AvailableNoxboxes(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final Activity activity) {
+    public AvailableNoxboxes(final GoogleMap googleMap, final GoogleApiClient googleApiClient, final MapActivity activity) {
         this.googleMap = googleMap;
         this.googleApiClient = googleApiClient;
         this.activity = activity;
@@ -87,12 +81,7 @@ public class AvailableNoxboxes implements State {
             clusterManager = new ClusterManager(activity, googleMap);
         }
         googleMap.setOnMarkerClickListener(clusterManager.getRenderer());
-        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes);
-            }
-        });
+        googleMap.setOnCameraIdleListener(() -> startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes));
         MapOperator.moveCopyrightRight(googleMap);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
@@ -100,87 +89,65 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
 
-        activity.findViewById(R.id.pointerImage).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
+        activity.findViewById(R.id.pointerImage).setOnLongClickListener(v -> {
 
-                saveToInternalStorage(takeScreenshot(activity), activity);
-                String deviceModel = android.os.Build.MODEL;
-                String deviceBrand = Build.BRAND;
-                String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
+            saveToInternalStorage(takeScreenshot(activity), activity);
+            String deviceModel = Build.MODEL;
+            String deviceBrand = Build.BRAND;
+            String hasGpsDevice = String.valueOf(hasGPSDevice(activity));
 
-                String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "hasGpsDevice: " + hasGpsDevice + " | " + " userId: " + profile.getId();
+            String mail = "Model: " + deviceModel + " | " + "Brand: " + deviceBrand + " | " + "hasGpsDevice: " + hasGpsDevice + " | " + " userId: " + profile.getId();
 
-                AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        try {
-                            GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
-                            sender.sendMail("deviceInfo",
-                                    mail,
-                                    "testnoxbox2018@gmail.com",
-                                    "support@noxbox.live");
-                        } catch (Exception e) {
-                            Log.e("GMailSender.class", e.getMessage(), e);
-                        }
-                        return null;
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    try {
+                        GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
+                        sender.sendMail("deviceInfo",
+                                mail,
+                                "testnoxbox2018@gmail.com",
+                                "support@noxbox.live");
+                    } catch (Exception e) {
+                        Log.e("GMailSender.class", e.getMessage(), e);
                     }
-                }.execute();
-
-
-                Toast.makeText(activity, "Информация об ошибке отправлена", Toast.LENGTH_LONG).show();
-                return true;
-            }
-        });
-
-        activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (MapActivity.isLocationPermissionGranted(activity)) {
-                    MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-                } else {
-                    ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_PERMISSION_REQUEST_CODE);
+                    return null;
                 }
-            }
+            }.execute();
+
+
+            Toast.makeText(activity, "Информация об ошибке отправлена", Toast.LENGTH_LONG).show();
+            return true;
         });
 
-        activity.findViewById(R.id.filter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO (vl) при повторном выборе услуги в фильтрах не происходит перерисовка услуг соответствующих выбранной
-                DialogFragment dialog = new NoxboxTypeListFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("key", MAP_CODE);
-                dialog.setArguments(bundle);
-                dialog.show(((FragmentActivity) activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
-            }
+        activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
+            getLocationPermission(activity);
+            activity.getDeviceLocation(profile);
         });
 
-        activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                profile.setNoxboxId(null);
-                profile.getCurrent().clean();
-                profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
-                profile.getCurrent().setOwner(profile.publicInfo());
-                if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    profile.getCurrent().getOwner().setPosition(getCameraPosition(googleMap));
-                }
+        activity.findViewById(R.id.filter).setOnClickListener(v -> {
+            //TODO (vl) при повторном выборе услуги в фильтрах не происходит перерисовка услуг соответствующих выбранной
+            DialogFragment dialog = new NoxboxTypeListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("key", MAP_CODE);
+            dialog.setArguments(bundle);
+            dialog.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+        });
 
-                startActivity(activity, ContractActivity.class);
+        activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {
+            profile.setNoxboxId(null);
+            profile.getCurrent().clean();
+            profile.getCurrent().setPosition(Position.from(googleMap.getCameraPosition().target));
+            profile.getCurrent().setOwner(profile.publicInfo());
 
-            }
+            startActivity(activity, ContractActivity.class);
+
         });
 
         if (!serviceIsBound) {
             serviceHandler = new Handler();
-            serviceRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    final Intent intent = new Intent(activity, AvailableNoxboxesService.class);
-                    activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-                }
+            serviceRunnable = () -> {
+                final Intent intent = new Intent(activity, AvailableNoxboxesService.class);
+                activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             };
             serviceHandler.post(serviceRunnable);
         }
@@ -205,17 +172,9 @@ public class AvailableNoxboxes implements State {
 
         //map clear
         googleMap.clear();
-        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-            }
+        googleMap.setOnCameraIdleListener(() -> {
         });
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                return true;
-            }
-        });
+        googleMap.setOnMarkerClickListener(marker -> true);
         activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.filter).setVisibility(View.GONE);
@@ -235,18 +194,10 @@ public class AvailableNoxboxes implements State {
 
             Log.d("AvailableNoxboxes", "onServiceConnected()");
 
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(final Profile profile) {
-                    Task task = new Task() {
-                        @Override
-                        public void execute(Object object) {
-                            clusterManager.setItems(availableNoxboxes, profile);
-                        }
-                    };
+            AppCache.readProfile(profile -> {
+                Task task = object -> clusterManager.setItems(availableNoxboxes, profile);
 
-                    SeparateStreamForStopwatch.startHandler(task, clusterRenderingFrequency);
-                }
+                SeparateStreamForStopwatch.startHandler(task, clusterRenderingFrequency);
             });
         }
 
