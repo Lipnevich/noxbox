@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Acceptance;
 import live.noxbox.model.NotificationType;
@@ -75,7 +74,7 @@ public class FacePartsDetection {
                             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                         }
 
-                        AppCache.fireProfile();
+                        //AppCache.fireProfile();
                         ProgressDialogManager.hideProgress();
                     }
                 })
@@ -89,7 +88,7 @@ public class FacePartsDetection {
                         data.put("type", NotificationType.photoInvalid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
 
-                        AppCache.fireProfile();
+                        //AppCache.fireProfile();
                         ProgressDialogManager.hideProgress();
                     }
                 });
