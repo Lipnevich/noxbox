@@ -20,13 +20,13 @@ import com.bumptech.glide.request.transition.Transition;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.debug.GMailSender;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Router;
 
+import static live.noxbox.Constants.TUTORIAL_KEY;
 import static live.noxbox.debug.Screenshot.saveToInternalStorage;
 import static live.noxbox.debug.Screenshot.takeScreenshot;
 
@@ -70,7 +70,7 @@ public class TutorialActivity extends BaseActivity {
                     }
                 }.execute();
 
-                if (tutorialKey != null && tutorialKey.equals(AuthActivity.TUTORIAL_KEY)) {
+                if (tutorialKey != null && tutorialKey.equals(TUTORIAL_KEY)) {
                     Router.startActivity(TutorialActivity.this, MapActivity.class);
                     finish();
                     return;
@@ -84,7 +84,7 @@ public class TutorialActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tutorialKey = getIntent().getStringExtra(AuthActivity.TUTORIAL_KEY);
+        tutorialKey = getIntent().getStringExtra(TUTORIAL_KEY);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);

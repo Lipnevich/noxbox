@@ -24,12 +24,12 @@ import live.noxbox.menu.about.tutorial.TutorialActivity;
 import live.noxbox.services.NetworkReceiver;
 
 import static java.util.Collections.singletonList;
+import static live.noxbox.Constants.TUTORIAL_KEY;
 
 public class AuthActivity extends BaseActivity {
 
     private static final int REQUEST_CODE = 11011;
     private SharedPreferences tutorialPreference;
-    public static final String TUTORIAL_KEY = "FIRSTRUN";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
