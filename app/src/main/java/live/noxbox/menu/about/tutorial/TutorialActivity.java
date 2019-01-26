@@ -18,7 +18,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.debug.GMailSender;
 import live.noxbox.tools.GyroscopeObserver;
@@ -34,6 +36,8 @@ public class TutorialActivity extends BaseActivity {
     private ImageView intro;
     private Button skip;
     private Button next;
+
+    private String tutorialKey;
 
     private View.OnClickListener nextOnClickListener = new View.OnClickListener() {
         @Override
@@ -65,6 +69,13 @@ public class TutorialActivity extends BaseActivity {
                         return null;
                     }
                 }.execute();
+
+                if (tutorialKey != null && tutorialKey.equals(AuthActivity.TUTORIAL_KEY)) {
+                    Router.startActivity(TutorialActivity.this, MapActivity.class);
+                    finish();
+                    return;
+                }
+
                 Router.finishActivity(TutorialActivity.this);
             }
         }
@@ -73,8 +84,11 @@ public class TutorialActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tutorialKey = getIntent().getStringExtra(AuthActivity.TUTORIAL_KEY);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_tutorial);
 
         viewPager = findViewById(R.id.viewpager);
