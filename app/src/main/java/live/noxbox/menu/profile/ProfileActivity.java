@@ -1,13 +1,19 @@
 package live.noxbox.menu.profile;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -40,7 +46,10 @@ import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.ProgressDialogManager;
 import live.noxbox.tools.Router;
 
+import static live.noxbox.Constants.CAMERA_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Constants.REQUEST_IMAGE_CAPTURE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
+import static live.noxbox.tools.ImageManager.createCircleImageFromBitmap;
 import static live.noxbox.tools.ImageManager.createCircleProfilePhotoFromUrl;
 import static live.noxbox.tools.ImageManager.getBitmap;
 
@@ -88,13 +97,27 @@ public class ProfileActivity extends BaseActivity {
             startActivityForResult(Intent.createChooser(intent, getString(R.string.selectPhoto)), SELECT_IMAGE);
         };
 
+        View.OnClickListener cameraListener = view -> {
+            if (ContextCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ProfileActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+            } else {
+                openCamera();
+            }
+        };
+
         createCircleProfilePhotoFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profilePhoto));
 
         findViewById(R.id.editPhoto).setOnClickListener(listener);
+        findViewById(R.id.camera).setOnClickListener(cameraListener);
         ImageView profilePhoto = findViewById(R.id.profilePhoto);
         profilePhoto.setOnClickListener(listener);
 
         checkPhotoAcceptance(profile);
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+        Router.startActivityForResult(this, intent, REQUEST_IMAGE_CAPTURE);
     }
 
     private void drawEditName(final Profile profile) {
@@ -254,11 +277,24 @@ public class ProfileActivity extends BaseActivity {
         ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openCamera();
+                }
+            }
+        }
+    }
+
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         AppCache.readProfile(profile -> {
-            if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK
+            if (requestCode == SELECT_IMAGE
+                    && resultCode == Activity.RESULT_OK
                     && data != null && data.getData() != null) {
                 ProgressDialogManager.showProgress(ProfileActivity.this, "Фотография проходит проверку");
 
@@ -277,6 +313,24 @@ public class ProfileActivity extends BaseActivity {
 
             } else if (requestCode == TravelModeListActivity.CODE) {
                 draw(profile);
+            } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                ProgressDialogManager.showProgress(ProfileActivity.this, "Фотография проходит проверку");
+
+                Map<String, String> notificationData = new HashMap<>();
+                notificationData.put("type", NotificationType.photoValidationProgress.name());
+                NotificationFactory.buildNotification(ProfileActivity.this.getApplicationContext(), null, notificationData).show();
+
+                Bundle photoData = data.getExtras();
+                Bitmap photoBitmap = (Bitmap) photoData.get("data");
+
+                getBitmap(ProfileActivity.this, photoBitmap, bitmap ->
+                        FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
+                            ImageManager.uploadPhoto(ProfileActivity.this, profile, checking);
+                            checkPhotoAcceptance(profile);
+                        }));
+
+                createCircleImageFromBitmap(ProfileActivity.this, photoBitmap, findViewById(R.id.profilePhoto));
+
             }
 
         });

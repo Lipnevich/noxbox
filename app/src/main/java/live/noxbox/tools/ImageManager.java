@@ -135,6 +135,14 @@ public class ImageManager {
             }
         });
     }
+    public static void getBitmap(Activity activity, Bitmap bitmap, final Task<Bitmap> task) {
+        Glide.with(activity).asBitmap().load(bitmap).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap bitmap, Transition<? super Bitmap> transition) {
+                task.execute(bitmap);
+            }
+        });
+    }
 
     private static StorageReference getStorageReference() {
         return FirebaseStorage.getInstance().getReference().child("images").child(FirebaseAuth.getInstance().getCurrentUser().getUid());

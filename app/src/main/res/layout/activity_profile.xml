@@ -92,6 +92,16 @@
                         android:src="@drawable/edit"
                         android:tint="@color/secondary" />
 
+                    <ImageView
+                        android:id="@+id/camera"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:layout_below="@+id/editPhoto"
+                        android:layout_alignParentEnd="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="16dp"
+                        android:src="@drawable/photo_camera"
+                        android:tint="@color/secondary" />
 
                 </RelativeLayout>
 
