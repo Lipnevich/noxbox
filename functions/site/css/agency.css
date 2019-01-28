@@ -504,3 +504,23 @@ header.masthead .socials a {
     color:#3498DB;
     font-size:2em;
 }
+
+.tuto {
+    background : url(img/starsandkometa.svg);
+}
+
+#tutoback {
+    position:relative;
+}
+
+#backtuto {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+}
+
+#backtuto2 {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+}
