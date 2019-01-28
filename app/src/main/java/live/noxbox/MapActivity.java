@@ -171,8 +171,8 @@ public class MapActivity extends DebugActivity implements
     private LocationReceiver locationReceiver;
 
 
-    public static boolean isLocationPermissionGranted(final Activity activity) {
-        return ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION)
+    public static boolean isLocationPermissionGranted(final Context context) {
+        return ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
     }
 

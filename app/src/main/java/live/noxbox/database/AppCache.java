@@ -36,31 +36,24 @@ public class AppCache {
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
 
-    private static final Task NONE = new Task() {
-        @Override
-        public void execute(Object noxbox) {
-        }
-    };
+    private static final Task NONE = noxbox -> { };
 
     public static void startListening() {
         if (profile == null
                 || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
-            Firestore.listenProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile newProfile) {
-                    // since current and viewed are virtual Noxboxes we should transfer them
-                    if (profile != null) {
-                        newProfile.setCurrent(profile.getCurrent());
-                        newProfile.setViewed(profile.getViewed());
-                    }
-                    profile = newProfile;
+            Firestore.listenProfile(newProfile -> {
+                // since current and viewed are virtual Noxboxes we should transfer them
+                if (profile != null) {
+                    newProfile.setCurrent(profile.getCurrent());
+                    newProfile.setViewed(profile.getViewed());
+                }
+                profile = newProfile;
 
-                    if (profile != null && profile.getNoxboxId() != null) {
-                        startListenNoxbox(profile.getNoxboxId());
-                    } else {
-                        profile.setCurrent(new Noxbox());
-                        executeUITasks();
-                    }
+                if (profile != null && profile.getNoxboxId() != null) {
+                    startListenNoxbox(profile.getNoxboxId());
+                } else {
+                    profile.setCurrent(new Noxbox());
+                    executeUITasks();
                 }
             });
         }

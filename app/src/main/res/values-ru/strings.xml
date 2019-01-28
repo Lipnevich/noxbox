@@ -135,7 +135,7 @@
     <string name="endTime">Конец рабочего времени:</string>
     <string name="selectService">Выбрать услугу</string>
     <string name="priceService">Стоимость услуги:</string>
-    <string name="priceOneHourOfService">Стоимость 1 часa услуги</string>
+    <string name="priceOneHourOfService">Стоимость 1(часa) услуги</string>
 
     <string name="trackLocation">Показывать местоположение</string>
 

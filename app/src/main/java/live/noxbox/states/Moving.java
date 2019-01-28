@@ -1,10 +1,18 @@
 package live.noxbox.states;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +43,8 @@ import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
 
-import static android.content.Context.LOCATION_SERVICE;
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;
+import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE;
 import static android.location.LocationManager.GPS_PROVIDER;
 import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
 import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
@@ -57,9 +66,9 @@ public class Moving implements State {
     private static LocationManager locationManager;
     private static LocationListener locationListener;
 
-    private LinearLayout movingView;
-    private View childMovingView;
-    private TextView timeView;
+    private static LinearLayout movingView;
+    private static View childMovingView;
+    private static TextView timeView;
 
     private Marker memberWhoMoving;
 
@@ -109,7 +118,7 @@ public class Moving implements State {
         childMovingView = activity.getLayoutInflater().inflate(R.layout.state_moving, null);
         movingView.addView(childMovingView);
         timeView = childMovingView.findViewById(R.id.timeView);
-        updateTimeView(profile);
+        updateTimeView(profile, activity);
 
         if (profile.getCurrent().getOwner().equals(profile)) {
             drawUnreadMessagesIndicator(profile.getCurrent().getChat().getPartyMessages(), profile.getCurrent().getChat().getOwnerReadTime());
@@ -118,7 +127,9 @@ public class Moving implements State {
         }
 
         if (defineProfileLocationListener(profile)) {
-            registerLocationListener();
+            //registerLocationListener();
+            Intent intent = new Intent(activity, LocationListenerService.class);
+            activity.startService(intent);
         } else {
             HashMap<String, String> data = new HashMap<>();
             data.put("type", NotificationType.moving.name());
@@ -223,54 +234,147 @@ public class Moving implements State {
         return false;
     }
 
-    private void registerLocationListener() {
-        if (locationManager != null && locationListener != null) return;
+//    private void registerLocationListener() {
+//        if (locationManager != null && locationListener != null) return;
+//
+//        locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
+//        locationListener = new LocationListener() {
+//            @Override
+//            public void onLocationChanged(final Location location) {
+//                AppCache.readProfile(profile -> {
+//                    Log.d(State.TAG + " Moving", location.toString());
+//                    DebugMessage.popup(activity, location.getLatitude() + " : " + location.getLongitude());
+//                    updatePosition(profile, location);
+//                    updateTimeView(profile);
+//                    AppCache.updateNoxbox();
+//                });
+//
+//            }
+//
+//            @Override
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//            }
+//
+//            @Override
+//            public void onProviderEnabled(String provider) {
+//            }
+//
+//            @Override
+//            public void onProviderDisabled(String provider) {
+//            }
+//        };
+//
+//        if (!isLocationPermissionGranted(activity))
+//            return;
+//        //todo (vl) You need to go to check updates for user location in outside
+//        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+//    }
 
-        locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-                AppCache.readProfile(profile -> {
-                    Log.d(State.TAG + " Moving", location.toString());
-                    DebugMessage.popup(activity, location.getLatitude() + " : " + location.getLongitude());
-                    updatePosition(profile, location);
-                    updateTimeView(profile);
-                    AppCache.updateNoxbox();
-                });
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
-        if (!isLocationPermissionGranted(activity))
-            return;
-        //todo (vl) You need to go to check updates for user location in outside
-        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
-    }
-
-    private void updateTimeView(Profile profile) {
+    private static void updateTimeView(Profile profile, Context context) {
         if (movingView != null && childMovingView != null && timeView != null) {
             int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getOwner().getPosition(), profile.getCurrent().getParty().getPosition(), profile.getCurrent().getProfileWhoComes().getTravelMode()));
-            timeView.setText(activity.getResources().getString(R.string.movement, "" + progressInMinutes));
+            timeView.setText(context.getResources().getString(R.string.movement, "" + progressInMinutes));
         }
     }
 
-    private void updatePosition(Profile profile, Location location) {
+    private static void updatePosition(Profile profile, Location location) {
         if (profile.equals(profile.getCurrent().getOwner())) {
             profile.getCurrent().getOwner().setPosition(new Position(location.getLatitude(), location.getLongitude()));
         } else {
             profile.getCurrent().getParty().setPosition(new Position(location.getLatitude(), location.getLongitude()));
+        }
+    }
+
+    //SERVICE CLASS
+    public static class LocationListenerService extends Service {
+
+        private LocationManager locationManager;
+        private LocationListener locationListener;
+
+        public LocationListenerService() {
+            super();
+        }
+
+        @Override
+        public void onCreate() {
+            super.onCreate();
+        }
+
+        @Override
+        public int onStartCommand(Intent intent, int flags, int startId) {
+            Runnable runnable = () -> {
+
+
+                locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+                locationListener = new LocationListener() {
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void onLocationChanged(final Location location) {
+                        AppCache.readProfile(profile -> {
+                            if ((profile.getCurrent().getTimeOwnerVerified() != null && profile.getCurrent().getTimePartyVerified() != null)
+                                    || profile.getCurrent().getTimeCanceledByOwner() != null
+                                    || profile.getCurrent().getTimeCanceledByParty() != null) {
+                                locationManager.removeUpdates(locationListener);
+                                stopSelf();
+                            }
+                            if (inForeground()) {
+                                DebugMessage.popup(getApplicationContext(), location.getLatitude() + " : " + location.getLongitude());
+                                updatePosition(profile, location);
+                                updateTimeView(profile, getApplicationContext());
+                            } else {
+                                if (profile.equals(profile.getCurrent().getOwner())) {
+                                    profile.getCurrent().getOwner().setPosition(new Position(location.getLatitude(), location.getLongitude()));
+                                } else {
+                                    profile.getCurrent().getParty().setPosition(new Position(location.getLatitude(), location.getLongitude()));
+                                }
+                            }
+                            Log.d(State.TAG + " Moving", location.toString());
+
+
+                            AppCache.updateNoxbox();
+                        });
+
+                        if (!isLocationPermissionGranted(getApplicationContext()))
+                            return;
+
+                        //todo (vl) You should check location updates driving around city
+                        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+                    }
+                };
+            };
+            new Handler().post(runnable);
+            return super.onStartCommand(intent, flags, startId);
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+        }
+
+        @Nullable
+        @Override
+        public IBinder onBind(Intent intent) {
+            return null;
+        }
+
+        private boolean inForeground() {
+            ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
+            ActivityManager.getMyMemoryState(appProcessInfo);
+            return (appProcessInfo.importance == IMPORTANCE_FOREGROUND
+                    || appProcessInfo.importance == IMPORTANCE_VISIBLE);
         }
     }
 }

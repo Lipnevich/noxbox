@@ -135,7 +135,7 @@
     <string name="endTime">End of working hours:</string>
     <string name="selectService">Select service</string>
     <string name="priceService">Price of services:</string>
-    <string name="priceOneHourOfService">Price 1 hour services</string>
+    <string name="priceOneHourOfService">Price 1(hour) services</string>
 
     <string name="trackLocation">Track location</string>
 

@@ -386,19 +386,16 @@ public class DetailedActivity extends AppCompatActivity {
             ((Button) findViewById(R.id.joinButton)).setText(R.string.proceed);
         }
 
-        findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!MapActivity.isLocationPermissionGranted(DetailedActivity.this)) {
-                    ActivityCompat.requestPermissions(DetailedActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                            LOCATION_PERMISSION_REQUEST_CODE);
+        findViewById(R.id.joinButton).setOnClickListener(v -> {
+            if (!MapActivity.isLocationPermissionGranted(DetailedActivity.this)) {
+                ActivityCompat.requestPermissions(DetailedActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        LOCATION_PERMISSION_REQUEST_CODE);
 
-                } else {
-                    v.setVisibility(View.GONE);
-                    sendRequestToNoxbox(profile);
-                }
-
+            } else {
+                v.setVisibility(View.GONE);
+                sendRequestToNoxbox(profile);
             }
+
         });
 
 
