@@ -125,11 +125,10 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         return Bitmap.createBitmap(sourceBitmap, minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
     }
 
-    public static TutorialFragment newInstance(int text, int image, int page) {
+    public static TutorialFragment newInstance(int text, int page) {
         TutorialFragment tutorialFragment = new TutorialFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("text", text);
-        bundle.putInt("image", image);
         bundle.putInt("page", page);
 
         tutorialFragment.setArguments(bundle);
