@@ -23,14 +23,11 @@ public class MapSettingsActivity extends BaseActivity {
     public static final int CODE = 1005;
 
     private Switch novice;
-    private Switch badWorker;
     private Switch demand;
     private Switch supply;
     private SeekBar price;
     private TextView priceText;
     private LinearLayout typeLayout;
-    private String[] typesName;
-    private boolean[] typesChecked;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +38,6 @@ public class MapSettingsActivity extends BaseActivity {
     }
 
     private void initialize() {
-        badWorker = findViewById(R.id.badWorker);
         novice = findViewById(R.id.novice);
         demand = findViewById(R.id.demand);
         supply = findViewById(R.id.supply);
@@ -49,7 +45,6 @@ public class MapSettingsActivity extends BaseActivity {
         priceText = findViewById(R.id.priceText);
         typeLayout = findViewById(R.id.typeLayout);
 
-        ((TextView) findViewById(R.id.badWorkerTitle)).setText(getResources().getString(R.string.badWorker));
         ((TextView) findViewById(R.id.noviceTitle)).setText(getResources().getString(R.string.novice));
         ((TextView) findViewById(R.id.demandTitle)).setText(getResources().getString(R.string.demand).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.demand).substring(1)));
         ((TextView) findViewById(R.id.supplyTitle)).setText(getResources().getString(R.string.supply).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.supply).substring(1)));
@@ -70,7 +65,6 @@ public class MapSettingsActivity extends BaseActivity {
 
     private void draw(final Profile profile) {
         drawToolbar();
-        drawBadWorker(profile);
         drawNovice(profile);
         drawDemand(profile);
         drawSupply(profile);
@@ -82,12 +76,6 @@ public class MapSettingsActivity extends BaseActivity {
     private void drawToolbar() {
         ((TextView) findViewById(R.id.title)).setText(R.string.settings);
         findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(MapSettingsActivity.this));
-    }
-
-    private void drawBadWorker(Profile profile) {
-        badWorker.setChecked(profile.getFilters().getBadWorker());
-        badWorker.setOnCheckedChangeListener((buttonView, isChecked) -> profile.getFilters().setBadWorker(isChecked));
-
     }
 
     private void drawNovice(final Profile profile) {

@@ -45,94 +45,52 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <!--LOW RATING-->
+
+            <!--TYPES LIST-->
             <LinearLayout
+                android:id="@+id/typeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                android:paddingStart="8dp">
+                android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
                     android:layout_weight="6"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/badWorkerTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@string/noxboxType"
                         android:textColor="@color/google_text"
                         android:textSize="@dimen/text_size" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/filterLowRatingPerformers"
+                        android:text="@string/filterTypeServiceText"
                         android:textColor="@color/text_color_secondary"
                         android:textSize="@dimen/text_size_secondary" />
                 </LinearLayout>
+
 
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2">
 
-                    <Switch
-                        android:id="@+id/badWorker"
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:src="@drawable/settings"
+                        android:tint="@color/primary"
                         android:layout_gravity="center" />
                 </FrameLayout>
-            </LinearLayout>
 
-            <View xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider" />
-            <!--NOVICE-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:paddingStart="8dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="6"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/noviceTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/google_text"
-                        android:textSize="@dimen/text_size" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/filterNoviceText"
-                        android:textColor="@color/text_color_secondary"
-                        android:textSize="@dimen/text_size_secondary" />
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2">
-
-                    <Switch
-                        android:id="@+id/novice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-                </FrameLayout>
             </LinearLayout>
 
             <View xmlns:android="http://schemas.android.com/apk/res/android"
@@ -234,6 +192,55 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/divider" />
+
+            <!--NOVICE-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:paddingStart="8dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="6"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/noviceTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/google_text"
+                        android:textSize="@dimen/text_size" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/filterNoviceText"
+                        android:textColor="@color/text_color_secondary"
+                        android:textSize="@dimen/text_size_secondary" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2">
+
+                    <Switch
+                        android:id="@+id/novice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <View xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
             <!--TOTAL MONEY-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -309,58 +316,6 @@
                     </LinearLayout>
                 </LinearLayout>
 
-
-            </LinearLayout>
-
-            <View xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/divider" />
-
-            <!--TYPES LIST-->
-            <LinearLayout
-                android:id="@+id/typeLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/noxboxType"
-                        android:textColor="@color/google_text"
-                        android:textSize="@dimen/text_size" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/filterTypeServiceText"
-                        android:textColor="@color/text_color_secondary"
-                        android:textSize="@dimen/text_size_secondary" />
-                </LinearLayout>
-
-
-                <FrameLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/settings"
-                        android:tint="@color/primary"
-                        android:layout_gravity="center" />
-                </FrameLayout>
 
             </LinearLayout>
 

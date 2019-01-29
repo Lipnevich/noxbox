@@ -275,7 +275,6 @@ public class Moving implements State {
 //
 //        if (!isLocationPermissionGranted(activity))
 //            return;
-//        //todo (vl) You need to go to check updates for user location in outside
 //        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
 //    }
 
@@ -333,7 +332,6 @@ public class Moving implements State {
                         if (!isLocationPermissionGranted(getApplicationContext()))
                             return;
 
-                        //todo (vl) You should check location updates driving around city
                         locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
 
                     }
