@@ -58,12 +58,10 @@ section {
 .btn-primary {
   background-color: #FF9100;
   border-color: #FF9100; }
-  .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
+  .btn-primary:hover {
     background-color: #fec810 !important;
     border-color: #fec810 !important;
     color: white; }
-  .btn-primary:active, .btn-primary:focus {
-    box-shadow: 0 0 0 0.2rem rgba(254, 209, 55, 0.5) !important; }
 
 ::-moz-selection {
   background: #FF9100;
@@ -364,8 +362,7 @@ ul.social-buttons {
     border-radius: 100%;
     outline: none;
     background-color: #212529; }
-    ul.social-buttons li a:active, ul.social-buttons li a:focus, ul.social-buttons li a:hover {
-      background-color: #FF9100; }
+    ul.social-buttons li a:hover { background-color: #FF9100; }
 
 .mobile {
     width:303px;
@@ -505,22 +502,13 @@ header.masthead .socials a {
     font-size:2em;
 }
 
-.tuto {
-    background : url(img/starsandkometa.svg);
+.carousel-control-prev,
+.carousel-control-next {
+  opacity: 0.8;
 }
 
-#tutoback {
-    position:relative;
-}
-
-#backtuto {
-    position: absolute;
-    left: 50px;
-    top: 50px;
-}
-
-#backtuto2 {
-    position: absolute;
-    left: 50px;
-    top: 50px;
+.carousel-control-prev:focus, .carousel-control-prev:hover,
+.carousel-control-next:focus,
+.carousel-control-next:hover {
+  opacity: 1;
 }
