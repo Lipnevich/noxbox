@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.TextView;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.menu.about.tutorial.TutorialActivity;
-import live.noxbox.menu.profile.ProfilePerformerActivity;
 import live.noxbox.tools.Router;
 
 public class AboutApplicationActivity extends BaseActivity {
@@ -27,40 +25,18 @@ public class AboutApplicationActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        findViewById(R.id.tutorialViewPager).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.startActivity(AboutApplicationActivity.this, TutorialActivity.class);
-            }
-        });
-        findViewById(R.id.promoVideoView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.promoVideoLink))));
-            }
-        });
-        findViewById(R.id.rules).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.rulesLink))));
-            }
-        });
-        findViewById(R.id.privacyPolicy).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.privacyPolicyLink))));
-            }
-        });
+        findViewById(R.id.tutorialViewPager).setOnClickListener(v -> Router.startActivity(AboutApplicationActivity.this, TutorialActivity.class));
+
+        findViewById(R.id.promoVideoView).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.promoVideoLink)))));
+
+        findViewById(R.id.rules).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.rulesLink)))));
+
+        findViewById(R.id.privacyPolicy).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.privacyPolicyLink)))));
 
     }
 
     private void drawToolbar() {
         ((TextView) findViewById(R.id.title)).setText(R.string.aboutApp);
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.finishActivity(AboutApplicationActivity.this);
-            }
-        });
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(AboutApplicationActivity.this));
     }
 }

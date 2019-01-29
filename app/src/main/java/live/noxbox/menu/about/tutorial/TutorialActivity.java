@@ -84,6 +84,7 @@ public class TutorialActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        long timeStarted = System.currentTimeMillis();
         tutorialKey = getIntent().getStringExtra(TUTORIAL_KEY);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -155,6 +156,8 @@ public class TutorialActivity extends BaseActivity {
                         panoramaImageView.setImageDrawable(resource);
                     }
                 });
+
+        Log.e("TIMETIMETIMETIMETIME", System.currentTimeMillis() - timeStarted + "");
 
     }
 

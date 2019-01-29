@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +20,26 @@ import live.noxbox.R;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public class TutorialFragment extends android.support.v4.app.Fragment {
+    private Bitmap mainImageBitmapPageOne;
+    private Bitmap mainImageBitmapPageTwo;
+    private Bitmap mainImageBitmapPageThree;
+    private Bitmap mainImageBitmapPageFour;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mainImageBitmapPageOne = drawableToBitmap(getResources().getDrawable(R.drawable.tutorial_page_one));
+        mainImageBitmapPageTwo = drawableToBitmap(getResources().getDrawable(R.drawable.tutorial_page_two));
+        mainImageBitmapPageThree = drawableToBitmap(getResources().getDrawable(R.drawable.tutorial_page_three));
+        mainImageBitmapPageFour = drawableToBitmap(getResources().getDrawable(R.drawable.tutorial_page_four));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_tutorial, container, false);
         String text = getResources().getString(getArguments().getInt("text"));
-        int mainImageResource = getArguments().getInt("image");
+        int page = getArguments().getInt("page");
 
         float displayWidth;
         float displayHeight;
@@ -40,14 +55,25 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         ImageView mainImage = view.findViewById(R.id.image);
         float heightDp = (float) (displayWidth * 1.42);//todo (vl) 143% value need to use for define a height of the image (we are using 230% at the moment)
         LinearLayout.LayoutParams mainImageParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, (int) (heightDp));
-        Drawable mainImageDrawable = getResources().getDrawable(mainImageResource);
-        Bitmap mainImageBitmap = drawableToBitmap(mainImageDrawable);
-        mainImage.setImageBitmap(cropBitmapTransparency(mainImageBitmap));
+        switch (page) {
+            case 1:
+                mainImage.setImageBitmap(mainImageBitmapPageOne);
+                break;
+            case 2:
+                mainImage.setImageBitmap(mainImageBitmapPageTwo);
+                break;
+            case 3:
+                mainImage.setImageBitmap(mainImageBitmapPageThree);
+                break;
+            case 4:
+                mainImage.setImageBitmap(mainImageBitmapPageFour);
+                break;
+        }
         mainImage.setLayoutParams(mainImageParams);
 
         ImageView tapeImage = view.findViewById(R.id.tape);
         RelativeLayout.LayoutParams tapeParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (displayWidth * 0.25));
-        tapeParams.setMargins( dpToPx(24), 0,  dpToPx(24), 0);
+        tapeParams.setMargins(dpToPx(24), 0, dpToPx(24), 0);
         tapeImage.setLayoutParams(tapeParams);
 
         TextView informationText = view.findViewById(R.id.text);
@@ -61,7 +87,6 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         RelativeLayout.LayoutParams underRootLayoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         underRootLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         underRootLayout.setLayoutParams(underRootLayoutParams);
-
         return view;
     }
 
@@ -100,11 +125,12 @@ public class TutorialFragment extends android.support.v4.app.Fragment {
         return Bitmap.createBitmap(sourceBitmap, minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
     }
 
-    public static TutorialFragment newInstance(int text, int image) {
+    public static TutorialFragment newInstance(int text, int image, int page) {
         TutorialFragment tutorialFragment = new TutorialFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("text", text);
         bundle.putInt("image", image);
+        bundle.putInt("page", page);
 
         tutorialFragment.setArguments(bundle);
 
