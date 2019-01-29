@@ -10,7 +10,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -302,54 +301,53 @@ public class Moving implements State {
 
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
-            Runnable runnable = () -> {
 
 
-                locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-                locationListener = new LocationListener() {
-                    @SuppressLint("MissingPermission")
-                    @Override
-                    public void onLocationChanged(final Location location) {
-                        readProfile(profile -> {
-                            if ((profile.getCurrent().getTimeOwnerVerified() != null && profile.getCurrent().getTimePartyVerified() != null)
-                                    || profile.getCurrent().getTimeCanceledByOwner() != null
-                                    || profile.getCurrent().getTimeCanceledByParty() != null) {
-                                locationManager.removeUpdates(locationListener);
-                                stopSelf();
-                            }
-                            if (inForeground()) {
-                                DebugMessage.popup(getApplicationContext(), location.getLatitude() + " : " + location.getLongitude());
-                                memberWhoMovingPosition = Position.from(location);
-                                updateTimeView(profile, getApplicationContext());
-                            } else {
-                                memberWhoMovingPosition = Position.from(location);
-                            }
-                            Log.d(State.TAG + " Moving", location.toString());
-
-                            GeoRealtime.updatePosition(profile.getCurrent().getId(), memberWhoMovingPosition);
-                        });
-
-                        if (!isLocationPermissionGranted(getApplicationContext()))
+            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+            locationListener = new LocationListener() {
+                @SuppressLint("MissingPermission")
+                @Override
+                public void onLocationChanged(final Location location) {
+                    readProfile(profile -> {
+                        if ((profile.getCurrent().getTimeOwnerVerified() != null && profile.getCurrent().getTimePartyVerified() != null)
+                                || profile.getCurrent().getTimeCanceledByOwner() != null
+                                || profile.getCurrent().getTimeCanceledByParty() != null) {
+                            locationManager.removeUpdates(locationListener);
+                            stopSelf();
                             return;
+                        }
+                        if (inForeground()) {
+                            DebugMessage.popup(getApplicationContext(), location.getLatitude() + " : " + location.getLongitude());
+                            memberWhoMovingPosition = Position.from(location);
+                            updateTimeView(profile, getApplicationContext());
+                        } else {
+                            memberWhoMovingPosition = Position.from(location);
+                        }
+                        Log.d(State.TAG + " Moving", location.toString());
 
-                        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+                        GeoRealtime.updatePosition(profile.getCurrent().getId(), memberWhoMovingPosition);
+                    });
 
-                    }
+                    if (!isLocationPermissionGranted(getApplicationContext()))
+                        return;
 
-                    @Override
-                    public void onStatusChanged(String provider, int status, Bundle extras) {
-                    }
 
-                    @Override
-                    public void onProviderEnabled(String provider) {
-                    }
+                }
 
-                    @Override
-                    public void onProviderDisabled(String provider) {
-                    }
-                };
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                }
             };
-            new Handler().post(runnable);
+            locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+
             return super.onStartCommand(intent, flags, startId);
         }
 
