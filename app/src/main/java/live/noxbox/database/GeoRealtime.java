@@ -1,12 +1,17 @@
 package live.noxbox.database;
 
+import android.support.annotation.NonNull;
+
 import com.crashlytics.android.Crashlytics;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 
@@ -17,17 +22,26 @@ import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
+import live.noxbox.tools.Task;
 
 public class GeoRealtime {
 
     public final static String delimiter = ";";
 
+    private static DatabaseReference realtime = FirebaseDatabase.getInstance().getReference();
     private static GeoFire geo;
+    private static DatabaseReference positions;
 
     private static GeoFire geo() {
         if (geo == null)
-            geo = new GeoFire(FirebaseDatabase.getInstance().getReference().child("geo"));
+            geo = new GeoFire(realtime.child("geo"));
         return geo;
+    }
+
+    private static DatabaseReference position(String noxboxId) {
+        if (positions == null)
+            positions = realtime.child("positions").child(noxboxId);
+        return positions;
     }
 
     // supplier
@@ -151,4 +165,36 @@ public class GeoRealtime {
         }
     }
 
+    private static ValueEventListener positionListener;
+    public static void listenPosition(String noxboxId, Task<Position> task) {
+        stopListenPosition(noxboxId);
+        positionListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    Position position = dataSnapshot.getValue(Position.class);
+                    task.execute(position);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {}
+        };
+        position(noxboxId).addValueEventListener(positionListener);
+    }
+
+    public static void stopListenPosition(String noxboxId) {
+        if(positionListener != null) {
+            position(noxboxId).removeEventListener(positionListener);
+            positionListener = null;
+        }
+    }
+
+    public static void updatePosition(String noxboxId, Position position) {
+        position(noxboxId).setValue(position);
+    }
+
+    public static void removePosition(String noxboxId) {
+        position(noxboxId).removeValue();
+    }
 }

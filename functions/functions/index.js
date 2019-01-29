@@ -12,7 +12,6 @@ exports.welcome = functions.auth.user().onCreate(async user => {
 });
 
 exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUpdate(async(change, context) => {
-    // TODO (nli) if location was changed just exit
     const previousNoxbox = change.before.data();
     const noxbox = change.after.data();
     console.log('Version code ' + JSON.stringify(version));
@@ -115,8 +114,6 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         await wallet.send(request);
 
         noxbox.total = request.transferable;
-
-        // TODO (vl) remove realtimeDB/locations/{noxboxId}
 
         let push = {
                   data: {

@@ -29,7 +29,7 @@ import java.util.Map;
 import live.noxbox.R;
 import live.noxbox.activities.ChatActivity;
 import live.noxbox.activities.ConfirmationActivity;
-import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Message;
 import live.noxbox.model.NotificationType;
@@ -49,6 +49,8 @@ import static android.location.LocationManager.GPS_PROVIDER;
 import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
 import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.MapActivity.isLocationPermissionGranted;
+import static live.noxbox.database.AppCache.readProfile;
+import static live.noxbox.database.GeoRealtime.stopListenPosition;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
@@ -69,6 +71,7 @@ public class Moving implements State {
     private static LinearLayout movingView;
     private static View childMovingView;
     private static TextView timeView;
+    private static Position memberWhoMovingPosition;
 
     private Marker memberWhoMoving;
 
@@ -78,7 +81,7 @@ public class Moving implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-
+        readProfile(profile -> memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition());
     }
 
     private void drawUnreadMessagesIndicator(Map<String, Message> messages, Long readTime) {
@@ -131,7 +134,10 @@ public class Moving implements State {
             Intent intent = new Intent(activity, LocationListenerService.class);
             activity.startService(intent);
         } else {
-            // TODO (vl) listen realtimeDB/locations/{noxboxId}
+            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
+                memberWhoMovingPosition = position;
+                draw(profile);
+            });
             HashMap<String, String> data = new HashMap<>();
             data.put("type", NotificationType.moving.name());
             NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
@@ -141,9 +147,10 @@ public class Moving implements State {
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         if (memberWhoMoving == null) {
-            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes(), googleMap, activity.getResources());
+            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+                    memberWhoMovingPosition, googleMap, activity.getResources());
         } else {
-            memberWhoMoving.setPosition(profile.getCurrent().getProfileWhoComes().getPosition().toLatLng());
+            memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());
         }
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
@@ -190,7 +197,7 @@ public class Moving implements State {
 
     @Override
     public void clear() {
-        // TODO (vl) stop listen realtimedb/locations/{noxboxId}
+        readProfile(profile -> stopListenPosition(profile.getCurrent().getId()));
         movingView.removeAllViews();
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
@@ -274,16 +281,8 @@ public class Moving implements State {
 
     private static void updateTimeView(Profile profile, Context context) {
         if (movingView != null && childMovingView != null && timeView != null) {
-            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getOwner().getPosition(), profile.getCurrent().getParty().getPosition(), profile.getCurrent().getProfileWhoComes().getTravelMode()));
+            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getPosition(), memberWhoMovingPosition, profile.getCurrent().getProfileWhoComes().getTravelMode()));
             timeView.setText(context.getResources().getString(R.string.movement, "" + progressInMinutes));
-        }
-    }
-
-    private static void updatePosition(Profile profile, Location location) {
-        if (profile.equals(profile.getCurrent().getOwner())) {
-            profile.getCurrent().getOwner().setPosition(new Position(location.getLatitude(), location.getLongitude()));
-        } else {
-            profile.getCurrent().getParty().setPosition(new Position(location.getLatitude(), location.getLongitude()));
         }
     }
 
@@ -312,7 +311,7 @@ public class Moving implements State {
                     @SuppressLint("MissingPermission")
                     @Override
                     public void onLocationChanged(final Location location) {
-                        AppCache.readProfile(profile -> {
+                        readProfile(profile -> {
                             if ((profile.getCurrent().getTimeOwnerVerified() != null && profile.getCurrent().getTimePartyVerified() != null)
                                     || profile.getCurrent().getTimeCanceledByOwner() != null
                                     || profile.getCurrent().getTimeCanceledByParty() != null) {
@@ -321,20 +320,14 @@ public class Moving implements State {
                             }
                             if (inForeground()) {
                                 DebugMessage.popup(getApplicationContext(), location.getLatitude() + " : " + location.getLongitude());
-                                updatePosition(profile, location);
+                                memberWhoMovingPosition = Position.from(location);
                                 updateTimeView(profile, getApplicationContext());
                             } else {
-                                if (profile.equals(profile.getCurrent().getOwner())) {
-                                    profile.getCurrent().getOwner().setPosition(new Position(location.getLatitude(), location.getLongitude()));
-                                } else {
-                                    profile.getCurrent().getParty().setPosition(new Position(location.getLatitude(), location.getLongitude()));
-                                }
+                                memberWhoMovingPosition = Position.from(location);
                             }
                             Log.d(State.TAG + " Moving", location.toString());
 
-                            // TODO (vl) update realtimeDB/locations/{noxboxId}
-
-                            AppCache.updateNoxbox();
+                            GeoRealtime.updatePosition(profile.getCurrent().getId(), memberWhoMovingPosition);
                         });
 
                         if (!isLocationPermissionGranted(getApplicationContext()))

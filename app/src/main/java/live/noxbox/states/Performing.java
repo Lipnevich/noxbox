@@ -15,6 +15,8 @@ import java.util.HashMap;
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Constants;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
@@ -45,6 +47,7 @@ public class Performing implements State {
         this.activity = activity;
         this.googleMap = googleMap;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+        AppCache.readProfile(profile -> GeoRealtime.removePosition(profile.getCurrent().getId()));
     }
 
     @Override
