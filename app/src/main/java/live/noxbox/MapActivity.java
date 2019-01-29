@@ -208,7 +208,7 @@ public class MapActivity extends DebugActivity implements
                 lastKnownLocation = null;
             }
         } catch (SecurityException e) {
-           Crashlytics.logException(e);
+            Crashlytics.logException(e);
         }
     }
 
@@ -225,13 +225,16 @@ public class MapActivity extends DebugActivity implements
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
         } else {
+            locationPermissionGranted = false;
             ActivityCompat.requestPermissions(activity,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     LOCATION_PERMISSION_REQUEST_CODE);
+
         }
     }
 
     public void getDeviceLocation(Profile profile) {
+        getLocationPermission(this);
         try {
             if (locationPermissionGranted) {
                 com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
@@ -239,10 +242,13 @@ public class MapActivity extends DebugActivity implements
                     if (task.isSuccessful()) {
                         lastKnownLocation = (Location) task.getResult();
 
-                        profile.setPosition(Position.from(new LatLng(lastKnownLocation.getLatitude(),
-                                lastKnownLocation.getLongitude())));
-                        MapOperator.buildMapPosition(googleMap, getApplicationContext());
-                        Firestore.writeProfile(profile);
+                        if (lastKnownLocation != null) {
+                            Position position = Position.from(lastKnownLocation);
+                            profile.setPosition(Position.from(new LatLng(position.getLatitude(),
+                                    position.getLongitude())));
+                            MapOperator.buildMapPosition(googleMap, getApplicationContext());
+                            Firestore.writeProfile(profile);
+                        }
                     } else {
                         Crashlytics.logException(task.getException());
                     }

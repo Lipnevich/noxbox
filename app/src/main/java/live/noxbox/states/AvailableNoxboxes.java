@@ -35,7 +35,6 @@ import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.MapActivity.getCameraPosition;
-import static live.noxbox.MapActivity.getLocationPermission;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
@@ -120,7 +119,6 @@ public class AvailableNoxboxes implements State {
         });
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
-            getLocationPermission(activity);
             activity.getDeviceLocation(profile);
         });
 
