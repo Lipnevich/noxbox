@@ -11,6 +11,7 @@ import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.LogEvents;
 
 import static live.noxbox.tools.MapOperator.buildMapMarkerListener;
 import static live.noxbox.tools.MapOperator.buildMapPosition;
@@ -28,6 +29,7 @@ public class Created implements State {
     public Created(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+        LogEvents.generateLogEvent(activity, "noxbox_created");
     }
 
     @Override
@@ -37,12 +39,7 @@ public class Created implements State {
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.edit);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(activity, ContractActivity.class);
-            }
-        });
+        activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> startActivity(activity, ContractActivity.class));
 
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         moveCopyrightRight(googleMap);

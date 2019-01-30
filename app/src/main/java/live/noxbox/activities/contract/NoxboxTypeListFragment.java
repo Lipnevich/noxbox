@@ -35,7 +35,7 @@ public class NoxboxTypeListFragment extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.dialog_fragment_noxbox_type_list, container, false);
 
-        List<NoxboxType> noxboxTypes = new ArrayList<NoxboxType>(Arrays.asList(NoxboxType.values()));
+        List<NoxboxType> noxboxTypes = new ArrayList<>(Arrays.asList(NoxboxType.values()));
         RecyclerView noxboxTypeList = view.findViewById(R.id.listOfServices);
         noxboxTypeList.setHasFixedSize(true);
         noxboxTypeList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

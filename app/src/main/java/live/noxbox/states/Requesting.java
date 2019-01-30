@@ -21,6 +21,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.LogEvents;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
@@ -42,6 +43,8 @@ public class Requesting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+
+        LogEvents.generateLogEvent(activity, "noxbox_requesting");
     }
 
     @Override
@@ -61,12 +64,7 @@ public class Requesting implements State {
         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
 
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.locationButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-            }
-        });
+        activity.findViewById(R.id.locationButton).setOnClickListener(v -> MapOperator.buildMapPosition(googleMap, activity.getApplicationContext()));
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
 
@@ -90,13 +88,10 @@ public class Requesting implements State {
         requestingView.addView(child);
 
         ((TextView) requestingView.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
-        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
-                profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
-                updateNoxbox();
-            }
+        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(v -> {
+            Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
+            profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+            updateNoxbox();
         });
 
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {

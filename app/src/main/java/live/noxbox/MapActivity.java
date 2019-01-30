@@ -62,18 +62,17 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
+import static live.noxbox.tools.LogEvents.generateLogEvent;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
 
 public class MapActivity extends DebugActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
-
     protected static final String TAG = "MapActivity";
 
     protected GoogleMap googleMap;
@@ -113,6 +112,9 @@ public class MapActivity extends DebugActivity implements
         AppCache.readProfile(profile -> checkBalance(profile, MapActivity.this));
 
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
+
+
+
     }
 
     @Override
@@ -190,6 +192,8 @@ public class MapActivity extends DebugActivity implements
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
                     AppCache.readProfile(this::getDeviceLocation);
+
+                    generateLogEvent(this, "location_permission_granted");
                 }
             }
         }
@@ -269,27 +273,24 @@ public class MapActivity extends DebugActivity implements
     private State currentState;
 
     private void draw() {
-        AppCache.listenProfile(this.getClass().getName(), new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                if (googleMap == null) return;
-                State newState = getFragment(profile);
-                if (currentState == null) {
-                    currentState = newState;
-                    measuredDraw(newState, profile);
-                    newState.draw(profile);
-                    return;
-                }
-
-                if (!newState.getClass().getName().equals(currentState.getClass().getName())) {
-                    currentState.clear();
-                    currentState = newState;
-                    measuredDraw(newState, profile);
-                    return;
-                }
-
-                measuredDraw(currentState, profile);
+        AppCache.listenProfile(this.getClass().getName(), profile -> {
+            if (googleMap == null) return;
+            State newState = getFragment(profile);
+            if (currentState == null) {
+                currentState = newState;
+                measuredDraw(newState, profile);
+                newState.draw(profile);
+                return;
             }
+
+            if (!newState.getClass().getName().equals(currentState.getClass().getName())) {
+                currentState.clear();
+                currentState = newState;
+                measuredDraw(newState, profile);
+                return;
+            }
+
+            measuredDraw(currentState, profile);
         });
     }
 

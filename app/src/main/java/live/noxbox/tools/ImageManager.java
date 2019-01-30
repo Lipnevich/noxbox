@@ -46,27 +46,25 @@ public class ImageManager {
             profile.setPhoto(uri.toString());
             AppCache.fireProfile();
             ProgressDialogManager.hideProgress();
+            LogEvents.generateLogEvent(activity, "valid_photo_was_uploaded");
         });
     }
 
     public static void uploadImage(final Activity activity, final Uri url, final ImageType imageType, final NoxboxType type, final int index) {
-        getBitmap(activity, url, new Task<Bitmap>() {
-            @Override
-            public void execute(Bitmap bitmap) {
-                if (bitmap == null) return;
-                uploadImage(activity, bitmap, type.name() + "/" + imageType.name() + "/" + index, new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(final Uri uri) {
-                        AppCache.readProfile(new Task<Profile>() {
-                            @Override
-                            public void execute(Profile profile) {
-                                profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
-                                AppCache.fireProfile();
-                            }
-                        });
-                    }
-                });
-            }
+        getBitmap(activity, url, bitmap -> {
+            if (bitmap == null) return;
+            uploadImage(activity, bitmap, type.name() + "/" + imageType.name() + "/" + index, new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(final Uri uri) {
+                    AppCache.readProfile(new Task<Profile>() {
+                        @Override
+                        public void execute(Profile profile) {
+                            profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
+                            AppCache.fireProfile();
+                        }
+                    });
+                }
+            });
         });
 
     }

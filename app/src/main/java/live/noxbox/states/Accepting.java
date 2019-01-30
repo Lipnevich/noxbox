@@ -22,6 +22,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.LogEvents;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
@@ -44,6 +45,8 @@ public class Accepting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+
+        LogEvents.generateLogEvent(activity, "noxbox_acceptingm");
 
         AppCache.readProfile(profile -> {
             if(profile.getCurrent().getRole() == MarketRole.demand &&
@@ -99,6 +102,8 @@ public class Accepting implements State {
                 profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
                 profile.getCurrent().getOwner().setName(profile.getName());
                 profile.getCurrent().getOwner().setWallet(profile.getWallet());
+
+                LogEvents.generateLogEvent(activity, "noxbox_accepted");
                 updateNoxbox();
             }
         });

@@ -18,7 +18,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
-import live.noxbox.tools.Task;
+import live.noxbox.tools.LogEvents;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
@@ -40,12 +40,7 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
         this.rootFragment = rootFragment;
         this.key = key;
 
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile object) {
-                profile = object;
-            }
-        });
+        AppCache.readProfile(object -> profile = object);
     }
 
     @NonNull
@@ -66,15 +61,6 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
         viewHolder.noxboxTypeName.setText(noxboxTypes.get(position).getName());
 
-//        Glide.with(activity)
-//                .load(noxboxTypes.get(position).getImage())
-//                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
-//                .into(new SimpleTarget<Drawable>() {
-//                    @Override
-//                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
-//                        viewHolder.noxboxTypeImage.setImageDrawable(drawable);
-//                    }
-//                });
         viewHolder.noxboxTypeImage.setImageResource(noxboxTypes.get(position).getImage());
         viewHolder.itemLayout.setOnClickListener(view -> onClick(position));
     }
@@ -136,6 +122,7 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
     private void executeInTheProfile(int position) {
         profile.getPortfolio().put(noxboxTypes.get(position).name(), new Portfolio(System.currentTimeMillis()));
+        LogEvents.generateLogEvent(activity, activity.getResources().getString(noxboxTypes.get(position).getName()) + "_portfolio_was_created");
     }
 
     private void executeInTheContract(int position) {

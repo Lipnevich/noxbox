@@ -1,6 +1,5 @@
 package live.noxbox.menu.profile;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -47,21 +46,18 @@ public class ProfilePerformerActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(ProfilePerformerActivity.class.getName(), new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                if (profile.getPortfolio().get(type.name()) == null) {
-                    profile.getPortfolio().put(type.name(), new Portfolio(System.currentTimeMillis()));
-                }
-                for (ImageType imageType : ImageType.values()) {
-                    Map<String, List<String>> images = profile.getPortfolio().get(type.name()).getImages();
-                    if (images.get(imageType.name()) == null) {
-                        images.put(imageType.name(), new ArrayList<String>());
-                    }
-                }
-
-                draw(profile);
+        AppCache.listenProfile(ProfilePerformerActivity.class.getName(), profile -> {
+            if (profile.getPortfolio().get(type.name()) == null) {
+                profile.getPortfolio().put(type.name(), new Portfolio(System.currentTimeMillis()));
             }
+            for (ImageType imageType : ImageType.values()) {
+                Map<String, List<String>> images = profile.getPortfolio().get(type.name()).getImages();
+                if (images.get(imageType.name()) == null) {
+                    images.put(imageType.name(), new ArrayList<String>());
+                }
+            }
+
+            draw(profile);
         });
 
     }
@@ -89,22 +85,14 @@ public class ProfilePerformerActivity extends BaseActivity {
 
         ((TextView) findViewById(R.id.title)).setText(type.getName());
 
-        findViewById(R.id.deleteSection).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogBuilder.createSimpleAlertDialog(
-                        ProfilePerformerActivity.this,
-                        R.string.deleteSection,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Objects.requireNonNull(profile.getPortfolio().get(type.name())).setTimeCreated(0L);
-                                deleteFolderByType(type);
-                                Router.finishActivity(ProfilePerformerActivity.this);
-                            }
-                        });
-            }
-        });
+        findViewById(R.id.deleteSection).setOnClickListener(v -> DialogBuilder.createSimpleAlertDialog(
+                ProfilePerformerActivity.this,
+                R.string.deleteSection,
+                (dialog, which) -> {
+                    Objects.requireNonNull(profile.getPortfolio().get(type.name())).setTimeCreated(0L);
+                    deleteFolderByType(type);
+                    Router.finishActivity(ProfilePerformerActivity.this);
+                }));
     }
 
     private void drawCertificate(final Profile profile) {
