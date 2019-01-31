@@ -32,6 +32,7 @@ import live.noxbox.model.Virtual;
 import live.noxbox.tools.Task;
 
 import static java.lang.reflect.Modifier.isStatic;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class Firestore {
 
@@ -78,7 +79,7 @@ public class Firestore {
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-                if (snapshot != null && snapshot.exists()) {
+                if (snapshot != null && snapshot.exists() && e == null) {
                     Noxbox current = snapshot.toObject(Noxbox.class);
                     task.execute(current);
                 }
@@ -90,7 +91,7 @@ public class Firestore {
         if (current.getId() == null) {
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
-            current.setAvailable(true);
+            //current.setAvailable(true);
         }
         // ids for activity_history queries
         if (current.getRole() == MarketRole.supply) {
@@ -103,7 +104,7 @@ public class Firestore {
 
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge());
 
-        if(current.getTimeCompleted() != null){
+        if(!isNullOrZero(current.getTimeCompleted())){
             GeoRealtime.offline(current);
         }
     }

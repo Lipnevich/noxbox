@@ -177,6 +177,8 @@ public class AppCache {
             stopListenNoxbox(noxboxId);
             profile.setNoxboxId(null);
             profile.getCurrent().clean();
+
+            writeProfile(profile);
         }
     }
 

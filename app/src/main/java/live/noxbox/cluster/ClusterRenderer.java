@@ -26,10 +26,8 @@ import live.noxbox.activities.detailed.DetailedActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Position;
-import live.noxbox.model.Profile;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
 
@@ -80,16 +78,13 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
     }
 
     private boolean onClusterItemClick(@NonNull final NoxboxMarker clusterItem) {
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                if (googleMap.getCameraPosition() != null && googleMap.getCameraPosition().target != null) {
-                    profile.setPosition(Position.from(googleMap.getCameraPosition().target));
-                }
-                profile.setViewed(clusterItem.getNoxbox());
-                profile.getViewed().setParty(profile.privateInfo());
-                Router.startActivity(activity, DetailedActivity.class);
+        AppCache.readProfile(profile -> {
+            if (googleMap.getCameraPosition() != null && googleMap.getCameraPosition().target != null) {
+                profile.setPosition(Position.from(googleMap.getCameraPosition().target));
             }
+            profile.setViewed(clusterItem.getNoxbox());
+            profile.getViewed().setParty(profile.privateInfo());
+            Router.startActivity(activity, DetailedActivity.class);
         });
         return false;
     }

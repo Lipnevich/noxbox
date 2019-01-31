@@ -1,5 +1,7 @@
 package live.noxbox.model;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 public enum NoxboxState {
 
     initial,
@@ -11,36 +13,36 @@ public enum NoxboxState {
     completed;
 
     public static NoxboxState getState(Noxbox noxbox, Profile profile) {
-        if (noxbox == null || noxbox.getTimeCreated() == null || noxbox.getTimeRemoved() != null
-                || noxbox.getTimeCompleted() != null || noxbox.getTimeCanceledByOwner() != null
-                || noxbox.getTimeCanceledByParty() != null || noxbox.getTimeTimeout() != null)
+        if (noxbox == null || isNullOrZero(noxbox.getTimeCreated()) || !isNullOrZero(noxbox.getTimeRemoved())
+                || !isNullOrZero(noxbox.getTimeCompleted()) || !isNullOrZero(noxbox.getTimeCanceledByOwner())
+                || !isNullOrZero(noxbox.getTimeCanceledByParty()) || !isNullOrZero(noxbox.getTimeTimeout()))
             return initial;
 
 
-        if (noxbox.getTimeCreated() != null
-                && noxbox.getTimeRequested() == null
-                && noxbox.getTimeAccepted() == null) {
+        if (!isNullOrZero(noxbox.getTimeCreated())
+                && isNullOrZero(noxbox.getTimeRequested())
+                && isNullOrZero(noxbox.getTimeAccepted())) {
             return created;
         }
 
-        if (noxbox.getTimeRequested() != null
-                && noxbox.getTimeAccepted() == null
-                && noxbox.getTimeCanceledByParty() == null
-                && noxbox.getTimeCanceledByOwner() == null) {
+        if (!isNullOrZero(noxbox.getTimeRequested())
+                && isNullOrZero(noxbox.getTimeAccepted())
+                && isNullOrZero(noxbox.getTimeCanceledByParty())
+                && isNullOrZero(noxbox.getTimeCanceledByOwner())) {
             if (profile.equals(noxbox.getOwner())) {
                 return accepting;
             }
             return requesting;
         }
-        if (noxbox.getTimeAccepted() != null
-                && noxbox.getTimeRequested() != null
-                && (noxbox.getTimeOwnerVerified() == null || noxbox.getTimePartyVerified() == null)) {
+        if (!isNullOrZero(noxbox.getTimeAccepted())
+                && !isNullOrZero(noxbox.getTimeRequested())
+                && (isNullOrZero(noxbox.getTimeOwnerVerified()) || isNullOrZero(noxbox.getTimePartyVerified()))) {
             return moving;
         }
 
-        if (noxbox.getTimePartyVerified() != null &&
-                noxbox.getTimeOwnerVerified() != null &&
-                noxbox.getTimeCompleted() == null) {
+        if (!isNullOrZero(noxbox.getTimePartyVerified()) &&
+                !isNullOrZero(noxbox.getTimeOwnerVerified()) &&
+                isNullOrZero(noxbox.getTimeCompleted())) {
 
             return performing;
         }

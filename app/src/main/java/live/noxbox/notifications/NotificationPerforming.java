@@ -16,6 +16,8 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 public class NotificationPerforming extends Notification {
 
     private Map<String, String> data;
@@ -43,7 +45,7 @@ public class NotificationPerforming extends Notification {
         Task<Noxbox> task = new Task<Noxbox>() {
             @Override
             public void execute(Noxbox noxbox) {
-                if (noxbox != null && noxbox.getTimeCompleted() != null)
+                if (noxbox != null && !isNullOrZero(noxbox.getTimeCompleted()))
                     return;
 
                 builder = getNotificationCompatBuilder();

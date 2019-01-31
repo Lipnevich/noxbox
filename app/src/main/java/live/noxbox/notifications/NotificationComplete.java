@@ -17,6 +17,8 @@ import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.MoneyFormatter;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 public class NotificationComplete extends Notification {
     private String total;
     private Map<String, String> data;
@@ -44,7 +46,7 @@ public class NotificationComplete extends Notification {
 
             Firestore.readNoxbox(noxboxId, noxbox -> {
                 final NotificationCompat.Builder builder = getNotificationCompatBuilder();
-                if (noxbox.getTimeCompleted() != null) {
+                if (!isNullOrZero(noxbox.getTimeCompleted())) {
                     String message;
 
                     if (noxbox.getPerformer().getId().equals(currentUserId)) {

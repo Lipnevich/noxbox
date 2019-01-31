@@ -31,6 +31,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.Constants.QUARTER;
 import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.SeparateStreamForStopwatch.startHandler;
@@ -84,7 +85,7 @@ public class Performing implements State {
                 String time = String.format("%d:%02d:%02d", hours, minutes, secs);
 
 
-                if (profile.getCurrent().getTimeCompleted() == null) {
+                if (isNullOrZero(profile.getCurrent().getTimeCompleted())) {
                     seconds = (System.currentTimeMillis() - timeStartPerforming) / 1000;
 
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
@@ -107,7 +108,6 @@ public class Performing implements State {
                                 NotificationFactory.buildNotification(activity, profile, data).show();
                             }
                         });
-
 
 
                         stopHandler();

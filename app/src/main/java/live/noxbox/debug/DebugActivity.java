@@ -1,15 +1,13 @@
 package live.noxbox.debug;
 
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,9 +17,9 @@ import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 import live.noxbox.BuildConfig;
-import live.noxbox.Constants;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.Firestore;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.NotificationType;
@@ -40,7 +38,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
 import static live.noxbox.cluster.DetectNullValue.areTheyNull;
 import static live.noxbox.database.AppCache.readProfile;
-import static live.noxbox.database.GeoRealtime.online;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class DebugActivity extends MenuActivity implements
         OnMapReadyCallback {
@@ -93,37 +91,56 @@ public class DebugActivity extends MenuActivity implements
                                 }
                             });
 
-                            DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
+                            findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
                             setOnClickListener(R.id.debugGenerateNoxboxes, new Task<Profile>() {
                                 @Override
                                 public void execute(Profile profile) {
-                                    double delta = (360 * Constants.RADIUS_IN_METERS / 40075000) / 20;
+//                                    double delta = (360 * Constants.RADIUS_IN_METERS / 40075000) / 20;
+//
+//                                    for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
+//                                        online(noxbox);
+//                                    }
+//
+//                                    LatLng myPosition = null;
+//                                    if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+//                                            == PackageManager.PERMISSION_GRANTED) {
+//                                        myPosition = googleMap.getCameraPosition().target;
+//                                    }
+//
+//                                    if (myPosition != null) {
+//
+//                                        LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
+//                                        LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
+//                                        LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
+//                                        LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
+//                                        googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
+//                                                coordinatesOne,
+//                                                coordinatesTwo,
+//                                                coordinatesThree,
+//                                                coordinatesFour,
+//                                                coordinatesOne)
+//                                                .color(Color.RED)
+//                                                .width(5));
 
-                                    for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
-                                        online(noxbox);
-                                    }
 
-                                    LatLng myPosition = null;
-                                    if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                                            == PackageManager.PERMISSION_GRANTED) {
-                                        myPosition = googleMap.getCameraPosition().target;
-                                    }
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().build());
 
-                                    if (myPosition != null) {
 
-                                        LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
-                                        LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
-                                        LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
-                                        LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
-                                        googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
-                                                coordinatesOne,
-                                                coordinatesTwo,
-                                                coordinatesThree,
-                                                coordinatesFour,
-                                                coordinatesOne)
-                                                .color(Color.RED)
-                                                .width(5));
-                                    }
+                                    Noxbox current = NoxboxExamples.generateNoxboxes(new Position(0, 0), 1, 100).get(0);
+                                    current.getOwner().setId(profile.getId());
+                                    current.setTimeRequested(null);
+
+
+                                    db.collection("noxboxes").document("666").set(Firestore.objectToMap(current), SetOptions.merge())
+                                            .addOnCompleteListener(task -> {
+                                                if (task.getException() != null) {
+                                                    DebugMessage.popup(getApplicationContext(), task.getException().getMessage());
+                                                } else {
+                                                    DebugMessage.popup(getApplicationContext(), "GOOD JOB");
+                                                }
+                                            });
+
                                 }
                             });
                             break;
@@ -133,7 +150,7 @@ public class DebugActivity extends MenuActivity implements
                                 @Override
                                 public void execute(Profile profile) {
                                     if (areNotTheyNull(profile.getCurrent(), profile.getCurrent().getOwner(), profile.getCurrent().getTimeCreated())
-                                            && profile.getCurrent().getTimeRequested() == null) {
+                                            && isNullOrZero(profile.getCurrent().getTimeRequested())) {
                                         // TODO (vl) сгенерировать коменты, сертификаты, примеры работ
 
                                         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
@@ -157,13 +174,12 @@ public class DebugActivity extends MenuActivity implements
                                 @Override
                                 public void execute(Profile profile) {
                                     if (profile.getCurrent() != null && !profile.equals(profile.getCurrent().getOwner())
-                                            && profile.getCurrent().getTimeCreated() != null
-                                            && profile.getCurrent().getTimeRequested() != null
-                                            && profile.getCurrent().getTimeAccepted() == null) {
+                                            && !isNullOrZero(profile.getCurrent().getTimeCreated())
+                                            && !isNullOrZero(profile.getCurrent().getTimeRequested())
+                                            && isNullOrZero(profile.getCurrent().getTimeAccepted())) {
                                         profile.getCurrent().getOwner().setPhoto(NoxboxExamples.PHOTO_MOCK);
                                         profile.getCurrent().getOwner().setId("" + ThreadLocalRandom.current().nextInt(100000));
                                         profile.getCurrent().getOwner().setName("Моя бабушка курит трубку");
-                                        profile.getCurrent().setTimeToMeet(1200000L);
                                         profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                         AppCache.updateNoxbox();
                                     } else {
@@ -177,10 +193,11 @@ public class DebugActivity extends MenuActivity implements
                                 }
                             });
                             break;
-                        case accepting: break;
+                        case accepting:
+                            break;
                         case moving:
-                            if(profile.getCurrent().getTimeOwnerVerified() == null &&
-                                    profile.getCurrent().getTimePartyVerified() == null)
+                            if (isNullOrZero(profile.getCurrent().getTimeOwnerVerified()) &&
+                                    isNullOrZero(profile.getCurrent().getTimePartyVerified()))
                                 break;
 
                             DebugActivity.this.findViewById(R.id.debugPhotoReject).setVisibility(View.VISIBLE);
@@ -188,10 +205,10 @@ public class DebugActivity extends MenuActivity implements
                                 @Override
                                 public void execute(Profile profile) {
                                     if (profile.getCurrent() != null
-                                            && profile.getCurrent().getTimeCreated() != null
-                                            && profile.getCurrent().getTimeRequested() != null
-                                            && profile.getCurrent().getTimeAccepted() != null
-                                            && profile.getCurrent().getTimeCompleted() == null) {
+                                            && !isNullOrZero(profile.getCurrent().getTimeCreated())
+                                            && !isNullOrZero(profile.getCurrent().getTimeRequested())
+                                            && !isNullOrZero(profile.getCurrent().getTimeAccepted())
+                                            && isNullOrZero(profile.getCurrent().getTimeCompleted())) {
                                         if (profile.equals(profile.getCurrent().getOwner())) {
                                             profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
                                         } else {
@@ -252,37 +269,35 @@ public class DebugActivity extends MenuActivity implements
                             break;
                         case performing:
                             DebugActivity.this.findViewById(R.id.debugComplete).setVisibility(View.VISIBLE);
-                            setOnClickListener(R.id.debugComplete, new Task<Profile>() {
-                                @Override
-                                public void execute(Profile profile) {
-                                    if (profile.getCurrent() != null
-                                            && profile.getCurrent().getTimeCreated() != null
-                                            && profile.getCurrent().getTimeRequested() != null
-                                            && profile.getCurrent().getTimeAccepted() != null
-                                            && profile.getCurrent().getTimeCompleted() == null) {
-                                        profile.getCurrent().setTimeCompleted(System.currentTimeMillis());
-                                        AppCache.updateNoxbox();
-                                    } else {
-                                        DebugMessage.popup(DebugActivity.this, "Not possible to complete");
-                                    }
-                                    Log.d(State.TAG + TAG, "debugComplete");
-                                    Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
-                                    Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
-                                    Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-                                    Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-                                    if (profile.equals(profile.getCurrent().getOwner())) {
-                                        Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimePartyVerified()));
-                                    } else {
-                                        Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
-                                    }
-                                    Log.d(State.TAG + TAG, "timeCompleted: " + DateTimeFormatter.time(profile.getCurrent().getTimeCompleted()));
+                            setOnClickListener(R.id.debugComplete, profile1 -> {
+                                if (profile1.getCurrent() != null
+                                        && !isNullOrZero(profile1.getCurrent().getTimeCreated())
+                                        && !isNullOrZero(profile1.getCurrent().getTimeRequested())
+                                        && !isNullOrZero(profile1.getCurrent().getTimeAccepted())
+                                        && isNullOrZero(profile1.getCurrent().getTimeCompleted())) {
+                                    profile1.getCurrent().setTimeCompleted(System.currentTimeMillis());
+                                    AppCache.updateNoxbox();
+                                } else {
+                                    DebugMessage.popup(DebugActivity.this, "Not possible to complete");
                                 }
+                                Log.d(State.TAG + TAG, "debugComplete");
+                                Log.d(State.TAG + TAG, "noxboxId: " + profile1.getCurrent().getId());
+                                Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile1.getCurrent().getTimeCreated()));
+                                Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile1.getCurrent().getTimeRequested()));
+                                Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile1.getCurrent().getTimeAccepted()));
+                                if (profile1.equals(profile1.getCurrent().getOwner())) {
+                                    Log.d(State.TAG + TAG, "timePartyVerified: " + DateTimeFormatter.time(profile1.getCurrent().getTimePartyVerified()));
+                                } else {
+                                    Log.d(State.TAG + TAG, "timeOwnerVerified: " + DateTimeFormatter.time(profile1.getCurrent().getTimeOwnerVerified()));
+                                }
+                                Log.d(State.TAG + TAG, "timeCompleted: " + DateTimeFormatter.time(profile1.getCurrent().getTimeCompleted()));
                             });
                     }
                 }
             });
 
         }
+
     }
 
     private void setOnClickListener(int button, final Task<Profile> task) {

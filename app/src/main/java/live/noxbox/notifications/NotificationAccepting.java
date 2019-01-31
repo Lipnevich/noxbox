@@ -12,9 +12,9 @@ import java.util.Map;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.database.Firestore;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.tools.Task;
+
+import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class NotificationAccepting extends Notification {
 
@@ -49,13 +49,10 @@ public class NotificationAccepting extends Notification {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Firestore.readNoxbox(noxboxId, new Task<Noxbox>() {
-            @Override
-            public void execute(Noxbox noxbox) {
-                if (noxbox.getTimeAccepted() == null) {
-                    noxbox.setTimeTimeout(System.currentTimeMillis());
-                    Firestore.writeNoxbox(noxbox);
-                }
+        Firestore.readNoxbox(noxboxId, noxbox -> {
+            if (isNullOrZero(noxbox.getTimeAccepted())) {
+                noxbox.setTimeTimeout(System.currentTimeMillis());
+                Firestore.writeNoxbox(noxbox);
             }
         });
 

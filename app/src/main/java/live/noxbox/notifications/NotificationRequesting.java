@@ -13,6 +13,8 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 public class NotificationRequesting extends Notification {
 
     public NotificationRequesting(Context context, Profile profile, Map<String, String> data) {
@@ -31,7 +33,7 @@ public class NotificationRequesting extends Notification {
 
     @Override
     public void show() {
-        if(profile.getCurrent() != null && profile.getCurrent().getTimeAccepted() != null)
+        if(profile.getCurrent() != null && !isNullOrZero(profile.getCurrent().getTimeAccepted()))
             return;
 
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();

@@ -18,6 +18,8 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 public class Estimating implements State {
 
     private Activity activity;
@@ -165,7 +167,7 @@ public class Estimating implements State {
 
     private void controlDisplayRate(final Profile profile) {
         if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-            if (profile.getCurrent().getTimePartyDisliked() != null) {
+            if (!isNullOrZero(profile.getCurrent().getTimePartyDisliked())) {
                 ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
                 ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
             } else {
@@ -173,7 +175,7 @@ public class Estimating implements State {
                 ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
             }
         } else {
-            if (profile.getCurrent().getTimeOwnerDisliked() != null) {
+            if (!isNullOrZero(profile.getCurrent().getTimeOwnerDisliked())) {
                 ((ImageView) estimatingView.findViewById(R.id.dislike)).setColorFilter(activity.getResources().getColor(R.color.primary));
                 ((ImageView) estimatingView.findViewById(R.id.like)).setColorFilter(activity.getResources().getColor(R.color.text_color_secondary));
             } else {

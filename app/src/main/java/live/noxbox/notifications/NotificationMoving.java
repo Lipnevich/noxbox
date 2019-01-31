@@ -16,6 +16,7 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class NotificationMoving extends Notification {
@@ -44,15 +45,15 @@ public class NotificationMoving extends Notification {
             @Override
             public void execute(Noxbox noxbox) {
                 if (noxbox != null && (
-                        (noxbox.getTimePartyVerified() != null && noxbox.getTimeOwnerVerified() != null)
-                                || noxbox.getTimeCompleted() != null
-                                || noxbox.getTimeCanceledByParty() != null
-                                || noxbox.getTimeCanceledByOwner() != null))
+                        (!isNullOrZero(noxbox.getTimePartyVerified()) && !isNullOrZero(noxbox.getTimeOwnerVerified()))
+                                || !isNullOrZero(noxbox.getTimeCompleted())
+                                || !isNullOrZero(noxbox.getTimeCanceledByParty())
+                                || !isNullOrZero(noxbox.getTimeCanceledByOwner())))
                     return;
 
                 removeNotificationByGroup(context, type.getGroup());
-                if (noxbox != null && ((noxbox.getTimeOwnerVerified() != null && noxbox.getTimePartyVerified() != null)
-                        || noxbox.getTimeCanceledByOwner() != null || noxbox.getTimeCanceledByParty() != null))
+                if (noxbox != null && ((!isNullOrZero(noxbox.getTimeOwnerVerified()) && !isNullOrZero(noxbox.getTimePartyVerified()))
+                        || !isNullOrZero(noxbox.getTimeCanceledByOwner()) || !isNullOrZero(noxbox.getTimeCanceledByParty())))
                     return;
 
                 if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {

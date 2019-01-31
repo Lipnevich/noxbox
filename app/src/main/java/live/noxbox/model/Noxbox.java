@@ -16,7 +16,6 @@ package live.noxbox.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static live.noxbox.Constants.DEFAULT_PRICE;
@@ -44,7 +43,6 @@ public class Noxbox implements Comparable<Noxbox> {
     private WorkSchedule workSchedule;
     private String ownerComment;
     private String estimationTime;
-    private Boolean available;
 
 
     // Noxbox specific data
@@ -59,63 +57,68 @@ public class Noxbox implements Comparable<Noxbox> {
     private Long timePartyVerified;
     private Long timeOwnerDisliked;
     private Long timePartyDisliked;
-    private Long timeToMeet;
     private Long timeTimeout;
     private String cancellationReasonMessage;
     private String commentForDemand;
     private String commentForSupply;
 
 
-
     public Noxbox clean() {
         id = null;
         getChat().getOwnerMessages().clear();
         getChat().getPartyMessages().clear();
-        getChat().setOwnerReadTime(null);
-        getChat().setPartyReadTime(null);
+        getChat().setOwnerReadTime(0L);
+        getChat().setPartyReadTime(0L);
+       // party = new Profile().setId("0");
         party = null;
         performerId = null;
-        available = true;
-        ownerComment = null;
         payerId = null;
+        ownerComment = null;
         estimationTime = null;
         cancellationReasonMessage = null;
         commentForDemand = null;
         commentForSupply = null;
-        timeCreated = null;
-        timeRemoved = null;
-        timeRequested = null;
-        timeCompleted = null;
-        timeAccepted = null;
-        timeCanceledByOwner = null;
-        timeCanceledByParty = null;
-        timeOwnerVerified = null;
-        timePartyVerified = null;
-        timeOwnerDisliked = null;
-        timePartyDisliked = null;
-        timeToMeet = null;
-        timeTimeout = null;
+        timeCreated = 0L;
+        timeRemoved = 0L;
+        timeRequested = 0L;
+        timeCompleted = 0L;
+        timeAccepted = 0L;
+        timeCanceledByOwner = 0L;
+        timeCanceledByParty = 0L;
+        timeOwnerVerified = 0L;
+        timePartyVerified = 0L;
+        timeOwnerDisliked = 0L;
+        timePartyDisliked = 0L;
+        timeTimeout = 0L;
 
         return this;
     }
 
+    public Noxbox create(Position position, Profile owner) {
+        clean();
+        this.position = position;
+        this.owner = owner;
+        return this;
+    }
+
+
     public Profile getProfileWhoWait() {
-        if(getProfileWhoComes().equals(owner)) {
+        if (getProfileWhoComes().equals(owner)) {
             return party;
         } else {
             return owner;
         }
     }
 
-    public Profile getProfileWhoComes(){
-        if(owner.getTravelMode() == none){
+    public Profile getProfileWhoComes() {
+        if (owner.getTravelMode() == none) {
             return party;
         } else {
-            if(role == supply){
+            if (role == supply) {
                 return owner;
             }
         }
-        if(party.getTravelMode() == none){
+        if (party.getTravelMode() == none) {
             return owner;
         }
         return party;
@@ -267,15 +270,6 @@ public class Noxbox implements Comparable<Noxbox> {
         else return party;
     }
 
-    public String getEstimationTime() {
-        return estimationTime;
-    }
-
-    public Noxbox setEstimationTime(String estimationTime) {
-        this.estimationTime = estimationTime;
-        return this;
-    }
-
     public MarketRole getRole() {
         if (role == null) {
             role = MarketRole.demand;
@@ -338,7 +332,8 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public Long getTimeStartPerforming() {
-        if (getTimeOwnerVerified() == null || getTimePartyVerified() == null) return null;
+        if (isNullOrZero(getTimeOwnerVerified()) || isNullOrZero(getTimePartyVerified()))
+            return null;
 
         return Math.max(getTimeOwnerVerified(), getTimePartyVerified());
     }
@@ -397,15 +392,6 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Long getTimeToMeet() {
-        return timeToMeet;
-    }
-
-    public Noxbox setTimeToMeet(Long timeToMeet) {
-        this.timeToMeet = timeToMeet;
-        return this;
-    }
-
     public Long getTimeRemoved() {
         return timeRemoved;
     }
@@ -425,7 +411,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public Chat getChat() {
-        if(chat == null){
+        if (chat == null) {
             chat = new Chat();
         }
         return chat;
@@ -439,25 +425,19 @@ public class Noxbox implements Comparable<Noxbox> {
     public List<Message> getMessages(String profileId) {
         List<Message> chat = new ArrayList<>();
         Collection<Message> myMessages = getChat().getPartyMessages().values();
-        if(profileId.equals(getOwner().getId())) {
+        if (profileId.equals(getOwner().getId())) {
             myMessages = getChat().getOwnerMessages().values();
         }
-        for(Message message : myMessages) {
+        for (Message message : myMessages) {
             message.setMyMessage(true);
         }
         chat.addAll(getChat().getPartyMessages().values());
         chat.addAll(getChat().getOwnerMessages().values());
 
-        Collections.sort(chat, new Comparator<Message>() {
-            @Override
-            public int compare(Message first, Message second) {
-                return Long.compare(first.getTime(), second.getTime());
-            }
-        });
+        Collections.sort(chat, (first, second) -> Long.compare(first.getTime(), second.getTime()));
 
         return chat;
     }
-
 
 
     public String getPerformerId() {
@@ -479,7 +459,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getOwnerComment() {
-        if(ownerComment == null){
+        if (ownerComment == null) {
             ownerComment = "";
         }
         return ownerComment;
@@ -490,13 +470,7 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Boolean getAvailable() {
-        if(available == null) available = true;
-        return available;
-    }
-
-    public Noxbox setAvailable(Boolean available) {
-        this.available = available;
-        return this;
+    public static boolean isNullOrZero(Long time) {
+        return time == null || time == 0;
     }
 }

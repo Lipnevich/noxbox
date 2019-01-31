@@ -157,7 +157,6 @@ public class Profile implements Serializable {
 
     public Profile publicInfo() {
         return new Profile().setId(id)
-                .setAcceptance(acceptance)
                 .setPosition(position)
                 .setSuppliesRating(suppliesRating)
                 .setDemandsRating(demandsRating)

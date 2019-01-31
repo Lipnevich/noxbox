@@ -53,6 +53,7 @@ import static live.noxbox.database.AppCache.readProfile;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.MapOperator.drawPath;
@@ -162,13 +163,13 @@ public class Moving implements State {
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
 
         if (profile.getCurrent().getOwner().equals(profile)) {
-            if (profile.getCurrent().getTimeOwnerVerified() != null) {
+            if (!isNullOrZero(profile.getCurrent().getTimeOwnerVerified())) {
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
             } else {
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
             }
         } else {
-            if (profile.getCurrent().getTimePartyVerified() != null) {
+            if (!isNullOrZero(profile.getCurrent().getTimePartyVerified())) {
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
             } else {
                 activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
@@ -185,12 +186,7 @@ public class Moving implements State {
         });
 
 
-        activity.findViewById(R.id.customFloatingView).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.startActivity(activity, ConfirmationActivity.class);
-            }
-        });
+        activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> Router.startActivity(activity, ConfirmationActivity.class));
 
         activity.findViewById(R.id.chat).setOnClickListener(v -> startActivity(activity, ChatActivity.class));
 
@@ -313,9 +309,9 @@ public class Moving implements State {
                 @Override
                 public void onLocationChanged(final Location location) {
                     readProfile(profile -> {
-                        if ((profile.getCurrent().getTimeOwnerVerified() != null && profile.getCurrent().getTimePartyVerified() != null)
-                                || profile.getCurrent().getTimeCanceledByOwner() != null
-                                || profile.getCurrent().getTimeCanceledByParty() != null) {
+                        if ((!isNullOrZero(profile.getCurrent().getTimeOwnerVerified()) && !isNullOrZero(profile.getCurrent().getTimePartyVerified()))
+                                || !isNullOrZero(profile.getCurrent().getTimeCanceledByOwner())
+                                || !isNullOrZero(profile.getCurrent().getTimeCanceledByParty())) {
                             locationManager.removeUpdates(locationListener);
                             stopSelf();
                             return;

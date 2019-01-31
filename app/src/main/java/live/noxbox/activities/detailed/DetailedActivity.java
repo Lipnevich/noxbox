@@ -20,7 +20,6 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,6 +62,7 @@ import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
@@ -291,12 +291,11 @@ public class DetailedActivity extends AppCompatActivity {
             }
 
 
-
             ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
 
             ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
 
-            if (noxbox.getTimeRequested() != null) {
+            if (!isNullOrZero(noxbox.getTimeRequested())) {
                 findViewById(R.id.coordinatesSelect).setVisibility(View.GONE);
             } else {
                 findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
@@ -322,21 +321,21 @@ public class DetailedActivity extends AppCompatActivity {
         TextView priceView = findViewById(R.id.price);
         priceView.setText(profile.getViewed().getPrice());
 
-        String description = getResources().getString(profile.getViewed().getType().getDuration());
+        String duration = getResources().getString(profile.getViewed().getType().getDuration());
         String serviceDescription = "";
         int countSpace = 0;
-        for (int i = 0; i < description.length(); i++) {
-            if (description.charAt(i) == ' ') {
+        for (int i = 0; i < duration.length(); i++) {
+            if (duration.charAt(i) == ' ') {
                 countSpace++;
                 if (countSpace > 1) {
                     serviceDescription = serviceDescription.concat(getResources().getString(R.string.ending));
                     break;
                 }
             }
-            serviceDescription = serviceDescription.concat(String.valueOf(description.charAt(i)));
+            serviceDescription = serviceDescription.concat(String.valueOf(duration.charAt(i)));
         }
-        String descriptiong = getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter);
-        ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(descriptiong);
+        String desc = getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter);
+        ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(desc);
         ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(profile.getViewed().getType().getImage());
     }
 
@@ -358,24 +357,15 @@ public class DetailedActivity extends AppCompatActivity {
         findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
 
         if (!profile.getAcceptance().isAccepted()) {
-            findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openPhotoNotVerifySheetDialog(DetailedActivity.this);
-                }
-            });
+            findViewById(R.id.acceptButton).setOnClickListener(v -> openPhotoNotVerifySheetDialog(DetailedActivity.this));
         } else {
-            findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    v.setVisibility(View.GONE);
-                    profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                    AppCache.updateNoxbox();
-                    Router.finishActivity(DetailedActivity.this);
-                }
+            findViewById(R.id.acceptButton).setOnClickListener(v -> {
+                v.setVisibility(View.GONE);
+                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
+                AppCache.updateNoxbox();
+                Router.finishActivity(DetailedActivity.this);
             });
         }
-
     }
 
     private void drawJoinButton(final Profile profile) {
@@ -419,7 +409,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         profile.setCurrent(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
-        profile.getCurrent().setAvailable(false);
+        //profile.getCurrent().setAvailable(false);
         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
 
         AppCache.updateNoxbox();
@@ -441,116 +431,92 @@ public class DetailedActivity extends AppCompatActivity {
     private String cancellationReason;
 
     private void drawCancelButton(final Profile profile) {
-        if (profile.getCurrent().getTimeAccepted() != null) return;
+        if (!isNullOrZero(profile.getCurrent().getTimeAccepted())) return;
         findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
-        findViewById(R.id.cancelButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(DetailedActivity.this);
-                final View view = getLayoutInflater().inflate(R.layout.dialog_cancellation_reason, null);
-                longToWait = view.findViewById(R.id.longToWait);
-                photoDoesNotMatch = view.findViewById(R.id.photoDoesNotMatch);
-                rudeBehavior = view.findViewById(R.id.rudeBehavior);
-                substandardWork = view.findViewById(R.id.substandardWork);
-                own = view.findViewById(R.id.own);
-                own.setChecked(true);
-                longToWait.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.cancelButton).setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(DetailedActivity.this);
+            final View view = getLayoutInflater().inflate(R.layout.dialog_cancellation_reason, null);
+            longToWait = view.findViewById(R.id.longToWait);
+            photoDoesNotMatch = view.findViewById(R.id.photoDoesNotMatch);
+            rudeBehavior = view.findViewById(R.id.rudeBehavior);
+            substandardWork = view.findViewById(R.id.substandardWork);
+            own = view.findViewById(R.id.own);
+            own.setChecked(true);
+            longToWait.setOnClickListener(v1 -> {
+                view.findViewById(R.id.ownReason).setEnabled(false);
+                view.findViewById(R.id.send).setEnabled(true);
+                cancellationReason = (String) longToWait.getText();
+            });
+            photoDoesNotMatch.setOnClickListener(v12 -> {
+                view.findViewById(R.id.ownReason).setEnabled(false);
+                view.findViewById(R.id.send).setEnabled(true);
+                cancellationReason = (String) photoDoesNotMatch.getText();
+            });
+            rudeBehavior.setOnClickListener(v13 -> {
+                view.findViewById(R.id.ownReason).setEnabled(false);
+                view.findViewById(R.id.send).setEnabled(true);
+                cancellationReason = (String) rudeBehavior.getText();
+
+            });
+            substandardWork.setOnClickListener(v14 -> {
+                view.findViewById(R.id.ownReason).setEnabled(false);
+                view.findViewById(R.id.send).setEnabled(true);
+                cancellationReason = (String) substandardWork.getText();
+            });
+            own.setOnClickListener(v15 -> {
+
+                view.findViewById(R.id.ownReason).setEnabled(true);
+                ((EditText) view.findViewById(R.id.ownReason)).addTextChangedListener(new TextWatcher() {
                     @Override
-                    public void onClick(View v) {
-                        view.findViewById(R.id.ownReason).setEnabled(false);
-                        view.findViewById(R.id.send).setEnabled(true);
-                        cancellationReason = (String) longToWait.getText();
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     }
-                });
-                photoDoesNotMatch.setOnClickListener(new View.OnClickListener() {
+
                     @Override
-                    public void onClick(View v) {
-                        view.findViewById(R.id.ownReason).setEnabled(false);
-                        view.findViewById(R.id.send).setEnabled(true);
-                        cancellationReason = (String) photoDoesNotMatch.getText();
-                    }
-                });
-                rudeBehavior.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        view.findViewById(R.id.ownReason).setEnabled(false);
-                        view.findViewById(R.id.send).setEnabled(true);
-                        cancellationReason = (String) rudeBehavior.getText();
-
-                    }
-                });
-                substandardWork.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        view.findViewById(R.id.ownReason).setEnabled(false);
-                        view.findViewById(R.id.send).setEnabled(true);
-                        cancellationReason = (String) substandardWork.getText();
-                    }
-                });
-                own.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        view.findViewById(R.id.ownReason).setEnabled(true);
-                        ((EditText) view.findViewById(R.id.ownReason)).addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                                cancellationReason = s.toString();
-                                if (s.length() > 0) {
-                                    view.findViewById(R.id.send).setEnabled(true);
-                                    view.findViewById(R.id.send).setBackground(getDrawable(R.drawable.button_corner));
-                                } else {
-                                    view.findViewById(R.id.send).setEnabled(false);
-                                    view.findViewById(R.id.send).setBackground(getDrawable(R.drawable.button_corner_disabled));
-                                }
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable s) {
-                            }
-                        });
-                    }
-                });
-
-                builder.setView(view);
-                final AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-
-                view.findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
-                            profile.getViewed().setTimeCanceledByOwner(System.currentTimeMillis());
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        cancellationReason = s.toString();
+                        if (s.length() > 0) {
+                            view.findViewById(R.id.send).setEnabled(true);
+                            view.findViewById(R.id.send).setBackground(getDrawable(R.drawable.button_corner));
                         } else {
-                            profile.getViewed().setTimeCanceledByParty(System.currentTimeMillis());
+                            view.findViewById(R.id.send).setEnabled(false);
+                            view.findViewById(R.id.send).setBackground(getDrawable(R.drawable.button_corner_disabled));
                         }
-                        profile.getViewed().setCancellationReasonMessage(cancellationReason);
-                        AppCache.updateNoxbox();
-                        alertDialog.cancel();
-                        Router.finishActivity(DetailedActivity.this);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
                     }
                 });
+            });
 
-            }
+            builder.setView(view);
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+
+            view.findViewById(R.id.send).setOnClickListener(v16 -> {
+                if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
+                    profile.getViewed().setTimeCanceledByOwner(System.currentTimeMillis());
+                } else {
+                    profile.getViewed().setTimeCanceledByParty(System.currentTimeMillis());
+                }
+                profile.getViewed().setCancellationReasonMessage(cancellationReason);
+                AppCache.updateNoxbox();
+                alertDialog.cancel();
+                Router.finishActivity(DetailedActivity.this);
+            });
+
         });
     }
 
     private void drawDropdownElement(int titleId, final int contentId) {
-        findViewById(titleId).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (findViewById(contentId).isShown()) {
-                    findViewById(contentId).setVisibility(View.GONE);
-                    findViewById(contentId).setElevation(0);
-                    findViewById(contentId).startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up));
-                } else {
-                    findViewById(contentId).setVisibility(View.VISIBLE);
-                    findViewById(contentId).startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down));
-                }
+        findViewById(titleId).setOnClickListener(v -> {
+            if (findViewById(contentId).isShown()) {
+                findViewById(contentId).setVisibility(View.GONE);
+                findViewById(contentId).setElevation(0);
+                findViewById(contentId).startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up));
+            } else {
+                findViewById(contentId).setVisibility(View.VISIBLE);
+                findViewById(contentId).startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_down));
             }
         });
     }
@@ -580,14 +546,11 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void changeArrowVector(int layout, final int element) {
         final ViewGroup listeningLayout = findViewById(layout);
-        listeningLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (listeningLayout.getVisibility() == View.VISIBLE) {
-                    ((ImageView) findViewById(element)).setImageResource(R.drawable.arrow_up);
-                } else if (listeningLayout.getVisibility() == View.GONE) {
-                    ((ImageView) findViewById(element)).setImageResource(R.drawable.arrow_down);
-                }
+        listeningLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            if (listeningLayout.getVisibility() == View.VISIBLE) {
+                ((ImageView) findViewById(element)).setImageResource(R.drawable.arrow_up);
+            } else if (listeningLayout.getVisibility() == View.GONE) {
+                ((ImageView) findViewById(element)).setImageResource(R.drawable.arrow_down);
             }
         });
 

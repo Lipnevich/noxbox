@@ -24,6 +24,8 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 import live.noxbox.R;
 import live.noxbox.model.Noxbox;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 public class HistoryFullScreenFragment extends DialogFragment {
     public static String TAG = "FullScreenDialog";
     private String profileId;
@@ -132,9 +134,9 @@ public class HistoryFullScreenFragment extends DialogFragment {
 
     private boolean isLiked(Noxbox noxbox, String profileId) {
         if (profileId.equals(noxbox.getOwner().getId())) {
-            return noxbox.getTimeOwnerDisliked() == null;
+            return isNullOrZero(noxbox.getTimeOwnerDisliked());
         } else {
-            return noxbox.getTimePartyDisliked() == null;
+            return isNullOrZero(noxbox.getTimePartyDisliked());
         }
     }
 }

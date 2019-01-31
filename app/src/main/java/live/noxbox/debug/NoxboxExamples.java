@@ -28,8 +28,8 @@ public class NoxboxExamples {
         List<Noxbox> noxboxes = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
 
-            Noxbox noxbox = new Noxbox();
-
+            Noxbox noxbox = new Noxbox().clean();
+           // noxbox.setAvailable(true);
             noxbox.setRole(MarketRole.values()[ThreadLocalRandom.current().nextInt(MarketRole.values().length)]);
             Profile owner = new Profile().setId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE))
                     .setNoxboxId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE)).setPosition(new Position().setLongitude(27.609018).setLatitude(53.951399)).setPhoto(PHOTO_MOCK).setName("Granny Zelda");
@@ -54,7 +54,6 @@ public class NoxboxExamples {
             owner.getSuppliesRating().put(noxbox.getType().name(), rating);
             noxbox.setOwner(owner);
             noxbox.setId(owner.getNoxboxId());
-            noxbox.setEstimationTime("0");
             noxbox.setPrice(ThreadLocalRandom.current().nextInt(10, 100) + "");
             noxbox.setPosition(new Position(
                     position.getLatitude() + ThreadLocalRandom.current().nextDouble(-delta, delta),

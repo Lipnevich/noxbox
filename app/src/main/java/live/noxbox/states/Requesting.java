@@ -27,6 +27,7 @@ import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 
@@ -115,7 +116,7 @@ public class Requesting implements State {
     }
 
     private void autoDisconnectFromService(final Profile profile) {
-        if (profile.getCurrent().getTimeAccepted() == null) {
+        if (isNullOrZero(profile.getCurrent().getTimeAccepted())) {
             long timeTimeout = System.currentTimeMillis();
             Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
             profile.getCurrent().setTimeTimeout(timeTimeout);

@@ -57,7 +57,6 @@ import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
@@ -413,44 +412,31 @@ public class ContractActivity extends BaseActivity {
     private void drawCancelOrRemoveButton(final Profile profile) {
         if (profile.getNoxboxId() != null) {
             closeOrRemove.setText(R.string.remove);
-            closeOrRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    removeNoxbox();
-                }
-            });
+            closeOrRemove.setOnClickListener(v -> removeNoxbox());
         } else {
             closeOrRemove.setText(R.string.cancel);
-            closeOrRemove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    cancelNoxboxConstructor();
-                }
-            });
+            closeOrRemove.setOnClickListener(v -> cancelNoxboxConstructor());
         }
     }
 
     private void drawPublishButton(final Profile profile) {
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
 
-        publishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
-                    publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
-                    BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
-                    return;
-                }
-                if (!profile.getAcceptance().isAccepted()) {
-                    openPhotoNotVerifySheetDialog(ContractActivity.this);
-                    return;
-                }
-                if (profile.getName() != null && profile.getName().length() == 0) {
-                    openNameNotVerifySheetDialog(ContractActivity.this, profile);
-                    return;
-                }
-                postNoxbox(profile);
+        publishButton.setOnClickListener(v -> {
+            if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
+                publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
+                BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
+                return;
             }
+            if (!profile.getAcceptance().isAccepted()) {
+                openPhotoNotVerifySheetDialog(ContractActivity.this);
+                return;
+            }
+            if (profile.getName() != null && profile.getName().length() == 0) {
+                openNameNotVerifySheetDialog(ContractActivity.this, profile);
+                return;
+            }
+            postNoxbox(profile);
         });
     }
 
@@ -556,12 +542,9 @@ public class ContractActivity extends BaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (checkLocationPermission()) {
-                AppCache.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        profile.getCurrent().getOwner().setTravelMode(TravelMode.none);
-                        draw(profile);
-                    }
+                AppCache.readProfile(profile -> {
+                    profile.getCurrent().getOwner().setTravelMode(TravelMode.none);
+                    draw(profile);
                 });
             }
         }
@@ -572,12 +555,7 @@ public class ContractActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    profile.getCurrent().setPosition(position);
-                }
-            });
+            AppCache.readProfile(profile -> profile.getCurrent().setPosition(position));
         }
     }
 

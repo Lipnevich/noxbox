@@ -117,7 +117,6 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
             profile.getFilters().getTypes().put(type.name(), false);
         }
         profile.getFilters().getTypes().put(noxboxTypes.get(position).name(), true);
-
     }
 
     private void executeInTheProfile(int position) {

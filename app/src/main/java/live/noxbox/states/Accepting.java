@@ -28,6 +28,7 @@ import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalance;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.MapOperator.drawPath;
@@ -93,12 +94,9 @@ public class Accepting implements State {
             @Override
             public void onClick(View v) {
                 long timeAccepted = System.currentTimeMillis();
-                long timeToMeet = (long) (Math.ceil(getTravelTimeInMinutes(profile)) * 60000);
                 Log.d(TAG + "Accepting", "timeAccepted: " + DateTimeFormatter.time(timeAccepted));
-                Log.d(TAG + "Accepting", "timeToMeet: " + DateTimeFormatter.time(timeToMeet));
 
                 profile.getCurrent().setTimeAccepted(timeAccepted);
-                profile.getCurrent().setTimeToMeet(timeToMeet);
                 profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
                 profile.getCurrent().getOwner().setName(profile.getName());
                 profile.getCurrent().getOwner().setWallet(profile.getWallet());
@@ -138,7 +136,7 @@ public class Accepting implements State {
 
             @Override
             public void onFinish() {
-                if (profile.getCurrent().getTimeAccepted() == null) {
+                if (isNullOrZero(profile.getCurrent().getTimeAccepted())) {
                     profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
                     updateNoxbox();
                 }
@@ -147,7 +145,7 @@ public class Accepting implements State {
     }
 
     private void autoDisconnectFromService(final Profile profile) {
-        if (profile.getCurrent().getTimeAccepted() == null) {
+        if (isNullOrZero(profile.getCurrent().getTimeAccepted())) {
             profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
             updateNoxbox();
         }
