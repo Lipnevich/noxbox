@@ -83,7 +83,6 @@ public class ProfileActivity extends BaseActivity {
     private void draw(final Profile profile) {
         drawEditPhoto(profile);
         drawEditName(profile);
-        drawEditTravelMode(profile);
         drawEditHost(profile);
         drawPortfolioEditingMenu(profile);
         drawMenuAddingPerformer(profile);
@@ -167,28 +166,6 @@ public class ProfileActivity extends BaseActivity {
         });
     }
 
-    private void drawEditTravelMode(final Profile profile) {
-//        if (profile.getTravelMode() == TravelMode.none) {
-//            findViewById(R.id.hostLayout).setEnabled(false);
-//            findViewById(R.id.switchHost).setEnabled(false);
-//        } else {
-//            findViewById(R.id.hostLayout).setEnabled(true);
-//            findViewById(R.id.switchHost).setEnabled(true);
-//        }
-
-        //setTravelModeStatus(profile);
-
-        //findViewById(R.id.editTravelMode).setVisibility(View.VISIBLE);
-//        findViewById(R.id.travelModeLayout).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(ProfileActivity.this, TravelModeListActivity.class);
-//                startActivityForResult(intent, TravelModeListActivity.CODE);
-//            }
-//        });
-
-    }
-
     private void drawEditHost(final Profile profile) {
         findViewById(R.id.switchHost).setVisibility(View.VISIBLE);
         ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
@@ -260,11 +237,6 @@ public class ProfileActivity extends BaseActivity {
             findViewById(R.id.invalidPhotoText).setVisibility(View.INVISIBLE);
         }
     }
-
-//    private void setTravelModeStatus(Profile profile) {
-//        ((TextView) findViewById(R.id.travelModeName)).setText(getText(profile.getTravelMode().getName()));
-//        ((ImageView) findViewById(R.id.travelModeImage)).setImageResource(profile.getTravelMode().getImage());
-//    }
 
     private void setHostStatus(boolean isChecked, Profile profile) {
         if (isChecked) {

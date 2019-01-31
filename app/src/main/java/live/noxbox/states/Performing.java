@@ -24,6 +24,7 @@ import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.BalanceChecker;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.LogEvents;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Task;
 
@@ -47,6 +48,9 @@ public class Performing implements State {
         this.activity = activity;
         this.googleMap = googleMap;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+
+        LogEvents.generateLogEvent(activity, "noxbox_performing");
+
         AppCache.readProfile(profile -> GeoRealtime.removePosition(profile.getCurrent().getId()));
     }
 
@@ -148,23 +152,20 @@ public class Performing implements State {
 //                updateNoxbox();
 //            }
 //        }));
-        ProSwipeButton proSwipeBtn = (ProSwipeButton) activity.findViewById(R.id.proSwipeButton);
-        proSwipeBtn.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
-            @Override
-            public void onSwipeConfirm() {
-                proSwipeBtn.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
-                new android.os.Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        long timeCompleted = System.currentTimeMillis();
+        ProSwipeButton proSwipeBtn = activity.findViewById(R.id.proSwipeButton);
+        proSwipeBtn.setOnSwipeListener(() -> {
+            proSwipeBtn.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
+            new android.os.Handler().postDelayed(() -> {
+                long timeCompleted = System.currentTimeMillis();
 
-                        Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
+                Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
 
-                        profile.getCurrent().setTimeCompleted(timeCompleted);
-                        updateNoxbox();
-                    }
-                }, 0);
-            }
+                profile.getCurrent().setTimeCompleted(timeCompleted);
+
+                LogEvents.generateLogEvent(activity, "noxbox_completed");
+
+                updateNoxbox();
+            }, 0);
         });
     }
 

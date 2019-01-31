@@ -37,6 +37,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
+import live.noxbox.tools.LogEvents;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
@@ -80,6 +81,9 @@ public class Moving implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+
+        LogEvents.generateLogEvent(activity, "noxbox_moving");
+
         readProfile(profile -> memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition());
     }
 
