@@ -4,7 +4,7 @@
     <!--Service descriptions-->
     <string name="waterDescription">Питьевая вода объемом не менее одного литра</string>
     <string name="plantDescription">Доставка и посадка деревьев-саженцев, садовник должен иметь при себе саженец и лопату</string>
-    <string name="nannyDescription">Добрая и заботливая няня с огнем в глазам и теплом в руках</string>
+    <string name="nannyDescription">Добрая и заботливая няня с огнем в глазах и теплом в руках</string>
     <string name="haircutDescription">Парикмахер обязан иметь при себе инструменты для стрижки</string>
     <string name="photographerDescription">Фотограф обязан поделиться фотографиями сразу после съемки</string>
     <string name="meditationDescription">Обучение медитации</string>

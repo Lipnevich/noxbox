@@ -31,7 +31,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         await admin.messaging().send(push);
         console.log('push sent' + JSON.stringify(push));
     } else if(!previousNoxbox.timeAccepted && noxbox.timeAccepted) {
-        let payer = noxbox.role == 'demand' ? noxbox.owner : noxbox.party;
+        let payer = noxbox.role === 'demand' ? noxbox.owner : noxbox.party;
         let balance = await wallet.balance(payer.wallet.address);
 
         let push;

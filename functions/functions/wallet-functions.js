@@ -24,6 +24,7 @@ exports.send = async request => {
 
     let response = await Waves.API.Node.v1.addresses.balance(request.seed.address);
     let balance = new BigDecimal('' + response.balance);
+    console.log('balance', response.balance);
 
     if(!request.transferable) {
         if(!response || balance.eq(new BigDecimal('0'))) return;

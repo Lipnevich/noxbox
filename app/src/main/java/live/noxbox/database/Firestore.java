@@ -90,6 +90,7 @@ public class Firestore {
         if (current.getId() == null) {
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
+            current.setAvailable(true);
         }
         // ids for activity_history queries
         if (current.getRole() == MarketRole.supply) {

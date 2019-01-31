@@ -419,6 +419,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         profile.setCurrent(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
+        profile.getCurrent().setAvailable(false);
         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
 
         AppCache.updateNoxbox();

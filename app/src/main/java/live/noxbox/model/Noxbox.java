@@ -44,6 +44,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private WorkSchedule workSchedule;
     private String ownerComment;
     private String estimationTime;
+    private Boolean available;
+
 
     // Noxbox specific data
     private Long timeCreated;
@@ -73,6 +75,7 @@ public class Noxbox implements Comparable<Noxbox> {
         getChat().setPartyReadTime(null);
         party = null;
         performerId = null;
+        available = true;
         ownerComment = null;
         payerId = null;
         estimationTime = null;
@@ -484,6 +487,16 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setOwnerComment(String ownerComment) {
         this.ownerComment = ownerComment;
+        return this;
+    }
+
+    public Boolean getAvailable() {
+        if(available == null) available = true;
+        return available;
+    }
+
+    public Noxbox setAvailable(Boolean available) {
+        this.available = available;
         return this;
     }
 }
