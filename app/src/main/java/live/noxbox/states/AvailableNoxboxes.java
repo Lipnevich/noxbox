@@ -118,9 +118,7 @@ public class AvailableNoxboxes implements State {
             return true;
         });
 
-        activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
-            activity.getDeviceLocation(profile);
-        });
+        activity.findViewById(R.id.locationButton).setOnClickListener(v -> activity.getDeviceLocation(profile));
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
             //TODO (vl) при повторном выборе услуги в фильтрах не происходит перерисовка услуг соответствующих выбранной
