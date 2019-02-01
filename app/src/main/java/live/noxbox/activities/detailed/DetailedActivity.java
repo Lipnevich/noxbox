@@ -153,7 +153,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawOppositeProfile(Profile me) {
         Profile other = me.getViewed().getNotMe(me.getId());
         if (other.getName() != null && other.getPhoto() != null) {
-
+            findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
             ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), ((ImageView) findViewById(R.id.profilePhoto)));
             ((TextView) findViewById(R.id.profileName)).setText(other.getName());
         }

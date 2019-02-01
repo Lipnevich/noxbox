@@ -49,6 +49,7 @@ import live.noxbox.tools.Router;
 import static live.noxbox.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.REQUEST_IMAGE_CAPTURE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.ImageManager.createCircleImageFromBitmap;
 import static live.noxbox.tools.ImageManager.createCircleProfilePhotoFromUrl;
 import static live.noxbox.tools.ImageManager.getBitmap;
@@ -122,6 +123,7 @@ public class ProfileActivity extends BaseActivity {
     private void drawEditName(final Profile profile) {
         final EditText name = findViewById(R.id.name);
         name.getBackground().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+
         findViewById(R.id.editName).setOnClickListener(view -> {
             name.requestFocus();
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -147,6 +149,13 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String newName = String.valueOf(s);
+                if(profile.getCurrent() != null && profile.getNoxboxId() != null && !isNullOrZero(profile.getCurrent().getTimeCreated())){
+                    inputLayout.requestFocus();
+                    inputLayout.setFocusable(true);
+                    inputLayout.setErrorEnabled(true);
+                    inputLayout.setError("* " + getString(R.string.messageCannotChangeName));
+                    return;
+                }
                 if (!Strings.nullToEmpty(profile.getName()).equals(newName)) {
                     profile.setName(newName);
                 }

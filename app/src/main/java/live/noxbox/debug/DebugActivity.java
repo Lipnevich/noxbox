@@ -50,7 +50,7 @@ public class DebugActivity extends MenuActivity implements
             .setId("12321")
             .setWallet(new Wallet().setBalance("1000000"))
             .setPosition(new Position().setLongitude(27.609018).setLatitude(53.901399))
-            .setTravelMode(TravelMode.driving)
+            .setTravelMode(TravelMode.bicycling)
             .setHost(true)
             .setName("Granny Smith")
             .setPhoto(NoxboxExamples.PHOTO_MOCK);
