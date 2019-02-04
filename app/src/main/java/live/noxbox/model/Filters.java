@@ -7,7 +7,6 @@ public class Filters {
 
     private Boolean supply = true;
     private Boolean demand = true;
-    private Boolean badWorker = true;
     private Boolean allowNovices = true;
     private Integer price;
     private Map<String, Boolean> types = new HashMap<>();
@@ -82,12 +81,4 @@ public class Filters {
         return this;
     }
 
-    public Boolean getBadWorker() {
-        return badWorker;
-    }
-
-    public Filters setBadWorker(Boolean badWorker) {
-        this.badWorker = badWorker;
-        return this;
-    }
 }

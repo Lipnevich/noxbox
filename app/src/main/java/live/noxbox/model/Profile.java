@@ -1,7 +1,5 @@
 package live.noxbox.model;
 
-import android.support.annotation.NonNull;
-
 import com.google.common.base.Objects;
 
 import java.io.Serializable;
@@ -12,20 +10,17 @@ import static live.noxbox.Constants.MIN_RATE_IN_PERCENTAGE;
 
 public class Profile implements Serializable {
 
-    // read only
     private String id;
 
-    private Acceptance acceptance = new Acceptance();
+    private Acceptance acceptance;
     private Map<String, Boolean> darkList = new HashMap<>();
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
     private Map<String, Portfolio> portfolio = new HashMap<>();
     private Wallet wallet;
 
-    // writable
     private String name;
     private String photo;
-    private NotificationKeys notificationKeys;
     private String noxboxId;
     @Virtual
     private Noxbox current;
@@ -113,6 +108,9 @@ public class Profile implements Serializable {
     }
 
     public Acceptance getAcceptance() {
+        if(acceptance == null) {
+            acceptance = new Acceptance();
+        }
         return acceptance;
     }
 
@@ -142,30 +140,18 @@ public class Profile implements Serializable {
         return this;
     }
 
-    @NonNull
-    public NotificationKeys getNotificationKeys() {
-        if (notificationKeys == null) {
-            notificationKeys = new NotificationKeys();
-        }
-        return notificationKeys;
-    }
-
-    public Profile setNotificationKeys(NotificationKeys notificationKeys) {
-        this.notificationKeys = notificationKeys;
-        return this;
-    }
-
     public Profile publicInfo() {
-        return new Profile().setId(id)
-                .setPosition(position)
-                .setSuppliesRating(suppliesRating)
-                .setDemandsRating(demandsRating)
-                .setTravelMode(travelMode)
-                .setHost(host);
+        return new Profile().setId(getId())
+                .setPosition(getPosition())
+                .setFilters(getFilters())
+                .setSuppliesRating(getSuppliesRating())
+                .setDemandsRating(getDemandsRating())
+                .setTravelMode(getTravelMode())
+                .setHost(getHost());
     }
 
     public Profile privateInfo() {
-        return publicInfo().setWallet(wallet).setName(name).setPhoto(photo);
+        return publicInfo().setWallet(getWallet()).setName(getName()).setPhoto(getPhoto());
     }
 
     public Noxbox getViewed() {

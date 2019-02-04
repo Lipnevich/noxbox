@@ -89,7 +89,6 @@ public class MapActivity extends DebugActivity implements
 
         initCrashReporting();
 
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Router.startActivity(this, AuthActivity.class);
@@ -157,7 +156,6 @@ public class MapActivity extends DebugActivity implements
             updateLocationUI();
             getDeviceLocation(profile);
         });
-        //visibleCurrentLocation();
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveCopyrightLeft(googleMap);
@@ -215,13 +213,6 @@ public class MapActivity extends DebugActivity implements
             Crashlytics.logException(e);
         }
     }
-
-//    protected int getEstimationInMinutes(Position from, Position to, TravelMode travelMode) {
-//        float distanceInMeters = from.toLocation()
-//                .distanceTo(to.toLocation());
-//        int estimationInMinutes = (int) (distanceInMeters / travelMode.getSpeedInMetersPerMinute());
-//        return estimationInMinutes > 0 ? estimationInMinutes : 1;
-//    }
 
     public static void getLocationPermission(Activity activity) {
         if (ContextCompat.checkSelfPermission(activity.getApplicationContext(),
@@ -318,7 +309,7 @@ public class MapActivity extends DebugActivity implements
 
         switch (state) {
             case initial:
-                newState = new AvailableNoxboxes(googleMap, googleApiClient, this);
+                newState = new AvailableNoxboxes(googleMap, this);
                 break;
             case created:
                 newState = new Created(googleMap, this);
@@ -333,7 +324,7 @@ public class MapActivity extends DebugActivity implements
                 newState = new Moving(googleMap, this);
                 break;
             case performing:
-                newState = new Performing(this, googleMap);
+                newState = new Performing(googleMap, this);
                 break;
             default:
                 throw new IllegalStateException("Unknown state: " + state.name());
