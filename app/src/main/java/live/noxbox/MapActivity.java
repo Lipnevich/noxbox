@@ -65,6 +65,7 @@ import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.LocationPermitOperator.locationPermissionGranted;
+import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.LogEvents.generateLogEvent;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
@@ -153,7 +154,6 @@ public class MapActivity extends DebugActivity implements
             updateLocationUI();
             getDeviceLocation(profile);
         });
-        //visibleCurrentLocation();
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveCopyrightLeft(googleMap);
@@ -282,7 +282,7 @@ public class MapActivity extends DebugActivity implements
 
         switch (state) {
             case initial:
-                newState = new AvailableNoxboxes(googleMap, googleApiClient, this);
+                newState = new AvailableNoxboxes(googleMap, this);
                 break;
             case created:
                 newState = new Created(googleMap, this);
@@ -297,7 +297,7 @@ public class MapActivity extends DebugActivity implements
                 newState = new Moving(googleMap, this);
                 break;
             case performing:
-                newState = new Performing(this, googleMap);
+                newState = new Performing(googleMap, this);
                 break;
             default:
                 throw new IllegalStateException("Unknown state: " + state.name());

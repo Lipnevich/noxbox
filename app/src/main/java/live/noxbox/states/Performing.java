@@ -45,7 +45,7 @@ public class Performing implements State {
     private static long seconds = 0;
     private static BigDecimal totalMoney;
 
-    public Performing(final Activity activity, final GoogleMap googleMap) {
+    public Performing(final GoogleMap googleMap, final Activity activity) {
         this.activity = activity;
         this.googleMap = googleMap;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());

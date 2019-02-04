@@ -1,12 +1,10 @@
 package live.noxbox.menu.about.tutorial;
 
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,14 +19,11 @@ import com.bumptech.glide.request.transition.Transition;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
-import live.noxbox.debug.GMailSender;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.TUTORIAL_KEY;
-import static live.noxbox.debug.Screenshot.saveToInternalStorage;
-import static live.noxbox.debug.Screenshot.takeScreenshot;
 
 public class TutorialActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
@@ -52,24 +47,6 @@ public class TutorialActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             if (viewPager != null) {
-                saveToInternalStorage(takeScreenshot(TutorialActivity.this), TutorialActivity.this);
-                String mail = "TutorialActivity Screenshot";
-                AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        try {
-                            GMailSender sender = new GMailSender("testnoxbox2018@gmail.com", "noxboxtest");
-                            sender.sendMail("deviceInfo",
-                                    mail,
-                                    "testnoxbox2018@gmail.com",
-                                    "support@noxbox.live");
-                        } catch (Exception e) {
-                            Log.e("GMailSender.class", e.getMessage(), e);
-                        }
-                        return null;
-                    }
-                }.execute();
-
                 if (tutorialKey != null && tutorialKey.equals(TUTORIAL_KEY)) {
                     Router.startActivity(TutorialActivity.this, MapActivity.class);
                     finish();
