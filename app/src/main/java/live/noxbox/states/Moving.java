@@ -48,7 +48,6 @@ import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIB
 import static android.location.LocationManager.GPS_PROVIDER;
 import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
 import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
-import static live.noxbox.MapActivity.isLocationPermissionGranted;
 import static live.noxbox.database.AppCache.readProfile;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
 import static live.noxbox.model.MarketRole.demand;
@@ -56,6 +55,7 @@ import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
+import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.moveCopyrightRight;

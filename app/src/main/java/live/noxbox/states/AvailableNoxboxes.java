@@ -26,11 +26,11 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.MapActivity.getCameraPosition;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
+import static live.noxbox.tools.MapOperator.getCameraPosition;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
@@ -67,6 +67,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> activity.getDeviceLocation(profile));
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
@@ -132,6 +133,8 @@ public class AvailableNoxboxes implements State {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
+            AvailableNoxboxesService.LocalBinder binder = (AvailableNoxboxesService.LocalBinder) service;
+            // AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
 
             Log.d("AvailableNoxboxes", "onServiceConnected()");

@@ -25,6 +25,7 @@ import live.noxbox.cluster.NoxboxMarker;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
@@ -173,6 +174,13 @@ public class MapOperator {
         polyline = googleMap.addPolyline(polylineOptions);
         polyline.setPattern(pattern);
         polyline.setGeodesic(true);
+    }
+
+    public static Position getCameraPosition(GoogleMap googleMap) {
+        if (googleMap == null) return null;
+        LatLng latLng = googleMap.getCameraPosition().target;
+
+        return Position.from(latLng);
     }
 
 }

@@ -39,6 +39,7 @@ import live.noxbox.R;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.about.AboutApplicationActivity;
 import live.noxbox.menu.settings.MapSettingsActivity;
 import live.noxbox.menu.history.HistoryActivity;
@@ -64,13 +65,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(MenuActivity.class.getName(), new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                draw(MenuActivity.this, profile);
-
-            }
-        });
+        AppCache.listenProfile(MenuActivity.class.getName(), profile -> draw(MenuActivity.this, profile));
     }
 
     @Override
@@ -112,12 +107,9 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
-        findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-                initializeNavigationHeader(activity, profile);
-            }
+        findViewById(R.id.menu).setOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START);
+            initializeNavigationHeader(activity, profile);
         });
     }
 
@@ -156,7 +148,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             isInitial = true;
         }
     }
-
 
 
     @Override

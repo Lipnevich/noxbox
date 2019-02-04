@@ -1,14 +1,11 @@
 package live.noxbox.activities.contract;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -59,14 +56,18 @@ import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
 import static live.noxbox.database.AppCache.showPriceInUsd;
+import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
+import static live.noxbox.tools.LocationPermitOperator.getLocationPermission;
+import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
 
 public class ContractActivity extends BaseActivity {
 
@@ -101,11 +102,6 @@ public class ContractActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         AppCache.stopListen(ContractActivity.class.getName());
-    }
-
-    protected boolean checkLocationPermission() {
-        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED;
     }
 
     private void draw(@NonNull final Profile profile) {
@@ -232,7 +228,7 @@ public class ContractActivity extends BaseActivity {
     private void drawHost(final Profile profile) {
         CheckBox checkBox = findViewById(R.id.isHost);
         //at least one option should be selected travel mode or host
-        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none) {
+        if (profile.getCurrent().getOwner().getTravelMode() == none) {
             checkBox.setChecked(true);
             checkBox.setEnabled(false);
             profile.getCurrent().getOwner().setHost(true);
@@ -258,7 +254,7 @@ public class ContractActivity extends BaseActivity {
             @Override
             protected String doInBackground(Void... voids) {
                 String address;
-                if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none || profile.getCurrent().getOwner().getHost()) {
+                if (profile.getCurrent().getOwner().getTravelMode() == none || profile.getCurrent().getOwner().getHost()) {
                     address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition());
                 } else {
                     address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition()) + " " + getResources().getString(R.string.change);
@@ -270,7 +266,7 @@ public class ContractActivity extends BaseActivity {
             @Override
             protected void onPostExecute(String address) {
                 final TextView addressView = findViewById(R.id.textAddress);
-                if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none || profile.getCurrent().getOwner().getHost()) {
+                if (profile.getCurrent().getOwner().getTravelMode() == none || profile.getCurrent().getOwner().getHost()) {
                     SpannableStringBuilder spanTxt =
                             new SpannableStringBuilder(address);
                     spanTxt.append(" ");
@@ -321,24 +317,22 @@ public class ContractActivity extends BaseActivity {
         for (TravelMode mode : TravelMode.values()) {
             popup.getMenu().add(Menu.NONE, mode.getId(), Menu.NONE, mode.getName());
         }
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                TravelMode travelMode = TravelMode.byId(item.getItemId());
-                profile.getCurrent().getOwner().setTravelMode(travelMode);
+        popup.setOnMenuItemClickListener(item -> {
+            TravelMode travelMode = TravelMode.byId(item.getItemId());
+            profile.getCurrent().getOwner().setTravelMode(travelMode);
 
 
-                if (travelMode == TravelMode.none) {
-                    profile.getCurrent().getOwner().setHost(true);
-                    ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
-                    ((CheckBox) findViewById(R.id.isHost)).setEnabled(false);
-                } else {
-                    if (checkLocationPermission()) {
-                        ActivityCompat.requestPermissions(ContractActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-                    }
+            if (travelMode == none) {
+                profile.getCurrent().getOwner().setHost(true);
+                ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
+                ((CheckBox) findViewById(R.id.isHost)).setEnabled(false);
+            } else {
+                if (!isLocationPermissionGranted(getApplicationContext())) {
+                    getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
                 }
-                draw(profile);
-                return true;
             }
+            draw(profile);
+            return true;
         });
         popup.show();
     }
@@ -381,7 +375,7 @@ public class ContractActivity extends BaseActivity {
 
     private void drawCommentView(Profile profile) {
         EditText editComment = findViewById(R.id.editComment);
-        if(!Strings.isNullOrEmpty(profile.getCurrent().getOwnerComment())) {
+        if (!Strings.isNullOrEmpty(profile.getCurrent().getOwnerComment())) {
             editComment.setText(profile.getCurrent().getOwnerComment());
         }
         editComment.addTextChangedListener(new TextWatcher() {
@@ -436,8 +430,85 @@ public class ContractActivity extends BaseActivity {
                 openNameNotVerifySheetDialog(ContractActivity.this, profile);
                 return;
             }
-            postNoxbox(profile);
+
+            if (profile.getCurrent().getOwner().getTravelMode() != none) {
+                if (isLocationPermissionGranted(getApplicationContext())) {
+                    postNoxbox();
+                } else {
+                    getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
+                }
+            } else {
+                postNoxbox();
+            }
+
+
         });
+    }
+
+
+    private void setHeightForDropdownList(Spinner spinner) {
+        try {
+            Field popup = Spinner.class.getDeclaredField("mPopup");
+            popup.setAccessible(true);
+
+            android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(spinner);
+
+            popupWindow.setHeight(500);
+        } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
+            Crashlytics.logException(e);
+        }
+    }
+
+    public void postNoxbox() {
+        Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
+
+        AppCache.noxboxCreated(profile -> {
+                    Router.finishActivity(ContractActivity.this);
+                },
+                profile -> {
+                    profile.getCurrent().clean();
+                    Router.finishActivity(ContractActivity.this);
+                });
+    }
+
+    public void removeNoxbox() {
+        AppCache.removeNoxbox();
+        Router.finishActivity(ContractActivity.this);
+    }
+
+    private void cancelNoxboxConstructor() {
+        Router.finishActivity(ContractActivity.this);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (!isLocationPermissionGranted(getApplicationContext())) {
+                AppCache.readProfile(profile -> {
+                    profile.getCurrent().getOwner().setTravelMode(none);
+                    draw(profile);
+                });
+            }
+        }
+
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH) {
+            if (isLocationPermissionGranted(getApplicationContext())) {
+                postNoxbox();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == COORDINATE && resultCode == RESULT_OK) {
+            final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
+            AppCache.readProfile(profile -> profile.getCurrent().setPosition(position));
+        }
     }
 
 
@@ -468,7 +539,7 @@ public class ContractActivity extends BaseActivity {
                     }
 
                     //travelmode
-                    if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none && item.getNoxbox().getOwner().getTravelMode() == TravelMode.none) {
+                    if (profile.getCurrent().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
                         continue;
                     }
 
@@ -504,59 +575,6 @@ public class ContractActivity extends BaseActivity {
                 }
             }
         }.execute();
-    }
-
-    private void setHeightForDropdownList(Spinner spinner) {
-        try {
-            Field popup = Spinner.class.getDeclaredField("mPopup");
-            popup.setAccessible(true);
-
-            android.widget.ListPopupWindow popupWindow = (android.widget.ListPopupWindow) popup.get(spinner);
-
-            popupWindow.setHeight(500);
-        } catch (NoClassDefFoundError | ClassCastException | NoSuchFieldException | IllegalAccessException e) {
-            Crashlytics.logException(e);
-        }
-    }
-
-    public void postNoxbox(Profile profile) {
-        Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
-
-        AppCache.noxboxCreated();
-
-        Router.finishActivity(ContractActivity.this);
-    }
-
-    public void removeNoxbox() {
-        AppCache.removeNoxbox();
-        Router.finishActivity(ContractActivity.this);
-    }
-
-    private void cancelNoxboxConstructor() {
-        Router.finishActivity(ContractActivity.this);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (checkLocationPermission()) {
-                AppCache.readProfile(profile -> {
-                    profile.getCurrent().getOwner().setTravelMode(TravelMode.none);
-                    draw(profile);
-                });
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == COORDINATE && resultCode == RESULT_OK) {
-            final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-            AppCache.readProfile(profile -> profile.getCurrent().setPosition(position));
-        }
     }
 
 }

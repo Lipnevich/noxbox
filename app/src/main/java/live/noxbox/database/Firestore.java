@@ -2,7 +2,9 @@ package live.noxbox.database;
 
 import android.support.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -13,7 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.lang.reflect.Field;
@@ -53,28 +54,39 @@ public class Firestore {
 
     // Current human_profile
     private static ListenerRegistration profileListener;
-    public static void listenProfile(@NonNull final Task<Profile> task) {
-        if(profileListener != null) profileListener.remove();
 
-        profileListener = profileReference().addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-                if (snapshot != null && snapshot.exists()) {
-                    Profile profile = snapshot.toObject(Profile.class);
-                    task.execute(profile);
-                }
+    public static void listenProfile(@NonNull final Task<Profile> task) {
+        if (profileListener != null) profileListener.remove();
+
+        profileListener = profileReference().addSnapshotListener((snapshot, e) -> {
+            if (snapshot != null && snapshot.exists()) {
+                Profile profile = snapshot.toObject(Profile.class);
+                task.execute(profile);
             }
         });
     }
 
-    public static void writeProfile(final Profile profile) {
-        profileReference().set(objectToMap(profile), SetOptions.merge());
+    public static void writeProfile(final Profile profile, Task<Profile> onSuccess) {
+        profileReference().set(objectToMap(profile), SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        onSuccess.execute(profile);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Crashlytics.logException(e);
+                    }
+                });
     }
 
     // Current noxbox
     private static ListenerRegistration noxboxListener;
+
     public static void listenNoxbox(@NonNull String noxboxId, @NonNull final Task<Noxbox> task) {
-        if(noxboxListener != null) noxboxListener.remove();
+        if (noxboxListener != null) noxboxListener.remove();
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -87,7 +99,7 @@ public class Firestore {
         });
     }
 
-    public static void writeNoxbox(final Noxbox current) {
+    public static void writeNoxbox(final Noxbox current, Profile profile, Task<Noxbox> onSuccess, Task<Profile> onFailure) {
         if (current.getId() == null) {
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
@@ -101,40 +113,47 @@ public class Firestore {
             current.setPayerId(current.getOwner().getId());
         }
 
-        noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge());
+        noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        onSuccess.execute(current);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Crashlytics.logException(e);
+                        onFailure.execute(profile);
+                    }
+                });
 
-        if(!isNullOrZero(current.getTimeCompleted())){
+        if (!isNullOrZero(current.getTimeCompleted())) {
             GeoRealtime.offline(current);
         }
     }
 
-    public static void readNoxbox(String noxboxId, final Task<Noxbox> task){
-        noxboxReference(noxboxId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DocumentSnapshot> completion) {
-                if(!completion.isSuccessful()) return;
-                DocumentSnapshot snapshot = completion.getResult();
-                if (snapshot != null && snapshot.exists()) {
-                    Noxbox noxbox = snapshot.toObject(Noxbox.class);
-                    task.execute(noxbox);
-                }
+    public static void readNoxbox(String noxboxId, final Task<Noxbox> task) {
+        noxboxReference(noxboxId).get().addOnCompleteListener(completion -> {
+            if (!completion.isSuccessful()) return;
+            DocumentSnapshot snapshot = completion.getResult();
+            if (snapshot != null && snapshot.exists()) {
+                Noxbox noxbox = snapshot.toObject(Noxbox.class);
+                task.execute(noxbox);
             }
         });
     }
 
     public static void readHistory(long start, int count, MarketRole role, final Task<Collection<Noxbox>> task) {
         noxboxes(start, count, role)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull com.google.android.gms.tasks.Task<QuerySnapshot> result) {
-                Collection<Noxbox> noxboxes = new ArrayList<>();
-                if (result.isSuccessful() && result.getResult() != null) {
-                    for (QueryDocumentSnapshot document : result.getResult()) {
-                        noxboxes.add(document.toObject(Noxbox.class));
-                    }
+                .get().addOnCompleteListener(result -> {
+            Collection<Noxbox> noxboxes = new ArrayList<>();
+            if (result.isSuccessful() && result.getResult() != null) {
+                for (QueryDocumentSnapshot document : result.getResult()) {
+                    noxboxes.add(document.toObject(Noxbox.class));
                 }
-                task.execute(noxboxes);
             }
+            task.execute(noxboxes);
         });
     }
 

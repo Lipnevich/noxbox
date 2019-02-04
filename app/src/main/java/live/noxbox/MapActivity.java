@@ -13,7 +13,6 @@
  */
 package live.noxbox;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -21,8 +20,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -66,6 +63,8 @@ import live.noxbox.tools.Router;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
+import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.LocationPermitOperator.locationPermissionGranted;
 import static live.noxbox.tools.LogEvents.generateLogEvent;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
@@ -80,8 +79,6 @@ public class MapActivity extends DebugActivity implements
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
-
-    public static boolean locationPermissionGranted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,12 +167,6 @@ public class MapActivity extends DebugActivity implements
 
     private LocationReceiver locationReceiver;
 
-
-    public static boolean isLocationPermissionGranted(final Context context) {
-        return ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
     protected boolean isGpsEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -214,24 +205,11 @@ public class MapActivity extends DebugActivity implements
         }
     }
 
-    public static void getLocationPermission(Activity activity) {
-        if (ContextCompat.checkSelfPermission(activity.getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            locationPermissionGranted = false;
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_PERMISSION_REQUEST_CODE);
 
-        }
-    }
 
     public void getDeviceLocation(Profile profile) {
-        getLocationPermission(this);
         try {
-            if (locationPermissionGranted) {
+            if (locationPermissionGranted && isLocationPermissionGranted(getApplicationContext())) {
                 com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(this, (OnCompleteListener) task -> {
                     if (task.isSuccessful()) {
@@ -242,7 +220,7 @@ public class MapActivity extends DebugActivity implements
                             profile.setPosition(Position.from(new LatLng(position.getLatitude(),
                                     position.getLongitude())));
                             MapOperator.buildMapPosition(googleMap, getApplicationContext());
-                            Firestore.writeProfile(profile);
+                            Firestore.writeProfile(profile, objectProfile -> { });
                         }
                     } else {
                         Crashlytics.logException(task.getException());
@@ -254,12 +232,6 @@ public class MapActivity extends DebugActivity implements
         }
     }
 
-    public static Position getCameraPosition(GoogleMap googleMap) {
-        if (googleMap == null) return null;
-        LatLng latLng = googleMap.getCameraPosition().target;
-
-        return Position.from(latLng);
-    }
 
     private State currentState;
 
