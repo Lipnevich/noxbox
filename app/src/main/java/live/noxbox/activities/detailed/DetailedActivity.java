@@ -414,10 +414,10 @@ public class DetailedActivity extends AppCompatActivity {
         AppCache.updateNoxbox();
 
         GeoRealtime.offline(profile.getCurrent());
+
         if (AppCache.availableNoxboxes.get(profile.getNoxboxId()) != null) {
             AppCache.availableNoxboxes.remove(profile.getNoxboxId());
         }
-
         Router.finishActivity(DetailedActivity.this);
     }
 

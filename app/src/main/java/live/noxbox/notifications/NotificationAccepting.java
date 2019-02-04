@@ -14,6 +14,7 @@ import live.noxbox.R;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.Profile;
 
+import static live.noxbox.database.AppCache.NONE;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class NotificationAccepting extends Notification {
@@ -52,7 +53,7 @@ public class NotificationAccepting extends Notification {
         Firestore.readNoxbox(noxboxId, noxbox -> {
             if (isNullOrZero(noxbox.getTimeAccepted())) {
                 noxbox.setTimeTimeout(System.currentTimeMillis());
-                Firestore.writeNoxbox(noxbox);
+                Firestore.writeNoxbox(noxbox, null, NONE, NONE);
             }
         });
 

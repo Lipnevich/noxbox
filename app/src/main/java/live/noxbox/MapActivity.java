@@ -221,7 +221,7 @@ public class MapActivity extends DebugActivity implements
                             profile.setPosition(Position.from(new LatLng(position.getLatitude(),
                                     position.getLongitude())));
                             MapOperator.buildMapPosition(googleMap, getApplicationContext());
-                            Firestore.writeProfile(profile);
+                            Firestore.writeProfile(profile, objectProfile -> { });
                         }
                     } else {
                         Crashlytics.logException(task.getException());

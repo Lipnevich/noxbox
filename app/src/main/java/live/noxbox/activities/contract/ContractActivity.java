@@ -446,7 +446,6 @@ public class ContractActivity extends BaseActivity {
     }
 
 
-
     private void setHeightForDropdownList(Spinner spinner) {
         try {
             Field popup = Spinner.class.getDeclaredField("mPopup");
@@ -463,9 +462,13 @@ public class ContractActivity extends BaseActivity {
     public void postNoxbox() {
         Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
 
-        AppCache.noxboxCreated();
-
-        Router.finishActivity(ContractActivity.this);
+        AppCache.noxboxCreated(profile -> {
+                    Router.finishActivity(ContractActivity.this);
+                },
+                profile -> {
+                    profile.getCurrent().clean();
+                    Router.finishActivity(ContractActivity.this);
+                });
     }
 
     public void removeNoxbox() {
@@ -507,7 +510,6 @@ public class ContractActivity extends BaseActivity {
             AppCache.readProfile(profile -> profile.getCurrent().setPosition(position));
         }
     }
-
 
 
     private List<NoxboxMarker> noxboxes;

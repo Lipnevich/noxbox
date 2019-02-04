@@ -1,8 +1,10 @@
 package live.noxbox.database;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -36,7 +38,8 @@ public class AppCache {
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
 
-    private static final Task NONE = noxbox -> { };
+    public static final Task NONE = noxbox -> {
+    };
 
     public static void startListening() {
         if (profile == null
@@ -88,9 +91,10 @@ public class AppCache {
         if (!equal(profile.getCurrent().getId(), profile.getNoxboxId())) {
             profile.setNoxboxId(profile.getCurrent().getId());
         }
-        writeProfile(profile);
-        Crashlytics.log(Log.DEBUG, "fireProfile()", profile.getName());
-        executeUITasks();
+        writeProfile(profile, profile -> {
+            Crashlytics.log(Log.DEBUG, "fireProfile()", profile.getName());
+            executeUITasks();
+        });
     }
 
     private static void executeUITasks() {
@@ -117,7 +121,7 @@ public class AppCache {
         if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
             removeNoxbox();
         }
-        for(String noxboxId : ids) {
+        for (String noxboxId : ids) {
             stopListenNoxbox(noxboxId);
         }
         Firestore.listenProfile(NONE);
@@ -130,16 +134,13 @@ public class AppCache {
         if (noxboxId == null || ids.contains(noxboxId)) return;
         ids.add(noxboxId);
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId);
-        Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
-            @Override
-            public void execute(Noxbox noxbox) {
-                if(noxbox.getId().equals(profile.getNoxboxId())) {
-                    profile.setCurrent(noxbox);
-                } else {
-                    profile.setViewed(noxbox);
-                }
-                executeUITasks();
+        Firestore.listenNoxbox(noxboxId, noxbox -> {
+            if (noxbox.getId().equals(profile.getNoxboxId())) {
+                profile.setCurrent(noxbox);
+            } else {
+                profile.setViewed(noxbox);
             }
+            executeUITasks();
         });
     }
 
@@ -149,7 +150,7 @@ public class AppCache {
     }
 
 
-    public static void noxboxCreated() {
+    public static void noxboxCreated(Task<Profile> onSuccess, Task<Profile> onFailure) {
         if (profile == null) return;
 
         // remove previous noxbox
@@ -160,41 +161,56 @@ public class AppCache {
         } else {
             profile.getCurrent().getOwner().setPortfolio(null);
         }
-        writeNoxbox(profile.getCurrent());
-        profile.setNoxboxId(profile.getCurrent().getId());
 
-        writeProfile(profile);
-        online(profile.getCurrent());
+        writeNoxbox(profile.getCurrent(), profile, noxbox -> {
+            profile.setNoxboxId(noxbox.getId());
+            writeProfile(profile, profile -> online(profile.getCurrent()));
+            onSuccess.execute(profile);
+        }, onFailure);
+
     }
+
 
     public static void removeNoxbox() {
         if (profile == null) return;
         String noxboxId = profile.getNoxboxId();
         if (noxboxId != null) {
-            FirebaseMessaging.getInstance().unsubscribeFromTopic(noxboxId);
-            offline(profile.getCurrent());
-            writeNoxbox(new Noxbox().setId(profile.getNoxboxId()).setTimeRemoved(System.currentTimeMillis()));
-            stopListenNoxbox(noxboxId);
-            profile.setNoxboxId(null);
-            profile.getCurrent().clean();
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(noxboxId)
+                    .addOnSuccessListener(aVoid -> {
+                        offline(profile.getCurrent());
+                        writeNoxbox(new Noxbox().setId(profile.getNoxboxId()).setTimeRemoved(System.currentTimeMillis()),
+                                null,
+                                noxbox -> {
+                                    stopListenNoxbox(noxboxId);
+                                    profile.setNoxboxId(null);
+                                    profile.getCurrent().clean();
+                                    writeProfile(profile, NONE);
+                                },
+                                NONE);
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Crashlytics.logException(e);
+                        }
+                    });
 
-            writeProfile(profile);
+
         }
     }
 
     public static void updateNoxbox() {
         if (profile == null) return;
-        writeNoxbox(profile.getCurrent());
-        executeUITasks();
+        writeNoxbox(profile.getCurrent(), null, noxbox -> executeUITasks(), NONE);
+
     }
 
     public static String showPriceInUsd(String currency, String price) {
-        if(wavesToUsd != null) {
+        if (wavesToUsd != null) {
             BigDecimal priceInWaves = new BigDecimal(price.replaceAll(",", "\\."));
             BigDecimal priceInUSD = priceInWaves.multiply(wavesToUsd);
             return currency + " (" + priceInUSD + "$)";
         }
         return "";
     }
-
 }
