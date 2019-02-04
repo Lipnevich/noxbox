@@ -15,15 +15,15 @@ public class TutorialAdapter extends FragmentPagerAdapter {
     public android.support.v4.app.Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return TutorialFragment.newInstance(R.string.toOrder, 1);
+                return TutorialFragment.newInstance(R.string.tutorial_one, 1);
             case 1:
-                return TutorialFragment.newInstance(R.string.toFind, 2);
+                return TutorialFragment.newInstance(R.string.tutorial_two, 2);
             case 2:
-                return TutorialFragment.newInstance(R.string.getStarted, 3);
+                return TutorialFragment.newInstance(R.string.tutorial_three, 3);
             case 3:
-                return TutorialFragment.newInstance(R.string.getComplete, 4);
+                return TutorialFragment.newInstance(R.string.tutorial_four, 4);
             default:
-                return TutorialFragment.newInstance(R.string.toOrder, 1);
+                return TutorialFragment.newInstance(R.string.tutorial_one, 1);
 
 
         }

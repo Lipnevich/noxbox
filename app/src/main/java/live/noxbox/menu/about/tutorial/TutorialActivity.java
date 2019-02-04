@@ -28,7 +28,7 @@ import static live.noxbox.Constants.TUTORIAL_KEY;
 public class TutorialActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
     private ViewPager viewPager;
-    private ImageView intro;
+    private ImageView dots;
     private Button skip;
     private Button next;
 
@@ -69,8 +69,8 @@ public class TutorialActivity extends BaseActivity {
         setContentView(R.layout.activity_tutorial);
 
         viewPager = findViewById(R.id.viewpager);
-        intro = findViewById(R.id.intro);
-        intro.setImageResource(R.drawable.tutorial_intro_one);
+        dots = findViewById(R.id.dots);
+        dots.setImageResource(R.drawable.tutorial_intro_one);
         skip = findViewById(R.id.skip);
         skip.setOnClickListener(gotItOnClickListener);
         next = findViewById(R.id.next);
@@ -95,22 +95,22 @@ public class TutorialActivity extends BaseActivity {
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        intro.setImageResource(R.drawable.tutorial_intro_one);
+                        dots.setImageResource(R.drawable.tutorial_intro_one);
                         next.setText(R.string.next);
                         next.setOnClickListener(nextOnClickListener);
                         break;
                     case 1:
-                        intro.setImageResource(R.drawable.tutorial_intro_two);
+                        dots.setImageResource(R.drawable.tutorial_intro_two);
                         next.setText(R.string.next);
                         next.setOnClickListener(nextOnClickListener);
                         break;
                     case 2:
-                        intro.setImageResource(R.drawable.tutorial_intro_three);
+                        dots.setImageResource(R.drawable.tutorial_intro_three);
                         next.setText(R.string.next);
                         next.setOnClickListener(nextOnClickListener);
                         break;
                     case 3:
-                        intro.setImageResource(R.drawable.tutorial_intro_four);
+                        dots.setImageResource(R.drawable.tutorial_intro_four);
                         next.setText(R.string.gotIt);
                         next.setOnClickListener(gotItOnClickListener);
                         break;

@@ -6,7 +6,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
 
         <live.noxbox.tools.PanoramaImageView
             android:id="@+id/tutorialBackground"
@@ -19,13 +20,9 @@
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignStart="@id/tutorialBackground"
-            android:layout_alignTop="@id/tutorialBackground"
-            android:layout_alignEnd="@id/tutorialBackground"
-            android:layout_alignBottom="@id/tutorialBackground"
-            android:layout_gravity="center"
-            android:scaleType="fitXY"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitXY" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -43,12 +40,12 @@
             android:clickable="true"
             android:focusable="true"
             android:text="@string/skip"
-            android:textColor="@color/primary"
+            android:textColor="@color/secondary"
             android:textSize="@dimen/text_size_secondary"
             android:visibility="visible" />
 
         <ImageView
-            android:id="@+id/intro"
+            android:id="@+id/dots"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:layout_centerHorizontal="true"
@@ -64,7 +61,7 @@
             android:clickable="true"
             android:focusable="true"
             android:text="@string/next"
-            android:textColor="@color/primary"
+            android:textColor="@color/secondary"
             android:textSize="@dimen/text_size_secondary"
             android:visibility="visible" />
 

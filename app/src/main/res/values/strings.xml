@@ -289,10 +289,10 @@
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
     <string name="gotIt">GOT IT</string>
-    <string name="toOrder">To order</string>
-    <string name="toFind">To find</string>
-    <string name="getStarted">Get started</string>
-    <string name="getComplete">Get complete</string>
+    <string name="tutorial_one">Book service</string>
+    <string name="tutorial_two">Verify person</string>
+    <string name="tutorial_three">Enjoy process</string>
+    <string name="tutorial_four">Save your time</string>
     <string name="messageCannotChangeName">You can\'t change your name when providing the service</string>
     <string name="enterYourName">Enter your name</string>
 
