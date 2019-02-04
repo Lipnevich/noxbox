@@ -65,7 +65,6 @@ import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.LocationPermitOperator.locationPermissionGranted;
-import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.LogEvents.generateLogEvent;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
