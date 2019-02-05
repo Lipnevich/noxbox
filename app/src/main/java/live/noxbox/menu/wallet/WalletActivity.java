@@ -101,7 +101,11 @@ public class WalletActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.readProfile(profile -> updateBalance(profile));
+        AppCache.readProfile(profile ->{
+            updateBalance(profile);
+        } );
+
+
     }
 
 
@@ -189,7 +193,11 @@ public class WalletActivity extends BaseActivity {
 
         copyToClipboard.setVisibility(wallet.getAddress() != null ? View.VISIBLE : View.INVISIBLE);
 
-        findViewById(R.id.inputLayout).setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
+       //findViewById(R.id.inputLayout).setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
+        ((Button)findViewById(R.id.send_button_id)).setEnabled(balance.compareTo(BigDecimal.ZERO) == 0);
+        ((EditText)findViewById(R.id.address_to_send_id)).setEnabled(balance.compareTo(BigDecimal.ZERO) == 0);
+
+
     }
 
 }
