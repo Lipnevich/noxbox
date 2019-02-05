@@ -108,8 +108,6 @@ public class MapActivity extends DebugActivity implements
         AppCache.readProfile(profile -> checkBalance(profile, MapActivity.this));
 
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
-
-
     }
 
     @Override

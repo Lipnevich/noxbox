@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import live.noxbox.R;
@@ -106,8 +107,14 @@ public class MapOperator {
         googleMap.setPadding(dpToPx(8), 0, 0, dpToPx(8));
     }
 
+    private static final Calendar calendar = Calendar.getInstance();
     public static void setupMap(Context context, GoogleMap googleMap) {
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_in_night));
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        if(hourOfDay >= 9 && hourOfDay < 21){
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map));
+        } else {
+            googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_in_night));
+        }
         googleMap.setMaxZoomPreference(MAX_ZOOM_LEVEL);
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
         googleMap.getUiSettings().setTiltGesturesEnabled(false);
