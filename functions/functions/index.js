@@ -178,6 +178,11 @@ exports.transfer = functions.https.onCall(async (data, context) => {
     console.log('id', context.auth.uid);
     console.log('addressToTransfer', data.addressToTransfer);
     // TODO (nli) firestore noxboxes query if current noxbox present
+    let currentNoxboxToPay = await admin.firestore().collection('noxboxes')
+        .where('payerId', '==', context.auth.uid).where('finished', '==', false).get();
+    if(!currentNoxboxToPay.empty) {
+        throw Error ('Attempt to return money with not finished noxbox');
+    }
     let request = { addressToTransfer : data.addressToTransfer};
     request.encrypted = await storage.seed(context.auth.uid);
     return wallet.send(request);

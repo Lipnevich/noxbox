@@ -113,6 +113,10 @@ public class Firestore {
             current.setPayerId(current.getOwner().getId());
         }
 
+        if(isFinished(current)) {
+            current.setFinished(true);
+        }
+
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -131,6 +135,15 @@ public class Firestore {
         if (!isNullOrZero(current.getTimeCompleted())) {
             GeoRealtime.offline(current);
         }
+    }
+
+    private static boolean isFinished(Noxbox noxbox) {
+        return noxbox.getTimeCanceledByOwner() > 0
+                || noxbox.getTimeCanceledByParty() > 0
+                || noxbox.getTimeCompleted() > 0
+                || noxbox.getTimeRemoved() > 0
+                || noxbox.getTimeTimeout() > 0
+                ;
     }
 
     public static void readNoxbox(String noxboxId, final Task<Noxbox> task) {

@@ -46,21 +46,22 @@ public class Noxbox implements Comparable<Noxbox> {
 
 
     // Noxbox specific data
-    private Long timeCreated;
-    private Long timeRemoved;
-    private Long timeRequested;
-    private Long timeCompleted;
-    private Long timeAccepted;
-    private Long timeCanceledByOwner;
-    private Long timeCanceledByParty;
-    private Long timeOwnerVerified;
-    private Long timePartyVerified;
-    private Long timeOwnerDisliked;
-    private Long timePartyDisliked;
-    private Long timeTimeout;
+    private long timeCreated;
+    private long timeRemoved;
+    private long timeRequested;
+    private long timeCompleted;
+    private long timeAccepted;
+    private long timeCanceledByOwner;
+    private long timeCanceledByParty;
+    private long timeOwnerVerified;
+    private long timePartyVerified;
+    private long timeOwnerDisliked;
+    private long timePartyDisliked;
+    private long timeTimeout;
     private String cancellationReasonMessage;
     private String commentForDemand;
     private String commentForSupply;
+    private boolean finished;
 
 
     public Noxbox clean() {
@@ -472,5 +473,14 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public static boolean isNullOrZero(Long time) {
         return time == null || time == 0;
+    }
+
+    public Noxbox setFinished(boolean finished) {
+        this.finished = finished;
+        return this;
+    }
+
+    public boolean getFinished() {
+        return finished;
     }
 }
