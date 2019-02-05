@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import live.noxbox.Constants;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
@@ -22,6 +23,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
+import live.noxbox.tools.LocationPermitOperator;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
@@ -68,7 +70,10 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
 
-        activity.findViewById(R.id.locationButton).setOnClickListener(v -> activity.getDeviceLocation(profile));
+        activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
+            activity.getDeviceLocation(profile);
+            LocationPermitOperator.getLocationPermission(activity,Constants.LOCATION_PERMISSION_REQUEST_CODE);
+        });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
             //TODO (vl) при повторном выборе услуги в фильтрах не происходит перерисовка услуг соответствующих выбранной

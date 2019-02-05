@@ -110,7 +110,6 @@ public class MapActivity extends DebugActivity implements
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
 
 
-
     }
 
     @Override
@@ -206,7 +205,6 @@ public class MapActivity extends DebugActivity implements
     }
 
 
-
     public void getDeviceLocation(Profile profile) {
         try {
             if (locationPermissionGranted && isLocationPermissionGranted(getApplicationContext())) {
@@ -220,7 +218,8 @@ public class MapActivity extends DebugActivity implements
                             profile.setPosition(Position.from(new LatLng(position.getLatitude(),
                                     position.getLongitude())));
                             MapOperator.buildMapPosition(googleMap, getApplicationContext());
-                            Firestore.writeProfile(profile, objectProfile -> { });
+                            Firestore.writeProfile(profile, objectProfile -> {
+                            });
                         }
                     } else {
                         Crashlytics.logException(task.getException());
