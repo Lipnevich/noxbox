@@ -113,9 +113,7 @@ public class Firestore {
             current.setPayerId(current.getOwner().getId());
         }
 
-        if(isFinished(current)) {
-            current.setFinished(true);
-        }
+        current.setFinished(isFinished(current));
 
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
