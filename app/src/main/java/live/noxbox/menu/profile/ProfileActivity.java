@@ -149,7 +149,9 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String newName = String.valueOf(s);
-                if(profile.getCurrent() != null && profile.getNoxboxId() != null && !isNullOrZero(profile.getCurrent().getTimeCreated())){
+                if(profile.getCurrent() != null
+                        && !profile.getNoxboxId().isEmpty()
+                        && !isNullOrZero(profile.getCurrent().getTimeCreated())){
                     inputLayout.requestFocus();
                     inputLayout.setFocusable(true);
                     inputLayout.setErrorEnabled(true);

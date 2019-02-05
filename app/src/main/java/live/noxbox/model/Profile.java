@@ -285,6 +285,9 @@ public class Profile implements Serializable {
     }
 
     public String getNoxboxId() {
+        if(noxboxId == null){
+            noxboxId = "";
+        }
         return noxboxId;
     }
 

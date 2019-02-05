@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,7 +54,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public HistoryAdapter(HistoryActivity activity, final List<Noxbox> historyItems, RecyclerView currentRecyclerView, final MarketRole role) {
         this.activity = activity;
-        this.profileId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        this.profileId = user == null ? "" : user.getUid();
         this.historyItems = historyItems;
 
         long startFrom = historyItems.isEmpty() ?
@@ -234,8 +236,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             progressBar = layout.findViewById(R.id.progressBar);
         }
     }
-
-
 
 
 }

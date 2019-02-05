@@ -14,6 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -72,8 +73,10 @@ public class ImageManager {
     private static final OnFailureListener onFailureListener = e -> Crashlytics.logException(e);
 
     private static void uploadImage(final Activity activity, final Bitmap bitmap, final String path, final OnSuccessListener<Uri> onSuccessListener) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
         final StorageReference storageRef =
-                getStorageReference().child(path + "." + Bitmap.CompressFormat.JPEG.name());
+                getStorageReference(user.getUid()).child(path + "." + Bitmap.CompressFormat.JPEG.name());
 
         int quality = 100;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -142,19 +145,23 @@ public class ImageManager {
         });
     }
 
-    private static StorageReference getStorageReference() {
-        return FirebaseStorage.getInstance().getReference().child("images").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+    private static StorageReference getStorageReference(String userId) {
+        return FirebaseStorage.getInstance().getReference().child("images").child(userId);
     }
 
     public static void deleteImage(final NoxboxType type, final int index, final ImageType imageType) {
-        getStorageReference()
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        getStorageReference(user.getUid())
                 .child(type.name() + "/" + imageType.name() + "/" + index + "." + Bitmap.CompressFormat.JPEG.name())
                 .delete()
                 .addOnFailureListener(onFailureListener);
     }
 
     public static void deleteFolderByType(final NoxboxType type) {
-        getStorageReference().child(type.name()).delete().addOnFailureListener(onFailureListener);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        getStorageReference(user.getUid()).child(type.name()).delete().addOnFailureListener(onFailureListener);
     }
 
 

@@ -404,12 +404,12 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawCancelOrRemoveButton(final Profile profile) {
-        if (profile.getNoxboxId() != null) {
-            closeOrRemove.setText(R.string.remove);
-            closeOrRemove.setOnClickListener(v -> removeNoxbox());
-        } else {
+        if (profile.getNoxboxId().isEmpty()) {
             closeOrRemove.setText(R.string.cancel);
             closeOrRemove.setOnClickListener(v -> cancelNoxboxConstructor());
+        } else {
+            closeOrRemove.setText(R.string.remove);
+            closeOrRemove.setOnClickListener(v -> removeNoxbox());
         }
     }
 

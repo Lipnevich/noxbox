@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -29,6 +31,7 @@ import live.noxbox.BuildConfig;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.model.TravelMode;
 import live.noxbox.model.Virtual;
 import live.noxbox.tools.Task;
 
@@ -43,9 +46,9 @@ public class Firestore {
         return db;
     }
 
-    private static DocumentReference profileReference() {
+    private static DocumentReference profileReference(String userId) {
         return db().collection("profiles")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .document(userId);
     }
 
     private static DocumentReference noxboxReference(String noxboxId) {
@@ -58,16 +61,25 @@ public class Firestore {
     public static void listenProfile(@NonNull final Task<Profile> task) {
         if (profileListener != null) profileListener.remove();
 
-        profileListener = profileReference().addSnapshotListener((snapshot, e) -> {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        profileListener = profileReference(user.getUid()).addSnapshotListener((snapshot, e) -> {
             if (snapshot != null && snapshot.exists()) {
                 Profile profile = snapshot.toObject(Profile.class);
                 task.execute(profile);
+            } else {
+                Profile profile = new Profile()
+                        .setId(Strings.nullToEmpty(user.getUid()))
+                        .setTravelMode(TravelMode.walking)
+                        .setPhoto(Strings.nullToEmpty(user.getPhotoUrl() == null ? "" : user.getPhotoUrl().toString()))
+                        .setName(Strings.nullToEmpty(user.getDisplayName()));
+                writeProfile(profile, o -> task.execute(profile));
             }
         });
     }
 
     public static void writeProfile(final Profile profile, Task<Profile> onSuccess) {
-        profileReference().set(objectToMap(profile), SetOptions.merge())
+        profileReference(profile.getId()).set(objectToMap(profile), SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -156,7 +168,9 @@ public class Firestore {
     }
 
     public static void readHistory(long start, int count, MarketRole role, final Task<Collection<Noxbox>> task) {
-        noxboxes(start, count, role)
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) return;
+        noxboxes(start, count, role, user.getUid())
                 .get().addOnCompleteListener(result -> {
             Collection<Noxbox> noxboxes = new ArrayList<>();
             if (result.isSuccessful() && result.getResult() != null) {
@@ -168,9 +182,9 @@ public class Firestore {
         });
     }
 
-    private static Query noxboxes(long start, int count, MarketRole role) {
+    private static Query noxboxes(long start, int count, MarketRole role, String userId) {
         return db().collection("noxboxes")
-                .whereEqualTo(role.getOwnerFieldId(), FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .whereEqualTo(role.getOwnerFieldId(), userId)
                 .whereGreaterThan("timeCompleted", 0)
                 .orderBy("timeCompleted", Query.Direction.DESCENDING)
                 .startAt(start)

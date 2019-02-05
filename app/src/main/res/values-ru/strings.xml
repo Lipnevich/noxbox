@@ -284,8 +284,6 @@
     <string name="pleaseUploadNewPhoto">Пожалуйста обновите фото</string>
     <string name="selectPhoto">Выберите фото</string>
     <string name="haircut">Стрижка</string>
-    <string name="filterLowRatingPerformers">Отображать Работников с отрицательными отзывами</string>
-    <string name="badWorker">Плохой работник</string>
     <string name="skip">ПРОПУСТИТЬ</string>
     <string name="next">СЛЕДУЮЩАЯ</string>
     <string name="gotIt">ЗАВЕРШИТЬ</string>
@@ -295,5 +293,6 @@
     <string name="tutorial_four">Экономьте время</string>
     <string name="messageCannotChangeName">Вы не можете изменить имя когда предоставляете услугу</string>
     <string name="enterYourName">Введите ваше имя</string>
+    <string name="pleaseEnterWalletAddress">Введите адрес кошелька</string>
 
 </resources>

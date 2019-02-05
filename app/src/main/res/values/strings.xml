@@ -183,7 +183,7 @@
     <string name="filters">Filters</string>
     <string name="contractService">Contract of service</string>
     <string name="filterMaxPriceText">The maximum cost of services</string>
-    <string name="filterNoviceText">Отображать новичков</string>
+    <string name="filterNoviceText">Show newbies</string>
     <string name="filterDemandText">Display the demand of all types of services</string>
     <string name="filterSupplyText">Display offer of all types of services</string>
     <string name="noxboxType">Service type</string>
@@ -284,8 +284,6 @@
     <string name="pleaseUploadNewPhoto">Please update your photo</string>
     <string name="selectPhoto">Select Photo</string>
     <string name="haircut">Haircut</string>
-    <string name="filterLowRatingPerformers">Отображать Работников с отрицательными отзывами</string>
-    <string name="badWorker">Плохой работник</string>
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
     <string name="gotIt">GOT IT</string>
@@ -295,6 +293,7 @@
     <string name="tutorial_four">Save your time</string>
     <string name="messageCannotChangeName">You can\'t change your name when providing the service</string>
     <string name="enterYourName">Enter your name</string>
+    <string name="pleaseEnterWalletAddress">Enter wallet address</string>
 
 
 </resources>

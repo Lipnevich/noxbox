@@ -65,12 +65,12 @@ public class Noxbox implements Comparable<Noxbox> {
 
 
     public Noxbox clean() {
-        id = null;
+        id = "";
         getChat().getOwnerMessages().clear();
         getChat().getPartyMessages().clear();
         getChat().setOwnerReadTime(0L);
         getChat().setPartyReadTime(0L);
-       // party = new Profile().setId("0");
+        // party = new Profile().setId("0");
         party = null;
         performerId = null;
         payerId = null;
@@ -126,6 +126,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getId() {
+        if (id == null) {
+            id = "";
+        }
         return id;
     }
 

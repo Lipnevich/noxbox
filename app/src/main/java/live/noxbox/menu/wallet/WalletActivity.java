@@ -6,6 +6,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -18,8 +19,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +39,7 @@ import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Wallet;
+import live.noxbox.tools.DisplayMetricsConservations;
 
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.tools.MoneyFormatter.format;
@@ -47,6 +54,8 @@ public class WalletActivity extends BaseActivity {
 
     private EditText addressToSendEditor;
     private TextView balanceLabel;
+    private TextView balance;
+    private ImageView progressCat;
     private TextView walletAddress;
     private ImageView copyToClipboard;
     private Button sendButton;
@@ -86,9 +95,10 @@ public class WalletActivity extends BaseActivity {
             walletAddress = findViewById(R.id.wallet_address_id);
             copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
             sendButton = findViewById(R.id.send_button_id);
+            balance = findViewById(R.id.balance);
+            progressCat = findViewById(R.id.progress);
 
             balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));
-
             walletAddress.setOnClickListener(addressToClipboardListener);
             copyToClipboard.setOnClickListener(addressToClipboardListener);
             sendButton.setOnClickListener(sendButtonOnClickListener);
@@ -96,18 +106,21 @@ public class WalletActivity extends BaseActivity {
             draw(profile);
         });
 
+        int progressDiameter = DisplayMetricsConservations.pxToDp(balance.getHeight(), getApplicationContext());
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.progress_cat)
+                .apply(RequestOptions.overrideOf(progressDiameter, progressDiameter))
+                .into(progressCat);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.readProfile(profile ->{
+        AppCache.readProfile(profile -> {
             updateBalance(profile);
-        } );
-
-
+        });
     }
-
 
     private StringRequest stringRequest;
     private RequestQueue requestQueue;
@@ -120,37 +133,37 @@ public class WalletActivity extends BaseActivity {
     };
 
     private void updateBalance(Profile profile) {
+        if (requestQueue != null && stringRequest != null) {
+            handler.postDelayed(runnable, 3000);
+            return;
+        }
+        balance.setVisibility(View.INVISIBLE);
+        progressCat.setVisibility(View.VISIBLE);
+        blockTransfer(false);
 
-            if (requestQueue != null && stringRequest != null) {
-                handler.postDelayed(runnable, 3000);
-                return;
+        requestQueue = Volley.newRequestQueue(WalletActivity.this);
+        String url = "https://nodes.wavesplatform.com/addresses/balance/";
+        url = url.concat(profile.getWallet().getAddress());
+
+        stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+            JSONObject jObject = null;
+            String walletBalance = null;
+            try {
+                jObject = new JSONObject(response);
+                walletBalance = jObject.getString("balance");
+                BigDecimal balance = new BigDecimal(walletBalance).divide(new BigDecimal("100000000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_DOWN);
+                profile.getWallet().setBalance(balance.toString());
+                draw(profile);
+            } catch (JSONException e) {
+                Crashlytics.logException(e);
             }
-            requestQueue = Volley.newRequestQueue(WalletActivity.this);
-            String url = "https://nodes.wavesplatform.com/addresses/balance/";
-            url = url.concat(profile.getWallet().getAddress());
+            balance.setVisibility(View.VISIBLE);
+            progressCat.setVisibility(View.INVISIBLE);
 
-            stringRequest = new StringRequest(Request.Method.GET, url, response -> {
-                if (System.currentTimeMillis() - lastTransferredTime > 15000) {
-                    JSONObject jObject = null;
-                    String walletBalance = null;
-                    try {
-                        jObject = new JSONObject(response);
-                        walletBalance = jObject.getString("balance");
-                        BigDecimal balance = new BigDecimal(walletBalance).divide(new BigDecimal("100000000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_DOWN);
-                        profile.getWallet().setBalance(balance.toString());
-                        draw(profile);
-                        updateBalance(profile);
-                    } catch (JSONException e) {
-                        Crashlytics.logException(e);
-                    }
-                } else {
-                    updateBalance(profile);
-                }
-            }, Crashlytics::logException);
-            stringRequest.setTag(TAG);
-            requestQueue.add(stringRequest);
-
-
+            updateBalance(profile);
+        }, Crashlytics::logException);
+        stringRequest.setTag(TAG);
+        requestQueue.add(stringRequest);
     }
 
     @Override
@@ -160,8 +173,10 @@ public class WalletActivity extends BaseActivity {
     }
 
     private void transfer(Profile profile, String address) {
-        if (TextUtils.isEmpty(address)) return;
-
+        if (TextUtils.isEmpty(address)) {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.pleaseEnterWalletAddress), Toast.LENGTH_LONG).show();
+            return;
+        }
 
         if (!address.equals(profile.getWallet().getAddressToRefund())) {
             profile.getWallet().setAddressToRefund(address);
@@ -170,12 +185,30 @@ public class WalletActivity extends BaseActivity {
         Map<String, Object> data = new HashMap<>();
         data.put("addressToTransfer", address);
 
+        balance.setVisibility(View.INVISIBLE);
+        progressCat.setVisibility(View.VISIBLE);
+        blockTransfer(false);
+
         FirebaseFunctions.getInstance()
                 .getHttpsCallable("transfer")
-                .call(data);
-        profile.getWallet().setBalance("0");
-        draw(profile);
-        lastTransferredTime = System.currentTimeMillis();
+                .call(data)
+                .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                    @Override
+                    public void onSuccess(HttpsCallableResult httpsCallableResult) {
+                        profile.getWallet().setBalance("0");
+                        progressCat.setVisibility(View.INVISIBLE);
+                        balance.setVisibility(View.VISIBLE);
+                        draw(profile);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressCat.setVisibility(View.INVISIBLE);
+                        balance.setVisibility(View.VISIBLE);
+                        blockTransfer(true);
+                    }
+                });
     }
 
 
@@ -187,17 +220,19 @@ public class WalletActivity extends BaseActivity {
         final Wallet wallet = profile.getWallet();
         BigDecimal balance = scale(wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO);
 
-        ((TextView) findViewById(R.id.balance)).setText(format(balance));
+        this.balance.setText(format(balance));
 
         walletAddress.setText(wallet.getAddress() != null ? wallet.getAddress() : "Not created yet");
 
         copyToClipboard.setVisibility(wallet.getAddress() != null ? View.VISIBLE : View.INVISIBLE);
 
-       //findViewById(R.id.inputLayout).setVisibility(balance.compareTo(BigDecimal.ZERO) == 0 ? View.INVISIBLE : View.VISIBLE);
-        ((Button)findViewById(R.id.send_button_id)).setEnabled(balance.compareTo(BigDecimal.ZERO) == 0);
-        ((EditText)findViewById(R.id.address_to_send_id)).setEnabled(balance.compareTo(BigDecimal.ZERO) == 0);
+        findViewById(R.id.send_button_id).setEnabled(balance.compareTo(BigDecimal.ZERO) > 0);
+        findViewById(R.id.address_to_send_id).setEnabled(balance.compareTo(BigDecimal.ZERO) > 0);
+    }
 
-
+    private void blockTransfer(boolean isBlock) {
+        findViewById(R.id.send_button_id).setEnabled(isBlock);
+        findViewById(R.id.address_to_send_id).setEnabled(isBlock);
     }
 
 }

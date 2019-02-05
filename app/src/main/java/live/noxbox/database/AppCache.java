@@ -6,6 +6,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.math.BigDecimal;
@@ -42,8 +43,9 @@ public class AppCache {
     };
 
     public static void startListening() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (profile == null
-                || (FirebaseAuth.getInstance().getCurrentUser() != null && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(profile.getId()))) {
+                || (user != null && !user.getUid().equals(profile.getId()))) {
             Firestore.listenProfile(newProfile -> {
                 // since current and viewed are virtual Noxboxes we should transfer them
                 if (profile != null) {
@@ -52,7 +54,7 @@ public class AppCache {
                 }
                 profile = newProfile;
 
-                if (profile != null && profile.getNoxboxId() != null) {
+                if (profile != null && !profile.getNoxboxId().isEmpty()) {
                     startListenNoxbox(profile.getNoxboxId());
                 } else {
                     profile.setCurrent(new Noxbox());
@@ -82,7 +84,7 @@ public class AppCache {
     }
 
     private static boolean isProfileReady() {
-        return profile != null && (profile.getNoxboxId() == null || profile.getCurrent() != null);
+        return profile != null && (profile.getNoxboxId().isEmpty() || profile.getCurrent() != null);
     }
 
     public static void fireProfile() {
@@ -182,7 +184,7 @@ public class AppCache {
                                 null,
                                 noxbox -> {
                                     stopListenNoxbox(noxboxId);
-                                    profile.setNoxboxId(null);
+                                    profile.setNoxboxId("");
                                     profile.getCurrent().clean();
                                     writeProfile(profile, NONE);
                                 },

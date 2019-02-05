@@ -3,12 +3,25 @@ const admin = require('firebase-admin');
 const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
-const storage = require('./noxbox-functions');
 const wallet = require('./wallet-functions');
 const version = 3;
 
+const db = admin.firestore();
+db.settings({timestampsInSnapshots: true});
+
 exports.welcome = functions.auth.user().onCreate(async user => {
-    return wallet.create(user).then(storage.init);
+    await wallet.create(user);
+
+    let profile = { id : user.uid, travelMode : 'walking' };
+    profile.wallet = { address : user.address, balance : '0' };
+
+    if(user.photoUrl) profile.photoUrl = user.photoUrl;
+    if(user.displayName) profile.name = user.displayName;
+
+    db.collection('profiles').doc(user.uid).set(profile);
+    db.collection('seeds').doc(user.uid).set({seed : user.seed});
+
+    return user;
 });
 
 exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUpdate(async(change, context) => {
@@ -107,7 +120,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         let request = { };
         request.addressToTransfer = performer.wallet.address;
-        request.encrypted = await storage.seed(payer.id);
+        request.encrypted = (await db.collection('seeds').doc(id).get()).data().seed;
         request.minPayment = new BigDecimal(noxbox.price).div(4);
         request.transferable = moneyToPay;
 
@@ -178,13 +191,13 @@ exports.transfer = functions.https.onCall(async (data, context) => {
     console.log('id', context.auth.uid);
     console.log('addressToTransfer', data.addressToTransfer);
     // TODO (nli) firestore noxboxes query if current noxbox present
-    let currentNoxboxToPay = await admin.firestore().collection('noxboxes')
+    let currentNoxboxToPay = await db.collection('noxboxes')
         .where('payerId', '==', context.auth.uid).where('finished', '==', false).get();
     if(!currentNoxboxToPay.empty) {
         throw Error ('Attempt to return money with not finished noxbox');
     }
     let request = { addressToTransfer : data.addressToTransfer};
-    request.encrypted = await storage.seed(context.auth.uid);
+    request.encrypted = (await db.collection('seeds').doc(context.auth.uid).get()).data().seed;
     return wallet.send(request);
 });
 
@@ -192,6 +205,4 @@ exports.transfer = functions.https.onCall(async (data, context) => {
 exports.version = functions.https.onRequest((req, res) => {
     res.status(200).send('Version ' + version);
 });
-
-
 

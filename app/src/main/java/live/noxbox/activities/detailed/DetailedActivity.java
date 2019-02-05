@@ -32,6 +32,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -109,7 +110,9 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         AppCache.stopListen(DetailedActivity.class.getName());
-        AppCache.stopListenNoxbox(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) AppCache.stopListenNoxbox(user.getUid());
+
         gyroscopeObserver.unregister();
     }
 

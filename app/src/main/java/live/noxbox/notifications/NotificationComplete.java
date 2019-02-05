@@ -8,6 +8,7 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
 
@@ -41,8 +42,9 @@ public class NotificationComplete extends Notification {
 
     @Override
     public void show() {
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            final String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            final String currentUserId = user.getUid();
 
             Firestore.readNoxbox(noxboxId, noxbox -> {
                 final NotificationCompat.Builder builder = getNotificationCompatBuilder();
