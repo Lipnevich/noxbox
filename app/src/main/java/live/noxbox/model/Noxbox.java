@@ -65,8 +65,8 @@ public class Noxbox implements Comparable<Noxbox> {
     public Noxbox copy(Noxbox from) {
         id = from.id;
         geoId = from.geoId;
-        owner = from.owner;
-        party = from.party;
+        owner = new Profile().copy(from.owner);
+        party = new Profile().copy(from.party);
         performerId = from.performerId;
         payerId = from.payerId;
         chat = from.chat;
@@ -75,7 +75,7 @@ public class Noxbox implements Comparable<Noxbox> {
         total = from.total;
         type = from.type;
         role = from.role;
-        workSchedule = from.workSchedule;
+        workSchedule = new WorkSchedule(from.workSchedule.getStartTime(), from.workSchedule.getEndTime());
         ownerComment = from.ownerComment;
         timeCreated = from.timeCreated;
         timeRemoved = from.timeRemoved;

@@ -88,7 +88,7 @@ public class ContractActivity extends BaseActivity {
         if (!profile().getNoxboxId().isEmpty() && !isNullOrZero(profile().getCurrent().getTimeCreated())) {
             profile().getBackup().copy(profile().getCurrent());
             profile().getCurrent().clean();
-        }else{
+        } else {
             //если услуги нет
             profile().getBackup().clean();
         }
@@ -425,38 +425,62 @@ public class ContractActivity extends BaseActivity {
 
     private void drawPublishButton(final Profile profile) {
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
-        if(isNullOrZero(profile.getBackup().getTimeCreated())){
-            ((TextView)findViewById(R.id.publish)).setText(R.string.add);
-        }else{
-            ((TextView)findViewById(R.id.publish)).setText(R.string.update);
-        }
-        publishButton.setOnClickListener(v -> {
-            if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
-                publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
-                BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
-                return;
-            }
-            if (!profile.getAcceptance().isAccepted()) {
-                openPhotoNotVerifySheetDialog(ContractActivity.this);
-                return;
-            }
-            if (profile.getName() != null && profile.getName().length() == 0) {
-                openNameNotVerifySheetDialog(ContractActivity.this, profile);
-                return;
-            }
-
-            if (profile.getCurrent().getOwner().getTravelMode() != none) {
-                if (isLocationPermissionGranted(getApplicationContext())) {
-                    postNoxbox();
-                } else {
-                    getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
+        if (isNullOrZero(profile.getBackup().getTimeCreated())) {
+            ((TextView) findViewById(R.id.publish)).setText(R.string.add);
+            publishButton.setOnClickListener(v -> {
+                if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
+                    publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
+                    BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
+                    return;
                 }
-            } else {
-                postNoxbox();
-            }
+                if (!profile.getAcceptance().isAccepted()) {
+                    openPhotoNotVerifySheetDialog(ContractActivity.this);
+                    return;
+                }
+                if (profile.getName() != null && profile.getName().length() == 0) {
+                    openNameNotVerifySheetDialog(ContractActivity.this, profile);
+                    return;
+                }
 
+                if (profile.getCurrent().getOwner().getTravelMode() != none) {
+                    if (isLocationPermissionGranted(getApplicationContext())) {
+                        postNoxbox();
+                    } else {
+                        getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
+                    }
+                } else {
+                    postNoxbox();
+                }
+            });
+        } else {
+            ((TextView) findViewById(R.id.publish)).setText(R.string.update);
+            publishButton.setOnClickListener(v -> {
+                if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
+                    publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
+                    BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
+                    return;
+                }
+                if (!profile.getAcceptance().isAccepted()) {
+                    openPhotoNotVerifySheetDialog(ContractActivity.this);
+                    return;
+                }
+                if (profile.getName() != null && profile.getName().length() == 0) {
+                    openNameNotVerifySheetDialog(ContractActivity.this, profile);
+                    return;
+                }
 
-        });
+                if (profile.getCurrent().getOwner().getTravelMode() != none) {
+                    if (isLocationPermissionGranted(getApplicationContext())) {
+                        updateNoxbox();
+                    } else {
+                        getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
+                    }
+                } else {
+                    postNoxbox();
+                }
+            });
+
+        }
     }
 
 
@@ -487,6 +511,13 @@ public class ContractActivity extends BaseActivity {
                 });
     }
 
+    public void updateNoxbox() {
+        Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
+        AppCache.removeNoxbox(profile -> profile.getBackup().clean());
+
+        postNoxbox();
+    }
+
     public void removeNoxbox() {
         profile().getCurrent().copy(profile().getBackup().setTimeRemoved(System.currentTimeMillis()));
         AppCache.removeNoxbox(profile -> profile.getCurrent().clean());
@@ -496,7 +527,6 @@ public class ContractActivity extends BaseActivity {
     private void cancelNoxbox() {
         Router.finishActivity(ContractActivity.this);
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,

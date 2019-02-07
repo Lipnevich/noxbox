@@ -329,6 +329,7 @@ public class Profile implements Serializable {
     }
 
     public Profile copy(Profile from) {
+        if(from == null) return null;
         id = from.id;
         acceptance = from.acceptance;
         darkList = from.darkList;

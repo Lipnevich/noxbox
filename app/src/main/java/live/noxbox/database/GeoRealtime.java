@@ -66,6 +66,7 @@ public class GeoRealtime {
         }
 
         return currentNoxbox.getId()
+                + delimiter + currentNoxbox.getOwner().getId()
                 + delimiter + currentNoxbox.getRole()
                 + delimiter + currentNoxbox.getType()
                 + delimiter + currentNoxbox.getPrice().replaceAll("\\.", ",")
@@ -73,7 +74,9 @@ public class GeoRealtime {
                 + delimiter + currentNoxbox.getOwner().getHost()
                 + delimiter + currentNoxbox.getOwner().getFilters().getAllowNovices()
                 + delimiter + ownerRating.getReceivedLikes()
-                + delimiter + ownerRating.getReceivedDislikes();
+                + delimiter + ownerRating.getReceivedDislikes()
+                + delimiter + currentNoxbox.getWorkSchedule().getStartTime()
+                + delimiter + currentNoxbox.getWorkSchedule().getEndTime();
     }
 
     private static Noxbox parseKey(String key) {
