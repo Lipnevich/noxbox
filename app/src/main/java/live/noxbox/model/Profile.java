@@ -1,6 +1,8 @@
 package live.noxbox.model;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.Map;
 import static live.noxbox.Constants.MIN_RATE_IN_PERCENTAGE;
 
 public class Profile implements Serializable {
+
 
     private String id;
 
@@ -19,9 +22,9 @@ public class Profile implements Serializable {
     private Map<String, Portfolio> portfolio = new HashMap<>();
     private Wallet wallet;
 
-    private String name;
-    private String photo;
-    private String noxboxId;
+    private String name = "";
+    private String photo = "";
+    private String noxboxId = "";
     @Virtual
     private Noxbox current;
     @Virtual
@@ -33,6 +36,17 @@ public class Profile implements Serializable {
     private Long arriveInSeconds;
 
     private Filters filters;
+
+    public Profile() {
+
+    }
+
+    public Profile(FirebaseUser user) {
+        setId(Strings.nullToEmpty(user.getUid()))
+                .setTravelMode(TravelMode.walking)
+                .setPhoto(Strings.nullToEmpty(user.getPhotoUrl() == null ? "" : user.getPhotoUrl().toString()))
+                .setName(Strings.nullToEmpty(user.getDisplayName()));
+    }
 
     public Filters getFilters() {
         if (filters == null) {
@@ -65,7 +79,7 @@ public class Profile implements Serializable {
     }
 
     public String getName() {
-        if(name == null) name = "";
+        if (name == null) name = "";
         return name;
     }
 
@@ -75,7 +89,7 @@ public class Profile implements Serializable {
     }
 
     public Position getPosition() {
-        if(position == null){
+        if (position == null) {
             return new Position().setLatitude(0.0).setLongitude(0.0);
         }
         return position;
@@ -108,7 +122,7 @@ public class Profile implements Serializable {
     }
 
     public Acceptance getAcceptance() {
-        if(acceptance == null) {
+        if (acceptance == null) {
             acceptance = new Acceptance();
         }
         return acceptance;
@@ -120,6 +134,9 @@ public class Profile implements Serializable {
     }
 
     public Noxbox getCurrent() {
+        if (current == null) {
+            current = new Noxbox();
+        }
         return current;
     }
 
@@ -210,7 +227,7 @@ public class Profile implements Serializable {
             rating = suppliesRating.get(type.name());
         }
 
-        if(rating == null){
+        if (rating == null) {
             rating = new Rating();
         }
 
@@ -220,6 +237,7 @@ public class Profile implements Serializable {
         return (likes * 100 / (likes + dislikes));
 
     }
+
     public static int ratingToPercentage(int likes, int dislikes) {
         if (dislikes == 0) return 100;
         return (likes * 100 / (likes + dislikes));
@@ -285,7 +303,7 @@ public class Profile implements Serializable {
     }
 
     public String getNoxboxId() {
-        if(noxboxId == null){
+        if (noxboxId == null) {
             noxboxId = "";
         }
         return noxboxId;
@@ -293,6 +311,25 @@ public class Profile implements Serializable {
 
     public Profile setNoxboxId(String noxboxId) {
         this.noxboxId = noxboxId;
+        return this;
+    }
+
+    public Profile copy(Profile from) {
+        id = from.id;
+        acceptance = from.acceptance;
+        darkList = from.darkList;
+        suppliesRating = from.suppliesRating;
+        demandsRating = from.demandsRating;
+        portfolio = from.portfolio;
+        wallet = from.wallet;
+        name = from.name;
+        photo = from.photo;
+        noxboxId = from.noxboxId;
+        travelMode = from.travelMode;
+        host = from.host;
+        position = from.position;
+        arriveInSeconds = from.arriveInSeconds;
+        filters = from.filters;
         return this;
     }
 

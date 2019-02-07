@@ -40,9 +40,9 @@ import static live.noxbox.cluster.DetectNullValue.areTheyNull;
 import static live.noxbox.database.AppCache.readProfile;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
-public class DebugActivity extends MenuActivity implements
+public class HackerActivity extends MenuActivity implements
         OnMapReadyCallback {
-    private static final String TAG = "DebugActivity";
+    private static final String TAG = "HackerActivity";
 
     private List<NotificationType> photoPushes = Arrays.asList(NotificationType.values());
     private Iterator<NotificationType> iterator = photoPushes.iterator();
@@ -59,21 +59,21 @@ public class DebugActivity extends MenuActivity implements
     protected void onResume() {
         super.onResume();
         if (BuildConfig.DEBUG) {
-            AppCache.listenProfile(DebugActivity.class.getName(), new Task<Profile>() {
+            AppCache.listenProfile(HackerActivity.class.getName(), new Task<Profile>() {
                 @Override
                 public void execute(final Profile profile) {
-                    DebugActivity.this.findViewById(R.id.debugNotify).setVisibility(View.GONE);
-                    DebugActivity.this.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.GONE);
-                    DebugActivity.this.findViewById(R.id.debugRequest).setVisibility(View.GONE);
-                    DebugActivity.this.findViewById(R.id.debugAccept).setVisibility(View.GONE);
-                    DebugActivity.this.findViewById(R.id.debugPhotoVerify).setVisibility(View.GONE);
-                    DebugActivity.this.findViewById(R.id.debugPhotoReject).setVisibility(View.GONE);
-                    DebugActivity.this.findViewById(R.id.debugComplete).setVisibility(View.GONE);
+                    HackerActivity.this.findViewById(R.id.debugNotify).setVisibility(View.GONE);
+                    HackerActivity.this.findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.GONE);
+                    HackerActivity.this.findViewById(R.id.debugRequest).setVisibility(View.GONE);
+                    HackerActivity.this.findViewById(R.id.debugAccept).setVisibility(View.GONE);
+                    HackerActivity.this.findViewById(R.id.debugPhotoVerify).setVisibility(View.GONE);
+                    HackerActivity.this.findViewById(R.id.debugPhotoReject).setVisibility(View.GONE);
+                    HackerActivity.this.findViewById(R.id.debugComplete).setVisibility(View.GONE);
 
                     NoxboxState currentState = NoxboxState.getState(profile.getCurrent(), profile);
                     switch (currentState) {
                         case initial:
-                            DebugActivity.this.findViewById(R.id.debugNotify).setVisibility(View.VISIBLE);
+                            HackerActivity.this.findViewById(R.id.debugNotify).setVisibility(View.VISIBLE);
                             setOnClickListener(R.id.debugNotify, new Task<Profile>() {
                                 @Override
                                 public void execute(Profile profile) {
@@ -87,7 +87,7 @@ public class DebugActivity extends MenuActivity implements
                                     data.put("noxboxType", NoxboxType.photographer.name());
                                     data.put("message", "Let me speak from my heart");
                                     data.put("id", "0pEHvCumSPbOCFSLFWIA");
-                                    NotificationFactory.buildNotification(DebugActivity.this, profile, data).show();
+                                    NotificationFactory.buildNotification(HackerActivity.this, profile, data).show();
                                 }
                             });
 
@@ -102,7 +102,7 @@ public class DebugActivity extends MenuActivity implements
 //                                    }
 //
 //                                    LatLng myPosition = null;
-//                                    if (ContextCompat.checkSelfPermission(DebugActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+//                                    if (ContextCompat.checkSelfPermission(HackerActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
 //                                            == PackageManager.PERMISSION_GRANTED) {
 //                                        myPosition = googleMap.getCameraPosition().target;
 //                                    }
@@ -145,7 +145,7 @@ public class DebugActivity extends MenuActivity implements
                             });
                             break;
                         case created:
-                            DebugActivity.this.findViewById(R.id.debugRequest).setVisibility(View.VISIBLE);
+                            HackerActivity.this.findViewById(R.id.debugRequest).setVisibility(View.VISIBLE);
                             setOnClickListener(R.id.debugRequest, new Task<Profile>() {
                                 @Override
                                 public void execute(Profile profile) {
@@ -158,7 +158,7 @@ public class DebugActivity extends MenuActivity implements
                                         AppCache.updateNoxbox();
                                         GeoRealtime.offline(profile.getCurrent());
                                     } else {
-                                        DebugMessage.popup(DebugActivity.this, "Not possible to request");
+                                        DebugMessage.popup(HackerActivity.this, "Not possible to request");
                                     }
 
                                     Log.d(State.TAG + TAG, "debugRequest");
@@ -169,7 +169,7 @@ public class DebugActivity extends MenuActivity implements
                             });
                             break;
                         case requesting:
-                            DebugActivity.this.findViewById(R.id.debugAccept).setVisibility(View.VISIBLE);
+                            HackerActivity.this.findViewById(R.id.debugAccept).setVisibility(View.VISIBLE);
                             setOnClickListener(R.id.debugAccept, new Task<Profile>() {
                                 @Override
                                 public void execute(Profile profile) {
@@ -183,7 +183,7 @@ public class DebugActivity extends MenuActivity implements
                                         profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                                         AppCache.updateNoxbox();
                                     } else {
-                                        DebugMessage.popup(DebugActivity.this, "Not possible to accept");
+                                        DebugMessage.popup(HackerActivity.this, "Not possible to accept");
                                     }
                                     Log.d(State.TAG + TAG, "debugAccept");
                                     Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
@@ -200,7 +200,7 @@ public class DebugActivity extends MenuActivity implements
                                     isNullOrZero(profile.getCurrent().getTimePartyVerified()))
                                 break;
 
-                            DebugActivity.this.findViewById(R.id.debugPhotoReject).setVisibility(View.VISIBLE);
+                            HackerActivity.this.findViewById(R.id.debugPhotoReject).setVisibility(View.VISIBLE);
                             setOnClickListener(R.id.debugPhotoReject, new Task<Profile>() {
                                 @Override
                                 public void execute(Profile profile) {
@@ -216,7 +216,7 @@ public class DebugActivity extends MenuActivity implements
                                         }
                                         AppCache.updateNoxbox();
                                     } else {
-                                        DebugMessage.popup(DebugActivity.this, "Not possible to reject");
+                                        DebugMessage.popup(HackerActivity.this, "Not possible to reject");
                                     }
 
                                     Log.d(State.TAG + TAG, "debugPhotoReject");
@@ -232,7 +232,7 @@ public class DebugActivity extends MenuActivity implements
                                 }
                             });
 
-                            DebugActivity.this.findViewById(R.id.debugPhotoVerify).setVisibility(View.VISIBLE);
+                            HackerActivity.this.findViewById(R.id.debugPhotoVerify).setVisibility(View.VISIBLE);
                             setOnClickListener(R.id.debugPhotoVerify, new Task<Profile>() {
                                 @Override
                                 public void execute(Profile profile) {
@@ -252,7 +252,7 @@ public class DebugActivity extends MenuActivity implements
                                         }
                                         AppCache.updateNoxbox();
                                     } else {
-                                        DebugMessage.popup(DebugActivity.this, "Not possible to verify");
+                                        DebugMessage.popup(HackerActivity.this, "Not possible to verify");
                                     }
                                     Log.d(State.TAG + TAG, "debugPhotoVerify");
                                     Log.d(State.TAG + TAG, "noxboxId: " + profile.getCurrent().getId());
@@ -268,7 +268,7 @@ public class DebugActivity extends MenuActivity implements
                             });
                             break;
                         case performing:
-                            DebugActivity.this.findViewById(R.id.debugComplete).setVisibility(View.VISIBLE);
+                            HackerActivity.this.findViewById(R.id.debugComplete).setVisibility(View.VISIBLE);
                             setOnClickListener(R.id.debugComplete, profile1 -> {
                                 if (profile1.getCurrent() != null
                                         && !isNullOrZero(profile1.getCurrent().getTimeCreated())
@@ -278,7 +278,7 @@ public class DebugActivity extends MenuActivity implements
                                     profile1.getCurrent().setTimeCompleted(System.currentTimeMillis());
                                     AppCache.updateNoxbox();
                                 } else {
-                                    DebugMessage.popup(DebugActivity.this, "Not possible to complete");
+                                    DebugMessage.popup(HackerActivity.this, "Not possible to complete");
                                 }
                                 Log.d(State.TAG + TAG, "debugComplete");
                                 Log.d(State.TAG + TAG, "noxboxId: " + profile1.getCurrent().getId());
@@ -310,7 +310,7 @@ public class DebugActivity extends MenuActivity implements
     @Override
     protected void onPause() {
         super.onPause();
-        AppCache.stopListen(DebugActivity.class.getName());
+        AppCache.stopListen(HackerActivity.class.getName());
     }
 
     private GoogleMap googleMap;

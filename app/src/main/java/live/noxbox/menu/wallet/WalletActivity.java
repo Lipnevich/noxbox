@@ -66,6 +66,26 @@ public class WalletActivity extends BaseActivity {
         setContentView(R.layout.activity_wallet);
         setTitle(R.string.wallet);
 
+        balanceLabel = findViewById(R.id.balance_label_id);
+        addressToSendEditor = findViewById(R.id.address_to_send_id);
+        walletAddress = findViewById(R.id.wallet_address_id);
+        copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
+        sendButton = findViewById(R.id.send_button_id);
+        balance = findViewById(R.id.balance);
+        progressCat = findViewById(R.id.progress);
+
+
+        int progressDiameter = DisplayMetricsConservations.pxToDp(balance.getHeight(), getApplicationContext());
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.progress_cat)
+                .apply(RequestOptions.overrideOf(progressDiameter, progressDiameter))
+                .into(progressCat);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         AppCache.readProfile(profile -> {
             View.OnClickListener addressToClipboardListener = view -> {
                 if (profile.getWallet().getAddress() == null) return;
@@ -90,13 +110,6 @@ public class WalletActivity extends BaseActivity {
             };
 
 
-            balanceLabel = findViewById(R.id.balance_label_id);
-            addressToSendEditor = findViewById(R.id.address_to_send_id);
-            walletAddress = findViewById(R.id.wallet_address_id);
-            copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
-            sendButton = findViewById(R.id.send_button_id);
-            balance = findViewById(R.id.balance);
-            progressCat = findViewById(R.id.progress);
 
             balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));
             walletAddress.setOnClickListener(addressToClipboardListener);
@@ -104,20 +117,6 @@ public class WalletActivity extends BaseActivity {
             sendButton.setOnClickListener(sendButtonOnClickListener);
 
             draw(profile);
-        });
-
-        int progressDiameter = DisplayMetricsConservations.pxToDp(balance.getHeight(), getApplicationContext());
-        Glide.with(this)
-                .asGif()
-                .load(R.drawable.progress_cat)
-                .apply(RequestOptions.overrideOf(progressDiameter, progressDiameter))
-                .into(progressCat);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        AppCache.readProfile(profile -> {
             updateBalance(profile);
         });
     }
@@ -226,8 +225,7 @@ public class WalletActivity extends BaseActivity {
 
         copyToClipboard.setVisibility(wallet.getAddress() != null ? View.VISIBLE : View.INVISIBLE);
 
-        findViewById(R.id.send_button_id).setEnabled(balance.compareTo(BigDecimal.ZERO) > 0);
-        findViewById(R.id.address_to_send_id).setEnabled(balance.compareTo(BigDecimal.ZERO) > 0);
+        blockTransfer(balance.compareTo(BigDecimal.ZERO) > 0);
     }
 
     private void blockTransfer(boolean isBlock) {

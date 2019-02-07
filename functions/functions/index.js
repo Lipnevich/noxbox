@@ -190,7 +190,7 @@ admin.database().ref('geo').once('value').then(allServices => {
 exports.transfer = functions.https.onCall(async (data, context) => {
     console.log('id', context.auth.uid);
     console.log('addressToTransfer', data.addressToTransfer);
-    // TODO (nli) firestore noxboxes query if current noxbox present
+    // check if active noxbox present
     let currentNoxboxToPay = await db.collection('noxboxes')
         .where('payerId', '==', context.auth.uid).where('finished', '==', false).get();
     if(!currentNoxboxToPay.empty) {

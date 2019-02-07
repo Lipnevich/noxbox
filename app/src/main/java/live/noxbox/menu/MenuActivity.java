@@ -39,17 +39,17 @@ import live.noxbox.R;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.about.AboutApplicationActivity;
-import live.noxbox.menu.settings.MapSettingsActivity;
 import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.menu.profile.ProfileActivity;
+import live.noxbox.menu.settings.MapSettingsActivity;
 import live.noxbox.menu.wallet.WalletActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.DisplayMetricsConservations.getStatusBarHeight;
 
@@ -79,7 +79,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     }
 
     private void drawNavigation(final Activity activity, final Profile profile) {
-        if (profile == null) return;
+        if (!isProfileReady()) return;
 
         drawerLayout = findViewById(R.id.drawerLayout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);

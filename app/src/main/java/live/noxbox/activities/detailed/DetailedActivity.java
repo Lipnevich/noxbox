@@ -227,7 +227,6 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void drawWaitingTime(final Profile profile) {
-        final Noxbox noxbox = profile.getViewed();
         if (ContextCompat.checkSelfPermission(DetailedActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -235,13 +234,13 @@ public class DetailedActivity extends AppCompatActivity {
 
         drawDropdownElement(R.id.travelTypeTitleLayout, R.id.travelTypeLayout);
         changeArrowVector(R.id.travelTypeLayout, R.id.travelTypeArrow);
-        ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
-        ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(noxbox.getOwner().getTravelMode().getImage());
+        ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
+        ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
 
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... voids) {
-                String address = AddressManager.provideAddressByPosition(getApplicationContext(), noxbox.getPosition());
+                String address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getViewed().getPosition());
                 return address;
             }
 
@@ -252,22 +251,22 @@ public class DetailedActivity extends AppCompatActivity {
         }.execute();
 
         TravelMode travelMode;
-        if (noxbox.getOwner().getTravelMode() == none) {
-            travelMode = noxbox.getParty().getTravelMode();
+        if (profile.getViewed().getOwner().getTravelMode() == none) {
+            travelMode = profile.getViewed().getParty().getTravelMode();
         } else {
-            travelMode = noxbox.getOwner().getTravelMode();
+            travelMode = profile.getViewed().getOwner().getTravelMode();
         }
 
-        String displayTime = DateTimeFormatter.format(noxbox.getWorkSchedule().getStartTime().getHourOfDay(), noxbox.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
-                DateTimeFormatter.format(noxbox.getWorkSchedule().getEndTime().getHourOfDay(), noxbox.getWorkSchedule().getEndTime().getMinuteOfHour());
+        String displayTime = DateTimeFormatter.format(profile.getViewed().getWorkSchedule().getStartTime().getHourOfDay(), profile.getViewed().getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
+                DateTimeFormatter.format(profile.getViewed().getWorkSchedule().getEndTime().getHourOfDay(), profile.getViewed().getWorkSchedule().getEndTime().getMinuteOfHour());
         ((TextView) findViewById(R.id.offerTime)).setText(R.string.validityOfTheOffer);
         ((TextView) findViewById(R.id.time)).setText(displayTime);
 
-        if (noxbox.getOwner().getTravelMode() == none) {
+        if (profile.getViewed().getOwner().getTravelMode() == none) {
             ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
             ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
         } else {
-            int minutes = (int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), travelMode);
+            int minutes = (int) getTimeInMinutesBetweenUsers(profile.getViewed().getOwner().getPosition(), profile.getViewed().getParty().getPosition(), travelMode);
 
             String timeTxt;
             switch (minutes % 10) {
@@ -298,7 +297,7 @@ public class DetailedActivity extends AppCompatActivity {
 
             ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
 
-            if (!isNullOrZero(noxbox.getTimeRequested())) {
+            if (!isNullOrZero(profile.getViewed().getTimeRequested())) {
                 findViewById(R.id.coordinatesSelect).setVisibility(View.GONE);
             } else {
                 findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
@@ -523,7 +522,7 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
-    private void drawCertificate(final Noxbox noxbox) {
+    private void drawCertificate(Noxbox noxbox) {
         if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
 
         findViewById(R.id.certificateLayout).setVisibility(View.VISIBLE);
@@ -535,7 +534,7 @@ public class DetailedActivity extends AppCompatActivity {
         certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, noxbox.getType()));
     }
 
-    private void drawWorkSample(final Noxbox noxbox) {
+    private void drawWorkSample(Noxbox noxbox) {
         if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
 
         findViewById(R.id.workSampleLayout).setVisibility(View.VISIBLE);

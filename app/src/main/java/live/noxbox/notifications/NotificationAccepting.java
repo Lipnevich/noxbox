@@ -53,7 +53,7 @@ public class NotificationAccepting extends Notification {
         Firestore.readNoxbox(noxboxId, noxbox -> {
             if (isNullOrZero(noxbox.getTimeAccepted())) {
                 noxbox.setTimeTimeout(System.currentTimeMillis());
-                Firestore.writeNoxbox(noxbox, null, NONE, NONE);
+                Firestore.createOrUpdateNoxbox(noxbox, NONE, NONE);
             }
         });
 

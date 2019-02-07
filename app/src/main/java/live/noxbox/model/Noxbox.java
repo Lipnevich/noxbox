@@ -42,7 +42,6 @@ public class Noxbox implements Comparable<Noxbox> {
     private MarketRole role;
     private WorkSchedule workSchedule;
     private String ownerComment;
-    private String estimationTime;
 
 
     // Noxbox specific data
@@ -72,10 +71,9 @@ public class Noxbox implements Comparable<Noxbox> {
         getChat().setPartyReadTime(0L);
         // party = new Profile().setId("0");
         party = null;
-        performerId = null;
-        payerId = null;
+        performerId = "";
+        payerId = "";
         ownerComment = null;
-        estimationTime = null;
         cancellationReasonMessage = null;
         commentForDemand = null;
         commentForSupply = null;
@@ -445,6 +443,9 @@ public class Noxbox implements Comparable<Noxbox> {
 
 
     public String getPerformerId() {
+        if(performerId == null){
+            performerId = "";
+        }
         return performerId;
     }
 
@@ -454,6 +455,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getPayerId() {
+        if(payerId == null){
+            payerId = "";
+        }
         return payerId;
     }
 

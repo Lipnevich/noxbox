@@ -25,6 +25,7 @@ import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
 
 import static com.google.common.base.Objects.equal;
+import static live.noxbox.database.Firestore.createOrUpdateNoxbox;
 import static live.noxbox.database.Firestore.writeNoxbox;
 import static live.noxbox.database.Firestore.writeProfile;
 import static live.noxbox.database.GeoRealtime.offline;
@@ -34,7 +35,17 @@ public class AppCache {
 
     public static Map<String, Noxbox> availableNoxboxes = new ConcurrentHashMap<>();
     public static BigDecimal wavesToUsd;
-    private static Profile profile;
+    private static final Profile profile;
+
+    static {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            profile = new Profile(user);
+        } else {
+            profile = new Profile();
+        }
+
+    }
 
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
@@ -44,20 +55,14 @@ public class AppCache {
 
     public static void startListening() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (profile == null
+        if (!isProfileReady()
                 || (user != null && !user.getUid().equals(profile.getId()))) {
             Firestore.listenProfile(newProfile -> {
-                // since current and viewed are virtual Noxboxes we should transfer them
-                if (profile != null) {
-                    newProfile.setCurrent(profile.getCurrent());
-                    newProfile.setViewed(profile.getViewed());
-                }
-                profile = newProfile;
+                profile.copy(newProfile);
 
-                if (profile != null && !profile.getNoxboxId().isEmpty()) {
+                if (!profile.getNoxboxId().isEmpty()) {
                     startListenNoxbox(profile.getNoxboxId());
                 } else {
-                    profile.setCurrent(new Noxbox());
                     executeUITasks();
                 }
             });
@@ -83,12 +88,12 @@ public class AppCache {
         }
     }
 
-    private static boolean isProfileReady() {
-        return profile != null && (profile.getNoxboxId().isEmpty() || profile.getCurrent() != null);
+    public static boolean isProfileReady() {
+        return (profile.getNoxboxId().isEmpty() || profile.getCurrent() != null) && profile.getWallet().getAddress() != null;
     }
 
     public static void fireProfile() {
-        if (profile == null) return;
+        if (!isProfileReady()) return;
 
         if (!equal(profile.getCurrent().getId(), profile.getNoxboxId())) {
             profile.setNoxboxId(profile.getCurrent().getId());
@@ -99,7 +104,7 @@ public class AppCache {
         });
     }
 
-    private static void executeUITasks() {
+    public static void executeUITasks() {
         LogProperties.update(profile, profileListeners);
 
         for (Map.Entry<String, Task<Profile>> entry : profileListeners.entrySet()) {
@@ -121,13 +126,13 @@ public class AppCache {
     public static void logout() {
         clearTasks();
         if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
-            removeNoxbox();
+            removeNoxbox(NONE);
         }
         for (String noxboxId : ids) {
             stopListenNoxbox(noxboxId);
         }
         Firestore.listenProfile(NONE);
-        profile = null;
+        profile.copy(new Profile()).setCurrent(null).setViewed(null);
     }
 
     private static Set<String> ids = new HashSet<>();
@@ -153,40 +158,46 @@ public class AppCache {
 
 
     public static void noxboxCreated(Task<Profile> onSuccess, Task<Profile> onFailure) {
-        if (profile == null) return;
+        if (!isProfileReady()) return;
 
         // remove previous noxbox
-        removeNoxbox();
-        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
-        if (profile.getCurrent().getRole() == MarketRole.supply) {
-            profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
-        } else {
-            profile.getCurrent().getOwner().setPortfolio(null);
-        }
+        removeNoxbox(new Task<Profile>() {
 
-        writeNoxbox(profile.getCurrent(), profile, noxbox -> {
-            profile.setNoxboxId(noxbox.getId());
-            writeProfile(profile, profile -> online(profile.getCurrent()));
-            onSuccess.execute(profile);
-        }, onFailure);
+            @Override
+            public void execute(Profile object) {
+                profile.getCurrent().setTimeCreated(System.currentTimeMillis());
+                if (profile.getCurrent().getRole() == MarketRole.supply) {
+                    profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
+                } else {
+                    profile.getCurrent().getOwner().setPortfolio(null);
+                }
+
+                createOrUpdateNoxbox(profile.getCurrent(), noxboxId -> {
+                    profile.setNoxboxId(noxboxId);
+                    writeProfile(profile, profile -> online(profile.getCurrent()));
+                    onSuccess.execute(profile);
+                }, onFailure);
+            }
+        });
+
+
 
     }
 
 
-    public static void removeNoxbox() {
-        if (profile == null) return;
+    public static void removeNoxbox(Task<Profile> onSuccess) {
+        if (!isProfileReady()) return;
         String noxboxId = profile.getNoxboxId();
-        if (noxboxId != null) {
+        if (noxboxId != null && !noxboxId.isEmpty()) {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(noxboxId)
                     .addOnSuccessListener(aVoid -> {
                         offline(profile.getCurrent());
                         writeNoxbox(new Noxbox().setId(profile.getNoxboxId()).setTimeRemoved(System.currentTimeMillis()),
-                                null,
                                 noxbox -> {
                                     stopListenNoxbox(noxboxId);
                                     profile.setNoxboxId("");
                                     profile.getCurrent().clean();
-                                    writeProfile(profile, NONE);
+                                    writeProfile(profile, onSuccess);
                                 },
                                 NONE);
                     })
@@ -202,8 +213,8 @@ public class AppCache {
     }
 
     public static void updateNoxbox() {
-        if (profile == null) return;
-        writeNoxbox(profile.getCurrent(), null, noxbox -> executeUITasks(), NONE);
+        if (!isProfileReady()) return;
+        createOrUpdateNoxbox(profile.getCurrent(), noxboxId -> executeUITasks(), NONE);
 
     }
 

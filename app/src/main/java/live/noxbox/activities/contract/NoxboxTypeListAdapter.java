@@ -23,6 +23,7 @@ import live.noxbox.tools.LogEvents;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
+import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.PlayMarketManager.openApplicationMarketPage;
 
@@ -41,6 +42,7 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
         this.key = key;
 
         AppCache.readProfile(object -> profile = object);
+
     }
 
     @NonNull
@@ -108,7 +110,7 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
        // availableNoxboxes.clear();
         stopListenAvailableNoxboxes();
-        AppCache.fireProfile();
+        executeUITasks();
         rootFragment.dismiss();
     }
 

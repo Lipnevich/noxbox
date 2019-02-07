@@ -42,7 +42,7 @@ import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.Firestore;
-import live.noxbox.debug.DebugActivity;
+import live.noxbox.debug.HackerActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
@@ -69,7 +69,7 @@ import static live.noxbox.tools.LogEvents.generateLogEvent;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
 
-public class MapActivity extends DebugActivity implements
+public class MapActivity extends HackerActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
     protected static final String TAG = "MapActivity";
@@ -92,6 +92,7 @@ public class MapActivity extends DebugActivity implements
             finish();
             return;
         }
+
         Crashlytics.setUserIdentifier(user.getUid());
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
 

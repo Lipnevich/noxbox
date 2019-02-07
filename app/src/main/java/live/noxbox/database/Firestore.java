@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -31,7 +30,6 @@ import live.noxbox.BuildConfig;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.model.TravelMode;
 import live.noxbox.model.Virtual;
 import live.noxbox.tools.Task;
 
@@ -68,11 +66,7 @@ public class Firestore {
                 Profile profile = snapshot.toObject(Profile.class);
                 task.execute(profile);
             } else {
-                Profile profile = new Profile()
-                        .setId(Strings.nullToEmpty(user.getUid()))
-                        .setTravelMode(TravelMode.walking)
-                        .setPhoto(Strings.nullToEmpty(user.getPhotoUrl() == null ? "" : user.getPhotoUrl().toString()))
-                        .setName(Strings.nullToEmpty(user.getDisplayName()));
+                Profile profile = new Profile(user);
                 writeProfile(profile, o -> task.execute(profile));
             }
         });
@@ -111,40 +105,45 @@ public class Firestore {
         });
     }
 
-    public static void writeNoxbox(final Noxbox current, Profile profile, Task<Noxbox> onSuccess, Task<Profile> onFailure) {
-        if (current.getId() == null) {
+    public static void createOrUpdateNoxbox(Noxbox current, Task<String> onSuccess, Task<Profile> onFailure){
+        if (current.getId() == null || current.getId().isEmpty()) {
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
         }
-        // ids for activity_history queries
+
         if (current.getRole() == MarketRole.supply) {
             current.setPerformerId(current.getOwner().getId());
-            current.setPayerId(current.getParty() == null ? null : current.getParty().getId());
+            current.setPayerId(current.getParty() == null ? "" : current.getParty().getId());
         } else if (current.getRole() == MarketRole.demand) {
-            current.setPerformerId(current.getParty() == null ? null : current.getParty().getId());
+            current.setPerformerId(current.getParty() == null ? "" : current.getParty().getId());
             current.setPayerId(current.getOwner().getId());
         }
 
+        writeNoxbox(current,onSuccess,onFailure);
+
+        if (!isNullOrZero(current.getTimeCompleted())) {
+            GeoRealtime.offline(current);
+        }
+    }
+
+    public static void writeNoxbox(Noxbox current, Task<String> onSuccess, Task<Profile> onFailure) {
         current.setFinished(isFinished(current));
 
+        String currentId = current.getId();
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        onSuccess.execute(current);
+                        onSuccess.execute(currentId);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Crashlytics.logException(e);
-                        onFailure.execute(profile);
+                        onFailure.execute(null);
                     }
                 });
-
-        if (!isNullOrZero(current.getTimeCompleted())) {
-            GeoRealtime.offline(current);
-        }
     }
 
     private static boolean isFinished(Noxbox noxbox) {

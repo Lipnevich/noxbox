@@ -54,6 +54,7 @@ import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH;
@@ -61,6 +62,8 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CO
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
+import static live.noxbox.database.AppCache.NONE;
+import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
@@ -91,7 +94,7 @@ public class ContractActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         AppCache.listenProfile(ContractActivity.class.getName(), profile -> {
-            if (profile == null) return;
+            if (!isProfileReady()) return;
             profile.getCurrent().setGeoId(GeoRealtime.createKey(profile.getCurrent()));
             draw(profile);
             checkBalance(profile, ContractActivity.this);
@@ -465,14 +468,19 @@ public class ContractActivity extends BaseActivity {
         AppCache.noxboxCreated(profile -> {
                     Router.finishActivity(ContractActivity.this);
                 },
-                profile -> {
-                    profile.getCurrent().clean();
+                object -> {
+                    AppCache.readProfile(new Task<Profile>() {
+                        @Override
+                        public void execute(Profile profile) {
+                            profile.getCurrent().clean();
+                        }
+                    });
                     Router.finishActivity(ContractActivity.this);
                 });
     }
 
     public void removeNoxbox() {
-        AppCache.removeNoxbox();
+        AppCache.removeNoxbox(NONE);
         Router.finishActivity(ContractActivity.this);
     }
 
