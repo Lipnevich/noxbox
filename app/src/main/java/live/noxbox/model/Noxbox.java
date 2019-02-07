@@ -62,6 +62,39 @@ public class Noxbox implements Comparable<Noxbox> {
     private String commentForSupply;
     private boolean finished;
 
+    public Noxbox copy(Noxbox from) {
+        id = from.id;
+        geoId = from.geoId;
+        owner = from.owner;
+        party = from.party;
+        performerId = from.performerId;
+        payerId = from.payerId;
+        chat = from.chat;
+        position = from.position;
+        price = from.price;
+        total = from.total;
+        type = from.type;
+        role = from.role;
+        workSchedule = from.workSchedule;
+        ownerComment = from.ownerComment;
+        timeCreated = from.timeCreated;
+        timeRemoved = from.timeRemoved;
+        timeRequested = from.timeRequested;
+        timeCompleted = from.timeCompleted;
+        timeAccepted = from.timeAccepted;
+        timeCanceledByOwner = from.timeCanceledByOwner;
+        timeCanceledByParty = from.timeCanceledByParty;
+        timeOwnerVerified = from.timeOwnerVerified;
+        timePartyVerified = from.timePartyVerified;
+        timeOwnerDisliked = from.timeOwnerDisliked;
+        timePartyDisliked = from.timePartyDisliked;
+        timeTimeout = from.timeTimeout;
+        cancellationReasonMessage = from.cancellationReasonMessage;
+        commentForDemand = from.commentForDemand;
+        commentForSupply = from.commentForSupply;
+        finished = from.finished;
+        return this;
+    }
 
     public Noxbox clean() {
         id = "";
@@ -443,7 +476,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
 
     public String getPerformerId() {
-        if(performerId == null){
+        if (performerId == null) {
             performerId = "";
         }
         return performerId;
@@ -455,7 +488,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getPayerId() {
-        if(payerId == null){
+        if (payerId == null) {
             payerId = "";
         }
         return payerId;

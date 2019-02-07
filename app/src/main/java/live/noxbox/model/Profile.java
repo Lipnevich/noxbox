@@ -29,6 +29,8 @@ public class Profile implements Serializable {
     private Noxbox current;
     @Virtual
     private Noxbox viewed;
+    @Virtual
+    private Noxbox backup;
     private TravelMode travelMode;
     private Boolean host;
 
@@ -311,6 +313,18 @@ public class Profile implements Serializable {
 
     public Profile setNoxboxId(String noxboxId) {
         this.noxboxId = noxboxId;
+        return this;
+    }
+
+    public Noxbox getBackup() {
+        if(backup == null){
+            backup = new Noxbox();
+        }
+        return backup;
+    }
+
+    public Profile setBackup(Noxbox backup) {
+        this.backup = backup;
         return this;
     }
 

@@ -22,9 +22,21 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Created by nicolay.lipnevich on 18/12/2017.
  */
 
-@RequiresApi(api = Build. VERSION_CODES.O)
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class SiteI18nizer {
-
+//    private static final Profile localProfile = new Profile().setName("Appa");
+//
+//    public static void main(String[] args) {
+//        Profile finalProfile = localProfile;
+//        draw(finalProfile);
+//        localProfile = new Profile().setName("Abba");
+//        draw(finalProfile);
+//    }
+//
+//    public static void draw(Profile profile){
+//
+//        System.out.println(profile.getName());
+//    }
     public static void main(String[] args) throws IOException {
         Path path = Paths.get("functions/translations/template.html");
 
@@ -43,14 +55,14 @@ public class SiteI18nizer {
         Map<String, String> languages = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String first, String second) {
-                if(first.equals(second)) return 0;
-                if(first.equals("ru")) return 1;
-                if(second.equals("ru")) return -1;
+                if (first.equals(second)) return 0;
+                if (first.equals("ru")) return 1;
+                if (second.equals("ru")) return -1;
 
                 return first.compareTo(second);
             }
         });
-        for(File file : files) {
+        for (File file : files) {
             if (file.isFile() && !file.getName().startsWith("template")) {
                 Properties properties = new Properties();
                 properties.load(new FileInputStream(file));
@@ -64,20 +76,20 @@ public class SiteI18nizer {
         Properties properties = new Properties();
         properties.load(new FileInputStream(file));
 
-        ArrayList<Map.Entry <String, String>> sorted = new ArrayList(properties.entrySet());
-        Collections.sort(sorted, new Comparator<Map.Entry <String, String>>() {
+        ArrayList<Map.Entry<String, String>> sorted = new ArrayList(properties.entrySet());
+        Collections.sort(sorted, new Comparator<Map.Entry<String, String>>() {
             @Override
-            public int compare(Map.Entry <String, String> o, Map.Entry <String, String> o1) {
+            public int compare(Map.Entry<String, String> o, Map.Entry<String, String> o1) {
                 return o1.getKey().length() - o.getKey().length();
             }
         });
 
-        for(Map.Entry entry : sorted) {
+        for (Map.Entry entry : sorted) {
             content = content.replaceAll("\\$" + entry.getKey(), entry.getValue().toString());
         }
 
         String name = file.getName().split("\\.")[0];
-        if(name.equals("ru")) {
+        if (name.equals("ru")) {
             name = "index";
         }
 

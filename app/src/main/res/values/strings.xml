@@ -294,6 +294,7 @@
     <string name="messageCannotChangeName">You can\'t change your name when providing the service</string>
     <string name="enterYourName">Enter your name</string>
     <string name="pleaseEnterWalletAddress">Enter wallet address</string>
+    <string name="update">Update</string>
 
 
 </resources>

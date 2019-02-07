@@ -54,7 +54,6 @@ import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH;
@@ -62,9 +61,10 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CO
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
-import static live.noxbox.database.AppCache.NONE;
 import static live.noxbox.database.AppCache.isProfileReady;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
@@ -81,13 +81,17 @@ public class ContractActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contract);
-
-        initializeUi();
-    }
-
-    private void initializeUi() {
         closeOrRemove = findViewById(R.id.closeOrRemove);
         ((TextView) findViewById(R.id.textCurrency)).setText(getString(R.string.currency));
+
+        //если услуга была создана
+        if (!profile().getNoxboxId().isEmpty() && !isNullOrZero(profile().getCurrent().getTimeCreated())) {
+            profile().getBackup().copy(profile().getCurrent());
+            profile().getCurrent().clean();
+        }else{
+            //если услуги нет
+            profile().getBackup().clean();
+        }
     }
 
     @Override
@@ -95,7 +99,6 @@ public class ContractActivity extends BaseActivity {
         super.onResume();
         AppCache.listenProfile(ContractActivity.class.getName(), profile -> {
             if (!isProfileReady()) return;
-            profile.getCurrent().setGeoId(GeoRealtime.createKey(profile.getCurrent()));
             draw(profile);
             checkBalance(profile, ContractActivity.this);
         });
@@ -108,6 +111,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void draw(@NonNull final Profile profile) {
+
         drawToolbar(profile);
         drawRole(profile);
         drawType(profile);
@@ -124,7 +128,10 @@ public class ContractActivity extends BaseActivity {
 
     private void drawToolbar(final Profile profile) {
         ((TextView) findViewById(R.id.title)).setText(R.string.contractService);
-        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(ContractActivity.this));
+        findViewById(R.id.homeButton).setOnClickListener(v -> {
+            profile.getCurrent().copy(profile.getBackup());
+            Router.finishActivity(ContractActivity.this);
+        });
     }
 
     private void drawRole(final Profile profile) {
@@ -409,7 +416,7 @@ public class ContractActivity extends BaseActivity {
     private void drawCancelOrRemoveButton(final Profile profile) {
         if (profile.getNoxboxId().isEmpty()) {
             closeOrRemove.setText(R.string.cancel);
-            closeOrRemove.setOnClickListener(v -> cancelNoxboxConstructor());
+            closeOrRemove.setOnClickListener(v -> cancelNoxbox());
         } else {
             closeOrRemove.setText(R.string.remove);
             closeOrRemove.setOnClickListener(v -> removeNoxbox());
@@ -418,7 +425,11 @@ public class ContractActivity extends BaseActivity {
 
     private void drawPublishButton(final Profile profile) {
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
-
+        if(isNullOrZero(profile.getBackup().getTimeCreated())){
+            ((TextView)findViewById(R.id.publish)).setText(R.string.add);
+        }else{
+            ((TextView)findViewById(R.id.publish)).setText(R.string.update);
+        }
         publishButton.setOnClickListener(v -> {
             if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
                 publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
@@ -465,26 +476,24 @@ public class ContractActivity extends BaseActivity {
     public void postNoxbox() {
         Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
 
+        profile().getCurrent().setGeoId(GeoRealtime.createKey(profile().getCurrent()));
+
         AppCache.noxboxCreated(profile -> {
                     Router.finishActivity(ContractActivity.this);
                 },
                 object -> {
-                    AppCache.readProfile(new Task<Profile>() {
-                        @Override
-                        public void execute(Profile profile) {
-                            profile.getCurrent().clean();
-                        }
-                    });
+                    profile().getCurrent().clean();
                     Router.finishActivity(ContractActivity.this);
                 });
     }
 
     public void removeNoxbox() {
-        AppCache.removeNoxbox(NONE);
+        profile().getCurrent().copy(profile().getBackup().setTimeRemoved(System.currentTimeMillis()));
+        AppCache.removeNoxbox(profile -> profile.getCurrent().clean());
         Router.finishActivity(ContractActivity.this);
     }
 
-    private void cancelNoxboxConstructor() {
+    private void cancelNoxbox() {
         Router.finishActivity(ContractActivity.this);
     }
 
