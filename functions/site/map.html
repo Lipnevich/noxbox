@@ -40,7 +40,7 @@
         var markers = [];
         for (var i = 0; i < results.length; i++) {
           var latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
-          var serviceType = results[i].key.split(';')[2];
+          var serviceType = results[i].key.split(';')[3];
           var marker = new google.maps.Marker({
             position: latLng,
             map: map,

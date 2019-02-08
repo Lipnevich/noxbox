@@ -11,9 +11,11 @@ import java.util.Map;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.Profile;
 
+import static live.noxbox.analitics.BusinessEvent.timeout;
 import static live.noxbox.database.AppCache.NONE;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
@@ -53,6 +55,7 @@ public class NotificationAccepting extends Notification {
         Firestore.readNoxbox(noxboxId, noxbox -> {
             if (isNullOrZero(noxbox.getTimeAccepted())) {
                 noxbox.setTimeTimeout(System.currentTimeMillis());
+                BusinessActivity.businessEvent(timeout);
                 Firestore.createOrUpdateNoxbox(noxbox, NONE, NONE);
             }
         });

@@ -39,6 +39,7 @@ import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.activities.detailed.CoordinateActivity;
 import live.noxbox.analitics.BusinessActivity;
+import live.noxbox.analitics.BusinessEvent;
 import live.noxbox.cluster.ClusterAdapter;
 import live.noxbox.cluster.NoxboxMarker;
 import live.noxbox.database.AppCache;
@@ -507,6 +508,7 @@ public class ContractActivity extends BaseActivity {
 
 
         AppCache.noxboxCreated(profile -> {
+                    BusinessActivity.businessEvent(BusinessEvent.post);
                     Router.finishActivity(ContractActivity.this);
                 },
                 object -> {
@@ -516,9 +518,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     public void updateNoxbox() {
-        Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
         AppCache.removeNoxbox(profile -> profile.getBackup().clean());
-
         postNoxbox();
     }
 

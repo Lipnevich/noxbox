@@ -28,6 +28,7 @@ import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.analitics.BusinessEvent.accept;
+import static live.noxbox.analitics.BusinessEvent.timeout;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalance;
@@ -137,6 +138,7 @@ public class Accepting implements State {
             @Override
             public void onFinish() {
                 if (isNullOrZero(profile.getCurrent().getTimeAccepted())) {
+                    BusinessActivity.businessEvent(timeout);
                     profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
                     updateNoxbox();
                 }
@@ -146,6 +148,7 @@ public class Accepting implements State {
 
     private void autoDisconnectFromService(final Profile profile) {
         if (isNullOrZero(profile.getCurrent().getTimeAccepted())) {
+            BusinessActivity.businessEvent(timeout);
             profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
             updateNoxbox();
         }

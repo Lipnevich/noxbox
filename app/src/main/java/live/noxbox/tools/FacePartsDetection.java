@@ -20,6 +20,9 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 
 import static live.noxbox.Constants.MINIMUM_FACE_SIZE;
+import static live.noxbox.analitics.BusinessActivity.businessEvent;
+import static live.noxbox.analitics.BusinessEvent.invalidPhoto;
+import static live.noxbox.analitics.BusinessEvent.validPhoto;
 
 public class FacePartsDetection {
 
@@ -60,11 +63,13 @@ public class FacePartsDetection {
                     if (profile.getAcceptance().isAccepted()) {
                         data.put("type", NotificationType.photoValid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
+                        businessEvent(validPhoto);
                         task.execute(bitmap);
 
                     } else {
                         data.put("type", NotificationType.photoInvalid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
+                        businessEvent(invalidPhoto);
                     }
 
                     //AppCache.fireProfile();

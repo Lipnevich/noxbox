@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.util.HashMap;
 
 import live.noxbox.R;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -25,6 +26,7 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
+import static live.noxbox.analitics.BusinessEvent.timeout;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
@@ -115,9 +117,9 @@ public class Requesting implements State {
     private void autoDisconnectFromService(final Profile profile) {
         if (isNullOrZero(profile.getCurrent().getTimeAccepted())) {
             long timeTimeout = System.currentTimeMillis();
-            Log.d(TAG + "Requesting", "timeTimeout: " + DateTimeFormatter.time(timeTimeout));
             profile.getCurrent().setTimeTimeout(timeTimeout);
             AppCache.updateNoxbox();
+            BusinessActivity.businessEvent(timeout);
         }
     }
 
