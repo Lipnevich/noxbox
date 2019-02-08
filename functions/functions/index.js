@@ -183,7 +183,7 @@ exports.map = functions.https.onRequest((req, res) => {
                         latitude : service.val().l[0],
                         longitude : service.val().l[1]
         })});
-
+        console.log(json.length);
         res.status(200).send('map_callback(' + JSON.stringify(json) + ')');
     });
 });

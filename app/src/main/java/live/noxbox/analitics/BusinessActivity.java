@@ -8,13 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import live.noxbox.database.Firestore;
 
 import static live.noxbox.database.AppCache.profile;
-import static live.noxbox.tools.DateTimeFormatter.date;
 
 public class BusinessActivity extends AppCompatActivity {
 
@@ -44,30 +40,32 @@ public class BusinessActivity extends AppCompatActivity {
     }
 
     public static void businessEvent(BusinessEvent event) {
-        Map<String, String> params = new HashMap<>();
+        Bundle bundle = new Bundle();
+
         switch (event) {
             case outBox:
             case inBox:
-                params.put("amount", profile().getWallet().getBalance());
+                bundle.putDouble("amount", Double.valueOf(profile().getWallet().getBalance()));
                 break;
+            case cancel:
             case chatting:
-                params.put("messages", profile().getCurrent().getMessages(profile().getId()).size() + "");
+                bundle.putInt("messages", profile().getCurrent().getMessages(profile().getId()).size());
                 break;
             case invalidPhoto:
-                params.put("issue", profile().getAcceptance().getInvalidAcceptance().name());
+                bundle.putString("issue", profile().getAcceptance().getInvalidAcceptance().name());
                 break;
             case post:
-                params.put("type", profile().getCurrent().getType().name());
-                params.put("role", profile().getCurrent().getRole().name());
-                params.put("price", profile().getCurrent().getPrice());
+                bundle.putString("type", profile().getCurrent().getType().name());
+                bundle.putString("role", profile().getCurrent().getRole().name());
+                bundle.putDouble("price", Double.valueOf(profile().getCurrent().getPrice()));
                 break;
             case complete:
-                params.put("type", profile().getCurrent().getType().name());
-                params.put("role", profile().getCurrent().getRole().name());
-                params.put("price", profile().getCurrent().getPrice());
-                params.put("timeCompleted", date(profile().getCurrent().getTimeCompleted()));
-                params.put("writes", writes.getLong("writes", 0L) + Firestore.writes + "");
-                params.put("reads", reads.getLong("reads", 0L) + Firestore.reads + "");
+                bundle.putString("type", profile().getCurrent().getType().name());
+                bundle.putString("role", profile().getCurrent().getRole().name());
+                bundle.putDouble("price", Double.valueOf(profile().getCurrent().getPrice()));
+                bundle.putDouble("timeSpent", (profile().getCurrent().getTimeCompleted() - Math.max(profile().getCurrent().getTimeOwnerVerified(), profile().getCurrent().getTimePartyVerified())/(1000 * 10)));
+                bundle.putLong("writes", writes.getLong("writes", 0L) + Firestore.writes);
+                bundle.putLong("reads", reads.getLong("reads", 0L) + Firestore.reads);
 
                 writes.edit().putLong("writes", 0L).apply();
                 reads.edit().putLong("writes", 0L).apply();
@@ -77,18 +75,12 @@ public class BusinessActivity extends AppCompatActivity {
 
         }
 
-        businessEvent(event, params);
+        businessEvent(event, bundle);
     }
 
-    public static void businessEvent(BusinessEvent event, Map<String, String> params) {
+    public static void businessEvent(BusinessEvent event, Bundle bundle) {
         if (context == null) return;
-
-        Bundle bundle = new Bundle();
-        for (Map.Entry<String, String> param : params.entrySet()) {
-            bundle.putString(param.getKey(), param.getValue());
-        }
         FirebaseAnalytics.getInstance(context).logEvent(event.name(), bundle);
     }
-
 
 }
