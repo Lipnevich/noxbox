@@ -42,7 +42,6 @@ import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.cluster.ClusterAdapter;
 import live.noxbox.cluster.NoxboxMarker;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxTime;
@@ -132,7 +131,9 @@ public class ContractActivity extends BaseActivity {
     private void drawToolbar(final Profile profile) {
         ((TextView) findViewById(R.id.title)).setText(R.string.contractService);
         findViewById(R.id.homeButton).setOnClickListener(v -> {
-            profile.getCurrent().copy(profile.getBackup());
+            if(profile.getBackup() != null && profile.getBackup().getTimeCreated() != 0){
+                profile.getCurrent().copy(profile.getBackup());
+            }
             Router.finishActivity(ContractActivity.this);
         });
     }
@@ -503,7 +504,7 @@ public class ContractActivity extends BaseActivity {
     public void postNoxbox() {
         Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
 
-        profile().getCurrent().setGeoId(GeoRealtime.createKey(profile().getCurrent()));
+
 
         AppCache.noxboxCreated(profile -> {
                     Router.finishActivity(ContractActivity.this);

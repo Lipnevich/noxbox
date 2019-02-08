@@ -13,7 +13,6 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-import live.noxbox.analitics.LogEvents;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Acceptance;
 import live.noxbox.model.NotificationType;
@@ -66,7 +65,6 @@ public class FacePartsDetection {
                     } else {
                         data.put("type", NotificationType.photoInvalid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
-                        LogEvents.generateLogEvent(activity, "invalid_profile_photo");
                     }
 
                     //AppCache.fireProfile();

@@ -178,8 +178,6 @@ public class MapActivity extends HackerActivity implements
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
                     AppCache.readProfile(this::getDeviceLocation);
-
-                    businessEvent(this, "location_permission_granted");
                 }
             }
         }

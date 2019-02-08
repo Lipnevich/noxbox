@@ -9,7 +9,6 @@ import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
-import live.noxbox.analitics.LogEvents;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DateTimeFormatter;
 
@@ -29,7 +28,6 @@ public class Created implements State {
     public Created(GoogleMap googleMap, Activity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        LogEvents.generateLogEvent(activity, "noxbox_created");
     }
 
     @Override

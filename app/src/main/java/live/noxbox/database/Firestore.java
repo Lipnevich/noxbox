@@ -94,7 +94,7 @@ public class Firestore {
         });
     }
 
-    public static void createOrUpdateNoxbox(Noxbox current, Task<String> onSuccess, Task<Profile> onFailure){
+    public static void createOrUpdateNoxbox(Noxbox current, Task<String> onSuccess, Task<Profile> onFailure) {
         if (current.getId() == null || current.getId().isEmpty()) {
             String newNoxboxId = db().collection("noxboxes").document().getId();
             current.setId(newNoxboxId);
@@ -108,7 +108,7 @@ public class Firestore {
             current.setPayerId(current.getOwner().getId());
         }
 
-        writeNoxbox(current,onSuccess,onFailure);
+        writeNoxbox(current, onSuccess, onFailure);
 
         if (!isNullOrZero(current.getTimeCompleted())) {
             GeoRealtime.offline(current);

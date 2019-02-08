@@ -94,8 +94,7 @@ public class GeoRealtime {
                 noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[index++]));
                 noxbox.getOwner().setHost(Boolean.valueOf(values[index++]));
                 noxbox.getOwner().getFilters().setAllowNovices(Boolean.valueOf(values[index++]));
-                noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));
-                noxbox.getWorkSchedule().setEndTime(NoxboxTime.valueOf(values[index++]));
+
 
                 Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[index++])).setReceivedDislikes(Integer.valueOf(values[index++]));
                 if (noxbox.getRole() == MarketRole.supply) {
@@ -103,6 +102,9 @@ public class GeoRealtime {
                 } else if (noxbox.getRole() == MarketRole.demand) {
                     noxbox.getOwner().getDemandsRating().put(noxbox.getType().name(), rating);
                 }
+
+                noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));
+                noxbox.getWorkSchedule().setEndTime(NoxboxTime.valueOf(values[index++]));
 
                 noxbox.setTimeCreated(0L);
                 return noxbox;
