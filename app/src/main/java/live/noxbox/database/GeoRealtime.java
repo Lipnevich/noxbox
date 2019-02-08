@@ -18,6 +18,7 @@ import java.util.Map;
 import live.noxbox.Constants;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Rating;
@@ -75,23 +76,26 @@ public class GeoRealtime {
                 + delimiter + currentNoxbox.getOwner().getFilters().getAllowNovices()
                 + delimiter + ownerRating.getReceivedLikes()
                 + delimiter + ownerRating.getReceivedDislikes()
-                + delimiter + currentNoxbox.getWorkSchedule().getStartTime()
-                + delimiter + currentNoxbox.getWorkSchedule().getEndTime();
+                + delimiter + currentNoxbox.getWorkSchedule().getStartTime().name()
+                + delimiter + currentNoxbox.getWorkSchedule().getEndTime().name();
     }
 
     private static Noxbox parseKey(String key) {
         String[] values = key.split(delimiter);
         int index = 0;
         try {
-            if (values.length == 9) {
+            if (values.length == 12) {
                 Noxbox noxbox = new Noxbox();
                 noxbox.setId(values[index++]);
+                noxbox.getOwner().setId(values[index++]);
                 noxbox.setRole(MarketRole.valueOf(values[index++]));
                 noxbox.setType(NoxboxType.valueOf(values[index++]));
                 noxbox.setPrice(values[index++]);
                 noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[index++]));
                 noxbox.getOwner().setHost(Boolean.valueOf(values[index++]));
                 noxbox.getOwner().getFilters().setAllowNovices(Boolean.valueOf(values[index++]));
+                noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));
+                noxbox.getWorkSchedule().setEndTime(NoxboxTime.valueOf(values[index++]));
 
                 Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[index++])).setReceivedDislikes(Integer.valueOf(values[index++]));
                 if (noxbox.getRole() == MarketRole.supply) {
