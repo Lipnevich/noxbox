@@ -14,7 +14,7 @@ import java.util.HashMap;
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Constants;
 import live.noxbox.R;
-import live.noxbox.analitics.LogEvents;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.NotificationType;
@@ -28,6 +28,7 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.Constants.QUARTER;
+import static live.noxbox.analitics.BusinessEvent.chatting;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
@@ -48,7 +49,6 @@ public class Performing implements State {
         this.googleMap = googleMap;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
-        LogEvents.generateLogEvent(activity, "noxbox_performing");
 
         AppCache.readProfile(profile -> GeoRealtime.removePosition(profile.getCurrent().getId()));
     }
@@ -134,6 +134,7 @@ public class Performing implements State {
 
                 profile.getCurrent().setTimeCompleted(timeCompleted);
 
+                BusinessActivity.businessEvent(chatting);
                 updateNoxbox();
             }, 0);
         });

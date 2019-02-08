@@ -14,7 +14,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
@@ -123,7 +122,6 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
     private void executeInTheProfile(int position) {
         profile.getPortfolio().put(noxboxTypes.get(position).name(), new Portfolio(System.currentTimeMillis()));
-        LogEvents.generateLogEvent(activity, activity.getResources().getString(noxboxTypes.get(position).getName()) + "_portfolio_was_created");
     }
 
     private void executeInTheContract(int position) {

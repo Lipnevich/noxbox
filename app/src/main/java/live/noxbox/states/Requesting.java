@@ -15,7 +15,6 @@ import com.google.android.gms.maps.GoogleMap;
 import java.util.HashMap;
 
 import live.noxbox.R;
-import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -44,8 +43,6 @@ public class Requesting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-
-        LogEvents.generateLogEvent(activity, "noxbox_requesting");
     }
 
     @Override

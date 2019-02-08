@@ -9,13 +9,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import live.noxbox.R;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.menu.profile.ProfileActivity;
 import live.noxbox.model.Profile;
 
+import static live.noxbox.analitics.BusinessEvent.invalidPhoto;
+import static live.noxbox.analitics.BusinessEvent.notEnoughMoney;
+
 public class BottomSheetDialog {
 
     public static void openWalletAddressSheetDialog(final Activity activity, final Profile profile) {
+        BusinessActivity.businessEvent(notEnoughMoney);
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_wallet_address, null);
         final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
         dialog.setContentView(view);
@@ -37,6 +42,7 @@ public class BottomSheetDialog {
     }
 
     public static void openPhotoNotVerifySheetDialog(final Activity activity) {
+        BusinessActivity.businessEvent(invalidPhoto);
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_not_verify_photo, null);
         final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
         dialog.setContentView(view);

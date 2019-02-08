@@ -28,7 +28,6 @@ import java.util.Map;
 import live.noxbox.R;
 import live.noxbox.activities.ChatActivity;
 import live.noxbox.activities.ConfirmationActivity;
-import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Message;
@@ -82,8 +81,6 @@ public class Moving implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-
-        LogEvents.generateLogEvent(activity, "noxbox_moving");
 
         readProfile(profile -> memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition());
     }

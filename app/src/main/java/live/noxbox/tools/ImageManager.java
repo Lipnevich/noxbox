@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import live.noxbox.R;
-import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;
@@ -48,7 +47,6 @@ public class ImageManager {
             profile.setPhoto(uri.toString());
             AppCache.fireProfile();
             ProgressDialogManager.hideProgress();
-            LogEvents.generateLogEvent(activity, "valid_photo_was_uploaded");
         });
     }
 

@@ -17,12 +17,14 @@ import com.bumptech.glide.request.transition.Transition;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.R;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.analitics.BusinessEvent.verification;
 import static live.noxbox.database.AppCache.updateNoxbox;
 
 public class ConfirmationActivity extends BaseActivity {
@@ -92,27 +94,22 @@ public class ConfirmationActivity extends BaseActivity {
 //        }));
 
         ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonConfirm);
-        proSwipeBtn.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
-            @Override
-            public void onSwipeConfirm() {
-                findViewById(R.id.swipeButtonWrongPhoto).setVisibility(View.GONE);
-                proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        long timeVerified = System.currentTimeMillis();
-                        if (profile.equals(profile.getCurrent().getOwner())) {
-                            Log.d(TAG, "timeOwnerVerified: " + DateTimeFormatter.time(timeVerified));
-                            profile.getCurrent().setTimeOwnerVerified(timeVerified);
-                        } else {
-                            Log.d(TAG, "timePartyVerified: " + DateTimeFormatter.time(timeVerified));
-                            profile.getCurrent().setTimePartyVerified(timeVerified);
-                        }
-                        updateNoxbox();
-                        Router.finishActivity(ConfirmationActivity.this);
-                    }
-                }, 0);
-            }
+        proSwipeBtn.setOnSwipeListener(() -> {
+            findViewById(R.id.swipeButtonWrongPhoto).setVisibility(View.GONE);
+            proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
+            new Handler().postDelayed(() -> {
+                long timeVerified = System.currentTimeMillis();
+                BusinessActivity.businessEvent(verification);
+                if (profile.equals(profile.getCurrent().getOwner())) {
+                    Log.d(TAG, "timeOwnerVerified: " + DateTimeFormatter.time(timeVerified));
+                    profile.getCurrent().setTimeOwnerVerified(timeVerified);
+                } else {
+                    Log.d(TAG, "timePartyVerified: " + DateTimeFormatter.time(timeVerified));
+                    profile.getCurrent().setTimePartyVerified(timeVerified);
+                }
+                updateNoxbox();
+                Router.finishActivity(ConfirmationActivity.this);
+            }, 0);
         });
     }
 
@@ -135,27 +132,21 @@ public class ConfirmationActivity extends BaseActivity {
 //            }
 //        }));
         final ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonWrongPhoto);
-        proSwipeBtn.setOnSwipeListener(new ProSwipeButton.OnSwipeListener() {
-            @Override
-            public void onSwipeConfirm() {
-                findViewById(R.id.swipeButtonConfirm).setVisibility(View.GONE);
-                proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        long timeCanceled = System.currentTimeMillis();
-                        if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                            Log.d(TAG, "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
-                            profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
-                        } else {
-                            Log.d(TAG, "timeCanceledByParty: " + DateTimeFormatter.time(timeCanceled));
-                            profile.getCurrent().setTimeCanceledByParty(timeCanceled);
-                        }
-                        updateNoxbox();
-                        Router.finishActivity(ConfirmationActivity.this);
-                    }
-                }, 0);
-            }
+        proSwipeBtn.setOnSwipeListener(() -> {
+            findViewById(R.id.swipeButtonConfirm).setVisibility(View.GONE);
+            proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
+            new Handler().postDelayed(() -> {
+                long timeCanceled = System.currentTimeMillis();
+                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                    Log.d(TAG, "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
+                    profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
+                } else {
+                    Log.d(TAG, "timeCanceledByParty: " + DateTimeFormatter.time(timeCanceled));
+                    profile.getCurrent().setTimeCanceledByParty(timeCanceled);
+                }
+                updateNoxbox();
+                Router.finishActivity(ConfirmationActivity.this);
+            }, 0);
         });
     }
 }

@@ -16,7 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.math.BigDecimal;
 
 import live.noxbox.R;
-import live.noxbox.analitics.LogEvents;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
@@ -27,6 +27,7 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
+import static live.noxbox.analitics.BusinessEvent.accept;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalance;
@@ -46,8 +47,6 @@ public class Accepting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-
-        LogEvents.generateLogEvent(activity, "noxbox_acceptingm");
 
         AppCache.readProfile(profile -> {
             if(profile.getCurrent().getRole() == MarketRole.demand &&
@@ -101,8 +100,9 @@ public class Accepting implements State {
                 profile.getCurrent().getOwner().setName(profile.getName());
                 profile.getCurrent().getOwner().setWallet(profile.getWallet());
 
-                LogEvents.generateLogEvent(activity, "noxbox_accepted");
                 updateNoxbox();
+
+                BusinessActivity.businessEvent(accept);
             }
         });
 

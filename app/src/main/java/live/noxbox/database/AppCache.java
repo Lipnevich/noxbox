@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
@@ -23,6 +24,8 @@ import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
 
 import static com.google.common.base.Objects.equal;
+import static live.noxbox.analitics.BusinessEvent.complete;
+import static live.noxbox.analitics.BusinessEvent.inBox;
 import static live.noxbox.database.Firestore.createOrUpdateNoxbox;
 import static live.noxbox.database.Firestore.writeNoxbox;
 import static live.noxbox.database.Firestore.writeProfile;
@@ -47,9 +50,10 @@ public class AppCache {
 
     }
 
-    public static Profile profile(){
+    public static Profile profile() {
         return profile;
     }
+
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
 
@@ -77,8 +81,8 @@ public class AppCache {
     private static void eventBalanceUpdate(String previous, String next) {
         BigDecimal previousBalance = scale(previous != null ? new BigDecimal(previous) : BigDecimal.ZERO);
         BigDecimal nextBalance = scale(next != null ? new BigDecimal(next) : BigDecimal.ZERO);
-        if(nextBalance.compareTo(previousBalance) > 0) {
-            // TODO (nli) send event about balance update
+        if (nextBalance.compareTo(previousBalance) > 0) {
+            BusinessActivity.businessEvent(inBox);
         }
 
     }
@@ -157,8 +161,14 @@ public class AppCache {
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId);
         Firestore.listenNoxbox(noxboxId, noxbox -> {
             if (noxbox.getId().equals(profile.getNoxboxId())) {
-                eventCompleted(profile().getCurrent(), noxbox);
+                long oldTimeCompleted = profile().getCurrent().getTimeCompleted();
+                long newTimeCompleted = noxbox.getTimeCompleted();
+
                 profile.getCurrent().copy(noxbox);
+
+                if (newTimeCompleted > 0 && oldTimeCompleted == 0) {
+                    BusinessActivity.businessEvent(complete);
+                }
             } else {
                 profile.getViewed().copy(noxbox);
             }
@@ -210,7 +220,7 @@ public class AppCache {
                         writeProfile(profile, onSuccess);
                     },
                     NONE);
-        }else{
+        } else {
             onSuccess.execute(profile);
         }
     }

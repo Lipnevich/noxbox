@@ -6,7 +6,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -22,10 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,12 +32,14 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Wallet;
 import live.noxbox.tools.DisplayMetricsConservations;
 
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
+import static live.noxbox.analitics.BusinessEvent.outBox;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
@@ -191,22 +189,17 @@ public class WalletActivity extends BaseActivity {
         FirebaseFunctions.getInstance()
                 .getHttpsCallable("transfer")
                 .call(data)
-                .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
-                    @Override
-                    public void onSuccess(HttpsCallableResult httpsCallableResult) {
-                        profile.getWallet().setBalance("0");
-                        progressCat.setVisibility(View.INVISIBLE);
-                        balance.setVisibility(View.VISIBLE);
-                        draw(profile);
-                    }
+                .addOnSuccessListener(httpsCallableResult -> {
+                    BusinessActivity.businessEvent(outBox);
+                    profile.getWallet().setBalance("0");
+                    progressCat.setVisibility(View.INVISIBLE);
+                    balance.setVisibility(View.VISIBLE);
+                    draw(profile);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressCat.setVisibility(View.INVISIBLE);
-                        balance.setVisibility(View.VISIBLE);
-                        blockTransfer(true);
-                    }
+                .addOnFailureListener(e -> {
+                    progressCat.setVisibility(View.INVISIBLE);
+                    balance.setVisibility(View.VISIBLE);
+                    blockTransfer(true);
                 });
     }
 

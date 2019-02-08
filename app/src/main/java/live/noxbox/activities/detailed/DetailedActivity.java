@@ -37,6 +37,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.profile.ImageListAdapter;
@@ -55,12 +56,15 @@ import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
+import static live.noxbox.analitics.BusinessEvent.accept;
+import static live.noxbox.analitics.BusinessEvent.cancel;
+import static live.noxbox.analitics.BusinessEvent.read;
+import static live.noxbox.analitics.BusinessEvent.request;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
@@ -93,16 +97,17 @@ public class DetailedActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         gyroscopeObserver.register(this);
-        AppCache.listenProfile(DetailedActivity.class.getName(), new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                AppCache.startListenNoxbox(profile.getViewed().getId());
-                if (profile.getViewed().getParty() == null) {
-                    profile.getViewed().setParty(profile.privateInfo());
-                }
-                draw(profile);
-                checkBalance(profile, DetailedActivity.this);
+        AppCache.listenProfile(DetailedActivity.class.getName(), profile -> {
+            if (profile.getCurrent().getTimeRequested() == 0) {
+                BusinessActivity.businessEvent(read);
             }
+
+            AppCache.startListenNoxbox(profile.getViewed().getId());
+            if (profile.getViewed().getParty() == null) {
+                profile.getViewed().setParty(profile.privateInfo());
+            }
+            draw(profile);
+            checkBalance(profile, DetailedActivity.this);
         });
     }
 
@@ -301,12 +306,7 @@ public class DetailedActivity extends AppCompatActivity {
                 findViewById(R.id.coordinatesSelect).setVisibility(View.GONE);
             } else {
                 findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
-                findViewById(R.id.coordinatesSelect).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startCoordinateActivity();
-                    }
-                });
+                findViewById(R.id.coordinatesSelect).setOnClickListener(v -> startCoordinateActivity());
             }
         }
     }
@@ -365,12 +365,16 @@ public class DetailedActivity extends AppCompatActivity {
                 v.setVisibility(View.GONE);
                 profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
                 AppCache.updateNoxbox();
+
+                BusinessActivity.businessEvent(accept);
+
                 Router.finishActivity(DetailedActivity.this);
             });
         }
     }
 
     private void drawJoinButton(final Profile profile) {
+
         findViewById(R.id.joinButton).setVisibility(View.VISIBLE);
         if (profile.getViewed().getRole() == MarketRole.supply) {
             ((Button) findViewById(R.id.joinButton)).setText(R.string.order);
@@ -407,6 +411,8 @@ public class DetailedActivity extends AppCompatActivity {
             openNameNotVerifySheetDialog(DetailedActivity.this, profile);
             return;
         }
+
+        BusinessActivity.businessEvent(request);
 
         profile.setCurrent(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
@@ -495,6 +501,7 @@ public class DetailedActivity extends AppCompatActivity {
             alertDialog.show();
 
             view.findViewById(R.id.send).setOnClickListener(v16 -> {
+                BusinessActivity.businessEvent(cancel);
                 if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
                     profile.getViewed().setTimeCanceledByOwner(System.currentTimeMillis());
                 } else {
@@ -587,14 +594,11 @@ public class DetailedActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                if (requestCode == COORDINATE && resultCode == RESULT_OK) {
-                    final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-                    profile.getViewed().setPosition(position);
-                    profile.getViewed().getProfileWhoComes();
-                }
+        AppCache.readProfile(profile -> {
+            if (requestCode == COORDINATE && resultCode == RESULT_OK) {
+                final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
+                profile.getViewed().setPosition(position);
+                profile.getViewed().getProfileWhoComes();
             }
         });
 
@@ -605,12 +609,7 @@ public class DetailedActivity extends AppCompatActivity {
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    AppCache.readProfile(new Task<Profile>() {
-                        @Override
-                        public void execute(Profile profile) {
-                            sendRequestToNoxbox(profile);
-                        }
-                    });
+                    AppCache.readProfile(profile -> sendRequestToNoxbox(profile));
                 }
             }
         }

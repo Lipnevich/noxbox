@@ -19,11 +19,14 @@ import com.bumptech.glide.request.transition.Transition;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.TUTORIAL_KEY;
+import static live.noxbox.analitics.BusinessEvent.tutorialDislikes;
+import static live.noxbox.analitics.BusinessEvent.tutorialLikes;
 
 public class TutorialActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
@@ -47,6 +50,21 @@ public class TutorialActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             if (viewPager != null) {
+                BusinessActivity.businessEvent(tutorialLikes);
+                if (tutorialKey != null && tutorialKey.equals(TUTORIAL_KEY)) {
+                    Router.startActivity(TutorialActivity.this, MapActivity.class);
+                    finish();
+                    return;
+                }
+                Router.finishActivity(TutorialActivity.this);
+            }
+        }
+    };
+    private View.OnClickListener skipOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (viewPager != null) {
+                BusinessActivity.businessEvent(tutorialDislikes);
                 if (tutorialKey != null && tutorialKey.equals(TUTORIAL_KEY)) {
                     Router.startActivity(TutorialActivity.this, MapActivity.class);
                     finish();
@@ -72,7 +90,7 @@ public class TutorialActivity extends BaseActivity {
         dots = findViewById(R.id.dots);
         dots.setImageResource(R.drawable.tutorial_intro_one);
         skip = findViewById(R.id.skip);
-        skip.setOnClickListener(gotItOnClickListener);
+        skip.setOnClickListener(skipOnClickListener);
         next = findViewById(R.id.next);
         next.setOnClickListener(nextOnClickListener);
 

@@ -38,6 +38,7 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.activities.detailed.CoordinateActivity;
+import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.cluster.ClusterAdapter;
 import live.noxbox.cluster.NoxboxMarker;
 import live.noxbox.database.AppCache;
@@ -61,6 +62,7 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CO
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
+import static live.noxbox.analitics.BusinessEvent.contractOpening;
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
@@ -91,6 +93,7 @@ public class ContractActivity extends BaseActivity {
         } else {
             //если услуги нет
             profile().getBackup().clean();
+            BusinessActivity.businessEvent(contractOpening);
         }
     }
 
