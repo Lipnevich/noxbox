@@ -176,16 +176,16 @@ function latestMessage(messages) {
 }
 
 exports.map = functions.https.onRequest((req, res) => {
-admin.database().ref('geo').once('value').then(allServices => {
-    let json = [];
-    allServices.forEach(service => {
-        json.push({ key : service.key,
-                    latitude : service.val().l[0],
-                    longitude : service.val().l[1]
-    })});
+    admin.database().ref('geo').once('value').then(allServices => {
+        let json = [];
+        allServices.forEach(service => {
+            json.push({ key : service.key,
+                        latitude : service.val().l[0],
+                        longitude : service.val().l[1]
+        })});
 
-    res.status(200).send('map_callback(' + JSON.stringify(json) + ')');
-});
+        res.status(200).send('map_callback(' + JSON.stringify(json) + ')');
+    });
 });
 
 exports.transfer = functions.https.onCall(async (data, context) => {
@@ -202,6 +202,27 @@ exports.transfer = functions.https.onCall(async (data, context) => {
     return wallet.send(request);
 });
 
+// export in emergency case only
+reset = functions.https.onRequest(async (req, res) => {
+    let profiles = await db.collection('profiles').get();
+    profiles.forEach(data => {
+        let profile = data.data();
+        profile.noxboxId = '';
+        db.collection('profiles').doc(profile.id).set(profile);
+    });
+    res.status(200).send('Version ' + version);
+});
+
+exports.balance = functions.https.onRequest(async (req, res) => {
+    let balance = new BigDecimal('0');
+    let profiles = await db.collection('profiles').get();
+    profiles.forEach(data => {
+         let profile = data.data();
+         if(profile.wallet && profile.wallet.balance)
+            balance = balance.plus(new BigDecimal(profile.wallet.balance));
+    });
+    res.status(200).send('Balance ' + balance + ' Waves');
+});
 
 exports.version = functions.https.onRequest((req, res) => {
     res.status(200).send('Version ' + version);
