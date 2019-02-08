@@ -31,7 +31,8 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
 
-    // TODO (nli) order completed, canceled, any stopped
+    if(previousNoxbox.finished) return;
+
     if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
         let push = {
             data: {

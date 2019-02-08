@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import live.noxbox.R;
+import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;

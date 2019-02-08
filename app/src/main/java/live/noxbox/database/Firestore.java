@@ -3,8 +3,6 @@ package live.noxbox.database;
 import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,6 +32,9 @@ import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class Firestore {
 
+    public static long reads = 0;
+    public static long writes = 0;
+
     private static FirebaseFirestore db() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().build());
@@ -58,6 +59,7 @@ public class Firestore {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
         profileListener = profileReference(user.getUid()).addSnapshotListener((snapshot, e) -> {
+            reads++;
             if (snapshot != null && snapshot.exists()) {
                 Profile profile = snapshot.toObject(Profile.class);
                 task.execute(profile);
@@ -70,18 +72,11 @@ public class Firestore {
 
     public static void writeProfile(final Profile profile, Task<Profile> onSuccess) {
         profileReference(profile.getId()).set(objectToMap(profile), SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        onSuccess.execute(profile);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    writes++;
+                    onSuccess.execute(profile);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Crashlytics.logException(e);
-                    }
-                });
+                .addOnFailureListener(Crashlytics::logException);
     }
 
     // Current noxbox
@@ -91,6 +86,7 @@ public class Firestore {
         if (noxboxListener != null) noxboxListener.remove();
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener((snapshot, e) -> {
+            reads++;
             if (snapshot != null && snapshot.exists() && e == null) {
                 Noxbox current = snapshot.toObject(Noxbox.class);
                 task.execute(current);
@@ -124,18 +120,13 @@ public class Firestore {
 
         String currentId = current.getId();
         noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        onSuccess.execute(currentId);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    writes++;
+                    onSuccess.execute(currentId);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Crashlytics.logException(e);
-                        onFailure.execute(null);
-                    }
+                .addOnFailureListener(e -> {
+                    Crashlytics.logException(e);
+                    onFailure.execute(null);
                 });
     }
 
@@ -150,6 +141,7 @@ public class Firestore {
 
     public static void readNoxbox(String noxboxId, final Task<Noxbox> task) {
         noxboxReference(noxboxId).get().addOnCompleteListener(completion -> {
+            reads++;
             if (!completion.isSuccessful()) return;
             DocumentSnapshot snapshot = completion.getResult();
             if (snapshot != null && snapshot.exists()) {
@@ -164,6 +156,7 @@ public class Firestore {
         if (user == null) return;
         noxboxes(start, count, role, user.getUid())
                 .get().addOnCompleteListener(result -> {
+            reads++;
             Collection<Noxbox> noxboxes = new ArrayList<>();
             if (result.isSuccessful() && result.getResult() != null) {
                 for (QueryDocumentSnapshot document : result.getResult()) {

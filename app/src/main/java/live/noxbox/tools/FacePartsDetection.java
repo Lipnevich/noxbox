@@ -13,6 +13,7 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import live.noxbox.analitics.LogEvents;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Acceptance;
 import live.noxbox.model.NotificationType;

@@ -16,13 +16,13 @@ import com.google.android.gms.maps.GoogleMap;
 import java.math.BigDecimal;
 
 import live.noxbox.R;
+import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.LogEvents;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 

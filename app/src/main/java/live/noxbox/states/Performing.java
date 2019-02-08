@@ -1,7 +1,6 @@
 package live.noxbox.states;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,6 +14,7 @@ import java.util.HashMap;
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Constants;
 import live.noxbox.R;
+import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.NotificationType;
@@ -23,8 +23,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.BalanceChecker;
-import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.LogEvents;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Task;
 
@@ -57,10 +55,6 @@ public class Performing implements State {
 
     @Override
     public void draw(final Profile profile) {
-        Log.d(TAG + "Performing", "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
-        Log.d(TAG + "Performing", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
-        Log.d(TAG + "Performing", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeOwnerVerified()));
-        Log.d(TAG + "Performing", "timeStartPerforming: " + DateTimeFormatter.time(profile.getCurrent().getTimeStartPerforming()));
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         performingView = activity.findViewById(R.id.container);
@@ -113,7 +107,6 @@ public class Performing implements State {
                         stopHandler();
                         return;
                     }
-                    Log.d("PerformingRunnable:", this.toString());
                     Crashlytics.setString(this.toString(), "PerformingRunnable");
                 }
             }
@@ -133,36 +126,13 @@ public class Performing implements State {
     }
 
     private void drawComplete(final Profile profile) {
-//        SwipeButton completeSwipeButton = performingView.findViewById(R.id.completeSwipeButton);
-//        completeSwipeButton.setText(activity.getResources().getString(R.string.completeText));
-//        completeSwipeButton.setParametrs(activity.getDrawable(R.drawable.yes), activity.getResources().getString(R.string.completeText), activity);
-//        completeSwipeButton.setOnTouchListener(completeSwipeButton.getButtonTouchListener(new Task<Object>() {
-//            @Override
-//            public void execute(Object object) {
-//                long timeCompleted = System.currentTimeMillis();
-//
-//                Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
-//
-//                //Map<String, String> data = new HashMap<>();
-//                //data.put("type", NotificationType.completed.name());
-//                //data.put("price", getTotalSpentForNoxbox(profile.getCurrent(), timeCompleted).toString());
-//                //data.put("time", "" + timeCompleted);
-//                //NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
-//                profile.getCurrent().setTimeCompleted(timeCompleted);
-//                updateNoxbox();
-//            }
-//        }));
         ProSwipeButton proSwipeBtn = activity.findViewById(R.id.proSwipeButton);
         proSwipeBtn.setOnSwipeListener(() -> {
             proSwipeBtn.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
             new android.os.Handler().postDelayed(() -> {
                 long timeCompleted = System.currentTimeMillis();
 
-                Log.d(TAG + "Performing", "timeCompleted: " + DateTimeFormatter.time(timeCompleted));
-
                 profile.getCurrent().setTimeCompleted(timeCompleted);
-
-                LogEvents.generateLogEvent(activity, "noxbox_completed");
 
                 updateNoxbox();
             }, 0);
@@ -177,7 +147,6 @@ public class Performing implements State {
         stopHandler();
         performingView.removeAllViews();
         MessagingService.removeNotifications(activity);
-        Log.d(TAG + "Performing", "time return to AvailableService: " + DateTimeFormatter.time(System.currentTimeMillis()));
     }
 
 

@@ -28,12 +28,14 @@ import static live.noxbox.database.Firestore.writeNoxbox;
 import static live.noxbox.database.Firestore.writeProfile;
 import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.database.GeoRealtime.online;
+import static live.noxbox.tools.MoneyFormatter.scale;
 
 public class AppCache {
 
     public static Map<String, Noxbox> availableNoxboxes = new ConcurrentHashMap<>();
     public static BigDecimal wavesToUsd;
     private static final Profile profile;
+
 
     static {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -59,6 +61,8 @@ public class AppCache {
         if (!isProfileReady()
                 || (user != null && !user.getUid().equals(profile.getId()))) {
             Firestore.listenProfile(newProfile -> {
+                eventBalanceUpdate(profile.getWallet().getBalance(), newProfile.getWallet().getBalance());
+
                 profile.copy(newProfile);
 
                 if (!profile.getNoxboxId().isEmpty()) {
@@ -68,6 +72,15 @@ public class AppCache {
                 }
             });
         }
+    }
+
+    private static void eventBalanceUpdate(String previous, String next) {
+        BigDecimal previousBalance = scale(previous != null ? new BigDecimal(previous) : BigDecimal.ZERO);
+        BigDecimal nextBalance = scale(next != null ? new BigDecimal(next) : BigDecimal.ZERO);
+        if(nextBalance.compareTo(previousBalance) > 0) {
+            // TODO (nli) send event about balance update
+        }
+
     }
 
     public static void stopListen(String className) {
@@ -144,6 +157,7 @@ public class AppCache {
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId);
         Firestore.listenNoxbox(noxboxId, noxbox -> {
             if (noxbox.getId().equals(profile.getNoxboxId())) {
+                eventCompleted(profile().getCurrent(), noxbox);
                 profile.getCurrent().copy(noxbox);
             } else {
                 profile.getViewed().copy(noxbox);

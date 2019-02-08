@@ -14,11 +14,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 import live.noxbox.model.Profile;
-import live.noxbox.tools.LogEvents;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;

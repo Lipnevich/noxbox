@@ -9,9 +9,9 @@ import com.google.android.gms.maps.GoogleMap;
 
 import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
+import live.noxbox.analitics.LogEvents;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.LogEvents;
 
 import static live.noxbox.tools.MapOperator.buildMapMarkerListener;
 import static live.noxbox.tools.MapOperator.buildMapPosition;

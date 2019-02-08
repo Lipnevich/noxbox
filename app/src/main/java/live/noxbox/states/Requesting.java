@@ -15,13 +15,13 @@ import com.google.android.gms.maps.GoogleMap;
 import java.util.HashMap;
 
 import live.noxbox.R;
+import live.noxbox.analitics.LogEvents;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
-import live.noxbox.tools.LogEvents;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
