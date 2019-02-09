@@ -121,7 +121,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         let request = { };
         request.addressToTransfer = performer.wallet.address;
-        request.encrypted = (await db.collection('seeds').doc(id).get()).data().seed;
+        request.encrypted = (await db.collection('seeds').doc(noxbox.payerId).get()).data().seed;
         request.minPayment = new BigDecimal(noxbox.price).div(4);
         request.transferable = moneyToPay;
 
