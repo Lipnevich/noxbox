@@ -66,28 +66,23 @@ public abstract class Notification {
     }
 
     protected NotificationCompat.Builder getNotificationCompatBuilder() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return new NotificationCompat.Builder(context, Constants.CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setVibrate(vibrate)
-                    .setCustomContentView(contentView)
-                    .setSound(sound)
-                    .setOnlyAlertOnce(isAlertOnce)
-                    .setContentIntent(onViewOnClickAction)
-                    .setDeleteIntent(deleteIntent)
-                    .setAutoCancel(isAutoCancel);
-        } else {
-            return new NotificationCompat.Builder(context, Constants.CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setVibrate(vibrate)
-                    .setContent(contentView)
-                    .setSound(sound)
-                    .setOnlyAlertOnce(isAlertOnce)
-                    .setContentIntent(onViewOnClickAction)
-                    .setDeleteIntent(deleteIntent)
-                    .setAutoCancel(isAutoCancel);
-        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constants.CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setVibrate(vibrate)
+                .setSound(sound)
+                .setOnlyAlertOnce(isAlertOnce)
+                .setContentIntent(onViewOnClickAction)
+                .setDeleteIntent(deleteIntent)
+                .setAutoCancel(isAutoCancel);
 
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            builder.setCustomContentView(contentView)
+                    .setPriority(NotificationManager.IMPORTANCE_HIGH);
+        else
+            builder.setContent(contentView)
+                    .setPriority(android.app.Notification.PRIORITY_MAX);
+
+        return builder;
     }
 
     protected static NotificationManager getNotificationService(Context context) {
