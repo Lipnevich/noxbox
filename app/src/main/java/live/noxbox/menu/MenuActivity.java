@@ -29,7 +29,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +46,6 @@ import live.noxbox.menu.wallet.WalletActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
@@ -170,10 +168,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.navigation_filters: {
-//                Router.startActivityForResult(this, MapSettingsActivity.class, MapSettingsActivity.CODE);
-//                break;
-//            }
             case R.id.navigation_settings: {
                 Router.startActivityForResult(this, MapSettingsActivity.class, MapSettingsActivity.CODE);
                 break;
@@ -195,27 +189,14 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 break;
             }
             case R.id.navigation_logout: {
-                AppCache.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-
-                        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if (currentUser != null) {
-                            AppCache.logout();
-                            FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
-                        }
-                        AuthUI.getInstance()
-                                .signOut(MenuActivity.this)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Void> task) {
-
-                                        startActivity(new Intent(getApplicationContext(), AuthActivity.class));
-                                        Router.finishActivity(MenuActivity.this);
-                                    }
-                                });
-                    }
-                });
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    AppCache.logout();
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
+                }
+                AuthUI.getInstance().signOut(MenuActivity.this);
+                startActivity(new Intent(getApplicationContext(), AuthActivity.class));
+                Router.finishActivity(MenuActivity.this);
             }
         }
 

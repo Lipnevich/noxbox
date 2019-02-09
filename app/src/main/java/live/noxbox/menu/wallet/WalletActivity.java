@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.crashlytics.android.Crashlytics;
+import com.google.common.base.Strings;
 import com.google.firebase.functions.FirebaseFunctions;
 
 import org.json.JSONException;
@@ -34,6 +35,7 @@ import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Wallet;
 import live.noxbox.tools.DisplayMetricsConservations;
@@ -84,7 +86,7 @@ public class WalletActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.readProfile(profile -> {
+        AppCache.listenProfile(WalletActivity.class.getName(), profile -> {
             View.OnClickListener addressToClipboardListener = view -> {
                 if (profile.getWallet().getAddress() == null) return;
 
@@ -115,7 +117,9 @@ public class WalletActivity extends BaseActivity {
             sendButton.setOnClickListener(sendButtonOnClickListener);
 
             draw(profile);
-            updateBalance(profile);
+            if(!Strings.isNullOrEmpty(profile.getWallet().getAddress())) {
+                updateBalance(profile);
+            }
         });
     }
 
@@ -136,7 +140,7 @@ public class WalletActivity extends BaseActivity {
         }
         balance.setVisibility(View.INVISIBLE);
         progressCat.setVisibility(View.VISIBLE);
-        blockTransfer(false);
+        enableTransfer(false);
 
         requestQueue = Volley.newRequestQueue(WalletActivity.this);
         String url = "https://nodes.wavesplatform.com/addresses/balance/";
@@ -164,9 +168,10 @@ public class WalletActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         handler.removeCallbacks(runnable);
+        AppCache.stopListen(WalletActivity.class.getName());
     }
 
     private void transfer(Profile profile, String address) {
@@ -184,7 +189,7 @@ public class WalletActivity extends BaseActivity {
 
         balance.setVisibility(View.INVISIBLE);
         progressCat.setVisibility(View.VISIBLE);
-        blockTransfer(false);
+        enableTransfer(false);
 
         FirebaseFunctions.getInstance()
                 .getHttpsCallable("transfer")
@@ -199,7 +204,7 @@ public class WalletActivity extends BaseActivity {
                 .addOnFailureListener(e -> {
                     progressCat.setVisibility(View.INVISIBLE);
                     balance.setVisibility(View.VISIBLE);
-                    blockTransfer(true);
+                    enableTransfer(true);
                 });
     }
 
@@ -218,12 +223,14 @@ public class WalletActivity extends BaseActivity {
 
         copyToClipboard.setVisibility(wallet.getAddress() != null ? View.VISIBLE : View.INVISIBLE);
 
-        blockTransfer(balance.compareTo(BigDecimal.ZERO) > 0);
+        enableTransfer(balance.compareTo(BigDecimal.ZERO) > 0
+                && (profile.getCurrent().getMyRole(profile.getId()) == MarketRole.supply
+                || profile.getCurrent().getFinished()));
     }
 
-    private void blockTransfer(boolean isBlock) {
-        findViewById(R.id.send_button_id).setEnabled(isBlock);
-        findViewById(R.id.address_to_send_id).setEnabled(isBlock);
+    private void enableTransfer(boolean enable) {
+        findViewById(R.id.send_button_id).setEnabled(enable);
+        findViewById(R.id.address_to_send_id).setEnabled(enable);
     }
 
 }

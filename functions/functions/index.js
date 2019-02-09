@@ -12,7 +12,7 @@ db.settings({timestampsInSnapshots: true});
 exports.welcome = functions.auth.user().onCreate(async user => {
     await wallet.create(user);
 
-    let profile = { id : user.uid, travelMode : 'walking' };
+    let profile = { id : user.uid, travelMode : 'walking', noxboxId : '' };
     profile.wallet = { address : user.address, balance : '0' };
 
     if(user.photoUrl) profile.photoUrl = user.photoUrl;

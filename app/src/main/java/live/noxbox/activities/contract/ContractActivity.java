@@ -13,7 +13,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,11 +48,9 @@ import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
-import live.noxbox.states.State;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.BottomSheetDialog;
-import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
@@ -503,10 +500,6 @@ public class ContractActivity extends BaseActivity {
     }
 
     public void postNoxbox() {
-        Log.d(State.TAG + "ContractActivity", "timeCreated: " + DateTimeFormatter.time(System.currentTimeMillis()));
-
-
-
         AppCache.noxboxCreated(profile -> {
                     BusinessActivity.businessEvent(BusinessEvent.post);
                     Router.finishActivity(ContractActivity.this);
@@ -518,13 +511,13 @@ public class ContractActivity extends BaseActivity {
     }
 
     public void updateNoxbox() {
-        AppCache.removeNoxbox(profile -> profile.getBackup().clean());
+        AppCache.removeNoxbox(profile().getBackup(), profile -> profile.getBackup().clean());
         postNoxbox();
     }
 
     public void removeNoxbox() {
         profile().getCurrent().copy(profile().getBackup().setTimeRemoved(System.currentTimeMillis()));
-        AppCache.removeNoxbox(profile -> profile.getCurrent().clean());
+        AppCache.removeNoxbox(profile().getCurrent(), profile -> profile.getCurrent().clean());
         Router.finishActivity(ContractActivity.this);
     }
 

@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static live.noxbox.Constants.DEFAULT_PRICE;
+import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.TravelMode.none;
 
@@ -522,5 +523,9 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public boolean getFinished() {
         return finished;
+    }
+
+    public MarketRole getMyRole(String myId) {
+        return myId.equals(owner.getId()) && role == demand ? demand : supply;
     }
 }

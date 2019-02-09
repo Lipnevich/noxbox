@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 
 import live.noxbox.model.Profile;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 public class BalanceChecker {
 
     private static StringRequest stringRequest;
@@ -22,6 +24,11 @@ public class BalanceChecker {
     private static final String TAG = BalanceChecker.class.getName();
 
     public static void checkBalance(Profile profile, Context context, Task<BigDecimal> afterBalanceCheck) {
+        if(isNullOrEmpty(profile.getWallet().getAddress())) {
+            afterBalanceCheck.execute(BigDecimal.ZERO);
+            return;
+        }
+
         if (requestQueue != null && stringRequest != null) {
             requestQueue.add(stringRequest);
             return;

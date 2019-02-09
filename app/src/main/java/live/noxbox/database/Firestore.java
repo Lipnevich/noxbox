@@ -1,6 +1,7 @@
 package live.noxbox.database;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.auth.FirebaseAuth;
@@ -8,11 +9,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.gson.Gson;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -76,7 +79,16 @@ public class Firestore {
                     writes++;
                     onSuccess.execute(profile);
                 })
-                .addOnFailureListener(Crashlytics::logException);
+                .addOnFailureListener(o-> {
+                    if(FirebaseAuth.getInstance().getCurrentUser() == null) return;
+
+                    if(o instanceof FirebaseFirestoreException) {
+                        if(((FirebaseFirestoreException) o).getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                            Crashlytics.log(Log.ERROR, "ProfileWriteDenied", new Gson().toJson(profile));
+                        }
+                    }
+                    Crashlytics.logException(o);
+                });
     }
 
     // Current noxbox
@@ -125,7 +137,8 @@ public class Firestore {
                     onSuccess.execute(currentId);
                 })
                 .addOnFailureListener(e -> {
-                    Crashlytics.logException(e);
+                        Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", new Gson().toJson(current));
+                        Crashlytics.logException(e);
                     onFailure.execute(null);
                 });
     }
