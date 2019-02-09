@@ -5,9 +5,8 @@
 
     <ImageView
         android:id="@+id/tutorial_one"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"
+        android:layout_width="match_parent"
         android:src="@drawable/tutorial_page_one"
         android:visibility="visible"
         />
@@ -16,7 +15,6 @@
         android:id="@+id/tutorial_two"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"
         android:src="@drawable/tutorial_page_two"
         android:visibility="gone"
         />
@@ -25,7 +23,6 @@
         android:id="@+id/tutorial_three"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"
         android:src="@drawable/tutorial_page_three"
         android:visibility="gone"
         />
@@ -34,17 +31,18 @@
         android:id="@+id/tutorial_four"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"
         android:src="@drawable/tutorial_page_four"
         android:visibility="gone"
         />
 
     <ImageView
         android:id="@+id/tape"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitEnd"
-        android:layout_marginBottom="73dp"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="24dp"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/tutorial_tape" />
 
     <TextView
@@ -53,7 +51,7 @@
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:gravity="center|bottom"
-        android:paddingBottom="83dp"
+        android:paddingBottom="32dp"
         android:textColor="@color/primary"
         android:textSize="@dimen/text_title_large" />
 

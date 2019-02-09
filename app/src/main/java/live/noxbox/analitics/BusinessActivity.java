@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import live.noxbox.BuildConfig;
 import live.noxbox.database.Firestore;
 
 import static live.noxbox.database.AppCache.profile;
@@ -40,6 +41,8 @@ public class BusinessActivity extends AppCompatActivity {
     }
 
     public static void businessEvent(BusinessEvent event) {
+        if (context == null || BuildConfig.DEBUG) return;
+
         Bundle bundle = new Bundle();
 
         switch (event) {
@@ -75,11 +78,6 @@ public class BusinessActivity extends AppCompatActivity {
 
         }
 
-        businessEvent(event, bundle);
-    }
-
-    public static void businessEvent(BusinessEvent event, Bundle bundle) {
-        if (context == null) return;
         FirebaseAnalytics.getInstance(context).logEvent(event.name(), bundle);
     }
 

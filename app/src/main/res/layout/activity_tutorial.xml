@@ -6,8 +6,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true">
+        android:layout_height="match_parent">
 
         <live.noxbox.tools.PanoramaImageView
             android:id="@+id/tutorialBackground"
@@ -20,20 +19,19 @@
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_alignParentBottom="true"
-            android:scaleType="fitXY" />
+
+            />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="64dp"
         android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/skip"
             android:layout_width="wrap_content"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="4dp"
             android:background="@null"
@@ -46,15 +44,16 @@
 
         <ImageView
             android:id="@+id/dots"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="0dp"/>
 
         <Button
             android:id="@+id/next"
             android:layout_width="wrap_content"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="4dp"
             android:background="@null"

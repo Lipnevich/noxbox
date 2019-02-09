@@ -1,73 +1,47 @@
 package live.noxbox.menu.about.tutorial;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 
 import live.noxbox.R;
 
 public class TutorialFragment extends android.support.v4.app.Fragment {
 
-    private static final String TEXT = "text";
     private static final String PAGE = "page";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        String text = getResources().getString(getArguments().getInt(TEXT));
-        int page = getArguments().getInt(PAGE);
-
         View view = inflater.inflate(R.layout.fragment_tutorial, container, false);
-        ImageView mainImage = view.findViewById(R.id.image);
-        switch (page) {
-            case 1:
-                setImage(mainImage, R.drawable.tutorial_page_one);
-                break;
-            case 2:
-                setImage(mainImage, R.drawable.tutorial_page_two);
-                break;
-            case 3:
-                setImage(mainImage, R.drawable.tutorial_page_three);
-                break;
-            case 4:
-                setImage(mainImage, R.drawable.tutorial_page_four);
-                break;
-        }
 
-        TextView informationText = view.findViewById(R.id.text);
-        informationText.setText(text);
+        switchImage(view, getArguments().getInt(PAGE));
+        switchText(view, getArguments().getInt(PAGE));
 
         return view;
     }
 
-    private void setImage(ImageView view, int image) {
-        Glide.with(this).asBitmap()
-                .load(image)
-                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        view.setImageBitmap(resource);
-                    }
-                });
+    private void switchText(View view, int page) {
+        TextView text = view.findViewById(R.id.text);
+        switch (page) {
+            case 1: text.setText(getResources().getString(R.string.tutorial_one)); break;
+            case 2: text.setText(getResources().getString(R.string.tutorial_two)); break;
+            case 3: text.setText(getResources().getString(R.string.tutorial_three)); break;
+            case 4: text.setText(getResources().getString(R.string.tutorial_four)); break;
+        }
     }
 
-    public static TutorialFragment newInstance(int text, int page) {
+    private void switchImage(View view, int page) {
+        view.findViewById(R.id.tutorial_one).setVisibility(page == 1 ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.tutorial_two).setVisibility(page == 2 ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.tutorial_three).setVisibility(page == 3 ? View.VISIBLE : View.GONE);
+        view.findViewById(R.id.tutorial_four).setVisibility(page == 4 ? View.VISIBLE : View.GONE);
+    }
+
+    public static TutorialFragment newInstance(int page) {
         TutorialFragment tutorialFragment = new TutorialFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TEXT, text);
         bundle.putInt(PAGE, page);
 
         tutorialFragment.setArguments(bundle);

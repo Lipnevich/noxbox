@@ -1,5 +1,6 @@
 package live.noxbox.menu.about.tutorial;
 
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,6 +28,7 @@ import live.noxbox.tools.Router;
 import static live.noxbox.Constants.TUTORIAL_KEY;
 import static live.noxbox.analitics.BusinessEvent.tutorialDislikes;
 import static live.noxbox.analitics.BusinessEvent.tutorialLikes;
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public class TutorialActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
@@ -89,6 +91,10 @@ public class TutorialActivity extends BaseActivity {
         viewPager = findViewById(R.id.viewpager);
         dots = findViewById(R.id.dots);
         dots.setImageResource(R.drawable.tutorial_intro_one);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            dots.setPadding(0, dpToPx(32),0, 0);
+        }
+
         skip = findViewById(R.id.skip);
         skip.setOnClickListener(skipOnClickListener);
         next = findViewById(R.id.next);
