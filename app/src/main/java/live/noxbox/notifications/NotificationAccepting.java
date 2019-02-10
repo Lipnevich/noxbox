@@ -56,7 +56,7 @@ public class NotificationAccepting extends Notification {
             if (isNullOrZero(noxbox.getTimeAccepted())) {
                 noxbox.setTimeTimeout(System.currentTimeMillis());
                 BusinessActivity.businessEvent(timeout);
-                Firestore.createOrUpdateNoxbox(noxbox, NONE, NONE);
+                Firestore.updateNoxbox(noxbox, NONE, NONE);
             }
         });
 

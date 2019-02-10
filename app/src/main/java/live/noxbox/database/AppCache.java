@@ -27,7 +27,7 @@ import static com.google.common.base.Objects.equal;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static live.noxbox.analitics.BusinessEvent.complete;
 import static live.noxbox.analitics.BusinessEvent.inBox;
-import static live.noxbox.database.Firestore.createOrUpdateNoxbox;
+import static live.noxbox.database.Firestore.getNextNoxboxId;
 import static live.noxbox.database.Firestore.writeNoxbox;
 import static live.noxbox.database.Firestore.writeProfile;
 import static live.noxbox.database.GeoRealtime.offline;
@@ -58,8 +58,7 @@ public class AppCache {
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
 
-    public static final Task NONE = noxbox -> {
-    };
+    public static final Task NONE = noxbox -> {};
 
     public static void startListening() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -183,27 +182,33 @@ public class AppCache {
     }
 
 
-    public static void noxboxCreated(Task<Profile> onSuccess, Task<Profile> onFailure) {
+    public static void createNoxbox(Task<Profile> onSuccess, Task<Exception> onFailure) {
         if (!isProfileReady()) return;
 
-        // remove noxbox from backup
-        removeNoxbox(profile.getCurrent(), o-> {
-
+        profile.setNoxboxId(getNextNoxboxId());
+        // persist noxboxId in the profile
+        writeProfile(profile, result -> {
+            profile.getCurrent().setId(profile.getNoxboxId());
             profile.getCurrent().setTimeCreated(System.currentTimeMillis());
             if (profile.getCurrent().getRole() == MarketRole.supply) {
                 profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
             } else {
                 profile.getCurrent().getOwner().setPortfolio(null);
             }
-
-            createOrUpdateNoxbox(profile.getCurrent(), noxboxId -> {
-                profile.setNoxboxId(noxboxId);
-                writeProfile(profile, profile -> online(profile.getCurrent()));
-                onSuccess.execute(profile);
-            }, onFailure);
+            // create noxbox
+            Firestore.updateNoxbox(profile.getCurrent(),
+                    success -> {
+                        // make it world wide visible
+                        online(profile.getCurrent());
+                        onSuccess.execute(profile);
+                    },
+                    error -> {
+                        // remove noxboxId from the profile
+                        profile.setNoxboxId("");
+                        writeProfile(profile, NONE);
+                        onFailure.execute(error);
+                    });
         });
-
-
     }
 
 
@@ -227,8 +232,7 @@ public class AppCache {
 
     public static void updateNoxbox() {
         if (!isProfileReady()) return;
-        createOrUpdateNoxbox(profile.getCurrent(), noxboxId -> executeUITasks(), NONE);
-
+        Firestore.updateNoxbox(profile.getCurrent(), noxboxId -> executeUITasks(), NONE);
     }
 
     public static String showPriceInUsd(String currency, String price) {

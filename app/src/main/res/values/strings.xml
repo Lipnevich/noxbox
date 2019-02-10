@@ -124,7 +124,7 @@
     <string name="onCar">car</string>
     <string name="onTransit">public transport</string>
     <string name="travelMode">The way of traveling</string>
-    <string name="add">Add</string>
+    <string name="post">Post</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
     <string name="daily">daytime from 10 to 18</string>

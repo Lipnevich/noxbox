@@ -214,8 +214,7 @@ public class MapActivity extends HackerActivity implements
                             profile.setPosition(Position.from(new LatLng(position.getLatitude(),
                                     position.getLongitude())));
                             MapOperator.buildMapPosition(googleMap, getApplicationContext());
-                            Firestore.writeProfile(profile, objectProfile -> {
-                            });
+                            Firestore.writeProfile(profile, o -> {});
                         }
                     } else {
                         Crashlytics.logException(task.getException());

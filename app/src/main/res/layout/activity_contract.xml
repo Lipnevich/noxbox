@@ -397,7 +397,7 @@
                                 android:layout_gravity="center"
                                 android:duplicateParentState="true"
                                 android:gravity="center"
-                                android:text="@string/add"
+                                android:text="@string/post"
                                 android:textColor="@color/secondary"
                                 android:textSize="@dimen/text_size" />
                         </LinearLayout>

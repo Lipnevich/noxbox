@@ -106,12 +106,11 @@ public class Firestore {
         });
     }
 
-    public static void createOrUpdateNoxbox(Noxbox current, Task<String> onSuccess, Task<Profile> onFailure) {
-        if (current.getId() == null || current.getId().isEmpty()) {
-            String newNoxboxId = db().collection("noxboxes").document().getId();
-            current.setId(newNoxboxId);
-        }
+    public static String getNextNoxboxId() {
+        return db().collection("noxboxes").document().getId();
+    }
 
+    public static void updateNoxbox(Noxbox current, Task<String> onSuccess, Task<Exception> onFailure) {
         if (current.getRole() == MarketRole.supply) {
             current.setPerformerId(current.getOwner().getId());
             current.setPayerId(current.getParty() == null ? "" : current.getParty().getId());
@@ -127,7 +126,7 @@ public class Firestore {
         }
     }
 
-    public static void writeNoxbox(Noxbox current, Task<String> onSuccess, Task<Profile> onFailure) {
+    public static void writeNoxbox(Noxbox current, Task<String> onSuccess, Task<Exception> onFailure) {
         current.setFinished(isFinished(current));
 
         String currentId = current.getId();
@@ -139,7 +138,7 @@ public class Firestore {
                 .addOnFailureListener(e -> {
                         Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", new Gson().toJson(current));
                         Crashlytics.logException(e);
-                    onFailure.execute(null);
+                    onFailure.execute(e);
                 });
     }
 

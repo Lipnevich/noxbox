@@ -55,6 +55,7 @@ import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
@@ -262,7 +263,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawAddress(Profile profile) {
-        AsyncTask<Void, Void, String> asyncTask = new AsyncTask<Void, Void, String>() {
+        new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... voids) {
                 String address;
@@ -428,7 +429,7 @@ public class ContractActivity extends BaseActivity {
     private void drawPublishButton(final Profile profile) {
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
         if (isNullOrZero(profile.getBackup().getTimeCreated())) {
-            ((TextView) findViewById(R.id.publish)).setText(R.string.add);
+            ((TextView) findViewById(R.id.publish)).setText(R.string.post);
             publishButton.setOnClickListener(v -> {
                 if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
                     publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
@@ -475,10 +476,10 @@ public class ContractActivity extends BaseActivity {
                     if (isLocationPermissionGranted(getApplicationContext())) {
                         updateNoxbox();
                     } else {
-                        getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
+                        getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE);
                     }
                 } else {
-                    postNoxbox();
+                    updateNoxbox();
                 }
             });
 
@@ -500,19 +501,20 @@ public class ContractActivity extends BaseActivity {
     }
 
     public void postNoxbox() {
-        AppCache.noxboxCreated(profile -> {
-                    BusinessActivity.businessEvent(BusinessEvent.post);
-                    Router.finishActivity(ContractActivity.this);
-                },
-                object -> {
-                    profile().getCurrent().clean();
-                    Router.finishActivity(ContractActivity.this);
-                });
+        AppCache.createNoxbox(success -> {
+                BusinessActivity.businessEvent(BusinessEvent.post);
+                Router.finishActivity(ContractActivity.this);
+            }, error -> {
+                profile().getCurrent().clean();
+                Router.finishActivity(ContractActivity.this);
+            });
     }
 
     public void updateNoxbox() {
-        AppCache.removeNoxbox(profile().getBackup(), profile -> profile.getBackup().clean());
-        postNoxbox();
+        AppCache.removeNoxbox(profile().getBackup(), success -> {
+            profile().getBackup().clean();
+            postNoxbox();
+        });
     }
 
     public void removeNoxbox() {
@@ -542,6 +544,10 @@ public class ContractActivity extends BaseActivity {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH) {
             if (isLocationPermissionGranted(getApplicationContext())) {
                 postNoxbox();
+            }
+        } else if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE) {
+            if (isLocationPermissionGranted(getApplicationContext())) {
+                updateNoxbox();
             }
         }
     }
