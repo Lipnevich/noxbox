@@ -526,6 +526,6 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public MarketRole getMyRole(String myId) {
-        return myId.equals(owner.getId()) && role == demand ? demand : supply;
+        return myId.equals(getOwner().getId()) && role == demand ? demand : supply;
     }
 }
