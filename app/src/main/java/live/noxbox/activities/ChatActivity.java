@@ -71,7 +71,7 @@ public class ChatActivity extends BaseActivity {
 
         Glide.with(getApplicationContext())
                 .asBitmap()
-                .load(R.drawable.view)
+                .load(AppCache.profile().getCurrent().getType().getIllustration())
                 .apply(diskCacheStrategyOf(BuildConfig.DEBUG ? DiskCacheStrategy.NONE : DiskCacheStrategy.RESOURCE))
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
