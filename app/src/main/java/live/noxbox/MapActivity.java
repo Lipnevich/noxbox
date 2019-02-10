@@ -20,7 +20,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -55,12 +54,13 @@ import live.noxbox.states.Moving;
 import live.noxbox.states.Performing;
 import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
-import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.model.NoxboxState.completed;
+import static live.noxbox.model.NoxboxState.performing;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
@@ -257,13 +257,15 @@ public class MapActivity extends HackerActivity implements
         timeLogger.makeLog(state.getClass().getSimpleName());
     }
 
-    private WeakHashMap<NoxboxState, State> states = new WeakHashMap<>();
+    private static WeakHashMap<NoxboxState, State> states = new WeakHashMap<>();
 
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
         if (state == NoxboxState.initial) {
-            AppCache.stopListenNoxbox(profile.getCurrent().getId());
-            states.clear();
+            AppCache.stopListenNoxbox(profile.getNoxboxId());
+            if(states.containsKey(performing) || states.containsKey(completed) || states.containsKey(NoxboxState.moving)) {
+                states.clear();
+            }
         } else {
             AppCache.startListenNoxbox(profile.getCurrent().getId());
         }
@@ -296,20 +298,6 @@ public class MapActivity extends HackerActivity implements
                 throw new IllegalStateException("Unknown state: " + state.name());
         }
         states.put(state, newState);
-
-        if (BuildConfig.DEBUG && currentState != null)
-            Log.d(State.TAG + TAG, "previousState: " + currentState.getClass().getName());
-        Log.d(State.TAG + TAG, "newState: " + newState.getClass().getName());
-        if (profile.getCurrent() != null) {
-            Log.d(State.TAG + TAG, "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
-            Log.d(State.TAG + TAG, "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-            Log.d(State.TAG + TAG, "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
-            Log.d(State.TAG + TAG, "timeStartPerforming: " + DateTimeFormatter.time(profile.getCurrent().getTimeStartPerforming()));
-            Log.d(State.TAG + TAG, "timeCompleted: " + DateTimeFormatter.time(profile.getCurrent().getTimeCompleted()));
-        } else {
-            Log.d(State.TAG + TAG, "current noxbox: " + "null");
-        }
-
 
         return newState;
     }
