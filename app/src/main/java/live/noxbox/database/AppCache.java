@@ -158,21 +158,24 @@ public class AppCache {
     public static void startListenNoxbox(String noxboxId) {
         if (isNullOrEmpty(noxboxId) || ids.contains(noxboxId)) return;
         ids.add(noxboxId);
-        FirebaseMessaging.getInstance().subscribeToTopic(noxboxId);
-        Firestore.listenNoxbox(noxboxId, noxbox -> {
-            if (noxbox.getId().equals(profile.getNoxboxId())) {
-                long oldTimeCompleted = profile().getCurrent().getTimeCompleted();
-                long newTimeCompleted = noxbox.getTimeCompleted();
+        FirebaseMessaging.getInstance().subscribeToTopic(noxboxId).addOnSuccessListener(o-> {
+            Firestore.listenNoxbox(noxboxId, noxbox -> {
+                if (noxbox.getId().equals(profile.getNoxboxId())) {
+                    long oldTimeCompleted = profile().getCurrent().getTimeCompleted();
+                    long newTimeCompleted = noxbox.getTimeCompleted();
 
-                profile.getCurrent().copy(noxbox);
+                    profile.getCurrent().copy(noxbox);
 
-                if (newTimeCompleted > 0 && oldTimeCompleted == 0) {
-                    BusinessActivity.businessEvent(complete);
+                    if (newTimeCompleted > 0 && oldTimeCompleted == 0) {
+                        BusinessActivity.businessEvent(complete);
+                    }
+                } else {
+                    profile.getViewed().copy(noxbox);
                 }
-            } else {
-                profile.getViewed().copy(noxbox);
-            }
-            executeUITasks();
+                executeUITasks();
+            });
+        }).addOnFailureListener(e-> {
+            Crashlytics.log(Log.ERROR, "failToSubscribeOnNoxbox", noxboxId);
         });
     }
 

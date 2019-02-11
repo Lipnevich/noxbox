@@ -20,6 +20,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -93,7 +94,9 @@ public class MapActivity extends HackerActivity implements
         }
 
         Crashlytics.setUserIdentifier(user.getUid());
-        FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
+        FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e-> {
+            Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid());
+        });;
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
