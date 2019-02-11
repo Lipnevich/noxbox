@@ -15,6 +15,9 @@ import static live.noxbox.ui.CircleView.BOTH_FLAG;
 import static live.noxbox.ui.CircleView.DEMAND_FLAG;
 import static live.noxbox.ui.CircleView.SUPPLY_FLAG;
 
+/**
+ * Created by Vladislaw Kravchenok on 11.02.2019.
+ */
 public class RoleSwitcherLayout extends RelativeLayout {
 
     private RelativeLayout background;

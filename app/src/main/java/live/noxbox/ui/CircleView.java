@@ -11,6 +11,9 @@ import live.noxbox.R;
 
 import static live.noxbox.App.context;
 
+/**
+ * Created by Vladislaw Kravchenok on 11.02.2019.
+ */
 public class CircleView extends View {
 
     public static final int SUPPLY_FLAG = 51;
@@ -156,3 +159,4 @@ public class CircleView extends View {
         invalidate();
     }
 }
+
