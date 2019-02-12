@@ -122,5 +122,6 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
     private void executeInTheContract(int position) {
         profile().getContract().setType(noxboxTypes.get(position));
+        executeUITasks();
     }
 }
