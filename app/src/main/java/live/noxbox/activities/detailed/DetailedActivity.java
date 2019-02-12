@@ -65,6 +65,7 @@ import static live.noxbox.analitics.BusinessEvent.accept;
 import static live.noxbox.analitics.BusinessEvent.cancel;
 import static live.noxbox.analitics.BusinessEvent.read;
 import static live.noxbox.analitics.BusinessEvent.request;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
@@ -418,7 +419,6 @@ public class DetailedActivity extends AppCompatActivity {
 
         profile.setCurrent(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
-        //profile.getCurrent().setAvailable(false);
         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
 
         AppCache.updateNoxbox();
@@ -611,7 +611,7 @@ public class DetailedActivity extends AppCompatActivity {
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    AppCache.readProfile(profile -> sendRequestToNoxbox(profile));
+                    sendRequestToNoxbox(profile());
                 }
             }
         }

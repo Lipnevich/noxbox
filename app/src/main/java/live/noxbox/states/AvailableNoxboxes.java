@@ -40,7 +40,6 @@ public class AvailableNoxboxes implements State {
 
     private GoogleMap googleMap;
     private MapActivity activity;
-    public static volatile int clusterRenderingFrequency = 400;
 
     private ClusterManager clusterManager;
 
@@ -48,6 +47,8 @@ public class AvailableNoxboxes implements State {
     private Runnable serviceRunnable;
 
     private static boolean serviceIsBound = false;
+
+    public static volatile int clusterRenderingFrequency = 400;
 
     public AvailableNoxboxes(final GoogleMap googleMap, final MapActivity activity) {
         this.googleMap = googleMap;
@@ -72,7 +73,7 @@ public class AvailableNoxboxes implements State {
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
             activity.getDeviceLocation(profile);
-            getLocationPermission(activity,Constants.LOCATION_PERMISSION_REQUEST_CODE);
+            getLocationPermission(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
         });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
@@ -90,7 +91,6 @@ public class AvailableNoxboxes implements State {
             profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo());
 
             startActivity(activity, ContractActivity.class);
-
         });
 
         if (!serviceIsBound) {

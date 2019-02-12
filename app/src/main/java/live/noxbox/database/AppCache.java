@@ -94,9 +94,14 @@ public class AppCache {
     }
 
     public static void listenProfile(String clazz, final Task<Profile> task) {
-        if (isProfileReady()) {
+        if (profileListeners.get(clazz) != null) {
             task.execute(profile);
+            return;
         }
+
+        if (isProfileReady())
+            task.execute(profile);
+
         profileListeners.put(clazz, task);
     }
 

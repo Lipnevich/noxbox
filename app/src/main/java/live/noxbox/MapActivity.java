@@ -60,8 +60,6 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
-import static live.noxbox.model.NoxboxState.completed;
-import static live.noxbox.model.NoxboxState.performing;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
@@ -72,9 +70,10 @@ import static live.noxbox.tools.MapOperator.setupMap;
 public class MapActivity extends HackerActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
-    protected static final String TAG = "MapActivity";
 
-    protected GoogleMap googleMap;
+    private static final String TAG = "MapActivity";
+
+    private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -94,9 +93,7 @@ public class MapActivity extends HackerActivity implements
         }
 
         Crashlytics.setUserIdentifier(user.getUid());
-        FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e-> {
-            Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid());
-        });;
+        FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e -> Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid()));
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -188,7 +185,6 @@ public class MapActivity extends HackerActivity implements
     }
 
 
-
     private void updateLocationUI() {
         if (googleMap == null)
             return;
@@ -219,7 +215,8 @@ public class MapActivity extends HackerActivity implements
                             profile.setPosition(Position.from(new LatLng(position.getLatitude(),
                                     position.getLongitude())));
                             MapOperator.buildMapPosition(googleMap, getApplicationContext());
-                            Firestore.writeProfile(profile, o -> {});
+                            Firestore.writeProfile(profile, o -> {
+                            });
                         }
                     } else {
                         Crashlytics.logException(task.getException());
@@ -268,9 +265,7 @@ public class MapActivity extends HackerActivity implements
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
         if (state == NoxboxState.initial) {
             AppCache.stopListenNoxbox(profile.getNoxboxId());
-            if(states.containsKey(performing) || states.containsKey(completed) || states.containsKey(NoxboxState.moving)) {
-                states.clear();
-            }
+            states.clear();
         } else {
             AppCache.startListenNoxbox(profile.getCurrent().getId());
         }
