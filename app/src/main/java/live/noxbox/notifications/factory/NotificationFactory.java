@@ -79,7 +79,7 @@ public abstract class NotificationFactory {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel = getNotificationService(context).getNotificationChannel(CHANNEL_ID);
-
+            notificationChannel.setShowBadge(false);
 
             if (notificationChannel == null) {
                 notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, importance);
