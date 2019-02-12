@@ -25,6 +25,8 @@ import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.profile;
+
 public class GeoRealtime {
 
     public final static String delimiter = ";";
@@ -135,7 +137,7 @@ public class GeoRealtime {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {
                     Noxbox noxbox = parseKey(key);
-                    if (noxbox != null) {
+                    if (noxbox != null && !noxbox.getOwner().getId().equals(profile().getId())) {
                         noxbox.setPosition(Position.from(location));
                         noxbox.getOwner().setPosition(Position.from(location));
                         noxboxes.put(noxbox.getId(), noxbox);

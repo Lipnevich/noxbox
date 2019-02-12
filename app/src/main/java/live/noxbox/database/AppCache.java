@@ -203,6 +203,9 @@ public class AppCache {
         } else {
             profile.getContract().getOwner().setPortfolio(null);
         }
+
+        executeUITasks();
+
         // persist noxboxId in the profile
         writeProfile(profile, result -> {
 
