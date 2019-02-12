@@ -352,6 +352,8 @@ public class DetailedActivity extends AppCompatActivity {
             case requesting:
                 drawCancelButton(profile);
                 break;
+            default:
+                drawJoinButton(profile);
         }
     }
 

@@ -295,5 +295,6 @@
     <string name="enterYourName">Введите ваше имя</string>
     <string name="pleaseEnterWalletAddress">Введите адрес кошелька</string>
     <string name="update">Обновить</string>
+    <string name="all">Все</string>
 
 </resources>

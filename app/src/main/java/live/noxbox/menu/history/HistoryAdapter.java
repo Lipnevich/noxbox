@@ -25,9 +25,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
-import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.MarketRole;
@@ -62,42 +60,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 Long.MAX_VALUE :
                 historyItems.get(historyItems.size() - 1).getTimeCompleted();
 
-        final Task<Collection<Noxbox>> uploadingTask = new Task<Collection<Noxbox>>() {
-            @Override
-            public void execute(Collection<Noxbox> items) {
-                List<Noxbox> noxboxes = new ArrayList<>();
-                for (Noxbox noxbox : items) {
-                    if (!uniqueValue.contains(noxbox)) {
-                        uniqueValue.add(noxbox);
-                        noxboxes.add(noxbox);
-                    }
+        final Task<Collection<Noxbox>> uploadingTask = items -> {
+            List<Noxbox> noxboxes = new ArrayList<>();
+            for (Noxbox noxbox : items) {
+                if (!uniqueValue.contains(noxbox)) {
+                    uniqueValue.add(noxbox);
+                    noxboxes.add(noxbox);
                 }
+            }
 
-                //for debbuging yearsBorder
-                if (BuildConfig.DEBUG) {
-                    Long[] datesInMillis = new Long[]{1505117471000L, 1507709471000L, 1510387871000L, 1473581471000L, 1476173471000L, 1478851871000L, 1481443871000L, 1441959071000L, 1410419471000L};
-                    if (!noxboxes.isEmpty()) {
-                        for (int i = 0; i < datesInMillis.length; i++) {
-                            Noxbox noxbox = new Noxbox().setId("" + ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE));
-                            noxbox.setParty(noxboxes.get(0).getParty());
-                            noxbox.setOwner(noxboxes.get(0).getOwner());
-                            noxbox.setType(noxboxes.get(0).getType());
-                            noxbox.setPosition(noxboxes.get(0).getPosition());
-                            noxbox.setPrice(noxboxes.get(0).getPrice());
-                            noxbox.setRole(noxboxes.get(0).getRole());
-                            noxbox.setWorkSchedule(noxboxes.get(0).getWorkSchedule());
-                            noxbox.setTimeCompleted(datesInMillis[i]);
 
-                            uniqueValue.add(noxbox);
-                            noxboxes.add(noxbox);
-                        }
-                    }
-                }
-
-                if (noxboxes.size() > 0) {
-                    historyItems.addAll(noxboxes);
-                    notifyDataSetChanged();
-                }
+            if (noxboxes.size() > 0) {
+                historyItems.addAll(noxboxes);
+                notifyDataSetChanged();
             }
         };
         Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
@@ -146,7 +121,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             return;
         }
 
-        final Noxbox noxbox = historyItems.get(position);
+        Noxbox noxbox = historyItems.get(position);
 
         viewHolder.time.setText(time(noxbox.getTimeCompleted()));
         viewHolder.date.setText(date(noxbox.getTimeCompleted()) + ",");

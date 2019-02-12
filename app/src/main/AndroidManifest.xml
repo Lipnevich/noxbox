@@ -12,7 +12,6 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/NoxBox"
-        android:name=".App"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"

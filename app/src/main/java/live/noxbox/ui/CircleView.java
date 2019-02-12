@@ -9,8 +9,6 @@ import android.view.View;
 
 import live.noxbox.R;
 
-import static live.noxbox.App.context;
-
 /**
  * Created by Vladislaw Kravchenok on 11.02.2019.
  */
@@ -27,8 +25,8 @@ public class CircleView extends View {
 
     private boolean checked;
 
-    private int defaultBarWidth = context().getResources().getDimensionPixelSize(R.dimen.default_bar_width);
-    private int defaultBarHeight = context().getResources().getDimensionPixelSize(R.dimen.default_bar_height);
+    private int defaultBarWidth;
+    private int defaultBarHeight;
 
     private int width;
     private int height;
@@ -36,26 +34,36 @@ public class CircleView extends View {
     public CircleView(Context context, int flag) {
         super(context);
         this.flag = flag;
+        this.defaultBarWidth = context.getResources().getDimensionPixelSize(R.dimen.default_bar_width);
+        this.defaultBarHeight = context.getResources().getDimensionPixelSize(R.dimen.default_bar_height);
         setWillNotDraw(false);
     }
 
     public CircleView(Context context) {
         super(context);
+        this.defaultBarWidth = context.getResources().getDimensionPixelSize(R.dimen.default_bar_width);
+        this.defaultBarHeight = context.getResources().getDimensionPixelSize(R.dimen.default_bar_height);
         setWillNotDraw(false);
     }
 
     public CircleView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.defaultBarWidth = context.getResources().getDimensionPixelSize(R.dimen.default_bar_width);
+        this.defaultBarHeight = context.getResources().getDimensionPixelSize(R.dimen.default_bar_height);
         setWillNotDraw(false);
     }
 
     public CircleView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.defaultBarWidth = context.getResources().getDimensionPixelSize(R.dimen.default_bar_width);
+        this.defaultBarHeight = context.getResources().getDimensionPixelSize(R.dimen.default_bar_height);
         setWillNotDraw(false);
     }
 
     public CircleView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        this.defaultBarWidth = context.getResources().getDimensionPixelSize(R.dimen.default_bar_width);
+        this.defaultBarHeight = context.getResources().getDimensionPixelSize(R.dimen.default_bar_height);
         setWillNotDraw(false);
     }
 
@@ -105,20 +113,20 @@ public class CircleView extends View {
         blue = new Paint();
         orange = new Paint();
 
-        float centerX = getWidth() >> 1;
-        float centerY = getHeight() >> 1;
-        float radius = height >> 1;
+        float centerX = width / 2;
+        float centerY = height / 2;
+        float radius = height / 2;
 
         if (flag == BOTH_FLAG) {
             if (checked) {
-                blue.setColor(context().getResources().getColor(R.color.blueON));
-                orange.setColor(context().getResources().getColor(R.color.orangeON));
+                blue.setColor(getResources().getColor(R.color.blueON));
+                orange.setColor(getResources().getColor(R.color.orangeON));
             } else {
-                blue.setColor(context().getResources().getColor(R.color.blueOFF));
-                orange.setColor(context().getResources().getColor(R.color.orangeOFF));
+                blue.setColor(getResources().getColor(R.color.blueOFF));
+                orange.setColor(getResources().getColor(R.color.orangeOFF));
             }
 
-            canvas.drawCircle(width >> 1, height >> 1, height >> 1, blue);
+            canvas.drawCircle(width / 2, height / 2, height / 2, blue);
 
             RectF rectF = new RectF();
             rectF.set(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
@@ -132,21 +140,21 @@ public class CircleView extends View {
 
         } else if (flag == SUPPLY_FLAG) {
             if (checked) {
-                blue.setColor(context().getResources().getColor(R.color.blueON));
+                blue.setColor(getResources().getColor(R.color.blueON));
             } else {
-                blue.setColor(context().getResources().getColor(R.color.blueOFF));
+                blue.setColor(getResources().getColor(R.color.blueOFF));
             }
 
-            canvas.drawCircle(width >> 1, height >> 1, height >> 1, blue);
+            canvas.drawCircle(width / 2, height / 2, height / 2, blue);
 
         } else if (flag == DEMAND_FLAG) {
             if (checked) {
-                orange.setColor(context().getResources().getColor(R.color.orangeON));
+                orange.setColor(getResources().getColor(R.color.orangeON));
             } else {
-                orange.setColor(context().getResources().getColor(R.color.orangeOFF));
+                orange.setColor(getResources().getColor(R.color.orangeOFF));
             }
 
-            canvas.drawCircle(width >> 1, height >> 1, height >> 1, orange);
+            canvas.drawCircle(width / 2, height / 2, height / 2, orange);
         }
     }
 

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 
 import live.noxbox.R;
 import live.noxbox.tools.Router;
@@ -19,13 +18,7 @@ public class HistoryActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         getSupportFragmentManager();
-        //setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-//        int size = 384;
-//        progressView = findViewById(R.id.progressView);
-//        Glide.with(this).asGif()
-//                .load(R.drawable.progress_cat)
-//                .apply(RequestOptions.overrideOf(size, size))
-//                .into(progressView);
+
         final ViewPager viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -41,11 +34,6 @@ public class HistoryActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.finishActivity(HistoryActivity.this);
-            }
-        });
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
     }
 }

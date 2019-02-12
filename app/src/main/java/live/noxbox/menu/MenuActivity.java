@@ -77,9 +77,13 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     }
 
     private void drawNavigation(final Activity activity, final Profile profile) {
-        if (!isProfileReady()) return;
-
         drawerLayout = findViewById(R.id.drawerLayout);
+
+        if (!isProfileReady()){
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            return;
+        }
+
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -133,15 +137,12 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
 
             //((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
 
-            profilePhoto.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
-                    if (drawerLayout != null) {
-                        drawerLayout.closeDrawers();
-                    }
-                    isInitial = false;
+            profilePhoto.setOnClickListener(v -> {
+                Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
+                if (drawerLayout != null) {
+                    drawerLayout.closeDrawers();
                 }
+                isInitial = false;
             });
             isInitial = true;
         }

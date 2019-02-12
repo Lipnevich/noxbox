@@ -62,18 +62,18 @@ public class RoleSwitcherLayout extends RelativeLayout {
         supply.setChecked(false);
         supply.setId(View.generateViewId());
         LayoutParams supplyParams = new LayoutParams(
-                (int) dpToPx(36),
-                (int) dpToPx(36));
-        supplyParams.setMargins((int) dpToPx(8), (int) dpToPx(8), 0, (int) dpToPx(8));
+                dpToPx(36),
+                dpToPx(36));
+        supplyParams.setMargins(dpToPx(8), dpToPx(8), 0, dpToPx(8));
         background.addView(supply, supplyParams);
 
         both = new CircleView(context, BOTH_FLAG);
         both.setChecked(true);
         both.setId(View.generateViewId());
         LayoutParams bothParams = new LayoutParams(
-                (int) dpToPx(36),
-                (int) dpToPx(36));
-        bothParams.setMargins((int) dpToPx(42), (int) dpToPx(8), 0, (int) dpToPx(8));
+                dpToPx(36),
+                dpToPx(36));
+        bothParams.setMargins(dpToPx(42), dpToPx(8), 0, dpToPx(8));
         bothParams.addRule(RelativeLayout.END_OF, supply.getId());
         background.addView(both, bothParams);
 
@@ -82,9 +82,9 @@ public class RoleSwitcherLayout extends RelativeLayout {
         demand.setChecked(false);
         demand.setId(View.generateViewId());
         LayoutParams demandParams = new LayoutParams(
-                (int) dpToPx(36),
-                (int) dpToPx(36));
-        demandParams.setMargins((int) dpToPx(42), (int) dpToPx(8), (int) dpToPx(8), (int) dpToPx(8));
+                dpToPx(36),
+                dpToPx(36));
+        demandParams.setMargins(dpToPx(42), dpToPx(8), dpToPx(8), dpToPx(8));
         demandParams.addRule(RelativeLayout.END_OF, both.getId());
         background.addView(demand, demandParams);
 
@@ -107,16 +107,16 @@ public class RoleSwitcherLayout extends RelativeLayout {
 
         if (supply.isChecked()) {
             textParams.addRule(RelativeLayout.END_OF, supply.getId());
-            textParams.setMargins(12,0,0,0);
-            text.setText("Supply");
+            textParams.setMargins(12, 0, 0, 0);
+            text.setText(R.string.supply);
         } else if (both.isChecked()) {
             textParams.addRule(RelativeLayout.END_OF, both.getId());
-            textParams.setMargins(12,0,0,0);
-            text.setText("All");
+            textParams.setMargins(12, 0, 0, 0);
+            text.setText(R.string.all);
         } else if (demand.isChecked()) {
             textParams.addRule(RelativeLayout.ALIGN_END, demand.getId());
-            textParams.setMargins(0, 0, (int) dpToPx(48), 0);
-            text.setText("Demand");
+            textParams.setMargins(0, 0, dpToPx(48), 0);
+            text.setText(R.string.demand);
         }
 
         background.addView(text, textParams);

@@ -92,15 +92,12 @@ public class Performing implements State {
 
                     // TODO (vl) по клику на экран, обновляем баланс и максимальное время из блокчейна
                     if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
-                        BalanceChecker.checkBalance(profile, activity, new Task<BigDecimal>() {
-                            @Override
-                            public void execute(BigDecimal object) {
-                                // TODO (vl) обновляем максимальное время из блокчейна
+                        BalanceChecker.checkBalance(profile, activity, o -> {
+                            // TODO (vl) обновляем максимальное время из блокчейна
 
-                                HashMap<String, String> data = new HashMap<>();
-                                data.put("type", NotificationType.lowBalance.name());
-                                NotificationFactory.buildNotification(activity, profile, data).show();
-                            }
+                            HashMap<String, String> data = new HashMap<>();
+                            data.put("type", NotificationType.lowBalance.name());
+                            NotificationFactory.buildNotification(activity, profile, data).show();
                         });
 
 
@@ -157,6 +154,5 @@ public class Performing implements State {
         if (startTime == null) return false;
 
         return startTime < System.currentTimeMillis() - Constants.MINIMUM_PAYMENT_TIME_MILLIS;
-
     }
 }
