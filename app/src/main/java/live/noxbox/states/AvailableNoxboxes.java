@@ -70,6 +70,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.switcherLayout).setVisibility(View.VISIBLE);
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
             activity.getDeviceLocation(profile);
@@ -131,6 +132,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         MapOperator.moveCopyrightLeft(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        activity.findViewById(R.id.switcherLayout).setVisibility(View.GONE);
         stopListenAvailableNoxboxes();
     }
 
