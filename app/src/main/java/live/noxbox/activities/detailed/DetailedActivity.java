@@ -410,7 +410,7 @@ public class DetailedActivity extends AppCompatActivity {
         }
 
         if (profile.getName() != null && profile.getName().length() == 0) {
-            openNameNotVerifySheetDialog(DetailedActivity.this, profile);
+            openNameNotVerifySheetDialog(DetailedActivity.this);
             return;
         }
 

@@ -28,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -79,7 +78,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     private void drawNavigation(final Activity activity, final Profile profile) {
         drawerLayout = findViewById(R.id.drawerLayout);
 
-        if (!isProfileReady()){
+        if (!isProfileReady()) {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             return;
         }
@@ -191,11 +190,13 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             }
             case R.id.navigation_logout: {
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (currentUser != null) {
-                    AppCache.logout();
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
-                }
-                AuthUI.getInstance().signOut(MenuActivity.this);
+
+                if (currentUser == null) return true;
+
+                AppCache.logout();
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
+
+                FirebaseAuth.getInstance().signOut();
 
                 startActivity(new Intent(getApplicationContext(), AuthActivity.class));
                 Router.finishActivity(MenuActivity.this);

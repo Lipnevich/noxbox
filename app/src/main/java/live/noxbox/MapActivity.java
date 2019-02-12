@@ -187,6 +187,8 @@ public class MapActivity extends HackerActivity implements
         updateLocationUI();
     }
 
+
+
     private void updateLocationUI() {
         if (googleMap == null)
             return;
@@ -305,10 +307,6 @@ public class MapActivity extends HackerActivity implements
         return newState;
     }
 
-    @Override
-    public void onBackPressed() {
-        // ignore it
-    }
 
     @Override
     public void onConnectionSuspended(int i) {
