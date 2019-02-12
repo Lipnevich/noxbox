@@ -14,15 +14,14 @@ import android.widget.TextView;
 import java.util.List;
 
 import live.noxbox.R;
-import live.noxbox.database.AppCache;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
-import live.noxbox.model.Profile;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
 import static live.noxbox.database.AppCache.executeUITasks;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.PlayMarketManager.openApplicationMarketPage;
 
@@ -31,7 +30,6 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
     private List<NoxboxType> noxboxTypes;
     private Activity activity;
     private DialogFragment rootFragment;
-    private Profile profile;
     private int key;
 
     public NoxboxTypeListAdapter(List<NoxboxType> noxboxTypes, Activity activity, DialogFragment rootFragment, int key) {
@@ -39,8 +37,6 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
         this.activity = activity;
         this.rootFragment = rootFragment;
         this.key = key;
-
-        AppCache.readProfile(object -> profile = object);
 
     }
 
@@ -115,16 +111,16 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
     private void executeInTheMap(int position) {
         for (NoxboxType type : NoxboxType.values()) {
-            profile.getFilters().getTypes().put(type.name(), false);
+            profile().getFilters().getTypes().put(type.name(), false);
         }
-        profile.getFilters().getTypes().put(noxboxTypes.get(position).name(), true);
+        profile().getFilters().getTypes().put(noxboxTypes.get(position).name(), true);
     }
 
     private void executeInTheProfile(int position) {
-        profile.getPortfolio().put(noxboxTypes.get(position).name(), new Portfolio(System.currentTimeMillis()));
+        profile().getPortfolio().put(noxboxTypes.get(position).name(), new Portfolio(System.currentTimeMillis()));
     }
 
     private void executeInTheContract(int position) {
-        profile.getCurrent().setType(noxboxTypes.get(position));
+        profile().getContract().setType(noxboxTypes.get(position));
     }
 }
