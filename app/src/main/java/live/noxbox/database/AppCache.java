@@ -194,7 +194,7 @@ public class AppCache {
 
     public static void createNoxbox(Task<Profile> onSuccess, Task<Exception> onFailure) {
         if (!isProfileReady()) return;
-        profile.getContract().copy(profile.getContract());
+        profile.getCurrent().copy(profile.getContract());
         profile.setNoxboxId(getNewNoxboxId());
         profile.getContract().setId(profile.getNoxboxId());
         profile.getContract().setTimeCreated(System.currentTimeMillis());
