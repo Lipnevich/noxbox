@@ -28,15 +28,12 @@ public class BottomSheetDialog {
         address.setText(profile.getWallet().getAddress());
         ImageView copyToClipboard = view.findViewById(R.id.copyToClipboard);
 
-        copyToClipboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DebugMessage.popup(activity, address.getText().toString() + " был скопирован в буфер");
-                ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("", profile.getWallet().getAddress());
-                clipboard.setPrimaryClip(clip);
-                dialog.dismiss();
-            }
+        copyToClipboard.setOnClickListener(v -> {
+            DebugMessage.popup(activity, address.getText().toString() + " был скопирован в буфер");
+            ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("", profile.getWallet().getAddress());
+            clipboard.setPrimaryClip(clip);
+            dialog.dismiss();
         });
         dialog.show();
     }
@@ -47,28 +44,22 @@ public class BottomSheetDialog {
         final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
         dialog.setContentView(view);
 
-        view.findViewById(R.id.profilePhoto).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.startActivity(activity, ProfileActivity.class);
-                Router.finishActivity(activity);
-            }
+        view.findViewById(R.id.profilePhoto).setOnClickListener(v -> {
+            Router.startActivity(activity, ProfileActivity.class);
+            Router.finishActivity(activity);
         });
         dialog.show();
     }
 
 
-    public static void openNameNotVerifySheetDialog(final Activity activity, final  Profile profile){
+    public static void openNameNotVerifySheetDialog(final Activity activity){
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_not_verify_name, null);
         final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
         dialog.setContentView(view);
 
-        view.findViewById(R.id.profilePhoto).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.startActivity(activity, ProfileActivity.class);
-                Router.finishActivity(activity);
-            }
+        view.findViewById(R.id.profilePhoto).setOnClickListener(v -> {
+            Router.startActivity(activity, ProfileActivity.class);
+            Router.finishActivity(activity);
         });
         dialog.show();
     }

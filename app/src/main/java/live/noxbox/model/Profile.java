@@ -30,7 +30,7 @@ public class Profile implements Serializable {
     @Virtual
     private Noxbox viewed;
     @Virtual
-    private Noxbox backup;
+    private Noxbox contract;
     private TravelMode travelMode;
     private Boolean host;
 
@@ -316,15 +316,15 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public Noxbox getBackup() {
-        if(backup == null){
-            backup = new Noxbox();
+    public Noxbox getContract() {
+        if(contract == null){
+            contract = new Noxbox();
         }
-        return backup;
+        return contract;
     }
 
-    public Profile setBackup(Noxbox backup) {
-        this.backup = backup;
+    public Profile setContract(Noxbox contract) {
+        this.contract = contract;
         return this;
     }
 

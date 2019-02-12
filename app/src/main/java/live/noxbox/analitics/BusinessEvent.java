@@ -19,4 +19,5 @@ public enum BusinessEvent {
     complete,
     tutorialLikes,
     tutorialDislikes,
+    update,
 }

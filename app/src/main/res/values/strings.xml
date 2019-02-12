@@ -114,7 +114,9 @@
     <string name="i">I</string>
     <string name="want">want</string>
     <string name="supply">supply</string>
+    <string name="supplyuppercase">Supply</string>
     <string name="demand">demand</string>
+    <string name="demanduppercase">Demand</string>
     <string name="service">service</string>
     <string name="earn">earn</string>
     <string name="spend">to spend</string>

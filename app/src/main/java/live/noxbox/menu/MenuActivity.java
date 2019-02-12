@@ -196,6 +196,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                     FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
                 }
                 AuthUI.getInstance().signOut(MenuActivity.this);
+
                 startActivity(new Intent(getApplicationContext(), AuthActivity.class));
                 Router.finishActivity(MenuActivity.this);
             }

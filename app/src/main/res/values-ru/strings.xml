@@ -114,7 +114,9 @@
     <string name="i">Я</string>
     <string name="want">хочу</string>
     <string name="supply">предоставить</string>
+    <string name="supplyuppercase">Предоставить</string>
     <string name="demand">получить</string>
+    <string name="demanduppercase">Получить</string>
     <string name="service">услугу</string>
     <string name="earn">заработав</string>
     <string name="spend">потратив</string>

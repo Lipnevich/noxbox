@@ -108,7 +108,7 @@ public class RoleSwitcherLayout extends RelativeLayout {
         if (supply.isChecked()) {
             textParams.addRule(RelativeLayout.END_OF, supply.getId());
             textParams.setMargins(12, 0, 0, 0);
-            text.setText(R.string.supply);
+            text.setText(R.string.supplyuppercase);
         } else if (both.isChecked()) {
             textParams.addRule(RelativeLayout.END_OF, both.getId());
             textParams.setMargins(12, 0, 0, 0);
@@ -116,7 +116,7 @@ public class RoleSwitcherLayout extends RelativeLayout {
         } else if (demand.isChecked()) {
             textParams.addRule(RelativeLayout.ALIGN_END, demand.getId());
             textParams.setMargins(0, 0, dpToPx(48), 0);
-            text.setText(R.string.demand);
+            text.setText(R.string.demanduppercase);
         }
 
         background.addView(text, textParams);

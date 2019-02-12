@@ -61,6 +61,7 @@ import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
 import static live.noxbox.analitics.BusinessEvent.contractOpening;
+import static live.noxbox.database.AppCache.NONE;
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
@@ -84,15 +85,8 @@ public class ContractActivity extends BaseActivity {
         closeOrRemove = findViewById(R.id.closeOrRemove);
         ((TextView) findViewById(R.id.textCurrency)).setText(getString(R.string.currency));
 
-        //если услуга была создана
-        if (!profile().getNoxboxId().isEmpty() && !isNullOrZero(profile().getCurrent().getTimeCreated())) {
-            profile().getBackup().copy(profile().getCurrent());
-            profile().getCurrent().clean();
-        } else {
-            //если услуги нет
-            profile().getBackup().clean();
-            BusinessActivity.businessEvent(contractOpening);
-        }
+        contract().copy(profile().getCurrent());
+        BusinessActivity.businessEvent(contractOpening);
     }
 
     @Override
@@ -111,9 +105,12 @@ public class ContractActivity extends BaseActivity {
         AppCache.stopListen(ContractActivity.class.getName());
     }
 
-    private void draw(@NonNull final Profile profile) {
+    private Noxbox contract() {
+        return profile().getContract();
+    }
 
-        drawToolbar(profile);
+    private void draw(@NonNull final Profile profile) {
+        drawToolbar();
         drawRole(profile);
         drawType(profile);
         drawTypeDescription(profile);
@@ -127,27 +124,22 @@ public class ContractActivity extends BaseActivity {
         drawButtons(profile);
     }
 
-    private void drawToolbar(final Profile profile) {
+    private void drawToolbar() {
         ((TextView) findViewById(R.id.title)).setText(R.string.contractService);
-        findViewById(R.id.homeButton).setOnClickListener(v -> {
-            if(profile.getBackup() != null && profile.getBackup().getTimeCreated() != 0){
-                profile.getCurrent().copy(profile.getBackup());
-            }
-            Router.finishActivity(ContractActivity.this);
-        });
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(ContractActivity.this));
     }
 
     private void drawRole(final Profile profile) {
         ((TextView) findViewById(R.id.textProfile)).setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
         final TextView role = findViewById(R.id.textRole);
         SpannableStringBuilder spanTxt =
-                new SpannableStringBuilder(getResources().getString(profile.getCurrent().getRole().getName()));
+                new SpannableStringBuilder(getResources().getString(contract().getRole().getName()));
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
                 createRoleList(profile, role);
             }
-        }, spanTxt.length() - getResources().getString(profile.getCurrent().getRole().getName()).length(), spanTxt.length(), 0);
+        }, spanTxt.length() - getResources().getString(contract().getRole().getName()).length(), spanTxt.length(), 0);
         role.setMovementMethod(LinkMovementMethod.getInstance());
         role.setText(spanTxt, TextView.BufferType.SPANNABLE);
         findViewById(R.id.arrowRole).setOnClickListener(v -> createRoleList(profile, role));
@@ -156,24 +148,24 @@ public class ContractActivity extends BaseActivity {
     private void drawType(Profile profile) {
         final TextView textView = findViewById(R.id.textNoxboxType);
         SpannableStringBuilder spanTxt =
-                new SpannableStringBuilder(getResources().getString(profile.getCurrent().getType().getName()).toLowerCase());
+                new SpannableStringBuilder(getResources().getString(contract().getType().getName()).toLowerCase());
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 startDialogList();
             }
-        }, spanTxt.length() - (getResources().getString(profile.getCurrent().getType().getName())).length(), spanTxt.length(), 0);
+        }, spanTxt.length() - (getResources().getString(contract().getType().getName())).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
         findViewById(R.id.arrowNoxboxType).setOnClickListener(v -> startDialogList());
     }
 
     private void drawTypeDescription(Profile profile) {
-        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(profile.getCurrent().getType().getDescription()).concat("."));
+        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(contract().getType().getDescription()).concat("."));
     }
 
     private void drawTextPayment(Profile profile) {
-        switch (profile.getCurrent().getType()) {
+        switch (contract().getType()) {
             case water:
                 ((TextView) findViewById(R.id.textPayment)).setText(R.string.priceService);
                 break;
@@ -201,33 +193,33 @@ public class ContractActivity extends BaseActivity {
                 @Override
                 public void afterTextChanged(Editable s) {
                     String price = s.toString().replaceAll("\\.", ",");
-                    profile.getCurrent().setPrice(price);
+                    contract().setPrice(price);
                     if (s.length() > 0) {
                         drawSimilarNoxboxList(profile);
                         ((TextView) findViewById(R.id.textCurrency))
                                 .setText(showPriceInUsd(getString(R.string.currency),
-                                        profile.getCurrent().getPrice()));
+                                        contract().getPrice()));
                     }
                 }
             };
             priceInput.addTextChangedListener(changeCountOfMoneyListener);
         }
-        priceInput.setText(profile.getCurrent().getPrice());
+        priceInput.setText(contract().getPrice());
 
         ((TextView) findViewById(R.id.textCurrency))
                 .setText(showPriceInUsd(getString(R.string.currency),
-                        profile.getCurrent().getPrice()));
+                        contract().getPrice()));
     }
 
     private void drawTravelMode(final Profile profile) {
         final TextView textView = findViewById(R.id.textTravelMode);
-        SpannableStringBuilder spanTxt = new SpannableStringBuilder(getResources().getString(profile.getCurrent().getOwner().getTravelMode().getName()));
+        SpannableStringBuilder spanTxt = new SpannableStringBuilder(getResources().getString(contract().getOwner().getTravelMode().getName()));
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
                 createTravelModeList(profile, textView);
             }
-        }, spanTxt.length() - getResources().getString(profile.getCurrent().getOwner().getTravelMode().getName()).length(), spanTxt.length(), 0);
+        }, spanTxt.length() - getResources().getString(contract().getOwner().getTravelMode().getName()).length(), spanTxt.length(), 0);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
         findViewById(R.id.arrowTravelMode).setOnClickListener(new View.OnClickListener() {
@@ -241,21 +233,21 @@ public class ContractActivity extends BaseActivity {
     private void drawHost(final Profile profile) {
         CheckBox checkBox = findViewById(R.id.isHost);
         //at least one option should be selected travel mode or host
-        if (profile.getCurrent().getOwner().getTravelMode() == none) {
+        if (contract().getOwner().getTravelMode() == none) {
             checkBox.setChecked(true);
             checkBox.setEnabled(false);
-            profile.getCurrent().getOwner().setHost(true);
+            contract().getOwner().setHost(true);
             findViewById(R.id.or).setVisibility(View.GONE);
         } else {
             checkBox.setEnabled(true);
-            checkBox.setChecked(profile.getCurrent().getOwner().getHost());
+            checkBox.setChecked(contract().getOwner().getHost());
             findViewById(R.id.or).setVisibility(View.VISIBLE);
         }
 
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                profile.getCurrent().getOwner().setHost(isChecked);
+                contract().getOwner().setHost(isChecked);
                 drawAddress(profile);
             }
         });
@@ -267,10 +259,10 @@ public class ContractActivity extends BaseActivity {
             @Override
             protected String doInBackground(Void... voids) {
                 String address;
-                if (profile.getCurrent().getOwner().getTravelMode() == none || profile.getCurrent().getOwner().getHost()) {
-                    address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition());
+                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost()) {
+                    address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition());
                 } else {
-                    address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getCurrent().getPosition()) + " " + getResources().getString(R.string.change);
+                    address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition()) + " " + getResources().getString(R.string.change);
                 }
 
                 return address;
@@ -279,7 +271,7 @@ public class ContractActivity extends BaseActivity {
             @Override
             protected void onPostExecute(String address) {
                 final TextView addressView = findViewById(R.id.textAddress);
-                if (profile.getCurrent().getOwner().getTravelMode() == none || profile.getCurrent().getOwner().getHost()) {
+                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost()) {
                     SpannableStringBuilder spanTxt =
                             new SpannableStringBuilder(address);
                     spanTxt.append(" ");
@@ -315,7 +307,7 @@ public class ContractActivity extends BaseActivity {
         }
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                profile.getCurrent().setRole(MarketRole.byId(item.getItemId()));
+                contract().setRole(MarketRole.byId(item.getItemId()));
                 draw(profile);
                 return true;
             }
@@ -332,11 +324,11 @@ public class ContractActivity extends BaseActivity {
         }
         popup.setOnMenuItemClickListener(item -> {
             TravelMode travelMode = TravelMode.byId(item.getItemId());
-            profile.getCurrent().getOwner().setTravelMode(travelMode);
+            contract().getOwner().setTravelMode(travelMode);
 
 
             if (travelMode == none) {
-                profile.getCurrent().getOwner().setHost(true);
+                contract().getOwner().setHost(true);
                 ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
                 ((CheckBox) findViewById(R.id.isHost)).setEnabled(false);
             } else {
@@ -356,12 +348,12 @@ public class ContractActivity extends BaseActivity {
 
         Spinner timeSelectFrom = findViewById(R.id.timeFromView);
         timeSelectFrom.setAdapter(adapter);
-        timeSelectFrom.setSelection(profile.getCurrent().getWorkSchedule().getStartTime().getId());
+        timeSelectFrom.setSelection(contract().getWorkSchedule().getStartTime().getId());
         setHeightForDropdownList(timeSelectFrom);
         timeSelectFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                profile.getCurrent().getWorkSchedule().setStartTime(NoxboxTime.byId(position));
+                contract().getWorkSchedule().setStartTime(NoxboxTime.byId(position));
             }
 
             @Override
@@ -372,12 +364,12 @@ public class ContractActivity extends BaseActivity {
 
         Spinner timeSelectTo = findViewById(R.id.timeToView);
         timeSelectTo.setAdapter(adapter);
-        timeSelectTo.setSelection(profile.getCurrent().getWorkSchedule().getEndTime().getId());
+        timeSelectTo.setSelection(contract().getWorkSchedule().getEndTime().getId());
         setHeightForDropdownList(timeSelectTo);
         timeSelectTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                profile.getCurrent().getWorkSchedule().setEndTime(NoxboxTime.byId(position));
+                contract().getWorkSchedule().setEndTime(NoxboxTime.byId(position));
             }
 
             @Override
@@ -388,8 +380,8 @@ public class ContractActivity extends BaseActivity {
 
     private void drawCommentView(Profile profile) {
         EditText editComment = findViewById(R.id.editComment);
-        if (!Strings.isNullOrEmpty(profile.getCurrent().getOwnerComment())) {
-            editComment.setText(profile.getCurrent().getOwnerComment());
+        if (!Strings.isNullOrEmpty(contract().getOwnerComment())) {
+            editComment.setText(contract().getOwnerComment());
         }
         editComment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -404,7 +396,7 @@ public class ContractActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                profile.getCurrent().setOwnerComment(s.toString());
+                contract().setOwnerComment(s.toString());
             }
         });
     }
@@ -428,10 +420,10 @@ public class ContractActivity extends BaseActivity {
 
     private void drawPublishButton(final Profile profile) {
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
-        if (isNullOrZero(profile.getBackup().getTimeCreated())) {
+        if (isNullOrZero(contract().getTimeCreated())) {
             ((TextView) findViewById(R.id.publish)).setText(R.string.post);
             publishButton.setOnClickListener(v -> {
-                if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
+                if (contract().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(contract(), profile)) {
                     publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
                     BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
@@ -441,24 +433,24 @@ public class ContractActivity extends BaseActivity {
                     return;
                 }
                 if (profile.getName() != null && profile.getName().length() == 0) {
-                    openNameNotVerifySheetDialog(ContractActivity.this, profile);
+                    openNameNotVerifySheetDialog(ContractActivity.this);
                     return;
                 }
 
-                if (profile.getCurrent().getOwner().getTravelMode() != none) {
+                if (contract().getOwner().getTravelMode() != none) {
                     if (isLocationPermissionGranted(getApplicationContext())) {
-                        postNoxbox();
+                        createNoxbox();
                     } else {
                         getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
                     }
                 } else {
-                    postNoxbox();
+                    createNoxbox();
                 }
             });
         } else {
             ((TextView) findViewById(R.id.publish)).setText(R.string.update);
             publishButton.setOnClickListener(v -> {
-                if (profile.getCurrent().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(profile.getCurrent(), profile)) {
+                if (contract().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(contract(), profile)) {
                     publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
                     BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
@@ -468,11 +460,11 @@ public class ContractActivity extends BaseActivity {
                     return;
                 }
                 if (profile.getName() != null && profile.getName().length() == 0) {
-                    openNameNotVerifySheetDialog(ContractActivity.this, profile);
+                    openNameNotVerifySheetDialog(ContractActivity.this);
                     return;
                 }
 
-                if (profile.getCurrent().getOwner().getTravelMode() != none) {
+                if (contract().getOwner().getTravelMode() != none) {
                     if (isLocationPermissionGranted(getApplicationContext())) {
                         updateNoxbox();
                     } else {
@@ -500,27 +492,21 @@ public class ContractActivity extends BaseActivity {
         }
     }
 
-    public void postNoxbox() {
-        AppCache.createNoxbox(success -> {
-                BusinessActivity.businessEvent(BusinessEvent.post);
-                Router.finishActivity(ContractActivity.this);
-            }, error -> {
-                profile().getCurrent().clean();
-                Router.finishActivity(ContractActivity.this);
-            });
+    public void createNoxbox() {
+        AppCache.createNoxbox(success -> BusinessActivity.businessEvent(BusinessEvent.post), NONE);
+        Router.finishActivity(ContractActivity.this);
     }
 
     public void updateNoxbox() {
-        AppCache.removeNoxbox(profile().getBackup(), success -> {
-            profile().getBackup().clean();
-            postNoxbox();
-        });
+        Router.finishActivity(ContractActivity.this);
+        AppCache.removeNoxbox(contract(), removed ->
+                AppCache.createNoxbox(created ->
+                        BusinessActivity.businessEvent(BusinessEvent.update), NONE));
     }
 
     public void removeNoxbox() {
-        profile().getCurrent().copy(profile().getBackup().setTimeRemoved(System.currentTimeMillis()));
-        AppCache.removeNoxbox(profile().getCurrent(), profile -> profile.getCurrent().clean());
         Router.finishActivity(ContractActivity.this);
+        AppCache.removeNoxbox(contract(), NONE);
     }
 
     private void cancelNoxbox() {
@@ -534,22 +520,22 @@ public class ContractActivity extends BaseActivity {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (!isLocationPermissionGranted(getApplicationContext())) {
                 AppCache.readProfile(profile -> {
-                    profile.getCurrent().getOwner().setTravelMode(none);
+                    contract().getOwner().setTravelMode(none);
                     draw(profile);
                 });
             }
         }
 
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH
+                && isLocationPermissionGranted(getApplicationContext()))
+            createNoxbox();
 
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH) {
-            if (isLocationPermissionGranted(getApplicationContext())) {
-                postNoxbox();
-            }
-        } else if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE) {
-            if (isLocationPermissionGranted(getApplicationContext())) {
-                updateNoxbox();
-            }
-        }
+
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE
+                && isLocationPermissionGranted(getApplicationContext()))
+            updateNoxbox();
+
     }
 
     @Override
@@ -557,7 +543,7 @@ public class ContractActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-            AppCache.readProfile(profile -> profile.getCurrent().setPosition(position));
+            AppCache.readProfile(profile -> contract().setPosition(position));
         }
     }
 
@@ -579,27 +565,27 @@ public class ContractActivity extends BaseActivity {
 
                 for (NoxboxMarker item : noxboxes) {
                     //type
-                    if (item.getNoxbox().getType() != profile.getCurrent().getType()) {
+                    if (item.getNoxbox().getType() != contract().getType()) {
                         continue;
                     }
 
                     //role
-                    if (item.getNoxbox().getRole() == profile.getCurrent().getRole()) {
+                    if (item.getNoxbox().getRole() == contract().getRole()) {
                         continue;
                     }
 
                     //travelmode
-                    if (profile.getCurrent().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
+                    if (contract().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
                         continue;
                     }
 
                     //price
-                    if (profile.getCurrent().getRole() == MarketRole.supply) {
-                        if (Double.parseDouble(profile.getCurrent().getPrice()) > Double.parseDouble(item.getNoxbox().getPrice())) {
+                    if (contract().getRole() == MarketRole.supply) {
+                        if (Double.parseDouble(contract().getPrice()) > Double.parseDouble(item.getNoxbox().getPrice())) {
                             continue;
                         }
                     } else {
-                        if (Double.parseDouble(profile.getCurrent().getPrice()) < Double.parseDouble(item.getNoxbox().getPrice())) {
+                        if (Double.parseDouble(contract().getPrice()) < Double.parseDouble(item.getNoxbox().getPrice())) {
                             continue;
                         }
                     }

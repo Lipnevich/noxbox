@@ -106,7 +106,7 @@ public class Firestore {
         });
     }
 
-    public static String getNextNoxboxId() {
+    public static String getNewNoxboxId() {
         return db().collection("noxboxes").document().getId();
     }
 
@@ -126,23 +126,23 @@ public class Firestore {
         }
     }
 
-    public static void writeNoxbox(Noxbox current, Task<String> onSuccess, Task<Exception> onFailure) {
-        current.setFinished(isFinished(current));
+    public static void writeNoxbox(Noxbox noxbox, Task<String> onSuccess, Task<Exception> onFailure) {
+        noxbox.setFinished(isFinished(noxbox));
 
-        String currentId = current.getId();
-        noxboxReference(current.getId()).set(objectToMap(current), SetOptions.merge())
+        String currentId = noxbox.getId();
+        noxboxReference(noxbox.getId()).set(objectToMap(noxbox), SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     writes++;
                     onSuccess.execute(currentId);
                 })
                 .addOnFailureListener(e -> {
-                        Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", new Gson().toJson(current));
+                        Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", new Gson().toJson(noxbox));
                         Crashlytics.logException(e);
                     onFailure.execute(e);
                 });
     }
 
-    private static boolean isFinished(Noxbox noxbox) {
+    public static boolean isFinished(Noxbox noxbox) {
         return noxbox.getTimeCanceledByOwner() > 0
                 || noxbox.getTimeCanceledByParty() > 0
                 || noxbox.getTimeCompleted() > 0
