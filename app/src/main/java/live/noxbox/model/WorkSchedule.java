@@ -18,6 +18,9 @@ public class WorkSchedule implements Serializable {
     }
 
     public NoxboxTime getStartTime() {
+        if(startTime == null){
+            startTime = NoxboxTime._25;
+        }
         return startTime;
     }
 
@@ -27,6 +30,9 @@ public class WorkSchedule implements Serializable {
     }
 
     public NoxboxTime getEndTime() {
+        if(endTime == null){
+            endTime = NoxboxTime._27;
+        }
         return endTime;
     }
 

@@ -130,7 +130,7 @@ public class Firestore {
         noxbox.setFinished(isFinished(noxbox));
 
         String currentId = noxbox.getId();
-        noxboxReference(noxbox.getId()).set(objectToMap(noxbox), SetOptions.merge())
+        noxboxReference(currentId).set(objectToMap(noxbox), SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     writes++;
                     onSuccess.execute(currentId);

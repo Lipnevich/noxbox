@@ -15,7 +15,6 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -62,6 +61,7 @@ import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
 import static live.noxbox.analitics.BusinessEvent.contractOpening;
 import static live.noxbox.database.AppCache.NONE;
+import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
@@ -292,7 +292,6 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void startDialogList() {
-        //TODO (vl) надо придумать как вызывать перерисовку(draw()) из списко во фрагменте
         DialogFragment dialog = new NoxboxTypeListFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("key", CONTRACT_CODE);
@@ -305,12 +304,9 @@ public class ContractActivity extends BaseActivity {
         for (MarketRole role : MarketRole.values()) {
             popup.getMenu().add(Menu.NONE, role.getId(), Menu.NONE, role.getName());
         }
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                contract().setRole(MarketRole.byId(item.getItemId()));
-                draw(profile);
-                return true;
-            }
+        popup.setOnMenuItemClickListener(item -> { contract().setRole(MarketRole.byId(item.getItemId()));
+            draw(profile);
+            return true;
         });
 
         popup.show();
@@ -499,14 +495,18 @@ public class ContractActivity extends BaseActivity {
 
     public void updateNoxbox() {
         Router.finishActivity(ContractActivity.this);
-        AppCache.removeNoxbox(contract(), removed ->
+        AppCache.removeNoxbox(removed ->
                 AppCache.createNoxbox(created ->
                         BusinessActivity.businessEvent(BusinessEvent.update), NONE));
     }
 
     public void removeNoxbox() {
         Router.finishActivity(ContractActivity.this);
-        AppCache.removeNoxbox(contract(), NONE);
+        AppCache.removeNoxbox(profile -> {
+            profile.getCurrent().clean();
+            profile.getContract().clean();
+            executeUITasks();
+        });
     }
 
     private void cancelNoxbox() {

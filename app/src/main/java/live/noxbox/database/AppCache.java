@@ -151,7 +151,7 @@ public class AppCache {
     public static void logout() {
         clearTasks();
         if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
-            removeNoxbox(profile.getCurrent(), task -> task.getCurrent().clean());
+            removeNoxbox(task -> task.getCurrent().clean());
         }
         for (String noxboxId : ids) {
             stopListenNoxbox(noxboxId);
@@ -194,23 +194,23 @@ public class AppCache {
 
     public static void createNoxbox(Task<Profile> onSuccess, Task<Exception> onFailure) {
         if (!isProfileReady()) return;
-
+        profile.getContract().copy(profile.getContract());
         profile.setNoxboxId(getNewNoxboxId());
-        profile.getCurrent().setId(profile.getNoxboxId());
-        profile.getCurrent().setTimeCreated(System.currentTimeMillis());
-        if (profile.getCurrent().getRole() == MarketRole.supply) {
-            profile.getCurrent().getOwner().setPortfolio(profile.getPortfolio());
+        profile.getContract().setId(profile.getNoxboxId());
+        profile.getContract().setTimeCreated(System.currentTimeMillis());
+        if (profile.getContract().getRole() == MarketRole.supply) {
+            profile.getContract().getOwner().setPortfolio(profile.getPortfolio());
         } else {
-            profile.getCurrent().getOwner().setPortfolio(null);
+            profile.getContract().getOwner().setPortfolio(null);
         }
         // persist noxboxId in the profile
         writeProfile(profile, result -> {
 
             // create noxbox
-            Firestore.updateNoxbox(profile.getCurrent(),
+            Firestore.updateNoxbox(profile.getContract(),
                     success -> {
                         // make it world wide visible
-                        online(profile.getCurrent());
+                        online(profile.getContract());
                         onSuccess.execute(profile);
                     },
                     error -> {
@@ -223,18 +223,18 @@ public class AppCache {
     }
 
 
-    public static void removeNoxbox(Noxbox noxbox, Task<Profile> onSuccess) {
+    public static void removeNoxbox(Task<Profile> onSuccess) {
         if (!isProfileReady()) return;
         String noxboxId = profile.getNoxboxId();
         if (!isNullOrEmpty(noxboxId)) {
             profile.setNoxboxId("");
-            noxbox.setFinished(isFinished(noxbox));
-            noxbox.setTimeRemoved(System.currentTimeMillis());
+            profile.getCurrent().setFinished(isFinished(profile.getCurrent()));
+            profile.getCurrent().setTimeRemoved(System.currentTimeMillis());
             FirebaseMessaging.getInstance().unsubscribeFromTopic(noxboxId);
             stopListenNoxbox(noxboxId);
-            offline(noxbox);
+            offline(profile.getCurrent());
 
-            writeNoxbox(noxbox, o -> writeProfile(profile, onSuccess), NONE);
+            writeNoxbox(profile.getCurrent(), o -> writeProfile(profile, onSuccess), NONE);
         } else {
             onSuccess.execute(profile);
         }
