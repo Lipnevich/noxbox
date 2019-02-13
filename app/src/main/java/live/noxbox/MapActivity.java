@@ -60,6 +60,7 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
@@ -146,15 +147,13 @@ public class MapActivity extends HackerActivity implements
         super.onMapReady(readyMap);
         googleMap = readyMap;
 
-        AppCache.readProfile(profile -> {
-            updateLocationUI();
-            getDeviceLocation(profile);
-        });
+        updateLocationUI();
+        getDeviceLocation(profile());
+
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveCopyrightLeft(googleMap);
         draw();
-
     }
 
     @Override

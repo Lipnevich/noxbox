@@ -33,7 +33,8 @@ public class NotificationRequesting extends Notification {
 
     @Override
     public void show() {
-        if(profile.getCurrent() != null && !isNullOrZero(profile.getCurrent().getTimeAccepted()))
+        if (profile.getCurrent() != null 
+                && (!isNullOrZero(profile.getCurrent().getTimeAccepted()) || profile.getCurrent().getFinished()))
             return;
 
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();

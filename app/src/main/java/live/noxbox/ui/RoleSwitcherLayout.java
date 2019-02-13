@@ -61,33 +61,52 @@ public class RoleSwitcherLayout extends RelativeLayout {
 
 
         supply = new CircleView(context, SUPPLY_FLAG);
-        supply.setChecked(false);
+        both = new CircleView(context, BOTH_FLAG);
+        demand = new CircleView(context, DEMAND_FLAG);
+
+
+        if (profile().getFilters().getDemand() && profile().getFilters().getSupply()) {
+            supply.setChecked(false);
+            demand.setChecked(false);
+            both.setChecked(true);
+        } else {
+            if (profile().getFilters().getSupply()) {
+                supply.setChecked(true);
+                demand.setChecked(false);
+                both.setChecked(false);
+            } else {
+                supply.setChecked(false);
+                demand.setChecked(true);
+                both.setChecked(false);
+            }
+        }
+
+
         supply.setId(View.generateViewId());
+        both.setId(View.generateViewId());
+        demand.setId(View.generateViewId());
+
         LayoutParams supplyParams = new LayoutParams(
                 dpToPx(36),
                 dpToPx(36));
-        supplyParams.setMargins(dpToPx(8), dpToPx(8), 0, dpToPx(8));
-        background.addView(supply, supplyParams);
-
-        both = new CircleView(context, BOTH_FLAG);
-        both.setChecked(true);
-        both.setId(View.generateViewId());
         LayoutParams bothParams = new LayoutParams(
                 dpToPx(36),
                 dpToPx(36));
-        bothParams.setMargins(dpToPx(42), dpToPx(8), 0, dpToPx(8));
-        bothParams.addRule(RelativeLayout.END_OF, supply.getId());
-        background.addView(both, bothParams);
-
-
-        demand = new CircleView(context, DEMAND_FLAG);
-        demand.setChecked(false);
-        demand.setId(View.generateViewId());
         LayoutParams demandParams = new LayoutParams(
                 dpToPx(36),
                 dpToPx(36));
+
+
+        supplyParams.setMargins(dpToPx(8), dpToPx(8), 0, dpToPx(8));
+        bothParams.setMargins(dpToPx(42), dpToPx(8), 0, dpToPx(8));
         demandParams.setMargins(dpToPx(42), dpToPx(8), dpToPx(8), dpToPx(8));
+
+
+        bothParams.addRule(RelativeLayout.END_OF, supply.getId());
         demandParams.addRule(RelativeLayout.END_OF, both.getId());
+
+        background.addView(supply, supplyParams);
+        background.addView(both, bothParams);
         background.addView(demand, demandParams);
 
         drawNameOfRole(context);

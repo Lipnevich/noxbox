@@ -39,6 +39,7 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.Firestore;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.profile.ImageListAdapter;
 import live.noxbox.model.ImageType;
@@ -355,8 +356,6 @@ public class DetailedActivity extends AppCompatActivity {
             case requesting:
                 drawCancelButton(profile);
                 break;
-            default:
-                drawJoinButton(profile);
         }
     }
 
@@ -419,17 +418,22 @@ public class DetailedActivity extends AppCompatActivity {
 
         BusinessActivity.businessEvent(request);
 
-        profile.setCurrent(profile.getViewed());
+        profile.getCurrent().copy(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
-        profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+        Firestore.writeProfile(profile, object -> {
+            profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+            profile.getCurrent().setParty(profile.privateInfo());
 
-        AppCache.updateNoxbox();
+            AppCache.updateNoxbox();
 
-        GeoRealtime.offline(profile.getCurrent());
+            GeoRealtime.offline(profile.getCurrent());
 
-        if (AppCache.availableNoxboxes.get(profile.getNoxboxId()) != null) {
-            AppCache.availableNoxboxes.remove(profile.getNoxboxId());
-        }
+            if (AppCache.availableNoxboxes.get(profile.getNoxboxId()) != null) {
+                AppCache.availableNoxboxes.remove(profile.getNoxboxId());
+            }
+        });
+
+
         Router.finishActivity(DetailedActivity.this);
     }
 

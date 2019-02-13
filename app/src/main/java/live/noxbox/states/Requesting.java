@@ -1,12 +1,9 @@
 package live.noxbox.states;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,7 +13,6 @@ import java.util.HashMap;
 
 import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
-import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
@@ -36,10 +32,10 @@ public class Requesting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    private ObjectAnimator animationProgress;
-    private AnimationDrawable animationDrawable;
+    //private ObjectAnimator animationProgress;
+    //private AnimationDrawable animationDrawable;
     private LinearLayout requestingView;
-    private static CountDownTimer countDownTimer;
+    private CountDownTimer countDownTimer;
 
     public Requesting(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
@@ -63,43 +59,53 @@ public class Requesting implements State {
         data.put("time", profile.getCurrent().getTimeRequested() + "");
         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
 
-        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.locationButton).setOnClickListener(v -> MapOperator.buildMapPosition(googleMap, activity.getApplicationContext()));
+        //activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
+        //activity.findViewById(R.id.locationButton).setOnClickListener(v -> MapOperator.buildMapPosition(googleMap, activity.getApplicationContext()));
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
 
-        animationProgress = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
-        animationProgress.setDuration(15000);
-        animationProgress.setInterpolator(new DecelerateInterpolator());
-        animationProgress.start();
+//        animationProgress = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
+//        animationProgress.setDuration(15000);
+//        animationProgress.setInterpolator(new DecelerateInterpolator());
+//        animationProgress.start();
+//
+//        View blinkingInfo = activity.findViewById(R.id.blinkingInfoLayout);
+//        if (blinkingInfo != null) {
+//            animationDrawable = (AnimationDrawable) blinkingInfo.getBackground();
+//            animationDrawable.setEnterFadeDuration(600);
+//            animationDrawable.setExitFadeDuration(1200);
+//            animationDrawable.start();
+//        }
 
-        View blinkingInfo = activity.findViewById(R.id.blinkingInfoLayout);
-        if (blinkingInfo != null) {
-            animationDrawable = (AnimationDrawable) blinkingInfo.getBackground();
-            animationDrawable.setEnterFadeDuration(600);
-            animationDrawable.setExitFadeDuration(1200);
-            animationDrawable.start();
-        }
-
-        profile.getViewed().setParty(profile.privateInfo());
+        //profile.getViewed().setParty(profile.privateInfo());
 
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
         requestingView.addView(child);
 
-        ((TextView) requestingView.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
-        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(v -> {
-            Log.d(TAG + "Requesting", "timeRequest: " + "now is null");
+        requestingView.findViewById(R.id.cancelButton).setOnClickListener(v -> {
             profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
             updateNoxbox();
         });
 
+//        ((TextView) requestingView.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
+//        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(v -> {
+//            profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+//            updateNoxbox();
+//        });
+
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                TextView countdownTime = requestingView.findViewById(R.id.countdownTime);
-                if (countdownTime != null) {
-                    countdownTime.setText(String.valueOf(millisUntilFinished / 1000));
+                TextView countDownTimerView = requestingView.findViewById(R.id.countdownTime);
+                if (countDownTimerView != null) {
+                    countDownTimerView.setText(String.valueOf(millisUntilFinished / 1000));
                 }
             }
 
@@ -115,10 +121,10 @@ public class Requesting implements State {
     }
 
     private void autoDisconnectFromService(final Profile profile) {
-        if (isNullOrZero(profile.getCurrent().getTimeAccepted())) {
-            long timeTimeout = System.currentTimeMillis();
-            profile.getCurrent().setTimeTimeout(timeTimeout);
-            AppCache.updateNoxbox();
+        if (isNullOrZero(profile.getCurrent().getTimeAccepted())
+                && !profile.getCurrent().getFinished()) {
+            profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
+            updateNoxbox();
             BusinessActivity.businessEvent(timeout);
         }
     }
@@ -130,11 +136,11 @@ public class Requesting implements State {
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        if (animationProgress != null && animationDrawable != null) {
-            animationProgress.cancel();
-            animationDrawable.stop();
-        }
+        //activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+//        if (animationProgress != null && animationDrawable != null) {
+//            animationProgress.cancel();
+//            animationDrawable.stop();
+//        }
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;

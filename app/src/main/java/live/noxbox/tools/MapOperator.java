@@ -16,7 +16,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import live.noxbox.R;
@@ -30,6 +29,7 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
+import static live.noxbox.tools.DayPartDeterminer.isItDayNow;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
 
@@ -107,10 +107,10 @@ public class MapOperator {
         googleMap.setPadding(dpToPx(8), 0, 0, dpToPx(8));
     }
 
-    private static final Calendar calendar = Calendar.getInstance();
+
     public static void setupMap(Context context, GoogleMap googleMap) {
-        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        if(hourOfDay >= 9 && hourOfDay < 21){
+
+        if(isItDayNow()){
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map));
         } else {
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_in_night));

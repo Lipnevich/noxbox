@@ -46,7 +46,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 
-import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.DisplayMetricsConservations.getStatusBarHeight;
 
@@ -77,11 +76,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
 
     private void drawNavigation(final Activity activity, final Profile profile) {
         drawerLayout = findViewById(R.id.drawerLayout);
-
-        if (!isProfileReady()) {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            return;
-        }
 
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {

@@ -37,7 +37,6 @@ public class NotificationAccepting extends Notification {
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
 
-
     }
 
     @Override
@@ -53,7 +52,8 @@ public class NotificationAccepting extends Notification {
             e.printStackTrace();
         }
         Firestore.readNoxbox(noxboxId, noxbox -> {
-            if (isNullOrZero(noxbox.getTimeAccepted())) {
+            if (isNullOrZero(noxbox.getTimeAccepted())
+                    && !noxbox.getFinished()) {
                 noxbox.setTimeTimeout(System.currentTimeMillis());
                 BusinessActivity.businessEvent(timeout);
                 Firestore.updateNoxbox(noxbox, NONE, NONE);
