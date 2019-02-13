@@ -194,7 +194,6 @@ public class AppCache {
 
     public static void createNoxbox(Task<Profile> onSuccess, Task<Exception> onFailure) {
         if (!isProfileReady()) return;
-        profile.getCurrent().copy(profile.getContract());
         profile.setNoxboxId(getNewNoxboxId());
         profile.getContract().setId(profile.getNoxboxId());
         profile.getContract().setTimeCreated(System.currentTimeMillis());
@@ -204,6 +203,7 @@ public class AppCache {
             profile.getContract().getOwner().setPortfolio(null);
         }
 
+        profile.getCurrent().copy(profile.getContract());
         executeUITasks();
 
         // persist noxboxId in the profile
@@ -214,6 +214,8 @@ public class AppCache {
                     success -> {
                         // make it world wide visible
                         online(profile.getContract());
+                        profile.getCurrent().setGeoId(profile.getContract().getGeoId());
+
                         onSuccess.execute(profile);
                     },
                     error -> {
