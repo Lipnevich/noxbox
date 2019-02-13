@@ -161,10 +161,12 @@ public class DetailedActivity extends AppCompatActivity {
 
     private void drawOppositeProfile(Profile me) {
         Profile other = me.getViewed().getNotMe(me.getId());
-        if (other.getName() != null && other.getPhoto() != null) {
+        if (!other.getName().isEmpty() && !other.getPhoto().isEmpty()) {
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
-            ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), ((ImageView) findViewById(R.id.profilePhoto)));
+            ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), findViewById(R.id.profilePhoto));
             ((TextView) findViewById(R.id.profileName)).setText(other.getName());
+        }else{
+            findViewById(R.id.profileLayout).setVisibility(View.GONE);
         }
     }
 
@@ -321,8 +323,8 @@ public class DetailedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.priceTitle)).setText(priceTitle);
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(profile.getViewed().getType().getDuration());
 
-        TextView priceView = findViewById(R.id.price);
-        priceView.setText(profile.getViewed().getPrice());
+        //TextView priceView = findViewById(R.id.price);
+        //priceView.setText(profile.getViewed().getPrice());
 
         String duration = getResources().getString(profile.getViewed().getType().getDuration());
         String serviceDescription = "";
