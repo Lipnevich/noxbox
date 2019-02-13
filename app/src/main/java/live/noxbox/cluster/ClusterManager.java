@@ -64,16 +64,16 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         if (shouldDrawType != null && !shouldDrawType)
             return true;
 
-
-
-        if (BuildConfig.DEBUG) return false;
-        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
-
         if (noxbox.getRole() == MarketRole.demand && !profile.getFilters().getDemand())
             return true;
 
         if (noxbox.getRole() == MarketRole.supply && !profile.getFilters().getSupply())
             return true;
+
+
+        if (BuildConfig.DEBUG) return false;
+        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
+
 
         //фильтры по типу передвижения
         if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none) {

@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import live.noxbox.R;
 
+import static live.noxbox.database.AppCache.fireProfile;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.ui.CircleView.BOTH_FLAG;
 import static live.noxbox.ui.CircleView.DEMAND_FLAG;
@@ -130,6 +132,9 @@ public class RoleSwitcherLayout extends RelativeLayout {
                 both.setChecked(false);
                 demand.setChecked(false);
                 drawNameOfRole(context);
+                profile().getFilters().setSupply(true);
+                profile().getFilters().setDemand(false);
+                fireProfile();
             }
         });
 
@@ -139,6 +144,9 @@ public class RoleSwitcherLayout extends RelativeLayout {
                 demand.setChecked(false);
                 supply.setChecked(false);
                 drawNameOfRole(context);
+                profile().getFilters().setSupply(true);
+                profile().getFilters().setDemand(true);
+                fireProfile();
             }
         });
 
@@ -149,6 +157,9 @@ public class RoleSwitcherLayout extends RelativeLayout {
                 both.setChecked(false);
                 supply.setChecked(false);
                 drawNameOfRole(context);
+                profile().getFilters().setSupply(false);
+                profile().getFilters().setDemand(true);
+                fireProfile();
             }
         });
     }
