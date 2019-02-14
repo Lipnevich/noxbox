@@ -1,16 +1,20 @@
 package live.noxbox.tools;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
+
+import live.noxbox.R;
 
 public class ProgressDialogManager {
 
     private static AlertDialog.Builder builder;
     private static AlertDialog alertDialog;
 
-    public static void showProgress(Context context, String message) {
-        builder = new AlertDialog.Builder(context);
-        builder.setMessage(message.concat("…"));
+    public static void showProgress(Activity activity) {
+        if(activity.isFinishing()) return;
+
+        builder = new AlertDialog.Builder(activity);
+        builder.setMessage(activity.getString(R.string.photoValidationProgressContent));
         builder.setCancelable(false);
         alertDialog = builder.create();
         alertDialog.show();
