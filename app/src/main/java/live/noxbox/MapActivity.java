@@ -149,7 +149,6 @@ public class MapActivity extends HackerActivity implements
 
         updateLocationUI();
         getDeviceLocation(profile());
-        MapOperator.buildMapPosition(googleMap, this);
 
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
