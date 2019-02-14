@@ -61,8 +61,6 @@ import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.database.AppCache.profile;
-import static live.noxbox.model.NoxboxState.completed;
-import static live.noxbox.model.NoxboxState.performing;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
@@ -151,6 +149,7 @@ public class MapActivity extends HackerActivity implements
 
         updateLocationUI();
         getDeviceLocation(profile());
+        MapOperator.buildMapPosition(googleMap, this);
 
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -266,9 +265,8 @@ public class MapActivity extends HackerActivity implements
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
         if (state == NoxboxState.initial) {
             AppCache.stopListenNoxbox(profile.getNoxboxId());
-            if(states.containsKey(performing) || states.containsKey(completed) || states.containsKey(NoxboxState.moving)) {
-                states.clear();
-            }
+            //TODO (vl) Переиспользовать существующий для initial
+            states.clear();
         } else {
             AppCache.startListenNoxbox(profile.getCurrent().getId());
         }

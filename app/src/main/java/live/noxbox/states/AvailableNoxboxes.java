@@ -53,7 +53,6 @@ public class AvailableNoxboxes implements State {
     public AvailableNoxboxes(final GoogleMap googleMap, final MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
     }
 
     @Override
