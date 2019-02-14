@@ -298,5 +298,6 @@
     <string name="pleaseEnterWalletAddress">Введите адрес кошелька</string>
     <string name="update">Обновить</string>
     <string name="all">Все</string>
+    <string name="schedule">с %s до %s</string>
 
 </resources>

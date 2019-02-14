@@ -25,8 +25,6 @@ import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.database.AppCache.profile;
-
 public class GeoRealtime {
 
     public final static String delimiter = ";";
@@ -108,11 +106,10 @@ public class GeoRealtime {
                 noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));
                 noxbox.getWorkSchedule().setEndTime(NoxboxTime.valueOf(values[index++]));
 
-                noxbox.setTimeCreated(0L);
                 return noxbox;
             }
-        } catch (IllegalArgumentException someOneRenamedEnum) {
-            Crashlytics.logException(someOneRenamedEnum);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         }
         return null;
     }
@@ -137,7 +134,7 @@ public class GeoRealtime {
                 @Override
                 public void onKeyEntered(String key, GeoLocation location) {
                     Noxbox noxbox = parseKey(key);
-                    if (noxbox != null && !noxbox.getOwner().getId().equals(profile().getId())) {
+                    if (noxbox != null) {
                         noxbox.setPosition(Position.from(location));
                         noxbox.getOwner().setPosition(Position.from(location));
                         noxboxes.put(noxbox.getId(), noxbox);

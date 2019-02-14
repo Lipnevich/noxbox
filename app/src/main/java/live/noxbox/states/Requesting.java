@@ -32,8 +32,6 @@ public class Requesting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    //private ObjectAnimator animationProgress;
-    //private AnimationDrawable animationDrawable;
     private LinearLayout requestingView;
     private CountDownTimer countDownTimer;
 
@@ -64,21 +62,6 @@ public class Requesting implements State {
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
 
-//        animationProgress = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
-//        animationProgress.setDuration(15000);
-//        animationProgress.setInterpolator(new DecelerateInterpolator());
-//        animationProgress.start();
-//
-//        View blinkingInfo = activity.findViewById(R.id.blinkingInfoLayout);
-//        if (blinkingInfo != null) {
-//            animationDrawable = (AnimationDrawable) blinkingInfo.getBackground();
-//            animationDrawable.setEnterFadeDuration(600);
-//            animationDrawable.setExitFadeDuration(1200);
-//            animationDrawable.start();
-//        }
-
-        //profile.getViewed().setParty(profile.privateInfo());
-
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
         requestingView.addView(child);
@@ -87,13 +70,6 @@ public class Requesting implements State {
             profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
             updateNoxbox();
         });
-
-//        ((TextView) requestingView.findViewById(R.id.blinkingInfo)).setText(R.string.connectionWithInitiator);
-//        requestingView.findViewById(R.id.circular_progress_bar).setOnClickListener(v -> {
-//            profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
-//            updateNoxbox();
-//        });
-
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -137,10 +113,6 @@ public class Requesting implements State {
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         //activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-//        if (animationProgress != null && animationDrawable != null) {
-//            animationProgress.cancel();
-//            animationDrawable.stop();
-//        }
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;

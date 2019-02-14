@@ -76,7 +76,7 @@ public class Noxbox implements Comparable<Noxbox> {
         total = from.total;
         type = from.type;
         role = from.role;
-        workSchedule = new WorkSchedule(from.getWorkSchedule().getStartTime(), from.getWorkSchedule().getEndTime());
+        workSchedule = from.getWorkSchedule();
         ownerComment = from.ownerComment;
         timeCreated = from.timeCreated;
         timeRemoved = from.timeRemoved;

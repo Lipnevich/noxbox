@@ -34,8 +34,6 @@ public class Accepting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    //private ObjectAnimator anim;
-    //private AnimationDrawable animationDrawable;
     private CountDownTimer countDownTimer;
     private LinearLayout acceptingView;
 
@@ -73,15 +71,6 @@ public class Accepting implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
 
-//        ((TextView) acceptingView.findViewById(R.id.blinkingInfo)).setText(R.string.acceptingConfirmation);
-//        acceptingView.findViewById(R.id.circular_progress_bar).setOnClickListener(v -> {
-//            long timeCanceled = System.currentTimeMillis();
-//            Log.d(TAG + "Accepting", "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
-//            profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
-//            countDownTimer.cancel();
-//            updateNoxbox();
-//        });
-
         acceptingView.findViewById(R.id.joinButton).setOnClickListener(v -> {
             profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
             profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
@@ -92,16 +81,6 @@ public class Accepting implements State {
 
             BusinessActivity.businessEvent(accept);
         });
-
-//        anim = ObjectAnimator.ofInt(activity.findViewById(R.id.circular_progress_bar), "progress", 0, 100);
-//        anim.setDuration(15000);
-//        anim.setInterpolator(new DecelerateInterpolator());
-//        anim.start();
-//
-//        animationDrawable = (AnimationDrawable) activity.findViewById(R.id.blinkingInfoLayout).getBackground();
-//        animationDrawable.setEnterFadeDuration(600);
-//        animationDrawable.setExitFadeDuration(1200);
-//        animationDrawable.start();
 
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
@@ -152,10 +131,6 @@ public class Accepting implements State {
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
-//        if (anim != null && animationDrawable != null) {
-//            anim.cancel();
-//            animationDrawable.stop();
-//        }
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
@@ -164,26 +139,4 @@ public class Accepting implements State {
         acceptingView.removeAllViews();
     }
 
-
-//    private Float getDistance(Profile profile) {
-//        double startLat = profile.getCurrent().getParty().getPosition().getLatitude();
-//        double startLng = profile.getCurrent().getParty().getPosition().getLongitude();
-//        double endLat = profile.getCurrent().getPosition().getLatitude();
-//        double endLng = profile.getCurrent().getPosition().getLongitude();
-//
-//        float[] results = new float[1];
-//        Location.distanceBetween(startLat, startLng, endLat, endLng, results);
-//        return results[0];
-//    }
-//
-//    private Float getTravelTimeInMinutes(Profile profile) {
-//        if (profile.getCurrent().getParty().getTravelMode() != TravelMode.none && profile.getCurrent().getOwner().getTravelMode() != TravelMode.none)
-//            return getDistance(profile) / profile.getCurrent().getParty().getTravelMode().getSpeedInMetersPerMinute();
-//
-//        if (profile.getCurrent().getOwner().getTravelMode() == TravelMode.none) {
-//            return getDistance(profile) / profile.getCurrent().getParty().getTravelMode().getSpeedInMetersPerMinute();
-//        } else {
-//            return getDistance(profile) / profile.getCurrent().getOwner().getTravelMode().getSpeedInMetersPerMinute();
-//        }
-//    }
 }

@@ -145,7 +145,7 @@
     </style>
 
 
-    <!--Full screen history fragment-->
+    <!--Full screen dialog fragment-->
     <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="colorPrimaryDark">@color/primary</item>

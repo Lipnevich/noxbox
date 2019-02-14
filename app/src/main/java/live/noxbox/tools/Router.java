@@ -2,7 +2,8 @@ package live.noxbox.tools;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 
 import live.noxbox.R;
 
@@ -22,8 +23,13 @@ public class Router {
         activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    public static void finishActivity(Activity activity){
+    public static void finishActivity(Activity activity) {
         activity.finish();
         activity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    private static final String TAG = "fullScreenDialog";
+    public static void showFullScreenDialog(DialogFragment dialogFragment, FragmentActivity activity) {
+        dialogFragment.show(activity.getSupportFragmentManager(), TAG);
     }
 }

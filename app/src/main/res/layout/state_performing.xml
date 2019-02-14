@@ -54,14 +54,6 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
-            <!--<live.noxbox.tools.SwipeButton-->
-            <!--android:id="@+id/completeSwipeButton"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:layout_marginBottom="32dp"-->
-            <!--android:layout_marginEnd="70dp"-->
-            <!--android:layout_marginStart="70dp" />-->
             <in.shadowfax.proswipebutton.ProSwipeButton
                 android:id="@+id/proSwipeButton"
                 android:layout_width="match_parent"

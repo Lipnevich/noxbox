@@ -8,6 +8,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,17 +17,21 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import live.noxbox.BuildConfig;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MapOperator;
 
 import static live.noxbox.Constants.CLUSTER_RENDERING_MAX_FREQUENCY;
 import static live.noxbox.Constants.CLUSTER_RENDERING_MIN_FREQUENCY;
+import static live.noxbox.Constants.NOVICE_LIKES;
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
+import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.model.MarketRole.demand;
+import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.states.AvailableNoxboxes.clusterRenderingFrequency;
 
 public class ClusterManager implements GoogleMap.OnCameraIdleListener {
@@ -50,45 +56,64 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     public void setItems(@NonNull Map<String, Noxbox> noxboxItems, final Profile profile) {
         List<NoxboxMarker> clusterItems = new ArrayList<>();
         if (areNotTheyNull(noxboxItems)) {
+            TimeLogger timeLogger = new TimeLogger();
             for (Noxbox noxbox : noxboxItems.values()) {
-                // TODO (nli) filter it in appear time and after profile's filter update
                 if (isFiltered(profile, noxbox)) continue;
                 clusterItems.add(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             }
+            timeLogger.makeLog("Filter execution time");
             buildQuadTree(clusterItems);
         }
     }
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
         Boolean shouldDrawType = profile.getFilters().getTypes().get(noxbox.getType().name());
+
+        //if (BuildConfig.DEBUG) return false;
+
         if (shouldDrawType != null && !shouldDrawType)
             return true;
 
         if (noxbox.getRole() == MarketRole.demand && !profile.getFilters().getDemand())
             return true;
 
-        if (noxbox.getRole() == MarketRole.supply && !profile.getFilters().getSupply())
+        if (noxbox.getRole() == supply && !profile.getFilters().getSupply())
             return true;
 
+        if (noxbox.getOwner().getId().equals(profile().getId()))
+            return true;
 
-        if (BuildConfig.DEBUG) return false;
-        //TODO (vl) так же проверять время, оно должно совпадать с рабочими часами, для этого сохранить часы в ключе GeoRealtime, включить фильтры после этого
+        int hour = LocalDateTime.now().getHourOfDay();
+        if (noxbox.getWorkSchedule().getStartTime().getHourOfDay() < hour
+                && noxbox.getWorkSchedule().getEndTime().getHourOfDay() > hour)
+            return true;
 
 
         //фильтры по типу передвижения
-        if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none) {
+        if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none)
             return true;
-        }
 
-        if (!profile.getFilters().getAllowNovices())
+        Rating ownerRating = noxbox.getRole()
+                == demand
+                ? noxbox.getOwner().getDemandsRating().get(noxbox.getType().name())
+                : noxbox.getOwner().getSuppliesRating().get(noxbox.getType().name());
+        if (!profile.getFilters().getAllowNovices() && ownerRating.getReceivedLikes() < NOVICE_LIKES)
+            return true;
+
+        Rating myRating = noxbox.getRole()
+                == supply
+                ? profile.getDemandsRating().get(noxbox.getType().name())
+                : profile.getSuppliesRating().get(noxbox.getType().name());
+        if (!noxbox.getOwner().getFilters().getAllowNovices() && myRating.getReceivedLikes() < NOVICE_LIKES)
             return true;
 
         if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
             return true;
+
         if (Integer.parseInt(noxbox.getPrice()) > profile.getFilters().getPrice())
             return true;
 
-        return !noxbox.getOwner().getHost() && !profile.getHost();
+        return false;
     }
 
     private void buildQuadTree(@NonNull List<NoxboxMarker> clusterItems) {
@@ -109,7 +134,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     private void cluster() {
         if (clusterTask == null) {
             clusterTask = new ClusterTask(googleMap.getProjection().getVisibleRegion().latLngBounds,
-                googleMap.getCameraPosition().zoom).executeOnExecutor(executor);
+                    googleMap.getCameraPosition().zoom).executeOnExecutor(executor);
             clusterRenderingFrequency = Math.max(CLUSTER_RENDERING_MAX_FREQUENCY, clusterRenderingFrequency - 100);
         } else {
             clusterRenderingFrequency = Math.min(CLUSTER_RENDERING_MIN_FREQUENCY, clusterRenderingFrequency + 100);

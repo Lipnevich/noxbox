@@ -3,11 +3,10 @@ package live.noxbox;
 import java.math.BigDecimal;
 
 public interface Constants {
-    int REQUESTING_AND_ACCEPTING_TIMEOUT_IN_SECONDS = 60;
     long REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS = 60 * 1000;
-    String START_TIME = "00:00:00";
     double RADIUS_IN_METERS = 50 * 1000;
     int MIN_RATE_IN_PERCENTAGE = 90;
+    int NOVICE_LIKES = 5;
 
     int LOCATION_PERMISSION_REQUEST_CODE = 911;
     int LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH = 912;

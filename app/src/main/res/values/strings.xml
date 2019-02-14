@@ -298,6 +298,7 @@
     <string name="pleaseEnterWalletAddress">Enter wallet address</string>
     <string name="update">Update</string>
     <string name="all">All</string>
+    <string name="schedule">from %s to %s</string>
 
 
 </resources>

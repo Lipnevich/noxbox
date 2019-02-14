@@ -256,6 +256,6 @@ public class AppCache {
             BigDecimal priceInUSD = priceInWaves.multiply(wavesToUsd);
             return currency + " (" + priceInUSD + "$)";
         }
-        return "";
+        return currency;
     }
 }

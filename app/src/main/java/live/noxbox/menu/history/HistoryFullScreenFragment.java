@@ -2,7 +2,6 @@ package live.noxbox.menu.history;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
@@ -13,10 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
@@ -47,12 +44,7 @@ public class HistoryFullScreenFragment extends DialogFragment {
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(R.drawable.close_white);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> dismiss());
 
         attachMapView(view.findViewById(R.id.map), currentItemHistory);
 
@@ -62,23 +54,17 @@ public class HistoryFullScreenFragment extends DialogFragment {
         ImageView rateBox = view.findViewById(R.id.rateBox);
         attachRating(rateBox, isLiked);
         if (isLiked) {
-            rateBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View view) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.NoxboxAlertDialogStyle);
-                    builder.setTitle(getResources().getString(R.string.dislikePrompt));
-                    builder.setPositiveButton(getResources().getString(R.string.dislike),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    view.setOnClickListener(null);
-                                    attachRating((ImageView) view, false);
+            rateBox.setOnClickListener(view1 -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.NoxboxAlertDialogStyle);
+                builder.setTitle(getResources().getString(R.string.dislikePrompt));
+                builder.setPositiveButton(getResources().getString(R.string.dislike),
+                        (dialog, which) -> {
+                            view1.setOnClickListener(null);
+                            attachRating((ImageView) view1, false);
 //                                    dislikeNoxbox(profileId, noxbox);
-                                }
-                            });
-                    builder.setNegativeButton(android.R.string.cancel, null);
-                    builder.show();
-                }
+                        });
+                builder.setNegativeButton(android.R.string.cancel, null);
+                builder.show();
             });
         }
 
@@ -103,24 +89,21 @@ public class HistoryFullScreenFragment extends DialogFragment {
     private void attachMapView(MapView mapView, final Noxbox noxbox) {
         mapView.onCreate(null);
         mapView.onResume();
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                MapsInitializer.initialize(getActivity());
-                GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                        .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
-                        .position(noxbox.getPosition().toLatLng(), 48, 48)
-                        .anchor(0.5f, 1)
-                        .zIndex(1000);
-                GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
-                marker.setDimensions(960, 960);
+        mapView.getMapAsync(googleMap -> {
+            MapsInitializer.initialize(getActivity());
+            GroundOverlayOptions newarkMap = new GroundOverlayOptions()
+                    .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
+                    .position(noxbox.getPosition().toLatLng(), 48, 48)
+                    .anchor(0.5f, 1)
+                    .zIndex(1000);
+            GroundOverlay marker = googleMap.addGroundOverlay(newarkMap);
+            marker.setDimensions(960, 960);
 
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(noxbox.getPosition().toLatLng(), 11));
 
-                googleMap.getUiSettings().setAllGesturesEnabled(false);
-                googleMap.getUiSettings().setScrollGesturesEnabled(false);
-                googleMap.getUiSettings().setZoomGesturesEnabled(false);
-            }
+            googleMap.getUiSettings().setAllGesturesEnabled(false);
+            googleMap.getUiSettings().setScrollGesturesEnabled(false);
+            googleMap.getUiSettings().setZoomGesturesEnabled(false);
         });
     }
 

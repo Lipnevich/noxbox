@@ -1,8 +1,7 @@
 package live.noxbox.tools;
 
 import android.os.AsyncTask;
-
-import com.crashlytics.android.Crashlytics;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +27,7 @@ public class ExchangeRate {
             protected BigDecimal doInBackground(Void... voids) {
                 return ExchangeRate.getPrice();
             }
+
             @Override
             protected void onPostExecute(BigDecimal price) {
                 task.execute(price);
@@ -50,7 +50,7 @@ public class ExchangeRate {
 
             price = new BigDecimal(json.getString("24h_open"));
         } catch (IOException | JSONException e) {
-            Crashlytics.logException(e);
+            Log.d("getPrice() FAILED", e.getMessage());
         }
         return price;
     }

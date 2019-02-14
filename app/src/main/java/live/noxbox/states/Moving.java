@@ -239,41 +239,6 @@ public class Moving implements State {
         return false;
     }
 
-//    private void registerLocationListener() {
-//        if (locationManager != null && locationListener != null) return;
-//
-//        locationManager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
-//        locationListener = new LocationListener() {
-//            @Override
-//            public void onLocationChanged(final Location location) {
-//                AppCache.readProfile(profile -> {
-//                    Log.d(State.TAG + " Moving", location.toString());
-//                    DebugMessage.popup(activity, location.getLatitude() + " : " + location.getLongitude());
-//                    updatePosition(profile, location);
-//                    updateTimeView(profile);
-//                    AppCache.updateNoxbox();
-//                });
-//
-//            }
-//
-//            @Override
-//            public void onStatusChanged(String provider, int status, Bundle extras) {
-//            }
-//
-//            @Override
-//            public void onProviderEnabled(String provider) {
-//            }
-//
-//            @Override
-//            public void onProviderDisabled(String provider) {
-//            }
-//        };
-//
-//        if (!isLocationPermissionGranted(activity))
-//            return;
-//        locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
-//    }
-
     private static void updateTimeView(Profile profile, Context context) {
         if (movingView != null && childMovingView != null && timeView != null) {
             int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getPosition(), memberWhoMovingPosition, profile.getCurrent().getProfileWhoComes().getTravelMode()));

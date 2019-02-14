@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -244,12 +243,9 @@ public class ContractActivity extends BaseActivity {
             findViewById(R.id.or).setVisibility(View.VISIBLE);
         }
 
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                contract().getOwner().setHost(isChecked);
-                drawAddress(profile);
-            }
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            contract().getOwner().setHost(isChecked);
+            drawAddress(profile);
         });
 
     }
@@ -304,7 +300,8 @@ public class ContractActivity extends BaseActivity {
         for (MarketRole role : MarketRole.values()) {
             popup.getMenu().add(Menu.NONE, role.getId(), Menu.NONE, role.getName());
         }
-        popup.setOnMenuItemClickListener(item -> { contract().setRole(MarketRole.byId(item.getItemId()));
+        popup.setOnMenuItemClickListener(item -> {
+            contract().setRole(MarketRole.byId(item.getItemId()));
             draw(profile);
             return true;
         });
@@ -415,6 +412,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawPublishButton(final Profile profile) {
+        //TODO (vl) запретить размещать услуги для пользователей у которых низкий рейтинг выбранной услуги
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
         if (isNullOrZero(contract().getTimeCreated())) {
             ((TextView) findViewById(R.id.publish)).setText(R.string.post);
@@ -529,7 +527,6 @@ public class ContractActivity extends BaseActivity {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH
                 && isLocationPermissionGranted(getApplicationContext()))
             createNoxbox();
-
 
 
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE
