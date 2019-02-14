@@ -4,8 +4,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/item_divider_year_history" />
-
     <RelativeLayout
         android:id="@+id/rootHistoryLayout"
         android:layout_width="match_parent"
@@ -67,4 +65,37 @@
                 android:textSize="@dimen/text_size_secondary" />
         </LinearLayout>
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/expandableMapLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </com.google.android.gms.maps.MapView>
+
+        <TextView
+            android:id="@+id/priceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/text_size" />
+
+
+        <ImageView
+            android:id="@+id/rateBox"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:padding="24dp"
+            android:src="@drawable/like" />
+
+    </LinearLayout>
 </LinearLayout>

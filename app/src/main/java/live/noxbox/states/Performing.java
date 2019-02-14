@@ -84,7 +84,7 @@ public class Performing implements State {
 
                     ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
                     if (hasMinimumServiceTimePassed(profile.getCurrent())) {
-                        calculateTotalAmount(profile);
+                        totalMoney = calculateTotalAmount(profile);
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(format(totalMoney));
                     } else {
                         ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(format(totalMoney));
