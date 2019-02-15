@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 
 import org.joda.time.LocalDateTime;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -110,9 +111,12 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
             return true;
 
-        if (Double.parseDouble(noxbox.getPrice()) > profile.getFilters().getPrice())
+        try {
+            if (new BigDecimal(noxbox.getPrice()).intValue() > profile.getFilters().getPrice())
+                return true;
+        } catch (NumberFormatException e) {
             return true;
-
+        }
         return false;
     }
 
