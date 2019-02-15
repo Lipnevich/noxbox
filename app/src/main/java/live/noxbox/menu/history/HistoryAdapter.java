@@ -1,5 +1,6 @@
 package live.noxbox.menu.history;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ import live.noxbox.R;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
+import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.model.Noxbox.isNullOrZero;
@@ -133,7 +135,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         viewHolder.performerName.setText(noxbox.getNotMe(profileId).getName());
         viewHolder.noxboxType.setText(noxbox.getType().getName());
 
-        viewHolder.price.setText(noxbox.getTotal());
+        //viewHolder.price.setText(noxbox.getTotal());
 
         Glide.with(activity)
                 .load(noxbox.getNotMe(profileId).getPhoto())
@@ -156,7 +158,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             showedExpandableLayout.setVisibility(View.GONE);
         }
         showedExpandableLayout = viewHolder.expandableMapLayout;
+
+
+        new Handler().post(() -> viewHolder.address.setText(AddressManager.provideAddressByPosition(activity, noxbox.getPosition())));
+
         viewHolder.expandableMapLayout.setVisibility(View.VISIBLE);
+        viewHolder.expandableMapLayout.requestFocus();
+
+        viewHolder.price.setText(noxbox.getTotal().concat(" " + activity.getResources().getString(R.string.currency)));
+
+        viewHolder.divider.setVisibility(View.VISIBLE);
+
+
         attachMapView(viewHolder.mapView, noxbox);
         attachRating(viewHolder.rateNoxbox, isLiked(noxbox, profileId));
     }
@@ -168,17 +181,22 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     class HistoryViewHolder extends RecyclerView.ViewHolder {
+
         RelativeLayout rootHistoryLayout;
+
         //ItemViewHolder
         TextView date;
         TextView time;
         TextView noxboxType;
-        TextView price;
         ImageView performerPhoto;
         TextView performerName;
+
         LinearLayout expandableMapLayout;
+        TextView address;
         MapView mapView;
         ImageView rateNoxbox;
+        TextView price;
+        View divider;
 
         //ProgressViewHolder
         ProgressBar progressBar;
@@ -202,6 +220,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             expandableMapLayout = layout.findViewById(R.id.expandableMapLayout);
             mapView = layout.findViewById(R.id.map);
             rateNoxbox = layout.findViewById(R.id.rateBox);
+            divider = layout.findViewById(R.id.dividerFullWidth);
+            address = layout.findViewById(R.id.address);
 
         }
     }

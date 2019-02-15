@@ -128,7 +128,7 @@ public class Performing implements State {
             proSwipeBtn.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
             new android.os.Handler().postDelayed(() -> {
                 long timeCompleted = System.currentTimeMillis();
-
+                profile.getCurrent().setTotal(totalMoney.toString());
                 profile.getCurrent().setTimeCompleted(timeCompleted);
 
                 BusinessActivity.businessEvent(chatting);
