@@ -71,8 +71,8 @@ public class Moving implements State {
     private static LinearLayout movingView;
     private static View childMovingView;
     private static TextView timeView;
-    private static Position memberWhoMovingPosition;
 
+    private static Position memberWhoMovingPosition;
     private Marker memberWhoMoving;
 
     private TextView totalUnreadView;

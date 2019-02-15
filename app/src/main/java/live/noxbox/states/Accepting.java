@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 
 import java.math.BigDecimal;
 
@@ -15,6 +16,7 @@ import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.DateTimeFormatter;
@@ -36,6 +38,9 @@ public class Accepting implements State {
     private Activity activity;
     private CountDownTimer countDownTimer;
     private LinearLayout acceptingView;
+
+    private Position memberWhoMovingPosition;
+    private Marker memberWhoMoving;
 
     public Accepting(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
@@ -66,6 +71,13 @@ public class Accepting implements State {
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         drawPath(activity, googleMap, profile);
+        memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
+        if (memberWhoMoving == null) {
+            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+                    memberWhoMovingPosition, googleMap, activity.getResources());
+        } else {
+            memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());
+        }
 
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
