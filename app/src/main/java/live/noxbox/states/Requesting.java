@@ -8,12 +8,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
 
 import java.util.HashMap;
 
 import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.model.NotificationType;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
@@ -25,6 +27,7 @@ import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.analitics.BusinessEvent.timeout;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
+import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 
@@ -34,6 +37,9 @@ public class Requesting implements State {
     private Activity activity;
     private LinearLayout requestingView;
     private CountDownTimer countDownTimer;
+
+    private Position memberWhoMovingPosition;
+    private Marker memberWhoMoving;
 
     public Requesting(final GoogleMap googleMap, final Activity activity) {
         this.googleMap = googleMap;
@@ -60,7 +66,16 @@ public class Requesting implements State {
         //activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         //activity.findViewById(R.id.locationButton).setOnClickListener(v -> MapOperator.buildMapPosition(googleMap, activity.getApplicationContext()));
 
+        drawPath(activity, googleMap, profile);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
+
+        memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
+        if (memberWhoMoving == null) {
+            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+                    memberWhoMovingPosition, googleMap, activity.getResources());
+        } else {
+            memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());
+        }
 
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
