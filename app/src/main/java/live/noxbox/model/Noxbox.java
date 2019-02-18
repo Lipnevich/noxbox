@@ -57,6 +57,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private long timePartyVerified;
     private long timeOwnerDisliked;
     private long timePartyDisliked;
+    private long timeOwnerLiked;
+    private long timePartyLiked;
     private long timeTimeout;
     private String cancellationReasonMessage;
     private String commentForDemand;
@@ -89,6 +91,8 @@ public class Noxbox implements Comparable<Noxbox> {
         timePartyVerified = from.timePartyVerified;
         timeOwnerDisliked = from.timeOwnerDisliked;
         timePartyDisliked = from.timePartyDisliked;
+        timePartyLiked = from.timePartyLiked;
+        timeOwnerLiked = from.timeOwnerLiked;
         timeTimeout = from.timeTimeout;
         cancellationReasonMessage = from.cancellationReasonMessage;
         commentForDemand = from.commentForDemand;
@@ -122,6 +126,8 @@ public class Noxbox implements Comparable<Noxbox> {
         timePartyVerified = 0L;
         timeOwnerDisliked = 0L;
         timePartyDisliked = 0L;
+        timePartyLiked = 0L;
+        timeOwnerLiked = 0L;
         timeTimeout = 0L;
 
         return this;
@@ -387,6 +393,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getCommentForDemand() {
+        if(commentForDemand == null){
+            commentForDemand = "";
+        }
         return commentForDemand;
     }
 
@@ -396,6 +405,9 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getCommentForSupply() {
+        if(commentForSupply == null){
+            commentForSupply = "";
+        }
         return commentForSupply;
     }
 
@@ -530,5 +542,23 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public MarketRole getMyRole(String myId) {
         return myId.equals(getOwner().getId()) && role == demand ? demand : supply;
+    }
+
+    public long getTimeOwnerLiked() {
+        return timeOwnerLiked;
+    }
+
+    public Noxbox setTimeOwnerLiked(long timeOwnerLiked) {
+        this.timeOwnerLiked = timeOwnerLiked;
+        return this;
+    }
+
+    public long getTimePartyLiked() {
+        return timePartyLiked;
+    }
+
+    public Noxbox setTimePartyLiked(long timePartyLiked) {
+        this.timePartyLiked = timePartyLiked;
+        return this;
     }
 }

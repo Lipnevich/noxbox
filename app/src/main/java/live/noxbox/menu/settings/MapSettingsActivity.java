@@ -42,7 +42,7 @@ public class MapSettingsActivity extends BaseActivity {
         demand = findViewById(R.id.demand);
         supply = findViewById(R.id.supply);
         price = findViewById(R.id.priceBar);
-        priceText = findViewById(R.id.priceText);
+        priceText = findViewById(R.id.participantName);
         typeLayout = findViewById(R.id.typeLayout);
 
         ((TextView) findViewById(R.id.noviceTitle)).setText(getResources().getString(R.string.novice));

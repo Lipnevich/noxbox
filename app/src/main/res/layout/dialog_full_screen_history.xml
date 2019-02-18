@@ -22,7 +22,7 @@
     </com.google.android.gms.maps.MapView>
 
     <TextView
-        android:id="@+id/priceText"
+        android:id="@+id/participantName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -34,7 +34,7 @@
 
 
     <ImageView
-        android:id="@+id/rateBox"
+        android:id="@+id/like"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_gravity="center_horizontal"

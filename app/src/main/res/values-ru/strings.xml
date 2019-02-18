@@ -77,6 +77,7 @@
     <string name="dislike">не нравится</string>
     <string name="like">нравится</string>
     <string name="dislikePrompt">Вы уверены что Вам не понравилась оказанная услуга?</string>
+    <string name="likePrompt">Вы уверены что Вам понравилась оказанная услуга?</string>
     <string name="send">Отправить</string>
     <string name="sendPrompt">Вы уверены что хотите перевести Ваши деньги?</string>
     <string name="logout">Выход</string>
@@ -299,5 +300,8 @@
     <string name="update">Обновить</string>
     <string name="all">Все</string>
     <string name="schedule">с %s до %s</string>
+    <string name="hour">час</string>
+    <string name="hours">час(а\ов)</string>
+    <string name="customer">заказчик</string>
 
 </resources>

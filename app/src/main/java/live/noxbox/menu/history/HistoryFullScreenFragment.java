@@ -48,10 +48,10 @@ public class HistoryFullScreenFragment extends DialogFragment {
 
         attachMapView(view.findViewById(R.id.map), currentItemHistory);
 
-        attachTotal(view.findViewById(R.id.priceText), currentItemHistory);
+        attachTotal(view.findViewById(R.id.participantName), currentItemHistory);
 
         boolean isLiked = isLiked(currentItemHistory, profileId);
-        ImageView rateBox = view.findViewById(R.id.rateBox);
+        ImageView rateBox = view.findViewById(R.id.like);
         attachRating(rateBox, isLiked);
         if (isLiked) {
             rateBox.setOnClickListener(view1 -> {

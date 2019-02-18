@@ -1,12 +1,15 @@
 package live.noxbox.menu.history;
 
+import android.app.AlertDialog;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -37,8 +40,11 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.DateTimeFormatter.date;
+import static live.noxbox.tools.DateTimeFormatter.getTimeFromMillis;
 import static live.noxbox.tools.DateTimeFormatter.time;
 
 /**
@@ -129,18 +135,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         Noxbox noxbox = historyItems.get(position);
 
+        viewHolder.noxboxTypeImage.setImageResource(noxbox.getType().getImage());
         viewHolder.time.setText(time(noxbox.getTimeCompleted()));
         viewHolder.date.setText(date(noxbox.getTimeCompleted()) + ",");
+        long timeStartPerforming = noxbox.getTimePartyVerified() > noxbox.getTimeOwnerVerified() ? noxbox.getTimePartyVerified() : noxbox.getTimeOwnerVerified();
+        viewHolder.noxboxType.setText(activity.getResources().getString(noxbox.getType().getName()).concat(", "
+                .concat(getTimeFromMillis(timeStartPerforming, noxbox.getTimeCompleted(), activity.getResources()))));
+        viewHolder.price.setText(noxbox.getTotal().concat(showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getTotal())));
 
-        viewHolder.performerName.setText(noxbox.getNotMe(profileId).getName());
-        viewHolder.noxboxType.setText(noxbox.getType().getName());
-
-        //viewHolder.price.setText(noxbox.getTotal());
-
-        Glide.with(activity)
-                .load(noxbox.getNotMe(profileId).getPhoto())
-                .apply(RequestOptions.circleCropTransform())
-                .into(viewHolder.performerPhoto);
 
         viewHolder.rootHistoryLayout.setOnClickListener(view1 -> onClick(viewHolder, noxbox));
     }
@@ -149,7 +151,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private LinearLayout showedExpandableLayout;
 
     private void onClick(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
-        if (showedExpandableLayout != null && showedExpandableLayout.equals(viewHolder.expandableMapLayout)) {
+        if (showedExpandableLayout != null && showedExpandableLayout.equals(viewHolder.expandableLayout)) {
             showedExpandableLayout.setVisibility(View.GONE);
             showedExpandableLayout = null;
             return;
@@ -157,21 +159,103 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         if (showedExpandableLayout != null) {
             showedExpandableLayout.setVisibility(View.GONE);
         }
-        showedExpandableLayout = viewHolder.expandableMapLayout;
+        showExpandableLayout(viewHolder, noxbox);
+    }
 
+    private void showExpandableLayout(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
+        showedExpandableLayout = viewHolder.expandableLayout;
+        showedExpandableLayout.setVisibility(View.VISIBLE);
 
         new Handler().post(() -> viewHolder.address.setText(AddressManager.provideAddressByPosition(activity, noxbox.getPosition())));
+        attachMapView(viewHolder.mapView, noxbox);
 
-        viewHolder.expandableMapLayout.setVisibility(View.VISIBLE);
-        viewHolder.expandableMapLayout.requestFocus();
+        Glide.with(activity)
+                .load(noxbox.getNotMe(profileId).getPhoto())
+                .apply(RequestOptions.circleCropTransform())
+                .into(viewHolder.participantPhoto);
 
-        viewHolder.price.setText(noxbox.getTotal().concat(" " + activity.getResources().getString(R.string.currency)));
+        viewHolder.participantName.setText(noxbox.getNotMe(profileId).getName());
+
+        if (noxbox.getPerformer().equals(profile())) {
+            viewHolder.profession.setText(R.string.customer);
+        } else {
+            viewHolder.profession.setText(noxbox.getType().getProfession());
+        }
+
+        attachRating(viewHolder.like, viewHolder.dislike, isNotLiked(noxbox));
+        viewHolder.like.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.NoxboxAlertDialogStyle);
+            builder.setTitle(activity.getResources().getString(R.string.likePrompt));
+            builder.setPositiveButton(activity.getResources().getString(R.string.like),
+                    (dialog, which) -> {
+                        Noxbox likedNoxbox = new Noxbox();
+                        likedNoxbox.copy(noxbox);
+
+                        likeNoxbox(likedNoxbox);
+
+                        updateNoxbox(likedNoxbox, object -> {
+                            noxbox.copy(likedNoxbox);
+                            viewHolder.like.setOnClickListener(null);
+                            viewHolder.dislike.setOnClickListener(null);
+                            showExpandableLayout(viewHolder, noxbox);
+                        }, object -> showExpandableLayout(viewHolder, noxbox));
+
+                    });
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.show();
+
+        });
+        viewHolder.dislike.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.NoxboxAlertDialogStyle);
+            builder.setTitle(activity.getResources().getString(R.string.dislikePrompt));
+            builder.setPositiveButton(activity.getResources().getString(R.string.dislike),
+                    (dialog, which) -> {
+                        Noxbox dislikedNoxbox = new Noxbox();
+                        dislikedNoxbox.copy(noxbox);
+
+                        dislikeNoxbox(dislikedNoxbox);
+
+                        updateNoxbox(dislikedNoxbox, object -> {
+                            noxbox.copy(dislikedNoxbox);
+                            viewHolder.like.setOnClickListener(null);
+                            viewHolder.dislike.setOnClickListener(null);
+                            if (showedExpandableLayout.equals(viewHolder.expandableLayout)) {
+                                showExpandableLayout(viewHolder, noxbox);
+                            }
+                        }, object -> onClick(viewHolder, noxbox));
+                    });
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.show();
+        });
+
+        attachCommentView(viewHolder, isNotComment(noxbox));
+        attachMyComment(viewHolder, noxbox);
+        viewHolder.send.setOnClickListener(v -> {
+            if (viewHolder.comment.getText().toString().length() > 0) {
+                Noxbox commentedNoxbox = new Noxbox();
+                commentedNoxbox.copy(noxbox);
+
+                commentNoxbox(viewHolder, commentedNoxbox);
+
+                updateNoxbox(commentedNoxbox, object -> {
+                    noxbox.copy(commentedNoxbox);
+                    if (showedExpandableLayout.equals(viewHolder.expandableLayout)) {
+                        showExpandableLayout(viewHolder, noxbox);
+                    }
+                }, object -> onClick(viewHolder, noxbox));
+            }
+        });
+
 
         viewHolder.divider.setVisibility(View.VISIBLE);
+    }
 
-
-        attachMapView(viewHolder.mapView, noxbox);
-        attachRating(viewHolder.rateNoxbox, isLiked(noxbox, profileId));
+    private void attachMyComment(HistoryViewHolder viewHolder, Noxbox noxbox) {
+        if (profileId.equals(noxbox.getPerformerId())) {
+            viewHolder.commentText.setText(noxbox.getCommentForDemand());
+        } else {
+            viewHolder.commentText.setText(noxbox.getCommentForSupply());
+        }
     }
 
 
@@ -180,60 +264,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return historyItems.size();
     }
 
-    class HistoryViewHolder extends RecyclerView.ViewHolder {
-
-        RelativeLayout rootHistoryLayout;
-
-        //ItemViewHolder
-        TextView date;
-        TextView time;
-        TextView noxboxType;
-        ImageView performerPhoto;
-        TextView performerName;
-
-        LinearLayout expandableMapLayout;
-        TextView address;
-        MapView mapView;
-        ImageView rateNoxbox;
-        TextView price;
-        View divider;
-
-        //ProgressViewHolder
-        ProgressBar progressBar;
-
-        public HistoryViewHolder(@NonNull View layout) {
-            super(layout);
-        }
-    }
-
-    class ItemViewHolder extends HistoryViewHolder {
-
-        public ItemViewHolder(@NonNull View layout) {
-            super(layout);
-            rootHistoryLayout = layout.findViewById(R.id.rootHistoryLayout);
-            date = layout.findViewById(R.id.dateText);
-            time = layout.findViewById(R.id.timeText);
-            price = layout.findViewById(R.id.priceText);
-            noxboxType = layout.findViewById(R.id.noxboxType);
-            performerPhoto = layout.findViewById(R.id.performerImage);
-            performerName = layout.findViewById(R.id.performerName);
-            expandableMapLayout = layout.findViewById(R.id.expandableMapLayout);
-            mapView = layout.findViewById(R.id.map);
-            rateNoxbox = layout.findViewById(R.id.rateBox);
-            divider = layout.findViewById(R.id.dividerFullWidth);
-            address = layout.findViewById(R.id.address);
-
-        }
-    }
-
-    class ProgressViewHolder extends HistoryViewHolder {
-
-
-        public ProgressViewHolder(@NonNull View layout) {
-            super(layout);
-            progressBar = layout.findViewById(R.id.progressBar);
-        }
-    }
 
     private void attachMapView(MapView mapView, final Noxbox noxbox) {
         mapView.onCreate(null);
@@ -256,21 +286,152 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         });
     }
 
-    private void attachRating(ImageView view, boolean isLiked) {
-        if (isLiked) {
-            view.setImageResource(R.drawable.like);
+    private void attachRating(ImageView like, ImageView dislike, boolean isNotLiked) {
+        if (isNotLiked) {
+            like.setVisibility(View.VISIBLE);
+            dislike.setVisibility(View.VISIBLE);
+            like.setImageResource(R.drawable.like);
+            dislike.setImageResource(R.drawable.dislike);
         } else {
-            view.setImageResource(R.drawable.dislike);
+            like.setVisibility(View.GONE);
+            dislike.setVisibility(View.GONE);
         }
     }
 
-    private boolean isLiked(Noxbox noxbox, String profileId) {
+    private void attachCommentView(HistoryAdapter.HistoryViewHolder viewHolder, boolean isNotComment) {
+        if (isNotComment) {
+            viewHolder.commentView.setVisibility(View.GONE);
+            viewHolder.comment.setVisibility(View.VISIBLE);
+            viewHolder.send.setVisibility(View.VISIBLE);
+
+        } else {
+            viewHolder.comment.setVisibility(View.GONE);
+            viewHolder.send.setVisibility(View.GONE);
+            viewHolder.commentView.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private boolean isNotLiked(Noxbox noxbox) {
         if (profileId.equals(noxbox.getOwner().getId())) {
-            return isNullOrZero(noxbox.getTimeOwnerDisliked());
+            return isNullOrZero(noxbox.getTimeOwnerDisliked()) && isNullOrZero(noxbox.getTimeOwnerLiked());
         } else {
-            return isNullOrZero(noxbox.getTimePartyDisliked());
+            return isNullOrZero(noxbox.getTimePartyDisliked()) && isNullOrZero(noxbox.getTimePartyLiked());
+        }
+    }
+
+    private boolean isNotComment(Noxbox noxbox) {
+        if (profileId.equals(noxbox.getPerformer().getId())) {
+            return noxbox.getCommentForDemand().length() == 0;
+        } else {
+            return noxbox.getCommentForSupply().length() == 0;
+        }
+    }
+
+    private void commentNoxbox(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
+        if (profileId.equals(noxbox.getPerformerId())) {
+            noxbox.setCommentForDemand(viewHolder.comment.getText().toString());
+        } else {
+            noxbox.setCommentForSupply(viewHolder.comment.getText().toString());
+        }
+    }
+
+    private void dislikeNoxbox(Noxbox noxbox) {
+        if (noxbox.getOwner().getId().equals(profileId)) {
+            noxbox.setTimeOwnerDisliked(System.currentTimeMillis());
+        } else {
+            noxbox.setTimePartyDisliked(System.currentTimeMillis());
+        }
+    }
+
+    private void likeNoxbox(Noxbox noxbox) {
+        if (noxbox.getOwner().getId().equals(profileId)) {
+            noxbox.setTimeOwnerLiked(System.currentTimeMillis());
+        } else {
+            noxbox.setTimePartyLiked(System.currentTimeMillis());
         }
     }
 
 
+    private void updateNoxbox(Noxbox noxbox, Task<String> success, Task<Exception> failure) {
+        Firestore.writeNoxbox(noxbox, success, failure);
+    }
+
+    class HistoryViewHolder extends RecyclerView.ViewHolder {
+
+        RelativeLayout rootHistoryLayout;
+
+        //ItemViewHolder
+        ImageView noxboxTypeImage;
+        TextView date;
+        TextView time;
+        TextView noxboxType;
+        TextView price;
+
+        LinearLayout expandableLayout;
+        TextView address;
+        MapView mapView;
+        ImageView participantPhoto;
+        TextView participantName;
+        TextView profession;
+        ImageView like;
+        ImageView dislike;
+
+        EditText comment;
+        ImageView send;
+        //these or
+        CardView commentView;
+        TextView commentText;
+
+        View divider;
+
+        //ProgressViewHolder
+        ProgressBar progressBar;
+
+        public HistoryViewHolder(@NonNull View layout) {
+            super(layout);
+        }
+    }
+
+    class ItemViewHolder extends HistoryViewHolder {
+
+        public ItemViewHolder(@NonNull View layout) {
+            super(layout);
+            rootHistoryLayout = layout.findViewById(R.id.rootHistoryLayout);
+
+            noxboxTypeImage = layout.findViewById(R.id.noxboxTypeImage);
+            date = layout.findViewById(R.id.date);
+            time = layout.findViewById(R.id.time);
+            noxboxType = layout.findViewById(R.id.noxboxType);
+            price = layout.findViewById(R.id.price);
+
+
+            expandableLayout = layout.findViewById(R.id.expandableLayout);
+            address = layout.findViewById(R.id.address);
+            mapView = layout.findViewById(R.id.map);
+            participantPhoto = layout.findViewById(R.id.participantPhoto);
+            participantName = layout.findViewById(R.id.participantName);
+            profession = layout.findViewById(R.id.profession);
+            like = layout.findViewById(R.id.like);
+            dislike = layout.findViewById(R.id.dislike);
+
+            comment = layout.findViewById(R.id.comment);
+            send = layout.findViewById(R.id.send);
+            //or
+            commentView = layout.findViewById(R.id.commentView);
+            commentText = layout.findViewById(R.id.commentText);
+
+            divider = layout.findViewById(R.id.dividerFullWidth);
+
+        }
+    }
+
+    class ProgressViewHolder extends HistoryViewHolder {
+
+
+        public ProgressViewHolder(@NonNull View layout) {
+            super(layout);
+            progressBar = layout.findViewById(R.id.progressBar);
+        }
+    }
 }

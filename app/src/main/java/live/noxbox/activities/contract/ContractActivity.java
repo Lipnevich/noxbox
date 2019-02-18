@@ -372,7 +372,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawCommentView(Profile profile) {
-        EditText editComment = findViewById(R.id.editComment);
+        EditText editComment = findViewById(R.id.comment);
         if (!Strings.isNullOrEmpty(contract().getOwnerComment())) {
             editComment.setText(contract().getOwnerComment());
         }

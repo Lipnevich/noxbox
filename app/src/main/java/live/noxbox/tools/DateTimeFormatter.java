@@ -1,10 +1,14 @@
 package live.noxbox.tools;
 
+import android.content.res.Resources;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import live.noxbox.R;
 
 public class DateTimeFormatter {
 
@@ -38,5 +42,40 @@ public class DateTimeFormatter {
 
     private static String format(Long millis, SimpleDateFormat year) {
         return format(millis, (DateFormat) year);
+    }
+
+    public static String getTimeFromMillis(Long timeStart, Long timeEnd, Resources resources){
+        int minutes = (int)(timeEnd - timeStart) / 1000;
+
+        String time = minutes + " ";
+
+
+
+
+        switch (minutes % 10) {
+            case 1: {
+                time = time.concat(resources.getString(R.string.minute));
+                break;
+            }
+            case 2: {
+                time = time.concat(resources.getString(R.string.minutes_));
+                break;
+            }
+            case 3: {
+                time = time.concat(resources.getString(R.string.minutes_));
+                break;
+            }
+            case 4: {
+                time = time.concat(resources.getString(R.string.minutes_));
+                break;
+            }
+            default: {
+                time = time.concat(resources.getString(R.string.minutes));
+                break;
+            }
+        }
+
+        return time;
+
     }
 }

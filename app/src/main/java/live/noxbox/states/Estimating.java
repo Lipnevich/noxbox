@@ -61,7 +61,7 @@ public class Estimating implements State {
             }
         });
 
-        ((EditText) estimatingView.findViewById(R.id.editComment)).addTextChangedListener(new TextWatcher() {
+        ((EditText) estimatingView.findViewById(R.id.comment)).addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }

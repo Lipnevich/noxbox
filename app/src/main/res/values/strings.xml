@@ -78,6 +78,7 @@
     <string name="dislike">dislike</string>
     <string name="like">like</string>
     <string name="dislikePrompt">Are you sure you want to dislike?</string>
+    <string name="likePrompt">Are you sure you want to like?</string>
     <string name="send">Send</string>
     <string name="sendPrompt">Are you sure you want to send your money?</string>
     <string name="logout">Logout</string>
@@ -299,6 +300,9 @@
     <string name="update">Update</string>
     <string name="all">All</string>
     <string name="schedule">from %s to %s</string>
+    <string name="hour">hour</string>
+    <string name="hours">hours</string>
+    <string name="customer">customer</string>
 
 
 </resources>
