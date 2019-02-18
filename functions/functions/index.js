@@ -49,7 +49,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         let balance = await wallet.balance(payer.wallet.address);
 
         let push;
-        if(balance.lt(new BigDecimal(noxbox.price).div(4))) {
+        if(balance.lt(new BigDecimal('' + noxbox.price).div(4))) {
             console.log('Not enough money for quoter hour', balance);
             let push = {
                 data: {
@@ -117,12 +117,12 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         console.log('performer', performer);
         let moneyToPay = new BigDecimal('' + timeSpent)
             .div(60 * 60 * 1000)
-            .mul(new BigDecimal(noxbox.price));
+            .mul(new BigDecimal('' + noxbox.price));
 
         let request = { };
         request.addressToTransfer = performer.wallet.address;
         request.encrypted = (await db.collection('seeds').doc(noxbox.payerId).get()).data().seed;
-        request.minPayment = new BigDecimal(noxbox.price).div(4);
+        request.minPayment = new BigDecimal('' + noxbox.price).div(4);
         request.transferable = moneyToPay;
 
         await wallet.send(request);
