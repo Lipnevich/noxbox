@@ -58,6 +58,6 @@ transfer = async request => {
 }
 
 exports.balance = async address => {
-    let response = await Waves.API.Node.v1.addresses.balance(request.seed.address);
+    let response = await Waves.API.Node.v1.addresses.balance(address);
     return new BigDecimal('' + response.balance);
 }
