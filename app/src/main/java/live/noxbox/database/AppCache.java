@@ -114,7 +114,7 @@ public class AppCache {
     }
 
     public static boolean isProfileReady() {
-        return (profile.getNoxboxId().isEmpty() || profile.getCurrent() != null) && profile.getWallet().getAddress() != null;
+        return (profile.getId() != null && profile.getNoxboxId().isEmpty() || profile.getCurrent() != null) && profile.getWallet().getAddress() != null;
     }
 
     public static void fireProfile() {
