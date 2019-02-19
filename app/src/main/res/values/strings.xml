@@ -157,9 +157,8 @@
     <string name="order">To order</string>
     <string name="proceed">Proceed</string>
     <string name="dateRegistrationService">Date of publication service</string>
-    <string name="minutes">minutes</string>
-    <string name="minutes_">minutes</string>
-    <string name="minute">minute</string>
+    <string name="minutes">"minutes"</string>
+    <string name="minute">"minute"</string>
     <string name="willPay">I will pay</string>
     <string name="waitThrough"> Wait through</string>
     <string name="arriveVia"> I\'ll arrive via</string>
@@ -300,9 +299,11 @@
     <string name="update">Update</string>
     <string name="all">All</string>
     <string name="schedule">from %s to %s</string>
-    <string name="hour">hour</string>
-    <string name="hours">hours</string>
-    <string name="customer">customer</string>
+    <string name="hour">"hour"</string>
+    <string name="hours">"hours"</string>
+    <string name="customer">Customer</string>
+    <string name="missingHistoryMessage">Here will showing your history of services</string>
+    <string name="chooseService">Choose a service</string>
 
 
 </resources>

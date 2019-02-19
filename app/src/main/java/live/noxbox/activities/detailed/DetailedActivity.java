@@ -275,32 +275,9 @@ public class DetailedActivity extends AppCompatActivity {
             ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
             ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
         } else {
-            int minutes = (int) getTimeInMinutesBetweenUsers(profile.getViewed().getOwner().getPosition(), profile.getViewed().getParty().getPosition(), travelMode);
+            long minutes = getTimeInMinutesBetweenUsers(profile.getViewed().getOwner().getPosition(), profile.getViewed().getParty().getPosition(), travelMode);
 
-            String timeTxt;
-            switch (minutes % 10) {
-                case 1: {
-                    timeTxt = getResources().getString(R.string.minute);
-                    break;
-                }
-                case 2: {
-                    timeTxt = getResources().getString(R.string.minutes_);
-                    break;
-                }
-                case 3: {
-                    timeTxt = getResources().getString(R.string.minutes_);
-                    break;
-                }
-                case 4: {
-                    timeTxt = getResources().getString(R.string.minutes_);
-                    break;
-                }
-                default: {
-                    timeTxt = getResources().getString(R.string.minutes);
-                    break;
-                }
-            }
-
+            String timeTxt = DateTimeFormatter.getFormatTimeFromMillis(minutes * 60000, getResources());
 
             ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
 

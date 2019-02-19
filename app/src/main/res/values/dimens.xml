@@ -26,4 +26,7 @@
 
     <dimen name="default_bar_width">36dp</dimen>
     <dimen name="default_bar_height">36dp</dimen>
+
+    <dimen name="global_card_view_corner">12dp</dimen>
+    <dimen name="global_elevation">4dp</dimen>
 </resources>

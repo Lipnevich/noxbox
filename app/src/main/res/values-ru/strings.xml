@@ -157,9 +157,8 @@
     <string name="order">Заказать</string>
     <string name="proceed">Приступить</string>
     <string name="dateRegistrationService">Дата публикации услуги</string>
-    <string name="minutes">минут</string>
-    <string name="minutes_">минуты</string>
-    <string name="minute">минута</string>
+    <string name="minutes">"минут(ы)"</string>
+    <string name="minute">"минута"</string>
     <string name="willPay">Оплачу</string>
     <string name="waitThrough">Ожидаю через</string>
     <string name="arriveVia">Прибуду через</string>
@@ -300,8 +299,10 @@
     <string name="update">Обновить</string>
     <string name="all">Все</string>
     <string name="schedule">с %s до %s</string>
-    <string name="hour">час</string>
-    <string name="hours">час(а\ов)</string>
-    <string name="customer">заказчик</string>
+    <string name="hour">"час"</string>
+    <string name="hours">"час(а\ов)"</string>
+    <string name="customer">Заказчик</string>
+    <string name="missingHistoryMessage">Здесь будет отображена ваша история услуг</string>
+    <string name="chooseService">Выбрать услугу</string>
 
 </resources>

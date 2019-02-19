@@ -2,6 +2,10 @@ package live.noxbox.tools;
 
 import android.content.res.Resources;
 
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,38 +48,35 @@ public class DateTimeFormatter {
         return format(millis, (DateFormat) year);
     }
 
-    public static String getTimeFromMillis(Long timeStart, Long timeEnd, Resources resources){
-        int minutes = (int)(timeEnd - timeStart) / 1000;
+    private static PeriodFormatter periodFormatter;
 
-        String time = minutes + " ";
-
-
-
-
-        switch (minutes % 10) {
-            case 1: {
-                time = time.concat(resources.getString(R.string.minute));
-                break;
-            }
-            case 2: {
-                time = time.concat(resources.getString(R.string.minutes_));
-                break;
-            }
-            case 3: {
-                time = time.concat(resources.getString(R.string.minutes_));
-                break;
-            }
-            case 4: {
-                time = time.concat(resources.getString(R.string.minutes_));
-                break;
-            }
-            default: {
-                time = time.concat(resources.getString(R.string.minutes));
-                break;
-            }
+    public static String getFormatTimeFromMillis(Long timeStart, Long timeEnd, Resources resources) {
+        if (periodFormatter == null) {
+            periodFormatter = new PeriodFormatterBuilder()
+                    .appendHours().appendSuffix(" " + resources.getString(R.string.hour), " " + resources.getString(R.string.hours))
+                    .appendSeparator(" ")
+                    .appendMinutes().appendSuffix(" " + resources.getString(R.string.minute), " " + resources.getString(R.string.minutes))
+                    .printZeroNever()
+                    .toFormatter();
         }
 
-        return time;
+        long duration = Math.max(timeEnd - timeStart, 60000);
+
+        return periodFormatter.print(new Period(duration));
+
+    }
+
+    public static String getFormatTimeFromMillis(Long millis, Resources resources) {
+        if (periodFormatter == null) {
+            periodFormatter = new PeriodFormatterBuilder()
+                    .appendHours().appendSuffix(resources.getString(R.string.hour), resources.getString(R.string.hours))
+                    .appendSeparator(" ")
+                    .appendMinutes().appendSuffix(resources.getString(R.string.minute), resources.getString(R.string.minutes))
+                    .printZeroNever()
+                    .toFormatter();
+        }
+
+        return periodFormatter.print(new Period(millis));
 
     }
 }

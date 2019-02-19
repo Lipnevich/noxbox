@@ -67,10 +67,48 @@
 
     </android.support.v4.view.ViewPager>
 
-    <!--<ImageView-->
-    <!--android:id="@+id/progressView"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_centerInParent="true"-->
-    <!--android:visibility="visible" />-->
+    <LinearLayout
+        android:id="@+id/missingHistoryLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/human" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/missingHistoryMessage"
+            android:textColor="@color/google_text"
+            android:textSize="@dimen/text_size" />
+
+        <Button
+            android:id="@+id/chooseService"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:minWidth="64dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textColor="@color/secondary"
+            android:background="@drawable/button_corner"
+            android:elevation="@dimen/global_elevation"
+            android:text="@string/chooseService"
+            android:textSize="14sp"
+            android:visibility="visible" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
