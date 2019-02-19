@@ -17,6 +17,7 @@ import live.noxbox.activities.detailed.DetailedActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
+import live.noxbox.model.Rating;
 import live.noxbox.tools.Router;
 
 public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterViewHolder> {
@@ -48,14 +49,25 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         clusterViewHolder.icon.setImageResource(type.getImage());
 
         String rating;
+
         if (clusterItems.get(position).getNoxbox().getRole() == MarketRole.supply) {
-            rating = String.valueOf(Profile.ratingToPercentage(
-                    clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedLikes(),
-                    clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().get(type.name()).getReceivedDislikes()));
+            Rating supplyRating = clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().get(type.name());
+            if(supplyRating == null) {
+                supplyRating = new Rating();
+                clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().put(type.name(), supplyRating);
+            }
+
+            rating = String.valueOf(Profile.ratingToPercentage(supplyRating.getReceivedLikes(),
+                    supplyRating.getReceivedDislikes()));
         } else {
+            Rating demandRating = clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().get(type.name());
+            if(demandRating == null) {
+                demandRating = new Rating();
+                clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().put(type.name(), demandRating);
+            }
             rating = String.valueOf(Profile.ratingToPercentage(
-                    clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedLikes(),
-                    clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().get(type.name()).getReceivedDislikes()));
+                    demandRating.getReceivedLikes(),
+                    demandRating.getReceivedDislikes()));
         }
 
         int travelModeImage = clusterItems.get(position).getNoxbox().getOwner().getTravelMode().getImage();
