@@ -92,6 +92,7 @@ public class MapActivity extends HackerActivity implements
             finish();
             return;
         }
+        AppCache.profile().init(user);
 
         Crashlytics.setUserIdentifier(user.getUid());
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e -> Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid()));

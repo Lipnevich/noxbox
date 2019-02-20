@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.menu.about.tutorial.TutorialActivity;
 import live.noxbox.services.NetworkReceiver;
 
@@ -83,6 +84,7 @@ public class AuthActivity extends BaseActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         tutorialPreference = getApplicationContext().getSharedPreferences(TUTORIAL_KEY, MODE_PRIVATE);
         if (user != null) {
+            AppCache.profile().init(user);
             if (tutorialPreference.getBoolean(TUTORIAL_KEY, true)) {
                 tutorialPreference.edit().putBoolean(TUTORIAL_KEY, false).apply();
                 startActivity(new Intent(this, TutorialActivity.class).putExtra(TUTORIAL_KEY, TUTORIAL_KEY));

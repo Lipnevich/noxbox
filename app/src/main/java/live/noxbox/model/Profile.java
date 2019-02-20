@@ -329,6 +329,15 @@ public class Profile implements Serializable {
         return this;
     }
 
+    public Profile init(FirebaseUser user) {
+        if (user == null || Strings.isNullOrEmpty(getId())) return null;
+        setId(Strings.nullToEmpty(user.getUid()))
+                .setPhoto(Strings.nullToEmpty(user.getPhotoUrl() == null ? "" : user.getPhotoUrl().toString()))
+                .setName(Strings.nullToEmpty(user.getDisplayName()));
+
+        return this;
+    }
+
     public Profile copy(Profile from) {
         if(from == null) return null;
         id = from.id;
