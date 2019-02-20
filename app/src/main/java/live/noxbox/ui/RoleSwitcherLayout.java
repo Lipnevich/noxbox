@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import live.noxbox.R;
 
-import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.ui.CircleView.BOTH_FLAG;
@@ -64,23 +63,7 @@ public class RoleSwitcherLayout extends RelativeLayout {
         both = new CircleView(context, BOTH_FLAG);
         demand = new CircleView(context, DEMAND_FLAG);
 
-
-        if (profile().getFilters().getDemand() && profile().getFilters().getSupply()) {
-            supply.setChecked(false);
-            demand.setChecked(false);
-            both.setChecked(true);
-        } else {
-            if (profile().getFilters().getSupply()) {
-                supply.setChecked(true);
-                demand.setChecked(false);
-                both.setChecked(false);
-            } else {
-                supply.setChecked(false);
-                demand.setChecked(true);
-                both.setChecked(false);
-            }
-        }
-
+        refresh();
 
         supply.setId(View.generateViewId());
         both.setId(View.generateViewId());
@@ -112,6 +95,22 @@ public class RoleSwitcherLayout extends RelativeLayout {
         drawNameOfRole(context);
 
         initOnClickListeners(context);
+    }
+
+    public void refresh() {
+        if (profile().getFilters().getDemand() && profile().getFilters().getSupply()) {
+            supply.setChecked(false);
+            demand.setChecked(false);
+            both.setChecked(true);
+        } else if (profile().getFilters().getSupply()) {
+            supply.setChecked(true);
+            demand.setChecked(false);
+            both.setChecked(false);
+        } else {
+            supply.setChecked(false);
+            demand.setChecked(true);
+            both.setChecked(false);
+        }
     }
 
     private void drawNameOfRole(Context context) {
@@ -153,7 +152,6 @@ public class RoleSwitcherLayout extends RelativeLayout {
                 drawNameOfRole(context);
                 profile().getFilters().setSupply(true);
                 profile().getFilters().setDemand(false);
-                fireProfile();
             }
         });
 
@@ -165,7 +163,6 @@ public class RoleSwitcherLayout extends RelativeLayout {
                 drawNameOfRole(context);
                 profile().getFilters().setSupply(true);
                 profile().getFilters().setDemand(true);
-                fireProfile();
             }
         });
 
@@ -178,7 +175,6 @@ public class RoleSwitcherLayout extends RelativeLayout {
                 drawNameOfRole(context);
                 profile().getFilters().setSupply(false);
                 profile().getFilters().setDemand(true);
-                fireProfile();
             }
         });
     }

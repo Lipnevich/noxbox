@@ -82,6 +82,7 @@
             android:src="@drawable/ic_notification_request_hand_up" />
 
         <TextView
+            android:id="@+id/missingHistoryMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -89,7 +90,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:gravity="center_horizontal"
-            android:text="@string/missingHistoryMessage"
+            android:text="@string/missingPerformedHistoryMessage"
             android:textColor="@color/google_text"
             android:textSize="@dimen/text_size" />
 
@@ -106,7 +107,7 @@
             android:minWidth="64dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:text="@string/chooseService"
+            android:text="@string/chooseSupplyService"
             android:textColor="@color/secondary"
             android:textSize="14sp"
             android:visibility="visible" />

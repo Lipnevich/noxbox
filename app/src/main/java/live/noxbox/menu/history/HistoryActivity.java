@@ -6,19 +6,23 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
+import live.noxbox.model.MarketRole;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 public class HistoryActivity extends FragmentActivity {
 
     public static final int CODE = 1002;
-    public static Task<Object> isHistoryEmpty;
-    public static Task<Object> isHistoryThere;
+    public static Task<MarketRole> isHistoryEmpty;
+    public static Task<MarketRole> isHistoryThere;
 
     public static boolean isSupplyHistoryEmpty = true;
     public static boolean isDemandHistoryEmpty = true;
@@ -41,19 +45,24 @@ public class HistoryActivity extends FragmentActivity {
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
+        findViewById(R.id.chooseService).setOnClickListener(v -> {
+            AppCache.profile().getFilters().setDemand(false);
+            AppCache.profile().getFilters().setSupply(true);
+            Router.finishActivity(HistoryActivity.this);
+        });
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == 0) {
                     if (isSupplyHistoryEmpty) {
-                        isHistoryEmpty.execute(null);
+                        isHistoryEmpty.execute(MarketRole.supply);
                     } else {
                         isHistoryThere.execute(null);
                     }
                 } else {
                     if (isDemandHistoryEmpty) {
-                        isHistoryEmpty.execute(null);
+                        isHistoryEmpty.execute(MarketRole.demand);
                     } else {
                         isHistoryThere.execute(null);
                     }
@@ -78,8 +87,26 @@ public class HistoryActivity extends FragmentActivity {
         super.onResume();
         findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
 
-        findViewById(R.id.chooseService).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
-        isHistoryEmpty = o -> {
+        isHistoryEmpty = marketRole -> {
+            if(marketRole == MarketRole.demand) {
+                findViewById(R.id.chooseService).setOnClickListener(v -> {
+                    AppCache.profile().getFilters().setDemand(true);
+                    AppCache.profile().getFilters().setSupply(false);
+                    AppCache.fireProfile();
+                    Router.finishActivity(HistoryActivity.this);
+                });
+                ((TextView)findViewById(R.id.missingHistoryMessage)).setText(R.string.missingReceivedHistoryMessage);
+                ((Button)findViewById(R.id.chooseService)).setText(R.string.chooseDemandService);
+            } else if (marketRole == MarketRole.supply) {
+                findViewById(R.id.chooseService).setOnClickListener(v -> {
+                    AppCache.profile().getFilters().setDemand(false);
+                    AppCache.profile().getFilters().setSupply(true);
+                    AppCache.fireProfile();
+                    Router.finishActivity(HistoryActivity.this);
+                });
+                ((TextView)findViewById(R.id.missingHistoryMessage)).setText(R.string.missingPerformedHistoryMessage);
+                ((Button)findViewById(R.id.chooseService)).setText(R.string.chooseSupplyService);
+            }
             findViewById(R.id.progressLayout).setVisibility(View.GONE);
             findViewById(R.id.missingHistoryLayout).setVisibility(View.VISIBLE);
         };

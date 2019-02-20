@@ -1,6 +1,5 @@
 package live.noxbox.states;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +26,7 @@ import live.noxbox.services.AvailableNoxboxesService;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
+import live.noxbox.ui.RoleSwitcherLayout;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
@@ -71,6 +71,8 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.switcherLayout).setVisibility(View.VISIBLE);
+        ((RoleSwitcherLayout)activity.findViewById(R.id.switcherLayout)
+                .findViewById(R.id.realSwitcherLayout)).refresh();
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
             activity.getDeviceLocation(profile);
