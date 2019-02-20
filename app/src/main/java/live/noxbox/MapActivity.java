@@ -237,25 +237,24 @@ public class MapActivity extends HackerActivity implements
             State newState = getFragment(profile);
             if (currentState == null) {
                 currentState = newState;
-                measuredDraw(newState, profile);
-                newState.draw(profile);
+                measuredDraw(newState);
                 return;
             }
 
             if (!newState.getClass().getName().equals(currentState.getClass().getName())) {
                 currentState.clear();
                 currentState = newState;
-                measuredDraw(newState, profile);
+                measuredDraw(newState);
                 return;
             }
 
-            measuredDraw(currentState, profile);
+            measuredDraw(currentState);
         });
     }
 
-    private void measuredDraw(State state, Profile profile) {
+    private void measuredDraw(State state) {
         TimeLogger timeLogger = new TimeLogger();
-        state.draw(profile);
+        state.draw(googleMap, this);
         timeLogger.makeLog(state.getClass().getSimpleName());
     }
 
@@ -272,28 +271,29 @@ public class MapActivity extends HackerActivity implements
         }
         //strong link for weakMap
         State newState = states.get(state);
-        if (newState != null)
+        if (newState != null) {
             return newState;
+        }
 
 
         switch (state) {
             case initial:
-                newState = new AvailableNoxboxes(googleMap, this);
+                newState = new AvailableNoxboxes();
                 break;
             case created:
-                newState = new Created(googleMap, this);
+                newState = new Created();
                 break;
             case requesting:
-                newState = new Requesting(googleMap, this);
+                newState = new Requesting();
                 break;
             case accepting:
-                newState = new Accepting(googleMap, this);
+                newState = new Accepting();
                 break;
             case moving:
-                newState = new Moving(googleMap, this);
+                newState = new Moving();
                 break;
             case performing:
-                newState = new Performing(googleMap, this);
+                newState = new Performing();
                 break;
             default:
                 throw new IllegalStateException("Unknown state: " + state.name());

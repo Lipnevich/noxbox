@@ -1,5 +1,6 @@
 package live.noxbox.states;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +41,7 @@ public class AvailableNoxboxes implements State {
 
     private GoogleMap googleMap;
     private MapActivity activity;
+    private Profile profile = AppCache.profile();
 
     private ClusterManager clusterManager;
 
@@ -50,13 +52,12 @@ public class AvailableNoxboxes implements State {
 
     public static volatile int clusterRenderingFrequency = 400;
 
-    public AvailableNoxboxes(final GoogleMap googleMap, final MapActivity activity) {
-        this.googleMap = googleMap;
-        this.activity = activity;
-    }
+    private boolean initiated;
 
     @Override
-    public void draw(final Profile profile) {
+    public void draw(GoogleMap googleMap, MapActivity activity) {
+        this.googleMap = googleMap;
+        this.activity = activity;
         startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes);
         if (clusterManager == null) {
             clusterManager = new ClusterManager(activity, googleMap);

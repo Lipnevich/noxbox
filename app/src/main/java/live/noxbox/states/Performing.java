@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Constants;
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
@@ -40,21 +41,21 @@ public class Performing implements State {
 
     private Activity activity;
     private GoogleMap googleMap;
+    private Profile profile = AppCache.profile();
     private LinearLayout performingView;
     private static long seconds = 0;
     private static BigDecimal totalMoney;
-
-    public Performing(final GoogleMap googleMap, final Activity activity) {
-        this.activity = activity;
-        this.googleMap = googleMap;
-        MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-
-
-        AppCache.readProfile(profile -> GeoRealtime.removePosition(profile.getCurrent().getId()));
-    }
+    private boolean initiated;
 
     @Override
-    public void draw(final Profile profile) {
+    public void draw(GoogleMap googleMap, MapActivity activity) {
+        this.googleMap = googleMap;
+        this.activity = activity;
+        if(!initiated) {
+            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+            GeoRealtime.removePosition(profile.getCurrent().getId());
+            initiated = true;
+        }
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         performingView = activity.findViewById(R.id.container);

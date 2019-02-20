@@ -25,9 +25,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.ChatActivity;
 import live.noxbox.activities.ConfirmationActivity;
+import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Message;
@@ -64,6 +66,7 @@ public class Moving implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
+    private Profile profile = AppCache.profile();
 
     private static LocationManager locationManager;
     private static LocationListener locationListener;
@@ -76,43 +79,17 @@ public class Moving implements State {
     private Marker memberWhoMoving;
 
     private TextView totalUnreadView;
-
-    public Moving(final GoogleMap googleMap, final Activity activity) {
-        this.googleMap = googleMap;
-        this.activity = activity;
-        MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-
-        readProfile(profile -> memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition());
-    }
-
-    private void drawUnreadMessagesIndicator(Map<String, Message> messages, Long readTime) {
-        Integer totalUnread = 0;
-
-        totalUnreadView = activity.findViewById(R.id.totalUnread);
-
-        Iterator iterator = messages.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            Message message = (Message) entry.getValue();
-
-            if (message.getTime() > readTime) {
-                totalUnread++;
-                totalUnreadView.setVisibility(View.VISIBLE);
-                if (totalUnread <= 9) {
-                    totalUnreadView.setText(totalUnread.toString());
-                } else {
-                    totalUnreadView.setText("9+");
-                }
-            }
-        }
-
-        if (totalUnread == 0) {
-            totalUnreadView.setVisibility(View.GONE);
-        }
-    }
+    private boolean initiated;
 
     @Override
-    public void draw(final Profile profile) {
+    public void draw(GoogleMap googleMap, MapActivity activity) {
+        this.googleMap = googleMap;
+        this.activity = activity;
+        if(!initiated) {
+            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+            initiated = true;
+        }
+        memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
         // TODO (vl) glide upload in daemon other person photo and store in cache
 
         Log.d(TAG + "Moving", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
@@ -137,7 +114,7 @@ public class Moving implements State {
         } else {
             GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
                 memberWhoMovingPosition = position;
-                draw(profile);
+                draw(googleMap, activity);
             });
             HashMap<String, String> data = new HashMap<>();
             data.put("type", NotificationType.moving.name());
@@ -191,6 +168,31 @@ public class Moving implements State {
         moveCopyrightRight(googleMap);
     }
 
+    private void drawUnreadMessagesIndicator(Map<String, Message> messages, Long readTime) {
+        Integer totalUnread = 0;
+
+        totalUnreadView = activity.findViewById(R.id.totalUnread);
+
+        Iterator iterator = messages.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            Message message = (Message) entry.getValue();
+
+            if (message.getTime() > readTime) {
+                totalUnread++;
+                totalUnreadView.setVisibility(View.VISIBLE);
+                if (totalUnread <= 9) {
+                    totalUnreadView.setText(totalUnread.toString());
+                } else {
+                    totalUnreadView.setText("9+");
+                }
+            }
+        }
+
+        if (totalUnread == 0) {
+            totalUnreadView.setVisibility(View.GONE);
+        }
+    }
     @Override
     public void clear() {
         readProfile(profile -> stopListenPosition(profile.getCurrent().getId()));

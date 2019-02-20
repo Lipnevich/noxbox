@@ -7,8 +7,10 @@ import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.DateTimeFormatter;
 
@@ -24,14 +26,13 @@ public class Created implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-
-    public Created(GoogleMap googleMap, Activity activity) {
-        this.googleMap = googleMap;
-        this.activity = activity;
-    }
+    private Profile profile = AppCache.profile();
 
     @Override
-    public void draw(final Profile profile) {
+    public void draw(GoogleMap googleMap, MapActivity activity) {
+        this.googleMap = googleMap;
+        this.activity = activity;
+
         Log.d(TAG + "Created", "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 

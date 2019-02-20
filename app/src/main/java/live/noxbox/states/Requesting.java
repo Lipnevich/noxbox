@@ -12,8 +12,10 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.HashMap;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -35,20 +37,21 @@ public class Requesting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
+    private Profile profile = AppCache.profile();
     private LinearLayout requestingView;
     private CountDownTimer countDownTimer;
-
-    private Position memberWhoMovingPosition;
     private Marker memberWhoMoving;
 
-    public Requesting(final GoogleMap googleMap, final Activity activity) {
-        this.googleMap = googleMap;
-        this.activity = activity;
-        MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-    }
+    private boolean initiated;
 
     @Override
-    public void draw(final Profile profile) {
+    public void draw(GoogleMap googleMap, MapActivity activity) {
+        this.googleMap = googleMap;
+        this.activity = activity;
+        if(!initiated) {
+            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+            initiated = true;
+        }
         moveCopyrightRight(googleMap);
 
         Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
@@ -69,7 +72,7 @@ public class Requesting implements State {
         drawPath(activity, googleMap, profile);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
 
-        memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
+        Position memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
         if (memberWhoMoving == null) {
             memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
                     memberWhoMovingPosition, googleMap, activity.getResources());

@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.math.BigDecimal;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
@@ -36,18 +37,21 @@ public class Accepting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
+    private Profile profile = AppCache.profile();
     private CountDownTimer countDownTimer;
     private LinearLayout acceptingView;
 
     private Position memberWhoMovingPosition;
     private Marker memberWhoMoving;
+    private boolean initiated;
 
-    public Accepting(final GoogleMap googleMap, final Activity activity) {
+    @Override
+    public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+        if(!initiated) {
+            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
-        AppCache.readProfile(profile -> {
             if (profile.getCurrent().getRole() == MarketRole.demand &&
                     !enoughBalance(profile.getCurrent(), profile.getCurrent().getParty())) {
                 checkBalance(profile.getCurrent().getParty(), activity, balance -> {
@@ -61,12 +65,8 @@ public class Accepting implements State {
                     updateNoxbox();
                 });
             }
-        });
-
-    }
-
-    @Override
-    public void draw(final Profile profile) {
+            initiated = true;
+        }
         Log.d(TAG + "Accepting", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
