@@ -6,6 +6,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import live.noxbox.R;
 import live.noxbox.tools.Router;
@@ -17,35 +20,73 @@ public class HistoryActivity extends FragmentActivity {
     public static Task<Object> isHistoryEmpty;
     public static Task<Object> isHistoryThere;
 
+    public static boolean isSupplyHistoryEmpty = true;
+    public static boolean isDemandHistoryEmpty = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         getSupportFragmentManager();
 
-
+        Glide.with(this)
+                .asGif()
+                .load(R.drawable.progress_cat)
+                .into((ImageView) findViewById(R.id.progress));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        isHistoryEmpty = o -> findViewById(R.id.missingHistoryLayout).setVisibility(View.VISIBLE);
-        isHistoryThere = o -> findViewById(R.id.missingHistoryLayout).setVisibility(View.GONE);
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
 
-        findViewById(R.id.chooseService).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO (vl) open list of services depends on the role
-            }
-        });
+        findViewById(R.id.chooseService).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
+        isHistoryEmpty = o -> {
+            findViewById(R.id.progressLayout).setVisibility(View.GONE);
+            findViewById(R.id.missingHistoryLayout).setVisibility(View.VISIBLE);
+        };
+        isHistoryThere = o -> {
+            findViewById(R.id.progressLayout).setVisibility(View.GONE);
+            findViewById(R.id.missingHistoryLayout).setVisibility(View.GONE);
+        };
 
         final ViewPager viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
+
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
-        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    if (isSupplyHistoryEmpty) {
+                        isHistoryEmpty.execute(null);
+                    } else {
+                        isHistoryThere.execute(null);
+                    }
+                } else {
+                    if (isDemandHistoryEmpty) {
+                        isHistoryEmpty.execute(null);
+                    } else {
+                        isHistoryThere.execute(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
     }
 
     private void setupViewPager(ViewPager viewPager) {

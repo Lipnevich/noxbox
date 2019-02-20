@@ -373,8 +373,8 @@ public class ContractActivity extends BaseActivity {
 
     private void drawCommentView(Profile profile) {
         EditText editComment = findViewById(R.id.comment);
-        if (!Strings.isNullOrEmpty(contract().getOwnerComment())) {
-            editComment.setText(contract().getOwnerComment());
+        if (!Strings.isNullOrEmpty(contract().getContractComment())) {
+            editComment.setText(contract().getContractComment());
         }
         editComment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -389,7 +389,7 @@ public class ContractActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                contract().setOwnerComment(s.toString());
+                contract().setContractComment(s.toString());
             }
         });
     }

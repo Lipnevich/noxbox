@@ -42,8 +42,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private NoxboxType type;
     private MarketRole role;
     private WorkSchedule workSchedule;
-    private String ownerComment;
-
+    private String contractComment;
 
     // Noxbox specific data
     private long timeCreated;
@@ -57,12 +56,10 @@ public class Noxbox implements Comparable<Noxbox> {
     private long timePartyVerified;
     private long timeOwnerDisliked;
     private long timePartyDisliked;
-    private long timeOwnerLiked;
-    private long timePartyLiked;
     private long timeTimeout;
     private String cancellationReasonMessage;
-    private String commentForDemand;
-    private String commentForSupply;
+    private String ownerComment;
+    private String partyComment;
     private boolean finished;
 
     public Noxbox copy(Noxbox from) {
@@ -79,7 +76,7 @@ public class Noxbox implements Comparable<Noxbox> {
         type = from.type;
         role = from.role;
         workSchedule = from.getWorkSchedule();
-        ownerComment = from.ownerComment;
+        contractComment = from.contractComment;
         timeCreated = from.timeCreated;
         timeRemoved = from.timeRemoved;
         timeRequested = from.timeRequested;
@@ -91,12 +88,10 @@ public class Noxbox implements Comparable<Noxbox> {
         timePartyVerified = from.timePartyVerified;
         timeOwnerDisliked = from.timeOwnerDisliked;
         timePartyDisliked = from.timePartyDisliked;
-        timePartyLiked = from.timePartyLiked;
-        timeOwnerLiked = from.timeOwnerLiked;
         timeTimeout = from.timeTimeout;
         cancellationReasonMessage = from.cancellationReasonMessage;
-        commentForDemand = from.commentForDemand;
-        commentForSupply = from.commentForSupply;
+        ownerComment = from.ownerComment;
+        partyComment = from.partyComment;
         finished = from.finished;
         return this;
     }
@@ -111,10 +106,10 @@ public class Noxbox implements Comparable<Noxbox> {
         party = null;
         performerId = "";
         payerId = "";
-        ownerComment = null;
+        contractComment = null;
         cancellationReasonMessage = null;
-        commentForDemand = null;
-        commentForSupply = null;
+        ownerComment = null;
+        partyComment = null;
         timeCreated = 0L;
         timeRemoved = 0L;
         timeRequested = 0L;
@@ -126,8 +121,6 @@ public class Noxbox implements Comparable<Noxbox> {
         timePartyVerified = 0L;
         timeOwnerDisliked = 0L;
         timePartyDisliked = 0L;
-        timePartyLiked = 0L;
-        timeOwnerLiked = 0L;
         timeTimeout = 0L;
 
         return this;
@@ -392,27 +385,27 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public String getCommentForDemand() {
-        if(commentForDemand == null){
-            commentForDemand = "";
+    public String getOwnerComment() {
+        if(ownerComment == null){
+            ownerComment = "";
         }
-        return commentForDemand;
+        return ownerComment;
     }
 
-    public Noxbox setCommentForDemand(String commentForDemand) {
-        this.commentForDemand = commentForDemand;
+    public Noxbox setOwnerComment(String ownerComment) {
+        this.ownerComment = ownerComment;
         return this;
     }
 
-    public String getCommentForSupply() {
-        if(commentForSupply == null){
-            commentForSupply = "";
+    public String getPartyComment() {
+        if(partyComment == null){
+            partyComment = "";
         }
-        return commentForSupply;
+        return partyComment;
     }
 
-    public Noxbox setCommentForSupply(String commentForSupply) {
-        this.commentForSupply = commentForSupply;
+    public Noxbox setPartyComment(String partyComment) {
+        this.partyComment = partyComment;
         return this;
     }
 
@@ -515,15 +508,15 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public String getOwnerComment() {
-        if (ownerComment == null) {
-            ownerComment = "";
+    public String getContractComment() {
+        if (contractComment == null) {
+            contractComment = "";
         }
-        return ownerComment;
+        return contractComment;
     }
 
-    public Noxbox setOwnerComment(String ownerComment) {
-        this.ownerComment = ownerComment;
+    public Noxbox setContractComment(String contractComment) {
+        this.contractComment = contractComment;
         return this;
     }
 
@@ -544,21 +537,4 @@ public class Noxbox implements Comparable<Noxbox> {
         return myId.equals(getOwner().getId()) && role == demand ? demand : supply;
     }
 
-    public long getTimeOwnerLiked() {
-        return timeOwnerLiked;
-    }
-
-    public Noxbox setTimeOwnerLiked(long timeOwnerLiked) {
-        this.timeOwnerLiked = timeOwnerLiked;
-        return this;
-    }
-
-    public long getTimePartyLiked() {
-        return timePartyLiked;
-    }
-
-    public Noxbox setTimePartyLiked(long timePartyLiked) {
-        this.timePartyLiked = timePartyLiked;
-        return this;
-    }
 }

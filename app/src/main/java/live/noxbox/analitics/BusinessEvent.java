@@ -20,4 +20,6 @@ public enum BusinessEvent {
     tutorialLikes,
     tutorialDislikes,
     update,
+    like,
+    dislike
 }

@@ -66,7 +66,7 @@ public class DateTimeFormatter {
 
     }
 
-    public static String getFormatTimeFromMillis(Long millis, Resources resources) {
+    public static String getFormatTimeFromMillis(long millis, Resources resources) {
         if (periodFormatter == null) {
             periodFormatter = new PeriodFormatterBuilder()
                     .appendHours().appendSuffix(resources.getString(R.string.hour), resources.getString(R.string.hours))

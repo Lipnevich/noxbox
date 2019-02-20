@@ -79,16 +79,16 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/human" />
+            android:src="@drawable/ic_notification_request_hand_up" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
+            android:gravity="center_horizontal"
             android:text="@string/missingHistoryMessage"
             android:textColor="@color/google_text"
             android:textSize="@dimen/text_size" />
@@ -100,15 +100,30 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/button_corner"
+            android:elevation="@dimen/global_elevation"
             android:gravity="center"
             android:minWidth="64dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@color/secondary"
-            android:background="@drawable/button_corner"
-            android:elevation="@dimen/global_elevation"
             android:text="@string/chooseService"
+            android:textColor="@color/secondary"
             android:textSize="14sp"
             android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progressLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/progress"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:layout_margin="8dp" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

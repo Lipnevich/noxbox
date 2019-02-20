@@ -10,11 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import live.noxbox.R;
 import live.noxbox.model.MarketRole;
-import live.noxbox.model.Noxbox;
 
 public class HistorySupplyFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
@@ -34,7 +31,8 @@ public class HistorySupplyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         RecyclerView listItems = view.findViewById(R.id.recyclerView);
         listItems.setLayoutManager(linearLayoutManager);
-        HistoryAdapter adapter = new HistoryAdapter((HistoryActivity) getActivity(), new ArrayList<Noxbox>(), listItems, MarketRole.supply);
+        HistoryAdapter adapter = new HistoryAdapter((HistoryActivity) getActivity(), listItems, MarketRole.supply);
+        container.findViewById(R.id.chooseService);
         listItems.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         return view;

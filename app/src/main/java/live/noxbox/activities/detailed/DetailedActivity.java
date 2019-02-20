@@ -73,6 +73,7 @@ import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
+import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.LocationPermitOperator.getLocationPermission;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
@@ -128,7 +129,7 @@ public class DetailedActivity extends AppCompatActivity {
         drawToolbar(profile.getViewed());
         drawOppositeProfile(profile);
         drawDescription(profile);
-        drawOwnerComment(profile);
+        drawContractComment(profile);
         drawWaitingTime(profile);
         drawRating(profile.getViewed());
         drawPrice(profile);
@@ -166,7 +167,7 @@ public class DetailedActivity extends AppCompatActivity {
             findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
             ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), findViewById(R.id.profilePhoto));
             ((TextView) findViewById(R.id.profileName)).setText(other.getName());
-        }else{
+        } else {
             findViewById(R.id.profileLayout).setVisibility(View.GONE);
         }
     }
@@ -192,11 +193,11 @@ public class DetailedActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
     }
 
-    private void drawOwnerComment(Profile me) {
+    private void drawContractComment(Profile me) {
         if (!me.getViewed().getOwner().equals(me)) {
-            if (me.getViewed().getOwnerComment().length() > 0) {
-                ((TextView) findViewById(R.id.ownerComment)).setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.ownerComment)).setText(me.getViewed().getOwnerComment());
+            if (me.getViewed().getContractComment().length() > 0) {
+                ((TextView) findViewById(R.id.contractComment)).setVisibility(View.VISIBLE);
+                ((TextView) findViewById(R.id.contractComment)).setText(me.getViewed().getContractComment());
             } else {
 
                 findViewById(R.id.commentView).setVisibility(View.GONE);
@@ -277,9 +278,9 @@ public class DetailedActivity extends AppCompatActivity {
         } else {
             long minutes = getTimeInMinutesBetweenUsers(profile.getViewed().getOwner().getPosition(), profile.getViewed().getParty().getPosition(), travelMode);
 
-            String timeTxt = DateTimeFormatter.getFormatTimeFromMillis(minutes * 60000, getResources());
+            String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
 
-            ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + String.valueOf(minutes) + " " + timeTxt);
+            ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + timeTxt);
 
             ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
 

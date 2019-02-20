@@ -40,7 +40,7 @@ public class BusinessActivity extends AppCompatActivity {
         Firestore.reads = 0L;
     }
 
-    public static void businessEvent(BusinessEvent event) {
+    public static void businessEvent(BusinessEvent event, String... args) {
         if (context == null || BuildConfig.DEBUG) return;
 
         Bundle bundle = new Bundle();
@@ -74,6 +74,12 @@ public class BusinessActivity extends AppCompatActivity {
                 reads.edit().putLong("writes", 0L).apply();
                 Firestore.writes = 0;
                 Firestore.reads = 0;
+                break;
+            case like:
+            case dislike:
+                bundle.putString("noxboxId", args[0]);
+                bundle.putString("noxboxType", args[1]);
+                bundle.putString("price", args[2]);
                 break;
 
         }

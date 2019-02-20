@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.Set;
 
 import live.noxbox.R;
+import live.noxbox.analitics.BusinessActivity;
+import live.noxbox.analitics.BusinessEvent;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
@@ -42,6 +44,8 @@ import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
+import static live.noxbox.menu.history.HistoryActivity.isHistoryEmpty;
+import static live.noxbox.menu.history.HistoryActivity.isHistoryThere;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
@@ -56,17 +60,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private HistoryActivity activity;
     private String profileId;
     private List<Noxbox> historyItems;
-
     private Set<Noxbox> uniqueValue = new HashSet<>();
     private int lastVisibleItem, totalItemCount;
     private static final int AMOUNT_PER_LOAD = 10;
 
-
-    public HistoryAdapter(HistoryActivity activity, final List<Noxbox> historyItems, RecyclerView currentRecyclerView, final MarketRole role) {
+    public HistoryAdapter(HistoryActivity activity, RecyclerView currentRecyclerView, final MarketRole role) {
         this.activity = activity;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         this.profileId = user == null ? "" : user.getUid();
-        this.historyItems = historyItems;
+        this.historyItems = new ArrayList<>();
 
         long startFrom = historyItems.isEmpty() ?
                 Long.MAX_VALUE :
@@ -84,6 +86,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             if (noxboxes.size() > 0) {
                 historyItems.addAll(noxboxes);
                 notifyDataSetChanged();
+                isHistoryThere.execute(null);
+                if(role == MarketRole.supply){
+                    HistoryActivity.isSupplyHistoryEmpty = false;
+                }else{
+                    HistoryActivity.isDemandHistoryEmpty = false;
+                }
+            } else {
+                if(historyItems.size() == 0){
+                    if(role == MarketRole.supply){
+                        HistoryActivity.isSupplyHistoryEmpty = true;
+                    }else{
+                        HistoryActivity.isDemandHistoryEmpty = true;
+                    }
+                    isHistoryEmpty.execute(null);
+                }
             }
         };
         Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
@@ -193,6 +210,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         clearDislikeNoxbox(clearedDislikNoxbox);
 
                         updateNoxbox(clearedDislikNoxbox, object -> {
+                            BusinessActivity.businessEvent(BusinessEvent.like,
+                                    noxbox.getId(),
+                                    noxbox.getType().name(),
+                                    noxbox.getPrice());
                             noxbox.copy(clearedDislikNoxbox);
                             viewHolder.like.setOnClickListener(null);
                             viewHolder.dislike.setOnClickListener(null);
@@ -217,6 +238,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         dislikeNoxbox(dislikedNoxbox);
 
                         updateNoxbox(dislikedNoxbox, object -> {
+                            BusinessActivity.businessEvent(BusinessEvent.dislike,
+                                    noxbox.getId(),
+                                    noxbox.getType().name(),
+                                    noxbox.getPrice());
                             noxbox.copy(dislikedNoxbox);
                             viewHolder.like.setOnClickListener(null);
                             viewHolder.dislike.setOnClickListener(null);
@@ -229,7 +254,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             builder.show();
         });
 
-        attachCommentView(viewHolder, noxbox,isNotCommented(noxbox));
+        attachCommentView(viewHolder, noxbox, isNotCommented(noxbox));
         attachMyComment(viewHolder, noxbox);
         viewHolder.send.setOnClickListener(v -> {
             if (viewHolder.comment.getText().toString().length() > 0) {
@@ -251,10 +276,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     private void attachMyComment(HistoryViewHolder viewHolder, Noxbox noxbox) {
-        if (profileId.equals(noxbox.getPerformerId())) {
-            viewHolder.commentText.setText(noxbox.getCommentForDemand());
+        if (profileId.equals(noxbox.getOwner().getId())) {
+            viewHolder.commentText.setText(noxbox.getOwnerComment());
         } else {
-            viewHolder.commentText.setText(noxbox.getCommentForSupply());
+            viewHolder.commentText.setText(noxbox.getPartyComment());
         }
     }
 
@@ -304,7 +329,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             viewHolder.comment.setVisibility(View.GONE);
             viewHolder.send.setVisibility(View.GONE);
             viewHolder.commentView.setVisibility(View.VISIBLE);
-            viewHolder.commenterName.setText("\"" +noxbox.getMe(profileId).getName() + "\"");
+            viewHolder.commenterName.setText("\"" + noxbox.getMe(profileId).getName() + "\"");
         }
 
     }
@@ -318,18 +343,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     private boolean isNotCommented(Noxbox noxbox) {
-        if (profileId.equals(noxbox.getPerformer().getId())) {
-            return noxbox.getCommentForDemand().length() == 0;
+        if (profileId.equals(noxbox.getOwner().getId())) {
+            return noxbox.getOwnerComment().length() == 0;
         } else {
-            return noxbox.getCommentForSupply().length() == 0;
+            return noxbox.getPartyComment().length() == 0;
         }
     }
 
     private void commentNoxbox(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
-        if (profileId.equals(noxbox.getPerformerId())) {
-            noxbox.setCommentForDemand(viewHolder.comment.getText().toString());
+        if (profileId.equals(noxbox.getOwner().getId())) {
+            noxbox.setOwnerComment(viewHolder.comment.getText().toString());
         } else {
-            noxbox.setCommentForSupply(viewHolder.comment.getText().toString());
+            noxbox.setPartyComment(viewHolder.comment.getText().toString());
         }
     }
 
