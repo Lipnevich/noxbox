@@ -86,12 +86,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             if (noxboxes.size() > 0) {
                 historyItems.addAll(noxboxes);
                 notifyDataSetChanged();
+
                 isHistoryThere.execute(null);
                 if(role == MarketRole.supply){
                     HistoryActivity.isSupplyHistoryEmpty = false;
                 }else{
                     HistoryActivity.isDemandHistoryEmpty = false;
                 }
+
             } else {
                 if(historyItems.size() == 0){
                     if(role == MarketRole.supply){
@@ -99,7 +101,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     }else{
                         HistoryActivity.isDemandHistoryEmpty = true;
                     }
-                    isHistoryEmpty.execute(null);
+                    if(HistoryActivity.isSupplyHistoryEmpty && HistoryActivity.isDemandHistoryEmpty){
+                        isHistoryEmpty.execute(null);
+                    }
                 }
             }
         };
