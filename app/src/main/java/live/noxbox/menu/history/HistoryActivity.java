@@ -33,26 +33,10 @@ public class HistoryActivity extends FragmentActivity {
                 .asGif()
                 .load(R.drawable.progress_cat)
                 .into((ImageView) findViewById(R.id.progress));
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
-
-        findViewById(R.id.chooseService).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
-        isHistoryEmpty = o -> {
-            findViewById(R.id.progressLayout).setVisibility(View.GONE);
-            findViewById(R.id.missingHistoryLayout).setVisibility(View.VISIBLE);
-        };
-        isHistoryThere = o -> {
-            findViewById(R.id.progressLayout).setVisibility(View.GONE);
-            findViewById(R.id.missingHistoryLayout).setVisibility(View.GONE);
-        };
-
         final ViewPager viewPager = findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
 
+        HistoryFragmentAdapter adapter = new HistoryFragmentAdapter(getSupportFragmentManager(), this);
+        viewPager.setAdapter(adapter);
 
         TabLayout tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -89,10 +73,21 @@ public class HistoryActivity extends FragmentActivity {
 
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        HistoryFragmentAdapter adapter = new HistoryFragmentAdapter(getSupportFragmentManager(), this);
-        viewPager.setAdapter(adapter);
-    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
 
+        findViewById(R.id.chooseService).setOnClickListener(v -> Router.finishActivity(HistoryActivity.this));
+        isHistoryEmpty = o -> {
+            findViewById(R.id.progressLayout).setVisibility(View.GONE);
+            findViewById(R.id.missingHistoryLayout).setVisibility(View.VISIBLE);
+        };
+        isHistoryThere = o -> {
+            findViewById(R.id.progressLayout).setVisibility(View.GONE);
+            findViewById(R.id.missingHistoryLayout).setVisibility(View.GONE);
+        };
+
+    }
 
 }

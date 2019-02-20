@@ -38,7 +38,6 @@ import static live.noxbox.notifications.factory.NotificationFactory.buildNotific
 
 public class ImageManager {
 
-
     public static void uploadPhoto(final Activity activity, final Profile profile, Bitmap bitmap) {
         uploadImage(activity, bitmap, "profile/" + System.currentTimeMillis(), uri -> {
             Map<String, String> data = new HashMap<>();
@@ -46,7 +45,6 @@ public class ImageManager {
             buildNotification(activity.getApplicationContext(), null, data).show();
             profile.setPhoto(uri.toString());
             AppCache.fireProfile();
-            ProgressDialogManager.hideProgress();
         });
     }
 

@@ -70,6 +70,9 @@ public class AppCache {
                 eventBalanceUpdate(profile.getWallet().getBalance(), newProfile.getWallet().getBalance());
 
                 profile.copy(newProfile);
+                if(profile.getFilters().getPrice() < 1) {
+                    profile.getFilters().setPrice(Integer.MAX_VALUE);
+                }
 
                 if (!profile.getNoxboxId().isEmpty()) {
                     startListenNoxbox(profile.getNoxboxId());
@@ -94,15 +97,10 @@ public class AppCache {
     }
 
     public static void listenProfile(String clazz, final Task<Profile> task) {
-        if (profileListeners.get(clazz) != null) {
-            task.execute(profile);
-            return;
-        }
+        profileListeners.put(clazz, task);
 
         if (isProfileReady())
             task.execute(profile);
-
-        profileListeners.put(clazz, task);
     }
 
     public static void readProfile(final Task<Profile> task) {
@@ -114,7 +112,9 @@ public class AppCache {
     }
 
     public static boolean isProfileReady() {
-        return (profile.getId() != null && profile.getNoxboxId().isEmpty() || profile.getCurrent() != null) && profile.getWallet().getAddress() != null;
+        return profile.getId() != null
+                && (profile.getNoxboxId().isEmpty() || profile.getNoxboxId().equals(profile.getCurrent().getId()))
+                && profile.getWallet().getAddress() != null;
     }
 
     public static void fireProfile() {

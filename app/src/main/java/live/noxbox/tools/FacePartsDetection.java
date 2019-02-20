@@ -71,9 +71,6 @@ public class FacePartsDetection {
                         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                         businessEvent(invalidPhoto);
                     }
-
-                    //AppCache.fireProfile();
-                    ProgressDialogManager.hideProgress();
                 })
                 .addOnFailureListener(e -> {
                     Crashlytics.logException(e);
@@ -82,10 +79,6 @@ public class FacePartsDetection {
                     Map<String, String> data = new HashMap<>();
                     data.put("type", NotificationType.photoInvalid.name());
                     NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
-
-                    //AppCache.fireProfile();
-
-                    ProgressDialogManager.hideProgress();
                 });
     }
 

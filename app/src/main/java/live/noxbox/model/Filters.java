@@ -8,7 +8,7 @@ public class Filters {
     private Boolean supply = true;
     private Boolean demand = true;
     private Boolean allowNovices = true;
-    private Integer price;
+    private Integer price = Integer.MAX_VALUE;
     private Map<String, Boolean> types = new HashMap<>();
 
     {

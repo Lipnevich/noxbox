@@ -233,7 +233,10 @@ public class MapActivity extends HackerActivity implements
 
     private void draw() {
         AppCache.listenProfile(this.getClass().getName(), profile -> {
-            if (googleMap == null) return;
+            if (googleMap == null) {
+                return;
+            }
+
             State newState = getFragment(profile);
             if (currentState == null) {
                 currentState = newState;

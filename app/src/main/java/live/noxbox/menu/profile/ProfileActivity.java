@@ -43,7 +43,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.ImageManager;
-import live.noxbox.tools.ProgressDialogManager;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.CAMERA_PERMISSION_REQUEST_CODE;
@@ -279,7 +278,6 @@ public class ProfileActivity extends BaseActivity {
             if (requestCode == SELECT_IMAGE
                     && resultCode == Activity.RESULT_OK
                     && data != null && data.getData() != null) {
-                ProgressDialogManager.showProgress(ProfileActivity.this);
 
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("type", NotificationType.photoValidationProgress.name());
@@ -297,8 +295,6 @@ public class ProfileActivity extends BaseActivity {
             } else if (requestCode == TravelModeListActivity.CODE) {
                 draw(profile);
             } else if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                ProgressDialogManager.showProgress(ProfileActivity.this);
-
                 Map<String, String> notificationData = new HashMap<>();
                 notificationData.put("type", NotificationType.photoValidationProgress.name());
                 NotificationFactory.buildNotification(ProfileActivity.this.getApplicationContext(), null, notificationData).show();

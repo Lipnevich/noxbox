@@ -116,7 +116,7 @@ public class MapSettingsActivity extends BaseActivity {
                         return;
                     }
                     if (progress == 100) {
-                        profile.getFilters().setPrice(100000000);
+                        profile.getFilters().setPrice(Integer.MAX_VALUE);
                         priceText.setText(R.string.max);
                         return;
                     }

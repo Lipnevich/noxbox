@@ -57,7 +57,10 @@ public class Firestore {
     private static ListenerRegistration profileListener;
 
     public static void listenProfile(@NonNull final Task<Profile> task) {
-        if (profileListener != null) profileListener.remove();
+        if (profileListener != null) {
+            profileListener.remove();
+            profileListener = null;
+        }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -68,7 +71,7 @@ public class Firestore {
                 task.execute(profile);
             } else {
                 Profile profile = new Profile(user);
-                writeProfile(profile, o -> task.execute(profile));
+                task.execute(profile);
             }
         });
     }
