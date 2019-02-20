@@ -302,7 +302,7 @@
     <string name="hour">" час"</string>
     <string name="hours">" час(а\ов)"</string>
     <string name="customer">Заказчик</string>
-    <string name="missingHistoryMessage">Здесь будет отображена ваша история услуг</string>
-    <string name="chooseService">Выбрать услугу</string>
+    <string name="missingHistoryMessage">Услуги, выполненные Вами, будут отображены здесь</string>
+    <string name="chooseService">Приступить</string>
 
 </resources>

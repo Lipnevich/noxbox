@@ -302,8 +302,8 @@
     <string name="hour">" hour"</string>
     <string name="hours">" hours"</string>
     <string name="customer">Customer</string>
-    <string name="missingHistoryMessage">Here will showing your history of services</string>
-    <string name="chooseService">Choose a service</string>
+    <string name="missingHistoryMessage">Services performed by You will be displayed here</string>
+    <string name="chooseService">Process first service</string>
 
 
 </resources>

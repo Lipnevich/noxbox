@@ -35,7 +35,6 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
     @NonNull
     @Override
-
     public ClusterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cluster, parent, false);
         return new ClusterViewHolder(view);
