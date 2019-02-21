@@ -31,7 +31,6 @@ import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
-import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 
 public class Requesting implements State {
 
@@ -71,10 +70,12 @@ public class Requesting implements State {
 
         drawPath(activity, googleMap, profile);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
+        Profile profileWhoComes = profile.getCurrent().getProfileWhoComes();
+        if(profileWhoComes == null) return;
 
-        Position memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
+        Position memberWhoMovingPosition = profileWhoComes.getPosition();
         if (memberWhoMoving == null) {
-            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
                     memberWhoMovingPosition, googleMap, activity.getResources());
         } else {
             memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());

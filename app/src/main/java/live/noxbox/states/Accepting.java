@@ -71,9 +71,12 @@ public class Accepting implements State {
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         drawPath(activity, googleMap, profile);
-        memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
+        Profile profileWhoComes = profile.getCurrent().getProfileWhoComes();
+        if(profileWhoComes == null) return;
+
+        memberWhoMovingPosition = profileWhoComes.getPosition();
         if (memberWhoMoving == null) {
-            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
                     memberWhoMovingPosition, googleMap, activity.getResources());
         } else {
             memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());
