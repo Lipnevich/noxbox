@@ -79,7 +79,7 @@ public class HistoryActivity extends FragmentActivity {
 
             }
         });
-
+        processYourFirstService();
     }
 
     @Override
@@ -98,14 +98,7 @@ public class HistoryActivity extends FragmentActivity {
                 ((TextView)findViewById(R.id.missingHistoryMessage)).setText(R.string.missingReceivedHistoryMessage);
                 ((Button)findViewById(R.id.chooseService)).setText(R.string.chooseDemandService);
             } else if (marketRole == MarketRole.supply) {
-                findViewById(R.id.chooseService).setOnClickListener(v -> {
-                    AppCache.profile().getFilters().setDemand(false);
-                    AppCache.profile().getFilters().setSupply(true);
-                    AppCache.fireProfile();
-                    Router.finishActivity(HistoryActivity.this);
-                });
-                ((TextView)findViewById(R.id.missingHistoryMessage)).setText(R.string.missingPerformedHistoryMessage);
-                ((Button)findViewById(R.id.chooseService)).setText(R.string.chooseSupplyService);
+                processYourFirstService();
             }
             findViewById(R.id.progressLayout).setVisibility(View.GONE);
             findViewById(R.id.missingHistoryLayout).setVisibility(View.VISIBLE);
@@ -115,6 +108,18 @@ public class HistoryActivity extends FragmentActivity {
             findViewById(R.id.missingHistoryLayout).setVisibility(View.GONE);
         };
 
+    }
+
+
+    private void processYourFirstService(){
+        findViewById(R.id.chooseService).setOnClickListener(v -> {
+            AppCache.profile().getFilters().setDemand(false);
+            AppCache.profile().getFilters().setSupply(true);
+            AppCache.fireProfile();
+            Router.finishActivity(HistoryActivity.this);
+        });
+        ((TextView)findViewById(R.id.missingHistoryMessage)).setText(R.string.missingPerformedHistoryMessage);
+        ((Button)findViewById(R.id.chooseService)).setText(R.string.chooseSupplyService);
     }
 
 }

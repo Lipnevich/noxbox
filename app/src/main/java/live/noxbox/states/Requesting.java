@@ -52,7 +52,7 @@ public class Requesting implements State {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
             initiated = true;
         }
-        moveCopyrightRight(googleMap);
+        //moveCopyrightRight(googleMap);
 
         Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
@@ -122,7 +122,6 @@ public class Requesting implements State {
             BusinessActivity.businessEvent(timeout);
         }
     }
-
 
     @Override
     public void clear() {

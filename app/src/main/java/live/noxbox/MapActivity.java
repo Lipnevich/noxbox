@@ -28,6 +28,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
@@ -74,8 +75,8 @@ public class MapActivity extends HackerActivity implements
 
     private static final String TAG = "MapActivity";
 
-    private GoogleMap googleMap;
-    private GoogleApiClient googleApiClient;
+    private static GoogleMap googleMap;
+    private static GoogleApiClient googleApiClient;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
@@ -107,7 +108,7 @@ public class MapActivity extends HackerActivity implements
         googleApiClient.connect();
 
         AppCache.startListening();
-        AppCache.readProfile(profile -> checkBalance(profile, MapActivity.this));
+        checkBalance(profile(), MapActivity.this);
 
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
     }
@@ -261,7 +262,7 @@ public class MapActivity extends HackerActivity implements
         timeLogger.makeLog(state.getClass().getSimpleName());
     }
 
-    private static WeakHashMap<NoxboxState, State> states = new WeakHashMap<>();
+    private WeakHashMap<NoxboxState, State> states = new WeakHashMap<>();
 
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
