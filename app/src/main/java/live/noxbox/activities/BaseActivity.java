@@ -2,6 +2,7 @@ package live.noxbox.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.view.MenuItem;
 
@@ -11,12 +12,13 @@ import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.services.NetworkReceiver;
 import live.noxbox.tools.Router;
 
+import static live.noxbox.Constants.FIRST_RUN_KEY;
 import static live.noxbox.tools.BalanceChecker.cancelBalanceUpdate;
 
 public abstract class BaseActivity extends BusinessActivity {
     protected BroadcastReceiver networkReceiver;
 
-
+    private SharedPreferences firstRunPreference;
 
 
     @Override
@@ -51,6 +53,21 @@ public abstract class BaseActivity extends BusinessActivity {
                 break;
         }
         return true;
+    }
+
+    protected boolean isFirstRun(boolean update) {
+        if (firstRunPreference == null) {
+            firstRunPreference = getApplicationContext().getSharedPreferences(FIRST_RUN_KEY, MODE_PRIVATE);
+        }
+
+        if (firstRunPreference.getBoolean(FIRST_RUN_KEY, true)) {
+            if(update){
+                firstRunPreference.edit().putBoolean(FIRST_RUN_KEY, false).apply();
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

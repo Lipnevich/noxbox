@@ -25,7 +25,7 @@ import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Router;
 
-import static live.noxbox.Constants.TUTORIAL_KEY;
+import static live.noxbox.Constants.FIRST_RUN_KEY;
 import static live.noxbox.analitics.BusinessEvent.tutorialDislikes;
 import static live.noxbox.analitics.BusinessEvent.tutorialLikes;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
@@ -53,7 +53,7 @@ public class TutorialActivity extends BaseActivity {
         public void onClick(View v) {
             if (viewPager != null) {
                 BusinessActivity.businessEvent(tutorialLikes);
-                if (tutorialKey != null && tutorialKey.equals(TUTORIAL_KEY)) {
+                if (tutorialKey != null && tutorialKey.equals(FIRST_RUN_KEY)) {
                     Router.startActivity(TutorialActivity.this, MapActivity.class);
                     finish();
                     return;
@@ -67,7 +67,7 @@ public class TutorialActivity extends BaseActivity {
         public void onClick(View v) {
             if (viewPager != null) {
                 BusinessActivity.businessEvent(tutorialDislikes);
-                if (tutorialKey != null && tutorialKey.equals(TUTORIAL_KEY)) {
+                if (tutorialKey != null && tutorialKey.equals(FIRST_RUN_KEY)) {
                     Router.startActivity(TutorialActivity.this, MapActivity.class);
                     finish();
                     return;
@@ -81,7 +81,7 @@ public class TutorialActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tutorialKey = getIntent().getStringExtra(TUTORIAL_KEY);
+        tutorialKey = getIntent().getStringExtra(FIRST_RUN_KEY);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);

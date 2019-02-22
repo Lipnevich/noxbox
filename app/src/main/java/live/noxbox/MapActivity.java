@@ -28,7 +28,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
@@ -73,10 +72,8 @@ public class MapActivity extends HackerActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 
-    private static final String TAG = "MapActivity";
-
-    private static GoogleMap googleMap;
-    private static GoogleApiClient googleApiClient;
+    private GoogleMap googleMap;
+    private GoogleApiClient googleApiClient;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location lastKnownLocation;
@@ -88,7 +85,7 @@ public class MapActivity extends HackerActivity implements
         initCrashReporting();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        if (user == null || isFirstRun(false)) {
             Router.startActivity(this, AuthActivity.class);
             finish();
             return;
@@ -146,7 +143,6 @@ public class MapActivity extends HackerActivity implements
 
     @Override
     public void onMapReady(GoogleMap readyMap) {
-        super.onMapReady(readyMap);
         googleMap = readyMap;
 
         updateLocationUI();

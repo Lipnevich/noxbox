@@ -32,5 +32,5 @@ public interface Constants {
 
     String DEFAULT_PRICE = "5";
 
-    String TUTORIAL_KEY = "FIRSTRUN";
+    String FIRST_RUN_KEY = "FIRSTRUN";
 }

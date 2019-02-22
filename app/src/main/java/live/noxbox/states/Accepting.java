@@ -49,6 +49,7 @@ public class Accepting implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+
         if(!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 

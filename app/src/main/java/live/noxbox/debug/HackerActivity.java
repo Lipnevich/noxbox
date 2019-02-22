@@ -2,8 +2,6 @@ package live.noxbox.debug;
 
 import android.view.View;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.SetOptions;
@@ -34,16 +32,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
-public class HackerActivity extends MenuActivity implements
-        OnMapReadyCallback {
-
-    private GoogleMap googleMap;
-
-    @Override
-    public void onMapReady(GoogleMap readyMap) {
-        googleMap = readyMap;
-
-    }
+public class HackerActivity extends MenuActivity {
 
     private List<NotificationType> photoPushes = Arrays.asList(NotificationType.values());
     private Iterator<NotificationType> iterator = photoPushes.iterator();

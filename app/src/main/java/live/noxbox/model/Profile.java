@@ -330,7 +330,7 @@ public class Profile implements Serializable {
     }
 
     public Profile init(FirebaseUser user) {
-        if (user == null || Strings.isNullOrEmpty(getId())) return null;
+        if (user == null || !Strings.isNullOrEmpty(getId())) return null;
         setId(Strings.nullToEmpty(user.getUid()))
                 .setPhoto(Strings.nullToEmpty(user.getPhotoUrl() == null ? "" : user.getPhotoUrl().toString()))
                 .setName(Strings.nullToEmpty(user.getDisplayName()));

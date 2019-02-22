@@ -1,7 +1,6 @@
 package live.noxbox.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,12 +24,11 @@ import live.noxbox.menu.about.tutorial.TutorialActivity;
 import live.noxbox.services.NetworkReceiver;
 
 import static java.util.Collections.singletonList;
-import static live.noxbox.Constants.TUTORIAL_KEY;
+import static live.noxbox.Constants.FIRST_RUN_KEY;
 
 public class AuthActivity extends BaseActivity {
 
     private static final int REQUEST_CODE = 11011;
-    private SharedPreferences tutorialPreference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +59,6 @@ public class AuthActivity extends BaseActivity {
         ((TextView) findViewById(textView)).setTextColor(getResources().getColor(color));
     }
 
-
     private View.OnClickListener authentificate(final AuthUI.IdpConfig.Builder provider) {
         return v -> {
             if (NetworkReceiver.isOnline(AuthActivity.this) && ((CheckBox) findViewById(R.id.checkbox)).isChecked()) {
@@ -77,17 +74,18 @@ public class AuthActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        login();
+
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE)
+            login();
     }
 
     private void login() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        tutorialPreference = getApplicationContext().getSharedPreferences(TUTORIAL_KEY, MODE_PRIVATE);
+
         if (user != null) {
             AppCache.profile().init(user);
-            if (tutorialPreference.getBoolean(TUTORIAL_KEY, true)) {
-                tutorialPreference.edit().putBoolean(TUTORIAL_KEY, false).apply();
-                startActivity(new Intent(this, TutorialActivity.class).putExtra(TUTORIAL_KEY, TUTORIAL_KEY));
+            if (isFirstRun(true)) {
+                startActivity(new Intent(this, TutorialActivity.class).putExtra(FIRST_RUN_KEY, FIRST_RUN_KEY));
             } else {
                 startActivity(new Intent(this, MapActivity.class));
             }
