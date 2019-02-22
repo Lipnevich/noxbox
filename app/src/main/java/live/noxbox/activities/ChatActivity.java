@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -20,22 +19,24 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
 import static java.util.Collections.sort;
+import static live.noxbox.database.AppCache.profile;
 
 public class ChatActivity extends BaseActivity {
 
     public static final int CODE = 1001;
 
     private LinearLayout root;
-    private RecyclerView chatList;
+    private TextView chatOpponentName;
     private EditText text;
 
+    private RecyclerView chatList;
     private ChatAdapter chatAdapter;
-
     private List<Message> messages = new ArrayList<>();
     private long timeWasRead = -1L;
 
@@ -48,6 +49,7 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.activity_chat);
 
         root = findViewById(R.id.root);
+        chatOpponentName = findViewById(R.id.chat_opponent_name);
         text = findViewById(R.id.type_message);
         chatList = findViewById(R.id.chat_list);
         chatList.setHasFixedSize(true);
@@ -60,8 +62,6 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        findViewById(R.id.back).setOnClickListener(v -> Router.finishActivity(ChatActivity.this));
-
         AppCache.listenProfile(ChatActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
@@ -76,10 +76,49 @@ public class ChatActivity extends BaseActivity {
         AppCache.stopListen(ChatActivity.class.getName());
     }
 
-    private void draw(final Profile profile) {
-        //Drawable drawable = getDrawable(profile.getContract().getType().getIllustration());
-       // root.setBackground(drawable);
 
+    private void draw(final Profile profile) {
+        drawToolbar(profile);
+        drawBackground();
+
+        drawDynamicalChatView(profile);
+        initChatAdapter(profile);
+
+        drawSendView(profile);
+    }
+
+    private void initChatAdapter(Profile profile) {
+        if (chatAdapter == null) {
+            chatAdapter = new ChatAdapter(screen, messages, getApplicationContext(), profile);
+            chatList.setAdapter(chatAdapter);
+        } else {
+            chatAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void drawToolbar(Profile profile) {
+        findViewById(R.id.back).setOnClickListener(v -> Router.finishActivity(ChatActivity.this));
+        chatOpponentName.setText(profile.getCurrent().getNotMe(profile.getId()).getName());
+    }
+
+    private void drawBackground() {
+        //Drawable drawable = getDrawable(profile.getContract().getType().getIllustration());
+        // root.setBackground(drawable);
+    }
+
+    private void drawSendView(Profile profile) {
+        text.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                send(profile);
+                return true;
+            }
+            return false;
+        });
+
+        findViewById(R.id.send_message).setOnClickListener(v -> send(profile));
+    }
+
+    private void drawDynamicalChatView(Profile profile) {
         if (profile.getCurrent().getOwner().equals(profile)) {
             if (timeWasRead == profile.getCurrent().getChat().getPartyReadTime()
                     && messages.size() == profile.getCurrent().getMessages(profile.getId()).size()) {
@@ -93,26 +132,12 @@ public class ChatActivity extends BaseActivity {
             }
             timeWasRead = profile.getCurrent().getChat().getOwnerReadTime();
         }
-
-        TextView interlocutorName = findViewById(R.id.chat_opponent_name);
-        interlocutorName.setText(profile.getCurrent().getNotMe(profile.getId()).getName());
-
         initMessages(profile);
 
-        chatAdapter = new ChatAdapter(screen, messages, this.getApplicationContext(), profile);
-        chatList.setAdapter(chatAdapter);
-        chatList.smoothScrollToPosition(View.FOCUS_DOWN);
 
-        text.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                send(profile);
-                return true;
-            }
-            return false;
-        });
-
-        findViewById(R.id.send_message).setOnClickListener(v -> send(profile));
+        chatList.scrollToPosition(messages.size() - 1);
     }
+
 
     private void send(Profile profile) {
         String trimmedText = text.getText().toString().trim();
@@ -131,21 +156,10 @@ public class ChatActivity extends BaseActivity {
         text.setText("");
         add(message);
         AppCache.updateNoxbox();
-        initMessages(profile);
     }
-
-    private void add(Message message) {
-        messages.add(message);
-        sort(messages);
-        chatAdapter.notifyItemInserted(messages.indexOf(message));
-        chatList.scrollToPosition(messages.size() - 1);
-    }
-
 
 
     private List<Message> initMessages(Profile profile) {
-        //messages.clear();
-
         if (profile.getCurrent() != null) {
 
             List<Message> remoteMessages = profile.getCurrent().getMessages(profile.getId());
@@ -165,16 +179,25 @@ public class ChatActivity extends BaseActivity {
             for (Message newMessage : newMessages) {
                 messages.add(newMessage);
             }
-
-            //messages.addAll(remoteMessages);
             sort(messages);
         }
-
-
         return messages;
     }
+
+    private void add(Message message) {
+        message.setMyMessage(true);
+        messages.add(message);
+        sort(messages);
+        chatAdapter.notifyDataSetChanged();
+        chatList.scrollToPosition(messages.size() - 1);
+    }
+
     private void sound() {
         MediaPlayer mediaPlayer = MediaPlayer.create(ChatActivity.this, R.raw.message);
         mediaPlayer.start();
+    }
+
+    private Noxbox current() {
+        return profile().getCurrent();
     }
 }

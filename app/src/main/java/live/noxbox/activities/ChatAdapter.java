@@ -44,7 +44,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         } else {
             wasRead = profile.getCurrent().getChat().getOwnerReadTime();
         }
-        //this.wasRead = wasRead == null ? 0 : wasRead;
     }
 
     @Override
@@ -76,7 +75,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         ImageView checkedView = viewHolder.checked;
 
         if (!isMyMessage(position)) {
-            rootLayout.setHorizontalGravity(Gravity.START);
+            rootLayout.setGravity(Gravity.START);
             messageCard.setCardBackgroundColor(context.getResources().getColor(R.color.message));
         }
 
@@ -84,7 +83,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         messageView.setText(message.getMessage());
         timeView.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(message.getTime())));
-
 
         LayoutParams cardParams = (LayoutParams) messageCard.getLayoutParams();
         if (position == 0) {
