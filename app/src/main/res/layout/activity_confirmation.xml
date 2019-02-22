@@ -44,10 +44,18 @@
         android:orientation="vertical">
 
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/progressCat"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center"
+                android:src="@drawable/progress_cat"
+                />
 
             <ImageView
                 android:id="@+id/photo"
@@ -55,8 +63,9 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
-        </RelativeLayout>
+                android:layout_centerHorizontal="true"
+                android:visibility="gone" />
+        </FrameLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -69,7 +78,6 @@
                 android:layout_centerInParent="true"
                 android:orientation="vertical">
 
-
                 <TextView
                     android:id="@+id/photoScreenMessage"
                     android:layout_width="wrap_content"
@@ -81,15 +89,6 @@
                     android:text="@string/confirmThatYouSeePersonFromPhoto"
                     android:textColor="@color/google_text"
                     android:textSize="@dimen/text_size" />
-
-
-                <!--<live.noxbox.tools.SwipeButton-->
-                <!--android:id="@+id/swipeButtonConfirm"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:layout_marginStart="16dp"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:layout_marginEnd="40dp" />-->
 
                 <in.shadowfax.proswipebutton.ProSwipeButton
                     android:id="@+id/swipeButtonConfirm"
@@ -112,14 +111,7 @@
                     android:layout_marginBottom="10dp"
                     app:bg_color="#ff0000"
                     app:btn_text="@string/notLikeThat" />
-                <!--<live.noxbox.tools.SwipeButton-->
-                <!--android:id="@+id/swipeButtonWrongPhoto"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="60dp"-->
-                <!--android:layout_marginStart="16dp"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:layout_marginEnd="40dp"-->
-                <!--android:layout_marginBottom="10dp" />-->
+
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

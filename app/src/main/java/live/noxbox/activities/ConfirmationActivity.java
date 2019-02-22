@@ -4,48 +4,51 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.target.ImageViewTarget;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.R;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
-import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.analitics.BusinessEvent.verification;
 import static live.noxbox.database.AppCache.updateNoxbox;
 
 public class ConfirmationActivity extends BaseActivity {
 
-    private static final String TAG = ConfirmationActivity.class.getName();
+    private ImageView photo;
+    private ImageView progressCat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
+        photo = findViewById(R.id.photo);
+        progressCat = findViewById(R.id.progressCat);
+
+        Glide.with(this).asGif().load(R.drawable.progress_cat).into(new ImageViewTarget<GifDrawable>(progressCat) {
+            @Override
+            protected void setResource(@Nullable GifDrawable gif) {
+                if (photo.getVisibility() == View.GONE) {
+                    progressCat.setImageDrawable(gif);
+                }
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.readProfile(new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                draw(profile);
-            }
-        });
+        AppCache.readProfile(profile -> draw(profile));
     }
 
     private void draw(Profile profile) {
@@ -57,42 +60,21 @@ public class ConfirmationActivity extends BaseActivity {
 
     private void drawToolbar() {
         ((TextView) findViewById(R.id.title)).setText(R.string.verification);
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.finishActivity(ConfirmationActivity.this);
-            }
-        });
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(ConfirmationActivity.this));
     }
 
     private void drawPhoto(Profile profile, Activity activity) {
-        Glide.with(activity).asDrawable().load(profile.getCurrent().getNotMe(profile.getId()).getPhoto()).into(new SimpleTarget<Drawable>() {
+        Glide.with(activity).asDrawable().load(profile.getCurrent().getNotMe(profile.getId()).getPhoto()).into(new ImageViewTarget<Drawable>(photo) {
             @Override
-            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                ((ImageView) findViewById(R.id.photo)).setImageDrawable(resource);
+            protected void setResource(@Nullable Drawable drawable) {
+                progressCat.setVisibility(View.GONE);
+                photo.setVisibility(View.VISIBLE);
+                photo.setImageDrawable(drawable);
             }
         });
     }
 
     private void drawConfirmButton(final Profile profile, final Activity activity) {
-//        final SwipeButton buttonConfirm = findViewById(R.id.swipeButtonConfirm);
-//        buttonConfirm.setParametrs(activity.getDrawable(R.drawable.yes), activity.getResources().getString(R.string.confirm), activity);
-//        buttonConfirm.setOnTouchListener(buttonConfirm.getButtonTouchListener(new Task<Object>() {
-//            @Override
-//            public void execute(Object object) {
-//                long timeVerified = System.currentTimeMillis();
-//                if (profile.equals(profile.getCurrent().getOwner())) {
-//                    Log.d(TAG, "timeOwnerVerified: " + DateTimeFormatter.time(timeVerified));
-//                    profile.getCurrent().setTimeOwnerVerified(timeVerified);
-//                } else {
-//                    Log.d(TAG, "timePartyVerified: " + DateTimeFormatter.time(timeVerified));
-//                    profile.getCurrent().setTimePartyVerified(timeVerified);
-//                }
-//                updateNoxbox();
-//                finish();
-//            }
-//        }));
-
         ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonConfirm);
         proSwipeBtn.setOnSwipeListener(() -> {
             findViewById(R.id.swipeButtonWrongPhoto).setVisibility(View.GONE);
@@ -101,10 +83,8 @@ public class ConfirmationActivity extends BaseActivity {
                 long timeVerified = System.currentTimeMillis();
                 BusinessActivity.businessEvent(verification);
                 if (profile.equals(profile.getCurrent().getOwner())) {
-                    Log.d(TAG, "timeOwnerVerified: " + DateTimeFormatter.time(timeVerified));
                     profile.getCurrent().setTimeOwnerVerified(timeVerified);
                 } else {
-                    Log.d(TAG, "timePartyVerified: " + DateTimeFormatter.time(timeVerified));
                     profile.getCurrent().setTimePartyVerified(timeVerified);
                 }
                 updateNoxbox();
@@ -114,23 +94,6 @@ public class ConfirmationActivity extends BaseActivity {
     }
 
     private void drawConformityButton(final Profile profile, Activity activity) {
-//        SwipeButton buttonConformity = findViewById(R.id.swipeButtonWrongPhoto);
-//        buttonConformity.setParametrs(activity.getDrawable(R.drawable.no), activity.getResources().getString(R.string.notLikeThat), activity);
-//        buttonConformity.setOnTouchListener(buttonConformity.getButtonTouchListener(new Task<Object>() {
-//            @Override
-//            public void execute(Object object) {
-//                long timeCanceled = System.currentTimeMillis();
-//                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-//                    Log.d(TAG, "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
-//                    profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
-//                } else {
-//                    Log.d(TAG, "timeCanceledByParty: " + DateTimeFormatter.time(timeCanceled));
-//                    profile.getCurrent().setTimeCanceledByParty(timeCanceled);
-//                }
-//                updateNoxbox();
-//                finish();
-//            }
-//        }));
         final ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonWrongPhoto);
         proSwipeBtn.setOnSwipeListener(() -> {
             findViewById(R.id.swipeButtonConfirm).setVisibility(View.GONE);
@@ -138,10 +101,8 @@ public class ConfirmationActivity extends BaseActivity {
             new Handler().postDelayed(() -> {
                 long timeCanceled = System.currentTimeMillis();
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                    Log.d(TAG, "timeCanceledByOwner: " + DateTimeFormatter.time(timeCanceled));
                     profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
                 } else {
-                    Log.d(TAG, "timeCanceledByParty: " + DateTimeFormatter.time(timeCanceled));
                     profile.getCurrent().setTimeCanceledByParty(timeCanceled);
                 }
                 updateNoxbox();
