@@ -28,26 +28,15 @@ public class MapSettingsActivity extends BaseActivity {
     private SeekBar price;
     private TextView priceText;
     private LinearLayout typeLayout;
+    private TextView noviceTitle;
+    private TextView demandTitle;
+    private TextView supplyTitle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        initialize();
-    }
-
-    private void initialize() {
-        novice = findViewById(R.id.novice);
-        demand = findViewById(R.id.demand);
-        supply = findViewById(R.id.supply);
-        price = findViewById(R.id.priceBar);
-        priceText = findViewById(R.id.participantName);
-        typeLayout = findViewById(R.id.typeLayout);
-
-        ((TextView) findViewById(R.id.noviceTitle)).setText(getResources().getString(R.string.novice));
-        ((TextView) findViewById(R.id.demandTitle)).setText(getResources().getString(R.string.demand).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.demand).substring(1)));
-        ((TextView) findViewById(R.id.supplyTitle)).setText(getResources().getString(R.string.supply).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.supply).substring(1)));
+        initializeUi();
     }
 
     @Override
@@ -63,8 +52,21 @@ public class MapSettingsActivity extends BaseActivity {
         AppCache.fireProfile();
     }
 
+    private void initializeUi() {
+        novice = findViewById(R.id.novice);
+        demand = findViewById(R.id.demand);
+        supply = findViewById(R.id.supply);
+        price = findViewById(R.id.priceBar);
+        priceText = findViewById(R.id.participantName);
+        typeLayout = findViewById(R.id.typeLayout);
+        noviceTitle = findViewById(R.id.noviceTitle);
+        demandTitle = findViewById(R.id.demandTitle);
+        supplyTitle = findViewById(R.id.supplyTitle);
+    }
+
     private void draw(final Profile profile) {
         drawToolbar();
+        drawTitles();
         drawNovice(profile);
         drawDemand(profile);
         drawSupply(profile);
@@ -72,10 +74,15 @@ public class MapSettingsActivity extends BaseActivity {
         drawTypeList(profile);
     }
 
-
     private void drawToolbar() {
         ((TextView) findViewById(R.id.title)).setText(R.string.settings);
         findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(MapSettingsActivity.this));
+    }
+
+    private void drawTitles() {
+        noviceTitle.setText(getResources().getString(R.string.novice));
+        demandTitle.setText(getResources().getString(R.string.demand).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.demand).substring(1)));
+        supplyTitle.setText(getResources().getString(R.string.supply).substring(0, 1).toUpperCase().concat(getResources().getString(R.string.supply).substring(1)));
     }
 
     private void drawNovice(final Profile profile) {
@@ -143,14 +150,17 @@ public class MapSettingsActivity extends BaseActivity {
         }
     }
 
+    private DialogFragment dialog;
 
     private void drawTypeList(final Profile profile) {
         typeLayout.setOnClickListener(v -> {
-            DialogFragment dialog = new NoxboxTypeSelectionFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("key", SETTINGS_CODE);
-            dialog.setArguments(bundle);
-            dialog.show(((FragmentActivity) MapSettingsActivity.this).getSupportFragmentManager(), NoxboxTypeSelectionFragment.TAG);
+            if (dialog == null || !dialog.isVisible()) {
+                dialog = new NoxboxTypeSelectionFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("key", SETTINGS_CODE);
+                dialog.setArguments(bundle);
+                dialog.show(((FragmentActivity) MapSettingsActivity.this).getSupportFragmentManager(), NoxboxTypeSelectionFragment.TAG);
+            }
         });
     }
 
