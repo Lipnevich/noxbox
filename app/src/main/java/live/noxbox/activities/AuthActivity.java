@@ -33,9 +33,13 @@ public class AuthActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         login();
         setContentView(R.layout.activity_auth);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 colorText(R.id.textGoogleAuth, R.color.secondary);
@@ -54,6 +58,7 @@ public class AuthActivity extends BaseActivity {
         findViewById(R.id.googleAuth).setOnClickListener(authentificate(new GoogleBuilder()));
         findViewById(R.id.phoneAuth).setOnClickListener(authentificate(new PhoneBuilder()));
     }
+
 
     private void colorText(int textView, int color) {
         ((TextView) findViewById(textView)).setTextColor(getResources().getColor(color));
