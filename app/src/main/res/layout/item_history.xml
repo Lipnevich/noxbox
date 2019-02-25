@@ -202,7 +202,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="8dp"
-                    android:background="@drawable/background_message_left"
+                    android:background="@drawable/background_history_comment"
                     android:elevation="@dimen/global_elevation">
 
                     <LinearLayout

@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
@@ -65,6 +67,14 @@ public class ChatActivity extends BaseActivity {
         AppCache.listenProfile(ChatActivity.class.getName(), new Task<Profile>() {
             @Override
             public void execute(final Profile profile) {
+                if (messages.size() > 0 && messages.size() == current().getMessages(profile.getId()).size()) {
+                    Message lastMessage = messages.get(messages.size() - 1);
+                    if (profile.equals(current().getParty()) && lastMessage.getTime() > current().getChat().getOwnerReadTime()
+                            || (profile.equals(current().getOwner()) && lastMessage.getTime() > current().getChat().getPartyReadTime())) {
+                        return;
+                    }
+                }
+
                 draw(profile);
             }
         });
@@ -80,11 +90,9 @@ public class ChatActivity extends BaseActivity {
     private void draw(final Profile profile) {
         drawToolbar(profile);
         drawBackground();
-
         drawDynamicalChatView(profile);
-        initChatAdapter(profile);
-
         drawSendView(profile);
+        initChatAdapter(profile);
     }
 
     private void initChatAdapter(Profile profile) {
@@ -97,11 +105,13 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void drawToolbar(Profile profile) {
-        findViewById(R.id.back).setOnClickListener(v -> Router.finishActivity(ChatActivity.this));
+        ImageManager.createCircleProfilePhotoFromUrl(this, current().getNotMe(profile.getId()).getPhoto(), (ImageView) findViewById(R.id.photo));
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(ChatActivity.this));
         chatOpponentName.setText(profile.getCurrent().getNotMe(profile.getId()).getName());
     }
 
     private void drawBackground() {
+
         //Drawable drawable = getDrawable(profile.getContract().getType().getIllustration());
         // root.setBackground(drawable);
     }
@@ -134,8 +144,9 @@ public class ChatActivity extends BaseActivity {
         }
         initMessages(profile);
 
-
-        chatList.scrollToPosition(messages.size() - 1);
+        if (messages != null && messages.size() > 0) {
+            chatList.smoothScrollToPosition(messages.size() - 1);
+        }
     }
 
 
@@ -200,4 +211,5 @@ public class ChatActivity extends BaseActivity {
     private Noxbox current() {
         return profile().getCurrent();
     }
+
 }

@@ -2,27 +2,30 @@ package live.noxbox.activities;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Message;
 import live.noxbox.model.Profile;
+
+import static live.noxbox.tools.DateTimeFormatter.time;
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
@@ -68,21 +71,36 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         LinearLayout rootLayout = viewHolder.rootLayout;
-        CardView messageCard = viewHolder.messageCard;
+        FrameLayout messageCard = viewHolder.messageCard;
         LinearLayout innerLayout = viewHolder.innerLayout;
         TextView messageView = viewHolder.message;
         TextView timeView = viewHolder.time;
         ImageView checkedView = viewHolder.checked;
 
-        if (!isMyMessage(position)) {
+        if (isMyMessage(position)) {
+            rootLayout.setGravity(Gravity.END);
+
+            if (position > 0 && !messages.get(position - 1).isMyMessage()) {
+                messageCard.setBackground(makeFirstMessageBackground(true));
+            } else {
+                messageCard.setBackground(makeDefaultMessageBackground(true));
+            }
+
+        } else {
             rootLayout.setGravity(Gravity.START);
-            messageCard.setCardBackgroundColor(context.getResources().getColor(R.color.message));
+
+            if (position > 0 && messages.get(position - 1).isMyMessage()) {
+                messageCard.setBackground(makeFirstMessageBackground(false));
+            } else {
+                messageCard.setBackground(makeDefaultMessageBackground(false));
+            }
         }
 
         Message message = messages.get(position);
 
         messageView.setText(message.getMessage());
-        timeView.setText(DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(message.getTime())));
+        timeView.setText(time(message.getTime()));
+
 
         LayoutParams cardParams = (LayoutParams) messageCard.getLayoutParams();
         if (position == 0) {
@@ -128,13 +146,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             }
         }
 
-        if (isMyMessage(position)) {
+        if (message.isMyMessage()) {
             checkedView.setVisibility(View.VISIBLE);
-            if (wasRead(message)) {
+            if (message.getTime() < wasRead) {
                 checkedView.setColorFilter(context.getResources().getColor(R.color.primary));
             } else {
                 checkedView.setColorFilter(context.getResources().getColor(R.color.divider));
             }
+        } else {
+            checkedView.setVisibility(View.GONE);
         }
 
         if (needToUpdateNoxbox) {
@@ -142,10 +162,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             needToUpdateNoxbox = false;
         }
 
-    }
-
-    private boolean wasRead(Message message) {
-        return message.getTime() < wasRead;
     }
 
     private boolean isTooLong(TextView text) {
@@ -158,10 +174,37 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return (textWidth / metrics.widthPixels) * 100 > 85;
     }
 
+    private Drawable makeFirstMessageBackground(boolean isMyMessage) {
+        GradientDrawable shape = new GradientDrawable();
+        float radius = dpToPx(12);
+        if (isMyMessage) {
+            shape.setColor(context.getResources().getColor(R.color.own_message));
+            shape.setCornerRadii(new float[]{radius, radius, 0f, 0f, radius, radius, radius, radius});
+        } else {
+            shape.setColor(context.getResources().getColor(R.color.message));
+            shape.setCornerRadii(new float[]{0f, 0f, radius, radius, radius, radius, radius, radius});
+        }
+
+        return shape;
+    }
+
+    private Drawable makeDefaultMessageBackground(boolean isMyMessage) {
+        GradientDrawable shape = new GradientDrawable();
+        float radius = dpToPx(12);
+        if (isMyMessage) {
+            shape.setColor(context.getResources().getColor(R.color.own_message));
+        } else {
+            shape.setColor(context.getResources().getColor(R.color.message));
+        }
+
+        shape.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
+        return shape;
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout rootLayout;
-        CardView messageCard;
+        FrameLayout messageCard;
         LinearLayout innerLayout;
         TextView message;
         TextView time;
@@ -170,8 +213,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         public ViewHolder(@NonNull View layout) {
             super(layout);
             rootLayout = layout.findViewById(R.id.rootLayout);
-            messageCard = layout.findViewById(R.id.chat_card);
-            innerLayout = layout.findViewById(R.id.chat_card_layout);
+            messageCard = layout.findViewById(R.id.messageCard);
+            innerLayout = layout.findViewById(R.id.innerLayout);
             message = layout.findViewById(R.id.message);
             time = layout.findViewById(R.id.time);
             checked = layout.findViewById(R.id.checked);
