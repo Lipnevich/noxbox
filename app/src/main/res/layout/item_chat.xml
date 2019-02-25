@@ -22,7 +22,7 @@
             android:id="@+id/innerLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
             android:orientation="vertical">
 
@@ -31,8 +31,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autoLink="web"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
                 android:text="pewpew"
                 android:textIsSelectable="true"
                 android:textSize="@dimen/text_size" />
