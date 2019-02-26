@@ -134,12 +134,12 @@ public class ChatActivity extends BaseActivity {
             layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
             layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
             backgroundImage.setLayoutParams(layoutParams);
-            backgroundImage.setScaleX(2F);
-            backgroundImage.setScaleY(1.2F);
+            backgroundImage.setScaleX(2.5F);
+            backgroundImage.setScaleY(1.0F);
         } else {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(screenWidthDp, screenHeightDp);
             backgroundImage.setLayoutParams(layoutParams);
-            backgroundImage.setScaleY(1.1F);
+            backgroundImage.setScaleY(1.0F);
             backgroundImage.setScaleX(1.0F);
         }
         backgroundImage.setBackground(drawable);
