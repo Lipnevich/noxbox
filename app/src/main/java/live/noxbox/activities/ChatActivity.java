@@ -145,7 +145,7 @@ public class ChatActivity extends BaseActivity {
         initMessages(profile);
 
         if (messages != null && messages.size() > 0) {
-            chatList.smoothScrollToPosition(messages.size() - 1);
+            chatList.scrollToPosition(messages.size() - 1);
         }
     }
 

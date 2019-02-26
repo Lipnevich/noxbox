@@ -98,14 +98,20 @@ public class Firestore {
     // Current noxbox
     private static ListenerRegistration noxboxListener;
 
-    public static void listenNoxbox(@NonNull String noxboxId, @NonNull final Task<Noxbox> task) {
-        if (noxboxListener != null) noxboxListener.remove();
+    public static void listenNoxbox(@NonNull String noxboxId,
+                                    @NonNull final Task<Noxbox> success,
+                                    final Task<Exception> failure) {
+        if (noxboxListener != null) {
+            noxboxListener.remove();
+        }
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener((snapshot, e) -> {
             reads++;
             if (snapshot != null && snapshot.exists() && e == null) {
                 Noxbox current = snapshot.toObject(Noxbox.class);
-                task.execute(current);
+                success.execute(current);
+            } else {
+                failure.execute(e);
             }
         });
     }

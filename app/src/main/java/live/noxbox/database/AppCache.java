@@ -163,7 +163,9 @@ public class AppCache {
     private static Set<String> ids = new HashSet<>();
 
     public static void startListenNoxbox(String noxboxId) {
-        if (isNullOrEmpty(noxboxId) || ids.contains(noxboxId)) return;
+        if (isNullOrEmpty(noxboxId) || ids.contains(noxboxId)) {
+            return;
+        }
         ids.add(noxboxId);
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId).addOnSuccessListener(o -> {
             Firestore.listenNoxbox(noxboxId, noxbox -> {
@@ -180,6 +182,10 @@ public class AppCache {
                     profile.getViewed().copy(noxbox);
                 }
                 executeUITasks();
+            }, onFailure -> {
+                profile().setNoxboxId("");
+                profile().getCurrent().clean();
+                writeProfile(profile(), done -> executeUITasks());
             });
         }).addOnFailureListener(e -> {
             Crashlytics.log(Log.ERROR, "failToSubscribeOnNoxbox", noxboxId);
@@ -187,8 +193,10 @@ public class AppCache {
     }
 
     public static void stopListenNoxbox(String noxboxId) {
-        if (isNullOrEmpty(noxboxId) || !ids.remove(noxboxId)) return;
-        Firestore.listenNoxbox(noxboxId, NONE);
+        if (isNullOrEmpty(noxboxId) || !ids.remove(noxboxId)) {
+            return;
+        }
+        Firestore.listenNoxbox(noxboxId, NONE, NONE);
     }
 
 

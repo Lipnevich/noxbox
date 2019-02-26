@@ -22,13 +22,13 @@ import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.detailed.DetailedActivity;
 import live.noxbox.cluster.NoxboxMarker;
-import live.noxbox.database.AppCache;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.DayPartDeterminer.isItDayNow;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.Router.startActivity;
@@ -36,30 +36,28 @@ import static live.noxbox.tools.Router.startActivity;
 public class MapOperator {
 
     public static void buildMapPosition(final GoogleMap googleMap, final Context context) {
-        AppCache.readProfile(profile -> {
-            switch (NoxboxState.getState(profile.getCurrent(), profile)) {
-                case requesting:
-                case accepting:
-                case moving:
-                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                    builder.include(profile.getCurrent().getProfileWhoComes().getPosition().toLatLng());
-                    builder.include(profile.getCurrent().getPosition().toLatLng());
-                    LatLngBounds latLngBounds = builder.build();
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                            latLngBounds,
-                            context.getResources().getDisplayMetrics().widthPixels,
-                            context.getResources().getDisplayMetrics().heightPixels,
-                            dpToPx(68)));
-                    break;
+        switch (NoxboxState.getState(profile().getCurrent(), profile())) {
+            case requesting:
+            case accepting:
+            case moving:
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(profile().getCurrent().getProfileWhoComes().getPosition().toLatLng());
+                builder.include(profile().getCurrent().getPosition().toLatLng());
+                LatLngBounds latLngBounds = builder.build();
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                        latLngBounds,
+                        context.getResources().getDisplayMetrics().widthPixels,
+                        context.getResources().getDisplayMetrics().heightPixels,
+                        dpToPx(68)));
+                break;
 
-                case created:
-                case performing:
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getCurrent().getPosition().toLatLng(), 15));
-                    break;
-                default:
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile.getPosition().toLatLng(), 15));
-            }
-        });
+            case created:
+            case performing:
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getCurrent().getPosition().toLatLng(), 15));
+                break;
+            default:
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), 15));
+        }
     }
 
 
