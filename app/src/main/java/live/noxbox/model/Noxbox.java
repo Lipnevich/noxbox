@@ -170,7 +170,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public String getTotal() {
         if(total == null){
-            total = "5.05";
+            total = "0";
         }
         return total;
     }

@@ -18,6 +18,7 @@ import live.noxbox.model.Profile;
 import static live.noxbox.analitics.BusinessEvent.timeout;
 import static live.noxbox.database.AppCache.NONE;
 import static live.noxbox.model.Noxbox.isNullOrZero;
+import static live.noxbox.tools.Events.inForeground;
 
 public class NotificationAccepting extends Notification {
 
@@ -41,6 +42,8 @@ public class NotificationAccepting extends Notification {
 
     @Override
     public void show() {
+        if (inForeground()) return;
+
         if (timeAccepted != null && timeAccepted.length() == 0)
             return;
 

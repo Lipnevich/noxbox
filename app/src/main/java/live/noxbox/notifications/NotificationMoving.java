@@ -17,6 +17,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.model.Noxbox.isNullOrZero;
+import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class NotificationMoving extends Notification {
@@ -41,9 +42,8 @@ public class NotificationMoving extends Notification {
 
     @Override
     public void show() {
-        Task<Noxbox> task = new Task<Noxbox>() {
-            @Override
-            public void execute(Noxbox noxbox) {
+        if (inForeground()) return;
+            Task<Noxbox> task = noxbox -> {
                 if (noxbox != null && (
                         (!isNullOrZero(noxbox.getTimePartyVerified()) && !isNullOrZero(noxbox.getTimeOwnerVerified()))
                                 || !isNullOrZero(noxbox.getTimeCompleted())
@@ -65,14 +65,14 @@ public class NotificationMoving extends Notification {
                 }
                 final NotificationCompat.Builder builder = getNotificationCompatBuilder();
                 getNotificationService(context).notify(type.getGroup(), builder.build());
+            };
+
+
+            if (profile == null) {
+                Firestore.readNoxbox(noxboxId, task);
+            } else {
+                task.execute(profile.getCurrent());
             }
-        };
 
-
-        if (profile == null) {
-            Firestore.readNoxbox(noxboxId, task);
-        } else {
-            task.execute(profile.getCurrent());
-        }
     }
 }

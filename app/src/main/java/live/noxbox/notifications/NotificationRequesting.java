@@ -14,6 +14,7 @@ import live.noxbox.R;
 import live.noxbox.model.Profile;
 
 import static live.noxbox.model.Noxbox.isNullOrZero;
+import static live.noxbox.tools.Events.inForeground;
 
 public class NotificationRequesting extends Notification {
 
@@ -33,6 +34,7 @@ public class NotificationRequesting extends Notification {
 
     @Override
     public void show() {
+        if (inForeground()) return;
         if (profile.getCurrent() != null
                 && (!isNullOrZero(profile.getCurrent().getTimeAccepted()) || profile.getCurrent().getFinished()))
             return;
