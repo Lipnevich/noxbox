@@ -1,17 +1,25 @@
 package live.noxbox.activities;
 
 
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.renderscript.Allocation;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,8 +32,9 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
+import static android.graphics.Bitmap.createBitmap;
+import static android.graphics.Bitmap.createScaledBitmap;
 import static java.util.Collections.sort;
 import static live.noxbox.database.AppCache.profile;
 
@@ -33,7 +42,8 @@ public class ChatActivity extends BaseActivity {
 
     public static final int CODE = 1001;
 
-    private LinearLayout root;
+    private RelativeLayout root;
+    private ImageView backgroundImage;
     private TextView chatOpponentName;
     private EditText text;
 
@@ -51,11 +61,12 @@ public class ChatActivity extends BaseActivity {
         setContentView(R.layout.activity_chat);
 
         root = findViewById(R.id.root);
+        backgroundImage = findViewById(R.id.background);
         chatOpponentName = findViewById(R.id.chat_opponent_name);
         text = findViewById(R.id.type_message);
         chatList = findViewById(R.id.chat_list);
         chatList.setHasFixedSize(true);
-        chatList.setLayoutManager(new LinearLayoutManager(this));
+        chatList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         screen = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(screen);
@@ -64,19 +75,16 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(ChatActivity.class.getName(), new Task<Profile>() {
-            @Override
-            public void execute(final Profile profile) {
-                if (messages.size() > 0 && messages.size() == current().getMessages(profile.getId()).size()) {
-                    Message lastMessage = messages.get(messages.size() - 1);
-                    if (profile.equals(current().getParty()) && lastMessage.getTime() > current().getChat().getOwnerReadTime()
-                            || (profile.equals(current().getOwner()) && lastMessage.getTime() > current().getChat().getPartyReadTime())) {
-                        return;
-                    }
+        AppCache.listenProfile(ChatActivity.class.getName(), profile -> {
+            if (messages.size() > 0 && messages.size() == current().getMessages(profile.getId()).size()) {
+                Message lastMessage = messages.get(messages.size() - 1);
+                if (profile.equals(current().getParty()) && lastMessage.getTime() > current().getChat().getOwnerReadTime()
+                        || (profile.equals(current().getOwner()) && lastMessage.getTime() > current().getChat().getPartyReadTime())) {
+                    return;
                 }
-
-                draw(profile);
             }
+
+            draw(profile);
         });
     }
 
@@ -110,10 +118,31 @@ public class ChatActivity extends BaseActivity {
         chatOpponentName.setText(profile.getCurrent().getNotMe(profile.getId()).getName());
     }
 
-    private void drawBackground() {
 
-        //Drawable drawable = getDrawable(profile.getContract().getType().getIllustration());
-        // root.setBackground(drawable);
+    private void drawBackground() {
+        Drawable drawable = getDrawable(AppCache.profile().getCurrent().getType().getIllustration());
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int screenWidthDp = size.x;
+        int screenHeightDp = size.y;
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(screenWidthDp, screenHeightDp);
+            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            backgroundImage.setLayoutParams(layoutParams);
+            backgroundImage.setScaleX(2F);
+            backgroundImage.setScaleY(1.2F);
+        } else {
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(screenWidthDp, screenHeightDp);
+            backgroundImage.setLayoutParams(layoutParams);
+            backgroundImage.setScaleY(1.1F);
+            backgroundImage.setScaleX(1.0F);
+        }
+        backgroundImage.setBackground(drawable);
     }
 
     private void drawSendView(Profile profile) {
@@ -212,4 +241,53 @@ public class ChatActivity extends BaseActivity {
         return profile().getCurrent();
     }
 
+
+    private int height(Bitmap picture, int width, double koef) {
+        int height = (int) (width * koef);
+        if (picture.getHeight() < height) {
+            height = picture.getHeight();
+        }
+        return height;
+    }
+
+    private int width(Bitmap picture, double koef) {
+        int width = (int) (picture.getHeight() / koef);
+        if (picture.getWidth() < width) {
+            width = picture.getWidth();
+        }
+        return width;
+    }
+
+    private Bitmap resize(DisplayMetrics screen, Bitmap picture) {
+        return createScaledBitmap(picture, screen.widthPixels, screen.heightPixels, false);
+    }
+
+    private Bitmap blur(int blurRadius, Bitmap picture) {
+        if (blurRadius == 0) return picture;
+
+        RenderScript rs = RenderScript.create(getApplicationContext());
+
+        Allocation in = Allocation.createFromBitmap(rs, picture,
+                Allocation.MipmapControl.MIPMAP_NONE,
+                Allocation.USAGE_SCRIPT);
+
+        Allocation out = Allocation.createTyped(rs, in.getType());
+        ScriptIntrinsicBlur blur = ScriptIntrinsicBlur.create(rs, out.getElement());
+        blur.setRadius(blurRadius);
+        blur.setInput(in);
+        blur.forEach(out);
+
+        out.copyTo(picture);
+        rs.destroy();
+
+        return picture;
+    }
+
+    private Bitmap right(Bitmap picture, int width, int height) {
+        return createBitmap(picture, picture.getWidth() - width, 0, width, height);
+    }
+
+    private Bitmap left(Bitmap picture, int width, int height) {
+        return createBitmap(picture, 0, picture.getHeight() - height, width, height);
+    }
 }

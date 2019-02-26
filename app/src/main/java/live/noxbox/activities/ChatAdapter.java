@@ -80,7 +80,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         if (isMyMessage(position)) {
             rootLayout.setGravity(Gravity.END);
 
-            if (position > 0 && !messages.get(position - 1).isMyMessage()) {
+            if (position == 0 || !messages.get(position - 1).isMyMessage()) {
                 messageCard.setBackground(makeFirstMessageBackground(true));
             } else {
                 messageCard.setBackground(makeDefaultMessageBackground(true));
@@ -89,7 +89,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         } else {
             rootLayout.setGravity(Gravity.START);
 
-            if (position > 0 && messages.get(position - 1).isMyMessage()) {
+            if (position == 0 || messages.get(position - 1).isMyMessage()) {
                 messageCard.setBackground(makeFirstMessageBackground(false));
             } else {
                 messageCard.setBackground(makeDefaultMessageBackground(false));
@@ -103,11 +103,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
 
         LayoutParams cardParams = (LayoutParams) messageCard.getLayoutParams();
-        if (position == 0) {
-            cardParams.topMargin *= 5;
-            messageCard.setLayoutParams(cardParams);
-        }
-
         if (isTooLong(messageView)) {
             cardParams.width = 0;
             cardParams.weight = 90;
