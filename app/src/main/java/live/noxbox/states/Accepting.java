@@ -53,7 +53,7 @@ public class Accepting implements State {
         if(!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
-            if (profile.getCurrent().getRole() == MarketRole.demand &&
+            if (profile.getCurrent().getRole() == MarketRole.supply &&
                     !enoughBalance(profile.getCurrent(), profile.getCurrent().getParty())) {
                 checkBalance(profile.getCurrent().getParty(), activity, balance -> {
 
