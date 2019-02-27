@@ -5,11 +5,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.services.NetworkReceiver;
+import live.noxbox.tools.ProgressDialogFragment;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.FIRST_RUN_KEY;
@@ -32,6 +34,7 @@ public abstract class BaseActivity extends BusinessActivity {
     protected void onStop() {
         super.onStop();
         cancelBalanceUpdate();
+        clearProgressDialog();
     }
 
     @Override
@@ -61,13 +64,44 @@ public abstract class BaseActivity extends BusinessActivity {
         }
 
         if (firstRunPreference.getBoolean(FIRST_RUN_KEY, true)) {
-            if(update){
+            if (update) {
                 firstRunPreference.edit().putBoolean(FIRST_RUN_KEY, false).apply();
             }
             return true;
         } else {
             return false;
         }
+    }
+
+    private ProgressDialogFragment dialogFragment;
+    private View shadowed;
+
+    protected void showProgressDialog(View shadowed, String key) {
+        if (dialogFragment != null) {
+            clearProgressDialog();
+        }
+        this.dialogFragment = new ProgressDialogFragment();
+        this.shadowed = shadowed;
+
+        dialogFragment.setCancelable(false);
+        dialogFragment.show(getSupportFragmentManager(), key);
+        shadowed.setAlpha(0.3f);
+    }
+
+    protected void clearProgressDialog() {
+        if (dialogFragment == null) return;
+
+        if (!dialogFragment.isCancelable()) {
+            dialogFragment.setCancelable(true);
+        }
+        if (dialogFragment.isVisible()) {
+            dialogFragment.dismiss();
+        }
+        if (shadowed.getAlpha() != 1.0f) {
+            shadowed.setAlpha(1.0f);
+        }
+        dialogFragment = null;
+        shadowed = null;
     }
 
 

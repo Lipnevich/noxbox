@@ -52,8 +52,6 @@ public class AvailableNoxboxes implements State {
 
     public static volatile int clusterRenderingFrequency = 400;
 
-    private boolean initiated;
-
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;

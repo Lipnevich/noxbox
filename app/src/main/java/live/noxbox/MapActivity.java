@@ -57,6 +57,7 @@ import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.MapOperator;
+import live.noxbox.tools.ProgressDialogFragment;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
@@ -80,8 +81,9 @@ public class MapActivity extends HackerActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.MapTheme);
         super.onCreate(savedInstanceState);
-
+        showProgressDialog(findViewById(R.id.mapId), ProgressDialogFragment.MAP_KEY);
         initCrashReporting();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -238,6 +240,7 @@ public class MapActivity extends HackerActivity implements
             if (currentState == null) {
                 currentState = newState;
                 measuredDraw(newState);
+                clearProgressDialog();
                 return;
             }
 
@@ -245,10 +248,12 @@ public class MapActivity extends HackerActivity implements
                 currentState.clear();
                 currentState = newState;
                 measuredDraw(newState);
+                clearProgressDialog();
                 return;
             }
 
             measuredDraw(currentState);
+            clearProgressDialog();
         });
     }
 

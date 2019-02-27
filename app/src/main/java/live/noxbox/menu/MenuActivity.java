@@ -56,6 +56,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
     }
 
     @Override
@@ -76,7 +77,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
 
     private void drawNavigation(final Activity activity, final Profile profile) {
         drawerLayout = findViewById(R.id.drawerLayout);
-
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
