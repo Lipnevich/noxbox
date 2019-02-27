@@ -61,6 +61,8 @@ import live.noxbox.tools.ProgressDialogFragment;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
+import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
@@ -147,7 +149,7 @@ public class MapActivity extends HackerActivity implements
     public void onMapReady(GoogleMap readyMap) {
         googleMap = readyMap;
 
-        updateLocationUI();
+        updateLocation();
         getDeviceLocation(profile());
 
         setupMap(this, googleMap);
@@ -178,13 +180,23 @@ public class MapActivity extends HackerActivity implements
                     locationPermissionGranted = true;
                     AppCache.readProfile(this::getDeviceLocation);
                 }
+                break;
             }
+            case LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted = true;
+                    AppCache.readProfile(this::getDeviceLocation);
+                    executeUITasks();
+                }
+                break;
+            }
+
         }
-        updateLocationUI();
+        updateLocation();
     }
 
 
-    private void updateLocationUI() {
+    private void updateLocation() {
         if (googleMap == null)
             return;
 

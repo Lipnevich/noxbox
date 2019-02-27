@@ -37,13 +37,13 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
-import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
 
 import static android.location.LocationManager.GPS_PROVIDER;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
 import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.database.AppCache.readProfile;
@@ -54,6 +54,7 @@ import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
+import static live.noxbox.tools.LocationPermitOperator.getLocationPermission;
 import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
@@ -83,15 +84,12 @@ public class Moving implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        if(!initiated) {
+        if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
             initiated = true;
         }
         memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
         // TODO (vl) glide upload in daemon other person photo and store in cache
-
-        Log.d(TAG + "Moving", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
-        Log.d(TAG + "Moving", "timeAccepted: " + DateTimeFormatter.time(profile.getCurrent().getTimeAccepted()));
 
         movingView = activity.findViewById(R.id.container);
         movingView.removeAllViews();
@@ -153,7 +151,6 @@ public class Moving implements State {
         activity.findViewById(R.id.navigation).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
-            DebugMessage.popup(activity, "way and points");
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
         });
 
@@ -190,7 +187,12 @@ public class Moving implements State {
         if (totalUnread == 0) {
             totalUnreadView.setVisibility(View.GONE);
         }
+
+        if (!isLocationPermissionGranted(activity)) {
+            getLocationPermission(activity, LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
+        }
     }
+
     @Override
     public void clear() {
         readProfile(profile -> stopListenPosition(profile.getCurrent().getId()));
@@ -290,10 +292,6 @@ public class Moving implements State {
                         GeoRealtime.updatePosition(profile.getCurrent().getId(), memberWhoMovingPosition);
                     });
 
-                    if (!isLocationPermissionGranted(getApplicationContext()))
-                        return;
-
-
                 }
 
                 @Override
@@ -308,7 +306,10 @@ public class Moving implements State {
                 public void onProviderDisabled(String provider) {
                 }
             };
-            locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+
+            if (isLocationPermissionGranted(getApplicationContext())) {
+                locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+            }
 
             return super.onStartCommand(intent, flags, startId);
         }

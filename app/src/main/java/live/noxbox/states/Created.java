@@ -2,7 +2,6 @@ package live.noxbox.states;
 
 import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -12,7 +11,6 @@ import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
-import live.noxbox.tools.DateTimeFormatter;
 
 import static live.noxbox.tools.MapOperator.buildMapMarkerListener;
 import static live.noxbox.tools.MapOperator.buildMapPosition;
@@ -33,15 +31,14 @@ public class Created implements State {
         this.googleMap = googleMap;
         this.activity = activity;
 
-        Log.d(TAG + "Created", "timeCreated: " + DateTimeFormatter.time(profile.getCurrent().getTimeCreated()));
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.edit);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> startActivity(activity, ContractActivity.class));
 
-        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         moveCopyrightRight(googleMap);
+        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> buildMapPosition(googleMap, activity.getApplicationContext()));
 
         createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
