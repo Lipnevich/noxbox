@@ -143,15 +143,16 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public Profile getProfileWhoComes() {
-        if (owner.getTravelMode() == none) {
+        if (party == null) return getOwner();
+        if (getOwner().getTravelMode() == none) {
             return party;
         } else {
             if (role == supply) {
-                return owner;
+                return getOwner();
             }
         }
         if (party.getTravelMode() == none) {
-            return owner;
+            return getOwner();
         }
         return party;
     }
@@ -169,7 +170,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getTotal() {
-        if(total == null){
+        if (total == null) {
             total = "0";
         }
         return total;
@@ -386,7 +387,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getOwnerComment() {
-        if(ownerComment == null){
+        if (ownerComment == null) {
             ownerComment = "";
         }
         return ownerComment;
@@ -398,7 +399,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public String getPartyComment() {
-        if(partyComment == null){
+        if (partyComment == null) {
             partyComment = "";
         }
         return partyComment;

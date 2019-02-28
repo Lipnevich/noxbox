@@ -44,7 +44,6 @@ import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUA
 import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
 import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.database.AppCache.profile;
-import static live.noxbox.database.AppCache.readProfile;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
@@ -73,7 +72,7 @@ public class Moving implements State {
     private static TextView timeView;
 
     private static Position memberWhoMovingPosition;
-    private Marker memberWhoMoving;
+    private Marker memberWhoMovingMarker;
 
     private TextView totalUnreadView;
     private boolean initiated;
@@ -118,11 +117,11 @@ public class Moving implements State {
         drawPath(activity, googleMap, profile);
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
-        if (memberWhoMoving == null) {
-            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+        if (memberWhoMovingMarker == null) {
+            memberWhoMovingMarker = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
                     memberWhoMovingPosition, googleMap, activity.getResources());
         } else {
-            memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());
+            memberWhoMovingMarker.setPosition(memberWhoMovingPosition.toLatLng());
         }
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
@@ -209,7 +208,7 @@ public class Moving implements State {
         moveCopyrightLeft(googleMap);
 
         googleMap.clear();
-        memberWhoMoving = null;
+        memberWhoMovingMarker = null;
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
             locationListener = null;
@@ -270,23 +269,23 @@ public class Moving implements State {
                 @SuppressLint("MissingPermission")
                 @Override
                 public void onLocationChanged(final Location location) {
-                    readProfile(profile -> {
-                        if ((!isNullOrZero(profile.getCurrent().getTimeOwnerVerified()) && !isNullOrZero(profile.getCurrent().getTimePartyVerified()))
-                                || !isNullOrZero(profile.getCurrent().getTimeCanceledByOwner())
-                                || !isNullOrZero(profile.getCurrent().getTimeCanceledByParty())) {
-                            locationManager.removeUpdates(locationListener);
-                            stopSelf();
-                            return;
-                        }
-                        if (inForeground()) {
-                            memberWhoMovingPosition = Position.from(location);
-                            updateTimeView(profile, getApplicationContext());
-                        } else {
-                            memberWhoMovingPosition = Position.from(location);
-                        }
 
-                        GeoRealtime.updatePosition(profile.getCurrent().getId(), memberWhoMovingPosition);
-                    });
+                    if ((!isNullOrZero(profile().getCurrent().getTimeOwnerVerified()) && !isNullOrZero(profile().getCurrent().getTimePartyVerified()))
+                            || !isNullOrZero(profile().getCurrent().getTimeCanceledByOwner())
+                            || !isNullOrZero(profile().getCurrent().getTimeCanceledByParty())) {
+                        locationManager.removeUpdates(locationListener);
+                        stopSelf();
+                        return;
+                    }
+                    if (inForeground()) {
+                        memberWhoMovingPosition = Position.from(location);
+                        updateTimeView(profile(), getApplicationContext());
+                    } else {
+                        memberWhoMovingPosition = Position.from(location);
+                    }
+
+                    GeoRealtime.updatePosition(profile().getCurrent().getId(), memberWhoMovingPosition);
+
 
                 }
 
