@@ -44,6 +44,7 @@ import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUA
 import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
 import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.database.GeoRealtime.positionListener;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
@@ -83,8 +84,25 @@ public class Moving implements State {
         this.activity = activity;
         if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+
             initiated = true;
         }
+
+        if (defineProfileLocationListener(profile)) {
+            activity.startService(new Intent(activity, LocationListenerService.class));
+        } else if(positionListener == null){
+            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
+                memberWhoMovingPosition = position;
+                draw(googleMap, activity);
+            });
+        }
+
+        if (!defineProfileLocationListener(profile)) {
+            HashMap<String, String> data = new HashMap<>();
+            data.put("type", NotificationType.moving.name());
+            NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
+        }
+
         memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
         // TODO (vl) glide upload in daemon other person photo and store in cache
 
@@ -101,18 +119,6 @@ public class Moving implements State {
             drawUnreadMessagesIndicator(profile.getCurrent().getChat().getOwnerMessages(), profile.getCurrent().getChat().getPartyReadTime());
         }
 
-        if (defineProfileLocationListener(profile)) {
-            Intent intent = new Intent(activity, LocationListenerService.class);
-            activity.startService(intent);
-        } else {
-            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
-                memberWhoMovingPosition = position;
-                draw(googleMap, activity);
-            });
-            HashMap<String, String> data = new HashMap<>();
-            data.put("type", NotificationType.moving.name());
-            NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
-        }
 
         drawPath(activity, googleMap, profile);
 
@@ -160,6 +166,34 @@ public class Moving implements State {
         moveCopyrightRight(googleMap);
     }
 
+
+    @Override
+    public void clear() {
+        stopListenPosition(profile().getCurrent().getId());
+        movingView.removeAllViews();
+        MapOperator.clearMapMarkerListener(googleMap);
+        googleMap.getUiSettings().setScrollGesturesEnabled(true);
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        activity.findViewById(R.id.chat).setVisibility(View.GONE);
+        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        if (totalUnreadView != null) {
+            totalUnreadView.setVisibility(View.GONE);
+        }
+        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
+        moveCopyrightLeft(googleMap);
+
+        googleMap.clear();
+        memberWhoMovingMarker = null;
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+            locationListener = null;
+            locationManager = null;
+        }
+        MessagingService.removeNotifications(activity);
+    }
+
     private void drawUnreadMessagesIndicator(Map<String, Message> messages, Long readTime) {
         Integer totalUnread = 0;
 
@@ -188,33 +222,6 @@ public class Moving implements State {
         if (!isLocationPermissionGranted(activity)) {
             getLocationPermission(activity, LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
         }
-    }
-
-    @Override
-    public void clear() {
-        stopListenPosition(profile().getCurrent().getId());
-        movingView.removeAllViews();
-        MapOperator.clearMapMarkerListener(googleMap);
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
-        activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        activity.findViewById(R.id.chat).setVisibility(View.GONE);
-        activity.findViewById(R.id.navigation).setVisibility(View.GONE);
-        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        if (totalUnreadView != null) {
-            totalUnreadView.setVisibility(View.GONE);
-        }
-        ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
-        moveCopyrightLeft(googleMap);
-
-        googleMap.clear();
-        memberWhoMovingMarker = null;
-        if (locationManager != null && locationListener != null) {
-            locationManager.removeUpdates(locationListener);
-            locationListener = null;
-            locationManager = null;
-        }
-        MessagingService.removeNotifications(activity);
     }
 
     private boolean defineProfileLocationListener(Profile profile) {

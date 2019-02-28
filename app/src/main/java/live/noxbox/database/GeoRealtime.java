@@ -173,7 +173,7 @@ public class GeoRealtime {
         }
     }
 
-    private static ValueEventListener positionListener;
+    public static ValueEventListener positionListener;
     public static void listenPosition(String noxboxId, Task<Position> task) {
         stopListenPosition(noxboxId);
         positionListener = new ValueEventListener() {
