@@ -32,7 +32,8 @@ import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
-import static live.noxbox.tools.LocationPermitOperator.getLocationPermission;
+import static live.noxbox.tools.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.LocationOperator.getLocationPermission;
 import static live.noxbox.tools.MapOperator.getCameraPosition;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
@@ -75,7 +76,7 @@ public class AvailableNoxboxes implements State {
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
             getLocationPermission(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
-            activity.getDeviceLocation(profile);
+            getDeviceLocation(profile, googleMap, activity);
         });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {

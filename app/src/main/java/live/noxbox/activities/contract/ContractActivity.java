@@ -69,8 +69,8 @@ import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
-import static live.noxbox.tools.LocationPermitOperator.getLocationPermission;
-import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.LocationOperator.getLocationPermission;
+import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 
 public class ContractActivity extends BaseActivity {
 

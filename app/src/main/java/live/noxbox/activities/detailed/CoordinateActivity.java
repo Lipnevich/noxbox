@@ -2,6 +2,7 @@ package live.noxbox.activities.detailed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
@@ -36,14 +38,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import live.noxbox.Constants;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
-import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.ADDRESS_SEARCH_RADIUS_IN_METERS;
-import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
+import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
+import static live.noxbox.database.AppCache.executeUITasks;
+import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.tools.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.LocationOperator.getLocationPermission;
+import static live.noxbox.tools.LocationOperator.initLocationProviderClient;
+import static live.noxbox.tools.LocationOperator.locationPermissionGranted;
+import static live.noxbox.tools.LocationOperator.updateLocation;
 import static live.noxbox.tools.MapOperator.setupMap;
 
 public class CoordinateActivity extends BaseActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
@@ -51,20 +60,21 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     public static final String LNG = "lng";
     public static final int COORDINATE = 111;
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     private GoogleMap googleMap;
     private AutoCompleteTextView searchLine;
-    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
-    private GoogleApiClient mGoogleApiClient;
+    private PlaceAutocompleteAdapter placeAutocompleteAdapter;
+    private GoogleApiClient googleApiClient;
+
+    private FusedLocationProviderClient providerClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coordinate);
+
+        providerClient = initLocationProviderClient(getApplicationContext());
+
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
     }
 
@@ -74,52 +84,90 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         draw();
     }
 
-    private void draw(){
-        drawToolbar();
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
-    private void drawToolbar() {
-
-        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(CoordinateActivity.this));
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
     public void onMapReady(final GoogleMap readyMap) {
         googleMap = readyMap;
-        if (!isLocationPermissionGranted(getApplicationContext())) {
-            return;
-        }
 
         setupMap(this, googleMap);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        googleMap.setMyLocationEnabled(true);
-        AppCache.readProfile(profile -> {
-            if (profile.getViewed().getPosition() != null) {
-                moveCamera(profile.getViewed().getPosition().toLatLng(), 15);
-            } else {
-                moveCamera(profile.getCurrent().getPosition().toLatLng(), 15);
-            }
-            init(profile);
-        });
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        getDeviceLocation(profile(), googleMap, CoordinateActivity.this);
+        updateLocation(googleMap);
+        if (profile().getViewed().getPosition() != null) {
+            moveCamera(profile().getViewed().getPosition().toLatLng(), 15);
+        } else {
+            moveCamera(profile().getCurrent().getPosition().toLatLng(), 15);
+        }
 
+        init(profile());
 
-        findViewById(R.id.choosePlace).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        draw();
+    }
 
-                final LatLng latLng = googleMap.getCameraPosition().target;
-                if (latLng == null) {
-                    Crashlytics.log(Log.ERROR, this.getClass().getSimpleName(), "Empty camera position on google maps");
-                    return;
-                }
-                Intent intent = new Intent();
-                intent.putExtra(LAT, latLng.latitude);
-                intent.putExtra(LNG, latLng.longitude);
-                setResult(RESULT_OK, intent);
-                Router.finishActivity(CoordinateActivity.this);
-            }
+    private void draw() {
+        drawToolbar();
+        drawLocationButton();
+        drawChoosePlaceButton();
+    }
+
+    private void drawToolbar() {
+        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(CoordinateActivity.this));
+    }
+
+    private void drawLocationButton() {
+        findViewById(R.id.locationButton).setOnClickListener(v -> {
+            getLocationPermission(CoordinateActivity.this, Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
+            getDeviceLocation(profile(), googleMap, CoordinateActivity.this);
         });
     }
+
+    private void drawChoosePlaceButton() {
+        findViewById(R.id.choosePlace).setOnClickListener(v -> {
+
+            providePositionResult();
+
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationPermissionGranted = true;
+                    getDeviceLocation(profile(), googleMap, this);
+                    executeUITasks();
+                }
+                break;
+        }
+        updateLocation(googleMap);
+    }
+
+    private void providePositionResult() {
+        if (googleMap == null) return;
+
+        final LatLng latLng = googleMap.getCameraPosition().target;
+        if (latLng == null) {
+            Crashlytics.log(Log.ERROR, this.getClass().getSimpleName(), "Empty camera position on google maps");
+            return;
+        }
+        Intent intent = new Intent();
+        intent.putExtra(LAT, latLng.latitude);
+        intent.putExtra(LNG, latLng.longitude);
+        setResult(RESULT_OK, intent);
+        Router.finishActivity(CoordinateActivity.this);
+    }
+
 
     public LatLngBounds getAreaByRadiusAroundPoint(LatLng center, double radiusInMeters) {
         double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
@@ -131,22 +179,22 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     }
 
     private void init(final Profile profile) {
-        mGoogleApiClient = new GoogleApiClient
+        googleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(this, this)
                 .build();
 
-        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(
+        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(
                 this,
-                mGoogleApiClient,
+                googleApiClient,
                 getAreaByRadiusAroundPoint(profile.getPosition().toLatLng(), ADDRESS_SEARCH_RADIUS_IN_METERS),
                 null);
 
         searchLine = findViewById(R.id.searchInput);
         searchLine.setOnItemClickListener(mAutocompleteClickListener);
-        searchLine.setAdapter(mPlaceAutocompleteAdapter);
+        searchLine.setAdapter(placeAutocompleteAdapter);
 
         searchLine.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH
@@ -164,9 +212,9 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final AutocompletePrediction item = mPlaceAutocompleteAdapter.getItem(position);
+            final AutocompletePrediction item = placeAutocompleteAdapter.getItem(position);
             final String placeId = item.getPlaceId();
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
+            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             if (in != null) {
@@ -208,5 +256,10 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
 
     private void hideSoftKeyboard() {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
