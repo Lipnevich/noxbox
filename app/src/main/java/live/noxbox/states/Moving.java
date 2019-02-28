@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,9 +27,7 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.ChatActivity;
 import live.noxbox.activities.ConfirmationActivity;
-import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
-import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Message;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Position;
@@ -46,6 +43,7 @@ import static android.location.LocationManager.GPS_PROVIDER;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
 import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.readProfile;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
 import static live.noxbox.model.MarketRole.demand;
@@ -65,7 +63,7 @@ public class Moving implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    private Profile profile = AppCache.profile();
+    private Profile profile = profile();
 
     private static LocationManager locationManager;
     private static LocationListener locationListener;
@@ -195,7 +193,7 @@ public class Moving implements State {
 
     @Override
     public void clear() {
-        readProfile(profile -> stopListenPosition(profile.getCurrent().getId()));
+        stopListenPosition(profile().getCurrent().getId());
         movingView.removeAllViews();
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
@@ -281,13 +279,11 @@ public class Moving implements State {
                             return;
                         }
                         if (inForeground()) {
-                            DebugMessage.popup(getApplicationContext(), location.getLatitude() + " : " + location.getLongitude());
                             memberWhoMovingPosition = Position.from(location);
                             updateTimeView(profile, getApplicationContext());
                         } else {
                             memberWhoMovingPosition = Position.from(location);
                         }
-                        Log.d(State.TAG + " Moving", location.toString());
 
                         GeoRealtime.updatePosition(profile.getCurrent().getId(), memberWhoMovingPosition);
                     });

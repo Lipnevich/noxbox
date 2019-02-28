@@ -2,7 +2,6 @@ package live.noxbox.states;
 
 import android.app.Activity;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +20,6 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
-import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
@@ -47,13 +45,11 @@ public class Requesting implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        if(!initiated) {
+        if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
             initiated = true;
         }
         //moveCopyrightRight(googleMap);
-
-        Log.d(TAG + "Requesting", "timeRequest: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
             autoDisconnectFromService(profile);
@@ -71,15 +67,11 @@ public class Requesting implements State {
         drawPath(activity, googleMap, profile);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         Profile profileWhoComes = profile.getCurrent().getProfileWhoComes();
-        if(profileWhoComes == null) return;
+        if (profileWhoComes == null) return;
 
         Position memberWhoMovingPosition = profileWhoComes.getPosition();
-        if (memberWhoMoving == null) {
-            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
-                    memberWhoMovingPosition, googleMap, activity.getResources());
-        } else {
-            memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());
-        }
+        memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
+                memberWhoMovingPosition, googleMap, activity.getResources());
 
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
