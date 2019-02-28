@@ -363,7 +363,7 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Long getTimeStartPerforming() {
         if (isNullOrZero(getTimeOwnerVerified()) || isNullOrZero(getTimePartyVerified()))
-            return null;
+            return 0L;
 
         return Math.max(getTimeOwnerVerified(), getTimePartyVerified());
     }

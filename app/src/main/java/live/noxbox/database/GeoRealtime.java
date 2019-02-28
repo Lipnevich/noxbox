@@ -7,6 +7,7 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.common.base.Strings;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -199,6 +200,7 @@ public class GeoRealtime {
     }
 
     public static void updatePosition(String noxboxId, Position position) {
+        if(Strings.isNullOrEmpty(noxboxId)) return;
         position(noxboxId).setValue(position);
     }
 

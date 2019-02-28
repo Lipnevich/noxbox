@@ -62,7 +62,7 @@ public class Performing implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
 
-        seconds = (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000;
+        seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
         final String price = profile.getCurrent().getPrice();
         totalMoney = new BigDecimal(price);
         totalMoney = totalMoney.multiply(QUARTER);
@@ -152,7 +152,7 @@ public class Performing implements State {
     public static boolean hasMinimumServiceTimePassed(Noxbox noxbox) {
         final Long startTime = noxbox.getTimeStartPerforming();
 
-        if (startTime == null) return false;
+        if (startTime == 0L) return false;
 
         return startTime < System.currentTimeMillis() - Constants.MINIMUM_PAYMENT_TIME_MILLIS;
     }
