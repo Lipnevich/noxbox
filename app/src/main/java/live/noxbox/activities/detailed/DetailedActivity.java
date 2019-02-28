@@ -422,7 +422,6 @@ public class DetailedActivity extends AppCompatActivity {
     private String cancellationReason;
 
     private void drawCancelButton(final Profile profile) {
-        if (!isNullOrZero(profile.getCurrent().getTimeAccepted())) return;
         findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
         findViewById(R.id.cancelButton).setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(DetailedActivity.this);

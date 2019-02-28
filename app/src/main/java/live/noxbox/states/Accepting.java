@@ -2,7 +2,6 @@ package live.noxbox.states;
 
 import android.app.Activity;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +19,6 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
-import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
@@ -68,7 +66,6 @@ public class Accepting implements State {
             }
             initiated = true;
         }
-        Log.d(TAG + "Accepting", "timeRequested: " + DateTimeFormatter.time(profile.getCurrent().getTimeRequested()));
 
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         drawPath(activity, googleMap, profile);
