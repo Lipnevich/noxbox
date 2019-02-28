@@ -150,8 +150,8 @@ public class Firestore {
                     onSuccess.execute(currentId);
                 })
                 .addOnFailureListener(e -> {
-                        Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", new Gson().toJson(noxbox));
-                        Crashlytics.logException(e);
+                    Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", new Gson().toJson(noxbox));
+                    Crashlytics.logException(e);
                     onFailure.execute(e);
                 });
     }

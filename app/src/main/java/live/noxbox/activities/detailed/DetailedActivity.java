@@ -117,7 +117,10 @@ public class DetailedActivity extends AppCompatActivity {
         super.onPause();
         AppCache.stopListen(DetailedActivity.class.getName());
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) AppCache.stopListenNoxbox(profile.getViewed().getId());
+
+        if (user != null && !profile.getCurrent().equals(profile.getViewed())) {
+            AppCache.stopListenNoxbox(profile.getViewed().getId());
+        }
 
         gyroscopeObserver.unregister();
     }
