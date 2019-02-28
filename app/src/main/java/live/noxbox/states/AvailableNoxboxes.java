@@ -74,8 +74,8 @@ public class AvailableNoxboxes implements State {
                 .findViewById(R.id.realSwitcherLayout)).refresh();
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
-            activity.getDeviceLocation(profile);
             getLocationPermission(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
+            activity.getDeviceLocation(profile);
         });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
