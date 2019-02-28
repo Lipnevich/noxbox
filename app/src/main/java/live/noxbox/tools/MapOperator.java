@@ -108,7 +108,7 @@ public class MapOperator {
 
     public static void setupMap(Context context, GoogleMap googleMap) {
 
-        if(isItDayNow()){
+        if (isItDayNow()) {
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map));
         } else {
             googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_in_night));
@@ -120,7 +120,7 @@ public class MapOperator {
     }
 
 
-    public static LatLng getCenterBetweenSomeLocations(List<NoxboxMarker> points){
+    public static LatLng getCenterBetweenSomeLocations(List<NoxboxMarker> points) {
         double totalLatitude = 0;
         double totalLongitude = 0;
 
@@ -132,10 +132,11 @@ public class MapOperator {
         double latitude = totalLatitude / points.size();
         double longitude = totalLongitude / points.size();
 
-        return new LatLng(latitude,longitude);
+        return new LatLng(latitude, longitude);
     }
 
     private static Polyline polyline;
+
     public static void drawPath(Activity activity, GoogleMap googleMap, Profile profile) {
         LatLng start = profile.getCurrent().getProfileWhoComes().getPosition().toLatLng();
         LatLng end = profile.getCurrent().getPosition().toLatLng();

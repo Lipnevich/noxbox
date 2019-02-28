@@ -287,12 +287,16 @@ public class ContractActivity extends BaseActivity {
         }.execute();
     }
 
+    private DialogFragment dialog;
+
     private void startDialogList() {
-        DialogFragment dialog = new NoxboxTypeListFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("key", CONTRACT_CODE);
-        dialog.setArguments(bundle);
-        dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+        if (dialog == null || !dialog.isVisible()) {
+            dialog = new NoxboxTypeListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("key", CONTRACT_CODE);
+            dialog.setArguments(bundle);
+            dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+        }
     }
 
     protected void createRoleList(final Profile profile, View textView) {

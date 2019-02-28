@@ -29,7 +29,7 @@
             android:layout_marginEnd="36dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:hint="@string/enterMessage"
+            android:hint="@string/search"
             android:imeOptions="actionDone"
             android:inputType="textNoSuggestions"
             android:maxLines="1"
@@ -53,21 +53,6 @@
         android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-        <ImageView
-            android:id="@+id/back"
-            style="@style/IconButtonStyle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="top|start"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/arrow_back"
-            android:tint="@color/primary"
-            android:visibility="visible" />
 
 
         <ImageView

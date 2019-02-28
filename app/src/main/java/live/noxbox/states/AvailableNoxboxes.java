@@ -51,6 +51,7 @@ public class AvailableNoxboxes implements State {
     private static boolean serviceIsBound = false;
 
     public static volatile int clusterRenderingFrequency = 400;
+    private DialogFragment dialog;
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
@@ -69,7 +70,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.switcherLayout).setVisibility(View.VISIBLE);
-        ((RoleSwitcherLayout)activity.findViewById(R.id.switcherLayout)
+        ((RoleSwitcherLayout) activity.findViewById(R.id.switcherLayout)
                 .findViewById(R.id.realSwitcherLayout)).refresh();
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
@@ -78,11 +79,13 @@ public class AvailableNoxboxes implements State {
         });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
-            DialogFragment dialog = new NoxboxTypeListFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("key", MAP_CODE);
-            dialog.setArguments(bundle);
-            dialog.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+            if (dialog == null || !dialog.isVisible()) {
+                dialog = new NoxboxTypeListFragment();
+                Bundle bundle = new Bundle();
+                bundle.putInt("key", MAP_CODE);
+                dialog.setArguments(bundle);
+                dialog.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+            }
         });
 
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {

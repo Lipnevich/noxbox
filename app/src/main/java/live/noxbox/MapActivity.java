@@ -216,7 +216,7 @@ public class MapActivity extends HackerActivity implements
         try {
             if (locationPermissionGranted && isLocationPermissionGranted(getApplicationContext())) {
                 com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, (OnCompleteListener) task -> {
+                locationResult.addOnCompleteListener(this, (OnCompleteListener<Location>) task -> {
                     if (task.isSuccessful()) {
                         lastKnownLocation = (Location) task.getResult();
 
