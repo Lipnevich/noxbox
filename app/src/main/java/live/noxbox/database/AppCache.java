@@ -59,8 +59,7 @@ public class AppCache {
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
 
-    public static final Task NONE = noxbox -> {
-    };
+    public static final Task NONE = noxbox -> {};
 
     public static void startListening() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -69,12 +68,20 @@ public class AppCache {
             Firestore.listenProfile(newProfile -> {
                 eventBalanceUpdate(profile.getWallet().getBalance(), newProfile.getWallet().getBalance());
 
+                if(!profile.getNoxboxId().equals(newProfile.getNoxboxId())) {
+                    if(!isNullOrEmpty(profile.getNoxboxId())) {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(profile.getNoxboxId());
+                        stopListenNoxbox(profile.getNoxboxId());
+                    }
+                    startListenNoxbox(newProfile.getNoxboxId());
+                }
+
                 profile.copy(newProfile);
                 if(profile.getFilters().getPrice() < 1) {
                     profile.getFilters().setPrice(Integer.MAX_VALUE);
                 }
 
-                if (!profile.getNoxboxId().isEmpty()) {
+                if (!isNullOrEmpty(profile.getNoxboxId()) && !ids.contains(profile.getNoxboxId())) {
                     startListenNoxbox(profile.getNoxboxId());
                 } else {
                     executeUITasks();
@@ -183,9 +190,11 @@ public class AppCache {
                 }
                 executeUITasks();
             }, onFailure -> {
-                profile().setNoxboxId("");
-                profile().getCurrent().clean();
-                writeProfile(profile(), done -> executeUITasks());
+                if(isNullOrEmpty(profile().getCurrent().getId())) {
+                    // that mean that we just cleaned up db
+                    profile().setNoxboxId("");
+                    writeProfile(profile(), done -> executeUITasks());
+                }
             });
         }).addOnFailureListener(e -> {
             Crashlytics.log(Log.ERROR, "failToSubscribeOnNoxbox", noxboxId);

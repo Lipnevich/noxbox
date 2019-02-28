@@ -107,11 +107,15 @@ public class Firestore {
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener((snapshot, e) -> {
             reads++;
-            if (snapshot != null && snapshot.exists() && e == null) {
+            if(e != null) {
+                Crashlytics.logException(e);
+                failure.execute(e);
+                return;
+            }
+
+            if (snapshot != null && snapshot.exists()) {
                 Noxbox current = snapshot.toObject(Noxbox.class);
                 success.execute(current);
-            } else {
-                failure.execute(e);
             }
         });
     }

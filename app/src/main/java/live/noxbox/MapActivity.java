@@ -57,7 +57,6 @@ import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.MapOperator;
-import live.noxbox.tools.ProgressDialogFragment;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
@@ -85,7 +84,7 @@ public class MapActivity extends HackerActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.MapTheme);
         super.onCreate(savedInstanceState);
-        showProgressDialog(findViewById(R.id.mapId), ProgressDialogFragment.MAP_KEY);
+//        showProgressDialog(findViewById(R.id.mapId), ProgressDialogFragment.MAP_KEY);
         initCrashReporting();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -280,18 +279,14 @@ public class MapActivity extends HackerActivity implements
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
         if (state == NoxboxState.initial) {
-            AppCache.stopListenNoxbox(profile.getNoxboxId());
             //TODO (vl) Переиспользовать существующий для initial
             states.clear();
-        } else {
-            AppCache.startListenNoxbox(profile.getCurrent().getId());
         }
         //strong link for weakMap
         State newState = states.get(state);
         if (newState != null) {
             return newState;
         }
-
 
         switch (state) {
             case initial:

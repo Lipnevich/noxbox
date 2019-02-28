@@ -68,6 +68,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
     }
 
     private boolean isFiltered(Profile profile, Noxbox noxbox) {
+        // TODO (vl) add virtual variable isFiltered to Noxbox and update all such fields after updating filters only
         Boolean shouldDrawType = profile.getFilters().getTypes().get(noxbox.getType().name());
 
         //if (BuildConfig.DEBUG) return false;
@@ -82,6 +83,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
             return true;
 
         if (noxbox.getOwner().getId().equals(profile().getId()))
+            // TODO (vl) we should also remove previous noxbox from map
             return true;
 
         int hour = LocalDateTime.now().getHourOfDay();
