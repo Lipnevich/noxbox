@@ -48,7 +48,7 @@ public class Accepting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
 
-        if(!initiated) {
+        if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
             if (profile.getCurrent().getRole() == MarketRole.supply &&
@@ -70,15 +70,11 @@ public class Accepting implements State {
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         drawPath(activity, googleMap, profile);
         Profile profileWhoComes = profile.getCurrent().getProfileWhoComes();
-        if(profileWhoComes == null) return;
+        if (profileWhoComes == null) return;
 
         memberWhoMovingPosition = profileWhoComes.getPosition();
-        if (memberWhoMoving == null) {
-            memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
-                    memberWhoMovingPosition, googleMap, activity.getResources());
-        } else {
-            memberWhoMoving.setPosition(memberWhoMovingPosition.toLatLng());
-        }
+        memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
+                memberWhoMovingPosition, googleMap, activity.getResources());
 
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);

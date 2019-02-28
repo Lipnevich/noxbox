@@ -22,7 +22,6 @@ import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.detailed.DetailedActivity;
 import live.noxbox.cluster.NoxboxMarker;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -73,7 +72,7 @@ public class MapOperator {
             case requesting:
             case accepting:
                 googleMap.setOnMarkerClickListener(marker -> {
-                    profile.setViewed((Noxbox) marker.getTag());
+                    profile.setViewed(profile().getCurrent());
                     startActivity(activity, DetailedActivity.class);
                     return true;
                 });
@@ -81,7 +80,7 @@ public class MapOperator {
 
             case moving:
                 googleMap.setOnMarkerClickListener(marker -> {
-                    profile.setViewed((Noxbox) marker.getTag());
+                    profile.setViewed(profile().getCurrent());
                     startActivity(activity, DetailedActivity.class);
                     return true;
                 });
