@@ -29,6 +29,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.common.base.Strings;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -191,7 +192,7 @@ public class ContractActivity extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    String price = s.toString().replaceAll("\\.", ",");
+                    String price = s.toString().replaceAll(",", "\\.");
                     contract().setPrice(price);
                     if (s.length() > 0) {
                         drawSimilarNoxboxList(profile);
@@ -582,11 +583,13 @@ public class ContractActivity extends BaseActivity {
 
                     //price
                     if (contract().getRole() == MarketRole.supply) {
-                        if (Double.parseDouble(contract().getPrice()) > Double.parseDouble(item.getNoxbox().getPrice())) {
+                        if (new BigDecimal(contract().getPrice())
+                                .compareTo(new BigDecimal(item.getNoxbox().getPrice())) > 0) {
                             continue;
                         }
                     } else {
-                        if (Double.parseDouble(contract().getPrice()) < Double.parseDouble(item.getNoxbox().getPrice())) {
+                        if (new BigDecimal(contract().getPrice())
+                                .compareTo(new BigDecimal(item.getNoxbox().getPrice())) < 0) {
                             continue;
                         }
                     }

@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.math.BigDecimal;
+
 import live.noxbox.BuildConfig;
 import live.noxbox.database.Firestore;
 
@@ -60,12 +62,12 @@ public class BusinessActivity extends AppCompatActivity {
             case post:
                 bundle.putString("type", profile().getCurrent().getType().name());
                 bundle.putString("role", profile().getCurrent().getRole().name());
-                bundle.putDouble("price", Double.valueOf(profile().getCurrent().getPrice()));
+                bundle.putDouble("price", new BigDecimal(profile().getCurrent().getPrice()).doubleValue());
                 break;
             case complete:
                 bundle.putString("type", profile().getCurrent().getType().name());
                 bundle.putString("role", profile().getCurrent().getRole().name());
-                bundle.putDouble("price", Double.valueOf(profile().getCurrent().getPrice()));
+                bundle.putDouble("price", new BigDecimal(profile().getCurrent().getPrice()).doubleValue());
                 bundle.putDouble("timeSpent", (profile().getCurrent().getTimeCompleted() - Math.max(profile().getCurrent().getTimeOwnerVerified(), profile().getCurrent().getTimePartyVerified())/(1000 * 10)));
                 bundle.putLong("writes", writes.getLong("writes", 0L) + Firestore.writes);
                 bundle.putLong("reads", reads.getLong("reads", 0L) + Firestore.reads);
@@ -79,7 +81,7 @@ public class BusinessActivity extends AppCompatActivity {
             case dislike:
                 bundle.putString("noxboxId", args[0]);
                 bundle.putString("noxboxType", args[1]);
-                bundle.putString("price", args[2]);
+                bundle.putDouble("price", new BigDecimal(args[2]).doubleValue());
                 break;
 
         }

@@ -4,7 +4,7 @@ const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
 const wallet = require('./wallet-functions');
-const version = 3;
+const version = 4;
 
 const db = admin.firestore();
 db.settings({timestampsInSnapshots: true});
@@ -27,13 +27,14 @@ exports.welcome = functions.auth.user().onCreate(async user => {
 exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUpdate(async(change, context) => {
     const previousNoxbox = change.before.data();
     const noxbox = change.after.data();
-    console.log('Version code ' + JSON.stringify(version));
     console.log('Previous Noxbox ' + JSON.stringify(previousNoxbox));
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
+    let operationName = 'unknown';
 
     if(previousNoxbox.finished) return;
 
     if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
+        operationName = 'Requested';
         let push = {
             data: {
                 type: 'accepting',
@@ -43,14 +44,16 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             topic: noxbox.owner.id
         };
         await admin.messaging().send(push);
-        console.log('push sent' + JSON.stringify(push));
+        console.log('push was sent' + JSON.stringify(push));
     } else if(!previousNoxbox.timeAccepted && noxbox.timeAccepted) {
+        operationName = 'Accepted';
         let payer = noxbox.role === 'demand' ? noxbox.owner : noxbox.party;
         let balance = await wallet.balance(payer.wallet.address);
 
         let push;
         if(balance.lt(new BigDecimal('' + noxbox.price).div(4))) {
-            console.log('Not enough money for quoter hour', balance);
+            console.error('Not enough money for quoter hour', balance);
+            // TODO (nli) set notEnoughMoneyTime and finished=true
             let push = {
                 data: {
                    //type: 'shouldWeBanHackers',
@@ -71,8 +74,9 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             };
         }
         await admin.messaging().send(push);
-        console.log('push sent' + JSON.stringify(push));
+        console.log('push was sent' + JSON.stringify(push));
     } else  if(noxbox.chat && noxbox.chat.ownerMessages && (!previousNoxbox.chat.ownerMessages || Object.keys(previousNoxbox.chat.ownerMessages).length < Object.keys(noxbox.chat.ownerMessages).length)) {
+        operationName = noxbox.role === 'demand' ? 'Payer say Performer' : 'Performer say Payer';
         let push = {
             data: {
                  type: 'message',
@@ -84,8 +88,9 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             topic: noxbox.party.id
         };
         await admin.messaging().send(push);
-        console.log('push sent' + JSON.stringify(push));
+        console.log('push was sent' + JSON.stringify(push));
     } else if(noxbox.chat && noxbox.chat.partyMessages && (!previousNoxbox.chat.partyMessages || Object.keys(previousNoxbox.chat.partyMessages).length < Object.keys(noxbox.chat.partyMessages).length)){
+        operationName = noxbox.role === 'supply' ? 'Payer say Performer' : 'Performer say Payer';
         let push = {
             data: {
                  type: 'message',
@@ -99,6 +104,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         await admin.messaging().send(push);
         console.log('push sent' + JSON.stringify(push));
     }else if((!previousNoxbox.timeOwnerVerified || !previousNoxbox.timePartyVerified) && noxbox.timeOwnerVerified && noxbox.timePartyVerified){
+        operationName = 'Verified';
         let push = {
                   data: {
                       type: 'performing',
@@ -109,6 +115,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             await admin.messaging().send(push);
             console.log('push sent' + JSON.stringify(push));
     }else if(!previousNoxbox.timeCompleted && noxbox.timeCompleted){
+        operationName = 'Completed';
         let timeStart = noxbox.timeOwnerVerified > noxbox.timePartyVerified ? noxbox.timeOwnerVerified : noxbox.timePartyVerified;
         let timeSpent = Date.now() - timeStart;
         let payer = noxbox.role === 'demand' ? noxbox.owner : noxbox.party;
@@ -127,21 +134,22 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         await wallet.send(request);
 
-        noxbox.total = request.transferable;
+        noxbox.total = request.transferred;
 
         let push = {
-                  data: {
-                      type: 'completed',
-                      time: '' + noxbox.timeCompleted,
-                      total: '' + request.transferable,
-                      id: noxbox.id
-                  },
-                  topic: noxbox.id
-              };
-            await admin.messaging().send(push);
-            console.log('push sent' + JSON.stringify(push));
+              data: {
+                  type: 'completed',
+                  time: '' + noxbox.timeCompleted,
+                  total: '' + request.transferred,
+                  id: noxbox.id
+              },
+              topic: noxbox.id
+        };
+        await admin.messaging().send(push);
+        console.log('push was sent' + JSON.stringify(push));
 
     }else if(!previousNoxbox.timeCanceledByOwner && !previousNoxbox.timeCanceledByParty && noxbox.timeCanceledByOwner){
+        operationName = noxbox.role === 'demand' ? 'Canceled by Payer' : 'Canceled by Performer';
         let push = {
               data: {
                   type: 'canceled',
@@ -153,6 +161,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         console.log('push sent' + JSON.stringify(push));
 
     }else if(!previousNoxbox.timeCanceledByOwner && !previousNoxbox.timeCanceledByParty && noxbox.timeCanceledByParty){
+         operationName = noxbox.role === 'supply' ? 'Canceled by Payer' : 'Canceled by Performer';
          let push = {
                data: {
                    type: 'canceled',
@@ -163,6 +172,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
          await admin.messaging().send(push);
          console.log('push sent' + JSON.stringify(push));
      }
+     console.log('Operation ' + operationName + ' v ' + JSON.stringify(version));
 });
 
 function latestMessage(messages) {

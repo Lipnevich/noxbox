@@ -71,6 +71,7 @@ public class GeoRealtime {
                 + delimiter + currentNoxbox.getOwner().getId()
                 + delimiter + currentNoxbox.getRole()
                 + delimiter + currentNoxbox.getType()
+                // key must not contain . symbols
                 + delimiter + currentNoxbox.getPrice().replaceAll("\\.", ",")
                 + delimiter + currentNoxbox.getOwner().getTravelMode()
                 + delimiter + currentNoxbox.getOwner().getHost()
@@ -91,7 +92,7 @@ public class GeoRealtime {
                 noxbox.getOwner().setId(values[index++]);
                 noxbox.setRole(MarketRole.valueOf(values[index++]));
                 noxbox.setType(NoxboxType.valueOf(values[index++]));
-                noxbox.setPrice(values[index++]);
+                noxbox.setPrice(values[index++].replaceAll(",", "\\."));
                 noxbox.getOwner().setTravelMode(TravelMode.valueOf(values[index++]));
                 noxbox.getOwner().setHost(Boolean.valueOf(values[index++]));
                 noxbox.getOwner().getFilters().setAllowNovices(Boolean.valueOf(values[index++]));

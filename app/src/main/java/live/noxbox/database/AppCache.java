@@ -269,7 +269,7 @@ public class AppCache {
 
     public static String showPriceInUsd(String currency, String price) {
         if (wavesToUsd != null) {
-            BigDecimal priceInWaves = new BigDecimal(price.replaceAll(",", "\\."));
+            BigDecimal priceInWaves = new BigDecimal(price);
             BigDecimal priceInUSD = scale(priceInWaves.multiply(wavesToUsd));
 
             return currency + " (" + priceInUSD + "$)";

@@ -54,6 +54,7 @@ transfer = async request => {
 
     await Waves.API.Node.v1.assets.transfer(transferData, request.seed.keyPair);
     console.log('Money was transferred');
+    request.transferred = request.transferable;
 
 }
 

@@ -32,6 +32,7 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import live.noxbox.R;
@@ -53,6 +54,7 @@ import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.ImageManager;
+import live.noxbox.tools.MoneyFormatter;
 import live.noxbox.tools.PanoramaImageView;
 import live.noxbox.tools.Router;
 
@@ -298,7 +300,8 @@ public class DetailedActivity extends AppCompatActivity {
         drawDropdownElement(R.id.priceTitleLayout, R.id.priceLayout);
         changeArrowVector(R.id.priceLayout, R.id.priceArrow);
 
-        String priceTitle = getResources().getString(R.string.priceTxt) + " " + profile.getViewed().getPrice() + " " + AppCache.showPriceInUsd(getString(R.string.currency), profile.getViewed().getPrice());
+        String priceTitle = getResources().getString(R.string.priceTxt) + " "
+                + MoneyFormatter.format(new BigDecimal(profile.getViewed().getPrice())) + " " + AppCache.showPriceInUsd(getString(R.string.currency), profile.getViewed().getPrice());
 
         ((TextView) findViewById(R.id.priceTitle)).setText(priceTitle);
         ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(profile.getViewed().getType().getDuration());

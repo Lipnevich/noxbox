@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,6 +41,7 @@ import live.noxbox.database.Firestore;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.tools.AddressManager;
+import live.noxbox.tools.MoneyFormatter;
 import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.profile;
@@ -161,7 +163,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         long timeStartPerforming = noxbox.getTimePartyVerified() > noxbox.getTimeOwnerVerified() ? noxbox.getTimePartyVerified() : noxbox.getTimeOwnerVerified();
         viewHolder.noxboxType.setText(activity.getResources().getString(noxbox.getType().getName()).concat(", "
                 .concat(getFormatTimeFromMillis(timeStartPerforming, noxbox.getTimeCompleted(), activity.getResources()))));
-        viewHolder.price.setText(noxbox.getTotal().concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getTotal())));
+        viewHolder.price.setText(MoneyFormatter.format(new BigDecimal(noxbox.getTotal())).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getTotal())));
 
 
         viewHolder.rootHistoryLayout.setOnClickListener(view1 -> onClick(viewHolder, noxbox));

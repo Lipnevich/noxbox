@@ -42,7 +42,6 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
     @Override
     public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, final int position) {
-        final String price = clusterItems.get(position).getNoxbox().getPrice();
         NoxboxType type = clusterItems.get(position).getNoxbox().getType();
 
         clusterViewHolder.icon.setImageResource(type.getImage());
@@ -80,7 +79,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
         clusterViewHolder.rating.setText(rating.concat("% ").concat(activity.getResources().getString(R.string.rating)));
         clusterViewHolder.type.setText(type.getName());
-        clusterViewHolder.price.setText(price);
+        clusterViewHolder.price.setText(clusterItems.get(position).getNoxbox().getPrice());
         clusterViewHolder.travelModeImage.setImageResource(travelModeImage);
         clusterViewHolder.role.setText(role);
 

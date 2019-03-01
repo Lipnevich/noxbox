@@ -63,14 +63,12 @@ public class Performing implements State {
         performingView.addView(child);
 
         seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        final String price = profile.getCurrent().getPrice();
-        totalMoney = new BigDecimal(price);
+        totalMoney = new BigDecimal(profile.getCurrent().getPrice());
         totalMoney = totalMoney.multiply(QUARTER);
         drawComplete(profile);
 
         final long timeStartPerforming = profile.getCurrent().getTimeStartPerforming();
         seconds = (int) ((System.currentTimeMillis() - timeStartPerforming) / 1000);
-        totalMoney = new BigDecimal(profile.getCurrent().getPrice()).multiply(QUARTER);
         final Task task = new Task() {
             @Override
             public void execute(Object object) {
