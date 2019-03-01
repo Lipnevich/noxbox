@@ -75,8 +75,8 @@ import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
-import static live.noxbox.tools.LocationPermitOperator.getLocationPermission;
-import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.LocationOperator.getLocationPermission;
+import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 
 public class DetailedActivity extends AppCompatActivity {
     private GyroscopeObserver gyroscopeObserver;

@@ -16,7 +16,6 @@ package live.noxbox;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,8 +29,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -41,11 +38,9 @@ import java.util.WeakHashMap;
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.Firestore;
 import live.noxbox.debug.HackerActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
-import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.LocationReceiver;
 import live.noxbox.states.Accepting;
@@ -56,7 +51,6 @@ import live.noxbox.states.Performing;
 import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.ExchangeRate;
-import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
@@ -65,8 +59,11 @@ import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
-import static live.noxbox.tools.LocationPermitOperator.isLocationPermissionGranted;
-import static live.noxbox.tools.LocationPermitOperator.locationPermissionGranted;
+import static live.noxbox.tools.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.LocationOperator.initLocationProviderClient;
+import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.LocationOperator.locationPermissionGranted;
+import static live.noxbox.tools.LocationOperator.updateLocation;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
 
@@ -77,8 +74,7 @@ public class MapActivity extends HackerActivity implements
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
-    private Location lastKnownLocation;
+    private FusedLocationProviderClient providerClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +94,7 @@ public class MapActivity extends HackerActivity implements
         Crashlytics.setUserIdentifier(user.getUid());
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e -> Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid()));
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        providerClient = initLocationProviderClient(getApplicationContext());
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapId);
         mapFragment.getMapAsync(this);
@@ -148,8 +144,8 @@ public class MapActivity extends HackerActivity implements
     public void onMapReady(GoogleMap readyMap) {
         googleMap = readyMap;
 
-        updateLocation();
-        getDeviceLocation(profile());
+        updateLocation(googleMap);
+        getDeviceLocation(profile(), googleMap, this);
 
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -177,65 +173,21 @@ public class MapActivity extends HackerActivity implements
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
-                    AppCache.readProfile(this::getDeviceLocation);
+                    getDeviceLocation(profile(), googleMap, this);
                 }
                 break;
             }
             case LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
-                    AppCache.readProfile(this::getDeviceLocation);
+                    getDeviceLocation(profile(), googleMap, this);
                     executeUITasks();
                 }
                 break;
             }
 
         }
-        updateLocation();
-    }
-
-
-    private void updateLocation() {
-        if (googleMap == null)
-            return;
-
-        try {
-            if (locationPermissionGranted) {
-                googleMap.setMyLocationEnabled(true);
-            } else {
-                googleMap.setMyLocationEnabled(false);
-                lastKnownLocation = null;
-            }
-        } catch (SecurityException e) {
-            Crashlytics.logException(e);
-        }
-    }
-
-
-    public void getDeviceLocation(Profile profile) {
-        try {
-            if (locationPermissionGranted && isLocationPermissionGranted(getApplicationContext())) {
-                com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, (OnCompleteListener<Location>) task -> {
-                    if (task.isSuccessful()) {
-                        lastKnownLocation = (Location) task.getResult();
-
-                        if (lastKnownLocation != null) {
-                            Position position = Position.from(lastKnownLocation);
-                            profile.setPosition(Position.from(new LatLng(position.getLatitude(),
-                                    position.getLongitude())));
-                            MapOperator.buildMapPosition(googleMap, getApplicationContext());
-                            Firestore.writeProfile(profile, o -> {
-                            });
-                        }
-                    } else {
-                        Crashlytics.logException(task.getException());
-                    }
-                });
-            }
-        } catch (SecurityException e) {
-            Crashlytics.logException(e);
-        }
+        updateLocation(googleMap);
     }
 
 

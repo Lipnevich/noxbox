@@ -60,54 +60,6 @@
                 android:visibility="visible" />
         </RelativeLayout>
 
-
-       <!-- <RelativeLayout
-            android:id="@+id/travelModeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:padding="@dimen/activity_horizontal_margin">
-
-            <ImageView
-                android:id="@+id/travelModeImage"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:tint="@color/primary" />
-
-            <TextView
-                android:id="@+id/travelMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/travelModeImage"
-                android:text="@string/travelMode"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
-
-            <TextView
-                android:id="@+id/travelModeName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/travelMode"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginTop="8dp"
-                android:layout_toEndOf="@id/travelModeImage"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/google_text" />
-
-            <ImageView
-                android:id="@+id/editTravelMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/edit"
-                android:visibility="gone" />
-        </RelativeLayout>-->
-
         <RelativeLayout
             android:id="@+id/hostLayout"
             android:layout_width="match_parent"
@@ -162,9 +114,8 @@
             android:id="@+id/serviceProvidedText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginEnd="8dp"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="84dp"
             android:text="@string/serviceProvided"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="@color/text_color_secondary" />
