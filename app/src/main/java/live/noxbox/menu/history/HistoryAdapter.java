@@ -157,7 +157,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         Noxbox noxbox = historyItems.get(position);
 
-        viewHolder.noxboxTypeImage.setImageResource(noxbox.getType().getImage());
+        viewHolder.noxboxTypeImage.setImageResource(noxbox.getType().getImageDemand());
         viewHolder.time.setText(time(noxbox.getTimeCompleted()));
         viewHolder.date.setText(date(noxbox.getTimeCompleted()) + ",");
         long timeStartPerforming = noxbox.getTimePartyVerified() > noxbox.getTimeOwnerVerified() ? noxbox.getTimePartyVerified() : noxbox.getTimeOwnerVerified();
@@ -300,7 +300,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         mapView.getMapAsync(googleMap -> {
             MapsInitializer.initialize(activity);
             GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                    .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
+                    .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImageDemand()))
                     .position(noxbox.getPosition().toLatLng(), 48, 48)
                     .anchor(0.5f, 1)
                     .zIndex(1000);

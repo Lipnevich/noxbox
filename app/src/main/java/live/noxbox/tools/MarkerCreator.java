@@ -19,7 +19,7 @@ import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public class MarkerCreator {
     public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Resources resources) {
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, noxbox.getType().getImage());
+        Bitmap bitmap = BitmapFactory.decodeResource(resources, noxbox.getType().getImageSupply());
         Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(56), dpToPx(56), false);
 
         MarkerOptions markerOptions = new MarkerOptions()

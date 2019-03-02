@@ -5,9 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -108,37 +105,50 @@ public class IconGenerator {
 
     @NonNull
     private BitmapDescriptor createClusterItemIcon(NoxboxMarker point) {
-        if (point.getNoxbox().getRole() == supply) {
-            return createItemIcon(point, R.color.colorAccent);
-        } else {
-            return createItemIcon(point, R.color.primary);
-        }
+        return createItemIcon(point);
     }
 
-    private BitmapDescriptor createItemIcon(NoxboxMarker point, int color) {
+    private BitmapDescriptor createItemIcon(NoxboxMarker point) {
         String key = point.getNoxbox().getType().name().concat(point.getNoxbox().getRole().name());
         if (itemIcons.containsKey(key)) {
             return itemIcons.get(key);
         }
-        Bitmap bitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(
-                context.getResources(),
-                point.getNoxbox().getType().getImage()),
+
+
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), point.getNoxbox().getRole() == supply
+                ? point.getNoxbox().getType().getImageSupply()
+                : point.getNoxbox().getType().getImageDemand());
+
+        Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap,
                 dpToPx(56),
                 dpToPx(56),
                 true);
-        BitmapDescriptor bitmapDescriptor = fromBitmap(tintImage(bitmap, color));
+        BitmapDescriptor bitmapDescriptor = fromBitmap(newBitmap);
         itemIcons.put(key, bitmapDescriptor);
 
         return bitmapDescriptor;
     }
 
-    private static Bitmap tintImage(Bitmap bitmap, int color) {
-        Paint paint = new Paint();
-        paint.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
-        Bitmap bitmapResult = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmapResult);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
-        return bitmapResult;
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 
     private int getClusterIconBucket(@NonNull Cluster<NoxboxMarker> cluster) {

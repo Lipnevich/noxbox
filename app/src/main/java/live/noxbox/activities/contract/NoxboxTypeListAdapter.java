@@ -58,7 +58,8 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
 
         viewHolder.noxboxTypeName.setText(noxboxTypes.get(position).getName());
 
-        viewHolder.noxboxTypeImage.setImageResource(noxboxTypes.get(position).getImage());
+
+        viewHolder.noxboxTypeImage.setImageResource(noxboxTypes.get(position).getImageDemand());
         viewHolder.itemLayout.setOnClickListener(view -> onClick(position));
     }
 
