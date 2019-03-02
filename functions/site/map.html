@@ -40,15 +40,16 @@
         var markers = [];
         for (var i = 0; i < results.length; i++) {
           var latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
+          var serviceRole = results[i].key.split(';')[2];
           var serviceType = results[i].key.split(';')[3];
           var marker = new google.maps.Marker({
             position: latLng,
             map: map,
             icon: {
-                url: 'img/services/ic_' + serviceType + '.png', // url
-                scaledSize: new google.maps.Size(36, 36), // scaled size
-                origin: new google.maps.Point(0,0), // origin
-                anchor: new google.maps.Point(0, 36) // anchor
+                url: 'img/services/ic_' + serviceType + '_' + serviceRole + '.png',
+                scaledSize: new google.maps.Size(36, 36),
+                origin: new google.maps.Point(0,0),
+                anchor: new google.maps.Point(0, 36)
             }
           });
           markers.push(marker);
