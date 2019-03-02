@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import live.noxbox.R;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap;
-import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public class IconGenerator {
@@ -115,9 +114,7 @@ public class IconGenerator {
         }
 
 
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), point.getNoxbox().getRole() == supply
-                ? point.getNoxbox().getType().getImageSupply()
-                : point.getNoxbox().getType().getImageDemand());
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), point.getNoxbox().getIcon());
 
         Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap,
                 dpToPx(56),

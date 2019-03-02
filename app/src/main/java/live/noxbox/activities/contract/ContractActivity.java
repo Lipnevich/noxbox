@@ -566,6 +566,10 @@ public class ContractActivity extends BaseActivity {
                 }
 
                 for (NoxboxMarker item : noxboxes) {
+                    if(item.getNoxbox().getOwner().equals(profile)) {
+                        continue;
+                    }
+
                     //type
                     if (item.getNoxbox().getType() != contract().getType()) {
                         continue;
