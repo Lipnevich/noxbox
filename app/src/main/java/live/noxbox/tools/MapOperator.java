@@ -26,6 +26,7 @@ import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
+import static live.noxbox.Constants.DEFAULT_ZOOM_LEVEL;
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.DayPartDeterminer.isItDayNow;
@@ -54,10 +55,10 @@ public class MapOperator {
 
             case created:
             case performing:
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getCurrent().getPosition().toLatLng(), 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getCurrent().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL));
                 break;
             default:
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL));
         }
     }
 
@@ -65,7 +66,7 @@ public class MapOperator {
         if(isLocationPermissionGranted(activity.getApplicationContext())){
             getDeviceLocation(profile(), googleMap, activity);
         }else{
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), 13));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL));
         }
     }
 

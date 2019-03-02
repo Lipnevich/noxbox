@@ -23,6 +23,7 @@ public interface Constants {
     BigDecimal QUARTER = new BigDecimal("0.25");
     double ADDRESS_SEARCH_RADIUS_IN_METERS = 100000D;
     int MAX_ZOOM_LEVEL = 18;
+    int DEFAULT_ZOOM_LEVEL = 13;
     String CHANNEL_ID = "noxbox_channel";
     int CLUSTER_RENDERING_MIN_FREQUENCY = 3000;
     int CLUSTER_RENDERING_MAX_FREQUENCY = 400;

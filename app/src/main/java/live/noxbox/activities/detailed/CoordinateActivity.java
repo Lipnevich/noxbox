@@ -45,13 +45,13 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.ADDRESS_SEARCH_RADIUS_IN_METERS;
+import static live.noxbox.Constants.DEFAULT_ZOOM_LEVEL;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.LocationOperator.getLocationPermission;
 import static live.noxbox.tools.LocationOperator.initLocationProviderClient;
-import static live.noxbox.tools.LocationOperator.locationPermissionGranted;
 import static live.noxbox.tools.LocationOperator.updateLocation;
 import static live.noxbox.tools.MapOperator.setupMap;
 
@@ -101,11 +101,11 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         setupMap(this, googleMap);
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         getDeviceLocation(profile(), googleMap, CoordinateActivity.this);
-        updateLocation(googleMap);
+        updateLocation(this, googleMap);
         if (profile().getViewed().getPosition() != null) {
-            moveCamera(profile().getViewed().getPosition().toLatLng(), 15);
+            moveCamera(profile().getViewed().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL);
         } else {
-            moveCamera(profile().getCurrent().getPosition().toLatLng(), 15);
+            moveCamera(profile().getCurrent().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL);
         }
 
         init(profile());
@@ -144,13 +144,12 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
                     getDeviceLocation(profile(), googleMap, this);
                     executeUITasks();
                 }
                 break;
         }
-        updateLocation(googleMap);
+        updateLocation(this, googleMap);
     }
 
     private void providePositionResult() {
@@ -228,7 +227,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
             places.release();
             return;
         }
-        moveCamera(places.get(0).getLatLng(), 15);
+        moveCamera(places.get(0).getLatLng(), DEFAULT_ZOOM_LEVEL);
         places.release();
     };
 
@@ -245,7 +244,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         if (addressesList.size() > 0) {
             Address address = addressesList.get(0);
 
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), 15);
+            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM_LEVEL);
         }
     }
 

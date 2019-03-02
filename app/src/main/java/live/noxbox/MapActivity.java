@@ -62,7 +62,6 @@ import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.LocationOperator.initLocationProviderClient;
 import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
-import static live.noxbox.tools.LocationOperator.locationPermissionGranted;
 import static live.noxbox.tools.LocationOperator.updateLocation;
 import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
@@ -145,7 +144,7 @@ public class MapActivity extends HackerActivity implements
     public void onMapReady(GoogleMap readyMap) {
         googleMap = readyMap;
 
-        updateLocation(googleMap);
+        updateLocation(this, googleMap);
 
         setupMap(this, googleMap);
         enterTheMap(googleMap,this);
@@ -170,18 +169,15 @@ public class MapActivity extends HackerActivity implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        locationPermissionGranted = false;
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
                     getDeviceLocation(profile(), googleMap, this);
                 }
                 break;
             }
             case LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
                     getDeviceLocation(profile(), googleMap, this);
                     executeUITasks();
                 }
@@ -189,7 +185,7 @@ public class MapActivity extends HackerActivity implements
             }
 
         }
-        updateLocation(googleMap);
+        updateLocation(this, googleMap);
     }
 
 

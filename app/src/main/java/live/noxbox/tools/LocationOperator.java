@@ -20,8 +20,6 @@ import live.noxbox.model.Profile;
 
 public class LocationOperator {
 
-    public static boolean locationPermissionGranted;
-
     private static FusedLocationProviderClient fusedLocationProviderClient;
     private static Location lastKnownLocation;
 
@@ -34,9 +32,7 @@ public class LocationOperator {
         if (ContextCompat.checkSelfPermission(activity.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
         } else {
-            locationPermissionGranted = false;
             ActivityCompat.requestPermissions(activity,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     requestCode);
@@ -44,16 +40,15 @@ public class LocationOperator {
         }
     }
 
-    public static void updateLocation(GoogleMap googleMap) {
+    public static void updateLocation(Context context, GoogleMap googleMap) {
         if (googleMap == null)
             return;
 
         try {
-            if (locationPermissionGranted) {
+            if (isLocationPermissionGranted(context)) {
                 googleMap.setMyLocationEnabled(true);
             } else {
                 googleMap.setMyLocationEnabled(false);
-                lastKnownLocation = null;
             }
         } catch (SecurityException e) {
             Crashlytics.logException(e);
@@ -62,7 +57,7 @@ public class LocationOperator {
 
     public static void getDeviceLocation(Profile profile, GoogleMap googleMap, Activity activity) {
         try {
-            if (locationPermissionGranted && isLocationPermissionGranted(activity.getApplicationContext())) {
+            if (isLocationPermissionGranted(activity.getApplicationContext())) {
                 com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(activity, (OnCompleteListener<Location>) task -> {
                     if (task.isSuccessful()) {
