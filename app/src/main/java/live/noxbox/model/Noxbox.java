@@ -13,6 +13,8 @@
  */
 package live.noxbox.model;
 
+import android.graphics.drawable.Drawable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +30,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private String id;
     @Virtual
     private String geoId;
+    @Virtual
+    private Drawable confirmationPhoto;
 
     private Profile owner;
     private Profile party;
@@ -529,4 +533,12 @@ public class Noxbox implements Comparable<Noxbox> {
         return myId.equals(getOwner().getId()) && role == demand ? demand : supply;
     }
 
+    public Drawable getConfirmationPhoto() {
+        return confirmationPhoto;
+    }
+
+    public Noxbox setConfirmationPhoto(Drawable confirmationPhoto) {
+        this.confirmationPhoto = confirmationPhoto;
+        return this;
+    }
 }

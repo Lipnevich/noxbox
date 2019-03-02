@@ -63,7 +63,7 @@ public class Moving implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    private Profile profile = profile();
+    private Profile profile;
 
     private static LocationManager locationManager;
     private static LocationListener locationListener;
@@ -78,6 +78,11 @@ public class Moving implements State {
     private TextView totalUnreadView;
     private boolean initiated;
 
+    public Moving() {
+        profile = profile();
+
+    }
+
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
@@ -90,7 +95,7 @@ public class Moving implements State {
 
         if (defineProfileLocationListener(profile)) {
             activity.startService(new Intent(activity, LocationListenerService.class));
-        } else if(positionListener == null){
+        } else if (positionListener == null) {
             GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
                 memberWhoMovingPosition = position;
                 draw(googleMap, activity);
@@ -186,6 +191,7 @@ public class Moving implements State {
 
         googleMap.clear();
         memberWhoMovingMarker = null;
+        memberWhoMovingPosition = null;
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
             locationListener = null;
@@ -309,9 +315,9 @@ public class Moving implements State {
                 }
             };
 
-            if (isLocationPermissionGranted(getApplicationContext())) {
+            if (isLocationPermissionGranted(getApplicationContext()))
                 locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
-            }
+
 
             return super.onStartCommand(intent, flags, startId);
         }

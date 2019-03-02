@@ -64,6 +64,7 @@ import static live.noxbox.tools.LocationOperator.initLocationProviderClient;
 import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.LocationOperator.locationPermissionGranted;
 import static live.noxbox.tools.LocationOperator.updateLocation;
+import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
 
@@ -145,9 +146,10 @@ public class MapActivity extends HackerActivity implements
         googleMap = readyMap;
 
         updateLocation(googleMap);
-        getDeviceLocation(profile(), googleMap, this);
 
         setupMap(this, googleMap);
+        enterTheMap(googleMap,this);
+
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveCopyrightLeft(googleMap);
         draw();

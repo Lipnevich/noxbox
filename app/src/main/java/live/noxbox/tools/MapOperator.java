@@ -30,6 +30,8 @@ import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.DayPartDeterminer.isItDayNow;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
+import static live.noxbox.tools.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.Router.startActivity;
 
 public class MapOperator {
@@ -56,6 +58,14 @@ public class MapOperator {
                 break;
             default:
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), 15));
+        }
+    }
+
+    public static void enterTheMap(GoogleMap googleMap, Activity activity) {
+        if(isLocationPermissionGranted(activity.getApplicationContext())){
+            getDeviceLocation(profile(), googleMap, activity);
+        }else{
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), 13));
         }
     }
 

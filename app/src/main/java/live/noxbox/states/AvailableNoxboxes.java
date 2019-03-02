@@ -58,6 +58,7 @@ public class AvailableNoxboxes implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+
         startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes);
         if (clusterManager == null) {
             clusterManager = new ClusterManager(activity, googleMap);

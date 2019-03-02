@@ -7,10 +7,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.target.ImageViewTarget;
 
 import in.shadowfax.proswipebutton.ProSwipeButton;
@@ -26,23 +26,15 @@ import static live.noxbox.database.AppCache.updateNoxbox;
 public class ConfirmationActivity extends BaseActivity {
 
     private ImageView photo;
-    private ImageView progressCat;
+    private ProgressBar progress;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
         photo = findViewById(R.id.photo);
-        progressCat = findViewById(R.id.progressCat);
+        progress = findViewById(R.id.progressCat);
 
-        Glide.with(this).asGif().load(R.drawable.progress_cat).into(new ImageViewTarget<GifDrawable>(progressCat) {
-            @Override
-            protected void setResource(@Nullable GifDrawable gif) {
-                if (photo.getVisibility() == View.GONE) {
-                    progressCat.setImageDrawable(gif);
-                }
-            }
-        });
     }
 
     @Override
@@ -67,7 +59,7 @@ public class ConfirmationActivity extends BaseActivity {
         Glide.with(activity).asDrawable().load(profile.getCurrent().getNotMe(profile.getId()).getPhoto()).into(new ImageViewTarget<Drawable>(photo) {
             @Override
             protected void setResource(@Nullable Drawable drawable) {
-                progressCat.setVisibility(View.GONE);
+                progress.setVisibility(View.GONE);
                 photo.setVisibility(View.VISIBLE);
                 photo.setImageDrawable(drawable);
             }

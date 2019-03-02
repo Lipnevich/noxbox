@@ -123,7 +123,8 @@ public class RoleSwitcherLayout extends RelativeLayout {
 
         text = new TextView(context);
         text.setId(View.generateViewId());
-        text.setTextSize(14);
+        text.setTextSize(20);
+        text.setTextColor(getResources().getColor(R.color.secondary));
 
         if (supply.isChecked()) {
             textParams.addRule(RelativeLayout.END_OF, supply.getId());
