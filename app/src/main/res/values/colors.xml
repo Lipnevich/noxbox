@@ -22,5 +22,5 @@
     <color name="blueOFF">#43139AFA</color>
     <color name="blueON">#139AFA</color>
     <color name="orangeOFF">#43FF9100</color>
-    <color name="orangeON">#FF9100</color>
+    <color name="orangeON">@color/primary</color>
 </resources>

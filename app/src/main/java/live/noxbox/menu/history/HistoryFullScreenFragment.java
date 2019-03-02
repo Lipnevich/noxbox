@@ -92,7 +92,7 @@ public class HistoryFullScreenFragment extends DialogFragment {
         mapView.getMapAsync(googleMap -> {
             MapsInitializer.initialize(getActivity());
             GroundOverlayOptions newarkMap = new GroundOverlayOptions()
-                    .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImage()))
+                    .image(BitmapDescriptorFactory.fromResource(noxbox.getType().getImageDemand()))
                     .position(noxbox.getPosition().toLatLng(), 48, 48)
                     .anchor(0.5f, 1)
                     .zIndex(1000);

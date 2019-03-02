@@ -11,7 +11,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import live.noxbox.database.Firestore;
@@ -65,8 +64,7 @@ public class LocationOperator {
 
                         if (lastKnownLocation != null) {
                             Position position = Position.from(lastKnownLocation);
-                            profile.setPosition(Position.from(new LatLng(position.getLatitude(),
-                                    position.getLongitude())));
+                            profile.setPosition(position);
                             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
                             Firestore.writeProfile(profile, o -> {
                             });

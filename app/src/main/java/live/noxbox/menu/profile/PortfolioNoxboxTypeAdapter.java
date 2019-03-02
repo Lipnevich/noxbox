@@ -35,15 +35,12 @@ public class PortfolioNoxboxTypeAdapter extends RecyclerView.Adapter<PortfolioNo
 
     @Override
     public void onBindViewHolder(@NonNull PortfolioNoxboxTypeViewHolder holder, final int position) {
-        holder.noxboxTypeImage.setImageResource(typeList.get(position).getImage());
+        holder.noxboxTypeImage.setImageResource(typeList.get(position).getImageDemand());
         holder.noxboxTypeName.setText(typeList.get(position).getName());
-        holder.noxboxTypeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity, ProfilePerformerActivity.class);
-                intent.putExtra(ProfileActivity.class.getName(), typeList.get(position).getId());
-                activity.startActivityForResult(intent,ProfilePerformerActivity.CODE);
-            }
+        holder.noxboxTypeLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, ProfilePerformerActivity.class);
+            intent.putExtra(ProfileActivity.class.getName(), typeList.get(position).getId());
+            activity.startActivityForResult(intent,ProfilePerformerActivity.CODE);
         });
     }
 

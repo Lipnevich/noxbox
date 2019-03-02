@@ -104,7 +104,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="4dp"
-                        android:src="@drawable/ic_photographer" />
+                        android:src="@drawable/ic_photographer_demand" />
 
                     <TextView
                         android:id="@+id/descriptionTitle"
@@ -735,7 +735,7 @@
                                     android:layout_height="42dp"
                                     android:layout_marginStart="8dp"
                                     android:layout_marginTop="8dp"
-                                    android:src="@drawable/ic_nanny" />
+                                    android:src="@drawable/ic_nanny_demand" />
 
                                 <LinearLayout
                                     android:layout_width="0dp"

@@ -42,7 +42,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
-        android:src="@drawable/ic_photographer" />
+        android:src="@drawable/ic_photographer_demand" />
 
 
 </RelativeLayout>

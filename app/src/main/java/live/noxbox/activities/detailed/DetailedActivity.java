@@ -192,7 +192,7 @@ public class DetailedActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
             }
         }
-        ((ImageView) findViewById(R.id.typeImage)).setImageResource(profile.getViewed().getType().getImage());
+        ((ImageView) findViewById(R.id.typeImage)).setImageResource(profile.getViewed().getType().getImageDemand());
         ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
     }
 
@@ -324,7 +324,7 @@ public class DetailedActivity extends AppCompatActivity {
         }
         String desc = getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter);
         ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(desc);
-        ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(profile.getViewed().getType().getImage());
+        ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(profile.getViewed().getType().getImageDemand());
     }
 
     private void drawButtons(Profile profile) {
