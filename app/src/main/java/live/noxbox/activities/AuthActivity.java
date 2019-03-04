@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -32,38 +33,41 @@ public class AuthActivity extends BaseActivity {
 
     private static final int REQUEST_CODE = 11011;
 
+    private CheckBox checkbox;
+    private CardView googleAuth;
+    private CardView phoneAuth;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         login();
         setContentView(R.layout.activity_auth);
+        checkbox = findViewById(R.id.checkbox);
+        googleAuth = findViewById(R.id.googleAuth);
+        phoneAuth = findViewById(R.id.phoneAuth);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ((CheckBox) findViewById(R.id.checkbox)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+        checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                colorText(R.id.textGoogleAuth, R.color.secondary);
-                colorText(R.id.textPhoneAuth, R.color.secondary);
-                findViewById(R.id.googleAuth).setVisibility(View.VISIBLE);
-                findViewById(R.id.phoneAuth).setVisibility(View.VISIBLE);
+                googleAuth.setVisibility(View.VISIBLE);
+                phoneAuth.setVisibility(View.VISIBLE);
             } else {
-                colorText(R.id.textGoogleAuth, R.color.google_text);
-                colorText(R.id.textPhoneAuth, R.color.google_text);
-                findViewById(R.id.googleAuth).setVisibility(View.INVISIBLE);
-                findViewById(R.id.phoneAuth).setVisibility(View.INVISIBLE);
+                googleAuth.setVisibility(View.INVISIBLE);
+                phoneAuth.setVisibility(View.INVISIBLE);
             }
 
         });
+        if(checkbox.isChecked()){
+            googleAuth.setVisibility(View.VISIBLE);
+            phoneAuth.setVisibility(View.VISIBLE);
+        }
+        googleAuth.setOnClickListener(authentificate(new GoogleBuilder()));
+        phoneAuth.setOnClickListener(authentificate(new PhoneBuilder()));
         drawAgreement();
-        findViewById(R.id.googleAuth).setOnClickListener(authentificate(new GoogleBuilder()));
-        findViewById(R.id.phoneAuth).setOnClickListener(authentificate(new PhoneBuilder()));
-    }
-
-
-    private void colorText(int textView, int color) {
-        ((TextView) findViewById(textView)).setTextColor(getResources().getColor(color));
     }
 
     private View.OnClickListener authentificate(final AuthUI.IdpConfig.Builder provider) {
