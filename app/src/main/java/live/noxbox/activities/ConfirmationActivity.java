@@ -1,6 +1,5 @@
 package live.noxbox.activities;
 
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,15 +24,23 @@ import static live.noxbox.database.AppCache.updateNoxbox;
 
 public class ConfirmationActivity extends BaseActivity {
 
+    private TextView title;
+    private ImageView homeButton;
     private ImageView photo;
     private ProgressBar progress;
+    private ProSwipeButton confirm;
+    private ProSwipeButton wrongPhoto;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmation);
+        title = findViewById(R.id.title);
+        homeButton = findViewById(R.id.homeButton);
         photo = findViewById(R.id.photo);
         progress = findViewById(R.id.progressCat);
+        confirm = findViewById(R.id.swipeButtonConfirm);
+        wrongPhoto = findViewById(R.id.swipeButtonWrongPhoto);
 
     }
 
@@ -45,32 +52,38 @@ public class ConfirmationActivity extends BaseActivity {
 
     private void draw(Profile profile) {
         drawToolbar();
-        drawPhoto(profile, this);
-        drawConfirmButton(profile, this);
-        drawConformityButton(profile, this);
+        drawPhoto(profile);
+        drawConfirmButton(profile);
+        drawConformityButton(profile);
     }
 
     private void drawToolbar() {
-        ((TextView) findViewById(R.id.title)).setText(R.string.verification);
-        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(ConfirmationActivity.this));
+        title.setText(R.string.verification);
+        homeButton.setOnClickListener(v -> Router.finishActivity(ConfirmationActivity.this));
     }
 
-    private void drawPhoto(Profile profile, Activity activity) {
-        Glide.with(activity).asDrawable().load(profile.getCurrent().getNotMe(profile.getId()).getPhoto()).into(new ImageViewTarget<Drawable>(photo) {
-            @Override
-            protected void setResource(@Nullable Drawable drawable) {
-                progress.setVisibility(View.GONE);
-                photo.setVisibility(View.VISIBLE);
-                photo.setImageDrawable(drawable);
-            }
-        });
+    private void drawPhoto(Profile profile) {
+        if (profile.getCurrent().getConfirmationPhoto() != null) {
+            showPhoto(profile.getCurrent().getConfirmationPhoto());
+        } else {
+            Glide.with(this)
+                    .asDrawable()
+                    .load(profile.getCurrent().getNotMe(profile.getId()).getPhoto())
+                    .into(new ImageViewTarget<Drawable>(photo) {
+                        @Override
+                        protected void setResource(@Nullable Drawable drawable) {
+                            showPhoto(drawable);
+                        }
+                    });
+        }
+
     }
 
-    private void drawConfirmButton(final Profile profile, final Activity activity) {
-        ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonConfirm);
-        proSwipeBtn.setOnSwipeListener(() -> {
-            findViewById(R.id.swipeButtonWrongPhoto).setVisibility(View.GONE);
-            proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
+    private void drawConfirmButton(final Profile profile) {
+        confirm.setOnSwipeListener(() -> {
+            profile.getCurrent().setConfirmationPhoto(null);
+            wrongPhoto.setVisibility(View.GONE);
+            confirm.setArrowColor(getResources().getColor(R.color.fullTranslucent));
             new Handler().postDelayed(() -> {
                 long timeVerified = System.currentTimeMillis();
                 BusinessActivity.businessEvent(verification);
@@ -85,11 +98,11 @@ public class ConfirmationActivity extends BaseActivity {
         });
     }
 
-    private void drawConformityButton(final Profile profile, Activity activity) {
-        final ProSwipeButton proSwipeBtn = (ProSwipeButton) findViewById(R.id.swipeButtonWrongPhoto);
-        proSwipeBtn.setOnSwipeListener(() -> {
-            findViewById(R.id.swipeButtonConfirm).setVisibility(View.GONE);
-            proSwipeBtn.setArrowColor(getResources().getColor(R.color.fullTranslucent));
+    private void drawConformityButton(final Profile profile) {
+        wrongPhoto.setOnSwipeListener(() -> {
+            profile.getCurrent().setConfirmationPhoto(null);
+            wrongPhoto.setArrowColor(getResources().getColor(R.color.fullTranslucent));
+            confirm.setVisibility(View.GONE);
             new Handler().postDelayed(() -> {
                 long timeCanceled = System.currentTimeMillis();
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
@@ -101,5 +114,11 @@ public class ConfirmationActivity extends BaseActivity {
                 Router.finishActivity(ConfirmationActivity.this);
             }, 0);
         });
+    }
+
+    private void showPhoto(Drawable drawable) {
+        progress.setVisibility(View.GONE);
+        photo.setVisibility(View.VISIBLE);
+        photo.setImageDrawable(drawable);
     }
 }

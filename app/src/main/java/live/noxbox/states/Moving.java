@@ -5,17 +5,24 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -63,7 +70,7 @@ public class Moving implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    private Profile profile;
+    private Profile profile = profile();
 
     private static LocationManager locationManager;
     private static LocationListener locationListener;
@@ -78,15 +85,27 @@ public class Moving implements State {
     private TextView totalUnreadView;
     private boolean initiated;
 
-    public Moving() {
-        profile = profile();
-
-    }
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+
+        if (profile.getCurrent().getConfirmationPhoto() == null) {
+            Glide.with(activity)
+                    .asDrawable()
+                    .load(profile.getCurrent().getNotMe(profile.getId()).getPhoto())
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.DATA))
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                            profile.getCurrent().setConfirmationPhoto(drawable);
+                        }
+                    });
+
+
+        }
+
         if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
@@ -335,4 +354,6 @@ public class Moving implements State {
 
 
     }
+
+
 }
