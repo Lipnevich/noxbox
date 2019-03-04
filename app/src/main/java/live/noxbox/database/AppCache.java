@@ -3,6 +3,7 @@ package live.noxbox.database;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -58,7 +59,8 @@ public class AppCache {
     private static Map<String, Task<Profile>> profileListeners = new HashMap<>();
     private static Map<String, Task<Profile>> profileReaders = new HashMap<>();
 
-    public static final Task NONE = noxbox -> {};
+    public static final Task NONE = noxbox -> {
+    };
 
     public static void startListening() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -67,8 +69,8 @@ public class AppCache {
             Firestore.listenProfile(newProfile -> {
                 eventBalanceUpdate(profile.getWallet().getBalance(), newProfile.getWallet().getBalance());
 
-                if(!profile.getNoxboxId().equals(newProfile.getNoxboxId())) {
-                    if(!isNullOrEmpty(profile.getNoxboxId())) {
+                if (!profile.getNoxboxId().equals(newProfile.getNoxboxId())) {
+                    if (!isNullOrEmpty(profile.getNoxboxId())) {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(profile.getNoxboxId());
                         stopListenNoxbox(profile.getNoxboxId());
                     }
@@ -76,7 +78,7 @@ public class AppCache {
                 }
 
                 profile.copy(newProfile);
-                if(profile.getFilters().getPrice() < 1) {
+                if (profile.getFilters().getPrice() < 1) {
                     profile.getFilters().setPrice(Integer.MAX_VALUE);
                 }
 
@@ -189,7 +191,7 @@ public class AppCache {
                 }
                 executeUITasks();
             }, onFailure -> {
-                if(isNullOrEmpty(profile().getCurrent().getId())) {
+                if (isNullOrEmpty(profile().getCurrent().getId())) {
                     // that mean that we just cleaned up db
                     profile().setNoxboxId("");
                     writeProfile(profile(), done -> executeUITasks());
@@ -267,12 +269,13 @@ public class AppCache {
     }
 
     public static String showPriceInUsd(String currency, String price) {
-        if (wavesToUsd != null) {
+        if (!Strings.isNullOrEmpty(price.trim()) && wavesToUsd != null) {
             BigDecimal priceInWaves = new BigDecimal(price);
             BigDecimal priceInUSD = scale(priceInWaves.multiply(wavesToUsd));
 
             return currency + " (" + priceInUSD + "$)";
         }
+
         return currency;
     }
 }

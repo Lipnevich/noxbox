@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -55,6 +57,7 @@ import live.noxbox.tools.Router;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE;
+import static live.noxbox.Constants.MINIMUM_PRICE;
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
@@ -70,20 +73,47 @@ import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
+import static live.noxbox.tools.DialogBuilder.createMessageAlertDialog;
 import static live.noxbox.tools.LocationOperator.getLocationPermission;
 import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 
 public class ContractActivity extends BaseActivity {
 
-    protected double price;
+    private DialogFragment noxboxTypeListFragment;
+    private TextView title;
+    private ImageView homeButton;
+    private TextView role;
+    private TextView noxboxType;
+    private TextInputLayout inputLayout;
+    private EditText inputPrice;
+    private TextWatcher changePriceListener;
+    private TextView textCurrency;
+    private TextView textTravelMode;
+    private TextView addressView;
+
+    private CheckBox host;
+    private EditText comment;
     private TextView closeOrRemove;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contract);
+
+        title = findViewById(R.id.title);
+        homeButton = findViewById(R.id.homeButton);
+        role = findViewById(R.id.textRole);
+        noxboxType = findViewById(R.id.textNoxboxType);
+        inputLayout = findViewById(R.id.textInputLayout);
+        inputPrice = findViewById(R.id.inputPrice);
+        textCurrency = findViewById(R.id.textCurrency);
+        textTravelMode = findViewById(R.id.textTravelMode);
+        host = findViewById(R.id.host);
+        addressView = findViewById(R.id.textAddress);
+        comment = findViewById(R.id.comment);
         closeOrRemove = findViewById(R.id.closeOrRemove);
-        ((TextView) findViewById(R.id.textCurrency)).setText(getString(R.string.currency));
+
+        checkBalance(profile(), this);
 
         contract().copy(profile().getCurrent());
         BusinessActivity.businessEvent(contractOpening);
@@ -112,26 +142,26 @@ public class ContractActivity extends BaseActivity {
     private void draw(@NonNull final Profile profile) {
         drawToolbar();
         drawRole(profile);
-        drawType(profile);
-        drawTypeDescription(profile);
-        drawTextPayment(profile);
+        drawType();
+        drawTypeDescription();
+        drawTextPayment();
         drawPrice(profile);
         drawTravelMode(profile);
         drawHost(profile);
         drawAddress(profile);
-        drawNoxboxTimeSwitch(profile);
-        drawCommentView(profile);
+        drawTimeSwitch();
+        drawCommentView();
         drawButtons(profile);
     }
 
     private void drawToolbar() {
-        ((TextView) findViewById(R.id.title)).setText(R.string.contractService);
-        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(ContractActivity.this));
+        title.setText(R.string.contractService);
+        homeButton.setOnClickListener(v -> Router.finishActivity(ContractActivity.this));
     }
 
     private void drawRole(final Profile profile) {
         ((TextView) findViewById(R.id.textProfile)).setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
-        final TextView role = findViewById(R.id.textRole);
+
         SpannableStringBuilder spanTxt =
                 new SpannableStringBuilder(getResources().getString(contract().getRole().getName()));
         spanTxt.setSpan(new ClickableSpan() {
@@ -145,8 +175,7 @@ public class ContractActivity extends BaseActivity {
         findViewById(R.id.arrowRole).setOnClickListener(v -> createRoleList(profile, role));
     }
 
-    private void drawType(Profile profile) {
-        final TextView textView = findViewById(R.id.textNoxboxType);
+    private void drawType() {
         SpannableStringBuilder spanTxt =
                 new SpannableStringBuilder(getResources().getString(contract().getType().getName()).toLowerCase());
         spanTxt.setSpan(new ClickableSpan() {
@@ -155,16 +184,16 @@ public class ContractActivity extends BaseActivity {
                 startDialogList();
             }
         }, spanTxt.length() - (getResources().getString(contract().getType().getName())).length(), spanTxt.length(), 0);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        noxboxType.setMovementMethod(LinkMovementMethod.getInstance());
+        noxboxType.setText(spanTxt, TextView.BufferType.SPANNABLE);
         findViewById(R.id.arrowNoxboxType).setOnClickListener(v -> startDialogList());
     }
 
-    private void drawTypeDescription(Profile profile) {
+    private void drawTypeDescription() {
         ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(contract().getType().getDescription()).concat("."));
     }
 
-    private void drawTextPayment(Profile profile) {
+    private void drawTextPayment() {
         switch (contract().getType()) {
             case water:
                 ((TextView) findViewById(R.id.textPayment)).setText(R.string.priceService);
@@ -175,76 +204,92 @@ public class ContractActivity extends BaseActivity {
 
     }
 
-    private TextWatcher changeCountOfMoneyListener;
 
     private void drawPrice(final Profile profile) {
-        EditText priceInput = findViewById(R.id.inputPrice);
-        if (changeCountOfMoneyListener == null) {
-            changeCountOfMoneyListener = new TextWatcher() {
+        if (changePriceListener == null) {
+            changePriceListener = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
                     String price = s.toString().replaceAll(",", "\\.");
                     contract().setPrice(price);
+
+
                     if (s.length() > 0) {
                         drawSimilarNoxboxList(profile);
-                        ((TextView) findViewById(R.id.textCurrency))
-                                .setText(showPriceInUsd(getString(R.string.currency),
-                                        contract().getPrice()));
+                        inputLayout.setErrorEnabled(false);
+                        textCurrency.setText(showPriceInUsd(getString(R.string.currency), contract().getPrice()));
+                    } else {
+                        inputLayout.requestFocus();
+                        inputLayout.setErrorEnabled(true);
+                        inputLayout.setError("* " + getString(R.string.emptyPriceErrorMessage));
+                        textCurrency.setText(getString(R.string.currency));
                     }
                 }
             };
-            priceInput.addTextChangedListener(changeCountOfMoneyListener);
+            inputPrice.addTextChangedListener(changePriceListener);
         }
-        priceInput.setText(contract().getPrice());
+        inputPrice.setText(contract().getPrice());
 
-        ((TextView) findViewById(R.id.textCurrency))
-                .setText(showPriceInUsd(getString(R.string.currency),
-                        contract().getPrice()));
+        if (!Strings.isNullOrEmpty(contract().getPrice())) {
+            inputLayout.setErrorEnabled(false);
+            textCurrency.setText(showPriceInUsd(getString(R.string.currency),
+                    contract().getPrice()));
+        }
+
+
+    }
+
+    private void getMinimumPriceError() {
+        createMessageAlertDialog(this, R.string.emptyPriceErrorMessage, (dialog, which) -> {
+            contract().setPrice(MINIMUM_PRICE);
+            inputPrice.setText(MINIMUM_PRICE);
+            dialog.dismiss();
+            inputLayout.setErrorEnabled(false);
+            inputLayout.requestFocus();
+        });
+
     }
 
     private void drawTravelMode(final Profile profile) {
-        final TextView textView = findViewById(R.id.textTravelMode);
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(getResources().getString(contract().getOwner().getTravelMode().getName()));
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                createTravelModeList(profile, textView);
+                createTravelModeList(profile, textTravelMode);
             }
         }, spanTxt.length() - getResources().getString(contract().getOwner().getTravelMode().getName()).length(), spanTxt.length(), 0);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+        textTravelMode.setMovementMethod(LinkMovementMethod.getInstance());
+        textTravelMode.setText(spanTxt, TextView.BufferType.SPANNABLE);
         findViewById(R.id.arrowTravelMode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createTravelModeList(profile, textView);
+                createTravelModeList(profile, textTravelMode);
             }
         });
     }
 
     private void drawHost(final Profile profile) {
-        CheckBox checkBox = findViewById(R.id.isHost);
         //at least one option should be selected travel mode or host
         if (contract().getOwner().getTravelMode() == none) {
-            checkBox.setChecked(true);
-            checkBox.setEnabled(false);
+            host.setChecked(true);
+            host.setEnabled(false);
             contract().getOwner().setHost(true);
             findViewById(R.id.or).setVisibility(View.GONE);
         } else {
-            checkBox.setEnabled(true);
-            checkBox.setChecked(contract().getOwner().getHost());
+            host.setEnabled(true);
+            host.setChecked(contract().getOwner().getHost());
             findViewById(R.id.or).setVisibility(View.VISIBLE);
         }
 
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        host.setOnCheckedChangeListener((buttonView, isChecked) -> {
             contract().getOwner().setHost(isChecked);
             drawAddress(profile);
         });
@@ -267,7 +312,6 @@ public class ContractActivity extends BaseActivity {
 
             @Override
             protected void onPostExecute(String address) {
-                final TextView addressView = findViewById(R.id.textAddress);
                 if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost()) {
                     SpannableStringBuilder spanTxt =
                             new SpannableStringBuilder(address);
@@ -288,19 +332,17 @@ public class ContractActivity extends BaseActivity {
         }.execute();
     }
 
-    private DialogFragment dialog;
-
     private void startDialogList() {
-        if (dialog == null || !dialog.isVisible()) {
-            dialog = new NoxboxTypeListFragment();
+        if (noxboxTypeListFragment == null || !noxboxTypeListFragment.isVisible()) {
+            noxboxTypeListFragment = new NoxboxTypeListFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("key", CONTRACT_CODE);
-            dialog.setArguments(bundle);
-            dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+            noxboxTypeListFragment.setArguments(bundle);
+            noxboxTypeListFragment.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
         }
     }
 
-    protected void createRoleList(final Profile profile, View textView) {
+    private void createRoleList(final Profile profile, View textView) {
         final PopupMenu popup = new PopupMenu(ContractActivity.this, textView, Gravity.CENTER_HORIZONTAL);
         for (MarketRole role : MarketRole.values()) {
             popup.getMenu().add(Menu.NONE, role.getId(), Menu.NONE, role.getName());
@@ -327,8 +369,8 @@ public class ContractActivity extends BaseActivity {
 
             if (travelMode == none) {
                 contract().getOwner().setHost(true);
-                ((CheckBox) findViewById(R.id.isHost)).setChecked(true);
-                ((CheckBox) findViewById(R.id.isHost)).setEnabled(false);
+                host.setChecked(true);
+                host.setEnabled(false);
             } else {
                 if (!isLocationPermissionGranted(getApplicationContext())) {
                     getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
@@ -340,7 +382,7 @@ public class ContractActivity extends BaseActivity {
         popup.show();
     }
 
-    private void drawNoxboxTimeSwitch(final Profile profile) {
+    private void drawTimeSwitch() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(ContractActivity.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -376,12 +418,11 @@ public class ContractActivity extends BaseActivity {
         });
     }
 
-    private void drawCommentView(Profile profile) {
-        EditText editComment = findViewById(R.id.comment);
+    private void drawCommentView() {
         if (!Strings.isNullOrEmpty(contract().getContractComment())) {
-            editComment.setText(contract().getContractComment());
+            comment.setText(contract().getContractComment());
         }
-        editComment.addTextChangedListener(new TextWatcher() {
+        comment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -400,9 +441,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawButtons(final Profile profile) {
-
         drawCancelOrRemoveButton(profile);
-
         drawPublishButton(profile);
     }
 
@@ -422,8 +461,12 @@ public class ContractActivity extends BaseActivity {
         if (isNullOrZero(contract().getTimeCreated())) {
             ((TextView) findViewById(R.id.publish)).setText(R.string.post);
             publishButton.setOnClickListener(v -> {
+                if (Strings.isNullOrEmpty(contract().getPrice())) {
+                    getMinimumPriceError();
+                    return;
+                }
+
                 if (contract().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(contract(), profile)) {
-                    publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
                     BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
                 }
@@ -551,7 +594,7 @@ public class ContractActivity extends BaseActivity {
 
 
     private List<NoxboxMarker> noxboxes;
-    private RecyclerView similarListViews;
+    private RecyclerView similarNoxboxesList;
 
     private void drawSimilarNoxboxList(Profile profile) {
         new AsyncTask<Void, Void, List<NoxboxMarker>>() {
@@ -605,10 +648,10 @@ public class ContractActivity extends BaseActivity {
                     findViewById(R.id.buttonsRootLayout).setVisibility(View.GONE);
                     findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
 
-                    similarListViews = findViewById(R.id.similarNoxboxesList);
-                    similarListViews.setHasFixedSize(true);
-                    similarListViews.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
-                    similarListViews.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this, profile));
+                    similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
+                    similarNoxboxesList.setHasFixedSize(true);
+                    similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
+                    similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this, profile));
                 } else {
                     findViewById(R.id.buttonsRootLayout).setVisibility(View.VISIBLE);
                     findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
