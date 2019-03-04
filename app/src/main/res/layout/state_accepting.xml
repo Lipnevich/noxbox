@@ -23,12 +23,17 @@
 
         <Button
             android:id="@+id/joinButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="36dp"
             android:background="@drawable/button_corner"
+            android:elevation="@dimen/global_elevation"
             android:enabled="true"
+            android:gravity="center"
+            android:minWidth="64dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:text="@string/acceptText"
             android:textSize="18sp"
             android:textStyle="normal"

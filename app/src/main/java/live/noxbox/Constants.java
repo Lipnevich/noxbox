@@ -33,6 +33,7 @@ public interface Constants {
     int MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS = 12;
 
     String DEFAULT_PRICE = "5";
+    String MINIMUM_PRICE = "0.5";
 
     String FIRST_RUN_KEY = "FIRSTRUN";
 }

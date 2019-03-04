@@ -49,7 +49,7 @@ public class Requesting implements State {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
             initiated = true;
         }
-        //moveCopyrightRight(googleMap);
+
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
             autoDisconnectFromService(profile);
@@ -60,9 +60,6 @@ public class Requesting implements State {
         data.put("type", NotificationType.requesting.name());
         data.put("time", profile.getCurrent().getTimeRequested() + "");
         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
-
-        //activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
-        //activity.findViewById(R.id.locationButton).setOnClickListener(v -> MapOperator.buildMapPosition(googleMap, activity.getApplicationContext()));
 
         drawPath(activity, googleMap, profile);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
@@ -122,7 +119,6 @@ public class Requesting implements State {
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
-        //activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;

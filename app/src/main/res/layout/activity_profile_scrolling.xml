@@ -28,20 +28,21 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/textInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/profilePhoto"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:layout_toEndOf="@id/nameImage"
                 android:layout_toStartOf="@id/editName">
 
-                <EditText
-                    android:id="@+id/name"
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/inputName"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:hint="@string/enterYourName"
                     android:inputType="text"
                     android:maxLength="50"
@@ -52,8 +53,8 @@
 
             <ImageView
                 android:id="@+id/editName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:src="@drawable/edit"
@@ -111,7 +112,7 @@
 
         <!--Noxbox Type-->
         <TextView
-            android:id="@+id/serviceProvidedText"
+            android:id="@+id/portfolioListTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -125,12 +126,12 @@
             android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/noxboxTypeList"
+                android:id="@+id/portfolioList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
             <LinearLayout
-                android:id="@+id/serviceNotProvidedLayout"
+                android:id="@+id/emptyPortfolio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="64dp"
@@ -152,7 +153,7 @@
         <include layout="@layout/item_divider" />
 
         <RelativeLayout
-            android:id="@+id/addLayout"
+            android:id="@+id/addPortfolio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -164,7 +165,7 @@
 
 
             <ImageView
-                android:id="@+id/addTravelModeLayout"
+                android:id="@+id/addPortfolioImage"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_centerVertical="true"
@@ -177,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@id/addTravelModeLayout"
+                android:layout_toEndOf="@id/addPortfolioImage"
                 android:text="@string/addProvidedService"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
         </RelativeLayout>

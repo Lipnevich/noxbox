@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -58,10 +59,38 @@ public class ProfileActivity extends BaseActivity {
     public static final int CODE = 1006;
     public static final int SELECT_IMAGE = 1007;
 
+    private ImageView profilePhoto;
+    private TextView invalidPhoto;
+
+    private EditText inputName;
+    private TextInputLayout inputLayout;
+    private Switch switchHost;
+    private TextView hostDescription;
+
+    private LinearLayout emptyPortfolio;
+    private RecyclerView portfolioList;
+    private TextView portfolioListTitle;
+
+    private RelativeLayout addPortfolio;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        profilePhoto = findViewById(R.id.profilePhoto);
+        invalidPhoto = findViewById(R.id.invalidPhotoText);
+
+        inputName = findViewById(R.id.inputName);
+        inputLayout = findViewById(R.id.textInputLayout);
+        switchHost = findViewById(R.id.switchHost);
+        hostDescription = findViewById(R.id.hostDescription);
+
+        emptyPortfolio = findViewById(R.id.emptyPortfolio);
+        portfolioList = findViewById(R.id.portfolioList);
+        portfolioListTitle = findViewById(R.id.portfolioListTitle);
+
+        addPortfolio = findViewById(R.id.addPortfolio);
     }
 
     @Override
@@ -104,11 +133,10 @@ public class ProfileActivity extends BaseActivity {
             }
         };
 
-        createCircleProfilePhotoFromUrl(this, profile.getPhoto(), (ImageView) findViewById(R.id.profilePhoto));
+        createCircleProfilePhotoFromUrl(this, profile.getPhoto(), profilePhoto);
 
         findViewById(R.id.editPhoto).setOnClickListener(listener);
         findViewById(R.id.camera).setOnClickListener(cameraListener);
-        ImageView profilePhoto = findViewById(R.id.profilePhoto);
         profilePhoto.setOnClickListener(listener);
 
         checkPhotoAcceptance(profile);
@@ -120,26 +148,25 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawEditName(final Profile profile) {
-        final EditText name = findViewById(R.id.name);
-        name.getBackground().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+        inputName.getBackground().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
 
         findViewById(R.id.editName).setOnClickListener(view -> {
-            name.requestFocus();
+            inputName.requestFocus();
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.showSoftInput(name, InputMethodManager.SHOW_IMPLICIT);
+            inputMethodManager.showSoftInput(inputName, InputMethodManager.SHOW_IMPLICIT);
         });
 
         if (!Strings.isNullOrEmpty(profile.getName())) {
-            name.setText(profile.getName());
+            inputName.setText(profile.getName());
         }
 
-        final TextInputLayout inputLayout = findViewById(R.id.textInputLayout);
+
         if (profile.getName() == null || profile.getName().length() < 1) {
             inputLayout.setErrorEnabled(true);
             inputLayout.setError("* " + getString(R.string.userNameWasNotVerified));
         }
-        name.setEnabled(true);
-        name.addTextChangedListener(new TextWatcher() {
+        inputName.setEnabled(true);
+        inputName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -148,9 +175,9 @@ public class ProfileActivity extends BaseActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String newName = String.valueOf(s);
-                if(profile.getCurrent() != null
+                if (profile.getCurrent() != null
                         && !profile.getNoxboxId().isEmpty()
-                        && !isNullOrZero(profile.getCurrent().getTimeCreated())){
+                        && !isNullOrZero(profile.getCurrent().getTimeCreated())) {
                     inputLayout.requestFocus();
                     inputLayout.setFocusable(true);
                     inputLayout.setErrorEnabled(true);
@@ -177,8 +204,8 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawEditHost(final Profile profile) {
-        findViewById(R.id.switchHost).setVisibility(View.VISIBLE);
-        ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
+        switchHost.setVisibility(View.VISIBLE);
+        switchHost.setChecked(profile.getHost());
         setHostStatus(profile.getHost(), profile);
 
         findViewById(R.id.hostLayout).setOnClickListener(view -> {
@@ -188,9 +215,8 @@ public class ProfileActivity extends BaseActivity {
                 setHostStatus(true, profile);
             }
         });
-        ((Switch) findViewById(R.id.switchHost))
-                .setOnCheckedChangeListener((buttonView, isChecked) ->
-                        setHostStatus(isChecked, profile));
+        switchHost.setOnCheckedChangeListener((buttonView, isChecked) ->
+                setHostStatus(isChecked, profile));
     }
 
     private void drawPortfolioEditingMenu(final Profile profile) {
@@ -202,27 +228,27 @@ public class ProfileActivity extends BaseActivity {
             }
         }
         if (typeList.size() >= 1) {
-            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.INVISIBLE);
-            findViewById(R.id.serviceProvidedText).setVisibility(View.VISIBLE);
-            RecyclerView recyclerView = findViewById(R.id.noxboxTypeList);
-            recyclerView.setVisibility(View.VISIBLE);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-            recyclerView.setAdapter(new PortfolioNoxboxTypeAdapter(typeList, ProfileActivity.this));
+            emptyPortfolio.setVisibility(View.INVISIBLE);
+            portfolioListTitle.setVisibility(View.VISIBLE);
+
+            portfolioList.setVisibility(View.VISIBLE);
+            portfolioList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+            portfolioList.setAdapter(new PortfolioNoxboxTypeAdapter(typeList, ProfileActivity.this));
         } else {
-            findViewById(R.id.noxboxTypeList).setVisibility(View.GONE);
-            findViewById(R.id.serviceNotProvidedLayout).setVisibility(View.VISIBLE);
-            findViewById(R.id.serviceProvidedText).setVisibility(View.GONE);
+            portfolioList.setVisibility(View.GONE);
+            emptyPortfolio.setVisibility(View.VISIBLE);
+            portfolioListTitle.setVisibility(View.GONE);
         }
     }
 
     private void drawMenuAddingPerformer(final Profile profile) {
         if (profile.getPortfolio().values().size() == NoxboxType.values().length) {
-            findViewById(R.id.addLayout).setVisibility(View.GONE);
+            addPortfolio.setVisibility(View.GONE);
             return;
         }
 
-        findViewById(R.id.addLayout).setVisibility(View.VISIBLE);
-        findViewById(R.id.addLayout).setOnClickListener(v -> {
+        addPortfolio.setVisibility(View.VISIBLE);
+        addPortfolio.setOnClickListener(v -> {
             DialogFragment dialog = new NoxboxTypeListFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("key", PROFILE_CODE);
@@ -232,31 +258,29 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void checkPhotoAcceptance(Profile profile) {
-        ImageView profilePhoto = findViewById(R.id.profilePhoto);
-
         if (!profile.getAcceptance().isAccepted()) {
-            ((TextView) findViewById(R.id.invalidPhotoText)).setText("* " + getString(R.string.photoInvalidContent, getString(profile.getAcceptance().getInvalidAcceptance().getContent())));
+            invalidPhoto.setText("* " + getString(R.string.photoInvalidContent, getString(profile.getAcceptance().getInvalidAcceptance().getContent())));
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
-            params.setMargins(0, 16, 0, 0); //substitute parameters for left, top, right, bottom
+            params.setMargins(0, 16, 0, 0);
             profilePhoto.setLayoutParams(params);
-            findViewById(R.id.invalidPhotoText).setVisibility(View.VISIBLE);
+            invalidPhoto.setVisibility(View.VISIBLE);
         } else {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
-            params.setMargins(0, 16, 0, 16); //substitute parameters for left, top, right, bottom
+            params.setMargins(0, 16, 0, 16);
             profilePhoto.setLayoutParams(params);
-            findViewById(R.id.invalidPhotoText).setVisibility(View.INVISIBLE);
+            invalidPhoto.setVisibility(View.INVISIBLE);
         }
     }
 
     private void setHostStatus(boolean isChecked, Profile profile) {
         if (isChecked) {
             profile.setHost(isChecked);
-            ((TextView) findViewById(R.id.hostDescription)).setText(R.string.haveHost);
+            hostDescription.setText(R.string.haveHost);
         } else {
             profile.setHost(isChecked);
-            ((TextView) findViewById(R.id.hostDescription)).setText(R.string.notHaveHost);
+            hostDescription.setText(R.string.notHaveHost);
         }
-        ((Switch) findViewById(R.id.switchHost)).setChecked(profile.getHost());
+        switchHost.setChecked(profile.getHost());
     }
 
     @Override
@@ -289,7 +313,7 @@ public class ProfileActivity extends BaseActivity {
                             checkPhotoAcceptance(profile);
                         }));
 
-                createCircleProfilePhotoFromUrl(ProfileActivity.this, data.getData().toString(), findViewById(R.id.profilePhoto));
+                createCircleProfilePhotoFromUrl(ProfileActivity.this, data.getData().toString(), profilePhoto);
 
 
             } else if (requestCode == TravelModeListActivity.CODE) {
@@ -308,7 +332,7 @@ public class ProfileActivity extends BaseActivity {
                             checkPhotoAcceptance(profile);
                         }));
 
-                createCircleImageFromBitmap(ProfileActivity.this, photoBitmap, findViewById(R.id.profilePhoto));
+                createCircleImageFromBitmap(ProfileActivity.this, photoBitmap, profilePhoto);
 
             }
 

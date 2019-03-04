@@ -30,6 +30,7 @@ import live.noxbox.ui.RoleSwitcherLayout;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
+import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.LocationOperator.getDeviceLocation;
@@ -52,7 +53,7 @@ public class AvailableNoxboxes implements State {
     private static boolean serviceIsBound = false;
 
     public static volatile int clusterRenderingFrequency = 400;
-    private DialogFragment dialog;
+    private DialogFragment noxboxTypeListFragment;
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
@@ -70,7 +71,9 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+        if (isProfileReady()) {
+            activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+        }
         activity.findViewById(R.id.switcherLayout).setVisibility(View.VISIBLE);
         ((RoleSwitcherLayout) activity.findViewById(R.id.switcherLayout)
                 .findViewById(R.id.realSwitcherLayout)).refresh();
@@ -81,12 +84,12 @@ public class AvailableNoxboxes implements State {
         });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
-            if (dialog == null || !dialog.isVisible()) {
-                dialog = new NoxboxTypeListFragment();
+            if (noxboxTypeListFragment == null || !noxboxTypeListFragment.isVisible()) {
+                noxboxTypeListFragment = new NoxboxTypeListFragment();
                 Bundle bundle = new Bundle();
                 bundle.putInt("key", MAP_CODE);
-                dialog.setArguments(bundle);
-                dialog.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+                noxboxTypeListFragment.setArguments(bundle);
+                noxboxTypeListFragment.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
             }
         });
 

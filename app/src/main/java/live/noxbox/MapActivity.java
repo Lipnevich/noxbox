@@ -80,7 +80,6 @@ public class MapActivity extends HackerActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.MapTheme);
         super.onCreate(savedInstanceState);
-//        showProgressDialog(findViewById(R.id.mapId), ProgressDialogFragment.MAP_KEY);
         initCrashReporting();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -147,7 +146,7 @@ public class MapActivity extends HackerActivity implements
         updateLocation(this, googleMap);
 
         setupMap(this, googleMap);
-        enterTheMap(googleMap,this);
+        enterTheMap(googleMap, this);
 
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         moveCopyrightLeft(googleMap);
@@ -201,7 +200,6 @@ public class MapActivity extends HackerActivity implements
             if (currentState == null) {
                 currentState = newState;
                 measuredDraw(newState);
-                clearProgressDialog();
                 return;
             }
 
@@ -209,12 +207,10 @@ public class MapActivity extends HackerActivity implements
                 currentState.clear();
                 currentState = newState;
                 measuredDraw(newState);
-                clearProgressDialog();
                 return;
             }
 
             measuredDraw(currentState);
-            clearProgressDialog();
         });
     }
 

@@ -13,6 +13,7 @@
     <dimen name="text_title">22sp</dimen>
     <dimen name="text_search">20sp</dimen>
     <dimen name="text_size">16sp</dimen>
+    <dimen name="text_button">14sp</dimen>
     <dimen name="text_size_secondary">12sp</dimen>
     <dimen name="text_warning">10sp</dimen>
 
