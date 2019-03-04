@@ -21,6 +21,7 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
+import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
 
 import static com.google.common.base.Objects.equal;
@@ -75,6 +76,10 @@ public class AppCache {
                         stopListenNoxbox(profile.getNoxboxId());
                     }
                     startListenNoxbox(newProfile.getNoxboxId());
+                }
+                if(profile.getPosition().getLatitude() != 0.0
+                        && newProfile.getPosition().getLatitude() == 0.0) {
+                    newProfile.setPosition(profile.getPosition());
                 }
 
                 profile.copy(newProfile);
@@ -138,7 +143,7 @@ public class AppCache {
     }
 
     public static void executeUITasks() {
-//        LogProperties.update(profile, profileListeners);
+        LogProperties.update(profile, profileListeners);
 
         for (Map.Entry<String, Task<Profile>> entry : profileListeners.entrySet()) {
             entry.getValue().execute(profile);

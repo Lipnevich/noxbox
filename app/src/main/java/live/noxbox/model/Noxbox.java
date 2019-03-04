@@ -137,6 +137,14 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
+    public int getIcon() {
+        if(getRole() == demand) {
+            return getType().getImageDemand();
+        }
+
+        return getType().getImageSupply();
+    }
+
     public Profile getProfileWhoComes() {
         if (party == null) return getOwner();
         if (getOwner().getTravelMode() == none) {

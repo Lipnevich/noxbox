@@ -44,7 +44,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
     public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, final int position) {
         NoxboxType type = clusterItems.get(position).getNoxbox().getType();
 
-        clusterViewHolder.icon.setImageResource(type.getImageSupply());
+        clusterViewHolder.icon.setImageResource(clusterItems.get(position).getNoxbox().getIcon());
 
         String rating;
 

@@ -13,7 +13,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 
-import live.noxbox.database.Firestore;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
@@ -66,8 +65,6 @@ public class LocationOperator {
                             Position position = Position.from(lastKnownLocation);
                             profile.setPosition(position);
                             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-                            Firestore.writeProfile(profile, o -> {
-                            });
                         }
                     } else {
                         Crashlytics.logException(task.getException());

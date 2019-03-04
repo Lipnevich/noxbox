@@ -88,7 +88,7 @@ public class Firestore {
 
                     if(o instanceof FirebaseFirestoreException) {
                         if(((FirebaseFirestoreException) o).getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
-                            Crashlytics.log(Log.ERROR, "ProfileWriteDenied", new Gson().toJson(profile));
+                            Crashlytics.log(Log.ERROR, "ProfileWriteDenied", new Gson().toJson(profile.publicInfo()));
                         }
                     }
                     Crashlytics.logException(o);

@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.math.BigDecimal;
@@ -103,7 +102,6 @@ public class Performing implements State {
                         stopHandler();
                         return;
                     }
-                    Crashlytics.setString(this.toString(), "PerformingRunnable");
                 }
             }
         };
