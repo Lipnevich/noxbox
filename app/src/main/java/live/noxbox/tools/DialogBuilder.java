@@ -14,12 +14,17 @@ public class DialogBuilder {
                 .setCancelable(false)
                 .setTitle(R.string.note)
                 .setPositiveButton(android.R.string.yes, listener)
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+
+    public static void createMessageAlertDialog(Activity activity, int message, DialogInterface.OnClickListener listener) {
+        new AlertDialog.Builder(activity, R.style.NoxboxAlertDialogStyle)
+                .setMessage(message)
+                .setCancelable(false)
+                .setTitle(R.string.note)
+                .setPositiveButton(android.R.string.ok, listener)
                 .create()
                 .show();
     }

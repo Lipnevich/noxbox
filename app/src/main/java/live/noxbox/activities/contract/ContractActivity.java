@@ -82,36 +82,32 @@ public class ContractActivity extends BaseActivity {
     private DialogFragment noxboxTypeListFragment;
     private TextView title;
     private ImageView homeButton;
+    private TextView textProfile;
     private TextView role;
+    private ImageView arrowRole;
     private TextView noxboxType;
+    private ImageView arrowNoxboxType;
+    private TextView textTypeDescription;
+    private TextView textPayment;
     private TextInputLayout inputLayout;
     private EditText inputPrice;
     private TextWatcher changePriceListener;
     private TextView textCurrency;
     private TextView textTravelMode;
+    private ImageView arrowTravelMode;
     private TextView addressView;
-
+    private TextView or;
     private CheckBox host;
     private EditText comment;
     private TextView closeOrRemove;
+    private TextView publish;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contract);
 
-        title = findViewById(R.id.title);
-        homeButton = findViewById(R.id.homeButton);
-        role = findViewById(R.id.textRole);
-        noxboxType = findViewById(R.id.textNoxboxType);
-        inputLayout = findViewById(R.id.textInputLayout);
-        inputPrice = findViewById(R.id.inputPrice);
-        textCurrency = findViewById(R.id.textCurrency);
-        textTravelMode = findViewById(R.id.textTravelMode);
-        host = findViewById(R.id.host);
-        addressView = findViewById(R.id.textAddress);
-        comment = findViewById(R.id.comment);
-        closeOrRemove = findViewById(R.id.closeOrRemove);
+        initializeUiComponents();
 
         checkBalance(profile(), this);
 
@@ -119,12 +115,35 @@ public class ContractActivity extends BaseActivity {
         BusinessActivity.businessEvent(contractOpening);
     }
 
+    private void initializeUiComponents() {
+        title = findViewById(R.id.title);
+        homeButton = findViewById(R.id.homeButton);
+        textProfile = findViewById(R.id.textProfile);
+        role = findViewById(R.id.textRole);
+        arrowRole = findViewById(R.id.arrowRole);
+        noxboxType = findViewById(R.id.textNoxboxType);
+        arrowNoxboxType = findViewById(R.id.arrowNoxboxType);
+        textTypeDescription = findViewById(R.id.textTypeDescription);
+        textPayment = findViewById(R.id.textPayment);
+        inputLayout = findViewById(R.id.textInputLayout);
+        inputPrice = findViewById(R.id.inputPrice);
+        textCurrency = findViewById(R.id.textCurrency);
+        textTravelMode = findViewById(R.id.textTravelMode);
+        arrowTravelMode = findViewById(R.id.arrowTravelMode);
+        host = findViewById(R.id.host);
+        or = findViewById(R.id.or);
+        addressView = findViewById(R.id.textAddress);
+        comment = findViewById(R.id.comment);
+        closeOrRemove = findViewById(R.id.closeOrRemove);
+        publish = findViewById(R.id.publish);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         AppCache.listenProfile(ContractActivity.class.getName(), profile -> {
             if (!isProfileReady()) return;
-            draw(profile);
+            draw();
             checkBalance(profile, ContractActivity.this);
         });
     }
@@ -139,19 +158,19 @@ public class ContractActivity extends BaseActivity {
         return profile().getContract();
     }
 
-    private void draw(@NonNull final Profile profile) {
+    private void draw() {
         drawToolbar();
-        drawRole(profile);
+        drawRole(profile());
         drawType();
         drawTypeDescription();
         drawTextPayment();
-        drawPrice(profile);
-        drawTravelMode(profile);
-        drawHost(profile);
-        drawAddress(profile);
+        drawPrice(profile());
+        drawTravelMode(profile());
+        drawHost(profile());
+        drawAddress(profile());
         drawTimeSwitch();
         drawCommentView();
-        drawButtons(profile);
+        drawButtons(profile());
     }
 
     private void drawToolbar() {
@@ -160,7 +179,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawRole(final Profile profile) {
-        ((TextView) findViewById(R.id.textProfile)).setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
+        textProfile.setText(getString(R.string.i).concat(" ").concat(profile.getName()).concat(" ").concat(getResources().getString(R.string.want)).concat(" "));
 
         SpannableStringBuilder spanTxt =
                 new SpannableStringBuilder(getResources().getString(contract().getRole().getName()));
@@ -172,7 +191,7 @@ public class ContractActivity extends BaseActivity {
         }, spanTxt.length() - getResources().getString(contract().getRole().getName()).length(), spanTxt.length(), 0);
         role.setMovementMethod(LinkMovementMethod.getInstance());
         role.setText(spanTxt, TextView.BufferType.SPANNABLE);
-        findViewById(R.id.arrowRole).setOnClickListener(v -> createRoleList(profile, role));
+        arrowRole.setOnClickListener(v -> createRoleList(profile, role));
     }
 
     private void drawType() {
@@ -186,20 +205,20 @@ public class ContractActivity extends BaseActivity {
         }, spanTxt.length() - (getResources().getString(contract().getType().getName())).length(), spanTxt.length(), 0);
         noxboxType.setMovementMethod(LinkMovementMethod.getInstance());
         noxboxType.setText(spanTxt, TextView.BufferType.SPANNABLE);
-        findViewById(R.id.arrowNoxboxType).setOnClickListener(v -> startDialogList());
+        arrowNoxboxType.setOnClickListener(v -> startDialogList());
     }
 
     private void drawTypeDescription() {
-        ((TextView) findViewById(R.id.textTypeDescription)).setText(getResources().getString(contract().getType().getDescription()).concat("."));
+        textTypeDescription.setText(getResources().getString(contract().getType().getDescription()).concat("."));
     }
 
     private void drawTextPayment() {
         switch (contract().getType()) {
             case water:
-                ((TextView) findViewById(R.id.textPayment)).setText(R.string.priceService);
+                textPayment.setText(R.string.priceService);
                 break;
             default:
-                ((TextView) findViewById(R.id.textPayment)).setText(R.string.priceOneHourOfService);
+                textPayment.setText(R.string.priceOneHourOfService);
         }
 
     }
@@ -268,12 +287,7 @@ public class ContractActivity extends BaseActivity {
         }, spanTxt.length() - getResources().getString(contract().getOwner().getTravelMode().getName()).length(), spanTxt.length(), 0);
         textTravelMode.setMovementMethod(LinkMovementMethod.getInstance());
         textTravelMode.setText(spanTxt, TextView.BufferType.SPANNABLE);
-        findViewById(R.id.arrowTravelMode).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createTravelModeList(profile, textTravelMode);
-            }
-        });
+        arrowTravelMode.setOnClickListener(v -> createTravelModeList(profile, textTravelMode));
     }
 
     private void drawHost(final Profile profile) {
@@ -282,11 +296,11 @@ public class ContractActivity extends BaseActivity {
             host.setChecked(true);
             host.setEnabled(false);
             contract().getOwner().setHost(true);
-            findViewById(R.id.or).setVisibility(View.GONE);
+            or.setVisibility(View.GONE);
         } else {
             host.setEnabled(true);
             host.setChecked(contract().getOwner().getHost());
-            findViewById(R.id.or).setVisibility(View.VISIBLE);
+            or.setVisibility(View.VISIBLE);
         }
 
         host.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -349,7 +363,7 @@ public class ContractActivity extends BaseActivity {
         }
         popup.setOnMenuItemClickListener(item -> {
             contract().setRole(MarketRole.byId(item.getItemId()));
-            draw(profile);
+            draw();
             return true;
         });
 
@@ -376,7 +390,7 @@ public class ContractActivity extends BaseActivity {
                     getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
                 }
             }
-            draw(profile);
+            draw();
             return true;
         });
         popup.show();
@@ -459,7 +473,7 @@ public class ContractActivity extends BaseActivity {
         //TODO (vl) запретить размещать услуги для пользователей у которых низкий рейтинг выбранной услуги
         final LinearLayout publishButton = ((LinearLayout) findViewById(R.id.publish).getParent());
         if (isNullOrZero(contract().getTimeCreated())) {
-            ((TextView) findViewById(R.id.publish)).setText(R.string.post);
+            publish.setText(R.string.post);
             publishButton.setOnClickListener(v -> {
                 if (Strings.isNullOrEmpty(contract().getPrice())) {
                     getMinimumPriceError();
@@ -490,7 +504,7 @@ public class ContractActivity extends BaseActivity {
                 }
             });
         } else {
-            ((TextView) findViewById(R.id.publish)).setText(R.string.update);
+            publish.setText(R.string.update);
             publishButton.setOnClickListener(v -> {
                 if (contract().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(contract(), profile)) {
                     publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
@@ -519,7 +533,6 @@ public class ContractActivity extends BaseActivity {
 
         }
     }
-
 
     private void setHeightForDropdownList(Spinner spinner) {
         try {
@@ -567,7 +580,7 @@ public class ContractActivity extends BaseActivity {
             if (!isLocationPermissionGranted(getApplicationContext())) {
                 AppCache.readProfile(profile -> {
                     contract().getOwner().setTravelMode(none);
-                    draw(profile);
+                    draw();
                 });
             }
         }
@@ -609,7 +622,7 @@ public class ContractActivity extends BaseActivity {
                 }
 
                 for (NoxboxMarker item : noxboxes) {
-                    if(item.getNoxbox().getOwner().equals(profile)) {
+                    if (item.getNoxbox().getOwner().equals(profile)) {
                         continue;
                     }
 
