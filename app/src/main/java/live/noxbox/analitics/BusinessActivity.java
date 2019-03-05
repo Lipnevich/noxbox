@@ -10,7 +10,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.math.BigDecimal;
 
-import live.noxbox.BuildConfig;
 import live.noxbox.database.Firestore;
 
 import static live.noxbox.database.AppCache.profile;
@@ -42,8 +41,8 @@ public class BusinessActivity extends AppCompatActivity {
         Firestore.reads = 0L;
     }
 
-    public static void businessEvent(BusinessEvent event, String... args) {
-        if (context == null || BuildConfig.DEBUG) return;
+    public static void businessEvent(BusinessEvent event, Object... args) {
+       // if (context == null || BuildConfig.DEBUG) return;
 
         Bundle bundle = new Bundle();
 
@@ -79,9 +78,9 @@ public class BusinessActivity extends AppCompatActivity {
                 break;
             case like:
             case dislike:
-                bundle.putString("noxboxId", args[0]);
-                bundle.putString("noxboxType", args[1]);
-                bundle.putDouble("price", new BigDecimal(args[2]).doubleValue());
+                bundle.putString("noxboxId", args[0].toString());
+                bundle.putString("noxboxType", args[1].toString());
+                bundle.putDouble("price", new BigDecimal(args[2].toString()).doubleValue());
                 break;
 
         }

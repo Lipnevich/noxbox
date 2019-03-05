@@ -77,7 +77,7 @@ public class AppCache {
                     }
                     startListenNoxbox(newProfile.getNoxboxId());
                 }
-                if(profile.getPosition().getLatitude() != 0.0
+                if (profile.getPosition().getLatitude() != 0.0
                         && newProfile.getPosition().getLatitude() == 0.0) {
                     newProfile.setPosition(profile.getPosition());
                 }

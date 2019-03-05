@@ -55,7 +55,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'com.google.android.gms:play-services-places:16.0.0'
+//   implementation 'com.google.android.gms:play-services-places:16.0.0'
+//    implementation 'com.google.android.libraries.places:places-compat:1.0.0'
+    implementation 'com.google.android.libraries.places:places:1.0.0'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.google.firebase:firebase-database:16.0.6'
@@ -70,7 +72,7 @@ dependencies {
     implementation 'com.firebase:geofire-android:2.1.1'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') { transitive = true }
     implementation 'joda-time:joda-time:2.10'
-    // progress cat
+
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'com.gjiazhe:PanoramaImageView:1.0'

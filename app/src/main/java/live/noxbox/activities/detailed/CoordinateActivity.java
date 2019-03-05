@@ -1,50 +1,39 @@
 package live.noxbox.activities.detailed;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.maps.android.SphericalUtil;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import live.noxbox.Constants;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
-import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
 
-import static live.noxbox.Constants.ADDRESS_SEARCH_RADIUS_IN_METERS;
 import static live.noxbox.Constants.DEFAULT_ZOOM_LEVEL;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.database.AppCache.executeUITasks;
@@ -60,27 +49,57 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     public static final String LNG = "lng";
     public static final int COORDINATE = 111;
 
+    private ImageView homeButton;
+    private ImageView locationButton;
+    private Button choosePlace;
+
 
     private GoogleMap googleMap;
-    private AutoCompleteTextView searchLine;
-    private PlaceAutocompleteAdapter placeAutocompleteAdapter;
-    private GoogleApiClient googleApiClient;
 
     private FusedLocationProviderClient providerClient;
+
+    private List<Place.Field> placeField = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
+    private static final String key = "MAP_API_KEY";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coordinate);
+        initializeUi();
 
         providerClient = initLocationProviderClient(getApplicationContext());
 
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), key);
+        }
+
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        autocompleteFragment.setPlaceFields(placeField);
+
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                Toast.makeText(getApplicationContext(), place.getAddress(), Toast.LENGTH_LONG).show();
+                moveCamera(place.getLatLng(), 15);
+            }
+
+            @Override
+            public void onError(Status status) {
+                Toast.makeText(getApplicationContext(), "An error occurred: " + status, Toast.LENGTH_LONG).show();
+            }
+        });
+
+
         draw();
     }
 
@@ -108,9 +127,13 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
             moveCamera(profile().getCurrent().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL);
         }
 
-        init(profile());
-
         draw();
+    }
+
+    private void initializeUi() {
+        homeButton = findViewById(R.id.homeButton);
+        locationButton = findViewById(R.id.locationButton);
+        choosePlace = findViewById(R.id.choosePlace);
     }
 
     private void draw() {
@@ -120,36 +143,20 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     }
 
     private void drawToolbar() {
-        findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(CoordinateActivity.this));
+        homeButton.setOnClickListener(v -> Router.finishActivity(CoordinateActivity.this));
     }
 
     private void drawLocationButton() {
-        findViewById(R.id.locationButton).setOnClickListener(v -> {
+        locationButton.setOnClickListener(v -> {
             getLocationPermission(CoordinateActivity.this, Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
             getDeviceLocation(profile(), googleMap, CoordinateActivity.this);
         });
     }
 
     private void drawChoosePlaceButton() {
-        findViewById(R.id.choosePlace).setOnClickListener(v -> {
-
+        choosePlace.setOnClickListener(v -> {
             providePositionResult();
-
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getDeviceLocation(profile(), googleMap, this);
-                    executeUITasks();
-                }
-                break;
-        }
-        updateLocation(this, googleMap);
     }
 
     private void providePositionResult() {
@@ -167,87 +174,6 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         Router.finishActivity(CoordinateActivity.this);
     }
 
-
-    public LatLngBounds getAreaByRadiusAroundPoint(LatLng center, double radiusInMeters) {
-        double distanceFromCenterToCorner = radiusInMeters * Math.sqrt(2.0);
-        LatLng southwestCorner =
-                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 225.0);
-        LatLng northeastCorner =
-                SphericalUtil.computeOffset(center, distanceFromCenterToCorner, 45.0);
-        return new LatLngBounds(southwestCorner, northeastCorner);
-    }
-
-    private void init(final Profile profile) {
-        googleApiClient = new GoogleApiClient
-                .Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, this)
-                .build();
-
-        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(
-                this,
-                googleApiClient,
-                getAreaByRadiusAroundPoint(profile.getPosition().toLatLng(), ADDRESS_SEARCH_RADIUS_IN_METERS),
-                null);
-
-        searchLine = findViewById(R.id.searchInput);
-        searchLine.setOnItemClickListener(mAutocompleteClickListener);
-        searchLine.setAdapter(placeAutocompleteAdapter);
-
-        searchLine.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH
-                    || actionId == EditorInfo.IME_ACTION_DONE
-                    || event.getAction() == KeyEvent.ACTION_DOWN
-                    || event.getAction() == KeyEvent.KEYCODE_ENTER) {
-                provideGeoLocation();
-
-            }
-
-            return false;
-        });
-    }
-
-    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final AutocompletePrediction item = placeAutocompleteAdapter.getItem(position);
-            final String placeId = item.getPlaceId();
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (in != null) {
-                in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
-            }
-        }
-    };
-
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = places -> {
-        if (!places.getStatus().isSuccess()) {
-            places.release();
-            return;
-        }
-        moveCamera(places.get(0).getLatLng(), DEFAULT_ZOOM_LEVEL);
-        places.release();
-    };
-
-    private void provideGeoLocation() {
-        String searchString = searchLine.getText().toString();
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> addressesList = new ArrayList<>();
-        try {
-            addressesList = geocoder.getFromLocationName(searchString, 1);
-        } catch (IOException e) {
-            Crashlytics.logException(e);
-        }
-
-        if (addressesList.size() > 0) {
-            Address address = addressesList.get(0);
-
-            moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM_LEVEL);
-        }
-    }
-
     private void moveCamera(LatLng latLng, float zoom) {
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
         hideSoftKeyboard();
@@ -260,5 +186,19 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getDeviceLocation(profile(), googleMap, this);
+                    executeUITasks();
+                }
+                break;
+        }
+        updateLocation(this, googleMap);
     }
 }

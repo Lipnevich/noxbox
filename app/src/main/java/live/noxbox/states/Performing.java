@@ -29,6 +29,7 @@ import live.noxbox.tools.Task;
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.Constants.QUARTER;
 import static live.noxbox.analitics.BusinessEvent.chatting;
+import static live.noxbox.analitics.BusinessEvent.complete;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
@@ -127,7 +128,7 @@ public class Performing implements State {
                 long timeCompleted = System.currentTimeMillis();
                 profile.getCurrent().setTotal(totalMoney.toString());
                 profile.getCurrent().setTimeCompleted(timeCompleted);
-
+                BusinessActivity.businessEvent(complete);
                 BusinessActivity.businessEvent(chatting);
                 updateNoxbox();
             }, 0);
