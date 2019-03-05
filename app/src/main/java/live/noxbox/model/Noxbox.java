@@ -549,4 +549,11 @@ public class Noxbox implements Comparable<Noxbox> {
         this.confirmationPhoto = confirmationPhoto;
         return this;
     }
+
+    @Override
+    public String toString() {
+        String string =
+                "id=" + getId();
+        return string;
+    }
 }

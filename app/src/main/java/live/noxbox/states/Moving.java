@@ -102,8 +102,6 @@ public class Moving implements State {
                             profile.getCurrent().setConfirmationPhoto(drawable);
                         }
                     });
-
-
         }
 
         if (!initiated) {
@@ -128,7 +126,6 @@ public class Moving implements State {
         }
 
         memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
-        // TODO (vl) glide upload in daemon other person photo and store in cache
 
         movingView = activity.findViewById(R.id.container);
         movingView.removeAllViews();

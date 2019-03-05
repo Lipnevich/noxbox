@@ -318,7 +318,7 @@ public class Profile implements Serializable {
     }
 
     public Noxbox getContract() {
-        if(contract == null){
+        if (contract == null) {
             contract = new Noxbox();
         }
         return contract;
@@ -339,7 +339,7 @@ public class Profile implements Serializable {
     }
 
     public Profile copy(Profile from) {
-        if(from == null) return null;
+        if (from == null) return null;
         id = from.id;
         acceptance = from.acceptance;
         darkList = from.darkList;
@@ -358,4 +358,8 @@ public class Profile implements Serializable {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "id=" + getId() + ",noxboxId=" + getNoxboxId();
+    }
 }

@@ -15,7 +15,6 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.gson.Gson;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -77,18 +76,18 @@ public class Firestore {
     }
 
     public static void writeProfile(final Profile profile, Task<Profile> onSuccess) {
-        if(profile.getId() == null) return;
+        if (profile.getId() == null) return;
         profileReference(profile.getId()).set(objectToMap(profile), SetOptions.merge())
                 .addOnSuccessListener(aVoid -> {
                     writes++;
                     onSuccess.execute(profile);
                 })
-                .addOnFailureListener(o-> {
-                    if(FirebaseAuth.getInstance().getCurrentUser() == null) return;
+                .addOnFailureListener(o -> {
+                    if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
 
-                    if(o instanceof FirebaseFirestoreException) {
-                        if(((FirebaseFirestoreException) o).getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
-                            Crashlytics.log(Log.ERROR, "ProfileWriteDenied", new Gson().toJson(profile.publicInfo()));
+                    if (o instanceof FirebaseFirestoreException) {
+                        if (((FirebaseFirestoreException) o).getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                            Crashlytics.log(Log.ERROR, "ProfileWriteDenied", profile.toString());
                         }
                     }
                     Crashlytics.logException(o);
@@ -107,7 +106,7 @@ public class Firestore {
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener((snapshot, e) -> {
             reads++;
-            if(e != null) {
+            if (e != null) {
                 Crashlytics.logException(e);
                 failure.execute(e);
                 return;
@@ -150,7 +149,7 @@ public class Firestore {
                     onSuccess.execute(currentId);
                 })
                 .addOnFailureListener(e -> {
-                    Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", new Gson().toJson(noxbox));
+                    Crashlytics.log(Log.ERROR, "NoxboxWriteDenied", noxbox.toString());
                     Crashlytics.logException(e);
                     onFailure.execute(e);
                 });
