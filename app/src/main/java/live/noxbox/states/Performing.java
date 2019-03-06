@@ -43,6 +43,9 @@ public class Performing implements State {
     private GoogleMap googleMap;
     private Profile profile = AppCache.profile();
     private LinearLayout performingView;
+    private TextView timeView;
+    private TextView moneyToPay;
+
     private static long seconds = 0;
     private static BigDecimal totalMoney;
     private boolean initiated;
@@ -61,6 +64,9 @@ public class Performing implements State {
         performingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
         performingView.addView(child);
+        timeView = performingView.findViewById(R.id.timeView);
+        moneyToPay = performingView.findViewById(R.id.moneyToPay);
+
 
         seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
         totalMoney = new BigDecimal(profile.getCurrent().getPrice());
@@ -81,12 +87,12 @@ public class Performing implements State {
                 if (isNullOrZero(profile.getCurrent().getTimeCompleted())) {
                     seconds = (System.currentTimeMillis() - timeStartPerforming) / 1000;
 
-                    ((TextView) performingView.findViewById(R.id.timeView)).setText(time);
+                    timeView.setText(time);
                     if (hasMinimumServiceTimePassed(profile.getCurrent())) {
                         totalMoney = calculateTotalAmount(profile);
-                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(format(totalMoney));
+                        moneyToPay.setText(format(totalMoney));
                     } else {
-                        ((TextView) performingView.findViewById(R.id.moneyToPay)).setText(format(totalMoney));
+                        moneyToPay.setText(format(totalMoney));
                     }
 
                     // TODO (vl) по клику на экран, обновляем баланс и максимальное время из блокчейна
