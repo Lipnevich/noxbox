@@ -23,8 +23,8 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.DialogBuilder;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.ImageManager.deleteFolderByType;
 
 public class ProfilePerformerActivity extends BaseActivity {
@@ -101,7 +101,7 @@ public class ProfilePerformerActivity extends BaseActivity {
 
         RecyclerView certificateList = findViewById(R.id.certificatesList);
         certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, type));
+        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, type, true));
 
         findViewById(R.id.certificateLayout).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,17 +119,14 @@ public class ProfilePerformerActivity extends BaseActivity {
 
         RecyclerView workSampleList = findViewById(R.id.workSampleList);
         workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, type));
+        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, type, true));
 
 
-        findViewById(R.id.workSampleLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE_WORK_SAMPLE);
-            }
+        findViewById(R.id.workSampleLayout).setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_IMAGE_WORK_SAMPLE);
         });
     }
 
@@ -138,18 +135,15 @@ public class ProfilePerformerActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (data != null) {
-                AppCache.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(Profile profile) {
-                        if (requestCode == SELECT_IMAGE_CERTIFICATE) {
-                            ImageManager.uploadImage(ProfilePerformerActivity.this, data.getData(), ImageType.certificates, type, profile.getPortfolio().get(type.name()).getImages().get(ImageType.certificates.name()).size());
-                        }
-                        if (requestCode == SELECT_IMAGE_WORK_SAMPLE) {
-                            ImageManager.uploadImage(ProfilePerformerActivity.this, data.getData(), ImageType.samples, type, profile.getPortfolio().get(type.name()).getImages().get(ImageType.samples.name()).size());
-                        }
-                    }
-                });
+
+                if (requestCode == SELECT_IMAGE_CERTIFICATE) {
+                    ImageManager.uploadImage(ProfilePerformerActivity.this, data.getData(), ImageType.certificates, type, profile().getPortfolio().get(type.name()).getImages().get(ImageType.certificates.name()).size());
+                }
+                if (requestCode == SELECT_IMAGE_WORK_SAMPLE) {
+                    ImageManager.uploadImage(ProfilePerformerActivity.this, data.getData(), ImageType.samples, type, profile().getPortfolio().get(type.name()).getImages().get(ImageType.samples.name()).size());
+                }
             }
         }
     }
 }
+

@@ -530,7 +530,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         RecyclerView certificateList = findViewById(R.id.certificatesList);
         certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, noxbox.getType()));
+        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, noxbox.getType(), false));
     }
 
     private void drawWorkSample(Noxbox noxbox) {
@@ -541,7 +541,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         RecyclerView workSampleList = findViewById(R.id.workSampleList);
         workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, noxbox.getType()));
+        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, noxbox.getType(), false));
     }
 
     private void changeArrowVector(int layout, final int element) {

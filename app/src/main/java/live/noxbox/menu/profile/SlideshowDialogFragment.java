@@ -2,7 +2,6 @@ package live.noxbox.menu.profile;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.PagerAdapter;
@@ -24,10 +23,10 @@ import live.noxbox.R;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NoxboxType;
-import live.noxbox.model.Profile;
 import live.noxbox.tools.DialogBuilder;
-import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.menu.profile.ImageListAdapter.EDITABLE_KEY;
 import static live.noxbox.menu.profile.ImageListAdapter.IMAGE_TYPE_KEY;
 import static live.noxbox.menu.profile.ImageListAdapter.PHOTOS_KEY;
 import static live.noxbox.menu.profile.ImageListAdapter.POSITION_KEY;
@@ -43,6 +42,7 @@ public class SlideshowDialogFragment extends DialogFragment {
     private int currentIndex;
     private NoxboxType type;
     private ImageType imageType;
+    private boolean editable;
 
 
     static SlideshowDialogFragment newInstance() {
@@ -60,6 +60,7 @@ public class SlideshowDialogFragment extends DialogFragment {
         selectedPosition = getArguments().getInt(POSITION_KEY);
         type = (NoxboxType) getArguments().getSerializable(TYPE_KEY);
         imageType = (ImageType) getArguments().getSerializable(IMAGE_TYPE_KEY);
+        editable = getArguments().getBoolean(EDITABLE_KEY);
 
         myViewPagerAdapter = new ViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
@@ -67,32 +68,22 @@ public class SlideshowDialogFragment extends DialogFragment {
 
         setCurrentItem(selectedPosition);
 
-        v.findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        v.findViewById(R.id.homeButton).setOnClickListener(v12 -> dismiss());
 
-        v.findViewById(R.id.deleteImage).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppCache.readProfile(new Task<Profile>() {
-                    @Override
-                    public void execute(final Profile profile) {
-                        DialogBuilder.createSimpleAlertDialog(getActivity(), R.string.wantDeleteImage, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).remove(currentIndex);
+        if (!editable) {
+            v.findViewById(R.id.deleteImage).setVisibility(View.GONE);
+        } else {
+            v.findViewById(R.id.deleteImage).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.deleteImage)
+                    .setOnClickListener(v1 -> DialogBuilder.createSimpleAlertDialog(getActivity(), R.string.wantDeleteImage,
+                            (dialog, which) -> {
+                                profile().getPortfolio().get(type.name()).getImages().get(imageType.name()).remove(currentIndex);
                                 deleteImage(type, currentIndex, imageType);
                                 dismiss();
                                 AppCache.fireProfile();
-                            }
-                        });
-                    }
-                });
-            }
-        });
+                            }));
+        }
+
 
         return v;
     }

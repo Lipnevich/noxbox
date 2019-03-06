@@ -26,17 +26,20 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
     static final String POSITION_KEY = "position";
     static final String TYPE_KEY = "type";
     static final String IMAGE_TYPE_KEY = "imageType";
+    static final String EDITABLE_KEY = "editable";
 
     private List<String> imageUrlList;
     private AppCompatActivity activity;
     private final ImageType imageType;
     private final NoxboxType type;
+    private final boolean editable;
 
-    public ImageListAdapter(final List<String> imageUrlList, final AppCompatActivity activity, final ImageType imageType, final NoxboxType type) {
+    public ImageListAdapter(final List<String> imageUrlList, final AppCompatActivity activity, final ImageType imageType, final NoxboxType type, final boolean editable) {
         this.imageUrlList = imageUrlList == null ? new ArrayList<String>() : imageUrlList;
         this.activity = activity;
         this.imageType = imageType;
         this.type = type;
+        this.editable = editable;
     }
 
     @NonNull
@@ -59,6 +62,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<ImageListAdapter.Imag
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
+                bundle.putBoolean(EDITABLE_KEY, editable);
                 bundle.putSerializable(PHOTOS_KEY, (Serializable) imageUrlList);
                 bundle.putInt(POSITION_KEY, holder.getAdapterPosition());
                 bundle.putSerializable(TYPE_KEY, type);
