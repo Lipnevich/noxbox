@@ -58,7 +58,6 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     private FusedLocationProviderClient providerClient;
 
     private List<Place.Field> placeField = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
-    private static final String key = "MAP_API_KEY";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,7 +76,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         super.onResume();
 
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), key);
+            Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
         }
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
