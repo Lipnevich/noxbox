@@ -1,25 +1,24 @@
 package live.noxbox.debug;
 
-import com.google.gson.Gson;
-
-import live.noxbox.model.Noxbox;
-import live.noxbox.model.Profile;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class SandBox {
     public static void main(String[] args) {
-        Profile profile = new Profile();
-        System.out.println(new Gson().toJson(profile));
-        System.out.println(new Gson().toJson(profile).toString());
-
-        Noxbox noxbox = new Noxbox();
-        System.out.println(new Gson().toJson(noxbox));
-
-        profile.setCurrent(noxbox);
-        System.out.println(new Gson().toJson(profile));
-        System.out.println(new Gson().toJson(noxbox));
-
-        noxbox.setOwner(profile);
-        System.out.println(new Gson().toJson(profile));
-        System.out.println(new Gson().toJson(noxbox));
+        Set<String> strings = new HashSet<>();
+        strings.add("asd");
+        strings.add("asdd");
+        strings.add("asdf");
+        strings.add("asdg");
+        strings.add("asdh");
+        System.out.println(strings);
+        Iterator<String> iterator = strings.iterator();
+        while (iterator.hasNext()) {
+            iterator.next();
+            iterator.remove();
+            strings.remove("asdh");
+        }
+        System.out.println(strings);
     }
 }

@@ -33,8 +33,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import java.util.WeakHashMap;
-
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.database.AppCache;
@@ -192,9 +190,7 @@ public class MapActivity extends HackerActivity implements
 
     private void draw() {
         AppCache.listenProfile(this.getClass().getName(), profile -> {
-            if (googleMap == null) {
-                return;
-            }
+            if (googleMap == null) return;
 
             State newState = getFragment(profile);
             if (currentState == null) {
@@ -220,19 +216,11 @@ public class MapActivity extends HackerActivity implements
         timeLogger.makeLog(state.getClass().getSimpleName());
     }
 
-    private WeakHashMap<NoxboxState, State> states = new WeakHashMap<>();
 
     public State getFragment(final Profile profile) {
         NoxboxState state = NoxboxState.getState(profile.getCurrent(), profile);
-        if (state == NoxboxState.initial) {
-            //TODO (vl) Переиспользовать существующий для initial
-            states.clear();
-        }
         //strong link for weakMap
-        State newState = states.get(state);
-        if (newState != null) {
-            return newState;
-        }
+        State newState;
 
         switch (state) {
             case initial:
@@ -256,7 +244,6 @@ public class MapActivity extends HackerActivity implements
             default:
                 throw new IllegalStateException("Unknown state: " + state.name());
         }
-        states.put(state, newState);
 
         return newState;
     }

@@ -33,7 +33,6 @@ import static live.noxbox.database.Firestore.isFinished;
 import static live.noxbox.database.Firestore.writeNoxbox;
 import static live.noxbox.database.Firestore.writeProfile;
 import static live.noxbox.database.GeoRealtime.offline;
-import static live.noxbox.database.GeoRealtime.online;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
 public class AppCache {
@@ -164,10 +163,13 @@ public class AppCache {
     public static void logout() {
         clearTasks();
         if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
-            removeNoxbox(task -> task.getCurrent().clean());
+            offline(profile.getCurrent());
         }
-        for (String noxboxId : ids) {
-            stopListenNoxbox(noxboxId);
+        Iterator<String> iterator = ids.iterator();
+        while (iterator.hasNext()) {
+            String id = iterator.next();
+            Firestore.listenNoxbox(id, NONE, NONE);
+            iterator.remove();
         }
         Firestore.listenProfile(NONE);
         profile.copy(new Profile()).setCurrent(null).setViewed(null).setContract(null);
@@ -236,7 +238,7 @@ public class AppCache {
             Firestore.updateNoxbox(profile.getContract(),
                     success -> {
                         // make it world wide visible
-                        online(profile.getContract());
+                        //online(profile.getContract());
                         profile.getCurrent().setGeoId(profile.getContract().getGeoId());
 
                         onSuccess.execute(profile);

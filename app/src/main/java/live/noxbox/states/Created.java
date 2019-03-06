@@ -12,6 +12,7 @@ import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 
+import static live.noxbox.database.GeoRealtime.online;
 import static live.noxbox.tools.MapOperator.buildMapMarkerListener;
 import static live.noxbox.tools.MapOperator.buildMapPosition;
 import static live.noxbox.tools.MapOperator.clearMapMarkerListener;
@@ -25,11 +26,16 @@ public class Created implements State {
     private GoogleMap googleMap;
     private Activity activity;
     private Profile profile = AppCache.profile();
+    private boolean initiated;
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+        if (!initiated) {
+            online(profile.getContract());
+            initiated = true;
+        }
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
