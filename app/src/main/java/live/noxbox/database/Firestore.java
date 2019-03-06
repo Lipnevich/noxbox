@@ -83,7 +83,9 @@ public class Firestore {
                     onSuccess.execute(profile);
                 })
                 .addOnFailureListener(o -> {
-                    if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
+                    if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                        return;
+                    }
 
                     if (o instanceof FirebaseFirestoreException) {
                         if (((FirebaseFirestoreException) o).getCode() == FirebaseFirestoreException.Code.PERMISSION_DENIED) {

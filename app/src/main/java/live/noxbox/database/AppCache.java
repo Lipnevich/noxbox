@@ -238,7 +238,6 @@ public class AppCache {
             Firestore.updateNoxbox(profile.getContract(),
                     success -> {
                         // make it world wide visible
-                        //online(profile.getContract());
                         profile.getCurrent().setGeoId(profile.getContract().getGeoId());
 
                         onSuccess.execute(profile);
@@ -246,6 +245,7 @@ public class AppCache {
                     error -> {
                         // remove noxboxId from the profile
                         profile.setNoxboxId("");
+                        offline(profile.getContract());
                         writeProfile(profile, NONE);
                         onFailure.execute(error);
                     });
