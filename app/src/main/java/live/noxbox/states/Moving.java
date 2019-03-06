@@ -269,7 +269,9 @@ public class Moving implements State {
 
     private static void updateTimeView(Profile profile, Context context) {
         if (movingView != null && childMovingView != null && timeView != null) {
-            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getPosition(), memberWhoMovingPosition, profile.getCurrent().getProfileWhoComes().getTravelMode()));
+            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getPosition(),
+                    memberWhoMovingPosition,
+                    profile.getCurrent().getProfileWhoComes().getTravelMode()));
             timeView.setText(context.getResources().getString(R.string.movement, "" + progressInMinutes));
         }
     }

@@ -36,4 +36,5 @@ public interface Constants {
     String MINIMUM_PRICE = "0.5";
 
     String FIRST_RUN_KEY = "FIRSTRUN";
+    int MAX_MINUTES =  15;
 }

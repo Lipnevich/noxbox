@@ -16,13 +16,13 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Constants.MAX_MINUTES;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class NotificationMoving extends Notification {
 
-    private final int maxProgressInMinutes = 15;
     private int progressInMinutes;
 
 
@@ -58,10 +58,10 @@ public class NotificationMoving extends Notification {
 
                 if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {
                     progressInMinutes = ((int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()));
-                    progressInMinutes = Math.max(1, Math.min(progressInMinutes, maxProgressInMinutes - 1));
+                    progressInMinutes = Math.max(1, Math.min(progressInMinutes, MAX_MINUTES - 1));
                     contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImageDemand());
                     contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movement, "" + progressInMinutes)));
-                    contentView.setProgressBar(R.id.progress, maxProgressInMinutes, Math.max(maxProgressInMinutes - progressInMinutes, 1), false);
+                    contentView.setProgressBar(R.id.progress, MAX_MINUTES, Math.max(MAX_MINUTES - progressInMinutes, 1), false);
                 }
                 final NotificationCompat.Builder builder = getNotificationCompatBuilder();
                 getNotificationService(context).notify(type.getGroup(), builder.build());

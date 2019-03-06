@@ -6,10 +6,14 @@ import android.util.Log;
 import live.noxbox.model.Position;
 import live.noxbox.model.TravelMode;
 
+import static live.noxbox.Constants.MAX_MINUTES;
+
 public class LocationCalculator {
 
     public static long getTimeInMinutesBetweenUsers(Position ownerPosition, Position partyPosition, TravelMode travelMode) {
-
+        if(travelMode.getSpeedInMetersPerMinute() == 0){
+            return MAX_MINUTES;
+        }
         int minutes = getDistanceBetweenTwoPoints(ownerPosition, partyPosition) / travelMode.getSpeedInMetersPerMinute();
 
         return minutes;
