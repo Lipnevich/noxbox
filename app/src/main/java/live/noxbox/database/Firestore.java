@@ -78,6 +78,9 @@ public class Firestore {
     public static void writeProfile(final Profile profile, Task<Profile> onSuccess) {
         if (profile.getId() == null) return;
         profileReference(profile.getId()).set(objectToMap(profile), SetOptions.merge())
+                .addOnCompleteListener(onComplete -> {
+                    System.out.println(onComplete);
+                })
                 .addOnSuccessListener(aVoid -> {
                     writes++;
                     onSuccess.execute(profile);

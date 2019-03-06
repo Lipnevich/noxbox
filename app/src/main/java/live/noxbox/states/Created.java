@@ -33,7 +33,7 @@ public class Created implements State {
         this.googleMap = googleMap;
         this.activity = activity;
         if (!initiated) {
-            online(profile.getContract());
+            online(profile.getCurrent());
             initiated = true;
         }
 

@@ -152,12 +152,12 @@ public class AvailableNoxboxes implements State {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             serviceIsBound = true;
-
-            AppCache.readProfile(profile -> {
-                Task task = object -> clusterManager.setItems(availableNoxboxes, profile);
-
-                SeparateStreamForStopwatch.startHandler(task, clusterRenderingFrequency);
-            });
+            Task update = with -> {
+                if(clusterManager != null) {
+                    clusterManager.setItems(availableNoxboxes, profile);
+                }
+            };
+            SeparateStreamForStopwatch.startHandler(update, clusterRenderingFrequency);
         }
 
         @Override

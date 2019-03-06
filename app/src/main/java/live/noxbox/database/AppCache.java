@@ -29,7 +29,6 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static live.noxbox.analitics.BusinessEvent.complete;
 import static live.noxbox.analitics.BusinessEvent.inBox;
 import static live.noxbox.database.Firestore.getNewNoxboxId;
-import static live.noxbox.database.Firestore.isFinished;
 import static live.noxbox.database.Firestore.writeNoxbox;
 import static live.noxbox.database.Firestore.writeProfile;
 import static live.noxbox.database.GeoRealtime.offline;
@@ -237,9 +236,6 @@ public class AppCache {
             // create noxbox
             Firestore.updateNoxbox(profile.getContract(),
                     success -> {
-                        // make it world wide visible
-                        profile.getCurrent().setGeoId(profile.getContract().getGeoId());
-
                         onSuccess.execute(profile);
                     },
                     error -> {
@@ -258,13 +254,14 @@ public class AppCache {
         String noxboxId = profile.getNoxboxId();
         if (!isNullOrEmpty(noxboxId)) {
             profile.setNoxboxId("");
-            profile.getCurrent().setFinished(isFinished(profile.getCurrent()));
             profile.getCurrent().setTimeRemoved(System.currentTimeMillis());
+            profile.getCurrent().setFinished(true);
             FirebaseMessaging.getInstance().unsubscribeFromTopic(noxboxId);
             stopListenNoxbox(noxboxId);
             offline(profile.getCurrent());
 
-            writeNoxbox(profile.getCurrent(), o -> writeProfile(profile, onSuccess), NONE);
+            writeNoxbox(profile.getCurrent(),
+                    success -> writeProfile(profile, onSuccess), NONE);
         } else {
             onSuccess.execute(profile);
         }
