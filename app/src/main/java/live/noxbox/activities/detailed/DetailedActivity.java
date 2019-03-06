@@ -109,6 +109,9 @@ public class DetailedActivity extends AppCompatActivity {
             if (profile.getViewed().getParty() == null) {
                 profile.getViewed().setParty(profile.privateInfo());
             }
+            if (resultPosition != null && profile.getViewed() != null) {
+                profile.getViewed().setPosition(resultPosition);
+            }
             draw(profile);
             checkBalance(profile, DetailedActivity.this);
         });
@@ -580,16 +583,15 @@ public class DetailedActivity extends AppCompatActivity {
         return true;
     }
 
+    private Position resultPosition;
+
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AppCache.readProfile(profile -> {
-            if (requestCode == COORDINATE && resultCode == RESULT_OK) {
-                final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-                profile.getViewed().setPosition(position);
-                profile.getViewed().getProfileWhoComes();
-            }
-        });
+        if (requestCode == COORDINATE && resultCode == RESULT_OK) {
+            resultPosition = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
+            profile().getViewed().setPosition(resultPosition);
+        }
 
     }
 

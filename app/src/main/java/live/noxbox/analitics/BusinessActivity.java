@@ -11,6 +11,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.math.BigDecimal;
 
 import live.noxbox.database.Firestore;
+import live.noxbox.debug.DebugMessage;
 
 import static live.noxbox.database.AppCache.profile;
 
@@ -42,7 +43,7 @@ public class BusinessActivity extends AppCompatActivity {
     }
 
     public static void businessEvent(BusinessEvent event, Object... args) {
-       // if (context == null || BuildConfig.DEBUG) return;
+        // if (context == null || BuildConfig.DEBUG) return;
 
         Bundle bundle = new Bundle();
 
@@ -67,9 +68,13 @@ public class BusinessActivity extends AppCompatActivity {
                 bundle.putString("type", profile().getCurrent().getType().name());
                 bundle.putString("role", profile().getCurrent().getRole().name());
                 bundle.putDouble("price", new BigDecimal(profile().getCurrent().getPrice()).doubleValue());
-                bundle.putDouble("timeSpent", (profile().getCurrent().getTimeCompleted() - Math.max(profile().getCurrent().getTimeOwnerVerified(), profile().getCurrent().getTimePartyVerified())/(1000 * 10)));
+                bundle.putDouble("timeSpent", (profile().getCurrent().getTimeCompleted() - Math.max(profile().getCurrent().getTimeOwnerVerified(), profile().getCurrent().getTimePartyVerified()) / (1000 * 10)));
                 bundle.putLong("writes", writes.getLong("writes", 0L) + Firestore.writes);
                 bundle.putLong("reads", reads.getLong("reads", 0L) + Firestore.reads);
+
+                DebugMessage.popup(context,
+                        "Reads:" + (reads.getLong("reads", 0L) + Firestore.reads)
+                                + "Writes:" + writes.getLong("writes", 0L) + Firestore.writes);
 
                 writes.edit().putLong("writes", 0L).apply();
                 reads.edit().putLong("writes", 0L).apply();

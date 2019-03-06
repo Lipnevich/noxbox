@@ -200,6 +200,10 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
         ObjectAnimator.ofFloat(marker, "alpha", 1.0F).start();
     }
 
+    public void clear() {
+        markers.clear();
+    }
+
     private static class LatLngTypeEvaluator implements TypeEvaluator<LatLng> {
 
         @Override

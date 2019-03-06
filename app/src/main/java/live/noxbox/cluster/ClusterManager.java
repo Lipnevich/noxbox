@@ -8,9 +8,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-import org.joda.time.LocalDateTime;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,21 +16,15 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import live.noxbox.debug.TimeLogger;
-import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.model.Rating;
-import live.noxbox.model.TravelMode;
 import live.noxbox.tools.MapOperator;
 
 import static live.noxbox.Constants.CLUSTER_RENDERING_MAX_FREQUENCY;
 import static live.noxbox.Constants.CLUSTER_RENDERING_MIN_FREQUENCY;
-import static live.noxbox.Constants.NOVICE_LIKES;
 import static live.noxbox.cluster.DetectNullValue.areNotTheyNull;
-import static live.noxbox.database.AppCache.profile;
-import static live.noxbox.model.MarketRole.demand;
-import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.states.AvailableNoxboxes.clusterRenderingFrequency;
+import static live.noxbox.tools.NoxboxFilters.isFiltered;
 
 public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
@@ -60,6 +51,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
             TimeLogger timeLogger = new TimeLogger();
             for (Noxbox noxbox : noxboxItems.values()) {
                 if (isFiltered(profile, noxbox)) continue;
+                // TODO (vl) add virtual variable isFiltered to Noxbox and update all such fields after updating filters only
                 clusterItems.add(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             }
             timeLogger.makeLog("Filter execution time");
@@ -67,60 +59,11 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
         }
     }
 
-    private boolean isFiltered(Profile profile, Noxbox noxbox) {
-        // TODO (vl) add virtual variable isFiltered to Noxbox and update all such fields after updating filters only
-        Boolean shouldDrawType = profile.getFilters().getTypes().get(noxbox.getType().name());
-
-        //if (BuildConfig.DEBUG) return false;
-
-        if (shouldDrawType != null && !shouldDrawType)
-            return true;
-
-        if (noxbox.getRole() == MarketRole.demand && !profile.getFilters().getDemand())
-            return true;
-
-        if (noxbox.getRole() == supply && !profile.getFilters().getSupply())
-            return true;
-
-        if (noxbox.getOwner().getId().equals(profile().getId()))
-            // TODO (vl) we should also remove previous noxbox from map
-            return true;
-
-        int hour = LocalDateTime.now().getHourOfDay();
-        if (noxbox.getWorkSchedule().getStartTime().getHourOfDay() < hour
-                && noxbox.getWorkSchedule().getEndTime().getHourOfDay() > hour)
-            return true;
-
-
-        //фильтры по типу передвижения
-        if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none)
-            return true;
-
-        Rating ownerRating = noxbox.getRole()
-                == demand
-                ? noxbox.getOwner().getDemandsRating().get(noxbox.getType().name())
-                : noxbox.getOwner().getSuppliesRating().get(noxbox.getType().name());
-        if (!profile.getFilters().getAllowNovices() && ownerRating.getReceivedLikes() < NOVICE_LIKES)
-            return true;
-
-        Rating myRating = noxbox.getRole()
-                == supply
-                ? profile.getDemandsRating().get(noxbox.getType().name())
-                : profile.getSuppliesRating().get(noxbox.getType().name());
-        if (!noxbox.getOwner().getFilters().getAllowNovices() && myRating.getReceivedLikes() < NOVICE_LIKES)
-            return true;
-
-        if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
-            return true;
-
-        try {
-            if (new BigDecimal(noxbox.getPrice()).intValue() > profile.getFilters().getPrice())
-                return true;
-        } catch (NumberFormatException e) {
-            return true;
-        }
-        return false;
+    public void clear(){
+        renderer.clear();
     }
+
+
 
     private void buildQuadTree(@NonNull List<NoxboxMarker> clusterItems) {
         if (quadTreeTask != null) {

@@ -167,7 +167,7 @@ public class ContractActivity extends BaseActivity {
         drawPrice(profile());
         drawTravelMode(profile());
         drawHost(profile());
-        drawAddress(profile());
+        drawAddress();
         drawTimeSwitch();
         drawCommentView();
         drawButtons(profile());
@@ -305,12 +305,12 @@ public class ContractActivity extends BaseActivity {
 
         host.setOnCheckedChangeListener((buttonView, isChecked) -> {
             contract().getOwner().setHost(isChecked);
-            drawAddress(profile);
+            drawAddress();
         });
 
     }
 
-    private void drawAddress(Profile profile) {
+    private void drawAddress() {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... voids) {
@@ -601,7 +601,7 @@ public class ContractActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-            AppCache.readProfile(profile -> contract().setPosition(position));
+            contract().setPosition(position);
         }
     }
 

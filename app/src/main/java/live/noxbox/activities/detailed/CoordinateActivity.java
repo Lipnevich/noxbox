@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
@@ -89,13 +88,11 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                Toast.makeText(getApplicationContext(), place.getAddress(), Toast.LENGTH_LONG).show();
                 moveCamera(place.getLatLng(), 15);
             }
 
             @Override
             public void onError(Status status) {
-                Toast.makeText(getApplicationContext(), "An error occurred: " + status, Toast.LENGTH_LONG).show();
             }
         });
 

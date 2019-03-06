@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -127,6 +126,11 @@ public class AvailableNoxboxes implements State {
         if (serviceHandler != null) {
             serviceHandler.removeCallbacksAndMessages(null);
         }
+        if (clusterManager != null) {
+            clusterManager.clear();
+        }
+        clusterManager = null;
+
 
         //map clear
         googleMap.clear();
@@ -147,11 +151,7 @@ public class AvailableNoxboxes implements State {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            AvailableNoxboxesService.LocalBinder binder = (AvailableNoxboxesService.LocalBinder) service;
-            // AvailableNoxboxesService availableNoxboxesService = binder.getService();
             serviceIsBound = true;
-
-            Log.d("AvailableNoxboxes", "onServiceConnected()");
 
             AppCache.readProfile(profile -> {
                 Task task = object -> clusterManager.setItems(availableNoxboxes, profile);
@@ -162,7 +162,6 @@ public class AvailableNoxboxes implements State {
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            Log.d("AvailableNoxboxes", "onServiceDisconnected()");
             SeparateStreamForStopwatch.stopHandler();
             serviceIsBound = false;
         }

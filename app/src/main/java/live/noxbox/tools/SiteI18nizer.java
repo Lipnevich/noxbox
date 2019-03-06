@@ -24,19 +24,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class SiteI18nizer {
-//    private static final Profile localProfile = new Profile().setName("Appa");
-//
-//    public static void main(String[] args) {
-//        Profile finalProfile = localProfile;
-//        draw(finalProfile);
-//        localProfile = new Profile().setName("Abba");
-//        draw(finalProfile);
-//    }
-//
-//    public static void draw(Profile profile){
-//
-//        System.out.println(profile.getName());
-//    }
     public static void main(String[] args) throws IOException {
         Path path = Paths.get("functions/translations/template.html");
 
