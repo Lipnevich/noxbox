@@ -61,12 +61,13 @@ public class Performing implements State {
         }
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
-        performingView = activity.findViewById(R.id.container);
-        View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
-        performingView.addView(child);
-        timeView = performingView.findViewById(R.id.timeView);
-        moneyToPay = performingView.findViewById(R.id.moneyToPay);
-
+        if(performingView == null){
+            performingView = activity.findViewById(R.id.container);
+            View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
+            performingView.addView(child);
+            timeView = performingView.findViewById(R.id.timeView);
+            moneyToPay = performingView.findViewById(R.id.moneyToPay);
+        }
 
         seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
         totalMoney = new BigDecimal(profile.getCurrent().getPrice());
