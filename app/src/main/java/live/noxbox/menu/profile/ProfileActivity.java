@@ -148,8 +148,9 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawEditName(final Profile profile) {
-        inputName.getBackground().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
-
+        if(inputName.getBackground() != null) {
+            inputName.getBackground().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+        }
         findViewById(R.id.editName).setOnClickListener(view -> {
             inputName.requestFocus();
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
