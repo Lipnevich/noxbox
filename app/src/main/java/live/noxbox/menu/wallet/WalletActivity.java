@@ -50,7 +50,6 @@ public class WalletActivity extends BaseActivity {
     public static final int CODE = 1003;
 
     private static final String TAG = WalletActivity.class.getName();
-    private static long lastTransferredTime;
 
     private EditText addressToSendEditor;
     private TextView balanceLabel;

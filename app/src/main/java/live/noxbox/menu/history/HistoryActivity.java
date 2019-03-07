@@ -3,7 +3,6 @@ package live.noxbox.menu.history;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
@@ -13,12 +12,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import live.noxbox.R;
+import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
-public class HistoryActivity extends FragmentActivity {
+public class HistoryActivity extends BaseActivity {
 
     public static final int CODE = 1002;
     public static Task<MarketRole> isHistoryEmpty;

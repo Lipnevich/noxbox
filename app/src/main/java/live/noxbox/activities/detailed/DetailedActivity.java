@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -36,6 +35,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.activities.BaseActivity;
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.Firestore;
@@ -78,7 +78,7 @@ import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.LocationOperator.getLocationPermission;
 import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 
-public class DetailedActivity extends AppCompatActivity {
+public class DetailedActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
     private Profile profile;
 
