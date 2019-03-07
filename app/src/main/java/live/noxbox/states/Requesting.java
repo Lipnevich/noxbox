@@ -124,7 +124,10 @@ public class Requesting implements State {
             countDownTimer = null;
         }
         MessagingService.removeNotifications(activity);
-        requestingView.removeAllViews();
+        if (requestingView != null) {
+            requestingView.removeAllViews();
+            requestingView = null;
+        }
     }
 
 }

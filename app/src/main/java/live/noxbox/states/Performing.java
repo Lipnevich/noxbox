@@ -54,14 +54,14 @@ public class Performing implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-        if(!initiated) {
+        if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
             GeoRealtime.removePosition(profile.getCurrent().getId());
             initiated = true;
         }
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
-        if(performingView == null){
+        if (performingView == null) {
             performingView = activity.findViewById(R.id.container);
             View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
             performingView.addView(child);
@@ -148,7 +148,10 @@ public class Performing implements State {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         googleMap.clear();
         stopHandler();
-        performingView.removeAllViews();
+        if (performingView != null) {
+            performingView.removeAllViews();
+            performingView = null;
+        }
         MessagingService.removeNotifications(activity);
     }
 

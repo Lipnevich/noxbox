@@ -191,7 +191,10 @@ public class Moving implements State {
     @Override
     public void clear() {
         stopListenPosition(profile().getCurrent().getId());
-        movingView.removeAllViews();
+        if (movingView != null) {
+            movingView.removeAllViews();
+            movingView = null;
+        }
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);

@@ -146,7 +146,10 @@ public class Accepting implements State {
             countDownTimer = null;
         }
         MessagingService.removeNotifications(activity);
-        acceptingView.removeAllViews();
+        if(acceptingView != null){
+            acceptingView.removeAllViews();
+            acceptingView = null;
+        }
     }
 
 }
