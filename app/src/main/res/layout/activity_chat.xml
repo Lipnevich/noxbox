@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
+    android:clipToPadding="false"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#E6E6E6">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -49,12 +49,12 @@
 
     <ImageView
         android:id="@+id/background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/toolbar"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_above="@+id/input"
+        android:scaleType="centerCrop"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/chat_list"
@@ -65,39 +65,35 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp" />
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/secondary"
         android:layout_alignParentBottom="true"
-        app:cardElevation="@dimen/global_elevation">
+        android:elevation="@dimen/global_elevation"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/type_message"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="@string/enterMessage"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions"
+            android:paddingStart="16dp"
+            android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/type_message"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:hint="@string/enterMessage"
-                android:imeOptions="actionDone"
-                android:inputType="textNoSuggestions"
-                android:paddingStart="16dp"
-                android:textSize="20sp" />
+        <ImageView
+            android:id="@+id/send_message"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/send" />
 
-            <ImageView
-                android:id="@+id/send_message"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/send" />
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 </RelativeLayout>

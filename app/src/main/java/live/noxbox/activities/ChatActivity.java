@@ -1,10 +1,7 @@
 package live.noxbox.activities;
 
 
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
@@ -13,13 +10,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +53,6 @@ public class ChatActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat);
 
         root = findViewById(R.id.root);
@@ -119,29 +115,9 @@ public class ChatActivity extends BaseActivity {
 
 
     private void drawBackground() {
-        Drawable drawable = getDrawable(AppCache.profile().getCurrent().getType().getIllustration());
-
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int screenWidthDp = size.x;
-        int screenHeightDp = size.y;
-
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(screenWidthDp, screenHeightDp);
-            layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-            layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            backgroundImage.setLayoutParams(layoutParams);
-            backgroundImage.setScaleX(2.5F);
-            backgroundImage.setScaleY(1.0F);
-        } else {
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(screenWidthDp, screenHeightDp);
-            backgroundImage.setLayoutParams(layoutParams);
-            backgroundImage.setScaleY(1.0F);
-            backgroundImage.setScaleX(1.0F);
-        }
-        backgroundImage.setBackground(drawable);
+        Glide.with(this).asDrawable()
+            .load(AppCache.profile().getCurrent().getType().getIllustration())
+            .into(backgroundImage);
     }
 
     private void drawSendView(Profile profile) {
