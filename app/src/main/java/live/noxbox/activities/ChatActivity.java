@@ -5,7 +5,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
@@ -182,7 +181,6 @@ public class ChatActivity extends BaseActivity {
     private void send(Profile profile) {
         String trimmedText = text.getText().toString().trim();
         if (TextUtils.isEmpty(trimmedText)) return;
-        sound();
 
         long time = System.currentTimeMillis();
 
@@ -230,11 +228,6 @@ public class ChatActivity extends BaseActivity {
         sort(messages);
         chatAdapter.notifyDataSetChanged();
         chatList.scrollToPosition(messages.size() - 1);
-    }
-
-    private void sound() {
-        MediaPlayer mediaPlayer = MediaPlayer.create(ChatActivity.this, R.raw.message);
-        mediaPlayer.start();
     }
 
     private Noxbox current() {
