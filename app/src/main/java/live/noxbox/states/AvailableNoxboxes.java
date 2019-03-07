@@ -95,7 +95,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {
             profile.setNoxboxId("");
 
-            profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.privateInfo());
+            profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo());
 
             startActivity(activity, ContractActivity.class);
         });

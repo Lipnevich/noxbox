@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.analitics.BusinessActivity;
-import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -23,8 +21,10 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
+import static live.noxbox.analitics.BusinessActivity.businessEvent;
 import static live.noxbox.analitics.BusinessEvent.accept;
 import static live.noxbox.analitics.BusinessEvent.timeout;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalance;
@@ -35,7 +35,7 @@ public class Accepting implements State {
 
     private GoogleMap googleMap;
     private Activity activity;
-    private Profile profile = AppCache.profile();
+    private Profile profile = profile();
     private CountDownTimer countDownTimer;
     private LinearLayout acceptingView;
 
@@ -80,16 +80,7 @@ public class Accepting implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
 
-        acceptingView.findViewById(R.id.joinButton).setOnClickListener(v -> {
-            profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-            profile.getCurrent().getOwner().setPhoto(profile.getPhoto());
-            profile.getCurrent().getOwner().setName(profile.getName());
-            profile.getCurrent().getOwner().setWallet(profile.getWallet());
-
-            updateNoxbox();
-
-            BusinessActivity.businessEvent(accept);
-        });
+        acceptingView.findViewById(R.id.joinButton).setOnClickListener(v -> acceptCurrent());
 
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
@@ -115,7 +106,7 @@ public class Accepting implements State {
                         && isNullOrZero(profile.getCurrent().getTimeCanceledByParty())
                         && isNullOrZero(profile.getCurrent().getTimeTimeout())) {
 
-                    BusinessActivity.businessEvent(timeout);
+                    businessEvent(timeout);
                     profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
                     updateNoxbox();
                 }
@@ -126,12 +117,22 @@ public class Accepting implements State {
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
     }
 
+    public static void acceptCurrent() {
+        profile().getCurrent().setTimeAccepted(System.currentTimeMillis());
+        profile().getCurrent().getOwner().setPhoto(profile().getPhoto());
+        profile().getCurrent().getOwner().setName(profile().getName());
+        profile().getCurrent().getOwner().setWallet(profile().getWallet());
+        updateNoxbox();
+
+        businessEvent(accept);
+    }
+
     private void autoDisconnectFromService(final Profile profile) {
         if (isNullOrZero(profile.getCurrent().getTimeAccepted())
                 && !profile.getCurrent().getFinished()) {
             profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
             updateNoxbox();
-            BusinessActivity.businessEvent(timeout);
+            businessEvent(timeout);
         }
     }
 

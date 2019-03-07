@@ -49,6 +49,7 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
+import live.noxbox.states.Accepting;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.DateTimeFormatter;
@@ -62,7 +63,6 @@ import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
-import static live.noxbox.analitics.BusinessEvent.accept;
 import static live.noxbox.analitics.BusinessEvent.cancel;
 import static live.noxbox.analitics.BusinessEvent.read;
 import static live.noxbox.analitics.BusinessEvent.request;
@@ -352,10 +352,8 @@ public class DetailedActivity extends AppCompatActivity {
         } else {
             findViewById(R.id.acceptButton).setOnClickListener(v -> {
                 v.setVisibility(View.GONE);
-                profile.getCurrent().setTimeAccepted(System.currentTimeMillis());
-                AppCache.updateNoxbox();
 
-                BusinessActivity.businessEvent(accept);
+                Accepting.acceptCurrent();
 
                 Router.finishActivity(DetailedActivity.this);
             });
