@@ -43,8 +43,8 @@ public class Performing implements State {
     private TextView timeView;
     private TextView moneyToPay;
 
-    private static long seconds = 0;
-    private static BigDecimal totalMoney;
+    private long seconds = 0;
+    private BigDecimal totalMoney;
     private boolean initiated;
 
     @Override
@@ -73,39 +73,36 @@ public class Performing implements State {
 
         final long timeStartPerforming = profile.getCurrent().getTimeStartPerforming();
         seconds = (int) ((System.currentTimeMillis() - timeStartPerforming) / 1000);
-        final Task task = new Task() {
-            @Override
-            public void execute(Object object) {
-                long hours = seconds / 3600;
-                long minutes = (seconds % 3600) / 60;
-                long secs = seconds % 60;
-                String time = String.format("%d:%02d:%02d", hours, minutes, secs);
+        final Task task = object -> {
+            long hours = seconds / 3600;
+            long minutes = (seconds % 3600) / 60;
+            long secs = seconds % 60;
+            String time = String.format("%d:%02d:%02d", hours, minutes, secs);
 
 
-                if (isNullOrZero(profile.getCurrent().getTimeCompleted())) {
-                    seconds = (System.currentTimeMillis() - timeStartPerforming) / 1000;
+            if (isNullOrZero(profile.getCurrent().getTimeCompleted())) {
+                seconds = (System.currentTimeMillis() - timeStartPerforming) / 1000;
 
-                    timeView.setText(time);
-                    if (hasMinimumServiceTimePassed(profile.getCurrent())) {
-                        totalMoney = calculateTotalAmount(profile);
-                        moneyToPay.setText(format(totalMoney));
-                    } else {
-                        moneyToPay.setText(format(totalMoney));
-                    }
+                timeView.setText(time);
+                if (hasMinimumServiceTimePassed(profile.getCurrent())) {
+                    totalMoney = calculateTotalAmount(profile);
+                    moneyToPay.setText(format(totalMoney));
+                } else {
+                    moneyToPay.setText(format(totalMoney));
+                }
 
-                    // TODO (vl) по клику на экран, обновляем баланс и максимальное время из блокчейна
-                    if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
-                        BalanceChecker.checkBalance(profile, activity, o -> {
-                            // TODO (vl) обновляем максимальное время из блокчейна
-                           // HashMap<String, String> data = new HashMap<>();
-                            //data.put("type", NotificationType.lowBalance.name());
-                            //NotificationFactory.buildNotification(activity, profile, data).show();
-                        });
+                // TODO (vl) по клику на экран, обновляем баланс и максимальное время из блокчейна
+                if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
+                    BalanceChecker.checkBalance(profile, activity, o -> {
+                        // TODO (vl) обновляем максимальное время из блокчейна
+                       // HashMap<String, String> data = new HashMap<>();
+                        //data.put("type", NotificationType.lowBalance.name());
+                        //NotificationFactory.buildNotification(activity, profile, data).show();
+                    });
 
 
-                        stopHandler();
-                        return;
-                    }
+                    stopHandler();
+                    return;
                 }
             }
         };
