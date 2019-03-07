@@ -202,7 +202,7 @@ public class DetailedActivity extends AppCompatActivity {
     private void drawContractComment(Profile me) {
         if (!me.getViewed().getOwner().equals(me)) {
             if (me.getViewed().getContractComment().length() > 0) {
-                ((TextView) findViewById(R.id.contractComment)).setVisibility(View.VISIBLE);
+                findViewById(R.id.commentView).setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.contractComment)).setText(me.getViewed().getContractComment());
             } else {
 
