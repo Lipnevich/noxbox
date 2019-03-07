@@ -2,6 +2,7 @@ package live.noxbox.activities;
 
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
@@ -17,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,9 +118,13 @@ public class ChatActivity extends BaseActivity {
 
 
     private void drawBackground() {
-        Glide.with(this).asDrawable()
-            .load(AppCache.profile().getCurrent().getType().getIllustration())
-            .into(backgroundImage);
+        Glide.with(this).asDrawable().load(AppCache.profile().getCurrent().getType().getIllustration())
+            .into(new SimpleTarget<Drawable>() {
+                @Override
+                public void onResourceReady(Drawable drawable, Transition<? super Drawable> transition) {
+                    backgroundImage.setImageDrawable(drawable);
+                }
+        });
     }
 
     private void drawSendView(Profile profile) {
