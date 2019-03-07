@@ -11,11 +11,10 @@ public class SeparateStreamForStopwatch {
         if (task == null) return;
         stopHandler();
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                task.execute(null);
-                handler.postDelayed(this, interval);
+        runnable = () -> {
+            task.execute(null);
+            if(runnable != null) {
+                handler.postDelayed(runnable, interval);
             }
         };
 

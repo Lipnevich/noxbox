@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -74,7 +75,7 @@ public class BusinessActivity extends AppCompatActivity {
 
                 DebugMessage.popup(context,
                         "Reads:" + (reads.getLong("reads", 0L) + Firestore.reads)
-                                + "Writes:" + writes.getLong("writes", 0L) + Firestore.writes);
+                                + "Writes:" + writes.getLong("writes", 0L) + Firestore.writes, Toast.LENGTH_LONG);
 
                 writes.edit().putLong("writes", 0L).apply();
                 reads.edit().putLong("writes", 0L).apply();
