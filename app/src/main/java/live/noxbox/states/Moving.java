@@ -19,8 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
@@ -95,7 +93,6 @@ public class Moving implements State {
             Glide.with(activity)
                     .asDrawable()
                     .load(profile.getCurrent().getNotMe(profile.getId()).getPhoto())
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.DATA))
                     .into(new SimpleTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
