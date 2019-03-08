@@ -245,7 +245,7 @@
     <string name="reply">reply</string>
     <string name="messageSent">Message sent</string>
     <string name="noxboxCompleted">All the best!</string>
-    <string name="toEarn">Earned</string>
+    <string name="earned">Earned</string>
     <string name="spent">Spent</string>
     <string name="version">Version</string>
     <string name="currency">Waves</string>

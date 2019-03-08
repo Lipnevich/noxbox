@@ -74,6 +74,8 @@ public class MapActivity extends HackerActivity implements
 
     private FusedLocationProviderClient providerClient;
 
+    private LocationReceiver locationReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.MapTheme);
@@ -154,9 +156,12 @@ public class MapActivity extends HackerActivity implements
     @Override
     public void onConfigurationChanged(android.content.res.Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        //TODO (vl) to remove operator if after there're being to add all customs view's
+        if (currentState != null && currentState.getClass().equals(Performing.class)) {
+            draw();
+        }
     }
 
-    private LocationReceiver locationReceiver;
 
     protected boolean isGpsEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

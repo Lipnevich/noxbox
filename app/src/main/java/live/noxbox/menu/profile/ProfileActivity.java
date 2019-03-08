@@ -165,6 +165,8 @@ public class ProfileActivity extends BaseActivity {
         if (profile.getName() == null || profile.getName().length() < 1) {
             inputLayout.setErrorEnabled(true);
             inputLayout.setError("* " + getString(R.string.userNameWasNotVerified));
+        }else{
+            inputLayout.setErrorEnabled(false);
         }
         inputName.setEnabled(true);
         inputName.addTextChangedListener(new TextWatcher() {

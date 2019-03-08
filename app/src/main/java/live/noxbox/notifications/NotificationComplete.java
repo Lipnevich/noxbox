@@ -52,7 +52,7 @@ public class NotificationComplete extends Notification {
                     String message;
 
                     if (noxbox.getPerformer().getId().equals(currentUserId)) {
-                        message = context.getResources().getString(R.string.toEarn);
+                        message = context.getResources().getString(R.string.earned);
                         contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_balance);
                     } else {
                         message = context.getResources().getString(R.string.spent);
