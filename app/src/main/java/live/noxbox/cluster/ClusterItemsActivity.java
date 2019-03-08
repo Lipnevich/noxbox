@@ -4,31 +4,37 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
+import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.Task;
+
+import static java.util.Collections.sort;
 
 public class ClusterItemsActivity extends BaseActivity {
 
     private RecyclerView supplyList;
     private RecyclerView demandList;
-    public static final List<NoxboxMarker> noxboxes = new ArrayList<>();
-    private List<NoxboxMarker> supplyNoxboxes;
-    private List<NoxboxMarker> demandNoxboxes;
+    public static final Set<NoxboxMarker> noxboxes = new HashSet<>();
+    private List<NoxboxMarker> supplyNoxboxes = new ArrayList<>();
+    private List<NoxboxMarker> demandNoxboxes = new ArrayList<>();
+    Map<NoxboxType, String> types = new HashMap<>();
 
     private TextView supplyTitle;
     private TextView demandTitle;
@@ -46,21 +52,7 @@ public class ClusterItemsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(this.getClass().getName(), new Task<Profile>() {
-            @Override
-            public void execute(Profile profile) {
-                if (supplyNoxboxes != null) {
-                    supplyNoxboxes.clear();
-                    supplyNoxboxes = null;
-                }
-
-                if (demandNoxboxes != null) {
-                    demandNoxboxes.clear();
-                    demandNoxboxes = null;
-                }
-                draw(profile);
-            }
-        });
+        AppCache.listenProfile(this.getClass().getName(), this::draw);
     }
 
     private void initializeUi() {
@@ -68,30 +60,33 @@ public class ClusterItemsActivity extends BaseActivity {
         demandTitle = findViewById(R.id.demandTitle);
         homeButton = findViewById(R.id.homeButton);
         sort = findViewById(R.id.sort);
+        demandNoxboxes.clear();
+        supplyNoxboxes.clear();
+
+        for(NoxboxType type : NoxboxType.values()) {
+            types.put(type, getString(type.getName()));
+        }
     }
 
     private void draw(final Profile profile) {
-        supplyTitle.setText("Предложение");
-        demandTitle.setText("Спрос");
         separationNoxboxesByRole();
         initClusterItemsLists();
-        updateClusterItemsList(profile);
+        updateClusterItemsList();
+        supplyTitle.setVisibility(supplyNoxboxes.isEmpty() ? View.INVISIBLE : View.VISIBLE);
+        demandTitle.setVisibility(demandNoxboxes.isEmpty() ? View.INVISIBLE : View.VISIBLE);
+
         homeButton.setOnClickListener(v -> Router.finishActivity(ClusterItemsActivity.this));
-        sort.setOnClickListener(v -> showSettings(profile));
+        sort.setOnClickListener(o -> showSettings());
     }
 
 
     private void separationNoxboxesByRole() {
         for (NoxboxMarker noxboxMarker : noxboxes) {
-            if (noxboxMarker.getNoxbox().getRole() == MarketRole.supply) {
-                if (supplyNoxboxes == null) {
-                    supplyNoxboxes = new ArrayList<>();
-                }
+            if (noxboxMarker.getNoxbox().getRole() == MarketRole.supply
+                    && !supplyNoxboxes.contains(noxboxMarker)) {
                 supplyNoxboxes.add(noxboxMarker);
-            } else {
-                if (demandNoxboxes == null) {
-                    demandNoxboxes = new ArrayList<>();
-                }
+            } else if(noxboxMarker.getNoxbox().getRole() == MarketRole.demand
+                    && !demandNoxboxes.contains(noxboxMarker)) {
                 demandNoxboxes.add(noxboxMarker);
             }
         }
@@ -108,111 +103,60 @@ public class ClusterItemsActivity extends BaseActivity {
 
     }
 
-    private void updateClusterItemsList(Profile profile) {
-        if (supplyNoxboxes != null) {
-            supplyList.setAdapter(new ClusterAdapter(supplyNoxboxes, this, profile));
-        }
-
-        if (demandNoxboxes != null) {
-            demandList.setAdapter(new ClusterAdapter(demandNoxboxes, this, profile));
-        }
-
+    private void updateClusterItemsList() {
+        supplyList.setAdapter(new ClusterAdapter(supplyNoxboxes, this));
+        demandList.setAdapter(new ClusterAdapter(demandNoxboxes, this));
     }
 
-    private void showSettings(final Profile profile) {
+    private void showSettings() {
         final PopupMenu popupMenu = new PopupMenu(ClusterItemsActivity.this, findViewById(R.id.sort));
         popupMenu.getMenuInflater().inflate(R.menu.sort_menu, popupMenu.getMenu());
 
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.type: {
-                        executeSortByTypeInAlphabeticalOrder();
-                        break;
-                    }
-                    case R.id.price: {
-                        executeSortByPrice();
-                        break;
-                    }
-                    case R.id.rating: {
-                        executeSortByRating();
-                        break;
-                    }
+        popupMenu.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.type: {
+                    executeSortByTypeInAlphabeticalOrder();
+                    break;
                 }
-                updateClusterItemsList(profile);
-                return true;
+                case R.id.price: {
+                    executeSortByPrice();
+                    break;
+                }
+                case R.id.rating: {
+                    executeSortByRating();
+                    break;
+                }
             }
+            updateClusterItemsList();
+            return true;
         });
 
         popupMenu.show();
     }
 
-    private void executeSortByTypeInAlphabeticalOrder() {
-        if (supplyNoxboxes != null) {
-            Collections.sort(supplyNoxboxes, new Comparator<NoxboxMarker>() {
-                @Override
-                public int compare(NoxboxMarker o1, NoxboxMarker o2) {
-                    String name1 = getResources().getString(o1.getNoxbox().getType().getName());
-                    String name2 = getResources().getString(o2.getNoxbox().getType().getName());
-                    return name1.compareTo(name2);
-                }
-            });
-        }
+    private Comparator<NoxboxMarker> typeComparator = (first, second) ->
+            types.get(first.getNoxbox().getType()).compareTo(types.get(second.getNoxbox().getType()));
 
-        if (demandNoxboxes != null) {
-            Collections.sort(demandNoxboxes, new Comparator<NoxboxMarker>() {
-                @Override
-                public int compare(NoxboxMarker o1, NoxboxMarker o2) {
-                    String name1 = getResources().getString(o1.getNoxbox().getType().getName());
-                    String name2 = getResources().getString(o2.getNoxbox().getType().getName());
-                    return name1.compareTo(name2);
-                }
-            });
-        }
+    private void executeSortByTypeInAlphabeticalOrder() {
+        sort(supplyNoxboxes, typeComparator);
+        sort(demandNoxboxes, typeComparator);
     }
+
+    private Comparator<NoxboxMarker> priceComparator = (first, second) ->
+            first.getNoxbox().getPrice().compareTo(second.getNoxbox().getPrice());
 
     private void executeSortByPrice() {
-        if (supplyNoxboxes != null) {
-            Collections.sort(supplyNoxboxes, new Comparator<NoxboxMarker>() {
-                @Override
-                public int compare(NoxboxMarker o1, NoxboxMarker o2) {
-                    return o1.getNoxbox().getPrice().compareTo(o2.getNoxbox().getPrice());
-                }
-            });
-        }
-        if (demandNoxboxes != null) {
-            Collections.sort(demandNoxboxes, new Comparator<NoxboxMarker>() {
-                @Override
-                public int compare(NoxboxMarker o1, NoxboxMarker o2) {
-                    return o1.getNoxbox().getPrice().compareTo(o2.getNoxbox().getPrice());
-                }
-            });
-        }
-
+        sort(supplyNoxboxes, priceComparator);
+        sort(demandNoxboxes, priceComparator);
     }
 
+    private Comparator<NoxboxMarker> ratingComparator = (first, second) ->
+            first.getNoxbox().getOwner().ratingToPercentage()
+                    .compareTo(second.getNoxbox().getOwner().ratingToPercentage());
+
     private void executeSortByRating() {
-        if (supplyNoxboxes != null) {
-            Collections.sort(supplyNoxboxes, new Comparator<NoxboxMarker>() {
-                @Override
-                public int compare(NoxboxMarker o1, NoxboxMarker o2) {
-                    Integer rating1 = o1.getNoxbox().getOwner().ratingToPercentage();
-                    Integer rating2 = o2.getNoxbox().getOwner().ratingToPercentage();
-                    return rating2.compareTo(rating1);
-                }
-            });
-        }
-        if (demandNoxboxes != null) {
-            Collections.sort(demandNoxboxes, new Comparator<NoxboxMarker>() {
-                @Override
-                public int compare(NoxboxMarker o1, NoxboxMarker o2) {
-                    Integer rating1 = o1.getNoxbox().getOwner().ratingToPercentage();
-                    Integer rating2 = o2.getNoxbox().getOwner().ratingToPercentage();
-                    return rating2.compareTo(rating1);
-                }
-            });
-        }
+        sort(supplyNoxboxes, ratingComparator);
+        sort(demandNoxboxes, ratingComparator);
     }
 
 }

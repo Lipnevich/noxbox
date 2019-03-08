@@ -247,7 +247,7 @@ public class Profile implements Serializable {
 
     }
 
-    public int ratingToPercentage() {
+    public Integer ratingToPercentage() {
         int likes = 0;
         int dislikes = 0;
         for (Rating offer : suppliesRating.values()) {

@@ -668,7 +668,7 @@ public class ContractActivity extends BaseActivity {
                     similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
                     similarNoxboxesList.setHasFixedSize(true);
                     similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
-                    similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this, profile));
+                    similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this));
                 } else {
                     findViewById(R.id.buttonsRootLayout).setVisibility(View.VISIBLE);
                     findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);

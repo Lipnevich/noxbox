@@ -309,5 +309,7 @@
     <string name="isMinimumPrice">минимальная цена</string>
     <string name="emptyPriceErrorMessage">Поле в котором указывается цена за услугу не может быть пустым</string>
     <string name="enterPrice">Цена</string>
+    <string name="supplyServices">Предложение</string>
+    <string name="demandServices">Спрос</string>
 
 </resources>

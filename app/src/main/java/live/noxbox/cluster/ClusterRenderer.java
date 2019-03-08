@@ -71,6 +71,7 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
             LatLng center = MapOperator.getCenterBetweenSomeLocations(cluster.getItems());
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(center, newZoom));
         } else {
+            ClusterItemsActivity.noxboxes.clear();
             ClusterItemsActivity.noxboxes.addAll(cluster.getItems());
             Router.startActivityForResult(activity, new Intent(activity, ClusterItemsActivity.class), 1);
         }
