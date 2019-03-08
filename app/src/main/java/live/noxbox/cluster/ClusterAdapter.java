@@ -20,16 +20,16 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.tools.Router;
 
+import static live.noxbox.database.AppCache.profile;
+
 public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterViewHolder> {
 
     private List<NoxboxMarker> clusterItems;
     private Activity activity;
-    private Profile profile;
 
     public ClusterAdapter(List<NoxboxMarker> clusterItems, Activity activity, Profile profile) {
         this.clusterItems = clusterItems;
         this.activity = activity;
-        this.profile = profile;
     }
 
 
@@ -86,8 +86,8 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         clusterViewHolder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                profile.setViewed(clusterItems.get(position).getNoxbox());
-                profile.getViewed().setParty(profile.privateInfo());
+                profile().setViewed(clusterItems.get(position).getNoxbox());
+                profile().getViewed().setParty(profile().privateInfo());
                 Router.startActivity(activity, DetailedActivity.class);
             }
         });
@@ -108,7 +108,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         ImageView travelModeImage;
         TextView role;
 
-        public ClusterViewHolder(@NonNull View layout) {
+        ClusterViewHolder(@NonNull View layout) {
             super(layout);
             rootView = layout.findViewById(R.id.rootView);
             icon = layout.findViewById(R.id.icon);
