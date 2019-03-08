@@ -21,7 +21,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -79,21 +81,116 @@ import static live.noxbox.tools.LocationOperator.getLocationPermission;
 import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 
 public class DetailedActivity extends BaseActivity {
+
     private GyroscopeObserver gyroscopeObserver;
     private Profile profile;
+
+    //ui
+    private Toolbar toolbar;
+    private PanoramaImageView illustration;
+    private LinearLayout profileLayout;
+    private TextView profileName;
+    private ImageView profilePhoto;
+    private LinearLayout descriptionTitleLayout;
+    private LinearLayout descriptionLayout;
+    private ImageView descriptionArrow;
+    private TextView descriptionTitle;
+    private ImageView typeImage;
+    private TextView serviceDescription;
+    private LinearLayout commentView;
+    private TextView contractComment;
+    private LinearLayout ratingTitleLayout;
+    private LinearLayout ratingLayout;
+    private ImageView ratingArrow;
+    private ImageView ratingImage;
+    private TextView ratingTitle;
+    private TextView rating;
+    private TextView like;
+    private TextView dislike;
+    private LinearLayout travelTypeTitleLayout;
+    private LinearLayout travelTypeLayout;
+    private ImageView travelTypeArrow;
+    private ImageView travelTypeImageTitle;
+    private ImageView travelTypeImage;
+    private TextView address;
+    private TextView offerTime;
+    private TextView time;
+    private TextView travelTypeTitle;
+    private TextView travelModeText;
+    private LinearLayout coordinatesSelect;
+    private LinearLayout priceTitleLayout;
+    private LinearLayout priceLayout;
+    private ImageView priceArrow;
+    private TextView priceTitle;
+    private TextView descriptionTextInPrice;
+    private TextView clarificationTextInPrice;
+    private ImageView typeImageInPrice;
+    private Button acceptButton;
+    private Button joinButton;
+    private Button cancelButton;
+    private RelativeLayout certificateLayout;
+    private RelativeLayout workSampleLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed);
 
-        PanoramaImageView panoramaImageView = findViewById(R.id.illustration);
+        initializeUi();
+    }
+
+    private void initializeUi() {
+        illustration = findViewById(R.id.illustration);
         gyroscopeObserver = new GyroscopeObserver();
         // Set the maximum radian the device should rotate to show image's bounds.
         // It should be set between 0 and π/2.
         // The default value is π/9.
         gyroscopeObserver.setMaxRotateRadian(Math.PI / 4);
-        gyroscopeObserver.addPanoramaImageView(panoramaImageView);
+        gyroscopeObserver.addPanoramaImageView(illustration);
+
+        toolbar = findViewById(R.id.toolbar);
+        profileLayout = findViewById(R.id.profileLayout);
+        profileName = findViewById(R.id.profileName);
+        profilePhoto = findViewById(R.id.profilePhoto);
+        descriptionTitleLayout = findViewById(R.id.descriptionTitleLayout);
+        descriptionLayout = findViewById(R.id.descriptionLayout);
+        descriptionArrow = findViewById(R.id.descriptionArrow);
+        descriptionTitle = findViewById(R.id.descriptionTitle);
+        typeImage = findViewById(R.id.typeImage);
+        serviceDescription = findViewById(R.id.serviceDescription);
+        commentView = findViewById(R.id.commentView);
+        contractComment = findViewById(R.id.contractComment);
+        ratingTitleLayout = findViewById(R.id.ratingTitleLayout);
+        ratingLayout = findViewById(R.id.ratingLayout);
+        ratingArrow = findViewById(R.id.ratingArrow);
+        ratingImage = findViewById(R.id.ratingImage);
+        ratingTitle = findViewById(R.id.ratingTitle);
+        rating = findViewById(R.id.rating);
+        like = findViewById(R.id.like);
+        dislike = findViewById(R.id.dislike);
+        travelTypeTitleLayout = findViewById(R.id.travelTypeTitleLayout);
+        travelTypeLayout = findViewById(R.id.travelTypeLayout);
+        travelTypeArrow = findViewById(R.id.travelTypeArrow);
+        travelTypeImageTitle = findViewById(R.id.travelTypeImageTitle);
+        travelTypeImage = findViewById(R.id.travelTypeImage);
+        address = findViewById(R.id.address);
+        offerTime = findViewById(R.id.offerTime);
+        time = findViewById(R.id.time);
+        travelTypeTitle = findViewById(R.id.travelTypeTitle);
+        travelModeText = findViewById(R.id.travelModeText);
+        coordinatesSelect = findViewById(R.id.coordinatesSelect);
+        priceTitleLayout = findViewById(R.id.priceTitleLayout);
+        priceLayout = findViewById(R.id.priceLayout);
+        priceArrow = findViewById(R.id.priceArrow);
+        priceTitle = findViewById(R.id.priceTitle);
+        descriptionTextInPrice = findViewById(R.id.descriptionTextInPrice);
+        clarificationTextInPrice = findViewById(R.id.clarificationTextInPrice);
+        typeImageInPrice = findViewById(R.id.typeImageInPrice);
+        acceptButton = findViewById(R.id.acceptButton);
+        joinButton = findViewById(R.id.joinButton);
+        cancelButton = findViewById(R.id.cancelButton);
+        certificateLayout = findViewById(R.id.certificateLayout);
+        workSampleLayout = findViewById(R.id.workSampleLayout);
     }
 
     @Override
@@ -148,7 +245,6 @@ public class DetailedActivity extends BaseActivity {
     }
 
     private void drawToolbar(Noxbox noxbox) {
-        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
@@ -159,10 +255,10 @@ public class DetailedActivity extends BaseActivity {
                 .asDrawable()
                 .load(noxbox.getType().getIllustration())
                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-                .into(new ImageViewTarget<Drawable>(((ImageView) findViewById(R.id.illustration))) {
+                .into(new ImageViewTarget<Drawable>(illustration) {
                     @Override
                     protected void setResource(@Nullable Drawable drawable) {
-                        ((ImageView) findViewById(R.id.illustration)).setImageDrawable(drawable);
+                        illustration.setImageDrawable(drawable);
                     }
                 });
     }
@@ -170,76 +266,76 @@ public class DetailedActivity extends BaseActivity {
     private void drawOppositeProfile(Profile me) {
         Profile other = me.getViewed().getNotMe(me.getId());
         if (!other.getName().isEmpty() && !other.getPhoto().isEmpty()) {
-            findViewById(R.id.profileLayout).setVisibility(View.VISIBLE);
-            ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), findViewById(R.id.profilePhoto));
-            ((TextView) findViewById(R.id.profileName)).setText(other.getName());
+            profileLayout.setVisibility(View.VISIBLE);
+            ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), profilePhoto);
+            profileName.setText(other.getName());
         } else {
-            findViewById(R.id.profileLayout).setVisibility(View.GONE);
+            profileLayout.setVisibility(View.GONE);
         }
     }
 
     private void drawDescription(Profile profile) {
-        drawDropdownElement(R.id.descriptionTitleLayout, R.id.descriptionLayout);
-        changeArrowVector(R.id.descriptionLayout, R.id.descriptionArrow);
+        drawDropdownElement(descriptionTitleLayout.getId(), descriptionLayout.getId());
+        changeArrowVector(descriptionLayout.getId(), descriptionArrow.getId());
 
         if (profile.getViewed().getRole() == MarketRole.supply) {
             if (profile.getViewed().getOwner().equals(profile)) {
-                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
+                descriptionTitle.setText(R.string.willPay);
             } else {
-                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
+                descriptionTitle.setText(R.string.perform);
             }
         } else {
             if (profile.getViewed().getOwner().equals(profile)) {
-                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.perform);
+                descriptionTitle.setText(R.string.perform);
             } else {
-                ((TextView) findViewById(R.id.descriptionTitle)).setText(R.string.willPay);
+                descriptionTitle.setText(R.string.willPay);
             }
         }
-        ((ImageView) findViewById(R.id.typeImage)).setImageResource(profile.getViewed().getType().getImageDemand());
-        ((TextView) findViewById(R.id.serviceDescription)).setText(getText(profile.getViewed().getType().getDescription()));
+        typeImage.setImageResource(profile.getViewed().getType().getImageDemand());
+        serviceDescription.setText(getText(profile.getViewed().getType().getDescription()));
     }
+
 
     private void drawContractComment(Profile me) {
         if (!me.getViewed().getOwner().equals(me)) {
             if (me.getViewed().getContractComment().length() > 0) {
-                findViewById(R.id.commentView).setVisibility(View.VISIBLE);
-                ((TextView) findViewById(R.id.contractComment)).setText(me.getViewed().getContractComment());
+                commentView.setVisibility(View.VISIBLE);
+                contractComment.setText(me.getViewed().getContractComment());
             } else {
-
-                findViewById(R.id.commentView).setVisibility(View.GONE);
+                commentView.setVisibility(View.GONE);
             }
         }
 
     }
 
     private void drawRating(Noxbox viewed) {
-        drawDropdownElement(R.id.ratingTitleLayout, R.id.ratingLayout);
-        changeArrowVector(R.id.ratingLayout, R.id.ratingArrow);
-        Rating rating = viewed.getRole() == MarketRole.demand ?
+        drawDropdownElement(ratingTitleLayout.getId(), ratingLayout.getId());
+        changeArrowVector(ratingLayout.getId(), ratingArrow.getId());
+        Rating mateRating = viewed.getRole() == MarketRole.demand ?
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name())
                 : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
 
-        if (rating == null) {
-            rating = new Rating();
+        if (mateRating == null) {
+            mateRating = new Rating();
         }
         int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
         if (percentage >= 95) {
-            ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.GREEN);
+            ratingImage.setColorFilter(Color.GREEN);
         } else if (percentage > 90) {
-            ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.YELLOW);
+            ratingImage.setColorFilter(Color.YELLOW);
         } else {
-            ((ImageView) findViewById(R.id.ratingImage)).setColorFilter(Color.RED);
+            ratingImage.setColorFilter(Color.RED);
         }
 
-        ((TextView) findViewById(R.id.ratingTitle)).setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
-        ((TextView) findViewById(R.id.rating)).setText(viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
-        ((TextView) findViewById(R.id.like)).setText(rating.getReceivedLikes() + " " + getResources().getString(R.string.like));
-        ((TextView) findViewById(R.id.dislike)).setText(rating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
+        ratingTitle.setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
+        rating.setText(viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
+        like.setText(mateRating.getReceivedLikes() + " " + getResources().getString(R.string.like));
+        dislike.setText(mateRating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
 
         RecyclerView recyclerView = findViewById(R.id.listComments);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new CommentAdapter(rating.getComments().values()));
+        recyclerView.setAdapter(new CommentAdapter(mateRating.getComments().values()));
     }
 
     private void drawWaitingTime(final Profile profile) {
@@ -248,10 +344,10 @@ public class DetailedActivity extends BaseActivity {
             return;
         }
 
-        drawDropdownElement(R.id.travelTypeTitleLayout, R.id.travelTypeLayout);
-        changeArrowVector(R.id.travelTypeLayout, R.id.travelTypeArrow);
-        ((ImageView) findViewById(R.id.travelTypeImageTitle)).setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
-        ((ImageView) findViewById(R.id.travelTypeImage)).setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
+        drawDropdownElement(travelTypeTitleLayout.getId(), travelTypeLayout.getId());
+        changeArrowVector(travelTypeLayout.getId(), travelTypeArrow.getId());
+        travelTypeImageTitle.setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
+        travelTypeImage.setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
 
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -261,8 +357,8 @@ public class DetailedActivity extends BaseActivity {
             }
 
             @Override
-            protected void onPostExecute(String address) {
-                ((TextView) findViewById(R.id.address)).setText(address);
+            protected void onPostExecute(String resultAddress) {
+                address.setText(resultAddress);
             }
         }.execute();
 
@@ -275,42 +371,39 @@ public class DetailedActivity extends BaseActivity {
 
         String displayTime = DateTimeFormatter.format(profile.getViewed().getWorkSchedule().getStartTime().getHourOfDay(), profile.getViewed().getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
                 DateTimeFormatter.format(profile.getViewed().getWorkSchedule().getEndTime().getHourOfDay(), profile.getViewed().getWorkSchedule().getEndTime().getMinuteOfHour());
-        ((TextView) findViewById(R.id.offerTime)).setText(R.string.validityOfTheOffer);
-        ((TextView) findViewById(R.id.time)).setText(displayTime);
+        offerTime.setText(R.string.validityOfTheOffer);
+        time.setText(displayTime);
 
         if (profile.getViewed().getOwner().getTravelMode() == none) {
-            ((TextView) findViewById(R.id.travelTypeTitle)).setText(R.string.byAddress);
-            ((TextView) findViewById(R.id.travelMode)).setText(R.string.waitingByAddress);
+            travelTypeTitle.setText(R.string.byAddress);
+            travelModeText.setText(R.string.waitingByAddress);
         } else {
             long minutes = getTimeInMinutesBetweenUsers(profile.getViewed().getOwner().getPosition(), profile.getViewed().getParty().getPosition(), travelMode);
 
             String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
 
-            ((TextView) findViewById(R.id.travelTypeTitle)).setText(getString(R.string.across) + " " + timeTxt);
+            travelTypeTitle.setText(getString(R.string.across) + " " + timeTxt);
 
-            ((TextView) findViewById(R.id.travelMode)).setText(R.string.willArriveAtTheAddress);
+            travelModeText.setText(R.string.willArriveAtTheAddress);
 
             if (!isNullOrZero(profile.getViewed().getTimeRequested())) {
-                findViewById(R.id.coordinatesSelect).setVisibility(View.GONE);
+                coordinatesSelect.setVisibility(View.GONE);
             } else {
-                findViewById(R.id.coordinatesSelect).setVisibility(View.VISIBLE);
-                findViewById(R.id.coordinatesSelect).setOnClickListener(v -> startCoordinateActivity());
+                coordinatesSelect.setVisibility(View.VISIBLE);
+                coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
             }
         }
     }
 
     private void drawPrice(Profile profile) {
-        drawDropdownElement(R.id.priceTitleLayout, R.id.priceLayout);
-        changeArrowVector(R.id.priceLayout, R.id.priceArrow);
+        drawDropdownElement(priceTitleLayout.getId(), priceLayout.getId());
+        changeArrowVector(priceLayout.getId(),priceArrow.getId());
 
-        String priceTitle = getResources().getString(R.string.priceTxt) + " "
+        String priceTitleText= getResources().getString(R.string.priceTxt) + " "
                 + MoneyFormatter.format(new BigDecimal(profile.getViewed().getPrice())) + " " + AppCache.showPriceInUsd(getString(R.string.currency), profile.getViewed().getPrice());
 
-        ((TextView) findViewById(R.id.priceTitle)).setText(priceTitle);
-        ((TextView) findViewById(R.id.descriptionTextInPrice)).setText(profile.getViewed().getType().getDuration());
-
-        //TextView priceView = findViewById(R.id.price);
-        //priceView.setText(profile.getViewed().getPrice());
+        priceTitle.setText(priceTitleText);
+        descriptionTextInPrice.setText(profile.getViewed().getType().getDuration());
 
         String duration = getResources().getString(profile.getViewed().getType().getDuration());
         String serviceDescription = "";
@@ -326,8 +419,8 @@ public class DetailedActivity extends BaseActivity {
             serviceDescription = serviceDescription.concat(String.valueOf(duration.charAt(i)));
         }
         String desc = getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter);
-        ((TextView) findViewById(R.id.clarificationTextInPrice)).setText(desc);
-        ((ImageView) findViewById(R.id.typeImageInPrice)).setImageResource(profile.getViewed().getType().getImageDemand());
+        clarificationTextInPrice.setText(desc);
+        typeImageInPrice.setImageResource(profile.getViewed().getType().getImageDemand());
     }
 
     private void drawButtons(Profile profile) {
@@ -345,12 +438,12 @@ public class DetailedActivity extends BaseActivity {
     }
 
     private void drawAcceptButton(final Profile profile) {
-        findViewById(R.id.acceptButton).setVisibility(View.VISIBLE);
+        acceptButton.setVisibility(View.VISIBLE);
 
         if (!profile.getAcceptance().isAccepted()) {
-            findViewById(R.id.acceptButton).setOnClickListener(v -> openPhotoNotVerifySheetDialog(DetailedActivity.this));
+            acceptButton.setOnClickListener(v -> openPhotoNotVerifySheetDialog(DetailedActivity.this));
         } else {
-            findViewById(R.id.acceptButton).setOnClickListener(v -> {
+            acceptButton.setOnClickListener(v -> {
                 v.setVisibility(View.GONE);
 
                 Accepting.acceptCurrent();
@@ -362,14 +455,14 @@ public class DetailedActivity extends BaseActivity {
 
     private void drawJoinButton(final Profile profile) {
 
-        findViewById(R.id.joinButton).setVisibility(View.VISIBLE);
+        joinButton.setVisibility(View.VISIBLE);
         if (profile.getViewed().getRole() == MarketRole.supply) {
-            ((Button) findViewById(R.id.joinButton)).setText(R.string.order);
+            joinButton.setText(R.string.order);
         } else {
-            ((Button) findViewById(R.id.joinButton)).setText(R.string.proceed);
+            joinButton.setText(R.string.proceed);
         }
 
-        findViewById(R.id.joinButton).setOnClickListener(v -> {
+        joinButton.setOnClickListener(v -> {
             if (!isLocationPermissionGranted(DetailedActivity.this)) {
                 getLocationPermission(DetailedActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
 
@@ -389,7 +482,7 @@ public class DetailedActivity extends BaseActivity {
             return;
         }
         if (profile.getViewed().getRole() == MarketRole.supply && !BalanceCalculator.enoughBalance(profile.getViewed(), profile)) {
-            findViewById(R.id.joinButton).setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
+            joinButton.setBackground(getResources().getDrawable(R.drawable.button_corner_disabled));
             openWalletAddressSheetDialog(DetailedActivity.this, profile);
             return;
         }
@@ -429,8 +522,8 @@ public class DetailedActivity extends BaseActivity {
     private String cancellationReason;
 
     private void drawCancelButton(final Profile profile) {
-        findViewById(R.id.cancelButton).setVisibility(View.VISIBLE);
-        findViewById(R.id.cancelButton).setOnClickListener(v -> {
+        cancelButton.setVisibility(View.VISIBLE);
+        cancelButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(DetailedActivity.this);
             final View view = getLayoutInflater().inflate(R.layout.dialog_cancellation_reason, null);
             longToWait = view.findViewById(R.id.longToWait);
@@ -519,10 +612,11 @@ public class DetailedActivity extends BaseActivity {
         });
     }
 
+
     private void drawCertificate(Noxbox noxbox) {
         if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
 
-        findViewById(R.id.certificateLayout).setVisibility(View.VISIBLE);
+        certificateLayout.setVisibility(View.VISIBLE);
         List<String> certificateUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.certificates.name());
 
 
@@ -534,7 +628,7 @@ public class DetailedActivity extends BaseActivity {
     private void drawWorkSample(Noxbox noxbox) {
         if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
 
-        findViewById(R.id.workSampleLayout).setVisibility(View.VISIBLE);
+        workSampleLayout.setVisibility(View.VISIBLE);
         List<String> workSampleUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.samples.name());
 
         RecyclerView workSampleList = findViewById(R.id.workSampleList);
