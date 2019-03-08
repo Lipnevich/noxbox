@@ -103,7 +103,7 @@ public class ChatActivity extends BaseActivity {
 
     private void initChatAdapter(Profile profile) {
         if (chatAdapter == null) {
-            chatAdapter = new ChatAdapter(screen, messages, getApplicationContext(), profile);
+            chatAdapter = new ChatAdapter(screen, messages, getApplicationContext());
             chatList.setAdapter(chatAdapter);
         } else {
             chatAdapter.notifyDataSetChanged();

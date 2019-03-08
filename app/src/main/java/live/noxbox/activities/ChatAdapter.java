@@ -32,16 +32,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private List<Message> messages;
     private DisplayMetrics metrics;
     private Context context;
-    private Profile profile;
+    private Profile profile = AppCache.profile();
     private Long wasRead = 0L;
     private boolean needToUpdateNoxbox = false;
 
 
-    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, Context context, Profile profile) {
+    public ChatAdapter(DisplayMetrics metrics, List<Message> messages, Context context) {
         this.messages = messages;
         this.metrics = metrics;
         this.context = context;
-        this.profile = profile;
         if (profile.getCurrent().getOwner().equals(profile)) {
             wasRead = profile.getCurrent().getChat().getPartyReadTime();
         } else {
@@ -63,13 +62,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return messages.get(position).isMyMessage();
     }
 
+    @NonNull
     @Override
     public ChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         LinearLayout rootLayout = viewHolder.rootLayout;
         FrameLayout messageCard = viewHolder.messageCard;
         LinearLayout innerLayout = viewHolder.innerLayout;
@@ -197,7 +197,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout rootLayout;
         FrameLayout messageCard;
         LinearLayout innerLayout;
@@ -205,7 +205,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         TextView time;
         ImageView checked;
 
-        public ViewHolder(@NonNull View layout) {
+        ViewHolder(@NonNull View layout) {
             super(layout);
             rootLayout = layout.findViewById(R.id.rootLayout);
             messageCard = layout.findViewById(R.id.messageCard);

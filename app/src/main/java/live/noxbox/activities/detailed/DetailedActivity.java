@@ -80,7 +80,6 @@ import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 
 public class DetailedActivity extends BaseActivity {
     private GyroscopeObserver gyroscopeObserver;
-    private Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +93,10 @@ public class DetailedActivity extends BaseActivity {
         // The default value is π/9.
         gyroscopeObserver.setMaxRotateRadian(Math.PI / 4);
         gyroscopeObserver.addPanoramaImageView(panoramaImageView);
+
+        if (profile().getCurrent().getTimeRequested() == 0) {
+            BusinessActivity.businessEvent(read);
+        }
     }
 
     @Override
@@ -101,10 +104,6 @@ public class DetailedActivity extends BaseActivity {
         super.onResume();
         gyroscopeObserver.register(this);
         AppCache.listenProfile(DetailedActivity.class.getName(), profile -> {
-            if (profile.getCurrent().getTimeRequested() == 0) {
-                BusinessActivity.businessEvent(read);
-            }
-
             AppCache.startListenNoxbox(profile.getViewed().getId());
             if (profile.getViewed().getParty() == null) {
                 profile.getViewed().setParty(profile.privateInfo());
@@ -123,15 +122,14 @@ public class DetailedActivity extends BaseActivity {
         AppCache.stopListen(DetailedActivity.class.getName());
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null && !profile.getCurrent().equals(profile.getViewed())) {
-            AppCache.stopListenNoxbox(profile.getViewed().getId());
+        if (user != null && !profile().getCurrent().equals(profile().getViewed())) {
+            AppCache.stopListenNoxbox(profile().getViewed().getId());
         }
 
         gyroscopeObserver.unregister();
     }
 
     private void draw(Profile profile) {
-        this.profile = profile;
         drawToolbar(profile.getViewed());
         drawOppositeProfile(profile);
         drawDescription(profile);
@@ -563,9 +561,9 @@ public class DetailedActivity extends BaseActivity {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:
-                switch (NoxboxState.getState(profile.getViewed(), profile)) {
+                switch (NoxboxState.getState(profile().getViewed(), profile())) {
                     case created:
-                        profile.setViewed(null);
+                        profile().setViewed(null);
                         break;
                     case accepting:
                     case moving:
