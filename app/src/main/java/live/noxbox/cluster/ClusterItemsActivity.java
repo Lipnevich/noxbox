@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
@@ -16,7 +16,6 @@ import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
-import live.noxbox.activities.ConfirmationActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
@@ -31,13 +30,18 @@ public class ClusterItemsActivity extends BaseActivity {
     private List<NoxboxMarker> supplyNoxboxes;
     private List<NoxboxMarker> demandNoxboxes;
 
+    private TextView supplyTitle;
+    private TextView demandTitle;
+    private ImageView homeButton;
+    private ImageView sort;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cluster_items);
 
+        initializeUi();
     }
-
 
     @Override
     protected void onResume() {
@@ -45,32 +49,35 @@ public class ClusterItemsActivity extends BaseActivity {
         AppCache.listenProfile(this.getClass().getName(), new Task<Profile>() {
             @Override
             public void execute(Profile profile) {
+                if (supplyNoxboxes != null) {
+                    supplyNoxboxes.clear();
+                    supplyNoxboxes = null;
+                }
+
+                if (demandNoxboxes != null) {
+                    demandNoxboxes.clear();
+                    demandNoxboxes = null;
+                }
                 draw(profile);
             }
         });
+    }
 
-
+    private void initializeUi() {
+        supplyTitle = findViewById(R.id.supplyTitle);
+        demandTitle = findViewById(R.id.demandTitle);
+        homeButton = findViewById(R.id.homeButton);
+        sort = findViewById(R.id.sort);
     }
 
     private void draw(final Profile profile) {
-        ((TextView) findViewById(R.id.supplyTitle)).setText("Предложение");
-        ((TextView) findViewById(R.id.demandTitle)).setText("Спрос");
+        supplyTitle.setText("Предложение");
+        demandTitle.setText("Спрос");
         separationNoxboxesByRole();
         initClusterItemsLists();
         updateClusterItemsList(profile);
-        findViewById(R.id.homeButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Router.finishActivity(ClusterItemsActivity.this);
-            }
-        });
-        findViewById(R.id.sort).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSettings(profile);
-                //showSortDialog();
-            }
-        });
+        homeButton.setOnClickListener(v -> Router.finishActivity(ClusterItemsActivity.this));
+        sort.setOnClickListener(v -> showSettings(profile));
     }
 
 
