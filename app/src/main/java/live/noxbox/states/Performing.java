@@ -1,15 +1,17 @@
 package live.noxbox.states;
 
 import android.app.Activity;
+import android.content.res.Configuration;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
 import java.math.BigDecimal;
 
-import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.Constants;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
@@ -30,6 +32,7 @@ import static live.noxbox.analitics.BusinessEvent.complete;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.SeparateStreamForStopwatch.startHandler;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
@@ -38,14 +41,33 @@ public class Performing implements State {
 
     private Activity activity;
     private GoogleMap googleMap;
-    private Profile profile = AppCache.profile();
-    private LinearLayout performingView;
-    private TextView timeView;
-    private TextView moneyToPay;
+    private final Profile profile = AppCache.profile();
 
     private long seconds = 0;
     private BigDecimal totalMoney;
     private boolean initiated;
+
+    //ui
+    private int screenOrientation;
+    private int wrapContent = LinearLayout.LayoutParams.WRAP_CONTENT;
+    private int matchParent = LinearLayout.LayoutParams.MATCH_PARENT;
+    private int textColorInt;
+    private int btnTextColorInt;
+    private int btnBackgroundColorInt;
+    private int titleTextSize;//in sp
+    private int defaultTextSize;//in sp
+    private CharSequence btnText;
+
+    private LinearLayout container;
+    private LinearLayout rootLayout;
+    private LinearLayout.LayoutParams textParams;
+    private TextView earnedOrSpent;
+    private TextView currencyText;
+    private TextView moneyToPay;
+    private TextView timePassedText;
+    private TextView timeView;
+    private RelativeLayout proSwipeButtonLayout;
+    private ProSwipeButton serviceCompleting;
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
@@ -58,21 +80,27 @@ public class Performing implements State {
         }
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
-        if (performingView == null) {
-            performingView = activity.findViewById(R.id.container);
-            View child = activity.getLayoutInflater().inflate(R.layout.state_performing, null);
-            performingView.addView(child);
-            timeView = performingView.findViewById(R.id.timeView);
-            moneyToPay = performingView.findViewById(R.id.moneyToPay);
+        if (container != null) {
+            container.removeAllViews();
         }
+        initializeUiVariables();
+
+        drawContainer();
+        drawRootLayout();
+        drawMoneyToPay();
+        drawTimeView();
+        drawComplete();
+
+        container.addView(rootLayout);
 
         seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
         totalMoney = new BigDecimal(profile.getCurrent().getPrice());
         totalMoney = totalMoney.multiply(QUARTER);
-        drawComplete(profile);
+
 
         final long timeStartPerforming = profile.getCurrent().getTimeStartPerforming();
-        seconds = (int) ((System.currentTimeMillis() - timeStartPerforming) / 1000);
+        seconds = (System.currentTimeMillis() - timeStartPerforming) / 1000;
+
         final Task task = object -> {
             long hours = seconds / 3600;
             long minutes = (seconds % 3600) / 60;
@@ -95,7 +123,7 @@ public class Performing implements State {
                 if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
                     BalanceChecker.checkBalance(profile, activity, o -> {
                         // TODO (vl) обновляем максимальное время из блокчейна
-                       // HashMap<String, String> data = new HashMap<>();
+                        // HashMap<String, String> data = new HashMap<>();
                         //data.put("type", NotificationType.lowBalance.name());
                         //NotificationFactory.buildNotification(activity, profile, data).show();
                     });
@@ -111,19 +139,121 @@ public class Performing implements State {
 
     }
 
-    private BigDecimal calculateTotalAmount(Profile profile) {
-        BigDecimal pricePerHour = new BigDecimal(profile.getCurrent().getPrice());
-        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        BigDecimal timeFromStartPerformingInMillis = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
-        BigDecimal timeFromStartPerformingInSeconds = timeFromStartPerformingInMillis.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        return timeFromStartPerformingInSeconds.multiply(pricePerSecond);
+
+    @Override
+    public void clear() {
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        googleMap.clear();
+        stopHandler();
+        if (rootLayout != null) {
+            rootLayout.removeAllViews();
+            rootLayout = null;
+        }
+        MessagingService.removeNotifications(activity);
     }
 
-    private void drawComplete(final Profile profile) {
-        ProSwipeButton proSwipeBtn = activity.findViewById(R.id.proSwipeButton);
-        proSwipeBtn.setOnSwipeListener(() -> {
-            proSwipeBtn.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
+    private void initializeUiVariables() {
+        screenOrientation = activity.getResources().getConfiguration().orientation;
+        textColorInt = activity.getResources().getColor(R.color.primary);
+        textParams = new LinearLayout.LayoutParams(matchParent, wrapContent);
+        textParams.setMargins(0,0,0,0);
+        btnTextColorInt = activity.getResources().getColor(R.color.secondary);
+        btnBackgroundColorInt = textColorInt;
+        btnText = activity.getResources().getString(R.string.complete);
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            titleTextSize = 64;
+            defaultTextSize = 32;
+        } else {
+            titleTextSize = 32;
+            defaultTextSize = 16;
+        }
+
+    }
+
+    private void drawContainer() {
+        container = activity.findViewById(R.id.container);
+    }
+
+    private void drawRootLayout() {
+        rootLayout = new LinearLayout(activity);
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams rootParams = new LinearLayout.LayoutParams(matchParent, matchParent);
+        if(screenOrientation == Configuration.ORIENTATION_PORTRAIT){
+            rootParams.setMargins(0, dpToPx(12), 0, 0);
+        }else{
+            rootParams.setMargins(0, dpToPx(24), 0, 0);
+        }
+        rootLayout.setLayoutParams(rootParams);
+
+    }
+
+
+    private void drawMoneyToPay() {
+        if (rootLayout == null) return;
+        earnedOrSpent = new TextView(activity);
+        if(profile.getCurrent().getPerformer().equals(profile)){
+            earnedOrSpent.setText(R.string.earned);
+        }else{
+            earnedOrSpent.setText(R.string.spent);
+        }
+        earnedOrSpent.setGravity(Gravity.CENTER_HORIZONTAL);
+        earnedOrSpent.setPadding(0, 0, 0, 0);
+        earnedOrSpent.setTextColor(textColorInt);
+        earnedOrSpent.setTextSize(defaultTextSize);
+
+
+        currencyText = new TextView(activity);
+        currencyText.setGravity(Gravity.CENTER_HORIZONTAL);
+        currencyText.setPadding(0, 0, 0, 0);
+        currencyText.setText(R.string.currency);
+        currencyText.setTextColor(textColorInt);
+        currencyText.setTextSize(defaultTextSize);
+
+        moneyToPay = new TextView(activity);
+        moneyToPay.setPadding(0, 0, 0, 0);
+        moneyToPay.setGravity(Gravity.CENTER_HORIZONTAL);
+        moneyToPay.setTextColor(activity.getResources().getColor(R.color.primary));
+        moneyToPay.setTextSize(titleTextSize);
+
+        rootLayout.addView(earnedOrSpent, textParams);
+        rootLayout.addView(currencyText, textParams);
+        rootLayout.addView(moneyToPay, textParams);
+    }
+
+    private void drawTimeView() {
+        if (rootLayout == null) return;
+        timePassedText = new TextView(activity);
+        timePassedText.setPadding(0, 0, 0, 0);
+        timePassedText.setText(R.string.performingPushContent);
+        timePassedText.setGravity(Gravity.CENTER_HORIZONTAL);
+        timePassedText.setTextColor(textColorInt);
+        timePassedText.setTextSize(defaultTextSize);
+
+        timeView = new TextView(activity);
+        timeView.setPadding(0, 0, 0, 0);
+        timeView.setGravity(Gravity.CENTER_HORIZONTAL);
+        timeView.setTextColor(textColorInt);
+        timeView.setTextSize(titleTextSize);
+
+        rootLayout.addView(timePassedText, textParams);
+        rootLayout.addView(timeView, textParams);
+    }
+
+    private void drawComplete() {
+        proSwipeButtonLayout = new RelativeLayout(activity);
+        LinearLayout.LayoutParams layoutParamsForProSwipeLayout = new LinearLayout.LayoutParams(matchParent, matchParent);
+        RelativeLayout.LayoutParams serviceCompletingParams = new RelativeLayout.LayoutParams(matchParent, wrapContent);
+        serviceCompletingParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            serviceCompletingParams.setMargins(dpToPx(16), dpToPx(32), dpToPx(16), dpToPx(46));
+        } else {
+            serviceCompletingParams.setMargins(dpToPx(46), dpToPx(12), dpToPx(46), dpToPx(46));
+        }
+
+
+        serviceCompleting = new live.noxbox.states.ProSwipeButton(activity, btnTextColorInt, btnBackgroundColorInt, btnText);
+        serviceCompleting.setOnSwipeListener(() -> {
+            serviceCompleting.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
             new android.os.Handler().postDelayed(() -> {
                 long timeCompleted = System.currentTimeMillis();
                 profile.getCurrent().setTotal(totalMoney.toString());
@@ -133,19 +263,8 @@ public class Performing implements State {
                 updateNoxbox();
             }, 0);
         });
-    }
-
-
-    @Override
-    public void clear() {
-        activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        googleMap.clear();
-        stopHandler();
-        if (performingView != null) {
-            performingView.removeAllViews();
-            performingView = null;
-        }
-        MessagingService.removeNotifications(activity);
+        proSwipeButtonLayout.addView(serviceCompleting, serviceCompletingParams);
+        rootLayout.addView(proSwipeButtonLayout, layoutParamsForProSwipeLayout);
     }
 
 
@@ -155,5 +274,14 @@ public class Performing implements State {
         if (startTime == 0L) return false;
 
         return startTime < System.currentTimeMillis() - Constants.MINIMUM_PAYMENT_TIME_MILLIS;
+    }
+
+    private BigDecimal calculateTotalAmount(Profile profile) {
+        BigDecimal pricePerHour = new BigDecimal(profile.getCurrent().getPrice());
+        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        BigDecimal timeFromStartPerformingInMillis = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
+        BigDecimal timeFromStartPerformingInSeconds = timeFromStartPerformingInMillis.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
+        return timeFromStartPerformingInSeconds.multiply(pricePerSecond);
     }
 }

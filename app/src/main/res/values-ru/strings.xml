@@ -245,7 +245,7 @@
     <string name="reply">повторить</string>
     <string name="messageSent">Сообщение отправлено</string>
     <string name="noxboxCompleted">Всего наилучшего!</string>
-    <string name="toEarn">Заработано</string>
+    <string name="earned">Заработано</string>
     <string name="spent">Потрачено</string>
     <string name="version">Версия </string>
     <string name="currency">Waves</string>
