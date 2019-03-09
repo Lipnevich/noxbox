@@ -55,11 +55,15 @@ public class Firestore {
     // Current human_profile
     private static ListenerRegistration profileListener;
 
-    public static void listenProfile(@NonNull final Task<Profile> task) {
+    public static void stopListenProfile() {
         if (profileListener != null) {
             profileListener.remove();
             profileListener = null;
         }
+    }
+
+    public static void listenProfile(@NonNull final Task<Profile> task) {
+        stopListenProfile();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;

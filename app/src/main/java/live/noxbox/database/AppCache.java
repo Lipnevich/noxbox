@@ -1,5 +1,6 @@
 package live.noxbox.database;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -153,7 +154,7 @@ public class AppCache {
         }
     }
 
-    public static void clearTasks() {
+    private static void clearTasks() {
         profileListeners.clear();
         profileReaders.clear();
     }
@@ -169,17 +170,19 @@ public class AppCache {
             Firestore.stopListenNoxbox();
             iterator.remove();
         }
-        Firestore.listenProfile(NONE);
+        Firestore.stopListenProfile();
         profile.copy(new Profile()).setCurrent(null).setViewed(null).setContract(null);
     }
 
     private static Set<String> ids = new HashSet<>();
+    private static int failedAttempts = 0;
 
     public static void startListenNoxbox(String noxboxId) {
         if (isNullOrEmpty(noxboxId) || ids.contains(noxboxId)) {
             return;
         }
         ids.add(noxboxId);
+
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId).addOnSuccessListener(o -> {
             Firestore.listenNoxbox(noxboxId, noxbox -> {
                 if (noxbox.getId().equals(profile.getNoxboxId())) {
@@ -188,14 +191,21 @@ public class AppCache {
                     profile.getViewed().copy(noxbox);
                 }
                 executeUITasks();
+                failedAttempts = 0;
             }, onFailure -> {
+                ids.remove(noxboxId);
+                failedAttempts++;
                 if (isNullOrEmpty(profile().getCurrent().getId())) {
                     // that mean that we just cleaned up db
                     profile().setNoxboxId("");
                     writeProfile(profile(), done -> executeUITasks());
+                } else if (++failedAttempts < 5){
+                    // in case we start listen noxbox with not completed persisting
+                    new Handler().postDelayed(() -> startListenNoxbox(noxboxId), 500);
                 }
             });
         }).addOnFailureListener(e -> {
+            ids.remove(noxboxId);
             Crashlytics.log(Log.ERROR, "failToSubscribeOnNoxbox", noxboxId);
         });
     }
@@ -228,6 +238,7 @@ public class AppCache {
             // create noxbox
             Firestore.updateNoxbox(profile.getContract(),
                     success -> {
+                        startListenNoxbox(profile.getNoxboxId());
                         onSuccess.execute(profile);
                     },
                     error -> {

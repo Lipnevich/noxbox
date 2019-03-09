@@ -70,12 +70,14 @@ public class BusinessActivity extends AppCompatActivity {
                 bundle.putString("role", profile().getCurrent().getRole().name());
                 bundle.putDouble("price", new BigDecimal(profile().getCurrent().getPrice()).doubleValue());
                 bundle.putDouble("timeSpent", (profile().getCurrent().getTimeCompleted() - Math.max(profile().getCurrent().getTimeOwnerVerified(), profile().getCurrent().getTimePartyVerified()) / (1000 * 10)));
-                bundle.putLong("writes", writes.getLong("writes", 0L) + Firestore.writes);
-                bundle.putLong("reads", reads.getLong("reads", 0L) + Firestore.reads);
+
+                long allWrites = writes.getLong("writes", 0L) + Firestore.writes;
+                long allReads = reads.getLong("reads", 0L) + Firestore.reads;
+                bundle.putLong("writes", allWrites);
+                bundle.putLong("reads", allReads);
 
                 DebugMessage.popup(context,
-                        "Reads:" + (reads.getLong("reads", 0L) + Firestore.reads)
-                                + "Writes:" + writes.getLong("writes", 0L) + Firestore.writes, Toast.LENGTH_LONG);
+                        "Reads:" + allReads + "|Writes:" + allWrites, Toast.LENGTH_LONG);
 
                 writes.edit().putLong("writes", 0L).apply();
                 reads.edit().putLong("writes", 0L).apply();
