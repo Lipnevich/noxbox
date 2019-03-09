@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.ImageViewTarget;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -39,6 +40,9 @@ import java.util.List;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.analitics.BusinessActivity;
+import live.noxbox.analitics.BusinessEvent;
+import live.noxbox.cluster.ClusterItemsActivity;
+import live.noxbox.cluster.NoxboxMarker;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.Firestore;
 import live.noxbox.database.GeoRealtime;
@@ -204,7 +208,7 @@ public class DetailedActivity extends BaseActivity {
         AppCache.listenProfile(DetailedActivity.class.getName(), profile -> {
             AppCache.startListenNoxbox(profile.getViewed().getId());
             if (profile.getViewed().getParty() == null) {
-                profile.getViewed().setParty(profile.privateInfo());
+                profile.getViewed().setParty(profile.publicInfo());
             }
             if (resultPosition != null && profile.getViewed() != null) {
                 profile.getViewed().setPosition(resultPosition);
@@ -424,6 +428,15 @@ public class DetailedActivity extends BaseActivity {
 
     private void drawButtons(Profile profile) {
         switch (NoxboxState.getState(profile.getViewed(), profile)) {
+            case initial:
+                BusinessActivity.businessEvent(BusinessEvent.removedNoxboxOpened);
+                GeoRealtime.offline(profile.getViewed());
+                AppCache.availableNoxboxes
+                        .remove(profile.getViewed().getId());
+                ClusterItemsActivity.noxboxes
+                        .remove(new NoxboxMarker(new LatLng(0, 0),
+                                new Noxbox().setId(profile.getViewed().getId())));
+                break;
             case created:
                 drawJoinButton(profile);
                 break;

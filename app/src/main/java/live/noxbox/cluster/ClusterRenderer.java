@@ -84,7 +84,7 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
                 profile.setPosition(Position.from(googleMap.getCameraPosition().target));
             }
             profile.setViewed(clusterItem.getNoxbox());
-            profile.getViewed().setParty(profile.privateInfo());
+            profile.getViewed().setParty(profile.publicInfo());
             Router.startActivity(activity, DetailedActivity.class);
         });
         return false;

@@ -102,12 +102,16 @@ public class Firestore {
     // Current noxbox
     private static ListenerRegistration noxboxListener;
 
-    public static void listenNoxbox(@NonNull String noxboxId,
-                                    @NonNull final Task<Noxbox> success,
-                                    final Task<Exception> failure) {
+    public static void stopListenNoxbox() {
         if (noxboxListener != null) {
             noxboxListener.remove();
         }
+    }
+
+    public static void listenNoxbox(@NonNull String noxboxId,
+                                    @NonNull final Task<Noxbox> success,
+                                    final Task<Exception> failure) {
+        stopListenNoxbox();
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener((snapshot, e) -> {
             reads++;

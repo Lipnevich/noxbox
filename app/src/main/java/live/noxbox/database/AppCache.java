@@ -26,7 +26,6 @@ import live.noxbox.tools.Task;
 
 import static com.google.common.base.Objects.equal;
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static live.noxbox.analitics.BusinessEvent.complete;
 import static live.noxbox.analitics.BusinessEvent.inBox;
 import static live.noxbox.database.Firestore.getNewNoxboxId;
 import static live.noxbox.database.Firestore.writeNoxbox;
@@ -76,7 +75,7 @@ public class AppCache {
                     startListenNoxbox(newProfile.getNoxboxId());
                 }
                 if (profile.getPosition().getLatitude() != 0.0
-                        && newProfile.getPosition().getLatitude() == 0.0) {
+                        && newProfile.getPosition().getLatitude() != 0.0) {
                     newProfile.setPosition(profile.getPosition());
                 }
 
@@ -167,7 +166,7 @@ public class AppCache {
         Iterator<String> iterator = ids.iterator();
         while (iterator.hasNext()) {
             String id = iterator.next();
-            Firestore.listenNoxbox(id, NONE, NONE);
+            Firestore.stopListenNoxbox();
             iterator.remove();
         }
         Firestore.listenProfile(NONE);
@@ -184,14 +183,7 @@ public class AppCache {
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId).addOnSuccessListener(o -> {
             Firestore.listenNoxbox(noxboxId, noxbox -> {
                 if (noxbox.getId().equals(profile.getNoxboxId())) {
-                    long oldTimeCompleted = profile().getCurrent().getTimeCompleted();
-                    long newTimeCompleted = noxbox.getTimeCompleted();
-
                     profile.getCurrent().copy(noxbox);
-
-                    if (newTimeCompleted > 0 && oldTimeCompleted == 0) {
-                        BusinessActivity.businessEvent(complete);
-                    }
                 } else {
                     profile.getViewed().copy(noxbox);
                 }
@@ -212,7 +204,7 @@ public class AppCache {
         if (isNullOrEmpty(noxboxId) || !ids.remove(noxboxId)) {
             return;
         }
-        Firestore.listenNoxbox(noxboxId, NONE, NONE);
+        Firestore.stopListenNoxbox();
     }
 
 
