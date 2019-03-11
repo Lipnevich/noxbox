@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--used for google map-->
-    <string name="google_maps_key" translatable="false">
-        AIzaSyBQ0cNnA8vGwCBCvnPu2ERTnB7ZOhxUvgI
-    </string>
-
-</resources>
