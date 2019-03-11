@@ -32,31 +32,25 @@
             android:theme="@style/MapTheme" />
         <activity
             android:name=".activities.ConfirmationActivity"
-            android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar">
+            android:parentActivityName=".MapActivity">
 
         </activity>
         <activity
             android:name=".menu.settings.MapSettingsActivity"
-            android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar" />
+            android:parentActivityName=".MapActivity"/>
         <activity
             android:name=".menu.profile.ProfileActivity"
             android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".cluster.ClusterItemsActivity"
-            android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar" />
+            android:parentActivityName=".MapActivity" />
         <activity
             android:name=".menu.profile.ProfilePerformerActivity"
-            android:parentActivityName=".menu.profile.ProfileActivity"
-            android:theme="@style/NoActionBar" />
+            android:parentActivityName=".menu.profile.ProfileActivity" />
         <activity
             android:name=".activities.contract.ContractActivity"
             android:launchMode="singleTop"
-            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".menu.profile.TravelModeListActivity"
@@ -66,19 +60,15 @@
         <activity
             android:name=".activities.detailed.DetailedActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar" />
+            android:parentActivityName=".MapActivity"/>
         <activity
-            android:name=".activities.detailed.CoordinateActivity"
-            android:theme="@style/NoActionBar" />
+            android:name=".activities.detailed.CoordinateActivity" />
         <activity
             android:name=".menu.history.HistoryActivity"
-            android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar" />
+            android:parentActivityName=".MapActivity" />
         <activity
             android:name=".activities.ChatActivity"
             android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".menu.wallet.WalletActivity"
@@ -88,15 +78,12 @@
         <activity
             android:name=".menu.about.AboutApplicationActivity"
             android:parentActivityName=".MapActivity"
-            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".menu.about.tutorial.TutorialActivity"
-            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".menu.about.RulesActivity"
-            android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <meta-data
