@@ -15,7 +15,8 @@ public enum NoxboxState {
     public static NoxboxState getState(Noxbox noxbox, Profile profile) {
         if (noxbox == null || isNullOrZero(noxbox.getTimeCreated()) || !isNullOrZero(noxbox.getTimeRemoved())
                 || !isNullOrZero(noxbox.getTimeCompleted()) || !isNullOrZero(noxbox.getTimeCanceledByOwner())
-                || !isNullOrZero(noxbox.getTimeCanceledByParty()) || !isNullOrZero(noxbox.getTimeTimeout()))
+                || !isNullOrZero(noxbox.getTimeCanceledByParty()) || !isNullOrZero(noxbox.getTimeTimeout())
+                || !isNullOrZero(noxbox.getTimePartyRejected()) || !isNullOrZero(noxbox.getTimeOwnerRejected()))
             return initial;
 
 
@@ -36,7 +37,8 @@ public enum NoxboxState {
         }
         if (!isNullOrZero(noxbox.getTimeAccepted())
                 && !isNullOrZero(noxbox.getTimeRequested())
-                && (isNullOrZero(noxbox.getTimeOwnerVerified()) || isNullOrZero(noxbox.getTimePartyVerified()))) {
+                && (isNullOrZero(noxbox.getTimeOwnerVerified()) || isNullOrZero(noxbox.getTimePartyVerified()))
+                && (isNullOrZero(noxbox.getTimeOwnerRejected()) && isNullOrZero(noxbox.getTimePartyRejected()))) {
             return moving;
         }
 

@@ -46,12 +46,14 @@
                 android:layout_marginBottom="42dp"
                 android:src="@drawable/pointer" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/menu"
                 style="@style/IconButtonStyle"
                 android:layout_gravity="start|top"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
+                android:background="@color/fui_transparent"
+                android:scaleType="fitCenter"
                 android:src="@drawable/menu"
                 android:visibility="gone" />
 
@@ -128,8 +130,8 @@
                     android:id="@+id/realSwitcherLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_centerHorizontal="true"/>
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="12dp" />
             </RelativeLayout>
 
             <android.support.design.widget.CoordinatorLayout

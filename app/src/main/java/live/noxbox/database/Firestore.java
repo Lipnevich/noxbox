@@ -163,6 +163,8 @@ public class Firestore {
     public static boolean isFinished(Noxbox noxbox) {
         return noxbox.getTimeCanceledByOwner() > 0
                 || noxbox.getTimeCanceledByParty() > 0
+                || noxbox.getTimeOwnerRejected() > 0
+                || noxbox.getTimePartyRejected() > 0
                 || noxbox.getTimeCompleted() > 0
                 || noxbox.getTimeRemoved() > 0
                 || noxbox.getTimeTimeout() > 0

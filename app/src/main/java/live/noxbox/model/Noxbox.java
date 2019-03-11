@@ -58,6 +58,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private long timeCanceledByParty;
     private long timeOwnerVerified;
     private long timePartyVerified;
+    private long timeOwnerRejected;
+    private long timePartyRejected;
     private long timeOwnerDisliked;
     private long timePartyDisliked;
     private long timeTimeout;
@@ -90,6 +92,8 @@ public class Noxbox implements Comparable<Noxbox> {
         timeCanceledByParty = from.timeCanceledByParty;
         timeOwnerVerified = from.timeOwnerVerified;
         timePartyVerified = from.timePartyVerified;
+        timeOwnerRejected = from.timeOwnerRejected;
+        timePartyRejected = from.timePartyRejected;
         timeOwnerDisliked = from.timeOwnerDisliked;
         timePartyDisliked = from.timePartyDisliked;
         timeTimeout = from.timeTimeout;
@@ -123,6 +127,8 @@ public class Noxbox implements Comparable<Noxbox> {
         timeCanceledByParty = 0L;
         timeOwnerVerified = 0L;
         timePartyVerified = 0L;
+        timeOwnerRejected = 0L;
+        timePartyRejected = 0L;
         timeOwnerDisliked = 0L;
         timePartyDisliked = 0L;
         timeTimeout = 0L;
@@ -257,6 +263,24 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setTimeCanceledByParty(Long timeCanceledByParty) {
         this.timeCanceledByParty = timeCanceledByParty;
+        return this;
+    }
+
+    public long getTimeOwnerRejected() {
+        return timeOwnerRejected;
+    }
+
+    public Noxbox setTimeOwnerRejected(long timeOwnerRejected) {
+        this.timeOwnerRejected = timeOwnerRejected;
+        return this;
+    }
+
+    public long getTimePartyRejected() {
+        return timePartyRejected;
+    }
+
+    public Noxbox setTimePartyRejected(long timePartyRejected) {
+        this.timePartyRejected = timePartyRejected;
         return this;
     }
 

@@ -20,6 +20,7 @@ import live.noxbox.notifications.NotificationMessage;
 import live.noxbox.notifications.NotificationMoving;
 import live.noxbox.notifications.NotificationPerforming;
 import live.noxbox.notifications.NotificationPhotoInvalid;
+import live.noxbox.notifications.NotificationPhotoReject;
 import live.noxbox.notifications.NotificationPhotoValid;
 import live.noxbox.notifications.NotificationPhotoValidationProgress;
 import live.noxbox.notifications.NotificationRequesting;
@@ -49,6 +50,8 @@ public abstract class NotificationFactory {
                 return new NotificationLowBalance(context, profile, data);
             case canceled:
                 return new NotificationCancel(context, profile, data);
+            case rejected:
+                return new NotificationPhotoReject(context, profile, data);
             case completed:
                 return new NotificationComplete(context, profile, data);
             case photoUploadingProgress:

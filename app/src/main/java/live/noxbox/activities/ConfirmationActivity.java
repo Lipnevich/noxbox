@@ -104,11 +104,11 @@ public class ConfirmationActivity extends BaseActivity {
             wrongPhoto.setArrowColor(getResources().getColor(R.color.fullTranslucent));
             confirm.setVisibility(View.GONE);
             new Handler().postDelayed(() -> {
-                long timeCanceled = System.currentTimeMillis();
+                long timeRejected = System.currentTimeMillis();
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
-                    profile.getCurrent().setTimeCanceledByOwner(timeCanceled);
+                    profile.getCurrent().setTimeOwnerRejected(timeRejected);
                 } else {
-                    profile.getCurrent().setTimeCanceledByParty(timeCanceled);
+                    profile.getCurrent().setTimePartyRejected(timeRejected);
                 }
                 updateNoxbox();
                 Router.finishActivity(ConfirmationActivity.this);

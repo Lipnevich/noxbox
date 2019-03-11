@@ -171,6 +171,28 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
            };
          await admin.messaging().send(push);
          console.log('push sent' + JSON.stringify(push));
+     }else if(!previousNoxbox.timePartyRejected && !previousNoxbox.timeOwnerRejected && noxbox.timeOwnerRejected){
+            operationName =  'Rejected by Owner';
+         let push = {
+               data: {
+                    type: 'rejected',
+                    id: noxbox.id
+               },
+               topic: noxbox.party.id
+            };
+         await admin.messaging().send(push);
+         console.log('push sent' + JSON.stringify(push));
+     }else if(!previousNoxbox.timePartyRejected && !previousNoxbox.timeOwnerRejected && noxbox.timePartyRejected){
+            operationName =  'Rejected by Party';
+            let push = {
+                           data: {
+                               type: 'rejected',
+                               id: noxbox.id
+                           },
+                           topic: noxbox.owner.id
+                       };
+                     await admin.messaging().send(push);
+                     console.log('push sent' + JSON.stringify(push));
      }
      console.log('Operation ' + operationName + ' v ' + JSON.stringify(version));
 });
