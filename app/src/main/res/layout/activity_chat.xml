@@ -20,11 +20,15 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/homeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="16dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/arrow_back" />
 
             <ImageView
@@ -87,10 +91,12 @@
             android:paddingStart="16dp"
             android:textSize="20sp" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/send_message"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="8dp"
             android:src="@drawable/send" />

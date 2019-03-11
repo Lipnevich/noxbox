@@ -18,12 +18,15 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/homeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
                 android:clickable="true"
+                android:focusable="true"
                 android:padding="16dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/arrow_back" />
 
             <TextView

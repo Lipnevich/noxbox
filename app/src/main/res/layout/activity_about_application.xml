@@ -18,12 +18,15 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/homeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
                 android:clickable="true"
+                android:focusable="true"
                 android:padding="16dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/arrow_back" />
 
             <TextView
@@ -47,60 +50,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <Button
                 android:id="@+id/tutorialViewPager"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextButtonStyle"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="56dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/tutorial"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/text_title"
-                android:textStyle="bold" />
+                android:text="@string/tutorial" />
 
             <include layout="@layout/item_divider_about_application" />
 
-            <TextView
+            <Button
                 android:id="@+id/promoVideoView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextButtonStyle"
                 android:layout_gravity="center_horizontal"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/start_promo_video"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/text_title"
-                android:textStyle="bold" />
+                android:text="@string/start_promo_video" />
 
             <include layout="@layout/item_divider_about_application" />
 
-            <TextView
+            <Button
                 android:id="@+id/rules"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextButtonStyle"
                 android:layout_gravity="center_horizontal"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/rules"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/text_title"
-                android:textStyle="bold" />
+                android:text="@string/rules" />
 
             <include layout="@layout/item_divider_about_application" />
 
-            <TextView
+            <Button
                 android:id="@+id/privacyPolicy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextButtonStyle"
                 android:layout_gravity="center_horizontal"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/privacyPolicy"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/text_title"
-                android:textStyle="bold" />
+                android:text="@string/privacyPolicy" />
 
         </LinearLayout>
 
@@ -123,9 +102,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:textStyle="bold"
                 android:textColor="@color/primary"
-                android:textSize="@dimen/text_size" />
+                android:textSize="@dimen/text_size"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </RelativeLayout>

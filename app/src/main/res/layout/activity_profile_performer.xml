@@ -18,12 +18,15 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/homeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/fui_transparent"
                 android:clickable="true"
+                android:focusable="true"
                 android:padding="16dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/arrow_back" />
 
             <TextView
@@ -38,14 +41,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/deleteSection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:background="?attr/selectableItemBackground"
+                    android:background="@color/fui_transparent"
                     android:clickable="true"
+                    android:focusable="true"
                     android:padding="16dp"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/delete" />
             </RelativeLayout>
 
@@ -95,12 +100,14 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/addCertificate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginEnd="16dp"
+                    android:background="@color/fui_transparent"
+                    android:scaleType="fitCenter"
                     android:src="@drawable/add_circle"
                     android:visibility="visible" />
             </LinearLayout>
@@ -133,12 +140,14 @@
         android:paddingTop="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_horizontal_margin">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/photoCameraImage"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
             android:src="@drawable/photo_camera"
             android:tint="@color/primary" />
 

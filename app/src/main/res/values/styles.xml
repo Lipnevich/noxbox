@@ -48,6 +48,18 @@
         <item name="android:layout_height">56dp</item>
         <item name="android:visibility">gone</item>
     </style>
+    <style name="TextButtonStyle">
+        <item name="android:background">@color/fui_transparent</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:visibility">visible</item>
+    </style>
 
     <style name="NoxboxAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/secondary</item>

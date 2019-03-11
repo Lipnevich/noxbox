@@ -81,7 +81,7 @@
             android:text="100.00"
             android:textColor="@color/primary"
             android:textSize="52sp"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/progress"
@@ -108,13 +108,15 @@
             android:layout_centerHorizontal="true"
             android:textSize="14sp" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/copy_to_clipboard_id"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_below="@+id/wallet_address_id"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
             android:src="@drawable/copy_to_clipboard"
             android:tint="@color/primary" />
 
@@ -138,15 +140,23 @@
             <Button
                 android:id="@+id/send_button_id"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
                 android:background="@drawable/button_corner"
-                android:padding="4dp"
+                android:elevation="@dimen/global_elevation"
+                android:enabled="true"
+                android:gravity="center"
+                android:minWidth="64dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:text="@string/transfer"
                 android:textAlignment="center"
                 android:textColor="@color/secondary"
+                android:textSize="18sp"
+                android:textStyle="normal"
                 android:visibility="visible" />
+
         </LinearLayout>
 
     </RelativeLayout>

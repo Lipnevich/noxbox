@@ -11,14 +11,16 @@
         android:layout_height="60dp"
         app:cardElevation="@dimen/global_elevation">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/homeButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/arrow_back"
-            android:tint="@color/primary" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/fui_transparent"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/arrow_back" />
 
         <fragment
             android:id="@+id/autocomplete_fragment"
