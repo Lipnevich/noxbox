@@ -91,15 +91,20 @@ public class Moving implements State {
         this.activity = activity;
 
         if (profile.getCurrent().getConfirmationPhoto() == null) {
-            Glide.with(activity)
-                    .asDrawable()
-                    .load(profile.getCurrent().getNotMe(profile.getId()).getPhoto())
-                    .into(new SimpleTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
-                            profile.getCurrent().setConfirmationPhoto(drawable);
-                        }
-                    });
+            if ((profile.getCurrent().getMe(profile.getId()).equals(profile.getCurrent().getOwner())
+                        && (isNullOrZero(profile.getCurrent().getTimeOwnerVerified()) && isNullOrZero(profile.getCurrent().getTimeOwnerRejected())))
+                    || (profile.getCurrent().getMe(profile.getId()).equals(profile.getCurrent().getParty())
+                        && (isNullOrZero(profile.getCurrent().getTimePartyVerified()) && isNullOrZero(profile.getCurrent().getTimePartyRejected())))) {
+                Glide.with(activity)
+                        .asDrawable()
+                        .load(profile.getCurrent().getNotMe(profile.getId()).getPhoto())
+                        .into(new SimpleTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                                profile.getCurrent().setConfirmationPhoto(drawable);
+                            }
+                        });
+            }
         }
 
         if (!initiated) {

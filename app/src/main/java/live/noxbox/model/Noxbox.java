@@ -111,6 +111,7 @@ public class Noxbox implements Comparable<Noxbox> {
         getChat().setOwnerReadTime(0L);
         getChat().setPartyReadTime(0L);
         // party = new Profile().setId("0");
+        confirmationPhoto = null;
         party = null;
         performerId = "";
         payerId = "";
@@ -144,7 +145,7 @@ public class Noxbox implements Comparable<Noxbox> {
     }
 
     public int getIcon() {
-        if(getRole() == demand) {
+        if (getRole() == demand) {
             return getType().getImageDemand();
         }
 

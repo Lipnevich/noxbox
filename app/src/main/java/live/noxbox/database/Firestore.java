@@ -175,8 +175,7 @@ public class Firestore {
                 || noxbox.getTimePartyRejected() > 0
                 || noxbox.getTimeCompleted() > 0
                 || noxbox.getTimeRemoved() > 0
-                || noxbox.getTimeTimeout() > 0
-                ;
+                || noxbox.getTimeTimeout() > 0;
     }
 
     public static void readNoxbox(String noxboxId, final Task<Noxbox> task) {
