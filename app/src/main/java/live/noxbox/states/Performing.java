@@ -99,7 +99,7 @@ public class Performing implements State {
 
 
         final long timeStartPerforming = profile.getCurrent().getTimeStartPerforming();
-        seconds = (System.currentTimeMillis() - timeStartPerforming) / 1000;
+        seconds = Math.max((System.currentTimeMillis() - timeStartPerforming) / 1000, 0);
 
         final Task task = object -> {
             long hours = seconds / 3600;
