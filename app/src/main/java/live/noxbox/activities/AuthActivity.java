@@ -86,12 +86,12 @@ public class AuthActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
                 login();
             } else {
                 //TODO (VL) popup in head
-                Crashlytics.logException(response.getError());
+                IdpResponse response = IdpResponse.fromResultIntent(data);
+                if(response != null) Crashlytics.logException(response.getError());
             }
         }
     }
