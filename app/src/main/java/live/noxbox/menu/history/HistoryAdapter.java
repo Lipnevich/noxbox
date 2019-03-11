@@ -65,12 +65,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     private Set<Noxbox> uniqueValue = new HashSet<>();
     private int lastVisibleItem, totalItemCount;
     private static final int AMOUNT_PER_LOAD = 10;
+    private MarketRole role;
+    private long lastNoxboxTimeCompleted;
+    private boolean wasLastNoxboxTimeCompletedFound;
 
-    public HistoryAdapter(HistoryActivity activity, RecyclerView currentRecyclerView, final MarketRole role) {
+    public HistoryAdapter(HistoryActivity activity, RecyclerView currentRecyclerView, final MarketRole role, long lastNoxboxTimeCompleted) {
         this.activity = activity;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         this.profileId = user == null ? "" : user.getUid();
         this.historyItems = new ArrayList<>();
+        this.role = role;
+        this.lastNoxboxTimeCompleted = lastNoxboxTimeCompleted;
 
         long startFrom = historyItems.isEmpty() ?
                 Long.MAX_VALUE :
@@ -89,21 +94,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 historyItems.addAll(noxboxes);
                 notifyDataSetChanged();
 
+
                 isHistoryThere.execute(null);
-                if(role == MarketRole.supply){
+
+                if (role == MarketRole.supply) {
                     HistoryActivity.isSupplyHistoryEmpty = false;
-                }else{
+                } else {
                     HistoryActivity.isDemandHistoryEmpty = false;
                 }
 
             } else {
-                if(historyItems.size() == 0){
-                    if(role == MarketRole.supply){
+                if (historyItems.size() == 0) {
+                    if (role == MarketRole.supply) {
                         HistoryActivity.isSupplyHistoryEmpty = true;
-                    }else{
+                    } else {
                         HistoryActivity.isDemandHistoryEmpty = true;
                     }
-                    if(HistoryActivity.isSupplyHistoryEmpty && HistoryActivity.isDemandHistoryEmpty){
+                    if (HistoryActivity.isSupplyHistoryEmpty && HistoryActivity.isDemandHistoryEmpty) {
                         isHistoryEmpty.execute(null);
                     }
                 }
@@ -165,8 +172,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 .concat(getFormatTimeFromMillis(timeStartPerforming, noxbox.getTimeCompleted(), activity.getResources()))));
         viewHolder.price.setText(MoneyFormatter.format(new BigDecimal(noxbox.getTotal())).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getTotal())));
 
-
         viewHolder.rootHistoryLayout.setOnClickListener(view1 -> onClick(viewHolder, noxbox));
+        if (noxbox.getTimeCompleted() == lastNoxboxTimeCompleted && !wasLastNoxboxTimeCompletedFound) {
+            wasLastNoxboxTimeCompletedFound = true;
+            isHistoryThere.execute(role);
+            onClick(viewHolder, noxbox);
+        }
     }
 
 

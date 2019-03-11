@@ -18,6 +18,7 @@ import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.MoneyFormatter;
 
+import static live.noxbox.menu.history.HistoryActivity.KEY;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class NotificationComplete extends Notification {
@@ -32,9 +33,8 @@ public class NotificationComplete extends Notification {
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
 
         isAlertOnce = true;
-        onViewOnClickAction = TaskStackBuilder.create(context)
-                .addNextIntentWithParentStack(new Intent(context, HistoryActivity.class))
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
         isAutoCancel = true;
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
@@ -47,10 +47,17 @@ public class NotificationComplete extends Notification {
             final String currentUserId = user.getUid();
 
             Firestore.readNoxbox(noxboxId, noxbox -> {
-                final NotificationCompat.Builder builder = getNotificationCompatBuilder();
+
+
                 if (!isNullOrZero(noxbox.getTimeCompleted())) {
                     String message;
 
+                    Intent lastNoxboxIntent = new Intent(context, HistoryActivity.class);
+                    lastNoxboxIntent.putExtra(KEY, noxbox.getTimeCompleted());
+                    onViewOnClickAction = TaskStackBuilder.create(context)
+                            .addNextIntentWithParentStack(lastNoxboxIntent)
+                            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    final NotificationCompat.Builder builder = getNotificationCompatBuilder();
                     if (noxbox.getPerformer().getId().equals(currentUserId)) {
                         message = context.getResources().getString(R.string.earned);
                         contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_balance);

@@ -13,8 +13,12 @@ import android.view.ViewGroup;
 import live.noxbox.R;
 import live.noxbox.model.MarketRole;
 
+import static live.noxbox.menu.history.HistoryActivity.KEY;
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 public class HistorySupplyFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
+    private long lastNoxboxTimeCompleted;
 
     public HistorySupplyFragment() {
     }
@@ -23,6 +27,9 @@ public class HistorySupplyFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        if (getArguments() != null && !isNullOrZero(getArguments().getLong(KEY))) {
+            lastNoxboxTimeCompleted = getArguments().getLong(KEY);
+        }
     }
 
     @Nullable
@@ -31,7 +38,7 @@ public class HistorySupplyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         RecyclerView listItems = view.findViewById(R.id.recyclerView);
         listItems.setLayoutManager(linearLayoutManager);
-        HistoryAdapter adapter = new HistoryAdapter((HistoryActivity) getActivity(), listItems, MarketRole.supply);
+        HistoryAdapter adapter = new HistoryAdapter((HistoryActivity) getActivity(), listItems, MarketRole.supply, lastNoxboxTimeCompleted);
         container.findViewById(R.id.chooseService);
         listItems.setAdapter(adapter);
         adapter.notifyDataSetChanged();
