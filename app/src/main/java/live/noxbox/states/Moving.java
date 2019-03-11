@@ -76,6 +76,7 @@ public class Moving implements State {
     private static LinearLayout movingView;
     private static View childMovingView;
     private static TextView timeView;
+    private static boolean wasNotificationOfPhotoVerifyShowed;
 
     private static Position memberWhoMovingPosition;
     private Marker memberWhoMovingMarker;
@@ -117,9 +118,7 @@ public class Moving implements State {
         }
 
         if (!defineProfileLocationListener(profile)) {
-            HashMap<String, String> data = new HashMap<>();
-            data.put("type", NotificationType.moving.name());
-            NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data);
+            provideNotification(NotificationType.moving, profile, activity.getApplicationContext());
         }
 
         memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
@@ -188,6 +187,7 @@ public class Moving implements State {
     @Override
     public void clear() {
         stopListenPosition(profile().getCurrent().getId());
+        wasNotificationOfPhotoVerifyShowed = false;
         if (movingView != null) {
             movingView.removeAllViews();
             movingView = null;
@@ -267,13 +267,25 @@ public class Moving implements State {
         return false;
     }
 
+
     private static void updateTimeView(Profile profile, Context context) {
         if (movingView != null && childMovingView != null && timeView != null) {
             int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(profile.getCurrent().getPosition(),
                     memberWhoMovingPosition,
                     profile.getCurrent().getProfileWhoComes().getTravelMode()));
             timeView.setText(context.getResources().getString(R.string.movement, "" + progressInMinutes));
+
+            if (progressInMinutes <= 1 && !wasNotificationOfPhotoVerifyShowed) {
+                provideNotification(NotificationType.verifyPhoto, profile, context);
+                wasNotificationOfPhotoVerifyShowed = true;
+            }
         }
+    }
+
+    private static void provideNotification(NotificationType type, Profile profile, Context context) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("type", type.name());
+        NotificationFactory.buildNotification(context, profile, data).show();
     }
 
     //SERVICE CLASS
@@ -303,7 +315,11 @@ public class Moving implements State {
 
                     if ((!isNullOrZero(profile().getCurrent().getTimeOwnerVerified()) && !isNullOrZero(profile().getCurrent().getTimePartyVerified()))
                             || !isNullOrZero(profile().getCurrent().getTimeCanceledByOwner())
-                            || !isNullOrZero(profile().getCurrent().getTimeCanceledByParty())) {
+                            || !isNullOrZero(profile().getCurrent().getTimeCanceledByParty())
+                            || !isNullOrZero(profile().getCurrent().getTimeOwnerRejected())
+                            || !isNullOrZero(profile().getCurrent().getTimePartyRejected())
+                            || profile().getCurrent().getFinished()) {
+                        wasNotificationOfPhotoVerifyShowed = false;
                         locationManager.removeUpdates(locationListener);
                         stopSelf();
                         return;

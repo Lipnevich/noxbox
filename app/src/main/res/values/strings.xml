@@ -311,6 +311,7 @@
     <string name="enterPrice">Price</string>
     <string name="supplyServices">Offer</string>
     <string name="demandServices">Demand</string>
+    <string name="pleaseConfirmMember">Please, confirm member</string>
 
 
 </resources>

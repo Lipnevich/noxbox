@@ -1,12 +1,16 @@
 package live.noxbox.notifications;
 
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import java.util.Map;
 
 import live.noxbox.R;
+import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.model.Profile;
 
 public class NotificationPhotoValidationProgress extends Notification {
@@ -15,6 +19,14 @@ public class NotificationPhotoValidationProgress extends Notification {
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_photo_validation_progress);
         contentView.setTextViewText(R.id.content, context.getResources().getString(type.getContent()));
+
+        isAlertOnce = true;
+        onViewOnClickAction = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(new Intent(context, HistoryActivity.class))
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        isAutoCancel = true;
+
+        deleteIntent = createOnDeleteIntent(context, type.getGroup());
     }
 
     @Override

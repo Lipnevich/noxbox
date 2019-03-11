@@ -17,7 +17,7 @@ public enum NotificationType {
     requesting(2, R.string.requestingPushContent),
     accepting(2, R.string.acceptingPushContent),
     moving(2, R.string.replaceIt),
-    verifyPhoto(2, R.string.replaceIt),
+    verifyPhoto(2, R.string.pleaseConfirmMember),
     performing(2, R.string.performingPushContent),
     lowBalance(2, R.string.beforeSpendingMoney),
     completed(2, R.string.completedPushContent),
