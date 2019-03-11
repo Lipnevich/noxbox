@@ -55,11 +55,15 @@ public class Firestore {
     // Current human_profile
     private static ListenerRegistration profileListener;
 
-    public static void listenProfile(@NonNull final Task<Profile> task) {
+    public static void stopListenProfile() {
         if (profileListener != null) {
             profileListener.remove();
             profileListener = null;
         }
+    }
+
+    public static void listenProfile(@NonNull final Task<Profile> task) {
+        stopListenProfile();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -102,12 +106,16 @@ public class Firestore {
     // Current noxbox
     private static ListenerRegistration noxboxListener;
 
-    public static void listenNoxbox(@NonNull String noxboxId,
-                                    @NonNull final Task<Noxbox> success,
-                                    final Task<Exception> failure) {
+    public static void stopListenNoxbox() {
         if (noxboxListener != null) {
             noxboxListener.remove();
         }
+    }
+
+    public static void listenNoxbox(@NonNull String noxboxId,
+                                    @NonNull final Task<Noxbox> success,
+                                    final Task<Exception> failure) {
+        stopListenNoxbox();
 
         noxboxListener = noxboxReference(noxboxId).addSnapshotListener((snapshot, e) -> {
             reads++;

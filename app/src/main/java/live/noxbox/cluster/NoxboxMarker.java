@@ -3,6 +3,8 @@ package live.noxbox.cluster;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
+import java.util.Objects;
+
 import live.noxbox.model.Noxbox;
 
 public class NoxboxMarker implements ClusterItem {
@@ -32,5 +34,18 @@ public class NoxboxMarker implements ClusterItem {
     @Override
     public String getSnippet() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NoxboxMarker that = (NoxboxMarker) o;
+        return Objects.equals(noxbox, that.noxbox);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(noxbox);
     }
 }

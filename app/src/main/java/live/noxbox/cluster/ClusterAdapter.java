@@ -27,11 +27,10 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
     private List<NoxboxMarker> clusterItems;
     private Activity activity;
 
-    public ClusterAdapter(List<NoxboxMarker> clusterItems, Activity activity, Profile profile) {
+    public ClusterAdapter(List<NoxboxMarker> clusterItems, Activity activity) {
         this.clusterItems = clusterItems;
         this.activity = activity;
     }
-
 
     @NonNull
     @Override
@@ -87,7 +86,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
             @Override
             public void onClick(View v) {
                 profile().setViewed(clusterItems.get(position).getNoxbox());
-                profile().getViewed().setParty(profile().privateInfo());
+                profile().getViewed().setParty(profile().publicInfo());
                 Router.startActivity(activity, DetailedActivity.class);
             }
         });

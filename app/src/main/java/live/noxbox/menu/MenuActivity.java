@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -191,7 +192,8 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(currentUser.getUid());
 
                 FirebaseAuth.getInstance().signOut();
-
+                // we need it for selecting new profile
+                AuthUI.getInstance().signOut(this);
                 startActivity(new Intent(getApplicationContext(), AuthActivity.class));
                 Router.finishActivity(MenuActivity.this);
             }

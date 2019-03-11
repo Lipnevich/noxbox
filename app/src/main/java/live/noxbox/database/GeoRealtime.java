@@ -107,6 +107,7 @@ public class GeoRealtime {
 
                 noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));
                 noxbox.getWorkSchedule().setEndTime(NoxboxTime.valueOf(values[index++]));
+                noxbox.setTimeCreated(1l);
 
                 return noxbox;
             }

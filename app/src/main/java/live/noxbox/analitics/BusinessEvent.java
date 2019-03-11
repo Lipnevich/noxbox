@@ -21,5 +21,5 @@ public enum BusinessEvent {
     tutorialDislikes,
     update,
     like,
-    dislike
+    removedNoxboxOpened, dislike
 }

@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -80,7 +81,7 @@ public class Accepting implements State {
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
 
-        acceptingView.findViewById(R.id.joinButton).setOnClickListener(v -> acceptCurrent());
+        acceptingView.findViewById(R.id.joinMapButton).setOnClickListener(v -> acceptCurrent());
 
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
@@ -99,22 +100,28 @@ public class Accepting implements State {
 
             @Override
             public void onFinish() {
-                if (isNullOrZero(profile.getCurrent().getTimeAccepted())
-                        && isNullOrZero(profile.getCurrent().getTimeCompleted())
-                        && isNullOrZero(profile.getCurrent().getTimeRemoved())
-                        && isNullOrZero(profile.getCurrent().getTimeCanceledByOwner())
-                        && isNullOrZero(profile.getCurrent().getTimeCanceledByParty())
-                        && isNullOrZero(profile.getCurrent().getTimeTimeout())) {
-
-                    businessEvent(timeout);
-                    profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
-                    updateNoxbox();
-                }
+                timeoutCurrent();
             }
         }.start();
 
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
+    }
+
+    public static void timeoutCurrent() {
+        if (isNullOrZero(profile().getCurrent().getTimeAccepted())
+                && isNullOrZero(profile().getCurrent().getTimeCompleted())
+                && isNullOrZero(profile().getCurrent().getTimeRemoved())
+                && isNullOrZero(profile().getCurrent().getTimeCanceledByOwner())
+                && isNullOrZero(profile().getCurrent().getTimeCanceledByParty())
+                && isNullOrZero(profile().getCurrent().getTimeTimeout())
+                && !profile().getCurrent().getFinished()) {
+
+            GeoRealtime.offline(profile().getCurrent());
+            businessEvent(timeout);
+            profile().getCurrent().setTimeTimeout(System.currentTimeMillis());
+            updateNoxbox();
+        }
     }
 
     public static void acceptCurrent() {

@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
+import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -24,9 +24,8 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
-import static live.noxbox.analitics.BusinessEvent.timeout;
 import static live.noxbox.database.AppCache.updateNoxbox;
-import static live.noxbox.model.Noxbox.isNullOrZero;
+import static live.noxbox.states.Accepting.timeoutCurrent;
 import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 
@@ -52,7 +51,7 @@ public class Requesting implements State {
 
         long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
-            autoDisconnectFromService(profile);
+            timeoutCurrent();
             return;
         }
 
@@ -75,6 +74,7 @@ public class Requesting implements State {
         requestingView.addView(child);
 
         requestingView.findViewById(R.id.cancelButton).setOnClickListener(v -> {
+            GeoRealtime.offline(profile.getCurrent());
             profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
             updateNoxbox();
         });
@@ -96,21 +96,12 @@ public class Requesting implements State {
             @Override
             public void onFinish() {
                 MessagingService.removeNotifications(activity);
-                autoDisconnectFromService(profile);
+                timeoutCurrent();
             }
 
         }.start();
 
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
-    }
-
-    private void autoDisconnectFromService(final Profile profile) {
-        if (isNullOrZero(profile.getCurrent().getTimeAccepted())
-                && !profile.getCurrent().getFinished()) {
-            profile.getCurrent().setTimeTimeout(System.currentTimeMillis());
-            updateNoxbox();
-            BusinessActivity.businessEvent(timeout);
-        }
     }
 
     @Override
