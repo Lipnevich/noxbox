@@ -8,7 +8,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -18,6 +17,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
@@ -82,6 +82,8 @@ public class LocationOperator {
                                     Position position = Position.from(lastKnownLocation);
                                     profile.setPosition(position);
                                     MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+                                }else{
+                                    DebugMessage.popup(activity,"Unknown user location");
                                 }
                             }
 
@@ -99,7 +101,7 @@ public class LocationOperator {
                             public void onProviderDisabled(String provider) {
 
                             }
-                        }, Looper.myLooper());
+                        }, null);
                     }
                 });
             }
