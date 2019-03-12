@@ -145,9 +145,9 @@ public class Performing implements State {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         googleMap.clear();
         stopHandler();
-        if (rootLayout != null) {
-            rootLayout.removeAllViews();
-            rootLayout = null;
+        if (container != null) {
+            container.removeAllViews();
+            container = null;
         }
         MessagingService.removeNotifications(activity);
     }
