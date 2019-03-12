@@ -8,9 +8,9 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="windowNoTitle">false</item>
-        <item name="windowActionBar">true</item>
-
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
         <item name="android:buttonStyle">@style/MainButtonStyle</item>
         <item name="android:indeterminateTint">@color/primary</item>
         <item name="android:windowActionBarOverlay">true</item>
@@ -19,17 +19,7 @@
     </style>
 
     <style name="MapTheme" parent="AppTheme">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowFullscreen">false</item>
-    </style>
-
-    <style name="NoActionBar" parent="@style/AppTheme">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="MainButtonStyle" parent="Widget.AppCompat.Button.Colored">
