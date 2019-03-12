@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Wallet;
 import live.noxbox.tools.DisplayMetricsConservations;
+import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.analitics.BusinessEvent.outBox;
@@ -51,6 +53,8 @@ public class WalletActivity extends BaseActivity {
 
     private static final String TAG = WalletActivity.class.getName();
 
+    private ImageButton homeButton;
+    private TextView title;
     private EditText addressToSendEditor;
     private TextView balanceLabel;
     private TextView balance;
@@ -65,6 +69,8 @@ public class WalletActivity extends BaseActivity {
         setContentView(R.layout.activity_wallet);
         setTitle(R.string.wallet);
 
+        homeButton = findViewById(R.id.homeButton);
+        title = findViewById(R.id.title);
         balanceLabel = findViewById(R.id.balance_label_id);
         addressToSendEditor = findViewById(R.id.address_to_send_id);
         walletAddress = findViewById(R.id.wallet_address_id);
@@ -109,14 +115,13 @@ public class WalletActivity extends BaseActivity {
             };
 
 
-
             balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));
             walletAddress.setOnClickListener(addressToClipboardListener);
             copyToClipboard.setOnClickListener(addressToClipboardListener);
             sendButton.setOnClickListener(sendButtonOnClickListener);
 
             draw(profile);
-            if(!Strings.isNullOrEmpty(profile.getWallet().getAddress())) {
+            if (!Strings.isNullOrEmpty(profile.getWallet().getAddress())) {
                 updateBalance(profile);
             }
         });
@@ -209,6 +214,7 @@ public class WalletActivity extends BaseActivity {
 
 
     private void draw(final Profile profile) {
+        drawToolbar();
         if (profile.getWallet().getAddressToRefund() != null)
             addressToSendEditor.setText(profile.getWallet().getAddressToRefund());
 
@@ -225,6 +231,11 @@ public class WalletActivity extends BaseActivity {
         enableTransfer(balance.compareTo(BigDecimal.ZERO) > 0
                 && (profile.getCurrent().getMyRole(profile.getId()) == MarketRole.supply
                 || profile.getCurrent().getFinished()));
+    }
+
+    private void drawToolbar() {
+        homeButton.setOnClickListener(v -> Router.finishActivity(WalletActivity.this));
+        title.setText(R.string.wallet);
     }
 
     private void enableTransfer(boolean enable) {
