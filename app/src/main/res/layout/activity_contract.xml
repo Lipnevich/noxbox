@@ -197,7 +197,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
+                            android:layout_margin="2dp"
                             android:text="@string/travelMode"
                             android:textSize="@dimen/text_size" />
 
@@ -231,7 +231,9 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginEnd="2dp">
 
                             <TextView
                                 android:id="@+id/or"
@@ -420,8 +422,8 @@
                 android:id="@+id/similarNoxboxesLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
                 android:orientation="vertical">
 
                 <TextView
