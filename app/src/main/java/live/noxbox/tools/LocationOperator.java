@@ -3,7 +3,12 @@ package live.noxbox.tools;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -11,7 +16,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
@@ -57,17 +62,44 @@ public class LocationOperator {
         try {
             if (isLocationPermissionGranted(activity.getApplicationContext())) {
                 com.google.android.gms.tasks.Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(activity, (OnCompleteListener<Location>) task -> {
-                    if (task.isSuccessful()) {
-                        lastKnownLocation = (Location) task.getResult();
+                locationResult.addOnSuccessListener(activity, (OnSuccessListener<? super Location>) location -> {
+                    if (location != null) {
+                        lastKnownLocation = location;
 
-                        if (lastKnownLocation != null) {
-                            Position position = Position.from(lastKnownLocation);
-                            profile.setPosition(position);
-                            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-                        }
+                        Position position = Position.from(lastKnownLocation);
+                        profile.setPosition(position);
+                        MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
                     } else {
-                        Crashlytics.logException(task.getException());
+                        LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+                        Criteria criteria = new Criteria();
+                        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                        locationManager.requestSingleUpdate(criteria, new LocationListener() {
+                            @Override
+                            public void onLocationChanged(Location location) {
+                                if (location != null) {
+                                    lastKnownLocation = location;
+
+                                    Position position = Position.from(lastKnownLocation);
+                                    profile.setPosition(position);
+                                    MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+                                }
+                            }
+
+                            @Override
+                            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                            }
+
+                            @Override
+                            public void onProviderEnabled(String provider) {
+
+                            }
+
+                            @Override
+                            public void onProviderDisabled(String provider) {
+
+                            }
+                        }, Looper.myLooper());
                     }
                 });
             }
@@ -77,7 +109,7 @@ public class LocationOperator {
     }
 
     public static FusedLocationProviderClient initLocationProviderClient(Context context) {
-        if(fusedLocationProviderClient == null){
+        if (fusedLocationProviderClient == null) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         }
         return fusedLocationProviderClient;
