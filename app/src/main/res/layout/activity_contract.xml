@@ -353,7 +353,7 @@
                             android:maxLines="3"
                             android:minLines="3"
                             android:textColor="@color/google_text"
-                            android:textSize="@dimen/text_size_secondary" />
+                            android:textSize="@dimen/text_size" />
                     </LinearLayout>
 
                     <LinearLayout
