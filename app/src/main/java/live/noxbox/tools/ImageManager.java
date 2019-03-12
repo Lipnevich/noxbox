@@ -159,7 +159,7 @@ public class ImageManager {
             Glide.with(activity)
                     .asDrawable()
                     .load(url)
-                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
+                    .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.DATA))
                     .apply(RequestOptions.circleCropTransform())
                     .into(image);
         else

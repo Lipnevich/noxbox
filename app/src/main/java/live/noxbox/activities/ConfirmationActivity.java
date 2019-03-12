@@ -21,6 +21,7 @@ import live.noxbox.tools.Router;
 
 import static live.noxbox.analitics.BusinessEvent.verification;
 import static live.noxbox.database.AppCache.updateNoxbox;
+import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class ConfirmationActivity extends BaseActivity {
 
@@ -47,7 +48,21 @@ public class ConfirmationActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.readProfile(profile -> draw(profile));
+        AppCache.listenProfile(ConfirmationActivity.class.getName(), profile -> {
+            if (!isNullOrZero(profile.getCurrent().getTimePartyRejected())
+                    || !isNullOrZero(profile.getCurrent().getTimeOwnerRejected())) {
+                Router.finishActivity(ConfirmationActivity.this);
+                return;
+            }
+
+            draw(profile);
+        });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppCache.stopListen(this.getClass().getName());
     }
 
     private void draw(Profile profile) {
