@@ -508,14 +508,12 @@ public class DetailedActivity extends BaseActivity {
 
         profile.getCurrent().copy(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
+        profile.getCurrent().setTimeRequested(System.currentTimeMillis());
+        profile.getCurrent().setParty(profile.privateInfo());
         Firestore.writeProfile(profile, object -> {
-            profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-            profile.getCurrent().setParty(profile.privateInfo());
-
             AppCache.updateNoxbox();
 
             GeoRealtime.offline(profile.getCurrent());
-
             if (AppCache.availableNoxboxes.get(profile.getNoxboxId()) != null) {
                 AppCache.availableNoxboxes.remove(profile.getNoxboxId());
             }

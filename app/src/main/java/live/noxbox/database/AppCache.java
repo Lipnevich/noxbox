@@ -186,6 +186,12 @@ public class AppCache {
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId).addOnSuccessListener(o -> {
             Firestore.listenNoxbox(noxboxId, noxbox -> {
                 if (noxbox.getId().equals(profile.getNoxboxId())) {
+                    if(profile.getCurrent().getId().equals(noxbox.getId()) &&
+                            (profile.getCurrent().getNotMe(profile.getId()) == null
+                        || !profile.getCurrent().getNotMe(profile.getId()).getPhoto()
+                                .equals(noxbox.getNotMe(profile.getId()).getPhoto()))) {
+                        profile.getCurrent().setConfirmationPhoto(null);
+                    }
                     profile.getCurrent().copy(noxbox);
                 } else {
                     profile.getViewed().copy(noxbox);
