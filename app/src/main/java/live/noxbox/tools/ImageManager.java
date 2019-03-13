@@ -27,13 +27,14 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
-import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NotificationType;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.Notification;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.notifications.factory.NotificationFactory.buildNotification;
 
 public class ImageManager {
@@ -44,6 +45,23 @@ public class ImageManager {
             data.put("type", NotificationType.photoValid.name());
             buildNotification(activity.getApplicationContext(), null, data).show();
             profile.setPhoto(uri.toString());
+
+            if (profile.getCurrent() != null
+                    && profile.getNoxboxId() != null
+                    && !isNullOrZero(profile.getCurrent().getTimeCreated())
+                    && isNullOrZero(profile.getCurrent().getTimePartyRejected())
+                    && isNullOrZero(profile.getCurrent().getTimeOwnerRejected())) {
+                Noxbox current = profile.getCurrent();
+                if (current.getOwner().equals(profile) && isNullOrZero(current.getTimePartyVerified())) {
+                    current.getOwner().setPhoto(profile.getPhoto());
+                    AppCache.updateNoxbox();
+                } else if (current.getParty().equals(profile) && isNullOrZero(current.getTimeOwnerVerified())) {
+                    current.getParty().setPhoto(profile.getPhoto());
+                    AppCache.updateNoxbox();
+                }
+
+            }
+
             AppCache.fireProfile();
         });
     }
@@ -75,9 +93,7 @@ public class ImageManager {
             if (stream.toByteArray().length <= 800000)//check photo size <= 800B or compress to lower quality
                 break;
             stream = new ByteArrayOutputStream();
-            TimeLogger compression = new TimeLogger();
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
-            compression.makeLog("compression");
         }
 
         final Map<String, String> data = new HashMap<>();
@@ -125,6 +141,7 @@ public class ImageManager {
             }
         });
     }
+
     public static void getBitmap(Activity activity, Bitmap bitmap, final Task<Bitmap> task) {
         Glide.with(activity).asBitmap().load(bitmap).into(new SimpleTarget<Bitmap>() {
             @Override

@@ -43,7 +43,6 @@ import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.FacePartsDetection;
-import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.CAMERA_PERMISSION_REQUEST_CODE;
@@ -53,6 +52,7 @@ import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.ImageManager.createCircleImageFromBitmap;
 import static live.noxbox.tools.ImageManager.createCircleProfilePhotoFromUrl;
 import static live.noxbox.tools.ImageManager.getBitmap;
+import static live.noxbox.tools.ImageManager.uploadPhoto;
 
 public class ProfileActivity extends BaseActivity {
 
@@ -312,7 +312,7 @@ public class ProfileActivity extends BaseActivity {
 
                 getBitmap(ProfileActivity.this, data.getData(), bitmap ->
                         FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
-                            ImageManager.uploadPhoto(ProfileActivity.this, profile, checking);
+                            uploadPhoto(ProfileActivity.this, profile, checking);
                             checkPhotoAcceptance(profile);
                         }));
 
@@ -331,7 +331,7 @@ public class ProfileActivity extends BaseActivity {
 
                 getBitmap(ProfileActivity.this, photoBitmap, bitmap ->
                         FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
-                            ImageManager.uploadPhoto(ProfileActivity.this, profile, checking);
+                            uploadPhoto(ProfileActivity.this, profile, checking);
                             checkPhotoAcceptance(profile);
                         }));
 

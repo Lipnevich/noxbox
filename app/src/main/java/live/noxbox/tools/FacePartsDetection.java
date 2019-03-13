@@ -13,7 +13,6 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import java.util.HashMap;
 import java.util.Map;
 
-import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Acceptance;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -38,29 +37,29 @@ public class FacePartsDetection {
                         .build();
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
                 .getVisionFaceDetector(options);
-        final TimeLogger detection = new TimeLogger();
         detector.detectInImage(image)
                 .addOnSuccessListener(faces -> {
-                    detection.makeLog("detection");
+                    Acceptance acceptance = new Acceptance();
+                    acceptance.setIncorrectName(profile.getAcceptance().getIncorrectName());
+                    acceptance.setMessage(profile.getAcceptance().getMessage());
 
                     Map<String, String> data = new HashMap<>();
 
-                    if (faces.size() != 1) {
-                        profile.setAcceptance(new Acceptance());
-                    } else {
-                        profile.getAcceptance().setFailToRecognizeFace(false);
-                        profile.getAcceptance().setFaceSize(0.7f);
+                    if (faces.size() == 1) {
+                        acceptance.setFailToRecognizeFace(false);
+                        acceptance.setFaceSize(0.7f);
 
                         FirebaseVisionFace face = faces.get(0);
                         // If classification was enabled:
-                        profile.getAcceptance().setSmileProbability(face.getSmilingProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getSmilingProbability() : 0f);
+                        acceptance.setSmileProbability(face.getSmilingProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getSmilingProbability() : 0f);
 
-                        profile.getAcceptance().setRightEyeOpenProbability(face.getRightEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getRightEyeOpenProbability() : 0f);
+                        acceptance.setRightEyeOpenProbability(face.getRightEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getRightEyeOpenProbability() : 0f);
 
-                        profile.getAcceptance().setLeftEyeOpenProbability(face.getLeftEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : 0f);
+                        acceptance.setLeftEyeOpenProbability(face.getLeftEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : 0f);
                     }
 
-                    if (profile.getAcceptance().isAccepted()) {
+                    if (acceptance.isAccepted()) {
+                        profile.setAcceptance(acceptance);
                         data.put("type", NotificationType.photoValid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
                         businessEvent(validPhoto);
@@ -68,7 +67,7 @@ public class FacePartsDetection {
 
                     } else {
                         data.put("type", NotificationType.photoInvalid.name());
-                        NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
+                        NotificationFactory.buildNotification(activity.getApplicationContext(), new Profile().setAcceptance(acceptance), data).show();
                         businessEvent(invalidPhoto);
                     }
                 })
