@@ -198,7 +198,6 @@ public class Moving implements State {
             movingView = null;
         }
         MapOperator.clearMapMarkerListener(googleMap);
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);

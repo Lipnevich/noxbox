@@ -48,7 +48,6 @@ public class Accepting implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
-
         if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
@@ -104,7 +103,6 @@ public class Accepting implements State {
             }
         }.start();
 
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
     }
 
@@ -147,7 +145,6 @@ public class Accepting implements State {
     public void clear() {
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
-        googleMap.getUiSettings().setScrollGesturesEnabled(true);
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
