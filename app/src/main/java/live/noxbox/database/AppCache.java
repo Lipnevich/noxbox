@@ -85,7 +85,7 @@ public class AppCache {
                     profile.getFilters().setPrice(Integer.MAX_VALUE);
                 }
 
-                if (!isNullOrEmpty(profile.getNoxboxId()) && !ids.contains(profile.getNoxboxId())) {
+                if (!isNullOrEmpty(profile.getNoxboxId())) {
                     startListenNoxbox(profile.getNoxboxId());
                 } else {
                     executeUITasks();
@@ -191,6 +191,10 @@ public class AppCache {
                         || !profile.getCurrent().getNotMe(profile.getId()).getPhoto()
                                 .equals(noxbox.getNotMe(profile.getId()).getPhoto()))) {
                         profile.getCurrent().setConfirmationPhoto(null);
+                    }
+                    if(NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.requesting) {
+                        noxbox.setTimeRequested(profile.getCurrent().getTimeRequested());
+                        noxbox.setParty(profile.getCurrent().getParty());
                     }
                     profile.getCurrent().copy(noxbox);
                 } else {

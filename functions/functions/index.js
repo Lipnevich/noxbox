@@ -4,7 +4,7 @@ const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
 const wallet = require('./wallet-functions');
-const version = 4;
+const version = 5;
 
 const db = admin.firestore();
 db.settings({timestampsInSnapshots: true});

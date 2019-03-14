@@ -20,7 +20,7 @@ public enum NoxboxState {
             return initial;
 
 
-        if (!isNullOrZero(noxbox.getTimeCreated())
+        if (!isNullOrZero(noxbox.getTimeCreated()) && noxbox.getOwner().equals(profile)
                 && isNullOrZero(noxbox.getTimeRequested())
                 && isNullOrZero(noxbox.getTimeAccepted())) {
             return created;
