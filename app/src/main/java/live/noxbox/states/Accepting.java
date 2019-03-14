@@ -48,6 +48,9 @@ public class Accepting implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
         if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
 
@@ -145,6 +148,7 @@ public class Accepting implements State {
     public void clear() {
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;

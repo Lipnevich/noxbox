@@ -44,6 +44,9 @@ public class Requesting implements State {
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
         if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
             initiated = true;
@@ -110,6 +113,7 @@ public class Requesting implements State {
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
