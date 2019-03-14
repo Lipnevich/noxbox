@@ -19,7 +19,6 @@ import live.noxbox.database.AppCache;
 import live.noxbox.database.Firestore;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.NotificationType;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
@@ -110,11 +109,8 @@ public class HackerActivity extends MenuActivity {
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().build());
 
-                        Noxbox current = NoxboxExamples.generateNoxboxes(new Position(0, 0), 1, 100).get(0);
-                        current.getOwner().setId(profile().getId());
-                        current.setTimeRequested(0L);
-
-                        db.collection("noxboxes").document("666").set(Firestore.objectToMap(current), SetOptions.merge())
+                        profile().setRatingHash(null);
+                        db.collection("profiles").document(profile().getId()).set(Firestore.objectToMap(profile()), SetOptions.merge())
                             .addOnCompleteListener(task -> {
                                 if (task.getException() != null) {
                                     DebugMessage.popup(getApplicationContext(), task.getException().getMessage());
