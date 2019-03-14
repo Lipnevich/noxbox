@@ -50,7 +50,7 @@ transfer = async request => {
     };
 
     transferData.recipient = request.addressToTransfer,
-    transferData.amount = '' + request.transferable.times(wavesDecimals);
+    transferData.amount = '' + request.transferable.times(wavesDecimals).round(0, 0);
 
     await Waves.API.Node.v1.assets.transfer(transferData, request.seed.keyPair);
     console.log('Money was transferred');
