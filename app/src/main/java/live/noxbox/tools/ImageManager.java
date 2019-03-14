@@ -88,7 +88,7 @@ public class ImageManager {
         int quality = 100;
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, quality, stream);
-        while (quality > 1) {
+        while (quality > 5) {
             quality -= 5;
             if (stream.toByteArray().length <= 800000)//check photo size <= 800B or compress to lower quality
                 break;
