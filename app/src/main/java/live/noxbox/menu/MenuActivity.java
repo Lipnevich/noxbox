@@ -48,20 +48,28 @@ import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
+import static live.noxbox.tools.DisplayMetricsConservations.getStatusBarHeight;
 
 public abstract class MenuActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ImageView photoView;
+    private TextView nameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigationView);
+        photoView = navigationView.getHeaderView(0).findViewById(R.id.photo);
+        nameView = navigationView.getHeaderView(0).findViewById(R.id.name);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        AppCache.profile().init(FirebaseAuth.getInstance().getCurrentUser());
         AppCache.listenProfile(MenuActivity.class.getName(), profile -> draw(MenuActivity.this, profile));
     }
 
@@ -71,12 +79,18 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         AppCache.stopListen(this.getClass().getName());
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isInitiated = false;
+    }
+
     private void draw(final Activity activity, final Profile profile) {
+        initializeNavigationHeader(activity, profile);
         drawNavigation(activity, profile);
     }
 
     private void drawNavigation(final Activity activity, final Profile profile) {
-        drawerLayout = findViewById(R.id.drawerLayout);
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
@@ -86,7 +100,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
 
             @Override
             public void onDrawerOpened(@NonNull View view) {
-                initializeNavigationHeader(activity, profile);
             }
 
             @Override
@@ -98,8 +111,6 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             }
         });
 
-
-        NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
         findViewById(R.id.menu).setOnClickListener(v -> {
@@ -108,36 +119,34 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         });
     }
 
-    private Boolean isInitial = false;
+    private Boolean isInitiated = false;
 
     private void initializeNavigationHeader(final Activity activity, final Profile profile) {
-        if (!isInitial) {
-            ImageView profilePhoto = findViewById(R.id.photo);
-
+        if (!isInitiated) {
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(dpToPx(96), dpToPx(96));
-            layoutParams.setMargins(dpToPx(16), dpToPx(32), 0, 0);
-            profilePhoto.setLayoutParams(layoutParams);
+            layoutParams.setMargins(dpToPx(16), dpToPx(32) + getStatusBarHeight(getApplicationContext()), 0, 0);
+            photoView.setLayoutParams(layoutParams);
 
 
             if (profile.getPhoto() == null) {
-                ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.human_profile), (profilePhoto));
+                ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.human_profile), photoView);
             } else {
-                ImageManager.createCircleProfilePhotoFromUrl(activity, profile.getPhoto(), profilePhoto);
+                ImageManager.createCircleProfilePhotoFromUrl(activity, profile.getPhoto(), photoView);
             }
             if (!Strings.isNullOrEmpty(profile.getName())) {
-                ((TextView) findViewById(R.id.name)).setText(profile.getName());
+                nameView.setText(profile.getName());
             }
 
             //((TextView) findViewById(R.id.rating)).setText(String.valueOf(profile.ratingToPercentage()).concat(" %"));
 
-            profilePhoto.setOnClickListener(v -> {
+            photoView.setOnClickListener(v -> {
                 Router.startActivityForResult(activity, ProfileActivity.class, ProfileActivity.CODE);
                 if (drawerLayout != null) {
                     drawerLayout.closeDrawers();
                 }
-                isInitial = false;
+                isInitiated = false;
             });
-            isInitial = true;
+            isInitiated = true;
         }
     }
 
@@ -201,7 +210,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         if (drawerLayout != null) {
             drawerLayout.closeDrawers();
         }
-        isInitial = false;
+        isInitiated = false;
         return true;
     }
 
