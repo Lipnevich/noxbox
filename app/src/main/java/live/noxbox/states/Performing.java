@@ -60,6 +60,8 @@ public class Performing implements State {
 
     private LinearLayout container;
     private LinearLayout rootLayout;
+    private LinearLayout moneyLayout;
+    private LinearLayout timeLayout;
     private LinearLayout.LayoutParams textParams;
     private TextView earnedOrSpent;
     private TextView currencyText;
@@ -156,17 +158,16 @@ public class Performing implements State {
         screenOrientation = activity.getResources().getConfiguration().orientation;
         textColorInt = activity.getResources().getColor(R.color.primary);
         textParams = new LinearLayout.LayoutParams(matchParent, wrapContent);
-        textParams.setMargins(0,0,0,0);
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            textParams.setMargins(0, 0, 0, 0);
+        } else {
+            textParams.setMargins(dpToPx(6), 0, 0, 0);
+        }
         btnTextColorInt = activity.getResources().getColor(R.color.secondary);
         btnBackgroundColorInt = textColorInt;
         btnText = activity.getResources().getString(R.string.complete);
-        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            titleTextSize = 64;
-            defaultTextSize = 32;
-        } else {
-            titleTextSize = 32;
-            defaultTextSize = 16;
-        }
+        titleTextSize = 58;
+        defaultTextSize = 32;
 
     }
 
@@ -178,9 +179,9 @@ public class Performing implements State {
         rootLayout = new LinearLayout(activity);
         rootLayout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams rootParams = new LinearLayout.LayoutParams(matchParent, matchParent);
-        if(screenOrientation == Configuration.ORIENTATION_PORTRAIT){
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
             rootParams.setMargins(0, dpToPx(12), 0, 0);
-        }else{
+        } else {
             rootParams.setMargins(0, dpToPx(24), 0, 0);
         }
         rootLayout.setLayoutParams(rootParams);
@@ -190,53 +191,88 @@ public class Performing implements State {
 
     private void drawMoneyToPay() {
         if (rootLayout == null) return;
+
         earnedOrSpent = new TextView(activity);
-        if(profile.getCurrent().getPerformer().equals(profile)){
+        currencyText = new TextView(activity);
+        moneyToPay = new TextView(activity);
+
+        if (profile.getCurrent().getPerformer().equals(profile)) {
             earnedOrSpent.setText(R.string.earned);
-        }else{
+        } else {
             earnedOrSpent.setText(R.string.spent);
         }
-        earnedOrSpent.setGravity(Gravity.CENTER_HORIZONTAL);
         earnedOrSpent.setPadding(0, 0, 0, 0);
         earnedOrSpent.setTextColor(textColorInt);
         earnedOrSpent.setTextSize(defaultTextSize);
 
 
-        currencyText = new TextView(activity);
-        currencyText.setGravity(Gravity.CENTER_HORIZONTAL);
         currencyText.setPadding(0, 0, 0, 0);
         currencyText.setText(R.string.currency);
         currencyText.setTextColor(textColorInt);
         currencyText.setTextSize(defaultTextSize);
 
-        moneyToPay = new TextView(activity);
+
         moneyToPay.setPadding(0, 0, 0, 0);
-        moneyToPay.setGravity(Gravity.CENTER_HORIZONTAL);
-        moneyToPay.setTextColor(activity.getResources().getColor(R.color.primary));
+        moneyToPay.setTextColor(textColorInt);
         moneyToPay.setTextSize(titleTextSize);
 
-        rootLayout.addView(earnedOrSpent, textParams);
-        rootLayout.addView(currencyText, textParams);
-        rootLayout.addView(moneyToPay, textParams);
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            earnedOrSpent.setGravity(Gravity.CENTER_HORIZONTAL);
+            currencyText.setGravity(Gravity.CENTER_HORIZONTAL);
+            moneyToPay.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            rootLayout.addView(earnedOrSpent, textParams);
+            rootLayout.addView(currencyText, textParams);
+            rootLayout.addView(moneyToPay, textParams);
+        } else {
+            moneyLayout = new LinearLayout(activity);
+            moneyLayout.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout.LayoutParams moneyLayoutParams = new LinearLayout.LayoutParams(wrapContent, wrapContent);
+            moneyLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+
+            moneyLayout.addView(earnedOrSpent, textParams);
+            moneyLayout.addView(currencyText, textParams);
+            moneyLayout.addView(moneyToPay, textParams);
+
+            rootLayout.addView(moneyLayout, moneyLayoutParams);
+        }
+
     }
 
     private void drawTimeView() {
         if (rootLayout == null) return;
         timePassedText = new TextView(activity);
+        timeView = new TextView(activity);
+
         timePassedText.setPadding(0, 0, 0, 0);
-        timePassedText.setText(R.string.performingPushContent);
-        timePassedText.setGravity(Gravity.CENTER_HORIZONTAL);
+        timePassedText.setText(R.string.timePassed);
+
         timePassedText.setTextColor(textColorInt);
         timePassedText.setTextSize(defaultTextSize);
 
-        timeView = new TextView(activity);
         timeView.setPadding(0, 0, 0, 0);
-        timeView.setGravity(Gravity.CENTER_HORIZONTAL);
         timeView.setTextColor(textColorInt);
         timeView.setTextSize(titleTextSize);
 
-        rootLayout.addView(timePassedText, textParams);
-        rootLayout.addView(timeView, textParams);
+        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            timePassedText.setGravity(Gravity.CENTER_HORIZONTAL);
+            timeView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+            rootLayout.addView(timePassedText, textParams);
+            rootLayout.addView(timeView, textParams);
+        } else {
+            timeLayout = new LinearLayout(activity);
+            timeLayout.setOrientation(LinearLayout.HORIZONTAL);
+            LinearLayout.LayoutParams timeLayoutParams = new LinearLayout.LayoutParams(wrapContent, wrapContent);
+            timeLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+            timeLayout.addView(timePassedText, textParams);
+            timeLayout.addView(timeView, textParams);
+
+            rootLayout.addView(timeLayout, timeLayoutParams);
+        }
+
     }
 
     private void drawComplete() {

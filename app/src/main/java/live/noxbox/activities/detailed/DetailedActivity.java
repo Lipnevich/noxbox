@@ -73,7 +73,6 @@ import static live.noxbox.analitics.BusinessEvent.cancel;
 import static live.noxbox.analitics.BusinessEvent.read;
 import static live.noxbox.analitics.BusinessEvent.request;
 import static live.noxbox.database.AppCache.profile;
-import static live.noxbox.database.AppCache.stopListenNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
@@ -506,8 +505,6 @@ public class DetailedActivity extends BaseActivity {
         }
 
         BusinessActivity.businessEvent(request);
-
-        stopListenNoxbox(profile.getCurrent().getId());
 
         profile.getCurrent().copy(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
