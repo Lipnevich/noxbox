@@ -20,6 +20,10 @@ public class Profile implements Serializable {
     private Map<String, Boolean> darkList = new HashMap<>();
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
+
+
+
+    private String ratingHash;
     private Map<String, Portfolio> portfolio = new HashMap<>();
     private Wallet wallet;
 
@@ -166,6 +170,7 @@ public class Profile implements Serializable {
                 .setFilters(getFilters())
                 .setSuppliesRating(getSuppliesRating())
                 .setDemandsRating(getDemandsRating())
+                .setRatingHash(getRatingHash())
                 .setTravelMode(getTravelMode())
                 .setHost(getHost());
     }
@@ -345,6 +350,7 @@ public class Profile implements Serializable {
         darkList = from.darkList;
         suppliesRating = from.suppliesRating;
         demandsRating = from.demandsRating;
+        ratingHash = from.ratingHash;
         portfolio = from.portfolio;
         wallet = from.wallet;
         name = from.name;
@@ -357,7 +363,14 @@ public class Profile implements Serializable {
         filters = from.filters;
         return this;
     }
+    public String getRatingHash() {
+        return ratingHash;
+    }
 
+    public Profile setRatingHash(String ratingHash) {
+        this.ratingHash = ratingHash;
+        return this;
+    }
     @Override
     public String toString() {
         return "id=" + getId() + ",noxboxId=" + getNoxboxId();
