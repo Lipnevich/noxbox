@@ -400,9 +400,9 @@ public class DetailedActivity extends BaseActivity {
 
     private void drawPrice(Profile profile) {
         drawDropdownElement(priceTitleLayout.getId(), priceLayout.getId());
-        changeArrowVector(priceLayout.getId(),priceArrow.getId());
+        changeArrowVector(priceLayout.getId(), priceArrow.getId());
 
-        String priceTitleText= getResources().getString(R.string.priceTxt) + " "
+        String priceTitleText = getResources().getString(R.string.priceTxt) + " "
                 + MoneyFormatter.format(new BigDecimal(profile.getViewed().getPrice())) + " " + AppCache.showPriceInUsd(getString(R.string.currency), profile.getViewed().getPrice());
 
         priceTitle.setText(priceTitleText);
@@ -438,7 +438,9 @@ public class DetailedActivity extends BaseActivity {
                                 new Noxbox().setId(profile.getViewed().getId())));
                 break;
             case created:
-                drawJoinButton(profile);
+                if (profile.getViewed().getTimeCreated() > 1) {
+                    drawJoinButton(profile);
+                }
                 break;
             case accepting:
                 drawAcceptButton(profile);

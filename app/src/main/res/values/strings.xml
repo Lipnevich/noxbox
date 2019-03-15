@@ -307,7 +307,7 @@
     <string name="missingReceivedHistoryMessage">The services you receive will be displayed here</string>
     <string name="chooseDemandService">Book your first service</string>
     <string name="isMinimumPrice">is a minimum price</string>
-    <string name="emptyPriceErrorMessage">The field which indicates the price of the service can not be empty</string>
+    <string name="emptyPriceErrorMessage">Wrong price</string>
     <string name="enterPrice">Price</string>
     <string name="supplyServices">Offer</string>
     <string name="demandServices">Demand</string>

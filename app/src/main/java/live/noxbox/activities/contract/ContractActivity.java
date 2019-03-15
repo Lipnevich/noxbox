@@ -237,21 +237,32 @@ public class ContractActivity extends BaseActivity {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    String price = s.toString().replaceAll(",", "\\.");
-                    contract().setPrice(price);
+                    String price = s.toString().replaceAll(",", "\\.").trim();
 
-
-                    if (s.length() > 0) {
-                        drawSimilarNoxboxList(profile);
-                        inputLayout.setErrorEnabled(false);
-                        textCurrency.setText(showPriceInUsd(getString(R.string.currency), contract().getPrice()));
-                    } else {
-                        inputLayout.requestFocus();
-                        inputLayout.setErrorEnabled(true);
-                        inputLayout.setError("* " + getString(R.string.emptyPriceErrorMessage));
-                        textCurrency.setText(getString(R.string.currency));
+                    try {
+                        BigDecimal bigDecimal = new BigDecimal(price);
+                        price = bigDecimal.toString();
+                        if(new BigDecimal(price).compareTo(new BigDecimal(MINIMUM_PRICE)) >= 0){
+                            drawSimilarNoxboxList(profile);
+                            inputLayout.setErrorEnabled(false);
+                            textCurrency.setText(showPriceInUsd(getString(R.string.currency), contract().getPrice()));
+                            contract().setPrice(price);
+                        } else {
+                            showErrorMessage();
+                        }
+                    } catch (NumberFormatException e) {
+                        showErrorMessage();
                     }
+
                 }
+
+                private void showErrorMessage(){
+                    inputLayout.requestFocus();
+                    inputLayout.setErrorEnabled(true);
+                    inputLayout.setError("* " + getString(R.string.emptyPriceErrorMessage));
+                    textCurrency.setText(getString(R.string.currency));
+                }
+
             };
             inputPrice.addTextChangedListener(changePriceListener);
         }
@@ -507,7 +518,6 @@ public class ContractActivity extends BaseActivity {
             publish.setText(R.string.update);
             publishButton.setOnClickListener(v -> {
                 if (contract().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(contract(), profile)) {
-                    publishButton.setBackgroundColor(getResources().getColor(R.color.translucent));
                     BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
                 }

@@ -28,7 +28,6 @@ import static live.noxbox.model.TravelMode.none;
 public class Noxbox implements Comparable<Noxbox> {
 
     private String id;
-    @Virtual
     private String geoId;
     @Virtual
     private Drawable confirmationPhoto;
@@ -106,11 +105,13 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox clean() {
         id = "";
+        geoId = null;
         getChat().getOwnerMessages().clear();
         getChat().getPartyMessages().clear();
         getChat().setOwnerReadTime(0L);
         getChat().setPartyReadTime(0L);
         // party = new Profile().setId("0");
+        total = "";
         confirmationPhoto = null;
         party = null;
         performerId = "";

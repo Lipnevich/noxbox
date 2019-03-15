@@ -307,7 +307,7 @@
     <string name="missingReceivedHistoryMessage">Услуги, полученные Вами, будут отображены здесь</string>
     <string name="chooseDemandService">Заказать вашу первую услугу</string>
     <string name="isMinimumPrice">минимальная цена</string>
-    <string name="emptyPriceErrorMessage">Поле в котором указывается цена за услугу не может быть пустым</string>
+    <string name="emptyPriceErrorMessage">Неправильная цена</string>
     <string name="enterPrice">Цена</string>
     <string name="supplyServices">Предложение</string>
     <string name="demandServices">Спрос</string>

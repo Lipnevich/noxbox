@@ -31,7 +31,9 @@ import static live.noxbox.analitics.BusinessEvent.inBox;
 import static live.noxbox.database.Firestore.getNewNoxboxId;
 import static live.noxbox.database.Firestore.writeNoxbox;
 import static live.noxbox.database.Firestore.writeProfile;
+import static live.noxbox.database.GeoRealtime.createKey;
 import static live.noxbox.database.GeoRealtime.offline;
+import static live.noxbox.database.GeoRealtime.online;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
 public class AppCache {
@@ -238,6 +240,7 @@ public class AppCache {
         } else {
             profile.getContract().getOwner().setPortfolio(null);
         }
+        profile().getContract().setGeoId(createKey(profile().getContract()));
 
         profile.getCurrent().copy(profile.getContract());
         executeUITasks();
@@ -250,6 +253,7 @@ public class AppCache {
                     success -> {
                         startListenNoxbox(profile.getNoxboxId());
                         onSuccess.execute(profile);
+                        online(profile().getCurrent());
                     },
                     error -> {
                         // remove noxboxId from the profile

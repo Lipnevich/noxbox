@@ -48,7 +48,7 @@ public class GeoRealtime {
 
     // supplier
     public static void online(Noxbox current) {
-        geo().setLocation(createKey(current), current.getPosition().toGeoLocation());
+        geo().setLocation(current.getGeoId(), current.getPosition().toGeoLocation());
     }
 
     public static void offline(Noxbox current) {
@@ -177,32 +177,34 @@ public class GeoRealtime {
     }
 
     public static ValueEventListener positionListener;
+
     public static void listenPosition(String noxboxId, Task<Position> task) {
         stopListenPosition(noxboxId);
         positionListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()) {
+                if (dataSnapshot.exists()) {
                     Position position = dataSnapshot.getValue(Position.class);
                     task.execute(position);
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {}
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
         };
         position(noxboxId).addValueEventListener(positionListener);
     }
 
     public static void stopListenPosition(String noxboxId) {
-        if(positionListener != null) {
+        if (positionListener != null) {
             position(noxboxId).removeEventListener(positionListener);
             positionListener = null;
         }
     }
 
     public static void updatePosition(String noxboxId, Position position) {
-        if(Strings.isNullOrEmpty(noxboxId)) return;
+        if (Strings.isNullOrEmpty(noxboxId)) return;
         position(noxboxId).setValue(position);
     }
 

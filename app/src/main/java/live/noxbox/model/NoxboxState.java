@@ -22,7 +22,9 @@ public enum NoxboxState {
 
         if (!isNullOrZero(noxbox.getTimeCreated())
                 && isNullOrZero(noxbox.getTimeRequested())
-                && isNullOrZero(noxbox.getTimeAccepted())) {
+                && isNullOrZero(noxbox.getTimeAccepted())
+                && isNullOrZero(noxbox.getTimeTimeout())
+                && isNullOrZero(noxbox.getTimeRemoved())) {
             return created;
         }
 
