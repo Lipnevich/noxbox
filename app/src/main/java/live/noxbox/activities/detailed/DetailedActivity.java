@@ -667,21 +667,8 @@ public class DetailedActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        switch (itemId) {
-            case android.R.id.home:
-                switch (NoxboxState.getState(profile().getViewed(), profile())) {
-                    case created:
-                        profile().setViewed(null);
-                        break;
-                    case accepting:
-                    case moving:
-                    case requesting:
-                        break;
-                }
-
-                Router.finishActivity(DetailedActivity.this);
-                break;
-
+        if(itemId == android.R.id.home){
+            Router.finishActivity(DetailedActivity.this);
         }
 
         return true;

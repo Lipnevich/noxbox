@@ -24,7 +24,7 @@ public interface Constants {
     double ADDRESS_SEARCH_RADIUS_IN_METERS = 100000D;
     int MAX_ZOOM_LEVEL = 18;
     int MIN_ZOOM_LEVEL = 1;
-    int DEFAULT_ZOOM_LEVEL = 13;
+    int DEFAULT_ZOOM_LEVEL = 11;
     String CHANNEL_ID = "noxbox_channel";
     int CLUSTER_RENDERING_MIN_FREQUENCY = 3000;
     int CLUSTER_RENDERING_MAX_FREQUENCY = 400;

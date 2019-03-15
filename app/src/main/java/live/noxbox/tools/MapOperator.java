@@ -26,6 +26,7 @@ import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
+import static live.noxbox.Constants.DEFAULT_ZOOM_LEVEL;
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
 import static live.noxbox.Constants.MIN_ZOOM_LEVEL;
 import static live.noxbox.database.AppCache.profile;
@@ -55,17 +56,19 @@ public class MapOperator {
 
             case created:
             case performing:
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getCurrent().getPosition().toLatLng(), googleMap.getCameraPosition().zoom));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getCurrent().getPosition().toLatLng(),
+                        googleMap.getCameraPosition().zoom < DEFAULT_ZOOM_LEVEL ? DEFAULT_ZOOM_LEVEL : googleMap.getCameraPosition().zoom));
                 break;
             default:
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), googleMap.getCameraPosition().zoom));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(),
+                        googleMap.getCameraPosition().zoom < DEFAULT_ZOOM_LEVEL ? DEFAULT_ZOOM_LEVEL : googleMap.getCameraPosition().zoom));
         }
     }
 
     public static void enterTheMap(GoogleMap googleMap, Activity activity) {
-        if(isLocationPermissionGranted(activity.getApplicationContext())){
+        if (isLocationPermissionGranted(activity.getApplicationContext())) {
             getDeviceLocation(profile(), googleMap, activity);
-        }else{
+        } else {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), MIN_ZOOM_LEVEL));
         }
     }
