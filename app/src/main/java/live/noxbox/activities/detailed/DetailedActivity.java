@@ -45,7 +45,6 @@ import live.noxbox.cluster.ClusterItemsActivity;
 import live.noxbox.cluster.NoxboxMarker;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.Firestore;
-import live.noxbox.database.GeoRealtime;
 import live.noxbox.menu.profile.ImageListAdapter;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.MarketRole;
@@ -73,6 +72,10 @@ import static live.noxbox.analitics.BusinessEvent.cancel;
 import static live.noxbox.analitics.BusinessEvent.read;
 import static live.noxbox.analitics.BusinessEvent.request;
 import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.database.AppCache.startListenNoxbox;
+import static live.noxbox.database.AppCache.stopListenNoxbox;
+import static live.noxbox.database.Firestore.isFinished;
+import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
@@ -206,7 +209,10 @@ public class DetailedActivity extends BaseActivity {
         super.onResume();
         gyroscopeObserver.register(this);
         AppCache.listenProfile(DetailedActivity.class.getName(), profile -> {
-            AppCache.startListenNoxbox(profile.getViewed().getId());
+            if(!isFinished(profile.getCurrent()) && profile.getNoxboxId().equals(profile.getCurrent().getId())){
+                stopListenNoxbox(profile.getCurrent().getId());
+            }
+            startListenNoxbox(profile.getViewed().getId());
             if (profile.getViewed().getParty() == null) {
                 profile.getViewed().setParty(profile.publicInfo());
             }
@@ -430,7 +436,7 @@ public class DetailedActivity extends BaseActivity {
         switch (NoxboxState.getState(profile.getViewed(), profile)) {
             case initial:
                 BusinessActivity.businessEvent(BusinessEvent.removedNoxboxOpened);
-                GeoRealtime.offline(profile.getViewed());
+                offline(profile.getViewed());
                 AppCache.availableNoxboxes
                         .remove(profile.getViewed().getId());
                 ClusterItemsActivity.noxboxes
@@ -482,7 +488,7 @@ public class DetailedActivity extends BaseActivity {
 
             } else {
                 v.setVisibility(View.GONE);
-                sendRequestToNoxbox(profile);
+                readinessCheck(profile);
             }
 
         });
@@ -490,7 +496,7 @@ public class DetailedActivity extends BaseActivity {
 
     }
 
-    private void sendRequestToNoxbox(Profile profile) {
+    private void readinessCheck(Profile profile) {
         if (!profile.getAcceptance().isAccepted()) {
             openPhotoNotVerifySheetDialog(DetailedActivity.this);
             return;
@@ -506,8 +512,25 @@ public class DetailedActivity extends BaseActivity {
             return;
         }
 
+        //when detailed was opened from Contract and joined while current exist
+        if (!isNullOrZero(profile.getCurrent().getTimeCreated())
+                && !isFinished(profile.getCurrent())) {
+
+            AppCache.removeNoxbox(o -> {
+                //show progress
+                BusinessActivity.businessEvent(request);
+                sendRequestToNoxbox(profile);
+            });
+
+            return;
+        }
+
         BusinessActivity.businessEvent(request);
 
+        sendRequestToNoxbox(profile);
+    }
+
+    private void sendRequestToNoxbox(Profile profile) {
         profile.getCurrent().copy(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
@@ -515,13 +538,14 @@ public class DetailedActivity extends BaseActivity {
         Firestore.writeProfile(profile, object -> {
             AppCache.updateNoxbox();
 
-            GeoRealtime.offline(profile.getCurrent());
+            offline(profile.getCurrent());
             if (AppCache.availableNoxboxes.get(profile.getNoxboxId()) != null) {
                 AppCache.availableNoxboxes.remove(profile.getNoxboxId());
             }
+            startListenNoxbox(profile.getCurrent().getId());
         });
 
-
+        //hide progress
         Router.finishActivity(DetailedActivity.this);
     }
 
@@ -667,7 +691,7 @@ public class DetailedActivity extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(itemId == android.R.id.home){
+        if (itemId == android.R.id.home) {
             Router.finishActivity(DetailedActivity.this);
         }
 
@@ -691,7 +715,7 @@ public class DetailedActivity extends BaseActivity {
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    sendRequestToNoxbox(profile());
+                    readinessCheck(profile());
                 }
             }
         }

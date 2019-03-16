@@ -82,13 +82,10 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         clusterViewHolder.travelModeImage.setImageResource(travelModeImage);
         clusterViewHolder.role.setText(role);
 
-        clusterViewHolder.rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                profile().setViewed(clusterItems.get(position).getNoxbox());
-                profile().getViewed().setParty(profile().publicInfo());
-                Router.startActivity(activity, DetailedActivity.class);
-            }
+        clusterViewHolder.rootView.setOnClickListener(v -> {
+            profile().setViewed(clusterItems.get(position).getNoxbox());
+            profile().getViewed().setParty(profile().publicInfo());
+            Router.startActivity(activity, DetailedActivity.class);
         });
     }
 

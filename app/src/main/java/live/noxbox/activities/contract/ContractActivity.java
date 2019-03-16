@@ -51,7 +51,6 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
-import live.noxbox.tools.BottomSheetDialog;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
@@ -68,11 +67,14 @@ import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
+import static live.noxbox.database.AppCache.startListenNoxbox;
+import static live.noxbox.database.Firestore.isFinished;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
+import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
 import static live.noxbox.tools.DialogBuilder.createMessageAlertDialog;
 import static live.noxbox.tools.LocationOperator.getLocationPermission;
 import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
@@ -143,6 +145,16 @@ public class ContractActivity extends BaseActivity {
         super.onResume();
         AppCache.listenProfile(ContractActivity.class.getName(), profile -> {
             if (!isProfileReady()) return;
+
+            //when noxbox was requested from detailed
+            if (!isNullOrZero(profile.getCurrent().getTimeRequested())) {
+                profile.getContract().clean();
+                Router.finishActivity(ContractActivity.this);
+                return;
+            }
+            if(profile.getCurrent().getId().equals(profile.getNoxboxId()) && !isFinished(profile.getCurrent())){
+                startListenNoxbox(profile.getCurrent().getId());
+            }
             draw();
             checkBalance(profile, ContractActivity.this);
         });
@@ -242,11 +254,11 @@ public class ContractActivity extends BaseActivity {
                     try {
                         BigDecimal bigDecimal = new BigDecimal(price);
                         price = bigDecimal.toString();
-                        if(new BigDecimal(price).compareTo(new BigDecimal(MINIMUM_PRICE)) >= 0){
-                            drawSimilarNoxboxList(profile);
+                        if (new BigDecimal(price).compareTo(new BigDecimal(MINIMUM_PRICE)) >= 0) {
                             inputLayout.setErrorEnabled(false);
                             textCurrency.setText(showPriceInUsd(getString(R.string.currency), contract().getPrice()));
                             contract().setPrice(price);
+                            drawSimilarNoxboxList(profile);
                         } else {
                             showErrorMessage();
                         }
@@ -256,7 +268,7 @@ public class ContractActivity extends BaseActivity {
 
                 }
 
-                private void showErrorMessage(){
+                private void showErrorMessage() {
                     inputLayout.requestFocus();
                     inputLayout.setErrorEnabled(true);
                     inputLayout.setError("* " + getString(R.string.emptyPriceErrorMessage));
@@ -492,7 +504,7 @@ public class ContractActivity extends BaseActivity {
                 }
 
                 if (contract().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(contract(), profile)) {
-                    BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
+                    openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
                 }
                 if (!profile.getAcceptance().isAccepted()) {
@@ -518,7 +530,7 @@ public class ContractActivity extends BaseActivity {
             publish.setText(R.string.update);
             publishButton.setOnClickListener(v -> {
                 if (contract().getRole() == MarketRole.demand && !BalanceCalculator.enoughBalance(contract(), profile)) {
-                    BottomSheetDialog.openWalletAddressSheetDialog(ContractActivity.this, profile);
+                    openWalletAddressSheetDialog(ContractActivity.this, profile);
                     return;
                 }
                 if (!profile.getAcceptance().isAccepted()) {
