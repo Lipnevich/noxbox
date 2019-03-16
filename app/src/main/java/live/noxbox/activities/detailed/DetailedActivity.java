@@ -209,7 +209,9 @@ public class DetailedActivity extends BaseActivity {
         super.onResume();
         gyroscopeObserver.register(this);
         AppCache.listenProfile(DetailedActivity.class.getName(), profile -> {
-            if(!isFinished(profile.getCurrent()) && profile.getNoxboxId().equals(profile.getCurrent().getId())){
+            if(!isFinished(profile.getCurrent())
+                    && profile.getNoxboxId().equals(profile.getCurrent().getId())
+                    && isNullOrZero(profile.getCurrent().getTimeRequested())){
                 stopListenNoxbox(profile.getCurrent().getId());
             }
             startListenNoxbox(profile.getViewed().getId());
