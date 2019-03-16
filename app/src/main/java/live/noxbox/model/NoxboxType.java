@@ -9,8 +9,8 @@ public enum NoxboxType {
     water(3, R.string.water, R.string.waterSupplier, R.drawable.ic_water_supply, R.drawable.ic_water_demand, R.drawable.illustration_water, R.string.waterDescription, R.string.waterDuration, "60"),
     plant(4, R.string.plant, R.string.gardener, R.drawable.ic_plant_supply, R.drawable.ic_plant_demand, R.drawable.illustration_plant, R.string.plantDescription, R.string.plantDuration, "60"),
     hairdresser(5, R.string.haircut, R.string.hairdresser, R.drawable.ic_hairdresser_supply, R.drawable.ic_hairdresser_demand, R.drawable.illustration_hairdresser, R.string.haircutDescription, R.string.haircutDuration, "60"),
-
-    redirect(5, R.string.redirectToPlayMarket, R.string.none, R.drawable.ic_play_market, R.drawable.ic_play_market, 0, 0, 0, "0");
+    massage(6, R.string.massage, R.string.masseur, R.drawable.ic_massage_supply, R.drawable.ic_massage_demand, R.drawable.illustration_massage, R.string.massageDescription, R.string.massageDuration, "60"),
+    redirect(7, R.string.redirectToPlayMarket, R.string.none, R.drawable.ic_play_market, R.drawable.ic_play_market, 0, 0, 0, "0");
 
     private int id;
     private int name;

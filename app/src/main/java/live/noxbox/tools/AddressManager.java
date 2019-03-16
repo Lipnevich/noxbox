@@ -15,6 +15,8 @@ import java.util.Locale;
 import live.noxbox.R;
 import live.noxbox.model.Position;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+
 public class AddressManager {
 
     public static String provideAddressByPosition(Context context, Position position) {
@@ -40,9 +42,8 @@ public class AddressManager {
             return lat + " " + lng;
         }
 
-
-        if (address.equals("")) {
-            if (city.equals("")) {
+        if (isNullOrEmpty(address)) {
+            if (isNullOrEmpty(city)) {
                 String lat = numberFormat.format(position.getLatitude());
                 String lng = numberFormat.format(position.getLongitude());
                 return lat + " " + lng;

@@ -7,15 +7,17 @@
     <string name="nannyDescription">Добрая и заботливая няня с огнем в глазах и теплом в руках</string>
     <string name="haircutDescription">Парикмахер обязан иметь при себе инструменты для стрижки</string>
     <string name="photographerDescription">Фотограф обязан поделиться фотографиями сразу после съемки</string>
-    <string name="meditationDescription">Обучение медитации</string>
+    <string name="meditationDescription">Обучение медитации, спокойствию и умиротворению</string>
+    <string name="massageDescription">Массажист должен расслабить тело и сделать его более здоровым</string>
 
     <!--Service durations-->
     <string name="nannyDuration">Час присмотра за ребёнком</string>
     <string name="photographerDuration">Час услуги фотографа</string>
     <string name="meditationDuration">Час медитации</string>
     <string name="haircutDuration">Час стрижки</string>
-    <string name="waterDuration">Напоить водой четверых человек</string>
-    <string name="plantDuration">Посадить два саженеца</string>
+    <string name="waterDuration">Час доставки воды</string>
+    <string name="plantDuration">Час посадки саженцев</string>
+    <string name="massageDuration">Hour of massage</string>
 
 
     <string name="permissionRequired">Необходимо разрешение</string>
@@ -49,6 +51,7 @@
     <string name="guru">Учитель</string>
     <string name="gardener">Садовник</string>
     <string name="hairdresser">Парикмахер</string>
+    <string name="masseur">Массажист</string>
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
@@ -286,6 +289,7 @@
     <string name="pleaseUploadNewPhoto">Пожалуйста обновите фото</string>
     <string name="selectPhoto">Выберите фото</string>
     <string name="haircut">Стрижка</string>
+    <string name="massage">Массаж</string>
     <string name="skip">ПРОПУСТИТЬ</string>
     <string name="next">СЛЕДУЮЩАЯ</string>
     <string name="gotIt">ЗАВЕРШИТЬ</string>
