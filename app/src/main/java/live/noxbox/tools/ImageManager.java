@@ -69,10 +69,11 @@ public class ImageManager {
     public static void uploadImage(final Activity activity, final Uri url, final ImageType imageType, final NoxboxType type, final int index) {
         getBitmap(activity, url, bitmap -> {
             if (bitmap == null) return;
-            uploadImage(activity, bitmap, type.name() + "/" + imageType.name() + "/" + index, uri -> AppCache.readProfile(profile -> {
-                profile.getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
-                AppCache.fireProfile();
-            }));
+            uploadImage(activity, bitmap, type.name() + "/" + imageType.name() + "/" + index,
+                    uri -> {
+                        AppCache.profile().getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
+                        AppCache.fireProfile();
+            });
         });
 
     }
@@ -104,16 +105,9 @@ public class ImageManager {
         UploadTask uploadTask = storageRef.putBytes(stream.toByteArray());
         uploadTask
                 .addOnFailureListener(onFailureListener)
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                        storageRef.getDownloadUrl()
-                                .addOnSuccessListener(onSuccessListener)
-                                .addOnFailureListener(onFailureListener);
-
-                    }
-                })
+                .addOnSuccessListener(taskSnapshot -> storageRef.getDownloadUrl()
+                        .addOnSuccessListener(onSuccessListener)
+                        .addOnFailureListener(onFailureListener))
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     private final long time = System.currentTimeMillis();
 
@@ -172,6 +166,7 @@ public class ImageManager {
 
 
     public static void createCircleProfilePhotoFromUrl(Activity activity, String url, ImageView image) {
+        if(activity.isFinishing()) return;
         if (url != null)
             Glide.with(activity)
                     .asDrawable()
@@ -184,6 +179,7 @@ public class ImageManager {
     }
 
     public static void createCircleImageFromBitmap(Activity activity, Bitmap bitmap, ImageView image) {
+        if(activity.isFinishing()) return;
         Glide.with(activity)
                 .asDrawable()
                 .load(bitmap)
@@ -193,6 +189,7 @@ public class ImageManager {
     }
 
     private static void createPlaceholderForProfilePhoto(Activity activity, ImageView image) {
+        if(activity.isFinishing()) return;
         Glide.with(activity)
                 .asDrawable()
                 .load(R.drawable.human_profile)
