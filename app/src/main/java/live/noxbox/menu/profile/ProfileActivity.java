@@ -139,7 +139,7 @@ public class ProfileActivity extends BaseActivity {
         findViewById(R.id.camera).setOnClickListener(cameraListener);
         profilePhoto.setOnClickListener(listener);
 
-        checkPhotoAcceptance(profile);
+        drawPhotoAcceptance(profile);
     }
 
     private void openCamera() {
@@ -259,7 +259,7 @@ public class ProfileActivity extends BaseActivity {
         });
     }
 
-    private void checkPhotoAcceptance(Profile profile) {
+    private void drawPhotoAcceptance(Profile profile) {
         if (!profile.getAcceptance().isAccepted()) {
             invalidPhoto.setText("* " + getString(R.string.photoInvalidContent, getString(profile.getAcceptance().getInvalidAcceptance().getContent())));
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profilePhoto.getLayoutParams();
@@ -312,7 +312,7 @@ public class ProfileActivity extends BaseActivity {
                 getBitmap(ProfileActivity.this, data.getData(), bitmap ->
                         FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
                             uploadPhoto(ProfileActivity.this, profile, checking);
-                            checkPhotoAcceptance(profile);
+                            drawPhotoAcceptance(profile);
                         }));
 
                 createCircleProfilePhotoFromUrl(ProfileActivity.this, data.getData().toString(), profilePhoto);
@@ -331,7 +331,7 @@ public class ProfileActivity extends BaseActivity {
                 getBitmap(ProfileActivity.this, photoBitmap, bitmap ->
                         FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
                             uploadPhoto(ProfileActivity.this, profile, checking);
-                            checkPhotoAcceptance(profile);
+                            drawPhotoAcceptance(profile);
                         }));
 
                 createCircleImageFromBitmap(ProfileActivity.this, photoBitmap, profilePhoto);

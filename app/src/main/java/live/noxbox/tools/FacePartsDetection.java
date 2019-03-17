@@ -21,7 +21,6 @@ import live.noxbox.notifications.factory.NotificationFactory;
 import static live.noxbox.Constants.MINIMUM_FACE_SIZE;
 import static live.noxbox.analitics.BusinessActivity.businessEvent;
 import static live.noxbox.analitics.BusinessEvent.invalidPhoto;
-import static live.noxbox.analitics.BusinessEvent.validPhoto;
 
 public class FacePartsDetection {
 
@@ -58,14 +57,7 @@ public class FacePartsDetection {
                         acceptance.setLeftEyeOpenProbability(face.getLeftEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : 0f);
                     }
 
-                    if (acceptance.isAccepted()) {
-                        profile.setAcceptance(acceptance);
-                        data.put("type", NotificationType.photoValid.name());
-                        NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
-                        businessEvent(validPhoto);
-                        task.execute(bitmap);
-
-                    } else {
+                    if (!acceptance.isAccepted()) {
                         data.put("type", NotificationType.photoInvalid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), new Profile().setAcceptance(acceptance), data).show();
                         businessEvent(invalidPhoto);
