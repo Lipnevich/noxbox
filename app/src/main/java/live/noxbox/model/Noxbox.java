@@ -31,6 +31,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private String geoId;
     @Virtual
     private Drawable confirmationPhoto;
+    @Virtual
+    private Boolean wasNotificationVerification;
 
     private Profile owner;
     private Profile party;
@@ -113,6 +115,7 @@ public class Noxbox implements Comparable<Noxbox> {
         // party = new Profile().setId("0");
         total = "";
         confirmationPhoto = null;
+        wasNotificationVerification = false;
         party = null;
         performerId = "";
         payerId = "";
@@ -142,6 +145,18 @@ public class Noxbox implements Comparable<Noxbox> {
         clean();
         this.position = position;
         this.owner = owner;
+        return this;
+    }
+
+    public Boolean getWasNotificationVerification() {
+        if (wasNotificationVerification == null) {
+            wasNotificationVerification = new Boolean(false);
+        }
+        return wasNotificationVerification;
+    }
+
+    public Noxbox setWasNotificationVerification(Boolean wasNotificationVerification) {
+        this.wasNotificationVerification = wasNotificationVerification;
         return this;
     }
 

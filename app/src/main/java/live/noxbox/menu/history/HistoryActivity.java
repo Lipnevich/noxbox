@@ -20,10 +20,13 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.profile;
+
 public class HistoryActivity extends BaseActivity {
 
     public static final int CODE = 1002;
-    public static final String KEY = "lastNoxboxTimeCompleted";
+    public static final String KEY_COMPLETE = "lastNoxboxTimeCompleted";
+    public static final String KEY_PERFORMER_ID = "lastNoxboxRole";
     public static Task<MarketRole> isHistoryEmpty;
     public static Task<MarketRole> isHistoryThere;
 
@@ -31,6 +34,7 @@ public class HistoryActivity extends BaseActivity {
     public static boolean isDemandHistoryEmpty = true;
 
     private long lastNoxboxTimeCompleted;
+    private String lastNoxboxPerformerId;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -46,9 +50,7 @@ public class HistoryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         getSupportFragmentManager();
-        if (getIntent() != null) {
-            lastNoxboxTimeCompleted = getIntent().getLongExtra(KEY, 0);
-        }
+
         Glide.with(this)
                 .asGif()
                 .load(R.drawable.progress_cat)
@@ -60,15 +62,26 @@ public class HistoryActivity extends BaseActivity {
         missingHistoryLayout = findViewById(R.id.missingHistoryLayout);
         progressLayout = findViewById(R.id.progressLayout);
 
-        HistoryFragmentAdapter adapter = new HistoryFragmentAdapter(getSupportFragmentManager(), lastNoxboxTimeCompleted,this);
+
+        lastNoxboxTimeCompleted = getIntent().getLongExtra(KEY_COMPLETE, 0);
+        lastNoxboxPerformerId = getIntent().getStringExtra(KEY_PERFORMER_ID);
+
+        HistoryFragmentAdapter adapter = new HistoryFragmentAdapter(getSupportFragmentManager(), lastNoxboxTimeCompleted, this);
         viewPager.setAdapter(adapter);
 
         tabLayout = findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+        if (lastNoxboxPerformerId != null) {
+            if (lastNoxboxPerformerId.equals(profile().getId())) {
+                viewPager.setCurrentItem(0);
+            } else {
+                viewPager.setCurrentItem(1);
+            }
+        }
 
         chooseService.setOnClickListener(v -> {
-            AppCache.profile().getFilters().setDemand(false);
-            AppCache.profile().getFilters().setSupply(true);
+            profile().getFilters().setDemand(false);
+            profile().getFilters().setSupply(true);
             Router.finishActivity(HistoryActivity.this);
         });
 
@@ -101,6 +114,7 @@ public class HistoryActivity extends BaseActivity {
             }
         });
         processYourFirstService();
+
     }
 
     @Override
@@ -111,8 +125,8 @@ public class HistoryActivity extends BaseActivity {
         isHistoryEmpty = marketRole -> {
             if (marketRole == MarketRole.demand) {
                 chooseService.setOnClickListener(v -> {
-                    AppCache.profile().getFilters().setDemand(true);
-                    AppCache.profile().getFilters().setSupply(false);
+                    profile().getFilters().setDemand(true);
+                    profile().getFilters().setSupply(false);
                     AppCache.fireProfile();
                     Router.finishActivity(HistoryActivity.this);
                 });
@@ -125,12 +139,13 @@ public class HistoryActivity extends BaseActivity {
             missingHistoryLayout.setVisibility(View.VISIBLE);
         };
         isHistoryThere = o -> {
+            MarketRole role = o;
             progressLayout.setVisibility(View.GONE);
             missingHistoryLayout.setVisibility(View.GONE);
-            if(o != null){
-                if(o == MarketRole.demand){
+            if (role != null) {
+                if (role == MarketRole.demand) {
                     viewPager.setCurrentItem(1);
-                }else{
+                } else {
                     viewPager.setCurrentItem(0);
                 }
             }
@@ -141,8 +156,8 @@ public class HistoryActivity extends BaseActivity {
 
     private void processYourFirstService() {
         chooseService.setOnClickListener(v -> {
-            AppCache.profile().getFilters().setDemand(false);
-            AppCache.profile().getFilters().setSupply(true);
+            profile().getFilters().setDemand(false);
+            profile().getFilters().setSupply(true);
             AppCache.fireProfile();
             Router.finishActivity(HistoryActivity.this);
         });

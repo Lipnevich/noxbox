@@ -18,7 +18,8 @@ import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.MoneyFormatter;
 
-import static live.noxbox.menu.history.HistoryActivity.KEY;
+import static live.noxbox.menu.history.HistoryActivity.KEY_COMPLETE;
+import static live.noxbox.menu.history.HistoryActivity.KEY_PERFORMER_ID;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
 public class NotificationComplete extends Notification {
@@ -34,7 +35,6 @@ public class NotificationComplete extends Notification {
 
         isAlertOnce = true;
 
-
         isAutoCancel = true;
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
@@ -48,12 +48,12 @@ public class NotificationComplete extends Notification {
 
             Firestore.readNoxbox(noxboxId, noxbox -> {
 
-
                 if (!isNullOrZero(noxbox.getTimeCompleted())) {
                     String message;
 
                     Intent lastNoxboxIntent = new Intent(context, HistoryActivity.class);
-                    lastNoxboxIntent.putExtra(KEY, noxbox.getTimeCompleted());
+                    lastNoxboxIntent.putExtra(KEY_COMPLETE, noxbox.getTimeCompleted());
+                    lastNoxboxIntent.putExtra(KEY_PERFORMER_ID, noxbox.getPerformer().getId());
                     onViewOnClickAction = TaskStackBuilder.create(context)
                             .addNextIntentWithParentStack(lastNoxboxIntent)
                             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

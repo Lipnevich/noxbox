@@ -29,7 +29,7 @@ public class HistoryFragmentAdapter extends FragmentPagerAdapter {
 
         Bundle bundle = new Bundle();
         if (!isNullOrZero(lastNoxboxTimeCompleted)) {
-            bundle.putLong(HistoryActivity.KEY, lastNoxboxTimeCompleted);
+            bundle.putLong(HistoryActivity.KEY_COMPLETE, lastNoxboxTimeCompleted);
         }
 
         if (position == 0) {
