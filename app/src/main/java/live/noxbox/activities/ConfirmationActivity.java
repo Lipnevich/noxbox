@@ -96,7 +96,7 @@ public class ConfirmationActivity extends BaseActivity {
 
     private void drawConfirmButton(final Profile profile) {
         confirm.setOnSwipeListener(() -> {
-            profile.getCurrent().setConfirmationPhoto(null);
+
             wrongPhoto.setVisibility(View.GONE);
             confirm.setArrowColor(getResources().getColor(R.color.fullTranslucent));
             new Handler().postDelayed(() -> {
@@ -107,6 +107,8 @@ public class ConfirmationActivity extends BaseActivity {
                 } else {
                     profile.getCurrent().setTimePartyVerified(timeVerified);
                 }
+                profile.getCurrent().setConfirmationPhoto(null);
+                profile.getCurrent().setWasNotificationVerification(false);
                 updateNoxbox();
                 Router.finishActivity(ConfirmationActivity.this);
             }, 0);
@@ -115,7 +117,7 @@ public class ConfirmationActivity extends BaseActivity {
 
     private void drawConformityButton(final Profile profile) {
         wrongPhoto.setOnSwipeListener(() -> {
-            profile.getCurrent().setConfirmationPhoto(null);
+
             wrongPhoto.setArrowColor(getResources().getColor(R.color.fullTranslucent));
             confirm.setVisibility(View.GONE);
             new Handler().postDelayed(() -> {
@@ -125,6 +127,8 @@ public class ConfirmationActivity extends BaseActivity {
                 } else {
                     profile.getCurrent().setTimePartyRejected(timeRejected);
                 }
+                profile.getCurrent().setConfirmationPhoto(null);
+                profile.getCurrent().setWasNotificationVerification(false);
                 updateNoxbox();
                 Router.finishActivity(ConfirmationActivity.this);
             }, 0);

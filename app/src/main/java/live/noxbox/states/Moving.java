@@ -76,7 +76,6 @@ public class Moving implements State {
     private static LinearLayout movingView;
     private static View childMovingView;
     private static TextView timeView;
-    private static boolean wasNotificationOfPhotoVerifyShowed;
 
     private static Position memberWhoMovingPosition;
     private Marker memberWhoMovingMarker;
@@ -92,9 +91,9 @@ public class Moving implements State {
 
         if (profile.getCurrent().getConfirmationPhoto() == null) {
             if ((profile.getCurrent().getMe(profile.getId()).equals(profile.getCurrent().getOwner())
-                        && (isNullOrZero(profile.getCurrent().getTimeOwnerVerified()) && isNullOrZero(profile.getCurrent().getTimeOwnerRejected())))
+                    && (isNullOrZero(profile.getCurrent().getTimeOwnerVerified()) && isNullOrZero(profile.getCurrent().getTimeOwnerRejected())))
                     || (profile.getCurrent().getMe(profile.getId()).equals(profile.getCurrent().getParty())
-                        && (isNullOrZero(profile.getCurrent().getTimePartyVerified()) && isNullOrZero(profile.getCurrent().getTimePartyRejected())))) {
+                    && (isNullOrZero(profile.getCurrent().getTimePartyVerified()) && isNullOrZero(profile.getCurrent().getTimePartyRejected())))) {
                 Glide.with(activity)
                         .asDrawable()
                         .load(profile.getCurrent().getNotMe(profile.getId()).getPhoto())
@@ -192,7 +191,6 @@ public class Moving implements State {
     @Override
     public void clear() {
         stopListenPosition(profile().getCurrent().getId());
-        wasNotificationOfPhotoVerifyShowed = false;
         if (movingView != null) {
             movingView.removeAllViews();
             movingView = null;
@@ -279,9 +277,16 @@ public class Moving implements State {
                     profile.getCurrent().getProfileWhoComes().getTravelMode()));
             timeView.setText(context.getResources().getString(R.string.movement, "" + progressInMinutes));
 
-            if (progressInMinutes <= 1 && !wasNotificationOfPhotoVerifyShowed) {
+            if (progressInMinutes <= 1
+                    && !profile.getCurrent().getWasNotificationVerification()
+                    && ((profile.equals(profile.getCurrent().getParty())
+                            && isNullOrZero(profile.getCurrent().getTimePartyRejected())
+                            && isNullOrZero(profile.getCurrent().getTimePartyVerified()))
+                        || (profile.equals(profile.getCurrent().getOwner())
+                                && isNullOrZero(profile.getCurrent().getTimeOwnerRejected())
+                                && isNullOrZero(profile.getCurrent().getTimeOwnerVerified())))) {
                 provideNotification(NotificationType.verifyPhoto, profile, context);
-                wasNotificationOfPhotoVerifyShowed = true;
+                profile.getCurrent().setWasNotificationVerification(true);
             }
         }
     }
@@ -323,7 +328,6 @@ public class Moving implements State {
                             || !isNullOrZero(profile().getCurrent().getTimeOwnerRejected())
                             || !isNullOrZero(profile().getCurrent().getTimePartyRejected())
                             || profile().getCurrent().getFinished()) {
-                        wasNotificationOfPhotoVerifyShowed = false;
                         locationManager.removeUpdates(locationListener);
                         stopSelf();
                         return;
