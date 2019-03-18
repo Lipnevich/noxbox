@@ -22,7 +22,6 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
-import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 import live.noxbox.tools.location.LocationUpdater;
@@ -154,7 +153,6 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.filter).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        MapOperator.moveCopyrightLeft(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.switcherLayout).setVisibility(View.GONE);
         stopListenAvailableNoxboxes();
