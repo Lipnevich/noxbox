@@ -25,6 +25,7 @@ import live.noxbox.services.AvailableNoxboxesService;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
+import live.noxbox.tools.location.LocationUpdater;
 import live.noxbox.ui.RoleSwitcherLayout;
 
 import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
@@ -32,11 +33,12 @@ import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
-import static live.noxbox.tools.LocationOperator.getDeviceLocation;
-import static live.noxbox.tools.LocationOperator.getLocationPermission;
 import static live.noxbox.tools.MapOperator.getCameraPosition;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
+import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
 
 public class AvailableNoxboxes implements State {
 
@@ -54,10 +56,17 @@ public class AvailableNoxboxes implements State {
     public static volatile int clusterRenderingFrequency = 400;
     private DialogFragment noxboxTypeListFragment;
 
+    private LocationUpdater locationUpdater;
+
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
         this.activity = activity;
+        if (locationUpdater == null && isLocationPermissionGranted(activity)) {
+            locationUpdater = new LocationUpdater(activity);
+            locationUpdater.startLocationUpdates();
+        }
+
 
         startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes);
         if (clusterManager == null) {
@@ -78,7 +87,7 @@ public class AvailableNoxboxes implements State {
                 .findViewById(R.id.realSwitcherLayout)).refresh();
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
-            getLocationPermission(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
+            startLocationPermissionRequest(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
             getDeviceLocation(profile, googleMap, activity);
         });
 
@@ -112,6 +121,10 @@ public class AvailableNoxboxes implements State {
 
     @Override
     public void clear() {
+        if (locationUpdater != null) {
+            locationUpdater.stopLocationUpdates();
+            locationUpdater = null;
+        }
         //service clear
         if (serviceIsBound) {
             stopHandler();
@@ -153,7 +166,7 @@ public class AvailableNoxboxes implements State {
         public void onServiceConnected(ComponentName className, IBinder service) {
             serviceIsBound = true;
             Task update = with -> {
-                if(clusterManager != null) {
+                if (clusterManager != null) {
                     clusterManager.setItems(availableNoxboxes, profile);
                 }
             };

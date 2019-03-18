@@ -24,7 +24,6 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -57,13 +56,12 @@ import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
-import static live.noxbox.tools.LocationOperator.getDeviceLocation;
-import static live.noxbox.tools.LocationOperator.initLocationProviderClient;
-import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
-import static live.noxbox.tools.LocationOperator.updateLocation;
 import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
+import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.location.LocationOperator.updateLocation;
 
 public class MapActivity extends HackerActivity implements
         OnMapReadyCallback,
@@ -71,8 +69,7 @@ public class MapActivity extends HackerActivity implements
 
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-
-    private FusedLocationProviderClient providerClient;
+    public static final String TAG = MapActivity.class.getSimpleName();
 
     private LocationReceiver locationReceiver;
 
@@ -92,8 +89,6 @@ public class MapActivity extends HackerActivity implements
 
         Crashlytics.setUserIdentifier(user.getUid());
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e -> Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid()));
-
-        providerClient = initLocationProviderClient(getApplicationContext());
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapId);
         mapFragment.getMapAsync(this);
@@ -174,6 +169,7 @@ public class MapActivity extends HackerActivity implements
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    draw();
                     getDeviceLocation(profile(), googleMap, this);
                 }
                 break;

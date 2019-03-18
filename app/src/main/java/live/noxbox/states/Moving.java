@@ -57,12 +57,12 @@ import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
-import static live.noxbox.tools.LocationOperator.getLocationPermission;
-import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
+import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
 
 public class Moving implements State {
 
@@ -244,7 +244,7 @@ public class Moving implements State {
         }
 
         if (!isLocationPermissionGranted(activity)) {
-            getLocationPermission(activity, LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
+            startLocationPermissionRequest(activity, LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
         }
     }
 

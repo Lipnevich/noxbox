@@ -32,9 +32,9 @@ import static live.noxbox.Constants.MIN_ZOOM_LEVEL;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.DayPartDeterminer.isItDayNow;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
-import static live.noxbox.tools.LocationOperator.getDeviceLocation;
-import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.Router.startActivity;
+import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 
 public class MapOperator {
 

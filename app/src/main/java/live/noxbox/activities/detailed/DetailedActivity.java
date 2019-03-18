@@ -78,8 +78,8 @@ import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
-import static live.noxbox.tools.LocationOperator.getLocationPermission;
-import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
 
 public class DetailedActivity extends BaseActivity {
 
@@ -479,7 +479,7 @@ public class DetailedActivity extends BaseActivity {
 
         joinButton.setOnClickListener(v -> {
             if (!isLocationPermissionGranted(DetailedActivity.this)) {
-                getLocationPermission(DetailedActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
+                startLocationPermissionRequest(DetailedActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
 
             } else {
                 v.setVisibility(View.GONE);

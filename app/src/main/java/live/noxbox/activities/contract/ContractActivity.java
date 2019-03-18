@@ -76,8 +76,8 @@ import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
 import static live.noxbox.tools.DialogBuilder.createMessageAlertDialog;
-import static live.noxbox.tools.LocationOperator.getLocationPermission;
-import static live.noxbox.tools.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
+import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
 
 public class ContractActivity extends BaseActivity {
 
@@ -410,7 +410,7 @@ public class ContractActivity extends BaseActivity {
                 host.setEnabled(false);
             } else {
                 if (!isLocationPermissionGranted(getApplicationContext())) {
-                    getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
+                    startLocationPermissionRequest(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
                 }
             }
             draw();
@@ -520,7 +520,7 @@ public class ContractActivity extends BaseActivity {
                     if (isLocationPermissionGranted(getApplicationContext())) {
                         createNoxbox();
                     } else {
-                        getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
+                        startLocationPermissionRequest(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH);
                     }
                 } else {
                     createNoxbox();
@@ -546,7 +546,7 @@ public class ContractActivity extends BaseActivity {
                     if (isLocationPermissionGranted(getApplicationContext())) {
                         updateNoxbox();
                     } else {
-                        getLocationPermission(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE);
+                        startLocationPermissionRequest(ContractActivity.this, LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE);
                     }
                 } else {
                     updateNoxbox();

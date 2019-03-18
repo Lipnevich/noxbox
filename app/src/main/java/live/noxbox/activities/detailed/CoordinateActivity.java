@@ -37,11 +37,11 @@ import static live.noxbox.Constants.DEFAULT_ZOOM_LEVEL;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
-import static live.noxbox.tools.LocationOperator.getDeviceLocation;
-import static live.noxbox.tools.LocationOperator.getLocationPermission;
-import static live.noxbox.tools.LocationOperator.initLocationProviderClient;
-import static live.noxbox.tools.LocationOperator.updateLocation;
 import static live.noxbox.tools.MapOperator.setupMap;
+import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.location.LocationOperator.initLocationProviderClient;
+import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
+import static live.noxbox.tools.location.LocationOperator.updateLocation;
 
 public class CoordinateActivity extends BaseActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
     public static final String LAT = "lat";
@@ -144,7 +144,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
 
     private void drawLocationButton() {
         locationButton.setOnClickListener(v -> {
-            getLocationPermission(CoordinateActivity.this, Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
+            startLocationPermissionRequest(CoordinateActivity.this, Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
             getDeviceLocation(profile(), googleMap, CoordinateActivity.this);
         });
     }
