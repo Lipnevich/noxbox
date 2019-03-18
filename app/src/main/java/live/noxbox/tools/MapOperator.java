@@ -10,12 +10,10 @@ import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import live.noxbox.R;
@@ -26,6 +24,7 @@ import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 
+import static java.util.Arrays.asList;
 import static live.noxbox.Constants.DEFAULT_ZOOM_LEVEL;
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
 import static live.noxbox.Constants.MIN_ZOOM_LEVEL;
@@ -154,17 +153,23 @@ public class MapOperator {
         LatLng start = profile.getCurrent().getProfileWhoComes().getPosition().toLatLng();
         LatLng end = profile.getCurrent().getPosition().toLatLng();
 
+        if (polyline != null)
+            polyline.remove();
+
+        drawPath(activity, googleMap, start, end);
+    }
+
+    public static void drawPath(Activity activity, GoogleMap googleMap, LatLng start, LatLng end) {
         double cLat = ((start.latitude + end.latitude) / 2);
         double cLon = ((start.longitude + end.longitude) / 2);
 
         //add skew and arcHeight to move the midPoint
-        if (Math.abs(start.longitude - end.longitude) < 0.0001) {
-            cLon -= 0.0195;
+        if (Math.abs(start.longitude - end.longitude) < Math.abs(start.latitude - end.latitude)) {
+            cLon -= start.longitude - end.longitude;
         } else {
-            cLat += 0.0195;
+            cLat += start.latitude - end.latitude;
         }
 
-        // TODO (nli) исправить для малых дистанций
         ArrayList<LatLng> points = new ArrayList<LatLng>();
         double tDelta = 1.0 / 50;
         for (double t = 0; t <= 1.0; t += tDelta) {
@@ -180,19 +185,13 @@ public class MapOperator {
         }
 
         PolylineOptions polylineOptions = new PolylineOptions()
-                .width(9)
+                .width(24)
                 .color(activity.getResources().getColor(R.color.primary))
                 .geodesic(true)
+                .pattern(asList(new Dot(), new Gap(10)))
                 .addAll(points);
-        List<PatternItem> pattern = Arrays.asList(
-                new Dot(), new Gap(10));
-
-        if (polyline != null)
-            polyline.remove();
 
         polyline = googleMap.addPolyline(polylineOptions);
-        polyline.setPattern(pattern);
-        polyline.setGeodesic(true);
     }
 
     public static Position getCameraPosition(GoogleMap googleMap) {
