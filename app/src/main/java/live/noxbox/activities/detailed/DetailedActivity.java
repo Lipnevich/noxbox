@@ -3,10 +3,8 @@ package live.noxbox.activities.detailed;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,10 +24,6 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -260,18 +254,17 @@ public class DetailedActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
 
-        //((ImageView) findViewById(R.id.illustration)).setImageResource(noxbox.getType().getIllustration());
+        illustration.setImageResource(noxbox.getType().getIllustration());
 
-        Glide.with(DetailedActivity.this)
-                .asDrawable()
-                .load(noxbox.getType().getIllustration())
-                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-                .into(new ImageViewTarget<Drawable>(illustration) {
-                    @Override
-                    protected void setResource(@Nullable Drawable drawable) {
-                        illustration.setImageDrawable(drawable);
-                    }
-                });
+//        Glide.with(DetailedActivity.this)
+//                .asDrawable()
+//                .load(noxbox.getType().getIllustration())
+//                .into(new ImageViewTarget<Drawable>(illustration) {
+//                    @Override
+//                    protected void setResource(@Nullable Drawable drawable) {
+//                        illustration.setImageDrawable(drawable);
+//                    }
+//                });
     }
 
     private void drawOppositeProfile(Profile me) {

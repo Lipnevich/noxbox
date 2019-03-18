@@ -65,7 +65,7 @@ public class AvailableNoxboxes implements State {
         }
         googleMap.setOnMarkerClickListener(clusterManager.getRenderer());
         googleMap.setOnCameraIdleListener(() -> startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes));
-        MapOperator.moveCopyrightRight(googleMap);
+        //MapOperator.moveCopyrightRight(googleMap);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);

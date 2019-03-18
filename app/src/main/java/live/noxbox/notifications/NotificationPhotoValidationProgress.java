@@ -9,8 +9,8 @@ import android.widget.RemoteViews;
 
 import java.util.Map;
 
+import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.menu.history.HistoryActivity;
 import live.noxbox.model.Profile;
 
 public class NotificationPhotoValidationProgress extends Notification {
@@ -22,9 +22,8 @@ public class NotificationPhotoValidationProgress extends Notification {
 
         isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
-                .addNextIntentWithParentStack(new Intent(context, HistoryActivity.class))
+                .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        isAutoCancel = true;
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
     }
