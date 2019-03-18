@@ -7,263 +7,257 @@
     android:fitsSystemWindows="true">
 
 
-    <android.support.constraint.ConstraintLayout
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mapId"
+        android:name="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/mapId"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <Button
+            android:id="@+id/requestButton"
+            style="@style/MainButtonStyle"
+            android:text="@string/requestText" />
 
-            <Button
-                android:id="@+id/requestButton"
-                style="@style/MainButtonStyle"
-                android:text="@string/requestText" />
+        <Button
+            android:id="@+id/goOnlineButton"
+            style="@style/MainButtonStyle"
+            android:text="@string/goOnlineText" />
 
-            <Button
-                android:id="@+id/goOnlineButton"
-                style="@style/MainButtonStyle"
-                android:text="@string/goOnlineText" />
+        <Button
+            android:id="@+id/goOfflineButton"
+            style="@style/MainButtonStyle"
+            android:background="@color/divider"
+            android:text="@string/goOfflineText" />
 
-            <Button
-                android:id="@+id/goOfflineButton"
-                style="@style/MainButtonStyle"
-                android:background="@color/divider"
-                android:text="@string/goOfflineText" />
+        <Button
+            android:id="@+id/completeButton"
+            style="@style/MainButtonStyle"
+            android:text="@string/completeText" />
 
-            <Button
-                android:id="@+id/completeButton"
-                style="@style/MainButtonStyle"
-                android:text="@string/completeText" />
+        <ImageView
+            android:id="@+id/pointerImage"
+            style="@style/IconButtonStyle"
+            android:layout_gravity="center"
+            android:src="@drawable/pointer" />
 
-            <ImageView
-                android:id="@+id/pointerImage"
-                style="@style/IconButtonStyle"
-                android:layout_gravity="center"
-                android:layout_marginBottom="42dp"
-                android:src="@drawable/pointer" />
+        <ImageButton
+            android:id="@+id/menu"
+            style="@style/IconButtonStyle"
+            android:layout_gravity="start|top"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/fui_transparent"
+            android:elevation="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/menu"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/filter"
+            style="@style/IconButtonStyle"
+            android:layout_gravity="end|top"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/filter"
+            android:tint="@color/primary" />
+
+        <FrameLayout
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            android:layout_gravity="end|top">
 
             <ImageButton
-                android:id="@+id/menu"
+                android:id="@+id/chat"
                 style="@style/IconButtonStyle"
-                android:layout_gravity="start|top"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:background="@color/fui_transparent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/menu"
-                android:elevation="4dp"
-                android:visibility="gone" />
-
-            <ImageButton
-                android:id="@+id/filter"
-                style="@style/IconButtonStyle"
-                android:layout_gravity="end|top"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="12dp"
                 android:background="@color/fui_transparent"
                 android:scaleType="fitCenter"
-                android:src="@drawable/filter"
-                android:tint="@color/primary" />
+                android:src="@drawable/chat" />
 
-            <FrameLayout
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:layout_gravity="end|top">
+            <TextView
+                android:id="@+id/totalUnread"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="56dp"
+                android:background="@drawable/chat_badge_background"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="@color/secondary"
+                android:textSize="@dimen/text_size_secondary"
+                android:visibility="gone" />
 
-                <ImageButton
-                    android:id="@+id/chat"
-                    style="@style/IconButtonStyle"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="12dp"
-                    android:background="@color/fui_transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/chat" />
+        </FrameLayout>
 
-                <TextView
-                    android:id="@+id/totalUnread"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="56dp"
-                    android:background="@drawable/chat_badge_background"
-                    android:gravity="center"
-                    android:textAlignment="center"
-                    android:textColor="@color/secondary"
-                    android:textSize="@dimen/text_size_secondary"
-                    android:visibility="gone" />
+        <android.support.v7.widget.CardView
+            android:id="@+id/navigation"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/primary"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="8dp">
 
-            </FrameLayout>
+            <ImageButton
+                android:id="@+id/navigationImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@color/fui_transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/navigation"
+                android:tint="@color/secondary"
+                android:visibility="visible" />
+        </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/navigation"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_gravity="end|center_vertical"
-                android:layout_marginEnd="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="gone"
-                app:cardBackgroundColor="@color/primary"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="8dp">
+        <RelativeLayout
+            android:id="@+id/switcherLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
-                <ImageButton
-                    android:id="@+id/navigationImage"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@color/fui_transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/navigation"
-                    android:tint="@color/secondary"
-                    android:visibility="visible" />
-            </android.support.v7.widget.CardView>
-
-            <RelativeLayout
-                android:id="@+id/switcherLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone">
-
-                <live.noxbox.ui.RoleSwitcherLayout
-                    android:id="@+id/realSwitcherLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="12dp" />
-            </RelativeLayout>
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/locationButton"
+            <live.noxbox.ui.RoleSwitcherLayout
+                android:id="@+id/realSwitcherLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp" />
+        </RelativeLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/locationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_margin="16dp"
+            android:src="@drawable/my_location"
+            android:tint="@color/secondary"
+            android:visibility="gone"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
+
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/coordinatorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/customFloatingView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
                 android:layout_margin="16dp"
-                android:src="@drawable/my_location"
+                android:scaleType="center"
+                android:src="@drawable/add"
                 android:tint="@color/secondary"
                 android:visibility="gone"
                 app:fabSize="auto"
                 app:maxImageSize="48dp" />
 
-            <android.support.design.widget.CoordinatorLayout
-                android:id="@+id/coordinatorLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        </android.support.design.widget.CoordinatorLayout>
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/customFloatingView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="16dp"
-                    android:scaleType="center"
-                    android:src="@drawable/add"
-                    android:tint="@color/secondary"
-                    android:visibility="gone"
-                    app:fabSize="auto"
-                    app:maxImageSize="48dp" />
+        <LinearLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible" />
 
-            </android.support.design.widget.CoordinatorLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="58dp"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="visible" />
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/debugNotify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|center"
-                android:layout_marginTop="58dp"
-                android:layout_marginStart="12dp"
-                android:orientation="vertical">
+                android:layout_marginTop="32dp"
+                android:text="@string/generatePush"
+                android:textColor="@color/debug"
+                android:textSize="@dimen/text_title"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/debugNotify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/generatePush"
-                    android:textColor="@color/debug"
-                    android:textSize="@dimen/text_title"
-                    android:visibility="gone" />
+            <TextView
+                android:id="@+id/debugGenerateNoxboxes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/generateNoxboxes"
+                android:textColor="@color/debug"
+                android:textSize="@dimen/text_title"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/debugGenerateNoxboxes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/generateNoxboxes"
-                    android:textColor="@color/debug"
-                    android:textSize="@dimen/text_title"
-                    android:visibility="gone" />
+            <TextView
+                android:id="@+id/debugRequest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/request"
+                android:textColor="@color/debug"
+                android:textSize="@dimen/text_title"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/debugRequest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/request"
-                    android:textColor="@color/debug"
-                    android:textSize="@dimen/text_title"
-                    android:visibility="gone" />
+            <TextView
+                android:id="@+id/debugAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/accept"
+                android:textColor="@color/debug"
+                android:textSize="@dimen/text_title"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/debugAccept"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/accept"
-                    android:textColor="@color/debug"
-                    android:textSize="@dimen/text_title"
-                    android:visibility="gone" />
+            <TextView
+                android:id="@+id/debugPhotoVerify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:layout_marginTop="32dp"
+                android:text="@string/verifyPhoto"
+                android:textColor="@color/debug"
+                android:textSize="@dimen/text_title"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/debugPhotoVerify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|top"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/verifyPhoto"
-                    android:textColor="@color/debug"
-                    android:textSize="@dimen/text_title"
-                    android:visibility="gone" />
+            <TextView
+                android:id="@+id/debugPhotoReject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:layout_marginTop="32dp"
+                android:text="@string/rejectPhoto"
+                android:textColor="@color/debug"
+                android:textSize="@dimen/text_title"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/debugPhotoReject"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|top"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/rejectPhoto"
-                    android:textColor="@color/debug"
-                    android:textSize="@dimen/text_title"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/debugComplete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|top"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/complete"
-                    android:textColor="@color/debug"
-                    android:textSize="@dimen/text_title"
-                    android:visibility="gone" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/debugComplete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|top"
+                android:layout_marginTop="32dp"
+                android:text="@string/complete"
+                android:textColor="@color/debug"
+                android:textSize="@dimen/text_title"
+                android:visibility="gone" />
+        </LinearLayout>
 
 
-        </fragment>
-
-    </android.support.constraint.ConstraintLayout>
+    </fragment>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"
