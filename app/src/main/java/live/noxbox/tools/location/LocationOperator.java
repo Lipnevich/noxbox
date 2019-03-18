@@ -22,12 +22,17 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.MapOperator;
 
+import static live.noxbox.database.AppCache.profile;
+
 public class LocationOperator {
 
     private static FusedLocationProviderClient fusedLocationProviderClient;
     private static Location lastLocation;
 
     public static Location location() {
+        if (lastLocation == null) {
+            lastLocation = profile().getPosition().toLocation();
+        }
         return lastLocation;
     }
 
@@ -68,47 +73,47 @@ public class LocationOperator {
     }
 
     public static void getDeviceLocation(Profile profile, GoogleMap googleMap, Activity activity) {
-        if(fusedLocationProviderClient == null) return;
+        if (fusedLocationProviderClient == null) return;
         try {
             if (isLocationPermissionGranted(activity.getApplicationContext())) {
-                if (lastLocation != null) {
-                    provideProfilePosition(profile, googleMap, activity);
-                } else {
-                    fusedLocationProviderClient.getLastLocation().addOnSuccessListener(activity, (OnSuccessListener<? super Location>) location -> {
-                        if (location != null) {
-                            lastLocation = location;
-                            provideProfilePosition(profile, googleMap, activity);
-                        } else {
-                            LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
-                            Criteria criteria = new Criteria();
-                            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-                            locationManager.requestSingleUpdate(criteria, new LocationListener() {
-                                @Override
-                                public void onLocationChanged(Location location) {
-                                    if (location != null) {
-                                        lastLocation = location;
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(activity, (OnSuccessListener<? super Location>) location -> {
+                    if (location != null) {
+                        lastLocation = location;
+                        provideProfilePosition(profile, googleMap, activity);
+                    } else if (lastLocation != null) {
+                        provideProfilePosition(profile, googleMap, activity);
+                    } else {
+                        LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+                        Criteria criteria = new Criteria();
+                        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                        locationManager.requestSingleUpdate(criteria, new LocationListener() {
+                            @Override
+                            public void onLocationChanged(Location location) {
+                                if (location != null) {
+                                    lastLocation = location;
 
-                                        provideProfilePosition(profile, googleMap, activity);
-                                    } else {
-                                        DebugMessage.popup(activity, "Unknown user location");
-                                    }
+                                    provideProfilePosition(profile, googleMap, activity);
+                                } else {
+                                    DebugMessage.popup(activity, "Unknown user location");
                                 }
+                            }
 
-                                @Override
-                                public void onStatusChanged(String provider, int status, Bundle extras) { }
+                            @Override
+                            public void onStatusChanged(String provider, int status, Bundle extras) {
+                            }
 
-                                @Override
-                                public void onProviderEnabled(String provider) { }
+                            @Override
+                            public void onProviderEnabled(String provider) {
+                            }
 
-                                @Override
-                                public void onProviderDisabled(String provider) { }
-                            }, null);
-                        }
-                    });
-                }
-
-
+                            @Override
+                            public void onProviderDisabled(String provider) {
+                            }
+                        }, null);
+                    }
+                });
             }
+
         } catch (SecurityException e) {
             Crashlytics.logException(e);
         }
