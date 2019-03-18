@@ -57,7 +57,6 @@ import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.enterTheMap;
-import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
@@ -144,7 +143,6 @@ public class MapActivity extends HackerActivity implements
         enterTheMap(googleMap, this);
 
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        moveCopyrightLeft(googleMap);
         draw();
     }
 
