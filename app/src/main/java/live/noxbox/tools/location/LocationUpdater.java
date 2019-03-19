@@ -40,7 +40,7 @@ public class LocationUpdater {
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
             UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
-    private Boolean requestingLocationUpdates;
+    private boolean requestingLocationUpdates;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private SettingsClient settingsClient;
     private LocationRequest locationRequest;
