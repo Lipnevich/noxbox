@@ -38,8 +38,6 @@ public class NoxboxesSelectionAdapter extends RecyclerView.Adapter<NoxboxesSelec
         viewHolder.checkBox.setOnCheckedChangeListener((compoundButton, checked) -> typesChecked[position] = checked);
 
         viewHolder.type.setText(noxboxTypes.get(position).getName());
-
-
     }
 
     @Override
