@@ -27,7 +27,6 @@ import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.states.Accepting.timeoutCurrent;
 import static live.noxbox.tools.MapOperator.drawPath;
-import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
 
 public class Requesting implements State {
 
@@ -109,7 +108,6 @@ public class Requesting implements State {
 
     @Override
     public void clear() {
-        moveCopyrightLeft(googleMap);
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);

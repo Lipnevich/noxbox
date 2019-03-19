@@ -58,8 +58,6 @@ import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.MapOperator.drawPath;
-import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
-import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
@@ -184,7 +182,6 @@ public class Moving implements State {
         activity.findViewById(R.id.chat).setOnClickListener(v -> startActivity(activity, ChatActivity.class));
 
         MapOperator.buildMapMarkerListener(googleMap, profile, activity);
-        moveCopyrightRight(googleMap);
     }
 
 
@@ -205,7 +202,6 @@ public class Moving implements State {
             totalUnreadView.setVisibility(View.GONE);
         }
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
-        moveCopyrightLeft(googleMap);
 
         googleMap.clear();
         memberWhoMovingMarker = null;

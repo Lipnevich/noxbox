@@ -15,8 +15,6 @@ import live.noxbox.model.Profile;
 import static live.noxbox.tools.MapOperator.buildMapMarkerListener;
 import static live.noxbox.tools.MapOperator.buildMapPosition;
 import static live.noxbox.tools.MapOperator.clearMapMarkerListener;
-import static live.noxbox.tools.MapOperator.moveCopyrightLeft;
-import static live.noxbox.tools.MapOperator.moveCopyrightRight;
 import static live.noxbox.tools.MarkerCreator.createCustomMarker;
 import static live.noxbox.tools.Router.startActivity;
 
@@ -31,14 +29,12 @@ public class Created implements State {
         this.googleMap = googleMap;
         this.activity = activity;
 
-
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.edit);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> startActivity(activity, ContractActivity.class));
 
-        moveCopyrightRight(googleMap);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> buildMapPosition(googleMap, activity.getApplicationContext()));
 
@@ -52,7 +48,6 @@ public class Created implements State {
         clearMapMarkerListener(googleMap);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        moveCopyrightLeft(googleMap);
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         googleMap.clear();
