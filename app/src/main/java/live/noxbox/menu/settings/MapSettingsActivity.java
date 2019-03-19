@@ -3,7 +3,6 @@ package live.noxbox.menu.settings;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -159,7 +158,7 @@ public class MapSettingsActivity extends BaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putInt("key", SETTINGS_CODE);
                 dialog.setArguments(bundle);
-                dialog.show(((FragmentActivity) MapSettingsActivity.this).getSupportFragmentManager(), NoxboxTypeSelectionFragment.TAG);
+                dialog.show(MapSettingsActivity.this.getSupportFragmentManager(), NoxboxTypeSelectionFragment.TAG);
             }
         });
     }

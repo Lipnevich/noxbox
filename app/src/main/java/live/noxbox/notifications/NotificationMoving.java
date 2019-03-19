@@ -43,36 +43,41 @@ public class NotificationMoving extends Notification {
     @Override
     public void show() {
         if (inForeground()) return;
-            Task<Noxbox> task = noxbox -> {
-                if (noxbox != null && (
-                        (!isNullOrZero(noxbox.getTimePartyVerified()) && !isNullOrZero(noxbox.getTimeOwnerVerified()))
-                                || !isNullOrZero(noxbox.getTimeCompleted())
-                                || !isNullOrZero(noxbox.getTimeCanceledByParty())
-                                || !isNullOrZero(noxbox.getTimeCanceledByOwner())))
-                    return;
+        Task<Noxbox> task = noxbox -> {
+            if (noxbox != null && (
+                    (!isNullOrZero(noxbox.getTimePartyVerified()) && !isNullOrZero(noxbox.getTimeOwnerVerified()))
+                            || !isNullOrZero(noxbox.getTimeCompleted())
+                            || !isNullOrZero(noxbox.getTimePartyRejected())
+                            || !isNullOrZero(noxbox.getTimeOwnerRejected())
+                            || !isNullOrZero(noxbox.getTimeCanceledByParty())
+                            || !isNullOrZero(noxbox.getTimeCanceledByOwner()))) {
 
                 removeNotificationByGroup(context, type.getGroup());
-                if (noxbox != null && ((!isNullOrZero(noxbox.getTimeOwnerVerified()) && !isNullOrZero(noxbox.getTimePartyVerified()))
-                        || !isNullOrZero(noxbox.getTimeCanceledByOwner()) || !isNullOrZero(noxbox.getTimeCanceledByParty())))
-                    return;
-
-                if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {
-                    progressInMinutes = ((int) getTimeInMinutesBetweenUsers(noxbox.getOwner().getPosition(), noxbox.getParty().getPosition(), noxbox.getProfileWhoComes().getTravelMode()));
-                    progressInMinutes = Math.max(1, Math.min(progressInMinutes, MAX_MINUTES - 1));
-                    contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImageDemand());
-                    contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movement, "" + progressInMinutes)));
-                    contentView.setProgressBar(R.id.progress, MAX_MINUTES, Math.max(MAX_MINUTES - progressInMinutes, 1), false);
-                }
-                final NotificationCompat.Builder builder = getNotificationCompatBuilder();
-                getNotificationService(context).notify(type.getGroup(), builder.build());
-            };
-
-
-            if (profile == null) {
-                Firestore.readNoxbox(noxboxId, task);
-            } else {
-                task.execute(profile.getCurrent());
+                return;
             }
+
+            removeNotificationByGroup(context, type.getGroup());
+
+            if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {
+                progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
+                        noxbox.getPosition(),
+                        noxbox.getProfileWhoComes().getPosition(),
+                        noxbox.getProfileWhoComes().getTravelMode()));
+                progressInMinutes = Math.max(1, Math.min(progressInMinutes, MAX_MINUTES - 1));
+                contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImageDemand());
+                contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movement, "" + progressInMinutes)));
+                contentView.setProgressBar(R.id.progress, MAX_MINUTES, Math.max(MAX_MINUTES - progressInMinutes, 1), false);
+            }
+            final NotificationCompat.Builder builder = getNotificationCompatBuilder();
+            getNotificationService(context).notify(type.getGroup(), builder.build());
+        };
+
+
+        if (profile == null) {
+            Firestore.readNoxbox(noxboxId, task);
+        } else {
+            task.execute(profile.getCurrent());
+        }
 
     }
 }

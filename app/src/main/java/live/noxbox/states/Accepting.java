@@ -106,7 +106,7 @@ public class Accepting implements State {
             }
         }.start();
 
-        MapOperator.buildMapMarkerListener(googleMap, profile, activity);
+        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
     }
 
     public static void timeoutCurrent() {
