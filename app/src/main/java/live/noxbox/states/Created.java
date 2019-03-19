@@ -12,9 +12,9 @@ import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 
-import static live.noxbox.tools.MapOperator.buildMapMarkerListener;
 import static live.noxbox.tools.MapOperator.buildMapPosition;
 import static live.noxbox.tools.MapOperator.clearMapMarkerListener;
+import static live.noxbox.tools.MapOperator.setNoxboxMarkerListener;
 import static live.noxbox.tools.MarkerCreator.createCustomMarker;
 import static live.noxbox.tools.Router.startActivity;
 
@@ -39,7 +39,7 @@ public class Created implements State {
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> buildMapPosition(googleMap, activity.getApplicationContext()));
 
         createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
-        buildMapMarkerListener(googleMap, profile, activity);
+        setNoxboxMarkerListener(googleMap, profile, activity);
         buildMapPosition(googleMap, activity.getApplicationContext());
     }
 

@@ -73,7 +73,7 @@ public class MapOperator {
     }
 
 
-    public static void buildMapMarkerListener(GoogleMap googleMap, final Profile profile, final Activity activity) {
+    public static void setNoxboxMarkerListener(GoogleMap googleMap, final Profile profile, final Activity activity) {
         switch (NoxboxState.getState(profile.getCurrent(), profile)) {
             case created:
                 googleMap.setOnMarkerClickListener(marker -> {

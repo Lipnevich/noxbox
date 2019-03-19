@@ -103,7 +103,7 @@ public class Requesting implements State {
 
         }.start();
 
-        MapOperator.buildMapMarkerListener(googleMap, profile, activity);
+        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
     }
 
     @Override
