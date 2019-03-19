@@ -221,23 +221,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             builder.setTitle(activity.getResources().getString(R.string.likePrompt));
             builder.setPositiveButton(activity.getResources().getString(R.string.like),
                     (dialog, which) -> {
-                        Noxbox clearedDislikNoxbox = new Noxbox();
-                        clearedDislikNoxbox.copy(noxbox);
+                        Noxbox likedNoxbox = new Noxbox().copy(noxbox);
+                        likeNoxbox(likedNoxbox);
 
-                        clearDislikeNoxbox(clearedDislikNoxbox);
-
-                        updateNoxbox(clearedDislikNoxbox, object -> {
+                        updateNoxbox(likedNoxbox, success -> {
                             BusinessActivity.businessEvent(BusinessEvent.like,
                                     noxbox.getId(),
                                     noxbox.getType().name(),
                                     noxbox.getPrice());
-                            noxbox.copy(clearedDislikNoxbox);
+                            noxbox.copy(likedNoxbox);
                             viewHolder.like.setOnClickListener(null);
                             viewHolder.dislike.setOnClickListener(null);
                             if (showedExpandableLayout.equals(viewHolder.expandableLayout)) {
                                 showExpandableLayout(viewHolder, noxbox);
                             }
-                        }, object -> onClick(viewHolder, noxbox));
+                        }, failure -> onClick(viewHolder, noxbox));
 
                     });
             builder.setNegativeButton(android.R.string.cancel, null);
@@ -254,7 +252,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
                         dislikeNoxbox(dislikedNoxbox);
 
-                        updateNoxbox(dislikedNoxbox, object -> {
+                        updateNoxbox(dislikedNoxbox, success -> {
                             BusinessActivity.businessEvent(BusinessEvent.dislike,
                                     noxbox.getId(),
                                     noxbox.getType().name(),
@@ -265,7 +263,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                             if (showedExpandableLayout.equals(viewHolder.expandableLayout)) {
                                 showExpandableLayout(viewHolder, noxbox);
                             }
-                        }, object -> onClick(viewHolder, noxbox));
+                        }, failure -> onClick(viewHolder, noxbox));
                     });
             builder.setNegativeButton(android.R.string.cancel, null);
             builder.show();
@@ -280,12 +278,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
                 commentNoxbox(viewHolder, commentedNoxbox);
 
-                updateNoxbox(commentedNoxbox, object -> {
+                updateNoxbox(commentedNoxbox, success -> {
                     noxbox.copy(commentedNoxbox);
                     if (showedExpandableLayout.equals(viewHolder.expandableLayout)) {
                         showExpandableLayout(viewHolder, noxbox);
                     }
-                }, object -> onClick(viewHolder, noxbox));
+                }, failure -> onClick(viewHolder, noxbox));
             }
         });
 
@@ -383,7 +381,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
     }
 
-    private void clearDislikeNoxbox(Noxbox noxbox) {
+    private void likeNoxbox(Noxbox noxbox) {
         if (noxbox.getOwner().getId().equals(profileId)) {
             noxbox.setTimeOwnerDisliked(0L);
         } else {

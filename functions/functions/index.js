@@ -4,7 +4,7 @@ const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
 const wallet = require('./wallet-functions');
-const version = 5;
+const version = 6;
 
 const db = admin.firestore();
 db.settings({timestampsInSnapshots: true});
@@ -31,8 +31,9 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
     let operationName = 'unknown';
 
-    //TODO update ratings on like\dislike\comment, recalculate rating hash
-    if(previousNoxbox.finished) return;
+    if(previousNoxbox.finished) {
+        return;
+    }
 
     if(!previousNoxbox.timeRequested && noxbox.timeRequested) {
         operationName = 'Requested';
@@ -44,7 +45,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             },
             topic: noxbox.owner.id
         };
-        //TODO check ratingHash For both users and cancel
+        // TODO check ratings for console else if both users and cancel
         await admin.messaging().send(push);
         console.log('push was sent' + JSON.stringify(push));
     } else if(!previousNoxbox.timeAccepted && noxbox.timeAccepted) {
@@ -147,7 +148,6 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
               },
               topic: noxbox.id
         };
-        //TODO two likes For both members and recalculate ratingHash
         await admin.messaging().send(push);
         console.log('push was sent' + JSON.stringify(push));
 

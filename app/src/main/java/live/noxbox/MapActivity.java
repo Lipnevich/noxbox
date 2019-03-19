@@ -108,6 +108,7 @@ public class MapActivity extends HackerActivity implements
         checkBalance(profile(), MapActivity.this);
 
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
+        // TODO load expired rating from completed services and store it in profile rating
     }
 
     @Override

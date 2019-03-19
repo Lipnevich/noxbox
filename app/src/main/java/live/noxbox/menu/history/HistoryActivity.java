@@ -153,7 +153,6 @@ public class HistoryActivity extends BaseActivity {
 
     }
 
-
     private void processYourFirstService() {
         chooseService.setOnClickListener(v -> {
             profile().getFilters().setDemand(false);
