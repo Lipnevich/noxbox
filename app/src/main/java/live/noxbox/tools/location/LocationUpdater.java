@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,6 +36,7 @@ import static live.noxbox.tools.location.LocationOperator.location;
  */
 public class LocationUpdater {
 
+    public static final String KEY_REQUESTING_LOCATION_UPDATES = "request_location_updates_key-0x2";
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 0x1;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 20000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
@@ -82,6 +84,8 @@ public class LocationUpdater {
     }
 
     public void startLocationUpdates() {
+        if (!requestingLocationUpdates) requestingLocationUpdates = true;
+
         settingsClient.checkLocationSettings(locationSettingsRequest)
                 .addOnSuccessListener(activity, new OnSuccessListener<LocationSettingsResponse>() {
                     @SuppressLint("MissingPermission")
@@ -93,29 +97,32 @@ public class LocationUpdater {
 
                     }
                 }).addOnFailureListener(activity, e -> {
-                    int statusCode = ((ApiException) e).getStatusCode();
-                    switch (statusCode) {
-                        case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                            try {
-                                ResolvableApiException rae = (ResolvableApiException) e;
-                                rae.startResolutionForResult(activity, REQUEST_CHECK_LOCATION_SETTINGS);
-                            } catch (IntentSender.SendIntentException sie) {
-                                Log.i(TAG, "PendingIntent unable to execute request.");
-                            }
-                            break;
-                        case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                            String errorMessage = "Location settings are inadequate, and cannot be " +
-                                    "fixed here. Fix in Settings.";
-                            Log.e(TAG, errorMessage);
-                            Toast.makeText(activity, errorMessage, Toast.LENGTH_LONG).show();
-                            requestingLocationUpdates = false;
+            int statusCode = ((ApiException) e).getStatusCode();
+            switch (statusCode) {
+                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                    try {
+                        ResolvableApiException rae = (ResolvableApiException) e;
+                        rae.startResolutionForResult(activity, REQUEST_CHECK_LOCATION_SETTINGS);
+                    } catch (IntentSender.SendIntentException sie) {
+                        Log.i(TAG, "PendingIntent unable to execute request.");
                     }
+                    break;
+                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                    String errorMessage = "Location settings are inadequate, and cannot be " +
+                            "fixed here. Fix in Settings.";
+                    Crashlytics.logException(new LocationException(errorMessage));
+                    DebugMessage.popup(activity,errorMessage,Toast.LENGTH_LONG);
+                    requestingLocationUpdates = false;
+            }
 
-                });
+        });
     }
 
     public void stopLocationUpdates() {
-        if (!requestingLocationUpdates) return;
+        if (!requestingLocationUpdates) {
+            Log.d(TAG, "stopLocationUpdates: updates never requested, no-op.");
+            return;
+        }
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                 .addOnCompleteListener(activity, new OnCompleteListener<Void>() {
                     @Override
@@ -123,5 +130,15 @@ public class LocationUpdater {
                         requestingLocationUpdates = false;
                     }
                 });
+    }
+
+
+    public boolean isRequestingLocationUpdates() {
+        return requestingLocationUpdates;
+    }
+
+    public LocationUpdater setRequestingLocationUpdates(boolean requestingLocationUpdates) {
+        this.requestingLocationUpdates = requestingLocationUpdates;
+        return this;
     }
 }

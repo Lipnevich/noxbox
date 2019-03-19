@@ -13,7 +13,9 @@
  */
 package live.noxbox;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
@@ -49,6 +51,7 @@ import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.location.LocationException;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
@@ -61,6 +64,8 @@ import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.location.LocationOperator.updateLocation;
+import static live.noxbox.tools.location.LocationUpdater.KEY_REQUESTING_LOCATION_UPDATES;
+import static live.noxbox.tools.location.LocationUpdater.REQUEST_CHECK_LOCATION_SETTINGS;
 
 public class MapActivity extends HackerActivity implements
         OnMapReadyCallback,
@@ -71,6 +76,8 @@ public class MapActivity extends HackerActivity implements
     public static final String TAG = MapActivity.class.getSimpleName();
 
     private LocationReceiver locationReceiver;
+
+    private Boolean requestLocationUpdatesBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,7 @@ public class MapActivity extends HackerActivity implements
                 .build();
         googleApiClient.connect();
 
+        updateValuesFromBundle(savedInstanceState);
         AppCache.startListening();
         checkBalance(profile(), MapActivity.this);
 
@@ -155,6 +163,27 @@ public class MapActivity extends HackerActivity implements
         }
     }
 
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if (currentState != null && currentState instanceof AvailableNoxboxes) {
+            AvailableNoxboxes availableNoxboxesState = (AvailableNoxboxes) currentState;
+            availableNoxboxesState.onSaveRequestingLocationUpdatesState(savedInstanceState);
+        }
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    private void updateValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_REQUESTING_LOCATION_UPDATES)) {
+            requestLocationUpdatesBundle = ((Boolean) savedInstanceState.getBoolean(KEY_REQUESTING_LOCATION_UPDATES)) != null
+                    ? savedInstanceState.getBoolean(KEY_REQUESTING_LOCATION_UPDATES)
+                    : null;
+            if (currentState != null && currentState instanceof AvailableNoxboxes) {
+                AvailableNoxboxes availableNoxboxesState = (AvailableNoxboxes) currentState;
+                availableNoxboxesState.updateRequestingLocationUpdatesFromBundle(requestLocationUpdatesBundle);
+            }
+        }
+    }
+
 
     protected boolean isGpsEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -184,6 +213,25 @@ public class MapActivity extends HackerActivity implements
         updateLocation(this, googleMap);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_LOCATION_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Crashlytics.logException(new LocationException("User agreed to make required location settings changes."));
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Crashlytics.logException(new LocationException("User chose not to make required location settings changes."));
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(KEY_REQUESTING_LOCATION_UPDATES,false);
+                        updateValuesFromBundle(bundle);
+                        break;
+                }
+                break;
+        }
+    }
+
 
     private State currentState;
 
@@ -192,6 +240,10 @@ public class MapActivity extends HackerActivity implements
             if (googleMap == null) return;
 
             State newState = getFragment(profile);
+            if (newState instanceof AvailableNoxboxes && requestLocationUpdatesBundle != null) {
+                ((AvailableNoxboxes) newState).updateRequestingLocationUpdatesFromBundle(requestLocationUpdatesBundle);
+            }
+
             if (currentState == null) {
                 currentState = newState;
                 measuredDraw(newState);

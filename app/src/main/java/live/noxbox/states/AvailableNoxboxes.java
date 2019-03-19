@@ -38,6 +38,7 @@ import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
+import static live.noxbox.tools.location.LocationUpdater.KEY_REQUESTING_LOCATION_UPDATES;
 
 public class AvailableNoxboxes implements State {
 
@@ -82,7 +83,7 @@ public class AvailableNoxboxes implements State {
         }
         activity.findViewById(R.id.switcherLayout).setVisibility(View.VISIBLE);
         ((RoleSwitcherLayout) activity.findViewById(R.id.switcherLayout)
-                .findViewById(R.id.realSwitcherLayout)).refresh();
+                .findViewById(R.id.roleSwitcherLayout)).refresh();
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
             startLocationPermissionRequest(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
@@ -114,6 +115,18 @@ public class AvailableNoxboxes implements State {
                 activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             };
             serviceHandler.post(serviceRunnable);
+        }
+    }
+
+    public void onSaveRequestingLocationUpdatesState(Bundle savedInstanceState) {
+        if (locationUpdater != null) {
+            savedInstanceState.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, locationUpdater.isRequestingLocationUpdates());
+        }
+    }
+
+    public void updateRequestingLocationUpdatesFromBundle(Boolean requestingLocationUpdates) {
+        if (locationUpdater != null && !locationUpdater.isRequestingLocationUpdates()) {
+            locationUpdater.setRequestingLocationUpdates(requestingLocationUpdates);
         }
     }
 
