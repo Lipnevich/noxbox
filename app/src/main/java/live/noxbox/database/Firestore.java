@@ -361,7 +361,6 @@ public class Firestore {
                         continue;
                     }
 
-                    // TODO check if noxbox was updated and correct likes, dislikes
                     if(noxbox.getTimeOwnerDisliked() > 0) {
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
                         if(isRatingUpdated) {
@@ -379,7 +378,7 @@ public class Firestore {
                         comment.setLike(false);
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
                         if(isRatingUpdated) {
-                            rating.setSentLikes(rating.getReceivedLikes() - 1);
+                            rating.setSentLikes(rating.getSentLikes() - 1);
                         }
                     } else {
                         comment.setLike(true);
