@@ -28,7 +28,6 @@ public interface Constants {
     String CHANNEL_ID = "noxbox_channel";
     int CLUSTER_RENDERING_MIN_FREQUENCY = 3000;
     int CLUSTER_RENDERING_MAX_FREQUENCY = 400;
-    float COMISSION_FEE = 0.1F;
     long RATINGS_UPDATE_MIN_FREQUENCY = BuildConfig.DEBUG ? 5000 : 60 * 60 * 1000;
 
     int MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS = 3;

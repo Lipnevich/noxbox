@@ -217,6 +217,7 @@ public class Firestore {
     private static Query noxboxes(long start, int count, MarketRole role, String userId) {
         return db().collection("noxboxes")
                 .whereEqualTo(role.getOwnerFieldId(), userId)
+                .whereEqualTo("finished", true)
                 .whereGreaterThan("timeCompleted", 0)
                 .orderBy("timeCompleted", Query.Direction.DESCENDING)
                 .startAt(start)
@@ -321,6 +322,7 @@ public class Firestore {
                         continue;
                     }
 
+                    // TODO fill blacklist
                     if(noxbox.getTimeOwnerDisliked() > 0) {
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
                         if(isRatingUpdated) {
@@ -334,6 +336,7 @@ public class Firestore {
                     }
 
                     Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
+                    // TODO fill blacklist
                     if(noxbox.getTimePartyDisliked() > 0) {
                         comment.setLike(false);
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
@@ -365,6 +368,7 @@ public class Firestore {
                         continue;
                     }
 
+                    // TODO fill blacklist
                     if(noxbox.getTimeOwnerDisliked() > 0) {
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
                         if(isRatingUpdated) {
@@ -378,6 +382,7 @@ public class Firestore {
                     }
 
                     Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
+                    // TODO fill blacklist
                     if(noxbox.getTimePartyDisliked() > 0) {
                         comment.setLike(false);
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
