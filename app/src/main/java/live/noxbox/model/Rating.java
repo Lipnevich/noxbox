@@ -8,14 +8,14 @@ import java.util.Map;
  */
 public class Rating {
 
-    private Integer receivedLikes = 0;
-    private Integer receivedDislikes = 0;
-    private Integer sentLikes = 0;
-    private Integer sentDislikes = 0;
+    private int receivedLikes;
+    private int receivedDislikes;
+    private int sentLikes;
+    private int sentDislikes;
 
-    private Integer notResponded = 0;
-    private Integer canceled = 0;
-    private Integer notVerified = 0;
+    private int notResponded;
+    private int canceled;
+    private int notVerified;
 
     //key is Profile.id
     private Map<String, Comment> comments = new HashMap<>();
@@ -24,7 +24,6 @@ public class Rating {
     }
 
     public Integer getReceivedLikes() {
-        if (receivedLikes == null) receivedLikes = 1;
         return receivedLikes;
     }
 

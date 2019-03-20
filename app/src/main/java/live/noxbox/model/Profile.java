@@ -192,9 +192,9 @@ public class Profile implements Serializable {
         if (demandsRating == null) {
             demandsRating = new HashMap<>();
         }
-        if(demandsRating.size() < NoxboxType.values().length) {
+        if(demandsRating.size() < NoxboxType.values().length - 1) {
             for(NoxboxType type : NoxboxType.values()) {
-                if(!demandsRating.containsKey(type.name())) {
+                if(type != NoxboxType.redirect && !demandsRating.containsKey(type.name())) {
                     demandsRating.put(type.name(), new Rating());
                 }
             }
@@ -211,9 +211,9 @@ public class Profile implements Serializable {
         if (suppliesRating == null) {
             suppliesRating = new HashMap<>();
         }
-        if(suppliesRating.size() < NoxboxType.values().length) {
+        if(suppliesRating.size() < NoxboxType.values().length - 1) {
             for(NoxboxType type : NoxboxType.values()) {
-                if(!suppliesRating.containsKey(type.name())) {
+                if(type != NoxboxType.redirect && !suppliesRating.containsKey(type.name())) {
                     suppliesRating.put(type.name(), new Rating());
                 }
             }

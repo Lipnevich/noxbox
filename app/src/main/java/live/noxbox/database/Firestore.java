@@ -275,7 +275,7 @@ public class Firestore {
         ratingsUpdate(MarketRole.supply);
     }
 
-
+    // TODO (vl) async it
     private static void ratingsUpdate(MarketRole role) {
         ratings(role, profile().getId(), profile().getRatingUpdateTime())
                 .get().addOnCompleteListener(result -> {
@@ -300,7 +300,7 @@ public class Firestore {
                 }
                 Rating rating = (role == MarketRole.demand
                         ? profile().getDemandsRating() : profile().getSuppliesRating())
-                        .get(noxbox.getType());
+                        .get(noxbox.getType().name());
                 boolean isOwner = noxbox.getOwner().equals(profile());
                 boolean isRatingUpdated = !noxbox.getTimeCompleted().equals(noxbox.getTimeRatingUpdated());
 
@@ -317,7 +317,7 @@ public class Firestore {
                         rating.setNotVerified(rating.getNotVerified() + 1);
                         continue;
                     }
-                    if(noxbox.getTimeRatingUpdated() == 0) {
+                    if(noxbox.getTimeRatingUpdated() == 0 || noxbox.getTimeCompleted() == 0) {
                         continue;
                     }
 
@@ -361,7 +361,7 @@ public class Firestore {
                         rating.setNotVerified(rating.getNotVerified() + 1);
                         continue;
                     }
-                    if(noxbox.getTimeRatingUpdated() == 0) {
+                    if(noxbox.getTimeRatingUpdated() == 0 || noxbox.getTimeCompleted() == 0) {
                         continue;
                     }
 
