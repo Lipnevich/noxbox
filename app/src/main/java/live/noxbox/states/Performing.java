@@ -294,6 +294,7 @@ public class Performing implements State {
                 long timeCompleted = System.currentTimeMillis();
                 profile.getCurrent().setTotal(totalMoney.toString());
                 profile.getCurrent().setTimeCompleted(timeCompleted);
+                profile.getCurrent().setTimeRatingUpdated(timeCompleted);
                 BusinessActivity.businessEvent(complete);
                 BusinessActivity.businessEvent(chatting);
                 updateNoxbox();

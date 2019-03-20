@@ -78,6 +78,7 @@ public class Requesting implements State {
         requestingView.findViewById(R.id.cancelButton).setOnClickListener(v -> {
             GeoRealtime.offline(profile.getCurrent());
             profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+            profile.getCurrent().setTimeRatingUpdated((System.currentTimeMillis()));
             updateNoxbox();
         });
 

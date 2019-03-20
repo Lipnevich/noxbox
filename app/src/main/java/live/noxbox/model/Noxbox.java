@@ -64,6 +64,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private long timeOwnerDisliked;
     private long timePartyDisliked;
     private long timeTimeout;
+    private long timeRatingUpdated;
     private String cancellationReasonMessage;
     private String ownerComment;
     private String partyComment;
@@ -98,6 +99,7 @@ public class Noxbox implements Comparable<Noxbox> {
         timeOwnerDisliked = from.timeOwnerDisliked;
         timePartyDisliked = from.timePartyDisliked;
         timeTimeout = from.timeTimeout;
+        timeRatingUpdated = from.timeRatingUpdated;
         cancellationReasonMessage = from.cancellationReasonMessage;
         ownerComment = from.ownerComment;
         partyComment = from.partyComment;
@@ -137,6 +139,7 @@ public class Noxbox implements Comparable<Noxbox> {
         timeOwnerDisliked = 0L;
         timePartyDisliked = 0L;
         timeTimeout = 0L;
+        timeRatingUpdated = 0L;
 
         return this;
     }
@@ -596,5 +599,14 @@ public class Noxbox implements Comparable<Noxbox> {
         String string =
                 "id=" + getId();
         return string;
+    }
+
+    public long getTimeRatingUpdated() {
+        return timeRatingUpdated;
+    }
+
+    public Noxbox setTimeRatingUpdated(long timeRatingUpdated) {
+        this.timeRatingUpdated = timeRatingUpdated;
+        return this;
     }
 }

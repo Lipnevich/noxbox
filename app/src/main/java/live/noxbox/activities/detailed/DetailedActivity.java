@@ -319,9 +319,6 @@ public class DetailedActivity extends BaseActivity {
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name())
                 : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
 
-        if (mateRating == null) {
-            mateRating = new Rating();
-        }
         int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
         if (percentage >= 95) {
             ratingImage.setColorFilter(Color.GREEN);
@@ -618,8 +615,10 @@ public class DetailedActivity extends BaseActivity {
                 BusinessActivity.businessEvent(cancel);
                 if (profile.getViewed().getOwner().getId().equals(profile.getId())) {
                     profile.getViewed().setTimeCanceledByOwner(System.currentTimeMillis());
+                    profile.getCurrent().setTimeRatingUpdated((System.currentTimeMillis()));
                 } else {
                     profile.getViewed().setTimeCanceledByParty(System.currentTimeMillis());
+                    profile.getCurrent().setTimeRatingUpdated((System.currentTimeMillis()));
                 }
                 profile.getViewed().setCancellationReasonMessage(cancellationReason);
                 AppCache.updateNoxbox();

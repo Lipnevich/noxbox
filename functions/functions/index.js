@@ -138,6 +138,8 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         await wallet.send(request);
 
         noxbox.total = request.transferred;
+        // TODO check it
+//        db.collection('noxboxes').doc(noxbox.id).update(noxbox);
 
         let push = {
               data: {

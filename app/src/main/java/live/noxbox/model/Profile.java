@@ -17,13 +17,11 @@ public class Profile implements Serializable {
 
     private Acceptance acceptance;
     //key is Profile.id
+    private long ratingUpdateTime = 0l;
     private Map<String, Boolean> darkList = new HashMap<>();
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
 
-
-
-    private String ratingHash;
     private Map<String, Portfolio> portfolio = new HashMap<>();
     private Wallet wallet;
 
@@ -170,7 +168,6 @@ public class Profile implements Serializable {
                 .setFilters(getFilters())
                 .setSuppliesRating(getSuppliesRating())
                 .setDemandsRating(getDemandsRating())
-                .setRatingHash(getRatingHash())
                 .setTravelMode(getTravelMode())
                 .setHost(getHost());
     }
@@ -195,6 +192,13 @@ public class Profile implements Serializable {
         if (demandsRating == null) {
             demandsRating = new HashMap<>();
         }
+        if(demandsRating.size() < NoxboxType.values().length) {
+            for(NoxboxType type : NoxboxType.values()) {
+                if(!demandsRating.containsKey(type.name())) {
+                    demandsRating.put(type.name(), new Rating());
+                }
+            }
+        }
         return demandsRating;
     }
 
@@ -206,6 +210,13 @@ public class Profile implements Serializable {
     public Map<String, Rating> getSuppliesRating() {
         if (suppliesRating == null) {
             suppliesRating = new HashMap<>();
+        }
+        if(suppliesRating.size() < NoxboxType.values().length) {
+            for(NoxboxType type : NoxboxType.values()) {
+                if(!suppliesRating.containsKey(type.name())) {
+                    suppliesRating.put(type.name(), new Rating());
+                }
+            }
         }
         return suppliesRating;
     }
@@ -350,7 +361,7 @@ public class Profile implements Serializable {
         darkList = from.darkList;
         suppliesRating = from.suppliesRating;
         demandsRating = from.demandsRating;
-        ratingHash = from.ratingHash;
+        ratingUpdateTime = from.ratingUpdateTime;
         portfolio = from.portfolio;
         wallet = from.wallet;
         name = from.name;
@@ -363,16 +374,18 @@ public class Profile implements Serializable {
         filters = from.filters;
         return this;
     }
-    public String getRatingHash() {
-        return ratingHash;
-    }
 
-    public Profile setRatingHash(String ratingHash) {
-        this.ratingHash = ratingHash;
-        return this;
-    }
     @Override
     public String toString() {
         return "id=" + getId() + ",noxboxId=" + getNoxboxId();
+    }
+
+    public long getRatingUpdateTime() {
+        return ratingUpdateTime;
+    }
+
+    public Profile setRatingUpdateTime(long ratingUpdateTime) {
+        this.ratingUpdateTime = ratingUpdateTime;
+        return this;
     }
 }

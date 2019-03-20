@@ -124,8 +124,10 @@ public class ConfirmationActivity extends BaseActivity {
                 long timeRejected = System.currentTimeMillis();
                 if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
                     profile.getCurrent().setTimeOwnerRejected(timeRejected);
+                    profile.getCurrent().setTimeRatingUpdated(timeRejected);
                 } else {
                     profile.getCurrent().setTimePartyRejected(timeRejected);
+                    profile.getCurrent().setTimeRatingUpdated(timeRejected);
                 }
                 profile.getCurrent().setConfirmationPhoto(null);
                 profile.getCurrent().setWasNotificationVerification(false);

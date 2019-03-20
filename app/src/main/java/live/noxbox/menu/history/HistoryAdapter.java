@@ -371,6 +371,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         } else {
             noxbox.setPartyComment(viewHolder.comment.getText().toString());
         }
+        noxbox.setTimeRatingUpdated(System.currentTimeMillis());
     }
 
     private void dislikeNoxbox(Noxbox noxbox) {
@@ -379,6 +380,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         } else {
             noxbox.setTimePartyDisliked(System.currentTimeMillis());
         }
+        noxbox.setTimeRatingUpdated(System.currentTimeMillis());
     }
 
     private void likeNoxbox(Noxbox noxbox) {
@@ -387,6 +389,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         } else {
             noxbox.setTimePartyDisliked(0L);
         }
+        noxbox.setTimeRatingUpdated(System.currentTimeMillis());
     }
 
 

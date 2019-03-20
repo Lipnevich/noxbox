@@ -127,7 +127,6 @@ public class HackerActivity extends MenuActivity implements OnMapReadyCallback {
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().build());
 
-                        profile().setRatingHash(null);
                         db.collection("profiles").document(profile().getId()).set(Firestore.objectToMap(profile()), SetOptions.merge())
                             .addOnCompleteListener(task -> {
                                 if (task.getException() != null) {
@@ -169,6 +168,7 @@ public class HackerActivity extends MenuActivity implements OnMapReadyCallback {
                             profile().getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
                         } else {
                             profile().getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
+                            profile().getCurrent().setTimeRatingUpdated((System.currentTimeMillis()));
                         }
                         AppCache.updateNoxbox();
                     });

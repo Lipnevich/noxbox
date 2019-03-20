@@ -7,22 +7,12 @@ public class Comment {
     private Boolean like;
 
     public Comment(String id, String text, Long time, Boolean like) {
-        this.id = id;
         this.text = text;
         this.time = time;
         this.like = like;
     }
 
     public Comment() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public Comment setId(String id) {
-        this.id = id;
-        return this;
     }
 
     public String getText() {
@@ -35,7 +25,6 @@ public class Comment {
     }
 
     public Long getTime() {
-
         return time;
     }
 

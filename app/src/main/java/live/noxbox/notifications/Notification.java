@@ -21,7 +21,6 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
-import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.NotificationType.message;
@@ -139,17 +138,16 @@ public abstract class Notification {
     public static class CancelRequestListener extends BroadcastReceiver {
         @Override
         public void onReceive(final Context context, Intent intent) {
-            AppCache.readProfile(new Task<Profile>() {
-                @Override
-                public void execute(Profile profile) {
-                    if (profile.equals(profile.getCurrent().getOwner())) {
-                        profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
-                    } else {
-                        profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
-                    }
-                    updateNoxbox();
-                    MessagingService.getNotificationService(context).cancelAll();
+            AppCache.readProfile(profile -> {
+                if (profile.equals(profile.getCurrent().getOwner())) {
+                    profile.getCurrent().setTimeCanceledByParty(System.currentTimeMillis());
+                    profile.getCurrent().setTimeRatingUpdated((System.currentTimeMillis()));
+                } else {
+                    profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
+                    profile.getCurrent().setTimeRatingUpdated((System.currentTimeMillis()));
                 }
+                updateNoxbox();
+                MessagingService.getNotificationService(context).cancelAll();
             });
         }
     }

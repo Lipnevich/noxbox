@@ -15,6 +15,7 @@ public class Rating {
 
     private Integer notResponded = 0;
     private Integer canceled = 0;
+    private Integer notVerified = 0;
 
     //key is Profile.id
     private Map<String, Comment> comments = new HashMap<>();
@@ -86,4 +87,12 @@ public class Rating {
         return this;
     }
 
+    public Integer getNotVerified() {
+        return notVerified;
+    }
+
+    public Rating setNotVerified(Integer notVerified) {
+        this.notVerified = notVerified;
+        return this;
+    }
 }

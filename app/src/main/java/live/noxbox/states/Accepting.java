@@ -59,6 +59,7 @@ public class Accepting implements State {
                 checkBalance(profile.getCurrent().getParty(), activity, balance -> {
 
                     profile.getCurrent().setTimeCanceledByOwner(System.currentTimeMillis());
+                    profile.getCurrent().setTimeRatingUpdated((System.currentTimeMillis()));
                     if (balance.compareTo(BigDecimal.ZERO) == 0) {
                         profile.getCurrent().setCancellationReasonMessage("Zero balance " + balance + " on payer account");
                     } else {

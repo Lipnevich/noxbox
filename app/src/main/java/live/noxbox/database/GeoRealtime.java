@@ -63,9 +63,6 @@ public class GeoRealtime {
         Rating ownerRating = currentNoxbox.getRole() == MarketRole.supply ?
                 currentNoxbox.getOwner().getSuppliesRating().get(currentNoxbox.getType().name()) :
                 currentNoxbox.getOwner().getDemandsRating().get(currentNoxbox.getType().name());
-        if (ownerRating == null) {
-            ownerRating = new Rating();
-        }
 
         return currentNoxbox.getId()
                 + delimiter + currentNoxbox.getOwner().getId()
