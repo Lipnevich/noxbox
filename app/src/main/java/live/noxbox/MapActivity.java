@@ -37,7 +37,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
 import live.noxbox.database.AppCache;
-import live.noxbox.database.Firestore;
 import live.noxbox.debug.HackerActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
@@ -108,7 +107,6 @@ public class MapActivity extends HackerActivity implements
         AppCache.startListening();
         checkBalance(profile(), MapActivity.this);
 
-        Firestore.ratingsUpdate();
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
     }
 

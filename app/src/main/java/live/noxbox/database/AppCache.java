@@ -92,6 +92,7 @@ public class AppCache {
                 } else {
                     executeUITasks();
                 }
+                Firestore.ratingsUpdate();
             });
         }
     }
