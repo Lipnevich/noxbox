@@ -288,6 +288,10 @@ public class Firestore {
             } else {
                 return;
             }
+            if(noxboxes.isEmpty()) {
+                return;
+            }
+
             Set<String> profiles = new HashSet<>();
             for(Noxbox noxbox : noxboxes) {
                 boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
@@ -405,9 +409,8 @@ public class Firestore {
         return db().collection("noxboxes")
                 .whereEqualTo(role.getOwnerFieldId(), userId)
                 .whereEqualTo("finished", true)
-                .whereGreaterThan("timeRequested", 0)
                 .whereGreaterThan("timeRatingUpdated", lastUpdate)
-                .orderBy("timeRequested", Query.Direction.DESCENDING)
+                .orderBy("timeRatingUpdated", Query.Direction.DESCENDING)
                 .limit(100);
     }
 }
