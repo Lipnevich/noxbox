@@ -24,6 +24,9 @@ public class Rating {
     }
 
     public Integer getReceivedLikes() {
+        if (receivedLikes < 0) {
+            setReceivedLikes(0);
+        }
         return receivedLikes;
     }
 
@@ -33,6 +36,9 @@ public class Rating {
     }
 
     public Integer getReceivedDislikes() {
+        if (receivedDislikes < 0) {
+            setReceivedDislikes(0);
+        }
         return receivedDislikes;
     }
 

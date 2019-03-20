@@ -92,7 +92,12 @@ public class AppCache {
                 } else {
                     executeUITasks();
                 }
-                Firestore.ratingsUpdate();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Firestore.ratingsUpdate();
+                    }
+                }).start();
             });
         }
     }
