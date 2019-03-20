@@ -408,7 +408,7 @@ public class Firestore {
             }
             profile().setRatingUpdateTime(System.currentTimeMillis());
             fireProfile();
-            timeLogger.makeLog("OLOLO" + role.name());
+            timeLogger.makeLog("Update rating time for: " + role.name());
         });
 
 
