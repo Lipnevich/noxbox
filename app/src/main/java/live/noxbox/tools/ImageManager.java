@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import live.noxbox.R;
+import live.noxbox.analitics.BusinessActivity;
+import live.noxbox.analitics.BusinessEvent;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.ImageType;
 import live.noxbox.model.NotificationType;
@@ -44,6 +46,7 @@ public class ImageManager {
             Map<String, String> data = new HashMap<>();
             data.put("type", NotificationType.photoValid.name());
             buildNotification(activity.getApplicationContext(), null, data).show();
+            BusinessActivity.businessEvent(BusinessEvent.validPhoto);
             profile.setPhoto(uri.toString());
 
             if (profile.getCurrent() != null
