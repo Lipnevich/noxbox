@@ -3,19 +3,21 @@ package live.noxbox.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import static live.noxbox.model.Noxbox.isNullOrZero;
+
 /**
  * Created by nicolay.lipnevich on 11/10/2017.
  */
 public class Rating {
 
-    private int receivedLikes;
-    private int receivedDislikes;
-    private int sentLikes;
-    private int sentDislikes;
+    private Integer receivedLikes;
+    private Integer receivedDislikes;
+    private Integer sentLikes;
+    private Integer sentDislikes;
 
-    private int notResponded;
-    private int canceled;
-    private int notVerified;
+    private Integer notResponded;
+    private Integer canceled;
+    private Integer notVerified;
 
     //key is Profile.id
     private Map<String, Comment> comments = new HashMap<>();
@@ -24,7 +26,7 @@ public class Rating {
     }
 
     public Integer getReceivedLikes() {
-        if (receivedLikes < 0) {
+        if (isNullOrZero(receivedLikes) || receivedLikes < 0) {
             setReceivedLikes(0);
         }
         return receivedLikes;
@@ -36,7 +38,7 @@ public class Rating {
     }
 
     public Integer getReceivedDislikes() {
-        if (receivedDislikes < 0) {
+        if (isNullOrZero(receivedDislikes) || receivedDislikes < 0) {
             setReceivedDislikes(0);
         }
         return receivedDislikes;

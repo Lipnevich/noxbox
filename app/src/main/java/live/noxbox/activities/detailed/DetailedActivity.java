@@ -203,15 +203,21 @@ public class DetailedActivity extends BaseActivity {
         super.onResume();
         gyroscopeObserver.register(this);
         AppCache.listenProfile(DetailedActivity.class.getName(), profile -> {
-            if(!isFinished(profile.getCurrent())
+            if (!isFinished(profile.getCurrent())
                     && profile.getNoxboxId().equals(profile.getCurrent().getId())
-                    && isNullOrZero(profile.getCurrent().getTimeRequested())){
+                    && isNullOrZero(profile.getCurrent().getTimeRequested())) {
                 stopListenNoxbox(profile.getCurrent().getId());
             }
             startListenNoxbox(profile.getViewed().getId());
             if (profile.getViewed().getParty() == null) {
-                MarketRole role = profile.getViewed().getRole() == MarketRole.supply ? MarketRole.demand : MarketRole.supply;
-                profile.getViewed().setParty(profile.publicInfo(role, profile.getViewed().getType()));
+                profile.getViewed().setParty(profile.publicInfo());
+                Rating rating = profile.getViewed().getRole() == MarketRole.supply
+                        ? profile.getDemandsRating().get(profile.getViewed().getType().name())
+                        : profile.getSuppliesRating().get(profile.getViewed().getType().name());
+                if (rating == null) {
+                    rating = new Rating();
+                }
+                profile.getViewed().setPartyRating(rating);
             }
             if (resultPosition != null && profile.getViewed() != null) {
                 profile.getViewed().setPosition(resultPosition);
@@ -328,7 +334,7 @@ public class DetailedActivity extends BaseActivity {
         Rating mateRating = viewed.getRole() == MarketRole.demand ?
                 viewed.getOwner().getDemandsRating().get(viewed.getType().name())
                 : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
-        if(mateRating == null) {
+        if (mateRating == null) {
             mateRating = new Rating();
         }
 

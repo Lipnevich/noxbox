@@ -22,6 +22,7 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
+import live.noxbox.model.Rating;
 import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
 
@@ -235,6 +236,7 @@ public class AppCache {
 
     public static void createNoxbox(Task<Profile> onSuccess, Task<Exception> onFailure) {
         if (!isProfileReady()) return;
+
         profile.setNoxboxId(getNewNoxboxId());
         profile.getContract().setId(profile.getNoxboxId());
         profile.getContract().setTimeCreated(System.currentTimeMillis());
@@ -245,6 +247,14 @@ public class AppCache {
         }
         profile().getContract().setGeoId(createKey(profile().getContract(), profile.getFilters().getAllowNovices()));
 
+        profile.getContract().setOwner(profile.publicInfo());
+        Rating rating = profile.getContract().getRole() == MarketRole.demand
+                ? profile.getDemandsRating().get(profile.getContract().getType().name())
+                : profile.getSuppliesRating().get(profile.getContract().getType().name());
+        if (rating == null) {
+            rating = new Rating();
+        }
+        profile.getContract().setOwnerRating(rating);
         profile.getCurrent().copy(profile.getContract());
         executeUITasks();
 
