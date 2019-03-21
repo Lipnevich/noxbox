@@ -48,7 +48,6 @@ import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.menu.history.HistoryActivity.isHistoryEmpty;
 import static live.noxbox.menu.history.HistoryActivity.isHistoryThere;
-import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.DateTimeFormatter.time;
@@ -269,7 +268,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             builder.show();
         });
 
-        attachCommentView(viewHolder, noxbox, isNotCommented(noxbox));
+        attachCommentView(viewHolder, noxbox, isCommented(noxbox));
         attachMyComment(viewHolder, noxbox);
         viewHolder.send.setOnClickListener(v -> {
             if (viewHolder.comment.getText().toString().length() > 0) {
@@ -324,8 +323,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         });
     }
 
-    private void attachRating(ImageView like, ImageView dislike, boolean isNotDisliked) {
-        if (isNotDisliked) {
+    private void attachRating(ImageView like, ImageView dislike, boolean isLiked) {
+        if (isLiked) {
             like.setColorFilter(activity.getResources().getColor(R.color.primary));
             dislike.setColorFilter(activity.getResources().getColor(R.color.divider));
         } else {
@@ -334,34 +333,32 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
     }
 
-    private void attachCommentView(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox, boolean isNotComment) {
-        if (isNotComment) {
-            viewHolder.commentView.setVisibility(View.GONE);
-            viewHolder.comment.setVisibility(View.VISIBLE);
-            viewHolder.send.setVisibility(View.VISIBLE);
-
-        } else {
+    private void attachCommentView(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox, boolean isCommented) {
+        if (isCommented) {
             viewHolder.comment.setVisibility(View.GONE);
             viewHolder.send.setVisibility(View.GONE);
             viewHolder.commentView.setVisibility(View.VISIBLE);
             viewHolder.commenterName.setText("\"" + noxbox.getMe(profileId).getName() + "\"");
+        } else {
+            viewHolder.commentView.setVisibility(View.GONE);
+            viewHolder.comment.setVisibility(View.VISIBLE);
+            viewHolder.send.setVisibility(View.VISIBLE);
         }
-
     }
 
     private boolean isLiked(Noxbox noxbox) {
         if (profileId.equals(noxbox.getOwner().getId())) {
-            return isNullOrZero(noxbox.getTimeOwnerDisliked());
+            return noxbox.getTimeOwnerDisliked() <= noxbox.getTimeOwnerLiked();
         } else {
-            return isNullOrZero(noxbox.getTimePartyDisliked());
+            return noxbox.getTimePartyDisliked() <= noxbox.getTimePartyLiked();
         }
     }
 
-    private boolean isNotCommented(Noxbox noxbox) {
+    private boolean isCommented(Noxbox noxbox) {
         if (profileId.equals(noxbox.getOwner().getId())) {
-            return noxbox.getOwnerComment().length() == 0;
+            return noxbox.getOwnerComment().length() > 0;
         } else {
-            return noxbox.getPartyComment().length() == 0;
+            return noxbox.getPartyComment().length() > 0;
         }
     }
 
@@ -385,9 +382,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     private void likeNoxbox(Noxbox noxbox) {
         if (noxbox.getOwner().getId().equals(profileId)) {
-            noxbox.setTimeOwnerDisliked(0L);
+            noxbox.setTimeOwnerLiked(System.currentTimeMillis());
         } else {
-            noxbox.setTimePartyDisliked(0L);
+            noxbox.setTimePartyLiked(System.currentTimeMillis());
         }
         noxbox.setTimeRatingUpdated(System.currentTimeMillis());
     }
