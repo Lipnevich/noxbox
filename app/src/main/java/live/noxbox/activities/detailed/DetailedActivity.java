@@ -210,7 +210,8 @@ public class DetailedActivity extends BaseActivity {
             }
             startListenNoxbox(profile.getViewed().getId());
             if (profile.getViewed().getParty() == null) {
-                profile.getViewed().setParty(profile.publicInfo());
+                MarketRole role = profile.getViewed().getRole() == MarketRole.supply ? MarketRole.demand : MarketRole.supply;
+                profile.getViewed().setParty(profile.publicInfo(role, profile.getViewed().getType()));
             }
             if (resultPosition != null && profile.getViewed() != null) {
                 profile.getViewed().setPosition(resultPosition);
@@ -315,10 +316,6 @@ public class DetailedActivity extends BaseActivity {
     private void drawRating(Noxbox viewed) {
         drawDropdownElement(ratingTitleLayout.getId(), ratingLayout.getId());
         changeArrowVector(ratingLayout.getId(), ratingArrow.getId());
-        Rating mateRating = viewed.getRole() == MarketRole.demand ?
-                viewed.getOwner().getDemandsRating().get(viewed.getType().name())
-                : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
-
         int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
         if (percentage >= 95) {
             ratingImage.setColorFilter(Color.GREEN);
@@ -326,6 +323,13 @@ public class DetailedActivity extends BaseActivity {
             ratingImage.setColorFilter(Color.YELLOW);
         } else {
             ratingImage.setColorFilter(Color.RED);
+        }
+
+        Rating mateRating = viewed.getRole() == MarketRole.demand ?
+                viewed.getOwner().getDemandsRating().get(viewed.getType().name())
+                : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
+        if(mateRating == null) {
+            mateRating = new Rating();
         }
 
         ratingTitle.setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
@@ -526,7 +530,8 @@ public class DetailedActivity extends BaseActivity {
         profile.getCurrent().copy(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-        profile.getCurrent().setParty(profile.privateInfo());
+
+        profile.getCurrent().getParty().addPrivateInfo(profile);
         Firestore.writeProfile(profile, object -> {
             AppCache.updateNoxbox();
 

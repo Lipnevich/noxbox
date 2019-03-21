@@ -19,6 +19,7 @@ import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
+import live.noxbox.model.MarketRole;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
@@ -103,7 +104,8 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {
             profile.setNoxboxId("");
 
-            profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo());
+            MarketRole role = profile.getCurrent().getRole() == MarketRole.supply ? MarketRole.demand : MarketRole.supply;
+            profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo(role, profile.getCurrent().getType()));
 
             startActivity(activity, ContractActivity.class);
         });

@@ -47,6 +47,9 @@ public class NoxboxFilters {
                 == demand
                 ? noxbox.getOwner().getDemandsRating().get(noxbox.getType().name())
                 : noxbox.getOwner().getSuppliesRating().get(noxbox.getType().name());
+        if(ownerRating == null) {
+            ownerRating = new Rating();
+        }
         if (!profile.getFilters().getAllowNovices() && ownerRating.getReceivedLikes() < NOVICE_LIKES)
             return true;
 
@@ -54,6 +57,10 @@ public class NoxboxFilters {
                 == supply
                 ? profile.getDemandsRating().get(noxbox.getType().name())
                 : profile.getSuppliesRating().get(noxbox.getType().name());
+        if(myRating == null) {
+            myRating = new Rating();
+        }
+
         if (!noxbox.getOwner().getFilters().getAllowNovices() && myRating.getReceivedLikes() < NOVICE_LIKES)
             return true;
 

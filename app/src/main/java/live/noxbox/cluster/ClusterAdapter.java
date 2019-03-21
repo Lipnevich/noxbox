@@ -49,10 +49,16 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
         if (clusterItems.get(position).getNoxbox().getRole() == MarketRole.supply) {
             Rating supplyRating = clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().get(type.name());
+            if(supplyRating == null) {
+                supplyRating = new Rating();
+            }
             rating = String.valueOf(Profile.ratingToPercentage(supplyRating.getReceivedLikes(),
                     supplyRating.getReceivedDislikes()));
         } else {
             Rating demandRating = clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().get(type.name());
+            if(demandRating == null) {
+                demandRating = new Rating();
+            }
             rating = String.valueOf(Profile.ratingToPercentage(
                     demandRating.getReceivedLikes(),
                     demandRating.getReceivedDislikes()));
@@ -75,7 +81,6 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
         clusterViewHolder.rootView.setOnClickListener(v -> {
             profile().setViewed(clusterItems.get(position).getNoxbox());
-            profile().getViewed().setParty(profile().publicInfo());
             Router.startActivity(activity, DetailedActivity.class);
         });
     }

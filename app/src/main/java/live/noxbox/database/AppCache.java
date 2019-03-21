@@ -243,7 +243,7 @@ public class AppCache {
         } else {
             profile.getContract().getOwner().setPortfolio(null);
         }
-        profile().getContract().setGeoId(createKey(profile().getContract()));
+        profile().getContract().setGeoId(createKey(profile().getContract(), profile.getFilters().getAllowNovices()));
 
         profile.getCurrent().copy(profile.getContract());
         executeUITasks();

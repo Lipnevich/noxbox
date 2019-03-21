@@ -91,9 +91,6 @@ public class Firestore {
     public static void writeProfile(final Profile profile, Task<Profile> onSuccess) {
         if (profile.getId() == null) return;
         profileReference(profile.getId()).set(objectToMap(profile), SetOptions.merge())
-                .addOnCompleteListener(onComplete -> {
-                    System.out.println(onComplete);
-                })
                 .addOnSuccessListener(aVoid -> {
                     writes++;
                     onSuccess.execute(profile);
@@ -304,6 +301,9 @@ public class Firestore {
                 Rating rating = (role == MarketRole.demand
                         ? profile().getDemandsRating() : profile().getSuppliesRating())
                         .get(noxbox.getType().name());
+                if(rating == null) {
+                    rating = new Rating();
+                }
                 boolean isOwner = noxbox.getOwner().equals(profile());
                 boolean isRatingUpdated = !noxbox.getTimeCompleted().equals(noxbox.getTimeRatingUpdated());
 

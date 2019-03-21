@@ -162,18 +162,24 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public Profile publicInfo() {
+    public Profile publicInfo(MarketRole role, NoxboxType type) {
+        Map<String, Rating> ratings = new HashMap<>();
+        Rating rating = role == MarketRole.supply ? getSuppliesRating().get(type.name()) : getDemandsRating().get(type.name());
+        if(rating == null) {
+            rating = new Rating();
+        }
+        ratings.put(type.name(), rating);
+
         return new Profile().setId(getId())
                 .setPosition(getPosition())
-                .setFilters(getFilters())
-                .setSuppliesRating(getSuppliesRating())
-                .setDemandsRating(getDemandsRating())
+                .setSuppliesRating(role == MarketRole.supply ? ratings : null)
+                .setDemandsRating(role == MarketRole.demand ? ratings : null)
                 .setTravelMode(getTravelMode())
                 .setHost(getHost());
     }
 
-    public Profile privateInfo() {
-        return publicInfo().setWallet(getWallet()).setName(getName()).setPhoto(getPhoto());
+    public Profile addPrivateInfo(Profile profile) {
+        return this.setWallet(profile.getWallet()).setName(profile.getName()).setPhoto(profile.getPhoto());
     }
 
     public Noxbox getViewed() {
@@ -210,13 +216,6 @@ public class Profile implements Serializable {
     public Map<String, Rating> getSuppliesRating() {
         if (suppliesRating == null) {
             suppliesRating = new HashMap<>();
-        }
-        if(suppliesRating.size() < NoxboxType.values().length - 1) {
-            for(NoxboxType type : NoxboxType.values()) {
-                if(type != NoxboxType.redirect && !suppliesRating.containsKey(type.name())) {
-                    suppliesRating.put(type.name(), new Rating());
-                }
-            }
         }
         return suppliesRating;
     }

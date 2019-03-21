@@ -54,15 +54,17 @@ public class GeoRealtime {
     public static void offline(Noxbox current) {
         if (current.getGeoId() != null) {
             geo().removeLocation(current.getGeoId());
-        } else {
-            geo().removeLocation(createKey(current));
         }
     }
 
-    public static String createKey(Noxbox currentNoxbox) {
+    public static String createKey(Noxbox currentNoxbox, boolean allowNovices) {
         Rating ownerRating = currentNoxbox.getRole() == MarketRole.supply ?
                 currentNoxbox.getOwner().getSuppliesRating().get(currentNoxbox.getType().name()) :
                 currentNoxbox.getOwner().getDemandsRating().get(currentNoxbox.getType().name());
+        if(ownerRating == null) {
+            ownerRating = new Rating();
+        }
+
 
         return currentNoxbox.getId()
                 + delimiter + currentNoxbox.getOwner().getId()
@@ -72,7 +74,7 @@ public class GeoRealtime {
                 + delimiter + currentNoxbox.getPrice().replaceAll("\\.", ",")
                 + delimiter + currentNoxbox.getOwner().getTravelMode()
                 + delimiter + currentNoxbox.getOwner().getHost()
-                + delimiter + currentNoxbox.getOwner().getFilters().getAllowNovices()
+                + delimiter + allowNovices
                 + delimiter + ownerRating.getReceivedLikes()
                 + delimiter + ownerRating.getReceivedDislikes()
                 + delimiter + currentNoxbox.getWorkSchedule().getStartTime().name()
