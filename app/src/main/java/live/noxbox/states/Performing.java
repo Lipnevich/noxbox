@@ -111,7 +111,7 @@ public class Performing implements State {
 
 
             if (isNullOrZero(profile.getCurrent().getTimeCompleted())) {
-                seconds = (System.currentTimeMillis() - timeStartPerforming) / 1000;
+                seconds =  Math.max((System.currentTimeMillis() - timeStartPerforming) / 1000, 0);
 
                 timeView.setText(time);
                 if (hasMinimumServiceTimePassed(profile.getCurrent())) {
