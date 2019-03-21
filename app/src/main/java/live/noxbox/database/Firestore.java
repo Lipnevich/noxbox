@@ -323,12 +323,15 @@ public class Firestore {
                     }
 
                     // TODO fill blacklist
-                    if(noxbox.getTimeOwnerDisliked() > 0) {
+                    if(noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
                         if(isRatingUpdated) {
                             rating.setSentLikes(rating.getSentLikes() - 1);
                         }
-                    } else {
+                    }
+
+                    // TODO how will you fix me?
+                    if(noxbox.getTimeOwnerDisliked() == 0) {
                         rating.setSentLikes(rating.getSentLikes() + 1);
                         if(isRatingUpdated) {
                             rating.setSentDislikes(rating.getSentDislikes() - 1);
@@ -337,13 +340,16 @@ public class Firestore {
 
                     Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
                     // TODO fill blacklist
-                    if(noxbox.getTimePartyDisliked() > 0) {
+                    if(noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
                         comment.setLike(false);
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
                         if(isRatingUpdated) {
                             rating.setReceivedLikes(rating.getReceivedLikes() - 1);
                         }
-                    } else {
+                    }
+
+                    // TODO how will you fix me?
+                    if(noxbox.getTimePartyDisliked() == 0) {
                         comment.setLike(true);
                         rating.setReceivedLikes(rating.getReceivedLikes() + 1);
                         if(isRatingUpdated) {
@@ -369,12 +375,14 @@ public class Firestore {
                     }
 
                     // TODO fill blacklist
-                    if(noxbox.getTimeOwnerDisliked() > 0) {
+                    if(noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
                         if(isRatingUpdated) {
                             rating.setReceivedLikes(rating.getReceivedLikes() - 1);
                         }
-                    } else {
+                    }
+                    // TODO how will you fix me?
+                    if(noxbox.getTimeOwnerDisliked() == 0) {
                         rating.setReceivedLikes(rating.getReceivedLikes() + 1);
                         if(isRatingUpdated) {
                             rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
@@ -383,13 +391,16 @@ public class Firestore {
 
                     Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
                     // TODO fill blacklist
-                    if(noxbox.getTimePartyDisliked() > 0) {
+                    if(noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
                         comment.setLike(false);
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
                         if(isRatingUpdated) {
                             rating.setSentLikes(rating.getSentLikes() - 1);
                         }
-                    } else {
+                    }
+
+                    // TODO how will you fix me?
+                    if(noxbox.getTimePartyDisliked() == 0) {
                         comment.setLike(true);
                         rating.setSentLikes(rating.getSentLikes() + 1);
                         if(isRatingUpdated) {
