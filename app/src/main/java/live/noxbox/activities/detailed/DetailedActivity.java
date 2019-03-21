@@ -315,7 +315,25 @@ public class DetailedActivity extends BaseActivity {
     private void drawRating(Noxbox viewed) {
         drawDropdownElement(ratingTitleLayout.getId(), ratingLayout.getId());
         changeArrowVector(ratingLayout.getId(), ratingArrow.getId());
-        int percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
+        int percentage;
+        Rating mateRating;
+        if (profile().equals(viewed.getOwner())) {
+            percentage = viewed.getParty().ratingToPercentage(viewed.getRole(), viewed.getType());
+            mateRating = viewed.getRole() == MarketRole.demand ?
+                    viewed.getParty().getDemandsRating().get(viewed.getType().name())
+                    : viewed.getParty().getSuppliesRating().get(viewed.getType().name());
+
+        } else {
+            percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
+            mateRating = viewed.getRole() == MarketRole.demand ?
+                    viewed.getOwner().getDemandsRating().get(viewed.getType().name())
+                    : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
+        }
+
+        if (mateRating == null) {
+            mateRating = new Rating();
+        }
+
         if (percentage >= 95) {
             ratingImage.setColorFilter(Color.GREEN);
         } else if (percentage > 90) {
@@ -324,18 +342,12 @@ public class DetailedActivity extends BaseActivity {
             ratingImage.setColorFilter(Color.RED);
         }
 
-        Rating mateRating = viewed.getRole() == MarketRole.demand ?
-                viewed.getOwner().getDemandsRating().get(viewed.getType().name())
-                : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
-        if (mateRating == null) {
-            mateRating = new Rating();
-        }
 
         ratingTitle.setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
         rating.setText(viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
         like.setText(mateRating.getReceivedLikes() + " " + getResources().getString(R.string.like));
         dislike.setText(mateRating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
-
+        //TODO (vl) for supply and demand
         RecyclerView recyclerView = findViewById(R.id.listComments);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
