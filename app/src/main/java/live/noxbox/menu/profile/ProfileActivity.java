@@ -148,7 +148,7 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawEditName(final Profile profile) {
-        if(inputName.getBackground() != null) {
+        if (inputName.getBackground() != null) {
             inputName.getBackground().setColorFilter(getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
         }
         findViewById(R.id.editName).setOnClickListener(view -> {
@@ -165,7 +165,7 @@ public class ProfileActivity extends BaseActivity {
         if (profile.getName() == null || profile.getName().length() < 1) {
             inputLayout.setErrorEnabled(true);
             inputLayout.setError("* " + getString(R.string.userNameWasNotVerified));
-        }else{
+        } else {
             inputLayout.setErrorEnabled(false);
         }
         inputName.setEnabled(true);

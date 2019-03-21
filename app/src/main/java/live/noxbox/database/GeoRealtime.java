@@ -95,7 +95,9 @@ public class GeoRealtime {
                 noxbox.getOwner().getFilters().setAllowNovices(Boolean.valueOf(values[index++]));
 
 
-                Rating rating = new Rating().setReceivedLikes(Integer.valueOf(values[index++])).setReceivedDislikes(Integer.valueOf(values[index++]));
+                Rating rating = new Rating()
+                        .setReceivedLikes(Math.max(0,Integer.valueOf(values[index++])))
+                        .setReceivedDislikes(Math.max(0,Integer.valueOf(values[index++])));
                 if (noxbox.getRole() == MarketRole.supply) {
                     noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
                 } else if (noxbox.getRole() == MarketRole.demand) {

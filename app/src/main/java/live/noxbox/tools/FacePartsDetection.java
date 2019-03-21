@@ -42,8 +42,6 @@ public class FacePartsDetection {
                     acceptance.setIncorrectName(profile.getAcceptance().getIncorrectName());
                     acceptance.setMessage(profile.getAcceptance().getMessage());
 
-                    Map<String, String> data = new HashMap<>();
-
                     if (faces.size() == 1) {
                         acceptance.setFailToRecognizeFace(false);
                         acceptance.setFaceSize(0.7f);
@@ -56,12 +54,15 @@ public class FacePartsDetection {
 
                         acceptance.setLeftEyeOpenProbability(face.getLeftEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : 0f);
                     }
-
-                    if (!acceptance.isAccepted()) {
+                    if (acceptance.isAccepted()) {
+                        task.execute(bitmap);
+                    } else {
+                        Map<String, String> data = new HashMap<>();
                         data.put("type", NotificationType.photoInvalid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), new Profile().setAcceptance(acceptance), data).show();
                         businessEvent(invalidPhoto);
                     }
+
                 })
                 .addOnFailureListener(e -> {
                     Crashlytics.logException(e);

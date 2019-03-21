@@ -27,6 +27,7 @@ import java.util.Set;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.Constants;
+import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
@@ -280,6 +281,7 @@ public class Firestore {
     private static void ratingsUpdate(MarketRole role) {
         ratings(role, profile().getId(), profile().getRatingUpdateTime())
                 .get().addOnCompleteListener(result -> {
+            TimeLogger timeLogger = new TimeLogger();
             reads++;
             Collection<Noxbox> noxboxes = new ArrayList<>();
             if (result.isSuccessful() && result.getResult() != null) {
@@ -413,9 +415,11 @@ public class Firestore {
                         rating.getComments().put(noxbox.getOwner().getId(), comment);
                     }
                 }
+
             }
             profile().setRatingUpdateTime(System.currentTimeMillis());
             fireProfile();
+            timeLogger.makeLog("Update rating time for: " + role.name());
         });
 
 
