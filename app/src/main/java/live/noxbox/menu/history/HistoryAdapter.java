@@ -215,7 +215,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             viewHolder.profession.setText(noxbox.getType().getProfession());
         }
 
-        attachRating(viewHolder.like, viewHolder.dislike, isNotDisliked(noxbox));
+        attachRating(viewHolder.like, viewHolder.dislike, isLiked(noxbox));
         viewHolder.like.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.NoxboxAlertDialogStyle);
             builder.setTitle(activity.getResources().getString(R.string.likePrompt));
@@ -349,7 +349,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     }
 
-    private boolean isNotDisliked(Noxbox noxbox) {
+    private boolean isLiked(Noxbox noxbox) {
         if (profileId.equals(noxbox.getOwner().getId())) {
             return isNullOrZero(noxbox.getTimeOwnerDisliked());
         } else {
