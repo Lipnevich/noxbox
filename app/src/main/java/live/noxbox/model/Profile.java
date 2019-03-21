@@ -198,13 +198,6 @@ public class Profile implements Serializable {
         if (demandsRating == null) {
             demandsRating = new HashMap<>();
         }
-        if(demandsRating.size() < NoxboxType.values().length - 1) {
-            for(NoxboxType type : NoxboxType.values()) {
-                if(type != NoxboxType.redirect && !demandsRating.containsKey(type.name())) {
-                    demandsRating.put(type.name(), new Rating());
-                }
-            }
-        }
         return demandsRating;
     }
 
