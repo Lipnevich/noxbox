@@ -75,7 +75,9 @@ public class AppCache {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(profile.getNoxboxId());
                         stopListenNoxbox(profile.getNoxboxId());
                     }
-                    startListenNoxbox(newProfile.getNoxboxId());
+                    if(!isNullOrEmpty(newProfile.getNoxboxId())) {
+                        startListenNoxbox(newProfile.getNoxboxId());
+                    }
                 }
                 if (profile.getPosition().getLatitude() != 0.0
                         && newProfile.getPosition().getLatitude() != 0.0) {
