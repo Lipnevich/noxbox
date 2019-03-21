@@ -9,6 +9,7 @@
     <string name="meditationDescription">Meditation and lection</string>
     <string name="haircutDescription">Hairdresser must has tools for cutting hair</string>
     <string name="massageDescription">Masseur should help body relax and become more healthy</string>
+    <string name="cleaningDescription">Cleaner must has garbage begs</string>
 
     <!--Service durations -->
     <string name="nannyDuration">Hour of childcare</string>
@@ -18,6 +19,7 @@
     <string name="plantDuration">Hour of planting sapling</string>
     <string name="haircutDuration">Hour of haircutting</string>
     <string name="massageDuration">Hour of massage</string>
+    <string name="cleaningDuration">Hour of cleaning</string>
 
     <string name="permissionRequired">Permission required</string>
     <string name="completeText">Complete</string>
@@ -51,6 +53,7 @@
     <string name="meditation">Meditation lessons</string>
     <string name="water">Drinking water</string>
     <string name="plant">Plant a sapling</string>
+    <string name="cleaning">Cleaning</string>
 
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
@@ -58,6 +61,7 @@
     <string name="gardener">Gardener</string>
     <string name="hairdresser">Hairdresser</string>
     <string name="masseur">Masseur</string>
+    <string name="cleaner">Cleaner</string>
 
     <string name="tirefitting">Tire fitting</string>
     <string name="sendMessage">Send message</string>

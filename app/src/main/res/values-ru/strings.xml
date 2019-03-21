@@ -9,6 +9,7 @@
     <string name="photographerDescription">Фотограф обязан поделиться фотографиями сразу после съемки</string>
     <string name="meditationDescription">Обучение медитации, спокойствию и умиротворению</string>
     <string name="massageDescription">Массажист должен расслабить тело и сделать его более здоровым</string>
+    <string name="cleaningDescription">Уборщик обязан иметь при себе пакеты для мусора</string>
 
     <!--Service durations-->
     <string name="nannyDuration">Час присмотра за ребёнком</string>
@@ -17,7 +18,8 @@
     <string name="haircutDuration">Час стрижки</string>
     <string name="waterDuration">Час доставки воды</string>
     <string name="plantDuration">Час посадки саженцев</string>
-    <string name="massageDuration">Hour of massage</string>
+    <string name="massageDuration">Час массажа</string>
+    <string name="cleaningDuration">Час уборки</string>
 
 
     <string name="permissionRequired">Необходимо разрешение</string>
@@ -45,6 +47,7 @@
     <string name="meditation">Уроки медитации</string>
     <string name="water">Питьевая вода</string>
     <string name="plant">Садовник</string>
+    <string name="cleaning">Уборка</string>
 
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
@@ -52,6 +55,7 @@
     <string name="gardener">Садовник</string>
     <string name="hairdresser">Парикмахер</string>
     <string name="masseur">Массажист</string>
+    <string name="cleaner">Уборщик</string>
 
     <string name="logoutText">Выход</string>
     <string name="myCar">Мой автомобиль</string>
