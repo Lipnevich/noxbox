@@ -19,10 +19,8 @@ import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
-import live.noxbox.model.MarketRole;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
-import live.noxbox.model.Rating;
 import live.noxbox.services.AvailableNoxboxesService;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
@@ -105,15 +103,7 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {
             profile.setNoxboxId("");
 
-            profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo());
-            profile.getCurrent().setOwner(profile.publicInfo());
-            Rating rating = profile.getCurrent().getRole() == MarketRole.demand
-                    ? profile.getDemandsRating().get(profile.getCurrent().getType().name())
-                    : profile.getSuppliesRating().get(profile.getCurrent().getType().name());
-            if (rating == null) {
-                rating = new Rating();
-            }
-            profile.getCurrent().setOwnerRating(rating);
+            profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo(profile.getCurrent().getRole(), profile.getCurrent().getType()));
             startActivity(activity, ContractActivity.class);
         });
 

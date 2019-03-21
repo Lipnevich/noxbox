@@ -162,9 +162,18 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public Profile publicInfo() {
+    public Profile publicInfo(MarketRole role, NoxboxType type) {
+        Map<String, Rating> ratings = new HashMap<>();
+        Rating rating = role == MarketRole.supply ? getSuppliesRating().get(type.name()) : getDemandsRating().get(type.name());
+        if(rating == null) {
+            rating = new Rating();
+        }
+        ratings.put(type.name(), rating);
+
         return new Profile().setId(getId())
                 .setPosition(getPosition())
+                .setSuppliesRating(role == MarketRole.supply ? ratings : null)
+                .setDemandsRating(role == MarketRole.demand ? ratings : null)
                 .setTravelMode(getTravelMode())
                 .setHost(getHost());
     }

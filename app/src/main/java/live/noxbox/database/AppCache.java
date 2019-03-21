@@ -22,7 +22,6 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
-import live.noxbox.model.Rating;
 import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
 
@@ -76,7 +75,7 @@ public class AppCache {
                         FirebaseMessaging.getInstance().unsubscribeFromTopic(profile.getNoxboxId());
                         stopListenNoxbox(profile.getNoxboxId());
                     }
-                    if(!isNullOrEmpty(newProfile.getNoxboxId())) {
+                    if (!isNullOrEmpty(newProfile.getNoxboxId())) {
                         startListenNoxbox(newProfile.getNoxboxId());
                     }
                 }
@@ -192,13 +191,13 @@ public class AppCache {
         FirebaseMessaging.getInstance().subscribeToTopic(noxboxId).addOnSuccessListener(o -> {
             Firestore.listenNoxbox(noxboxId, noxbox -> {
                 if (noxbox.getId().equals(profile.getNoxboxId())) {
-                    if(profile.getCurrent().getId().equals(noxbox.getId()) &&
+                    if (profile.getCurrent().getId().equals(noxbox.getId()) &&
                             (profile.getCurrent().getNotMe(profile.getId()) == null
-                        || !profile.getCurrent().getNotMe(profile.getId()).getPhoto()
-                                .equals(noxbox.getNotMe(profile.getId()).getPhoto()))) {
+                                    || !profile.getCurrent().getNotMe(profile.getId()).getPhoto()
+                                    .equals(noxbox.getNotMe(profile.getId()).getPhoto()))) {
                         profile.getCurrent().setConfirmationPhoto(null);
                     }
-                    if(NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.requesting) {
+                    if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.requesting) {
                         noxbox.setTimeRequested(profile.getCurrent().getTimeRequested());
                         noxbox.setParty(profile.getCurrent().getParty());
                     }
@@ -215,7 +214,7 @@ public class AppCache {
                     // that mean that we just cleaned up db
                     profile().setNoxboxId("");
                     writeProfile(profile(), done -> executeUITasks());
-                } else if (++failedAttempts < 5){
+                } else if (++failedAttempts < 5) {
                     // in case we start listen noxbox with not completed persisting
                     new Handler().postDelayed(() -> startListenNoxbox(noxboxId), 500);
                 }
@@ -247,14 +246,7 @@ public class AppCache {
         }
         profile().getContract().setGeoId(createKey(profile().getContract(), profile.getFilters().getAllowNovices()));
 
-        profile.getContract().setOwner(profile.publicInfo());
-        Rating rating = profile.getContract().getRole() == MarketRole.demand
-                ? profile.getDemandsRating().get(profile.getContract().getType().name())
-                : profile.getSuppliesRating().get(profile.getContract().getType().name());
-        if (rating == null) {
-            rating = new Rating();
-        }
-        profile.getContract().setOwnerRating(rating);
+        profile.getContract().setOwner(profile.publicInfo(profile.getContract().getRole(), profile.getContract().getType()));
         profile.getCurrent().copy(profile.getContract());
         executeUITasks();
 

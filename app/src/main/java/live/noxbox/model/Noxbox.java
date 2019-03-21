@@ -36,8 +36,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     private Profile owner;
     private Profile party;
-    private Rating ownerRating;
-    private Rating partyRating;
     private String performerId;
     private String payerId;
 
@@ -80,8 +78,6 @@ public class Noxbox implements Comparable<Noxbox> {
         geoId = from.geoId;
         owner = new Profile().copy(from.owner);
         party = new Profile().copy(from.party);
-        ownerRating = from.ownerRating;
-        partyRating = from.partyRating;
         performerId = from.performerId;
         payerId = from.payerId;
         chat = from.chat;
@@ -128,7 +124,6 @@ public class Noxbox implements Comparable<Noxbox> {
         confirmationPhoto = null;
         wasNotificationVerification = false;
         party = null;
-        partyRating = null;
         performerId = "";
         payerId = "";
         contractComment = null;
@@ -643,21 +638,4 @@ public class Noxbox implements Comparable<Noxbox> {
         return this;
     }
 
-    public Rating getOwnerRating() {
-        return ownerRating;
-    }
-
-    public Noxbox setOwnerRating(Rating ownerRating) {
-        this.ownerRating = ownerRating;
-        return this;
-    }
-
-    public Rating getPartyRating() {
-        return partyRating;
-    }
-
-    public Noxbox setPartyRating(Rating partyRating) {
-        this.partyRating = partyRating;
-        return this;
-    }
 }

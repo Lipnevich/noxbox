@@ -210,14 +210,7 @@ public class DetailedActivity extends BaseActivity {
             }
             startListenNoxbox(profile.getViewed().getId());
             if (profile.getViewed().getParty() == null) {
-                profile.getViewed().setParty(profile.publicInfo());
-                Rating rating = profile.getViewed().getRole() == MarketRole.supply
-                        ? profile.getDemandsRating().get(profile.getViewed().getType().name())
-                        : profile.getSuppliesRating().get(profile.getViewed().getType().name());
-                if (rating == null) {
-                    rating = new Rating();
-                }
-                profile.getViewed().setPartyRating(rating);
+                profile.getViewed().setParty(profile.publicInfo(profile.getViewed().getRole() == MarketRole.demand ? MarketRole.supply : MarketRole.demand, profile.getViewed().getType()));
             }
             if (resultPosition != null && profile.getViewed() != null) {
                 profile.getViewed().setPosition(resultPosition);
