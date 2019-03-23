@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -19,17 +18,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import live.noxbox.R;
+import live.noxbox.debug.TimeLogger;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.fromBitmap;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public class IconGenerator {
-    private static final int[] CLUSTER_ICON_BUCKETS = {10, 20, 50, 100, 500, 1000, 5000, 10000, 20000};
 
     private final Context context;
-    private BitmapDescriptor mClusterItemIcon;
+    private BitmapDrawable mClusterItemIcon;
 
-    private final SparseArray<BitmapDescriptor> clusterIcons = new SparseArray<>();
     private static Map<String, BitmapDescriptor> itemIcons = new ConcurrentHashMap<>();
 
     public IconGenerator(@NonNull Context context) {
@@ -43,34 +41,19 @@ public class IconGenerator {
         TextView clusterIconView = (TextView) LayoutInflater.from(context)
                 .inflate(R.layout.map_cluster_icon, null);
 
-        int size = 85;
-        if (clusterBucket >= 20000) {
-            size += 70;
-        } else if (clusterBucket >= 10000) {
-            size += 55;
-        } else if (clusterBucket >= 5000) {
-            size += 50;
-        } else if (clusterBucket >= 1000) {
-            size += 40;
-        } else if (clusterBucket >= 500) {
-            size += 30;
-        } else if (clusterBucket >= 100) {
-            size += 20;
-        } else if (clusterBucket >= 50) {
-            size += 10;
-        } else if (clusterBucket >= 10) {
-            size += 5;
+        if(mClusterItemIcon == null) {
+            Drawable dr = context.getResources().getDrawable(R.drawable.noxbox);
+            Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
+            mClusterItemIcon = new BitmapDrawable(context.getResources(),
+                Bitmap.createScaledBitmap(bitmap, dpToPx(64), dpToPx(64), true));
         }
 
-        Drawable dr = context.getResources().getDrawable(R.drawable.noxbox);
-        Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
-        Drawable d = new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(bitmap, size, size, true));
-
-        clusterIconView.setBackground(d);
+        clusterIconView.setBackground(mClusterItemIcon);
 
         clusterIconView.setTextColor(context.getResources().getColor(R.color.secondary));
 
-        clusterIconView.setText(getClusterIconText(clusterBucket));
+        clusterIconView.setTextSize(36);
+        clusterIconView.setText(String.valueOf(clusterBucket));
 
         clusterIconView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         clusterIconView.layout(0, 0, clusterIconView.getMeasuredWidth(),
@@ -88,13 +71,9 @@ public class IconGenerator {
     @NonNull
     public BitmapDescriptor getClusterIcon(@NonNull Cluster<NoxboxMarker> cluster) {
         int clusterBucket = getClusterIconBucket(cluster);
-        BitmapDescriptor clusterIcon = clusterIcons.get(clusterBucket);
-
-        if (clusterIcon == null) {
-            clusterIcon = createClusterIcon(clusterBucket);
-            clusterIcons.put(clusterBucket, clusterIcon);
-        }
-
+        TimeLogger timeLogger = new TimeLogger();
+        BitmapDescriptor clusterIcon = createClusterIcon(clusterBucket);
+        timeLogger.makeLog("Create cluster icon");
         return clusterIcon;
     }
 
@@ -165,8 +144,6 @@ public class IconGenerator {
 
     @NonNull
     private String getClusterIconText(int clusterIconBucket) {
-//        return (clusterIconBucket < CLUSTER_ICON_BUCKETS[0]) ?
-//                String.valueOf(clusterIconBucket) : String.valueOf(clusterIconBucket) + "+";
         return String.valueOf(clusterIconBucket);
     }
 }
