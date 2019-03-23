@@ -76,6 +76,4 @@ public class NoxboxFilters {
         return false;
     }
 
-
-    //TODO переиспользовать логику для контракта
 }

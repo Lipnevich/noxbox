@@ -274,7 +274,6 @@ public class Firestore {
         ratingsUpdate(MarketRole.supply);
     }
 
-    // TODO (vl) async it
     private static void ratingsUpdate(MarketRole role) {
         ratings(role, profile().getId(), profile().getRatingUpdateTime())
                 .get().addOnCompleteListener(result -> {
@@ -294,10 +293,6 @@ public class Firestore {
 
             Set<String> profiles = new HashSet<>();
             for(Noxbox noxbox : noxboxes) {
-                boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
-                if(!isUniqueProfile) {
-                    continue;
-                }
                 Rating rating = (role == MarketRole.demand
                         ? profile().getDemandsRating() : profile().getSuppliesRating())
                         .get(noxbox.getType().name());
@@ -305,7 +300,8 @@ public class Firestore {
                     rating = new Rating();
                 }
                 boolean isOwner = noxbox.getOwner().equals(profile());
-                boolean isRatingUpdated = !noxbox.getTimeCompleted().equals(noxbox.getTimeRatingUpdated());
+                boolean isRatingUpdated = !noxbox.getTimeCompleted().equals(noxbox.getTimeRatingUpdated())
+                        && profile().getRatingUpdateTime() > noxbox.getTimeCompleted();
 
                 if(isOwner) {
                     if(noxbox.getTimeCanceledByOwner() > 0) {
@@ -324,7 +320,18 @@ public class Firestore {
                         continue;
                     }
 
-                    // TODO fill blacklist
+                    if(!Strings.isNullOrEmpty(noxbox.getPartyComment())) {
+                        Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
+                        comment.setLike(noxbox.getTimePartyLiked() >= noxbox.getTimePartyDisliked());
+                        comment.setText(noxbox.getPartyComment());
+                        rating.getComments().put(noxbox.getParty().getId(), comment);
+                    }
+
+                    boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
+                    if(!isUniqueProfile) {
+                        continue;
+                    }
+
                     if(noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
                         if(isRatingUpdated) {
@@ -339,10 +346,7 @@ public class Firestore {
                         }
                     }
 
-                    Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
-                    // TODO fill blacklist
                     if(noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
-                        comment.setLike(false);
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
                         if(isRatingUpdated) {
                             rating.setReceivedLikes(rating.getReceivedLikes() - 1);
@@ -350,17 +354,12 @@ public class Firestore {
                     }
 
                     if(noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
-                        comment.setLike(true);
                         rating.setReceivedLikes(rating.getReceivedLikes() + 1);
                         if(isRatingUpdated) {
                             rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
                         }
                     }
-
-                    if(!Strings.isNullOrEmpty(noxbox.getPartyComment())) {
-                        comment.setText(noxbox.getPartyComment());
-                        rating.getComments().put(noxbox.getParty().getId(), comment);
-                    }
+                // profile is party in the noxbox
                 } else {
                     if(noxbox.getTimeCanceledByParty() > 0) {
                         rating.setCanceled(rating.getCanceled() + 1);
@@ -374,7 +373,18 @@ public class Firestore {
                         continue;
                     }
 
-                    // TODO fill blacklist
+                    if(!Strings.isNullOrEmpty(noxbox.getOwnerComment())) {
+                        Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
+                        comment.setLike(noxbox.getTimeOwnerLiked() >= noxbox.getTimeOwnerDisliked());
+                        comment.setText(noxbox.getOwnerComment());
+                        rating.getComments().put(noxbox.getOwner().getId(), comment);
+                    }
+
+                    boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
+                    if(!isUniqueProfile) {
+                        continue;
+                    }
+
                     if(noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
                         if(isRatingUpdated) {
@@ -388,10 +398,7 @@ public class Firestore {
                         }
                     }
 
-                    Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
-                    // TODO fill blacklist
                     if(noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
-                        comment.setLike(false);
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
                         if(isRatingUpdated) {
                             rating.setSentLikes(rating.getSentLikes() - 1);
@@ -399,25 +406,19 @@ public class Firestore {
                     }
 
                     if(noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
-                        comment.setLike(true);
                         rating.setSentLikes(rating.getSentLikes() + 1);
                         if(isRatingUpdated) {
                             rating.setSentDislikes(rating.getSentDislikes() - 1);
                         }
                     }
-
-                    if(!Strings.isNullOrEmpty(noxbox.getOwnerComment())) {
-                        comment.setText(noxbox.getOwnerComment());
-                        rating.getComments().put(noxbox.getOwner().getId(), comment);
-                    }
                 }
 
+                // TODO fill blacklist if a least one member disliked
             }
             profile().setRatingUpdateTime(System.currentTimeMillis());
             fireProfile();
             timeLogger.makeLog("Update rating time for: " + role.name());
         });
-
 
     }
 
