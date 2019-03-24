@@ -55,6 +55,7 @@ public class FacePartsDetection {
                         acceptance.setLeftEyeOpenProbability(face.getLeftEyeOpenProbability() != FirebaseVisionFace.UNCOMPUTED_PROBABILITY ? face.getLeftEyeOpenProbability() : 0f);
                     }
                     if (acceptance.isAccepted()) {
+                        profile.setAcceptance(acceptance);
                         task.execute(bitmap);
                     } else {
                         Map<String, String> data = new HashMap<>();

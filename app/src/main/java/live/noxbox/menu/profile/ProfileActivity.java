@@ -310,8 +310,8 @@ public class ProfileActivity extends BaseActivity {
                 NotificationFactory.buildNotification(ProfileActivity.this.getApplicationContext(), null, notificationData).show();
 
                 getBitmap(ProfileActivity.this, data.getData(), bitmap ->
-                        FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
-                            uploadPhoto(ProfileActivity.this, profile, checking);
+                        FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, acceptedPhoto -> {
+                            uploadPhoto(ProfileActivity.this, profile, acceptedPhoto);
                             drawPhotoAcceptance(profile);
                         }));
 
@@ -329,8 +329,8 @@ public class ProfileActivity extends BaseActivity {
                 Bitmap photoBitmap = (Bitmap) photoData.get("data");
 
                 getBitmap(ProfileActivity.this, photoBitmap, bitmap ->
-                        FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, checking -> {
-                            uploadPhoto(ProfileActivity.this, profile, checking);
+                        FacePartsDetection.execute(bitmap, profile, ProfileActivity.this, acceptedPhoto -> {
+                            uploadPhoto(ProfileActivity.this, profile, acceptedPhoto);
                             drawPhotoAcceptance(profile);
                         }));
 
