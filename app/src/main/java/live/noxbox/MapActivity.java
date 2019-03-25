@@ -104,14 +104,20 @@ public class MapActivity extends HackerActivity implements
         googleApiClient.connect();
 
         updateValuesFromBundle(savedInstanceState);
-        AppCache.startListening();
-        checkBalance(profile(), MapActivity.this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                checkBalance(profile(), MapActivity.this);
+            }
+        }).start();
+
 
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
     }
 
     @Override
     protected void onResume() {
+        AppCache.startListening();
         if (isLocationPermissionGranted(this)) {
             if (!isGpsEnabled()) {
                 messageGps(this);
