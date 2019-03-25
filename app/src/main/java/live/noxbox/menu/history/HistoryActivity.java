@@ -48,10 +48,6 @@ public class HistoryActivity extends BaseActivity {
         setContentView(R.layout.activity_history);
         getSupportFragmentManager();
 
-//        Glide.with(this)
-//                .asGif()
-//                .load(R.drawable.progress_cat)
-//                .into((ImageView) findViewById(R.id.progress));
         viewPager = findViewById(R.id.viewpager);
         homeButton = findViewById(R.id.homeButton);
         chooseService = findViewById(R.id.chooseService);

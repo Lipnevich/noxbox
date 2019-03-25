@@ -123,10 +123,10 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <ImageView
+        <ProgressBar
             android:id="@+id/progress"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_margin="8dp" />
     </LinearLayout>
