@@ -50,6 +50,9 @@ public class Rating {
     }
 
     public Integer getSentLikes() {
+        if (isNullOrZero(sentLikes) || sentLikes < 0) {
+            setSentLikes(0);
+        }
         return sentLikes;
     }
 
@@ -59,6 +62,9 @@ public class Rating {
     }
 
     public Integer getSentDislikes() {
+        if (isNullOrZero(sentDislikes) || sentDislikes < 0) {
+            setSentDislikes(0);
+        }
         return sentDislikes;
     }
 
@@ -68,6 +74,9 @@ public class Rating {
     }
 
     public Integer getNotResponded() {
+        if (isNullOrZero(notResponded) || notResponded < 0) {
+            setNotResponded(0);
+        }
         return notResponded;
     }
 
@@ -77,6 +86,9 @@ public class Rating {
     }
 
     public Integer getCanceled() {
+        if (isNullOrZero(canceled) || canceled < 0) {
+            setCanceled(0);
+        }
         return canceled;
     }
 
@@ -95,6 +107,9 @@ public class Rating {
     }
 
     public Integer getNotVerified() {
+        if (isNullOrZero(notVerified) || notVerified < 0) {
+            setNotVerified(0);
+        }
         return notVerified;
     }
 
