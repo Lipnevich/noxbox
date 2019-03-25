@@ -109,15 +109,6 @@ public class MapOperator {
         googleMap.setOnMarkerClickListener(marker -> true);
     }
 
-    public static void moveCopyrightRight(GoogleMap googleMap) {
-        googleMap.setPadding(dpToPx(84), 0, 0, dpToPx(8));
-    }
-
-    public static void moveCopyrightLeft(GoogleMap googleMap) {
-        googleMap.setPadding(dpToPx(8), 0, 0, dpToPx(8));
-    }
-
-
     public static void setupMap(Context context, GoogleMap googleMap) {
 
         if (isItDayNow()) {

@@ -3,9 +3,10 @@ package live.noxbox.activities.detailed;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,8 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +50,6 @@ import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
-import live.noxbox.model.TravelMode;
 import live.noxbox.states.Accepting;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
@@ -254,17 +256,17 @@ public class DetailedActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
 
-        illustration.setImageResource(noxbox.getType().getIllustration());
+        //illustration.setImageResource(noxbox.getType().getIllustration());
 
-//        Glide.with(DetailedActivity.this)
-//                .asDrawable()
-//                .load(noxbox.getType().getIllustration())
-//                .into(new ImageViewTarget<Drawable>(illustration) {
-//                    @Override
-//                    protected void setResource(@Nullable Drawable drawable) {
-//                        illustration.setImageDrawable(drawable);
-//                    }
-//                });
+        Glide.with(this)
+                .asDrawable()
+                .load(noxbox.getType().getIllustration())
+                .into(new ImageViewTarget<Drawable>(illustration) {
+                    @Override
+                    protected void setResource(@Nullable Drawable drawable) {
+                        illustration.setImageDrawable(drawable);
+                    }
+                });
     }
 
     private void drawOppositeProfile(Profile me) {
@@ -355,20 +357,17 @@ public class DetailedActivity extends BaseActivity {
     }
 
     private void drawWaitingTime(final Profile profile) {
-        if (ContextCompat.checkSelfPermission(DetailedActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+//        if (ContextCompat.checkSelfPermission(DetailedActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
 
-        drawDropdownElement(travelTypeTitleLayout.getId(), travelTypeLayout.getId());
-        changeArrowVector(travelTypeLayout.getId(), travelTypeArrow.getId());
-        travelTypeImageTitle.setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
-        travelTypeImage.setImageResource(profile.getViewed().getOwner().getTravelMode().getImage());
+        Noxbox viewed = profile.getViewed();
 
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... voids) {
-                String address = AddressManager.provideAddressByPosition(getApplicationContext(), profile.getViewed().getPosition());
+                String address = AddressManager.provideAddressByPosition(getApplicationContext(), viewed.getPosition());
                 return address;
             }
 
@@ -377,38 +376,65 @@ public class DetailedActivity extends BaseActivity {
                 address.setText(resultAddress);
             }
         }.execute();
+        drawDropdownElement(travelTypeTitleLayout.getId(), travelTypeLayout.getId());
+        changeArrowVector(travelTypeLayout.getId(), travelTypeArrow.getId());
 
-        TravelMode travelMode;
-        if (profile.getViewed().getOwner().getTravelMode() == none) {
-            travelMode = profile.getViewed().getParty().getTravelMode();
-        } else {
-            travelMode = profile.getViewed().getOwner().getTravelMode();
-        }
-
-        String displayTime = DateTimeFormatter.format(profile.getViewed().getWorkSchedule().getStartTime().getHourOfDay(), profile.getViewed().getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
-                DateTimeFormatter.format(profile.getViewed().getWorkSchedule().getEndTime().getHourOfDay(), profile.getViewed().getWorkSchedule().getEndTime().getMinuteOfHour());
-        offerTime.setText(R.string.validityOfTheOffer);
-        time.setText(displayTime);
-
-        if (profile.getViewed().getOwner().getTravelMode() == none) {
-            travelTypeTitle.setText(R.string.byAddress);
-            travelModeText.setText(R.string.waitingByAddress);
-        } else {
-            long minutes = getTimeInMinutesBetweenUsers(profile.getViewed().getOwner().getPosition(), profile.getViewed().getParty().getPosition(), travelMode);
-
-            String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
-
-            travelTypeTitle.setText(getString(R.string.across) + " " + timeTxt);
-
-            travelModeText.setText(R.string.willArriveAtTheAddress);
-
-            if (!isNullOrZero(profile.getViewed().getTimeRequested())) {
-                coordinatesSelect.setVisibility(View.GONE);
-            } else {
+        switch (NoxboxState.getState(viewed, profile)) {
+            case created: {
+                travelTypeImageTitle.setImageResource(viewed.getOwner().getTravelMode().getImage());
+                travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
                 coordinatesSelect.setVisibility(View.VISIBLE);
                 coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
+                if (viewed.getOwner().getTravelMode() == none) {
+                    travelTypeTitle.setText(R.string.byAddress);
+                    travelModeText.setText(R.string.waitingByAddress);
+                } else {
+                    long minutes = getTimeInMinutesBetweenUsers(
+                            viewed.getOwner().getPosition(),
+                            viewed.getParty().getPosition(),
+                            viewed.getOwner().getTravelMode() == none
+                                    ? viewed.getParty().getTravelMode()
+                                    : viewed.getOwner().getTravelMode());
+
+                    String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
+                    travelTypeTitle.setText(getString(R.string.across) + " " + timeTxt);
+                    travelModeText.setText(R.string.willArriveAtTheAddress);
+                }
+                break;
             }
+            case requesting:
+            case accepting:
+            case moving:
+                travelTypeImageTitle.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
+                travelTypeImage.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
+                coordinatesSelect.setVisibility(View.GONE);
+                if (viewed.getNotMe(profile.getId()).getTravelMode() == none) {
+                    travelTypeTitle.setText(R.string.byAddress);
+                    travelModeText.setText(R.string.waitingByAddress);
+                } else {
+                    long minutes = getTimeInMinutesBetweenUsers(
+                            viewed.getOwner().getPosition(),
+                            viewed.getParty().getPosition(),
+                            viewed.getOwner().getTravelMode() == none
+                                    ? viewed.getParty().getTravelMode()
+                                    : viewed.getOwner().getTravelMode());
+
+                    String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
+                    travelTypeTitle.setText(getString(R.string.across) + " " + timeTxt);
+                    travelModeText.setText(R.string.willArriveAtTheAddress);
+                }
+                break;
+            default:{
+                travelTypeImageTitle.setImageResource(viewed.getOwner().getTravelMode().getImage());
+                travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
+            }
+
         }
+
+        String displayTime = DateTimeFormatter.format(viewed.getWorkSchedule().getStartTime().getHourOfDay(), viewed.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
+                DateTimeFormatter.format(viewed.getWorkSchedule().getEndTime().getHourOfDay(), viewed.getWorkSchedule().getEndTime().getMinuteOfHour());
+        offerTime.setText(R.string.validityOfTheOffer);
+        time.setText(displayTime);
     }
 
     private void drawPrice(Profile profile) {

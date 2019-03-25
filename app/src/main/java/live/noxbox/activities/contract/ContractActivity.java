@@ -401,10 +401,12 @@ public class ContractActivity extends BaseActivity {
         }
         popup.setOnMenuItemClickListener(item -> {
             TravelMode travelMode = TravelMode.byId(item.getItemId());
+            profile().setTravelMode(travelMode);
             contract().getOwner().setTravelMode(travelMode);
 
 
             if (travelMode == none) {
+                profile().setHost(true);
                 contract().getOwner().setHost(true);
                 host.setChecked(true);
                 host.setEnabled(false);
