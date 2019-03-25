@@ -30,7 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +59,8 @@ import static live.noxbox.tools.DateTimeFormatter.time;
  */
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
-    private static Set<Noxbox> historyCache = new HashSet<>();
+    private static Set<Noxbox> historyDemandCache = new HashSet<>();
+    private static Set<Noxbox> historySupplyCache = new HashSet<>();
 
     private HistoryActivity activity;
     private String profileId;
@@ -76,7 +79,37 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         this.role = role;
         this.lastNoxboxTimeCompleted = lastNoxboxTimeCompleted;
 
-
+        if (role == MarketRole.demand) {
+            if (historyDemandCache.size() > 0) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Iterator<Noxbox> iterator = historyDemandCache.iterator();
+                        while (iterator.hasNext()) {
+                            Noxbox noxbox = iterator.next();
+                            historyItems.add(noxbox);
+                        }
+                        sortHistoryItems();
+                        executeUiHistoryUpdate();
+                    }
+                }).start();
+            }
+        } else {
+            if (historySupplyCache.size() > 0) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Iterator<Noxbox> iterator = historySupplyCache.iterator();
+                        while (iterator.hasNext()) {
+                            Noxbox noxbox = iterator.next();
+                            historyItems.add(noxbox);
+                        }
+                        sortHistoryItems();
+                        executeUiHistoryUpdate();
+                    }
+                }).start();
+            }
+        }
 
         long startFrom = historyItems.isEmpty() ?
                 Long.MAX_VALUE :
@@ -84,39 +117,54 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         final Task<Collection<Noxbox>> uploadingTask = items -> {
             List<Noxbox> noxboxes = new ArrayList<>();
-            for (Noxbox noxbox : items) {
-                if (!historyCache.contains(noxbox)) {
-                    historyCache.add(noxbox);
-                    noxboxes.add(noxbox);
+            if (role == MarketRole.demand) {
+                for (Noxbox noxbox : items) {
+                    if (!historyDemandCache.contains(noxbox)) {
+                        historyDemandCache.add(noxbox);
+                        noxboxes.add(noxbox);
+                    }
                 }
-            }
-
-            if (noxboxes.size() > 0) {
-                historyItems.addAll(noxboxes);
-                notifyDataSetChanged();
-
-                isHistoryThere.execute(null);
-
-                if (role == MarketRole.supply) {
-                    HistoryActivity.isSupplyHistoryEmpty = false;
-                } else {
-                    HistoryActivity.isDemandHistoryEmpty = false;
-                }
-
             } else {
-                if (historyItems.size() == 0) {
-                    if (role == MarketRole.supply) {
-                        HistoryActivity.isSupplyHistoryEmpty = true;
-                    } else {
-                        HistoryActivity.isDemandHistoryEmpty = true;
-                    }
-                    if (HistoryActivity.isSupplyHistoryEmpty && HistoryActivity.isDemandHistoryEmpty) {
-                        isHistoryEmpty.execute(null);
+                for (Noxbox noxbox : items) {
+                    if (!historySupplyCache.contains(noxbox)) {
+                        historySupplyCache.add(noxbox);
+                        noxboxes.add(noxbox);
                     }
                 }
             }
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (noxboxes.size() > 0) {
+                        historyItems.addAll(noxboxes);
+                        sortHistoryItems();
+                        executeUiHistoryUpdate();
+
+                        if (role == MarketRole.supply) {
+                            HistoryActivity.isSupplyHistoryEmpty = false;
+                        } else {
+                            HistoryActivity.isDemandHistoryEmpty = false;
+                        }
+
+                    } else {
+                        if (historyItems.size() == 0) {
+                            if (role == MarketRole.supply) {
+                                HistoryActivity.isSupplyHistoryEmpty = true;
+                            } else {
+                                HistoryActivity.isDemandHistoryEmpty = true;
+                            }
+                            if (HistoryActivity.isSupplyHistoryEmpty && HistoryActivity.isDemandHistoryEmpty) {
+                                executeEmptyUiHistoryUpdate();
+                            }
+                        }
+                    }
+                }
+            }).start();
+
         };
-        Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
+
+        readHistory(startFrom, uploadingTask);
 
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) currentRecyclerView.getLayoutManager();
         currentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -130,8 +178,40 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     long startFrom = historyItems.isEmpty() ?
                             Long.MAX_VALUE :
                             historyItems.get(historyItems.size() - 1).getTimeCompleted();
-                    Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
+                    readHistory(startFrom, uploadingTask);
                 }
+            }
+        });
+    }
+
+    private void readHistory(long startFrom, Task<Collection<Noxbox>> uploadingTask) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
+            }
+        }).start();
+    }
+
+    private void sortHistoryItems() {
+        Collections.sort(historyItems, (o1, o2) -> o1.getTimeCompleted() > o2.getTimeCompleted() ? -1 : o1.getTimeCompleted() < o2.getTimeCompleted() ? 1 : 0);
+    }
+
+    private void executeUiHistoryUpdate() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                isHistoryThere.execute(null);
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void executeEmptyUiHistoryUpdate() {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                isHistoryEmpty.execute(null);
             }
         });
     }
@@ -144,23 +224,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     @NonNull
     @Override
     public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        HistoryViewHolder viewHolder;
-        if (viewType == 1) {
-            viewHolder = new ItemViewHolder(LayoutInflater.from(activity).inflate(R.layout.item_history, parent, false));
-        } else {
-            viewHolder = new ProgressViewHolder(LayoutInflater.from(activity).inflate(R.layout.item_progress, parent, false));
-        }
-        return viewHolder;
+        return new ItemViewHolder(LayoutInflater.from(activity).inflate(R.layout.item_history, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull final HistoryViewHolder viewHolder, int position) {
-        if (viewHolder instanceof ProgressViewHolder) {
-            viewHolder.progressBar.setIndeterminate(true);
-            return;
-        }
-
         Noxbox noxbox = historyItems.get(position);
+        if (viewHolder.expandableLayout.getVisibility() == View.VISIBLE && showedNoxbox != null) {
+            if (noxbox.getId().equals(showedNoxbox.getId())) {
+                viewHolder.expandableLayout.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.expandableLayout.setVisibility(View.GONE);
+            }
+        }
 
         viewHolder.noxboxTypeImage.setImageResource(noxbox.getType().getImageDemand());
         viewHolder.time.setText(time(noxbox.getTimeCompleted()));
@@ -175,11 +251,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             wasLastNoxboxTimeCompletedFound = true;
             isHistoryThere.execute(role);
             onClick(viewHolder, noxbox);
+        } else if (showedNoxbox != null && showedNoxbox.getId().equals(noxbox.getId())) {
+            showExpandableLayout(viewHolder, noxbox);
         }
+
+
     }
 
 
     private LinearLayout showedExpandableLayout;
+    private Noxbox showedNoxbox;
 
     private void onClick(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
         if (showedExpandableLayout != null && showedExpandableLayout.equals(viewHolder.expandableLayout)) {
@@ -190,10 +271,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         if (showedExpandableLayout != null) {
             showedExpandableLayout.setVisibility(View.GONE);
         }
+        showedNoxbox = null;
         showExpandableLayout(viewHolder, noxbox);
     }
 
     private void showExpandableLayout(HistoryAdapter.HistoryViewHolder viewHolder, Noxbox noxbox) {
+        if (showedNoxbox != null && !showedNoxbox.getId().equals(noxbox.getId())) return;
+        showedNoxbox = noxbox;
         showedExpandableLayout = viewHolder.expandableLayout;
         showedExpandableLayout.setVisibility(View.VISIBLE);
 
@@ -473,12 +557,4 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         }
     }
 
-    class ProgressViewHolder extends HistoryViewHolder {
-
-
-        public ProgressViewHolder(@NonNull View layout) {
-            super(layout);
-            progressBar = layout.findViewById(R.id.progressBar);
-        }
-    }
 }
