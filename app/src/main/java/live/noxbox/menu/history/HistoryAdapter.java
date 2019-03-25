@@ -57,11 +57,11 @@ import static live.noxbox.tools.DateTimeFormatter.time;
  */
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
+    private static Set<Noxbox> historyCache = new HashSet<>();
 
     private HistoryActivity activity;
     private String profileId;
     private List<Noxbox> historyItems;
-    private Set<Noxbox> uniqueValue = new HashSet<>();
     private int lastVisibleItem, totalItemCount;
     private static final int AMOUNT_PER_LOAD = 10;
     private MarketRole role;
@@ -76,6 +76,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         this.role = role;
         this.lastNoxboxTimeCompleted = lastNoxboxTimeCompleted;
 
+
+
         long startFrom = historyItems.isEmpty() ?
                 Long.MAX_VALUE :
                 historyItems.get(historyItems.size() - 1).getTimeCompleted();
@@ -83,8 +85,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         final Task<Collection<Noxbox>> uploadingTask = items -> {
             List<Noxbox> noxboxes = new ArrayList<>();
             for (Noxbox noxbox : items) {
-                if (!uniqueValue.contains(noxbox)) {
-                    uniqueValue.add(noxbox);
+                if (!historyCache.contains(noxbox)) {
+                    historyCache.add(noxbox);
                     noxboxes.add(noxbox);
                 }
             }
@@ -92,7 +94,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             if (noxboxes.size() > 0) {
                 historyItems.addAll(noxboxes);
                 notifyDataSetChanged();
-
 
                 isHistoryThere.execute(null);
 
@@ -117,24 +118,22 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         };
         Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
 
-        if (currentRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
-            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) currentRecyclerView.getLayoutManager();
-            currentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    totalItemCount = linearLayoutManager.getItemCount();
-                    lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    if (totalItemCount <= (lastVisibleItem + AMOUNT_PER_LOAD)) {
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) currentRecyclerView.getLayoutManager();
+        currentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                totalItemCount = linearLayoutManager.getItemCount();
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                if (totalItemCount <= (lastVisibleItem + AMOUNT_PER_LOAD)) {
 
-                        long startFrom = historyItems.isEmpty() ?
-                                Long.MAX_VALUE :
-                                historyItems.get(historyItems.size() - 1).getTimeCompleted();
-                        Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
-                    }
+                    long startFrom = historyItems.isEmpty() ?
+                            Long.MAX_VALUE :
+                            historyItems.get(historyItems.size() - 1).getTimeCompleted();
+                    Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
                 }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -216,13 +215,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         attachRating(viewHolder.like, viewHolder.dislike, isLiked(noxbox));
         viewHolder.like.setOnClickListener(v -> {
+            if (isLiked(noxbox)) return;
             AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.NoxboxAlertDialogStyle);
             builder.setTitle(activity.getResources().getString(R.string.likePrompt));
             builder.setPositiveButton(activity.getResources().getString(R.string.like),
                     (dialog, which) -> {
                         Noxbox likedNoxbox = new Noxbox().copy(noxbox);
                         likeNoxbox(likedNoxbox);
-
+                        attachRating(viewHolder.like, viewHolder.dislike, isLiked(likedNoxbox));
                         updateNoxbox(likedNoxbox, success -> {
                             BusinessActivity.businessEvent(BusinessEvent.like,
                                     noxbox.getId(),
@@ -242,6 +242,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
         });
         viewHolder.dislike.setOnClickListener(v -> {
+            if (!isLiked(noxbox)) return;
             AlertDialog.Builder builder = new AlertDialog.Builder(activity, R.style.NoxboxAlertDialogStyle);
             builder.setTitle(activity.getResources().getString(R.string.dislikePrompt));
             builder.setPositiveButton(activity.getResources().getString(R.string.dislike),
@@ -250,7 +251,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                         dislikedNoxbox.copy(noxbox);
 
                         dislikeNoxbox(dislikedNoxbox);
-
+                        attachRating(viewHolder.like, viewHolder.dislike, isLiked(dislikedNoxbox));
                         updateNoxbox(dislikedNoxbox, success -> {
                             BusinessActivity.businessEvent(BusinessEvent.dislike,
                                     noxbox.getId(),
@@ -339,6 +340,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             viewHolder.send.setVisibility(View.GONE);
             viewHolder.commentView.setVisibility(View.VISIBLE);
             viewHolder.commenterName.setText("\"" + noxbox.getMe(profileId).getName() + "\"");
+            viewHolder.commentText.setText(noxbox.getOwner().equals(profileId) ? noxbox.getOwnerComment() : noxbox.getPartyComment());
         } else {
             viewHolder.commentView.setVisibility(View.GONE);
             viewHolder.comment.setVisibility(View.VISIBLE);
@@ -418,8 +420,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         ImageView send;
         //these or
         TextView commenterName;
-        LinearLayout commentView;
         TextView commentText;
+        LinearLayout commentView;
 
         View divider;
 
@@ -459,8 +461,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             send = layout.findViewById(R.id.send);
             //or
             commenterName = layout.findViewById(R.id.commenterName);
-            commentView = layout.findViewById(R.id.commentView);
             commentText = layout.findViewById(R.id.commentText);
+            commentView = layout.findViewById(R.id.commentView);
 
             divider = layout.findViewById(R.id.dividerFullWidth);
 
