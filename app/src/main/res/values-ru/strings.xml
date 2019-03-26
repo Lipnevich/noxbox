@@ -129,10 +129,10 @@
     <string name="earn">заработав</string>
     <string name="spend">потратив</string>
     <string name="host">жду по выбранному адресу</string>
-    <string name="beWalk">приду пешком</string>
-    <string name="onBike">приеду на велосипеде</string>
-    <string name="onCar">приеду на машине</string>
-    <string name="onTransit">приеду на общественном транспорте</string>
+    <string name="beWalk">пешком</string>
+    <string name="onBike">велосипед</string>
+    <string name="onCar">машина</string>
+    <string name="onTransit">общественный</string>
     <string name="travelMode">Способ перемещения</string>
     <string name="post">Опубликовать</string>
     <string name="remove">Удалить</string>

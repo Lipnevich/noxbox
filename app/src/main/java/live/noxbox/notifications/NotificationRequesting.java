@@ -23,7 +23,6 @@ public class NotificationRequesting extends Notification {
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_requesting);
 
-        isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

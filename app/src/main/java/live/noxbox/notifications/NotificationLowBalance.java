@@ -23,7 +23,6 @@ public class NotificationLowBalance extends Notification {
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_low_balance);
         contentView.setTextViewText(R.id.content, context.getResources().getString(type.getContent()));
 
-        isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

@@ -132,7 +132,7 @@
     <string name="beWalk">foot</string>
     <string name="onBike">bike</string>
     <string name="onCar">car</string>
-    <string name="onTransit">public transport</string>
+    <string name="onTransit">public</string>
     <string name="travelMode">The way of traveling</string>
     <string name="post">Post</string>
     <string name="remove">Remove</string>

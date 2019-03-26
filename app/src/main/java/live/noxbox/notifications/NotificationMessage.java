@@ -30,7 +30,6 @@ public class NotificationMessage extends Notification {
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_message);
 
-        isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, ChatActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

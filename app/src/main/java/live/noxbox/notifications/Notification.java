@@ -6,9 +6,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.RemoteInput;
 import android.widget.RemoteViews;
@@ -22,6 +26,8 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.NotificationType.message;
 
@@ -32,7 +38,6 @@ public abstract class Notification {
     protected long[] vibrate;
     protected Uri sound;
     protected RemoteViews contentView;
-    protected boolean isAlertOnce = true;
     protected PendingIntent onViewOnClickAction;
     protected PendingIntent deleteIntent;
     protected boolean isAutoCancel = false;
@@ -53,12 +58,13 @@ public abstract class Notification {
         noxboxId = data.get("id");
 
         this.vibrate = getVibrate();
-        this.sound = getSound();
+        this.sound = getSound(type, context);
 
         removeNotifications(context);
     }
 
     public void show() {
+
     }
 
     public void update(Map<String, String> data) {
@@ -67,21 +73,31 @@ public abstract class Notification {
     protected NotificationCompat.Builder getNotificationCompatBuilder() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constants.CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setVibrate(vibrate)
-                .setSound(sound)
-                .setOnlyAlertOnce(isAlertOnce)
+                //.setVibrate(vibrate)
+                //.setSound(sound)
+                .setOnlyAlertOnce(true)
+                .setVisibility(VISIBILITY_PUBLIC)
                 .setContentIntent(onViewOnClickAction)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDeleteIntent(deleteIntent)
                 .setAutoCancel(isAutoCancel);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             builder.setCustomContentView(contentView)
                     .setPriority(NotificationManager.IMPORTANCE_HIGH);
         else
             builder.setContent(contentView)
                     .setPriority(android.app.Notification.PRIORITY_MAX);
 
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(getVibrate(), -1));
+        } else {
+            ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(getVibrate(), -1);
+        }
+
+        Ringtone ringtone = RingtoneManager.getRingtone(context, getSound(type, context));
+        ringtone.play();
         return builder;
     }
 
@@ -108,7 +124,7 @@ public abstract class Notification {
         getNotificationService(context).notify(type.getGroup(), builder.build());
     }
 
-    protected Uri getSound() {
+    public static Uri getSound(NotificationType type, Context context) {
         int sound = R.raw.push;
         if (type == message) {
             sound = R.raw.message;
@@ -120,7 +136,7 @@ public abstract class Notification {
 
     protected long[] getVibrate() {
         // first value is pause
-        return new long[]{0, 500, 400, 500, 400, 1000, 400, 200};
+        return new long[]{500, 500, 400, 500, 400, 1000, 400, 200};
     }
 
     protected PendingIntent createOnDeleteIntent(Context context, int group) {

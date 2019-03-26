@@ -35,5 +35,6 @@ public class NotificationBalance extends Notification {
     public void show() {
         NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
+
     }
 }

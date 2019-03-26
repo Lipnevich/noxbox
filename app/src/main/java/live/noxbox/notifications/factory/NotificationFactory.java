@@ -1,8 +1,11 @@
 package live.noxbox.notifications.factory;
 
+import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Color;
+import android.media.AudioAttributes;
 import android.os.Build;
 
 import java.util.Map;
@@ -29,13 +32,15 @@ import live.noxbox.notifications.NotificationSupport;
 import live.noxbox.notifications.NotificationUploadingProgress;
 
 import static live.noxbox.Constants.CHANNEL_ID;
+import static live.noxbox.notifications.Notification.getSound;
 import static live.noxbox.services.MessagingService.getNotificationService;
+import static live.noxbox.tools.VersionOperator.isSdkHighestThan26OrEqual;
 
 public abstract class NotificationFactory {
 
     public static Notification buildNotification(Context context, Profile profile, Map<String, String> data) {
-        createChannel(context);
         NotificationType type = NotificationType.valueOf(data.get("type"));
+        createChannel(type, context);
         switch (type) {
             case requesting:
                 return new NotificationRequesting(context, profile, data);
@@ -81,19 +86,24 @@ public abstract class NotificationFactory {
     }
 
 
-    private static void createChannel(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    @TargetApi(Build.VERSION_CODES.O)
+    private static void createChannel(NotificationType type, Context context) {
+        if (isSdkHighestThan26OrEqual()) {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel notificationChannel = getNotificationService(context).getNotificationChannel(CHANNEL_ID);
-
             if (notificationChannel == null) {
                 notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, importance);
-                notificationChannel.setShowBadge(false);
                 getNotificationService(context).createNotificationChannel(notificationChannel);
             }
 
-
+            notificationChannel.setLightColor(Color.GREEN);
+            notificationChannel.enableLights(true);
+            notificationChannel.setShowBadge(false);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            notificationChannel.setSound(getSound(type, context), audioAttributes);
         }
     }
-
 }

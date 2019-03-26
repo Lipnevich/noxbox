@@ -30,7 +30,6 @@ public class NotificationPerforming extends Notification {
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
 
-        isAlertOnce = true;
         onViewOnClickAction = TaskStackBuilder.create(context)
                 .addNextIntentWithParentStack(new Intent(context, MapActivity.class))
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

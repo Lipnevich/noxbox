@@ -28,5 +28,6 @@ public class NotificationSupport extends Notification {
     public void show() {
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
+        super.show();
     }
 }

@@ -33,8 +33,6 @@ public class NotificationComplete extends Notification {
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_completed);
 
-        isAlertOnce = true;
-
         isAutoCancel = true;
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
@@ -69,7 +67,6 @@ public class NotificationComplete extends Notification {
                             + MoneyFormatter.scale(total)
                             + " " + context.getString(R.string.currency));
                     getNotificationService(context).notify(type.getGroup(), builder.build());
-
                 }
             });
         }
