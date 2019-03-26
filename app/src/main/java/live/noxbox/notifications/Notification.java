@@ -49,6 +49,15 @@ public abstract class Notification {
     protected Map<String, String> data;
     protected String noxboxId;
 
+    // first value is Initial delay ..
+    // second value is Vibrate for ..
+    // third value is Pause for ..
+    // fourth value is Vibrate for ..
+    // fifth value is Pause for ..
+    // sixth value is Vibrate for ..
+    private static long[] vibration = new long[]{500, 500, 400, 500, 400, 1000, 400, 200};
+    private static int[] amplitude = new int[]{0, 255, 0, 255, 0, 255, 0, 255};
+
     public Notification(Context context, Profile profile, Map<String, String> data) {
         this.context = context;
         this.profile = profile;
@@ -92,17 +101,26 @@ public abstract class Notification {
             case photoValidationProgress:
                 break;
             default: {
+                Vibrator vibrator;
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(getVibrate(), -1));
+                    vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+                    if (vibrator.hasVibrator()) {
+                        VibrationEffect vibrationEffect;
+                        if (vibrator.hasAmplitudeControl()) {
+                            vibrationEffect = VibrationEffect.createWaveform(getVibrate(), getAmplitude(), -1);
+                        } else {
+                            vibrationEffect = VibrationEffect.createWaveform(getVibrate(), -1);
+                        }
+                        vibrator.vibrate(vibrationEffect);
+                    }
                 } else {
-                    ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(getVibrate(), -1);
+                    vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+                    vibrator.vibrate(getVibrate(), -1);
                 }
-
                 Ringtone ringtone = RingtoneManager.getRingtone(context, getSound(type, context));
                 ringtone.play();
             }
         }
-
         return builder;
     }
 
@@ -150,13 +168,18 @@ public abstract class Notification {
             case photoValidationProgress:
                 return null;
         }
-        // first value is Initial delay ..
-        // second value is Vibrate for ..
-        // third value is Pause for ..
-        // fourth value is Vibrate for ..
-        // fifth value is Pause for ..
-        // sixth value is Vibrate for ..
-        return new long[]{500, 500, 400, 500, 400, 1000, 400, 200};
+
+        return vibration;
+    }
+
+    protected int[] getAmplitude() {
+        switch (type) {
+            case photoUploadingProgress:
+            case photoValidationProgress:
+                return null;
+        }
+
+        return amplitude;
     }
 
     protected PendingIntent createOnDeleteIntent(Context context, int group) {

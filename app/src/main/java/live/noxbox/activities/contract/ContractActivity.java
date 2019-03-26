@@ -82,6 +82,7 @@ import static live.noxbox.tools.location.LocationOperator.startLocationPermissio
 public class ContractActivity extends BaseActivity {
 
     private DialogFragment noxboxTypeListFragment;
+    private DialogFragment travelModeListFragment;
     private TextView title;
     private ImageView homeButton;
     private TextView textProfile;
@@ -152,7 +153,7 @@ public class ContractActivity extends BaseActivity {
                 Router.finishActivity(ContractActivity.this);
                 return;
             }
-            if(profile.getCurrent().getId().equals(profile.getNoxboxId()) && !isFinished(profile.getCurrent())){
+            if (profile.getCurrent().getId().equals(profile.getNoxboxId()) && !isFinished(profile.getCurrent())) {
                 startListenNoxbox(profile.getCurrent().getId());
             }
             draw();
@@ -212,12 +213,12 @@ public class ContractActivity extends BaseActivity {
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                startDialogList();
+                startNoxboxTypeDialog();
             }
         }, spanTxt.length() - (getResources().getString(contract().getType().getName())).length(), spanTxt.length(), 0);
         noxboxType.setMovementMethod(LinkMovementMethod.getInstance());
         noxboxType.setText(spanTxt, TextView.BufferType.SPANNABLE);
-        arrowNoxboxType.setOnClickListener(v -> startDialogList());
+        arrowNoxboxType.setOnClickListener(v -> startNoxboxTypeDialog());
     }
 
     private void drawTypeDescription() {
@@ -305,12 +306,13 @@ public class ContractActivity extends BaseActivity {
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                createTravelModeList(profile, textTravelMode);
+                //createTravelModeList(profile, textTravelMode);
+                startTravelModeDialog();
             }
         }, spanTxt.length() - getResources().getString(contract().getOwner().getTravelMode().getName()).length(), spanTxt.length(), 0);
         textTravelMode.setMovementMethod(LinkMovementMethod.getInstance());
         textTravelMode.setText(spanTxt, TextView.BufferType.SPANNABLE);
-        arrowTravelMode.setOnClickListener(v -> createTravelModeList(profile, textTravelMode));
+        arrowTravelMode.setOnClickListener(v -> startTravelModeDialog());
     }
 
     private void drawHost(final Profile profile) {
@@ -369,13 +371,23 @@ public class ContractActivity extends BaseActivity {
         }.execute();
     }
 
-    private void startDialogList() {
+    private void startNoxboxTypeDialog() {
         if (noxboxTypeListFragment == null || !noxboxTypeListFragment.isVisible()) {
             noxboxTypeListFragment = new NoxboxTypeListFragment();
             Bundle bundle = new Bundle();
             bundle.putInt("key", CONTRACT_CODE);
             noxboxTypeListFragment.setArguments(bundle);
             noxboxTypeListFragment.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+        }
+    }
+
+    private void startTravelModeDialog() {
+        if (travelModeListFragment == null || !travelModeListFragment.isVisible()) {
+            travelModeListFragment = new TravelModeListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("key", TravelModeListFragment.CONTRACT_CODE);
+            travelModeListFragment.setArguments(bundle);
+            travelModeListFragment.show(getSupportFragmentManager(), TravelModeListFragment.TAG);
         }
     }
 
@@ -403,7 +415,6 @@ public class ContractActivity extends BaseActivity {
             TravelMode travelMode = TravelMode.byId(item.getItemId());
             profile().setTravelMode(travelMode);
             contract().getOwner().setTravelMode(travelMode);
-
 
             if (travelMode == none) {
                 profile().setHost(true);

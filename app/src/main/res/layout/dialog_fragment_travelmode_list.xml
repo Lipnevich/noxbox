@@ -21,10 +21,8 @@
     </FrameLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/listOfServices"
+        android:id="@+id/listOfTravelMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical">
-
-    </android.support.v7.widget.RecyclerView>
+        android:scrollbars="vertical" />
 </LinearLayout>

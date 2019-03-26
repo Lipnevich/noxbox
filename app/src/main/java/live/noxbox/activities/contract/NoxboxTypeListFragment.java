@@ -27,7 +27,6 @@ public class NoxboxTypeListFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         key = getArguments().getInt("key");
-
     }
 
     @Override

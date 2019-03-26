@@ -37,7 +37,6 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
         this.activity = activity;
         this.rootFragment = rootFragment;
         this.key = key;
-
     }
 
     @NonNull
