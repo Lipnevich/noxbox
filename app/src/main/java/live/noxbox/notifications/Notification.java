@@ -73,8 +73,6 @@ public abstract class Notification {
     protected NotificationCompat.Builder getNotificationCompatBuilder() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constants.CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                //.setVibrate(vibrate)
-                //.setSound(sound)
                 .setOnlyAlertOnce(true)
                 .setVisibility(VISIBILITY_PUBLIC)
                 .setContentIntent(onViewOnClickAction)
@@ -89,15 +87,22 @@ public abstract class Notification {
             builder.setContent(contentView)
                     .setPriority(android.app.Notification.PRIORITY_MAX);
 
+        switch (type) {
+            case photoUploadingProgress:
+            case photoValidationProgress:
+                break;
+            default: {
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(getVibrate(), -1));
+                } else {
+                    ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(getVibrate(), -1);
+                }
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(VibrationEffect.createWaveform(getVibrate(), -1));
-        } else {
-            ((Vibrator) context.getSystemService(VIBRATOR_SERVICE)).vibrate(getVibrate(), -1);
+                Ringtone ringtone = RingtoneManager.getRingtone(context, getSound(type, context));
+                ringtone.play();
+            }
         }
 
-        Ringtone ringtone = RingtoneManager.getRingtone(context, getSound(type, context));
-        ringtone.play();
         return builder;
     }
 
@@ -125,6 +130,11 @@ public abstract class Notification {
     }
 
     public static Uri getSound(NotificationType type, Context context) {
+        switch (type) {
+            case photoUploadingProgress:
+            case photoValidationProgress:
+                return null;
+        }
         int sound = R.raw.push;
         if (type == message) {
             sound = R.raw.message;
@@ -135,7 +145,17 @@ public abstract class Notification {
     }
 
     protected long[] getVibrate() {
-        // first value is pause
+        switch (type) {
+            case photoUploadingProgress:
+            case photoValidationProgress:
+                return null;
+        }
+        // first value is Initial delay ..
+        // second value is Vibrate for ..
+        // third value is Pause for ..
+        // fourth value is Vibrate for ..
+        // fifth value is Pause for ..
+        // sixth value is Vibrate for ..
         return new long[]{500, 500, 400, 500, 400, 1000, 400, 200};
     }
 
