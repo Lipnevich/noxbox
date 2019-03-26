@@ -42,6 +42,7 @@ import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
 import live.noxbox.services.LocationReceiver;
+import live.noxbox.services.NetworkReceiver;
 import live.noxbox.states.Accepting;
 import live.noxbox.states.AvailableNoxboxes;
 import live.noxbox.states.Created;
@@ -49,6 +50,7 @@ import live.noxbox.states.Moving;
 import live.noxbox.states.Performing;
 import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
+import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.location.LocationException;
@@ -117,7 +119,11 @@ public class MapActivity extends HackerActivity implements
 
     @Override
     protected void onResume() {
-        AppCache.startListening();
+        if(NetworkReceiver.isOnline(this)){
+            AppCache.startListening();
+        }else{
+            ConfirmationMessage.messageOffline(this);
+        }
         if (isLocationPermissionGranted(this)) {
             if (!isGpsEnabled()) {
                 messageGps(this);
