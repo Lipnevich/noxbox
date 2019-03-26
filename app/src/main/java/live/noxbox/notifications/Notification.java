@@ -71,6 +71,7 @@ public abstract class Notification {
                 .setSound(sound)
                 .setOnlyAlertOnce(isAlertOnce)
                 .setContentIntent(onViewOnClickAction)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDeleteIntent(deleteIntent)
                 .setAutoCancel(isAutoCancel);
 
@@ -118,7 +119,8 @@ public abstract class Notification {
     }
 
     protected long[] getVibrate() {
-        return new long[]{100, 500, 200, 100, 100};
+        // first value is pause
+        return new long[]{0, 500, 400, 500, 400, 1000, 400, 200};
     }
 
     protected PendingIntent createOnDeleteIntent(Context context, int group) {

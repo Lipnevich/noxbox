@@ -86,6 +86,7 @@ public class HackerActivity extends MenuActivity implements OnMapReadyCallback {
                         data.put("type", iterator.next().name());
                         data.put("progress", "" + 50);
                         data.put("price", "" + 555);
+                        data.put("timeAccepted", "" + System.currentTimeMillis());
                         data.put("time", "" + System.currentTimeMillis());
                         data.put("name", "Long Long Long Party Name");
                         data.put("noxboxType", NoxboxType.photographer.name());
@@ -96,34 +97,6 @@ public class HackerActivity extends MenuActivity implements OnMapReadyCallback {
 
                     findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
                     setOnClickListener(R.id.debugGenerateNoxboxes, o -> {
-//                            double delta = (360 * Constants.RADIUS_IN_METERS / 40075000) / 20;
-//
-//                            for (Noxbox noxbox : NoxboxExamples.generateNoxboxes(Position.from(googleMap.getCameraPosition().target), 150, delta)) {
-//                                online(noxbox);
-//                            }
-//
-//                            LatLng myPosition = null;
-//                            if (ContextCompat.checkSelfPermission(HackerActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-//                                    == PackageManager.PERMISSION_GRANTED) {
-//                                myPosition = googleMap.getCameraPosition().target;
-//                            }
-//
-//                            if (myPosition != null) {
-//
-//                                LatLng coordinatesOne = new LatLng(myPosition.latitude + delta, myPosition.longitude + delta);
-//                                LatLng coordinatesTwo = new LatLng(myPosition.latitude + delta, myPosition.longitude - delta);
-//                                LatLng coordinatesThree = new LatLng(myPosition.latitude - delta, myPosition.longitude - delta);
-//                                LatLng coordinatesFour = new LatLng(myPosition.latitude - delta, myPosition.longitude + delta);
-//                                googleMap.addPolyline(new PolylineOptions().geodesic(true).add(
-//                                        coordinatesOne,
-//                                        coordinatesTwo,
-//                                        coordinatesThree,
-//                                        coordinatesFour,
-//                                        coordinatesOne)
-//                                        .color(Color.RED)
-//                                        .width(5));
-
-
                         FirebaseFirestore db = FirebaseFirestore.getInstance();
                         db.setFirestoreSettings(new FirebaseFirestoreSettings.Builder().build());
 
