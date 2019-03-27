@@ -55,6 +55,7 @@ import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
+import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.MapOperator.drawPath;
@@ -269,7 +270,13 @@ public class Moving implements State {
                     profile.getCurrent().getPosition(),
                     memberWhoMovingPosition,
                     profile.getCurrent().getProfileWhoComes().getTravelMode()));
-            timeView.setText(context.getResources().getString(R.string.movement, "" + progressInMinutes));
+            String timeTxt = getFormatTimeFromMillis(progressInMinutes * 60000, context.getResources());
+            if(profile.getCurrent().getProfileWhoComes().equals(profile)){
+                timeView.setText(context.getResources().getString(R.string.movementMove, timeTxt));
+            }else{
+                timeView.setText(context.getResources().getString(R.string.movementWait, timeTxt));
+            }
+
 
             if (progressInMinutes <= 1
                     && !profile.getCurrent().getWasNotificationVerification()

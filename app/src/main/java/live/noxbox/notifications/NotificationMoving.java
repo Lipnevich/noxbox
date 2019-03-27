@@ -63,7 +63,7 @@ public class NotificationMoving extends Notification {
                         noxbox.getProfileWhoComes().getTravelMode()));
                 progressInMinutes = Math.max(1, Math.min(progressInMinutes, MAX_MINUTES - 1));
                 contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImageDemand());
-                contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movement, "" + progressInMinutes)));
+                contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movementWait, "" + progressInMinutes)));
                 contentView.setProgressBar(R.id.progress, MAX_MINUTES, Math.max(MAX_MINUTES - progressInMinutes, 1), false);
             }
             final NotificationCompat.Builder builder = getNotificationCompatBuilder();

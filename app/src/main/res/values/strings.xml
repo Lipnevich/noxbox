@@ -269,7 +269,8 @@
     <string name="withComission">with commission fee</string>
     <string name="worker">Performer</string>
     <string name="costumer">Consumer</string>
-    <string name="movement">Arrive in ~%1$s minutes</string>
+    <string name="movementWait">Wait for a party ~%1$s</string>
+    <string name="movementMove">Move to service position ~%1$s</string>
     <string name="uploadingComplete">Uploading complete</string>
     <string name="aboutApp">About</string>
     <string name="start_promo_video">Video</string>

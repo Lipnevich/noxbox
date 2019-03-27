@@ -269,7 +269,8 @@
     <string name="withComission">с учётом комиссии</string>
     <string name="worker">Работник</string>
     <string name="costumer">Заказчик</string>
-    <string name="movement">Прибытие через ~%1$s минут</string>
+    <string name="movementWait">Ожидайте участника через ~%1$s</string>
+    <string name="movementMove">Двигайтесь к указанной точке ~%1$s</string>
     <string name="uploadingComplete">Загрузка завершена</string>
     <string name="aboutApp">Информация</string>
     <string name="start_promo_video">Видео</string>
