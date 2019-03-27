@@ -329,6 +329,7 @@ public class ContractActivity extends BaseActivity {
         }
 
         host.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            profile().setHost(isChecked);
             contract().getOwner().setHost(isChecked);
             drawAddress();
         });
