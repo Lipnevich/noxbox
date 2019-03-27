@@ -321,7 +321,7 @@
     <string name="demandServices">Demand</string>
     <string name="pleaseConfirmMember">Please, confirm member</string>
     <string name="showAll">Show all</string>
-    <string name="selectTravelMode">Select travel type</string>
+    <string name="travelType">Travel type</string>
 
 
 </resources>

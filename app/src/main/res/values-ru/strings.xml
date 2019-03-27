@@ -321,6 +321,6 @@
     <string name="demandServices">Спрос</string>
     <string name="pleaseConfirmMember">Пожалуйста, подтвердите участника</string>
     <string name="showAll">Показать все</string>
-    <string name="selectTravelMode">Выберите способ перемещения</string>
+    <string name="travelType">Способ перемещения</string>
 
 </resources>

@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="16dp"
-            android:text="@string/selectTravelMode"
+            android:text="@string/travelType"
             android:textColor="@color/secondary"
             android:layout_marginEnd="12dp"
             android:textSize="21sp" />
