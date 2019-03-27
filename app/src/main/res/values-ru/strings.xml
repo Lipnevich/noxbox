@@ -132,7 +132,7 @@
     <string name="beWalk">пешком</string>
     <string name="onBike">велосипед</string>
     <string name="onCar">машина</string>
-    <string name="onTransit">общественный</string>
+    <string name="onTransit">транспорт</string>
     <string name="travelMode">Способ перемещения</string>
     <string name="post">Опубликовать</string>
     <string name="remove">Удалить</string>
@@ -321,5 +321,6 @@
     <string name="demandServices">Спрос</string>
     <string name="pleaseConfirmMember">Пожалуйста, подтвердите участника</string>
     <string name="showAll">Показать все</string>
+    <string name="selectTravelMode">Выберите способ перемещения</string>
 
 </resources>
