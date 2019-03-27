@@ -38,7 +38,6 @@ public class NoxboxFilters {
 //                && noxbox.getWorkSchedule().getEndTime().getHourOfDay() > hour)
 //            return true;
 
-
         //фильтры по типу передвижения
         if (profile.getTravelMode() == TravelMode.none && noxbox.getOwner().getTravelMode() == TravelMode.none)
             return true;
