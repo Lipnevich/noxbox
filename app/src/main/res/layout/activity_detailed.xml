@@ -302,6 +302,7 @@
                                             android:layout_gravity="center_vertical"
                                             android:layout_marginStart="12dp"
                                             android:textColor="@color/google_text"
+                                            android:textIsSelectable="true"
                                             android:textSize="@dimen/text_size_secondary" />
                                     </LinearLayout>
                                 </LinearLayout>
