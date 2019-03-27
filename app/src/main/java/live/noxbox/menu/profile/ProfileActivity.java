@@ -37,10 +37,12 @@ import java.util.Map;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.activities.contract.NoxboxTypeListFragment;
+import live.noxbox.activities.contract.TravelModeListFragment;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
+import live.noxbox.model.TravelMode;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.Router;
@@ -58,6 +60,8 @@ public class ProfileActivity extends BaseActivity {
 
     public static final int CODE = 1006;
     public static final int SELECT_IMAGE = 1007;
+
+    private DialogFragment travelModeListFragment;
 
     private ImageView profilePhoto;
     private TextView invalidPhoto;
@@ -112,9 +116,46 @@ public class ProfileActivity extends BaseActivity {
     private void draw(final Profile profile) {
         drawEditPhoto(profile);
         drawEditName(profile);
+        drawEditTravelMode(profile);
         drawEditHost(profile);
         drawPortfolioEditingMenu(profile);
         drawMenuAddingPerformer(profile);
+    }
+
+    private void drawEditTravelMode(final Profile profile) {
+        if (profile.getTravelMode() == TravelMode.none) {
+            findViewById(R.id.hostLayout).setEnabled(false);
+            findViewById(R.id.switchHost).setEnabled(false);
+        } else {
+            findViewById(R.id.hostLayout).setEnabled(true);
+            findViewById(R.id.switchHost).setEnabled(true);
+        }
+
+        setTravelModeStatus(profile);
+
+        findViewById(R.id.editTravelMode).setVisibility(View.VISIBLE);
+        findViewById(R.id.travelModeLayout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTravelModeDialog();
+            }
+        });
+
+    }
+
+    private void startTravelModeDialog() {
+        if (travelModeListFragment == null || !travelModeListFragment.isVisible()) {
+            travelModeListFragment = new TravelModeListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("key", TravelModeListFragment.PROFILE_CODE);
+            travelModeListFragment.setArguments(bundle);
+            travelModeListFragment.show(getSupportFragmentManager(), TravelModeListFragment.TAG);
+        }
+    }
+
+    private void setTravelModeStatus(Profile profile) {
+        ((TextView) findViewById(R.id.travelModeName)).setText(getText(profile.getTravelMode().getName()));
+        ((ImageView) findViewById(R.id.travelModeImage)).setImageResource(profile.getTravelMode().getImage());
     }
 
     private void drawEditPhoto(final Profile profile) {
@@ -206,7 +247,9 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void drawEditHost(final Profile profile) {
-        switchHost.setVisibility(View.VISIBLE);
+        if (profile.getTravelMode() == TravelMode.none) {
+            profile.setHost(true);
+        }
         switchHost.setChecked(profile.getHost());
         setHostStatus(profile.getHost(), profile);
 

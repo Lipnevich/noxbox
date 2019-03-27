@@ -18,6 +18,7 @@ import live.noxbox.model.TravelMode;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.activities.contract.TravelModeListFragment.CONTRACT_CODE;
+import static live.noxbox.activities.contract.TravelModeListFragment.PROFILE_CODE;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.model.TravelMode.none;
@@ -54,8 +55,8 @@ public class TravelModeListAdapter extends RecyclerView.Adapter<TravelModeListAd
         viewHolder.itemLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TravelMode travelMode = TravelMode.byId(travelModes.get(position).getId());
                 if (key == CONTRACT_CODE) {
-                    TravelMode travelMode = TravelMode.byId(travelModes.get(position).getId());
                     profile().setTravelMode(travelMode);
                     profile().getContract().getOwner().setTravelMode(travelMode);
 
@@ -67,6 +68,10 @@ public class TravelModeListAdapter extends RecyclerView.Adapter<TravelModeListAd
                             startLocationPermissionRequest(activity, LOCATION_PERMISSION_REQUEST_CODE);
                         }
                     }
+                    executeUITasks();
+                    travelModeListFragment.dismiss();
+                } else if (key == PROFILE_CODE) {
+                    profile().setTravelMode(travelMode);
                     executeUITasks();
                     travelModeListFragment.dismiss();
                 }
