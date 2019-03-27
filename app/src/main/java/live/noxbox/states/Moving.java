@@ -152,11 +152,7 @@ public class Moving implements State {
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
-        if(profile.getCurrent().getProfileWhoComes().equals(profile)){
-            activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
-            activity.findViewById(R.id.navigation).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
-            activity.findViewById(R.id.navigationImage).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
-        }
+        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
 
         if (profile.getCurrent().getOwner().equals(profile)) {
@@ -174,6 +170,9 @@ public class Moving implements State {
         }
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.eye);
+
+        activity.findViewById(R.id.navigation).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
+        activity.findViewById(R.id.navigationImage).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
@@ -272,9 +271,9 @@ public class Moving implements State {
                     memberWhoMovingPosition,
                     profile.getCurrent().getProfileWhoComes().getTravelMode()));
             String timeTxt = getFormatTimeFromMillis(progressInMinutes * 60000, context.getResources());
-            if(profile.getCurrent().getProfileWhoComes().equals(profile)){
+            if (profile.getCurrent().getProfileWhoComes().equals(profile)) {
                 timeView.setText(context.getResources().getString(R.string.movementMove, timeTxt));
-            }else{
+            } else {
                 timeView.setText(context.getResources().getString(R.string.movementWait, timeTxt));
             }
 
@@ -282,11 +281,11 @@ public class Moving implements State {
             if (progressInMinutes <= 1
                     && !profile.getCurrent().getWasNotificationVerification()
                     && ((profile.equals(profile.getCurrent().getParty())
-                            && isNullOrZero(profile.getCurrent().getTimePartyRejected())
-                            && isNullOrZero(profile.getCurrent().getTimePartyVerified()))
-                        || (profile.equals(profile.getCurrent().getOwner())
-                                && isNullOrZero(profile.getCurrent().getTimeOwnerRejected())
-                                && isNullOrZero(profile.getCurrent().getTimeOwnerVerified())))) {
+                    && isNullOrZero(profile.getCurrent().getTimePartyRejected())
+                    && isNullOrZero(profile.getCurrent().getTimePartyVerified()))
+                    || (profile.equals(profile.getCurrent().getOwner())
+                    && isNullOrZero(profile.getCurrent().getTimeOwnerRejected())
+                    && isNullOrZero(profile.getCurrent().getTimeOwnerVerified())))) {
                 provideNotification(NotificationType.verifyPhoto, profile, context);
                 profile.getCurrent().setWasNotificationVerification(true);
             }
