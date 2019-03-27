@@ -19,7 +19,7 @@
             android:textColor="@color/secondary"
             android:textSize="21sp" />
     </FrameLayout>
-
+    <include layout="@layout/item_filter_service" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listOfServices"
         android:layout_width="match_parent"

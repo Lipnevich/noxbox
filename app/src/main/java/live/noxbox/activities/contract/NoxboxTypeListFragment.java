@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +16,9 @@ import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
+
+import static live.noxbox.database.AppCache.executeUITasks;
+import static live.noxbox.database.AppCache.profile;
 
 public class NoxboxTypeListFragment extends DialogFragment {
     public static final int MAP_CODE = 1010;
@@ -33,7 +38,19 @@ public class NoxboxTypeListFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.dialog_fragment_noxbox_type_list, container, false);
-
+        if (key == MAP_CODE) {
+            view.findViewById(R.id.itemLayout).setVisibility(View.VISIBLE);
+            ((ImageView) view.findViewById(R.id.itemLayout).findViewById(R.id.noxboxTypeImage)).setImageResource(R.drawable.noxbox);
+            ((TextView) view.findViewById(R.id.itemLayout).findViewById(R.id.noxboxTypeName)).setText(R.string.showAll);
+            view.findViewById(R.id.itemLayout).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    executeAllInTheMap();
+                }
+            });
+        } else {
+            view.findViewById(R.id.itemLayout).setVisibility(View.GONE);
+        }
         List<NoxboxType> noxboxTypes = new ArrayList<>(Arrays.asList(NoxboxType.values()));
         RecyclerView noxboxTypeList = view.findViewById(R.id.listOfServices);
         noxboxTypeList.setHasFixedSize(true);
@@ -41,5 +58,13 @@ public class NoxboxTypeListFragment extends DialogFragment {
         noxboxTypeList.setAdapter(new NoxboxTypeListAdapter(noxboxTypes, getActivity(), this, key));
 
         return view;
+    }
+
+    private void executeAllInTheMap(){
+        for (NoxboxType type : NoxboxType.values()) {
+            profile().getFilters().getTypes().put(type.name(), true);
+        }
+        dismiss();
+        executeUITasks();
     }
 }
