@@ -152,7 +152,11 @@ public class Moving implements State {
 
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
+        if(profile.getCurrent().getProfileWhoComes().equals(profile)){
+            activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
+            activity.findViewById(R.id.navigation).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
+            activity.findViewById(R.id.navigationImage).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
+        }
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
 
         if (profile.getCurrent().getOwner().equals(profile)) {
@@ -171,12 +175,9 @@ public class Moving implements State {
 
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.eye);
 
-        activity.findViewById(R.id.navigation).setOnClickListener(v -> NavigatorManager.openNavigator(activity, profile));
-
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
         });
-
 
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> Router.startActivity(activity, ConfirmationActivity.class));
 
