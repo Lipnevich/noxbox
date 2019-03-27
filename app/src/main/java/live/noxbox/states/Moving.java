@@ -239,9 +239,6 @@ public class Moving implements State {
             totalUnreadView.setVisibility(View.GONE);
         }
 
-        if (!isLocationPermissionGranted(activity)) {
-            startLocationPermissionRequest(activity, LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
-        }
     }
 
     private boolean defineProfileLocationListener(Profile profile) {
@@ -299,9 +296,16 @@ public class Moving implements State {
 
         private LocationManager locationManager;
         private LocationListener locationListener;
+        private Activity activity;
 
         public LocationListenerService() {
             super();
+        }
+
+        public LocationListenerService(Activity activity) {
+            super();
+
+            this.activity = activity;
         }
 
         @Override
@@ -356,6 +360,8 @@ public class Moving implements State {
 
             if (isLocationPermissionGranted(getApplicationContext()))
                 locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
+            else
+                startLocationPermissionRequest(activity, LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
 
 
             return super.onStartCommand(intent, flags, startId);
