@@ -21,6 +21,7 @@ import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.MapOperator;
+import live.noxbox.tools.Task;
 
 import static live.noxbox.database.AppCache.profile;
 
@@ -66,22 +67,23 @@ public class LocationOperator {
         }
     }
 
-    private static void provideProfilePosition(Profile profile, GoogleMap googleMap, Activity activity) {
-        Position position = Position.from(lastLocation);
-        profile.setPosition(position);
-        MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+    public static void getDeviceLocation(Profile profile, GoogleMap googleMap, Activity activity) {
+        getDeviceLocation(position -> {
+            profile.setPosition(position);
+            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+        }, activity);
     }
 
-    public static void getDeviceLocation(Profile profile, GoogleMap googleMap, Activity activity) {
+    public static void getDeviceLocation(Task<Position> onSuccess, Activity activity) {
         if (fusedLocationProviderClient == null) return;
         try {
             if (isLocationPermissionGranted(activity.getApplicationContext())) {
                 fusedLocationProviderClient.getLastLocation().addOnSuccessListener(activity, (OnSuccessListener<? super Location>) location -> {
                     if (location != null) {
                         lastLocation = location;
-                        provideProfilePosition(profile, googleMap, activity);
+                        onSuccess.execute(Position.from(lastLocation));
                     } else if (lastLocation != null) {
-                        provideProfilePosition(profile, googleMap, activity);
+                        onSuccess.execute(Position.from(lastLocation));
                     } else {
                         LocationManager locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
                         Criteria criteria = new Criteria();
@@ -92,7 +94,7 @@ public class LocationOperator {
                                 if (location != null) {
                                     lastLocation = location;
 
-                                    provideProfilePosition(profile, googleMap, activity);
+                                    onSuccess.execute(Position.from(lastLocation));
                                 } else {
                                     DebugMessage.popup(activity, "Unknown user location");
                                 }

@@ -38,6 +38,7 @@ import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGr
 public class MapOperator {
 
     public static void buildMapPosition(final GoogleMap googleMap, final Context context) {
+        if (googleMap == null) return;
         switch (NoxboxState.getState(profile().getCurrent(), profile())) {
             case requesting:
             case accepting:

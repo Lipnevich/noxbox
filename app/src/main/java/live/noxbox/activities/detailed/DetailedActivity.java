@@ -80,6 +80,7 @@ import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openWalletAddressSheetDialog;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
+import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
 
@@ -383,9 +384,9 @@ public class DetailedActivity extends BaseActivity {
             case created: {
                 travelTypeImageTitle.setImageResource(viewed.getOwner().getTravelMode().getImage());
                 travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
-                if(viewed.getOwner().getHost() && viewed.getOwner().getTravelMode() == none){
+                if (viewed.getOwner().getHost() && viewed.getOwner().getTravelMode() == none) {
                     coordinatesSelect.setVisibility(View.GONE);
-                }else{
+                } else {
                     coordinatesSelect.setVisibility(View.VISIBLE);
                     coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
                 }
@@ -507,12 +508,15 @@ public class DetailedActivity extends BaseActivity {
         }
 
         joinButton.setOnClickListener(v -> {
-            if (!isLocationPermissionGranted(DetailedActivity.this)) {
+            if (profile.getViewed().getProfileWhoComes().equals(profile) && !isLocationPermissionGranted(DetailedActivity.this)) {
                 startLocationPermissionRequest(DetailedActivity.this, LOCATION_PERMISSION_REQUEST_CODE);
-
             } else {
                 v.setVisibility(View.GONE);
-                readinessCheck(profile);
+                //TODO (vl) progress while noxbox is loading or waiting location
+                getDeviceLocation(position -> {
+                    profile().getViewed().getParty().setPosition(position);
+                    request(profile());
+                }, this);
             }
 
         });
@@ -520,7 +524,7 @@ public class DetailedActivity extends BaseActivity {
 
     }
 
-    private void readinessCheck(Profile profile) {
+    private void request(Profile profile) {
         if (!profile.getAcceptance().isAccepted()) {
             openPhotoNotVerifySheetDialog(DetailedActivity.this);
             return;
@@ -572,7 +576,10 @@ public class DetailedActivity extends BaseActivity {
 
         //hide progress
         Router.finishActivity(DetailedActivity.this);
+
+
     }
+
 
     private RadioButton longToWait;
     private RadioButton photoDoesNotMatch;
@@ -742,7 +749,12 @@ public class DetailedActivity extends BaseActivity {
         switch (requestCode) {
             case LOCATION_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    readinessCheck(profile());
+                    joinButton.setVisibility(View.GONE);
+                    //TODO (vl) progress while noxbox is loading or waiting location
+                    getDeviceLocation(position -> {
+                        profile().getViewed().getParty().setPosition(position);
+                        request(profile());
+                    }, this);
                 }
             }
         }
