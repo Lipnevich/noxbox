@@ -95,6 +95,7 @@ public class Accepting implements State {
         countDownTimer = new CountDownTimer(REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS - requestTimePassed, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                if (acceptingView == null) return;
                 TextView countdownTimeView = acceptingView.findViewById(R.id.countdownTime);
                 if (countdownTimeView != null) {
                     countdownTimeView.setText(String.valueOf(millisUntilFinished / 1000));
@@ -155,7 +156,7 @@ public class Accepting implements State {
             countDownTimer = null;
         }
         MessagingService.removeNotifications(activity);
-        if(acceptingView != null){
+        if (acceptingView != null) {
             acceptingView.removeAllViews();
             acceptingView = null;
         }
