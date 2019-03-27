@@ -172,8 +172,7 @@
     <string name="km">км</string>
     <string name="travelTime">Время в пути</string>
     <string name="distance">Расстояние</string>
-    <string name="priceClarificationBefore">Указана стоимость</string>
-    <string name="priceClarificationAfter">исполнения услуги, оплата будет рассчитываться посекундно в зависимости от действительного времени исполнения.</string>
+    <string name="priceClarification">Оплата будет рассчитана посекундно в зависимости от действительного времени исполнения</string>
     <string name="ending">а</string>
     <string name="byAddress">По адресу</string>
     <string name="search">введите адрес</string>

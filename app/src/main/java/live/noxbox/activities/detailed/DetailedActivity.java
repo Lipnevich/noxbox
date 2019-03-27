@@ -447,26 +447,12 @@ public class DetailedActivity extends BaseActivity {
         changeArrowVector(priceLayout.getId(), priceArrow.getId());
 
         String priceTitleText = getResources().getString(R.string.priceTxt) + " "
-                + MoneyFormatter.format(new BigDecimal(profile.getViewed().getPrice())) + " " + AppCache.showPriceInUsd(getString(R.string.currency), profile.getViewed().getPrice());
+                + MoneyFormatter.format(new BigDecimal(profile.getViewed().getPrice())) + " "
+                + AppCache.showPriceInUsd(getString(R.string.currency), profile.getViewed().getPrice());
 
         priceTitle.setText(priceTitleText);
         descriptionTextInPrice.setText(profile.getViewed().getType().getDuration());
-
-        String duration = getResources().getString(profile.getViewed().getType().getDuration());
-        String serviceDescription = "";
-        int countSpace = 0;
-        for (int i = 0; i < duration.length(); i++) {
-            if (duration.charAt(i) == ' ') {
-                countSpace++;
-                if (countSpace > 1) {
-                    serviceDescription = serviceDescription.concat(getResources().getString(R.string.ending));
-                    break;
-                }
-            }
-            serviceDescription = serviceDescription.concat(String.valueOf(duration.charAt(i)));
-        }
-        String desc = getResources().getString(R.string.priceClarificationBefore) + " " + serviceDescription + " " + getResources().getString(R.string.priceClarificationAfter);
-        clarificationTextInPrice.setText(desc);
+        clarificationTextInPrice.setText(getString(R.string.priceClarification));
         typeImageInPrice.setImageResource(profile.getViewed().getType().getImageDemand());
     }
 
