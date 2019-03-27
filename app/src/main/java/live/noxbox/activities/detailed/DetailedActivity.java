@@ -383,8 +383,13 @@ public class DetailedActivity extends BaseActivity {
             case created: {
                 travelTypeImageTitle.setImageResource(viewed.getOwner().getTravelMode().getImage());
                 travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
-                coordinatesSelect.setVisibility(View.VISIBLE);
-                coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
+                if(viewed.getOwner().getHost() && viewed.getOwner().getTravelMode() == none){
+                    coordinatesSelect.setVisibility(View.GONE);
+                }else{
+                    coordinatesSelect.setVisibility(View.VISIBLE);
+                    coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
+                }
+
                 if (viewed.getOwner().getTravelMode() == none) {
                     travelTypeTitle.setText(R.string.byAddress);
                     travelModeText.setText(R.string.waitingByAddress);
@@ -424,7 +429,7 @@ public class DetailedActivity extends BaseActivity {
                     travelModeText.setText(R.string.willArriveAtTheAddress);
                 }
                 break;
-            default:{
+            default: {
                 travelTypeImageTitle.setImageResource(viewed.getOwner().getTravelMode().getImage());
                 travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
             }

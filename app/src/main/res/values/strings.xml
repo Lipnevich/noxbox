@@ -132,7 +132,7 @@
     <string name="beWalk">foot</string>
     <string name="onBike">bike</string>
     <string name="onCar">car</string>
-    <string name="onTransit">public</string>
+    <string name="onTransit">transit</string>
     <string name="travelMode">The way of traveling</string>
     <string name="post">Post</string>
     <string name="remove">Remove</string>
@@ -320,6 +320,7 @@
     <string name="demandServices">Demand</string>
     <string name="pleaseConfirmMember">Please, confirm member</string>
     <string name="showAll">Show all</string>
+    <string name="selectTravelMode">Select travel type</string>
 
 
 </resources>
