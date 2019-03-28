@@ -106,9 +106,8 @@
         </service>
         <service android:name=".services.AvailableNoxboxesService" />
         <service
-            android:name=".states.Moving$LocationListenerService"
-            android:enabled="true"
-            android:exported="true" />
+            android:name=".tools.location.LocationListenerService"
+            android:enabled="true" />
 
         <receiver android:name=".notifications.Notification$CancelRequestListener">
             <intent-filter>

@@ -34,7 +34,7 @@ public class MarkerCreator {
         return marker;
     }
 
-    public static Marker createMovingMemberMarker(TravelMode travelMode, Position position, GoogleMap googleMap, Resources resources) {
+    public static Marker drawMovingMemberMarker(TravelMode travelMode, Position position, GoogleMap googleMap, Resources resources) {
         Drawable drawable = resources.getDrawable(travelMode.getImage());
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
                 drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);

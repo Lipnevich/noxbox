@@ -77,7 +77,7 @@ public class Accepting implements State {
         if (profileWhoComes == null) return;
 
         memberWhoMovingPosition = profileWhoComes.getPosition();
-        memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
+        memberWhoMoving = MarkerCreator.drawMovingMemberMarker(profileWhoComes.getTravelMode(),
                 memberWhoMovingPosition, googleMap, activity.getResources());
 
         acceptingView = activity.findViewById(R.id.container);

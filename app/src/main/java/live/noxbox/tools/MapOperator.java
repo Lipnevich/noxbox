@@ -141,17 +141,30 @@ public class MapOperator {
 
     private static Polyline polyline;
 
-    public static void drawPath(Activity activity, GoogleMap googleMap, Profile profile) {
+    public static void drawPath(Context context, GoogleMap googleMap, Profile profile) {
         LatLng start = profile.getCurrent().getProfileWhoComes().getPosition().toLatLng();
         LatLng end = profile.getCurrent().getPosition().toLatLng();
 
-        if (polyline != null)
+        if (polyline != null) {
             polyline.remove();
+        }
 
-        drawPath(activity, googleMap, start, end);
+        drawPath(context, googleMap, start, end);
     }
 
-    public static void drawPath(Activity activity, GoogleMap googleMap, LatLng start, LatLng end) {
+    //method for moving State only
+    public static void drawPath(Context context, GoogleMap googleMap, Position currentNoxbox, Position profileWhoMoving) {
+        LatLng start = profileWhoMoving.toLatLng();
+        LatLng end = currentNoxbox.toLatLng();
+
+        if (polyline != null) {
+            polyline.remove();
+        }
+
+        drawPath(context, googleMap, start, end);
+    }
+
+    public static void drawPath(Context context, GoogleMap googleMap, LatLng start, LatLng end) {
         double cLat = ((start.latitude + end.latitude) / 2);
         double cLon = ((start.longitude + end.longitude) / 2);
 
@@ -178,7 +191,7 @@ public class MapOperator {
 
         PolylineOptions polylineOptions = new PolylineOptions()
                 .width(24)
-                .color(activity.getResources().getColor(R.color.primary))
+                .color(context.getResources().getColor(R.color.primary))
                 .geodesic(true)
                 .pattern(asList(new Dot(), new Gap(10)))
                 .addAll(points);

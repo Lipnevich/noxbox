@@ -68,7 +68,7 @@ public class Requesting implements State {
         if (profileWhoComes == null) return;
 
         Position memberWhoMovingPosition = profileWhoComes.getPosition();
-        memberWhoMoving = MarkerCreator.createMovingMemberMarker(profileWhoComes.getTravelMode(),
+        memberWhoMoving = MarkerCreator.drawMovingMemberMarker(profileWhoComes.getTravelMode(),
                 memberWhoMovingPosition, googleMap, activity.getResources());
 
         requestingView = activity.findViewById(R.id.container);

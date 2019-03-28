@@ -44,13 +44,16 @@
 
         <ImageButton
             android:id="@+id/menu"
-            style="@style/IconButtonStyle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_gravity="start|top"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
-            android:background="@color/fui_transparent"
-            android:elevation="4dp"
-            android:scaleType="fitCenter"
+            android:background="@drawable/circular_button"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:focusable="true"
+            android:scaleType="center"
             android:src="@drawable/menu"
             android:visibility="gone" />
 

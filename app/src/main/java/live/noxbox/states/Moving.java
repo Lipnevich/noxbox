@@ -1,16 +1,11 @@
 package live.noxbox.states;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -43,11 +38,8 @@ import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.location.LocationListenerService;
 
-import static android.location.LocationManager.GPS_PROVIDER;
-import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
-import static live.noxbox.Constants.MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS;
-import static live.noxbox.Constants.MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.GeoRealtime.positionListener;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
@@ -56,16 +48,15 @@ import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
-import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.MapOperator.drawPath;
+import static live.noxbox.tools.MarkerCreator.drawMovingMemberMarker;
 import static live.noxbox.tools.Router.startActivity;
-import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
-import static live.noxbox.tools.location.LocationOperator.startLocationPermissionRequest;
+import static live.noxbox.tools.ServiceMonitoring.isMyServiceRunning;
 
 public class Moving implements State {
 
-    private GoogleMap googleMap;
+    private static GoogleMap googleMap;
     private Activity activity;
     private Profile profile = profile();
 
@@ -77,11 +68,12 @@ public class Moving implements State {
     private static TextView timeView;
 
     private static Position memberWhoMovingPosition;
-    private Marker memberWhoMovingMarker;
+    private static Marker memberWhoMovingMarker;
 
     private TextView totalUnreadView;
     private boolean initiated;
 
+    private LocationListenerService locationListenerService;
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
@@ -105,26 +97,18 @@ public class Moving implements State {
             }
         }
 
-        if (!initiated) {
-            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
-
-            initiated = true;
+        if(memberWhoMovingPosition == null){
+            memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
         }
 
-        if (defineProfileLocationListener(profile)) {
-            activity.startService(new Intent(activity, LocationListenerService.class));
-        } else if (positionListener == null) {
-            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
-                memberWhoMovingPosition = position;
-                draw(googleMap, activity);
-            });
+        if (!initiated) {
+            MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
+            initiated = true;
         }
 
         if (!defineProfileLocationListener(profile)) {
             provideNotification(NotificationType.moving, profile, activity.getApplicationContext());
         }
-
-        memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
 
         movingView = activity.findViewById(R.id.container);
         movingView.removeAllViews();
@@ -140,11 +124,10 @@ public class Moving implements State {
         }
 
 
-        drawPath(activity, googleMap, profile);
-
+        drawPath(activity, googleMap, profile.getCurrent().getPosition(), memberWhoMovingPosition);
         MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
         if (memberWhoMovingMarker == null) {
-            memberWhoMovingMarker = MarkerCreator.createMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+            memberWhoMovingMarker = drawMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
                     memberWhoMovingPosition, googleMap, activity.getResources());
         } else {
             memberWhoMovingMarker.setPosition(memberWhoMovingPosition.toLatLng());
@@ -183,6 +166,18 @@ public class Moving implements State {
         activity.findViewById(R.id.chat).setOnClickListener(v -> startActivity(activity, ChatActivity.class));
 
         MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
+
+        if (defineProfileLocationListener(profile) && locationListenerService == null) {
+            locationListenerService = new LocationListenerService(activity, googleMap, memberWhoMovingPosition, memberWhoMovingMarker, profile -> updateTimeView(profile, activity.getApplicationContext()));
+            if (!isMyServiceRunning(locationListenerService.getClass(), activity)) {
+                activity.startService(new Intent(activity, locationListenerService.getClass()));
+            }
+        } else if (positionListener == null) {
+            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
+                memberWhoMovingPosition = position;
+                draw(googleMap, activity);
+            });
+        }
     }
 
 
@@ -204,13 +199,21 @@ public class Moving implements State {
         }
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
 
+        if (positionListener != null) {
+            stopListenPosition(profile.getNoxboxId());
+            positionListener = null;
+        }
+
         googleMap.clear();
         memberWhoMovingMarker = null;
         memberWhoMovingPosition = null;
-        if (locationManager != null && locationListener != null) {
-            locationManager.removeUpdates(locationListener);
-            locationListener = null;
-            locationManager = null;
+        if (profile.getCurrent().getFinished()
+                || (!isNullOrZero(profile.getCurrent().getTimePartyVerified()) && !isNullOrZero(profile.getCurrent().getTimeOwnerVerified()))) {
+            if (locationManager != null && locationListener != null) {
+                locationManager.removeUpdates(locationListener);
+                locationListener = null;
+                locationManager = null;
+            }
         }
         MessagingService.removeNotifications(activity);
     }
@@ -264,7 +267,7 @@ public class Moving implements State {
     }
 
 
-    private static void updateTimeView(Profile profile, Context context) {
+    public static void updateTimeView(Profile profile, Context context) {
         if (movingView != null && childMovingView != null && timeView != null) {
             int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
                     profile.getCurrent().getPosition(),
@@ -296,96 +299,6 @@ public class Moving implements State {
         HashMap<String, String> data = new HashMap<>();
         data.put("type", type.name());
         NotificationFactory.buildNotification(context, profile, data).show();
-    }
-
-    //SERVICE CLASS
-    public static class LocationListenerService extends Service {
-
-        private LocationManager locationManager;
-        private LocationListener locationListener;
-        private Activity activity;
-
-        public LocationListenerService() {
-            super();
-        }
-
-        public LocationListenerService(Activity activity) {
-            super();
-
-            this.activity = activity;
-        }
-
-        @Override
-        public void onCreate() {
-            super.onCreate();
-        }
-
-        @Override
-        public int onStartCommand(Intent intent, int flags, int startId) {
-
-
-            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-            locationListener = new LocationListener() {
-                @SuppressLint("MissingPermission")
-                @Override
-                public void onLocationChanged(final Location location) {
-
-                    if ((!isNullOrZero(profile().getCurrent().getTimeOwnerVerified()) && !isNullOrZero(profile().getCurrent().getTimePartyVerified()))
-                            || !isNullOrZero(profile().getCurrent().getTimeCanceledByOwner())
-                            || !isNullOrZero(profile().getCurrent().getTimeCanceledByParty())
-                            || !isNullOrZero(profile().getCurrent().getTimeOwnerRejected())
-                            || !isNullOrZero(profile().getCurrent().getTimePartyRejected())
-                            || profile().getCurrent().getFinished()) {
-                        locationManager.removeUpdates(locationListener);
-                        stopSelf();
-                        return;
-                    }
-                    if (inForeground()) {
-                        memberWhoMovingPosition = Position.from(location);
-                        updateTimeView(profile(), getApplicationContext());
-                    } else {
-                        memberWhoMovingPosition = Position.from(location);
-                    }
-
-                    GeoRealtime.updatePosition(profile().getCurrent().getId(), memberWhoMovingPosition);
-
-
-                }
-
-                @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
-                }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-                }
-            };
-
-            if (isLocationPermissionGranted(getApplicationContext()))
-                locationManager.requestLocationUpdates(GPS_PROVIDER, MINIMUM_TIME_INTERVAL_BETWEEN_GPS_ACCESS_IN_SECONDS, MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS, locationListener);
-            else
-                startLocationPermissionRequest(activity, LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS);
-
-
-            return super.onStartCommand(intent, flags, startId);
-        }
-
-        @Override
-        public void onDestroy() {
-            super.onDestroy();
-        }
-
-        @Nullable
-        @Override
-        public IBinder onBind(Intent intent) {
-            return null;
-        }
-
-
     }
 
 
