@@ -269,8 +269,8 @@ public class ContractActivity extends BaseActivity {
                         price = bigDecimal.toString();
                         if (new BigDecimal(price).compareTo(new BigDecimal(MINIMUM_PRICE)) >= 0) {
                             inputLayout.setErrorEnabled(false);
-                            textCurrency.setText(showPriceInUsd(getString(R.string.currency), contract().getPrice()));
                             contract().setPrice(price);
+                            textCurrency.setText(showPriceInUsd(getString(R.string.currency), contract().getPrice()));
                             drawSimilarNoxboxList(profile);
                         } else {
                             showErrorMessage();

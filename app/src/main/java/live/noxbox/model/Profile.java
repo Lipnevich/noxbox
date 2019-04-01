@@ -170,7 +170,14 @@ public class Profile implements Serializable {
         }
         ratings.put(type.name(), rating);
 
+
+        Map<String, Portfolio> servicePortfolio = new HashMap<>();
+        if(role == MarketRole.supply && portfolio.get(type.name()) != null) {
+            servicePortfolio.put(type.name(), portfolio.get(type.name()));
+        }
+
         return new Profile().setId(getId())
+                .setPortfolio(servicePortfolio)
                 .setPosition(getPosition())
                 .setSuppliesRating(role == MarketRole.supply ? ratings : null)
                 .setDemandsRating(role == MarketRole.demand ? ratings : null)
