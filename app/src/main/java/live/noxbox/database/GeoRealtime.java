@@ -17,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Map;
 
 import live.noxbox.Constants;
+import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxTime;
@@ -61,7 +62,7 @@ public class GeoRealtime {
         Rating ownerRating = currentNoxbox.getRole() == MarketRole.supply ?
                 currentNoxbox.getOwner().getSuppliesRating().get(currentNoxbox.getType().name()) :
                 currentNoxbox.getOwner().getDemandsRating().get(currentNoxbox.getType().name());
-        if(ownerRating == null) {
+        if (ownerRating == null) {
             ownerRating = new Rating();
         }
 
@@ -98,8 +99,8 @@ public class GeoRealtime {
 
 
                 Rating rating = new Rating()
-                        .setReceivedLikes(Math.max(0,Integer.valueOf(values[index++])))
-                        .setReceivedDislikes(Math.max(0,Integer.valueOf(values[index++])));
+                        .setReceivedLikes(Math.max(0, Integer.valueOf(values[index++])))
+                        .setReceivedDislikes(Math.max(0, Integer.valueOf(values[index++])));
                 if (noxbox.getRole() == MarketRole.supply) {
                     noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
                 } else if (noxbox.getRole() == MarketRole.demand) {
@@ -123,10 +124,11 @@ public class GeoRealtime {
     private static GeoLocation currentLocation = new GeoLocation(0, 0);
     private static final double MIN_STEP = 0.01;
 
-    public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Map<String, Noxbox> noxboxes) {
+    public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Map<String, Noxbox> noxboxes, Object clazz) {
         //allow to recreate query once per three seconds
-        if (Math.abs(geoLocation.latitude - currentLocation.latitude) < MIN_STEP ||
+        if ((Math.abs(geoLocation.latitude - currentLocation.latitude) < MIN_STEP ||
                 Math.abs(geoLocation.longitude - currentLocation.longitude) < MIN_STEP)
+                && clazz == null)
             return;
         currentLocation = geoLocation;
 
@@ -143,6 +145,9 @@ public class GeoRealtime {
                         noxbox.getOwner().setPosition(Position.from(location));
                         noxboxes.put(noxbox.getId(), noxbox);
                     }
+                    if (clazz != null && clazz instanceof ContractActivity) {
+                        AppCache.executeAvailableNoxboxesTasks();
+                    }
                 }
 
                 @Override
@@ -150,6 +155,9 @@ public class GeoRealtime {
                     Noxbox noxbox = parseKey(key);
                     if (noxbox != null) {
                         noxboxes.remove(noxbox.getId());
+                    }
+                    if (clazz != null && clazz instanceof ContractActivity) {
+                        AppCache.executeAvailableNoxboxesTasks();
                     }
                 }
 
@@ -160,6 +168,7 @@ public class GeoRealtime {
 
                 @Override
                 public void onGeoQueryReady() {
+
                 }
 
                 @Override

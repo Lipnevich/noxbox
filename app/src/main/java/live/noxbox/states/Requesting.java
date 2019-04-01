@@ -23,10 +23,12 @@ import live.noxbox.services.MessagingService;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.MarkerCreator;
 
+import static live.noxbox.Constants.DEFAULT_MARKER_SIZE;
 import static live.noxbox.Constants.REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.states.Accepting.timeoutCurrent;
 import static live.noxbox.tools.MapOperator.drawPath;
+import static live.noxbox.tools.MarkerCreator.createCustomMarker;
 
 public class Requesting implements State {
 
@@ -63,7 +65,7 @@ public class Requesting implements State {
         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
 
         drawPath(activity, googleMap, profile);
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
+        createCustomMarker(profile.getCurrent(), googleMap, activity.getResources(),DEFAULT_MARKER_SIZE);
         Profile profileWhoComes = profile.getCurrent().getProfileWhoComes();
         if (profileWhoComes == null) return;
 

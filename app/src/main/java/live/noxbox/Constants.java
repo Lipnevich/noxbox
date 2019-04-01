@@ -39,4 +39,7 @@ public interface Constants {
 
     String FIRST_RUN_KEY = "FIRSTRUN";
     int MAX_MINUTES =  15;
+
+    int DEFAULT_MARKER_SIZE = 56;
+    int BIG_MARKER_SIZE = 78;
 }

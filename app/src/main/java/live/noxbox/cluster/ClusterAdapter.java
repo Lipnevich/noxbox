@@ -14,7 +14,9 @@ import java.util.List;
 
 import live.noxbox.R;
 import live.noxbox.activities.detailed.DetailedActivity;
+import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
@@ -41,22 +43,26 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
     @Override
     public void onBindViewHolder(@NonNull ClusterViewHolder clusterViewHolder, final int position) {
-        NoxboxType type = clusterItems.get(position).getNoxbox().getType();
+        Noxbox noxbox = clusterItems.get(position).getNoxbox();
+        if (!AppCache.availableNoxboxes.containsKey(noxbox.getId()))
+            return;
 
-        clusterViewHolder.icon.setImageResource(clusterItems.get(position).getNoxbox().getIcon());
+        NoxboxType type = noxbox.getType();
+
+        clusterViewHolder.icon.setImageResource(noxbox.getIcon());
 
         String rating;
 
-        if (clusterItems.get(position).getNoxbox().getRole() == MarketRole.supply) {
-            Rating supplyRating = clusterItems.get(position).getNoxbox().getOwner().getSuppliesRating().get(type.name());
-            if(supplyRating == null) {
+        if (noxbox.getRole() == MarketRole.supply) {
+            Rating supplyRating = noxbox.getOwner().getSuppliesRating().get(type.name());
+            if (supplyRating == null) {
                 supplyRating = new Rating();
             }
             rating = String.valueOf(Profile.ratingToPercentage(supplyRating.getReceivedLikes(),
                     supplyRating.getReceivedDislikes()));
         } else {
-            Rating demandRating = clusterItems.get(position).getNoxbox().getOwner().getDemandsRating().get(type.name());
-            if(demandRating == null) {
+            Rating demandRating = noxbox.getOwner().getDemandsRating().get(type.name());
+            if (demandRating == null) {
                 demandRating = new Rating();
             }
             rating = String.valueOf(Profile.ratingToPercentage(
@@ -64,10 +70,10 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
                     demandRating.getReceivedDislikes()));
         }
 
-        int travelModeImage = clusterItems.get(position).getNoxbox().getOwner().getTravelMode().getImage();
+        int travelModeImage = noxbox.getOwner().getTravelMode().getImage();
 
         String role;
-        if (clusterItems.get(position).getNoxbox().getRole() == MarketRole.supply) {
+        if (noxbox.getRole() == MarketRole.supply) {
             role = activity.getResources().getString(R.string.worker);
         } else {
             role = activity.getResources().getString(R.string.costumer);
@@ -75,12 +81,12 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
 
         clusterViewHolder.rating.setText(rating.concat("% ").concat(activity.getResources().getString(R.string.rating)));
         clusterViewHolder.type.setText(type.getName());
-        clusterViewHolder.price.setText(clusterItems.get(position).getNoxbox().getPrice());
+        clusterViewHolder.price.setText(noxbox.getPrice());
         clusterViewHolder.travelModeImage.setImageResource(travelModeImage);
         clusterViewHolder.role.setText(role);
 
         clusterViewHolder.rootView.setOnClickListener(v -> {
-            profile().setViewed(clusterItems.get(position).getNoxbox());
+            profile().setViewed(noxbox);
             Router.startActivity(activity, DetailedActivity.class);
         });
     }

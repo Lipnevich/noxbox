@@ -22,6 +22,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
+import live.noxbox.states.decorator.StatesDecorator;
 import live.noxbox.tools.SeparateStreamForStopwatch;
 import live.noxbox.tools.Task;
 import live.noxbox.tools.location.LocationUpdater;
@@ -58,6 +59,15 @@ public class AvailableNoxboxes implements State {
 
     private LocationUpdater locationUpdater;
 
+    private StatesDecorator decorator;
+
+    public AvailableNoxboxes(StatesDecorator decorator) {
+        this.decorator = decorator;
+    }
+
+    public AvailableNoxboxes() {
+    }
+
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
         this.googleMap = googleMap;
@@ -68,12 +78,12 @@ public class AvailableNoxboxes implements State {
         }
 
 
-        startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes);
+        startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes, null);
         if (clusterManager == null) {
             clusterManager = new ClusterManager(activity, googleMap);
         }
         googleMap.setOnMarkerClickListener(clusterManager.getRenderer());
-        googleMap.setOnCameraIdleListener(() -> startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes));
+        googleMap.setOnCameraIdleListener(() -> startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes, null));
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
@@ -115,6 +125,10 @@ public class AvailableNoxboxes implements State {
             };
             serviceHandler.post(serviceRunnable);
         }
+
+        if (decorator != null) {
+            decorator.draw(googleMap, activity);
+        }
     }
 
     public void onSaveRequestingLocationUpdatesState(Bundle savedInstanceState) {
@@ -131,6 +145,10 @@ public class AvailableNoxboxes implements State {
 
     @Override
     public void clear() {
+        if (decorator != null) {
+            decorator.clear();
+            decorator = null;
+        }
         if (locationUpdater != null) {
             locationUpdater.stopLocationUpdates();
             locationUpdater = null;
@@ -189,6 +207,8 @@ public class AvailableNoxboxes implements State {
         }
     };
 
-
+    public StatesDecorator getDecorator() {
+        return decorator;
+    }
 }
 

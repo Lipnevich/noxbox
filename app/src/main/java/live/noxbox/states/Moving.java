@@ -35,11 +35,11 @@ import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.services.MessagingService;
 import live.noxbox.tools.MapOperator;
-import live.noxbox.tools.MarkerCreator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.location.LocationListenerService;
 
+import static live.noxbox.Constants.DEFAULT_MARKER_SIZE;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.GeoRealtime.positionListener;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
@@ -50,6 +50,7 @@ import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.MapOperator.drawPath;
+import static live.noxbox.tools.MarkerCreator.createCustomMarker;
 import static live.noxbox.tools.MarkerCreator.drawMovingMemberMarker;
 import static live.noxbox.tools.Router.startActivity;
 import static live.noxbox.tools.ServiceMonitoring.isMyServiceRunning;
@@ -125,7 +126,7 @@ public class Moving implements State {
 
 
         drawPath(activity, googleMap, profile.getCurrent().getPosition(), memberWhoMovingPosition);
-        MarkerCreator.createCustomMarker(profile.getCurrent(), googleMap, activity.getResources());
+        createCustomMarker(profile.getCurrent(), googleMap, activity.getResources(),DEFAULT_MARKER_SIZE);
         if (memberWhoMovingMarker == null) {
             memberWhoMovingMarker = drawMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
                     memberWhoMovingPosition, googleMap, activity.getResources());

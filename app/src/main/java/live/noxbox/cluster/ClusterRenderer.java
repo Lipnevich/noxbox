@@ -22,14 +22,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.detailed.DetailedActivity;
-import live.noxbox.database.AppCache;
 import live.noxbox.debug.TimeLogger;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.MAX_ZOOM_LEVEL;
+import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.tools.Router.startActivity;
 
 public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
 
@@ -62,6 +65,11 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
             }
         }
 
+        //created decor
+        if (markerTag instanceof Noxbox) {
+            startActivity(activity, ContractActivity.class);
+        }
+
         return false;
     }
 
@@ -79,13 +87,11 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
     }
 
     private boolean onClusterItemClick(@NonNull final NoxboxMarker clusterItem) {
-        AppCache.readProfile(profile -> {
-            if (googleMap.getCameraPosition() != null && googleMap.getCameraPosition().target != null) {
-                profile.setPosition(Position.from(googleMap.getCameraPosition().target));
-            }
-            profile.setViewed(clusterItem.getNoxbox());
-            Router.startActivity(activity, DetailedActivity.class);
-        });
+        if (googleMap.getCameraPosition() != null && googleMap.getCameraPosition().target != null) {
+            profile().setPosition(Position.from(googleMap.getCameraPosition().target));
+        }
+        profile().setViewed(clusterItem.getNoxbox());
+        Router.startActivity(activity, DetailedActivity.class);
         return false;
     }
 
@@ -170,7 +176,7 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
 
     @Nullable
     private Cluster<NoxboxMarker> findParentCluster(@NonNull List<Cluster<NoxboxMarker>> clusters,
-                                         double latitude, double longitude) {
+                                                    double latitude, double longitude) {
         for (Cluster<NoxboxMarker> cluster : clusters) {
             if (cluster.contains(latitude, longitude)) {
                 return cluster;

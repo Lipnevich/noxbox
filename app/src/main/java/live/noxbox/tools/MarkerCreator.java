@@ -18,9 +18,9 @@ import live.noxbox.model.TravelMode;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 
 public class MarkerCreator {
-    public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Resources resources) {
+    public static Marker createCustomMarker(Noxbox noxbox, GoogleMap googleMap, Resources resources, int size) {
         Bitmap bitmap = BitmapFactory.decodeResource(resources, noxbox.getIcon());
-        Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(56), dpToPx(56), false);
+        Bitmap resizedImage = Bitmap.createScaledBitmap(bitmap, dpToPx(size), dpToPx(size), false);
 
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(noxbox.getPosition().toLatLng())

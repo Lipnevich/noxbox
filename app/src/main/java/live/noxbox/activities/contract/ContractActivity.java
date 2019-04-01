@@ -34,6 +34,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
@@ -52,6 +53,7 @@ import live.noxbox.model.TravelMode;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH;
@@ -67,6 +69,7 @@ import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
+import static live.noxbox.database.AppCache.startListenAvailableNoxboxes;
 import static live.noxbox.database.AppCache.startListenNoxbox;
 import static live.noxbox.database.Firestore.isFinished;
 import static live.noxbox.model.Noxbox.isNullOrZero;
@@ -159,12 +162,21 @@ public class ContractActivity extends BaseActivity {
             draw();
             checkBalance(profile, ContractActivity.this);
         });
+
+
+        startListenAvailableNoxboxes(ContractActivity.class, new Task<Map<String, Noxbox>>() {
+            @Override
+            public void execute(Map<String, Noxbox> noxboxes) {
+                drawSimilarNoxboxList(profile());
+            }
+        });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         AppCache.stopListen(ContractActivity.class.getName());
+        AppCache.stopListenAvailableNoxboxes(ContractActivity.class.getName());
     }
 
     private Noxbox contract() {
@@ -650,12 +662,11 @@ public class ContractActivity extends BaseActivity {
             @Override
             protected List<NoxboxMarker> doInBackground(Void... voids) {
                 List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
-                if (noxboxes == null) {
-                    noxboxes = new ArrayList<>();
-                    for (Noxbox item : AppCache.availableNoxboxes.values()) {
-                        noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
-                    }
+                noxboxes = new ArrayList<>();
+                for (Noxbox item : AppCache.availableNoxboxes.values()) {
+                    noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
                 }
+
 
                 for (NoxboxMarker item : noxboxes) {
                     if (item.getNoxbox().getOwner().equals(profile)) {
@@ -678,17 +689,17 @@ public class ContractActivity extends BaseActivity {
                     }
 
                     //price
-                    if (contract().getRole() == MarketRole.supply) {
-                        if (new BigDecimal(contract().getPrice())
-                                .compareTo(new BigDecimal(item.getNoxbox().getPrice())) > 0) {
-                            continue;
-                        }
-                    } else {
-                        if (new BigDecimal(contract().getPrice())
-                                .compareTo(new BigDecimal(item.getNoxbox().getPrice())) < 0) {
-                            continue;
-                        }
-                    }
+//                    if (contract().getRole() == MarketRole.supply) {
+//                        if (new BigDecimal(contract().getPrice())
+//                                .compareTo(new BigDecimal(item.getNoxbox().getPrice())) > 0) {
+//                            continue;
+//                        }
+//                    } else {
+//                        if (new BigDecimal(contract().getPrice())
+//                                .compareTo(new BigDecimal(item.getNoxbox().getPrice())) < 0) {
+//                            continue;
+//                        }
+//                    }
 
                     similarNoxboxes.add(item);
                 }

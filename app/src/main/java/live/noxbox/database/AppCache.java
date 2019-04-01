@@ -21,9 +21,11 @@ import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
+import live.noxbox.tools.location.LocationOperator;
 
 import static com.google.common.base.Objects.equal;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -39,9 +41,8 @@ import static live.noxbox.tools.MoneyFormatter.scale;
 public class AppCache {
 
     public static Map<String, Noxbox> availableNoxboxes = new ConcurrentHashMap<>();
-    public static BigDecimal wavesToUsd;
     private static final Profile profile;
-
+    public static BigDecimal wavesToUsd;
 
     static {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -52,6 +53,8 @@ public class AppCache {
         }
 
     }
+
+    private static Map<String, Task<Map<String, Noxbox>>> availableNoxboxesListener = new HashMap<>();
 
     public static Profile profile() {
         return profile;
@@ -106,6 +109,24 @@ public class AppCache {
             BusinessActivity.businessEvent(inBox);
         }
 
+    }
+
+    public static void startListenAvailableNoxboxes(Object clazz, final Task<Map<String, Noxbox>> task) {
+        GeoRealtime.startListenAvailableNoxboxes(Position.from(LocationOperator.location()).toGeoLocation(), availableNoxboxes, clazz);
+        availableNoxboxesListener.put(clazz.getClass().getName(), task);
+        
+        task.execute(availableNoxboxes);
+    }
+
+    public static void stopListenAvailableNoxboxes(String clazz) {
+        GeoRealtime.stopListenAvailableNoxboxes();
+        availableNoxboxesListener.remove(clazz);
+    }
+
+    public static void executeAvailableNoxboxesTasks() {
+        for (Map.Entry<String, Task<Map<String, Noxbox>>> entry : availableNoxboxesListener.entrySet()) {
+            entry.getValue().execute(availableNoxboxes);
+        }
     }
 
     public static void stopListen(String className) {

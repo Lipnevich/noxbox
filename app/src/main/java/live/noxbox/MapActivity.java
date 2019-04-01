@@ -119,9 +119,9 @@ public class MapActivity extends HackerActivity implements
 
     @Override
     protected void onResume() {
-        if(NetworkReceiver.isOnline(this)){
+        if (NetworkReceiver.isOnline(this)) {
             AppCache.startListening();
-        }else{
+        } else {
             ConfirmationMessage.messageOffline(this);
         }
         if (isLocationPermissionGranted(this)) {
@@ -144,12 +144,12 @@ public class MapActivity extends HackerActivity implements
         googleApiClient.disconnect();
 
         AppCache.stopListen(this.getClass().getName());
+        if (currentState != null) currentState.clear();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (currentState != null) currentState.clear();
     }
 
 
@@ -237,7 +237,7 @@ public class MapActivity extends HackerActivity implements
                     case Activity.RESULT_CANCELED:
                         Crashlytics.logException(new LocationException("User chose not to make required location settings changes."));
                         Bundle bundle = new Bundle();
-                        bundle.putBoolean(KEY_REQUESTING_LOCATION_UPDATES,false);
+                        bundle.putBoolean(KEY_REQUESTING_LOCATION_UPDATES, false);
                         updateValuesFromBundle(bundle);
                         break;
                 }
@@ -270,6 +270,17 @@ public class MapActivity extends HackerActivity implements
                 return;
             }
 
+            if (profile.getCurrent() != null && NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created
+                    && currentState instanceof AvailableNoxboxes
+                    && newState instanceof AvailableNoxboxes
+                    && ((AvailableNoxboxes) currentState).getDecorator() == null
+                    && ((AvailableNoxboxes) newState).getDecorator() != null) {
+                currentState.clear();
+                currentState = newState;
+                measuredDraw(newState);
+                return;
+            }
+
             measuredDraw(currentState);
         });
     }
@@ -291,7 +302,7 @@ public class MapActivity extends HackerActivity implements
                 newState = new AvailableNoxboxes();
                 break;
             case created:
-                newState = new Created();
+                newState = new AvailableNoxboxes(new Created());
                 break;
             case requesting:
                 newState = new Requesting();
