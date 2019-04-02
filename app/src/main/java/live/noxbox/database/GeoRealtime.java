@@ -18,6 +18,7 @@ import java.util.Map;
 
 import live.noxbox.Constants;
 import live.noxbox.activities.contract.ContractActivity;
+import live.noxbox.cluster.ClusterItemsActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxTime;
@@ -124,11 +125,11 @@ public class GeoRealtime {
     private static GeoLocation currentLocation = new GeoLocation(0, 0);
     private static final double MIN_STEP = 0.01;
 
-    public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Map<String, Noxbox> noxboxes, Object clazz) {
+    public static void startListenAvailableNoxboxes(GeoLocation geoLocation, final Map<String, Noxbox> noxboxes, String className) {
         //allow to recreate query once per three seconds
         if ((Math.abs(geoLocation.latitude - currentLocation.latitude) < MIN_STEP ||
                 Math.abs(geoLocation.longitude - currentLocation.longitude) < MIN_STEP)
-                && clazz == null)
+                && className == null)
             return;
         currentLocation = geoLocation;
 
@@ -145,7 +146,9 @@ public class GeoRealtime {
                         noxbox.getOwner().setPosition(Position.from(location));
                         noxboxes.put(noxbox.getId(), noxbox);
                     }
-                    if (clazz != null && clazz instanceof ContractActivity) {
+                    if (className != null
+                            && (className.equals(ContractActivity.class.toString())
+                            || className.equals(ClusterItemsActivity.class.toString()))) {
                         AppCache.executeAvailableNoxboxesTasks();
                     }
                 }
@@ -156,7 +159,9 @@ public class GeoRealtime {
                     if (noxbox != null) {
                         noxboxes.remove(noxbox.getId());
                     }
-                    if (clazz != null && clazz instanceof ContractActivity) {
+                    if (className != null
+                            && (className.equals(ContractActivity.class.toString())
+                            || className.equals(ClusterItemsActivity.class.toString()))) {
                         AppCache.executeAvailableNoxboxesTasks();
                     }
                 }

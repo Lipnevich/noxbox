@@ -58,19 +58,23 @@ public enum NotificationType {
             case requesting: {
                 data.put("type", NotificationType.requesting.name());
                 data.put("time", current.getTimeRequested() + "");
+                break;
             }
 
             case accepting: {
                 data.put("type", NotificationType.accepting.name());
                 data.put("id", current.getId());
+                break;
             }
             case moving: {
                 data.put("type", NotificationType.moving.name());
                 data.put("id", current.getId());
+                break;
             }
             case performing: {
                 data.put("type", NotificationType.performing.name());
                 data.put("id", current.getId());
+                break;
             }
 
         }

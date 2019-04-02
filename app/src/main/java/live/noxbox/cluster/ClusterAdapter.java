@@ -34,6 +34,16 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         this.activity = activity;
     }
 
+    public void add(NoxboxMarker noxboxMarker, int position) {
+        clusterItems.add(position, noxboxMarker);
+        notifyItemInserted(position);
+    }
+
+    public void remove(int position){
+        clusterItems.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @NonNull
     @Override
     public ClusterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {

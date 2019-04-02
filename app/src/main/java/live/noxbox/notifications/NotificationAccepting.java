@@ -13,8 +13,6 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.model.Profile;
 
-import static live.noxbox.tools.Events.inForeground;
-
 public class NotificationAccepting extends Notification {
 
     public NotificationAccepting(Context context, Profile profile, Map<String, String> data) {
@@ -32,7 +30,6 @@ public class NotificationAccepting extends Notification {
 
     @Override
     public void show() {
-        if (inForeground()) return;
 
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());

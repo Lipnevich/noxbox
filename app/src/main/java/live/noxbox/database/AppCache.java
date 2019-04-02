@@ -54,6 +54,7 @@ public class AppCache {
 
     }
 
+    //key is class name
     private static Map<String, Task<Map<String, Noxbox>>> availableNoxboxesListener = new HashMap<>();
 
     public static Profile profile() {
@@ -111,16 +112,16 @@ public class AppCache {
 
     }
 
-    public static void startListenAvailableNoxboxes(Object clazz, final Task<Map<String, Noxbox>> task) {
-        GeoRealtime.startListenAvailableNoxboxes(Position.from(LocationOperator.location()).toGeoLocation(), availableNoxboxes, clazz);
-        availableNoxboxesListener.put(clazz.getClass().getName(), task);
+    public static void startListenAvailableNoxboxes(String className, final Task<Map<String, Noxbox>> task) {
+        GeoRealtime.startListenAvailableNoxboxes(Position.from(LocationOperator.location()).toGeoLocation(), availableNoxboxes, className);
+        availableNoxboxesListener.put(className, task);
 
         task.execute(availableNoxboxes);
     }
 
-    public static void stopListenAvailableNoxboxes(String clazz) {
+    public static void stopListenAvailableNoxboxes(String className) {
         GeoRealtime.stopListenAvailableNoxboxes();
-        availableNoxboxesListener.remove(clazz);
+        availableNoxboxesListener.remove(className);
     }
 
     public static void executeAvailableNoxboxesTasks() {

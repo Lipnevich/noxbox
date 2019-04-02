@@ -41,15 +41,12 @@ public class NotificationPerforming extends Notification {
 
     @Override
     public void show() {
-        Task<Noxbox> task = new Task<Noxbox>() {
-            @Override
-            public void execute(Noxbox noxbox) {
-                if (noxbox != null && !isNullOrZero(noxbox.getTimeCompleted()))
-                    return;
+        Task<Noxbox> task = noxbox -> {
+            if (noxbox != null && !isNullOrZero(noxbox.getTimeCompleted()))
+                return;
 
-                builder = getNotificationCompatBuilder();
-                getNotificationService(context).notify(type.getGroup(), builder.build());
-            }
+            builder = getNotificationCompatBuilder();
+            getNotificationService(context).notify(type.getGroup(), builder.build());
         };
 
         if (profile == null) {

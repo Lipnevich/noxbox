@@ -33,7 +33,7 @@ public class NotificationRequesting extends Notification {
 
     @Override
     public void show() {
-        if (inForeground()) return;
+        if (inForeground() && !silent) return;
         if (profile.getCurrent() != null
                 && (!isNullOrZero(profile.getCurrent().getTimeAccepted()) || profile.getCurrent().getFinished()))
             return;

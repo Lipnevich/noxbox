@@ -165,7 +165,7 @@ public class ContractActivity extends BaseActivity {
         });
 
 
-        startListenAvailableNoxboxes(ContractActivity.class, new Task<Map<String, Noxbox>>() {
+        startListenAvailableNoxboxes(ContractActivity.class.toString(), new Task<Map<String, Noxbox>>() {
             @Override
             public void execute(Map<String, Noxbox> noxboxes) {
                 drawSimilarNoxboxList(profile());
@@ -177,7 +177,7 @@ public class ContractActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
         AppCache.stopListen(ContractActivity.class.getName());
-        AppCache.stopListenAvailableNoxboxes(ContractActivity.class.getName());
+        AppCache.stopListenAvailableNoxboxes(ContractActivity.class.toString());
     }
 
     private Noxbox contract() {

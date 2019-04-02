@@ -40,7 +40,7 @@ public class NotificationMoving extends Notification {
 
     @Override
     public void show() {
-        if (inForeground()) return;
+        if (inForeground() && !silent) return;
         Task<Noxbox> task = noxbox -> {
             if (noxbox != null && (
                     (!isNullOrZero(noxbox.getTimePartyVerified()) && !isNullOrZero(noxbox.getTimeOwnerVerified()))
