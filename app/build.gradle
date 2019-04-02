@@ -78,6 +78,8 @@ dependencies {
     implementation 'com.gjiazhe:PanoramaImageView:1.0'
     implementation 'in.shadowfax:proswipebutton:1.1'
     implementation 'com.android.volley:volley:1.1.1'
+
+    implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
     //test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
