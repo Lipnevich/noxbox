@@ -57,7 +57,6 @@ public enum NotificationType {
         switch (state) {
             case requesting: {
                 data.put("type", NotificationType.requesting.name());
-                data.put("time", current.getTimeRequested() + "");
                 break;
             }
 

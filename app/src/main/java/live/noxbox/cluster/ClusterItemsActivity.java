@@ -21,9 +21,10 @@ import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
+import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
-import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.Task;
 
 import static java.util.Collections.sort;
 
@@ -52,7 +53,19 @@ public class ClusterItemsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.listenProfile(this.getClass().getName(), this::draw);
+        AppCache.listenProfile(this.getClass().getName(), profile -> draw());
+        AppCache.startListenAvailableNoxboxes(ClusterItemsActivity.class.toString(), new Task<Map<String, Noxbox>>() {
+            @Override
+            public void execute(Map<String, Noxbox> object) {
+                draw();
+            }
+        });
+}
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AppCache.stopListenAvailableNoxboxes(ClusterItemsActivity.class.toString());
     }
 
     private void initializeUi() {
@@ -68,7 +81,7 @@ public class ClusterItemsActivity extends BaseActivity {
         }
     }
 
-    private void draw(final Profile profile) {
+    private void draw() {
         separationNoxboxesByRole();
         initClusterItemsLists();
         updateClusterItemsList();
@@ -104,8 +117,10 @@ public class ClusterItemsActivity extends BaseActivity {
     }
 
     private void updateClusterItemsList() {
+
         supplyList.setAdapter(new ClusterAdapter(supplyNoxboxes, this));
         demandList.setAdapter(new ClusterAdapter(demandNoxboxes, this));
+
     }
 
     private void showSettings() {

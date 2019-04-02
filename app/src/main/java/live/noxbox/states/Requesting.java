@@ -61,7 +61,6 @@ public class Requesting implements State {
 
         HashMap<String, String> data = new HashMap<>();
         data.put("type", NotificationType.requesting.name());
-        data.put("time", profile.getCurrent().getTimeRequested() + "");
         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
 
         drawPath(activity, googleMap, profile);

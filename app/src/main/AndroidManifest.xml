@@ -108,6 +108,9 @@
         <service
             android:name=".tools.location.LocationListenerService"
             android:enabled="true" />
+        <service
+            android:name=".services.NotificationService"
+            android:enabled="true" />
 
         <receiver android:name=".notifications.Notification$CancelRequestListener">
             <intent-filter>
