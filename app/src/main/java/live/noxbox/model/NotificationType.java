@@ -1,5 +1,8 @@
 package live.noxbox.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import live.noxbox.R;
 
 /**
@@ -43,9 +46,34 @@ public enum NotificationType {
         return group;
     }
 
-
     public int getContent() {
         return content;
     }
 
+    public static Map<String, String> fromNoxboxState(Profile profile) {
+        Noxbox current  = profile.getCurrent();
+        NoxboxState state = NoxboxState.getState(current, profile);
+        Map<String, String> data = new HashMap<>();
+        switch (state) {
+            case requesting: {
+                data.put("type", NotificationType.requesting.name());
+                data.put("time", current.getTimeRequested() + "");
+            }
+
+            case accepting: {
+                data.put("type", NotificationType.accepting.name());
+                data.put("id", current.getId());
+            }
+            case moving: {
+                data.put("type", NotificationType.moving.name());
+                data.put("id", current.getId());
+            }
+            case performing: {
+                data.put("type", NotificationType.performing.name());
+                data.put("id", current.getId());
+            }
+
+        }
+        return data;
+    }
 }

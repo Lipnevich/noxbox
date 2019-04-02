@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 
-import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.services.NetworkReceiver;
 import live.noxbox.tools.ProgressDialogFragment;
 import live.noxbox.tools.Router;
@@ -17,7 +16,7 @@ import live.noxbox.tools.Router;
 import static live.noxbox.Constants.FIRST_RUN_KEY;
 import static live.noxbox.tools.BalanceChecker.cancelBalanceUpdate;
 
-public abstract class BaseActivity extends BusinessActivity {
+public abstract class BaseActivity extends NotificationActivity {
     protected BroadcastReceiver networkReceiver;
 
     private SharedPreferences firstRunPreference;

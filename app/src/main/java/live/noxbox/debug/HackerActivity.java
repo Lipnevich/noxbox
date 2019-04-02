@@ -2,8 +2,6 @@ package live.noxbox.debug;
 
 import android.view.View;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.SetOptions;
@@ -21,7 +19,6 @@ import live.noxbox.database.AppCache;
 import live.noxbox.database.Firestore;
 import live.noxbox.menu.MenuActivity;
 import live.noxbox.model.NotificationType;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
@@ -29,15 +26,13 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.model.Wallet;
 import live.noxbox.notifications.factory.NotificationFactory;
-import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.debug.DebugMessage.popup;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
-public class HackerActivity extends MenuActivity implements OnMapReadyCallback {
+public class HackerActivity extends MenuActivity{
 
     private List<NotificationType> photoPushes = Arrays.asList(NotificationType.values());
     private Iterator<NotificationType> iterator = photoPushes.iterator();
@@ -50,17 +45,6 @@ public class HackerActivity extends MenuActivity implements OnMapReadyCallback {
             .setName("Granny Smith")
             .setPhoto(NoxboxExamples.PHOTO_MOCK);
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        if (!BuildConfig.DEBUG) return;
-        googleMap.setOnMapClickListener(location -> {
-            googleMap.clear();
-            for(Noxbox noxbox : availableNoxboxes.values()) {
-                MapOperator.drawPath(HackerActivity.this, googleMap,
-                    location, noxbox.getPosition().toLatLng());
-            }
-        });
-    }
 
     @Override
     protected void onResume() {

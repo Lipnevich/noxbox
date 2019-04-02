@@ -11,23 +11,14 @@ import java.util.Map;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;
-import live.noxbox.analitics.BusinessActivity;
-import live.noxbox.database.Firestore;
 import live.noxbox.model.Profile;
 
-import static live.noxbox.analitics.BusinessEvent.timeout;
-import static live.noxbox.database.AppCache.NONE;
-import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.Events.inForeground;
 
 public class NotificationAccepting extends Notification {
 
-    private String timeAccepted;
-
     public NotificationAccepting(Context context, Profile profile, Map<String, String> data) {
         super(context, profile, data);
-
-        timeAccepted = data.get("timeAccepted");
 
         contentView = new RemoteViews(context.getPackageName(), R.layout.notification_accepting);
 
@@ -43,25 +34,7 @@ public class NotificationAccepting extends Notification {
     public void show() {
         if (inForeground()) return;
 
-        if (timeAccepted != null && timeAccepted.length() == 0)
-            return;
-
         final NotificationCompat.Builder builder = getNotificationCompatBuilder();
         getNotificationService(context).notify(type.getGroup(), builder.build());
-        try {
-            Thread.sleep(60000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Firestore.readNoxbox(noxboxId, noxbox -> {
-            if (isNullOrZero(noxbox.getTimeAccepted())
-                    && !noxbox.getFinished()) {
-                noxbox.setTimeTimeout(System.currentTimeMillis());
-                BusinessActivity.businessEvent(timeout);
-                Firestore.updateNoxbox(noxbox, NONE, NONE);
-            }
-        });
-
-
     }
 }

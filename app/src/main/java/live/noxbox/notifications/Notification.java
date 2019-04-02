@@ -48,6 +48,7 @@ public abstract class Notification {
     protected String notificationTime;
     protected Map<String, String> data;
     protected String noxboxId;
+    protected boolean silent;
 
     // first value is Initial delay ..
     // second value is Vibrate for ..
@@ -72,11 +73,14 @@ public abstract class Notification {
         removeNotifications(context);
     }
 
-    public void show() {
-
-    }
+    public abstract void show();
 
     public void update(Map<String, String> data) {
+    }
+
+    public Notification setSilent(boolean silent) {
+        this.silent = silent;
+        return this;
     }
 
     protected NotificationCompat.Builder getNotificationCompatBuilder() {
@@ -95,6 +99,13 @@ public abstract class Notification {
         else
             builder.setContent(contentView)
                     .setPriority(android.app.Notification.PRIORITY_MAX);
+
+        makeNoise();
+        return builder;
+    }
+
+    private void makeNoise() {
+        if (silent) return;
 
         switch (type) {
             case photoUploadingProgress:
@@ -121,7 +132,6 @@ public abstract class Notification {
                 ringtone.play();
             }
         }
-        return builder;
     }
 
     protected static NotificationManager getNotificationService(Context context) {

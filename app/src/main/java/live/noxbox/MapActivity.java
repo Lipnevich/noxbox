@@ -155,7 +155,6 @@ public class MapActivity extends HackerActivity implements
 
     @Override
     public void onMapReady(GoogleMap readyMap) {
-        super.onMapReady(readyMap);
         googleMap = readyMap;
 
         updateLocation(this, googleMap);
