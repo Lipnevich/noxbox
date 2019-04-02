@@ -114,7 +114,7 @@ public class AppCache {
     public static void startListenAvailableNoxboxes(Object clazz, final Task<Map<String, Noxbox>> task) {
         GeoRealtime.startListenAvailableNoxboxes(Position.from(LocationOperator.location()).toGeoLocation(), availableNoxboxes, clazz);
         availableNoxboxesListener.put(clazz.getClass().getName(), task);
-        
+
         task.execute(availableNoxboxes);
     }
 
