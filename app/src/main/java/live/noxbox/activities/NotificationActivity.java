@@ -1,5 +1,7 @@
 package live.noxbox.activities;
 
+import java.util.Map;
+
 import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
@@ -21,7 +23,11 @@ public class NotificationActivity extends BusinessActivity {
     protected void onPause() {
         super.onPause();
         AppCache.readProfile(profile -> {
-            NotificationFactory.buildNotification(getApplicationContext(), profile, NotificationType.fromNoxboxState(profile)).setSilent(true).show();
+
+            Map<String, String> data = NotificationType.fromNoxboxState(profile);
+            if (data.isEmpty()) return;
+
+            NotificationFactory.buildNotification(getApplicationContext(), profile, data).setSilent(true).show();
         });
 
     }
