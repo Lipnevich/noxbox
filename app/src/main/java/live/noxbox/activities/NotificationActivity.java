@@ -18,6 +18,9 @@ public class NotificationActivity extends BusinessActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(ServiceMonitoring.isMyServiceRunning(NotificationService.class, getApplicationContext())){
+            stopService(new Intent(getApplicationContext(), NotificationService.class));
+        }
         MessagingService.removeNotifications(getApplicationContext());
     }
 
@@ -28,7 +31,7 @@ public class NotificationActivity extends BusinessActivity {
                 && profile().getCurrent().getTimeRequested() != null
                 && !profile().getCurrent().getFinished()
                 && !ServiceMonitoring.isMyServiceRunning(NotificationService.class, getApplicationContext())) {
-            startService(new Intent(getApplicationContext(), new NotificationService().getClass()));
+            startService(new Intent(getApplicationContext(), NotificationService.class));
         }
 
     }

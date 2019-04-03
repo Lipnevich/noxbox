@@ -18,7 +18,6 @@ import static live.noxbox.Constants.FIRST_DEMONSTRATION_KEY;
  */
 public class DemonstrationActivity extends HackerActivity {
     private SharedPreferences demonstrationPreference;
-    private boolean hasShown;
 
 
     protected boolean isFirstRunDemonstration() {
@@ -35,8 +34,7 @@ public class DemonstrationActivity extends HackerActivity {
     }
 
     protected void startDemonstration() {
-        if (!isFirstRunDemonstration() && !hasShown) return;
-        hasShown = true;
+        if (!isFirstRunDemonstration()) return;
         final Activity activity = this;
         new ShowcaseView.Builder(activity)
                 .setTarget(new ViewTarget(R.id.menu, activity))
