@@ -49,7 +49,7 @@ public class HackerActivity extends MenuActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (!BuildConfig.DEBUG) return;
+        if (true || !BuildConfig.DEBUG) return;
 
         AppCache.listenProfile(HackerActivity.class.getName(), i -> {
             HackerActivity.this.findViewById(R.id.debugNotify).setVisibility(View.GONE);

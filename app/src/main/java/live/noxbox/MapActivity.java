@@ -246,7 +246,7 @@ public class MapActivity extends DemonstrationActivity implements
         AppCache.listenProfile(this.getClass().getName(), profile -> {
             if (googleMap == null) return;
 
-            startDemonstration();
+//            startDemonstration();
 
             State newState = getFragment(profile);
             if (newState instanceof AvailableNoxboxes && requestLocationUpdatesBundle != null) {

@@ -89,6 +89,9 @@
         <li class="nav-item">
           <a class="nav-link js-scroll-trigger" href="#team">$team</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link js-scroll-trigger" href="$langLink">$lang</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -96,33 +99,7 @@
 
 <!-- Header -->
 <header class="masthead">
-  <div class="container">
-    <!--Socials-->
-    <div class="row justify-content-end socials">
-      <div class="col-lg-4">
-        <ul class="list-inline">
-          <li class="list-inline-item">
-            <a href="index.html"><img class="img-fluid" width="32px" src="img/lang/ru.svg"/></a>
-          </li>
-          <li class="list-inline-item">
-            <a href="en.html"><img class="img-fluid" width="32px" src="img/lang/us.svg"/></a>
-          </li>
-          <li class="list-inline-item">
-            <a href="id.html"><img class="img-fluid" width="32px" src="img/lang/id.svg"/></a>
-          </li>
-          <li class="list-inline-item">
-            <a href="ja.html"><img class="img-fluid" width="32px" src="img/lang/ja.svg"/></a>
-          </li>
-          <li class="list-inline-item">
-            <a href="ko.html"><img class="img-fluid" width="32px" src="img/lang/ko.svg"/></a>
-          </li>
-          <li class="list-inline-item">
-            <a href="zh.html"><img class="img-fluid" width="32px" src="img/lang/zh.svg"/></a>
-          </li>
-        </ul>
-      </div>
-    </div>
-
+  <div class="container" style="padding: 160px 0">
     <div class="row">
       <div class="col-md-2"></div>
       <div class="col-md-8 embed-responsive embed-responsive-16by9">
@@ -136,7 +113,9 @@
 </header>
 
 <!-- Tutorial -->
-<section>
+<section style="padding: 0px 0">
+  <div style="background:url(img/starsandkometa.svg); background-size: cover;" >
+    <div class="container" >
   <div class="text-center carousel slide" data-ride="carousel" id="tutorial">
     <!-- Indicators -->
     <ul class="carousel-indicators">
@@ -147,7 +126,7 @@
     </ul>
 
     <!-- The slideshow -->
-    <div class="carousel-inner" style="background:url(img/starsandkometa.svg); background-size: cover;" >
+    <div class="carousel-inner" >
       <div class="carousel-item active" >
         <img width="50%" src="img/find.svg" alt="">
         <div class="carousel-caption">
@@ -181,6 +160,8 @@
     <a class="carousel-control-next" href="#tutorial" data-slide="next">
       <span class="carousel-control-next-icon"></span>
     </a>
+  </div>
+  </div>
   </div>
 </section>
 
@@ -225,21 +206,23 @@
     </div>
     <div class="row">
       <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 text-center">
-        <img class="mobile" class="team-member" src="img/mobile.png" />
+        <img class="mobile" class="team-member" src="img/mobile.jpg" />
         <br/>
         <br/>
       </div>
       <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12 text-left" >
         <p class="list-item">
           $mobile_application
-          <a target="_blank" href="https://play.google.com/apps/testing/live.noxbox">$Noxbox_title</a></p>
-        <p class="list-item">$noxbox_logic</p>
-        </p>
+          <a target="_blank" href="https://play.google.com/store/apps/details?id=live.noxbox">$Noxbox_title</a></p>
+        <p class="list-item">$uploadPhoto</p>
+        <p class="list-item">$notify</p>
+        <p class="list-item">$verifyPhoto</p>
+        <p class="list-item">$complete</p>
       </div>
     </div>
     <div class="row text-center">
       <div class="col-md-12">
-        <a target="_blank" href='https://play.google.com/apps/testing/live.noxbox'>
+        <a target="_blank" href='https://play.google.com/store/apps/details?id=live.noxbox'>
           <img width="240px" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
         $Noxbox_title
       </div>
@@ -455,10 +438,10 @@
   <div class="container">
     <div class="row">
       <div class="col-md-4">
-        <span class="copyright">Copyright &copy; Noxbox 2018</span>
+        <a target="_blank" href="$rulesLink">Rules</a>
       </div>
       <div class="col-md-4">
-        <a target="_blank" href="$rulesLink">Rules</a>
+        <a target="_blank" href="$privacyPolicyLink">Privacy Policy</a>
       </div>
       <div class="col-md-4">
         <ul class="list-inline social-buttons">
