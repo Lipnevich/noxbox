@@ -43,5 +43,5 @@ public interface Constants {
     String FIRST_DEMONSTRATION_KEY = "DEMONSTRATION";
 
     int DEFAULT_MARKER_SIZE = 56;
-    int BIG_MARKER_SIZE = 78;
+    int BIG_MARKER_SIZE = 64;
 }
