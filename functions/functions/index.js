@@ -231,6 +231,9 @@ exports.transfer = functions.https.onCall(async (data, context) => {
     let currentNoxboxToPay = await db.collection('noxboxes')
         .where('payerId', '==', context.auth.uid).where('finished', '==', false).get();
     if(!currentNoxboxToPay.empty) {
+        currentNoxboxToPay.forEach(one => {
+            console.log('notFinished', one.data().id);
+        });
         throw Error ('Attempt to return money with not finished noxbox');
     }
     let request = { addressToTransfer : data.addressToTransfer};
