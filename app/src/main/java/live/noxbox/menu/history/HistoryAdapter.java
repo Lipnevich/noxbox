@@ -46,6 +46,7 @@ import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.MoneyFormatter;
 import live.noxbox.tools.Task;
 
+import static io.fabric.sdk.android.services.common.CommonUtils.isNullOrEmpty;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.menu.history.HistoryActivity.isHistoryEmpty;
@@ -244,7 +245,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         long timeStartPerforming = noxbox.getTimePartyVerified() > noxbox.getTimeOwnerVerified() ? noxbox.getTimePartyVerified() : noxbox.getTimeOwnerVerified();
         viewHolder.noxboxType.setText(activity.getResources().getString(noxbox.getType().getName()).concat(", "
                 .concat(getFormatTimeFromMillis(timeStartPerforming, noxbox.getTimeCompleted(), activity.getResources()))));
-        viewHolder.price.setText(MoneyFormatter.format(new BigDecimal(noxbox.getTotal())).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getTotal())));
+        if(!isNullOrEmpty(noxbox.getTotal())){
+            viewHolder.price.setText(MoneyFormatter.format(new BigDecimal(noxbox.getTotal())).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getTotal())));
+        }
 
         viewHolder.rootHistoryLayout.setOnClickListener(view1 -> onClick(viewHolder, noxbox));
         if (noxbox.getTimeCompleted() == lastNoxboxTimeCompleted && !wasLastNoxboxTimeCompletedFound) {

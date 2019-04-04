@@ -41,18 +41,18 @@ public class IconGenerator {
         TextView clusterIconView = (TextView) LayoutInflater.from(context)
                 .inflate(R.layout.map_cluster_icon, null);
 
-        if(mClusterItemIcon == null) {
+        if (mClusterItemIcon == null) {
             Drawable dr = context.getResources().getDrawable(R.drawable.noxbox);
             Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
             mClusterItemIcon = new BitmapDrawable(context.getResources(),
-                Bitmap.createScaledBitmap(bitmap, dpToPx(64), dpToPx(64), true));
+                    Bitmap.createScaledBitmap(bitmap, dpToPx(64), dpToPx(64), true));
         }
 
         clusterIconView.setBackground(mClusterItemIcon);
 
         clusterIconView.setTextColor(context.getResources().getColor(R.color.secondary));
 
-        clusterIconView.setTextSize(36);
+        clusterIconView.setTextSize(16 * context.getResources().getDisplayMetrics().density);
         clusterIconView.setText(String.valueOf(clusterBucket));
 
         clusterIconView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
