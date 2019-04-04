@@ -2,7 +2,6 @@ package live.noxbox.tools;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.widget.Toast;
 
 import live.noxbox.debug.DebugMessage;
 
@@ -18,7 +17,7 @@ public class ServiceMonitoring {
                 return true;
             }
         }
-        DebugMessage.popup(context,"LocationListenerService isn't running", Toast.LENGTH_LONG);
+        //DebugMessage.popup(context,"LocationListenerService isn't running", Toast.LENGTH_LONG);
         return false;
     }
 }
