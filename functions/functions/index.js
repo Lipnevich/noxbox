@@ -4,7 +4,7 @@ const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
 const wallet = require('./wallet-functions');
-const version = 6;
+const version = 7;
 
 const db = admin.firestore();
 db.settings({timestampsInSnapshots: true});
@@ -118,27 +118,19 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
             console.log('push sent' + JSON.stringify(push));
     }else if(!previousNoxbox.timeCompleted && noxbox.timeCompleted){
         operationName = 'Completed';
-        let timeStart = noxbox.timeOwnerVerified > noxbox.timePartyVerified ? noxbox.timeOwnerVerified : noxbox.timePartyVerified;
-        let timeSpent = Date.now() - timeStart;
         let payer = noxbox.role === 'demand' ? noxbox.owner : noxbox.party;
         console.log('payer', payer);
         let performer = noxbox.role === 'demand' ? noxbox.party : noxbox.owner;
         console.log('performer', performer);
-        let moneyToPay = new BigDecimal('' + timeSpent)
-            .div(60 * 60 * 1000)
-            .mul(new BigDecimal('' + noxbox.price));
+        let moneyToPay = new BigDecimal(noxbox.price));
 
         let request = { };
         request.addressToTransfer = performer.wallet.address;
         request.encrypted = (await db.collection('seeds').doc(noxbox.payerId).get()).data().seed;
-        request.minPayment = new BigDecimal('' + noxbox.price).div(4);
+        request.attachment = 'Payment for ' + noxbox.type + '. Processed with love by NoxBox';
         request.transferable = moneyToPay;
 
         await wallet.send(request);
-
-        noxbox.total = request.transferred;
-        // TODO check it
-//        db.collection('noxboxes').doc(noxbox.id).update(noxbox);
 
         let push = {
               data: {
@@ -236,8 +228,10 @@ exports.transfer = functions.https.onCall(async (data, context) => {
         });
         throw Error ('Attempt to return money with not finished noxbox');
     }
+
     let request = { addressToTransfer : data.addressToTransfer};
     request.encrypted = (await db.collection('seeds').doc(context.auth.uid).get()).data().seed;
+    request.attachment = 'Money transfer. Processed with love by NoxBox';
     return wallet.send(request);
 });
 

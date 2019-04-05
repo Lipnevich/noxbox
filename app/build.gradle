@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 184
-        versionName "1.01"
+        versionCode 185
+        versionName "1.03"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -80,7 +80,6 @@ dependencies {
     implementation 'in.shadowfax:proswipebutton:1.1'
     implementation 'com.android.volley:volley:1.1.1'
 
-    implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
     //test
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

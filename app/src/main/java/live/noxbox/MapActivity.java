@@ -36,8 +36,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
-import live.noxbox.activities.DemonstrationActivity;
 import live.noxbox.database.AppCache;
+import live.noxbox.debug.HackerActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
@@ -69,7 +69,7 @@ import static live.noxbox.tools.location.LocationOperator.updateLocation;
 import static live.noxbox.tools.location.LocationUpdater.KEY_REQUESTING_LOCATION_UPDATES;
 import static live.noxbox.tools.location.LocationUpdater.REQUEST_CHECK_LOCATION_SETTINGS;
 
-public class MapActivity extends DemonstrationActivity implements
+public class MapActivity extends HackerActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 
