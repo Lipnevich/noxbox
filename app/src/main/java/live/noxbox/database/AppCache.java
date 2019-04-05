@@ -36,6 +36,7 @@ import static live.noxbox.database.Firestore.writeProfile;
 import static live.noxbox.database.GeoRealtime.createKey;
 import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.database.GeoRealtime.online;
+import static live.noxbox.tools.BalanceChecker.cleanRequestBalanceQueue;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
 public class AppCache {
@@ -188,6 +189,7 @@ public class AppCache {
 
     public static void logout() {
         clearTasks();
+        cleanRequestBalanceQueue();
         if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
             offline(profile.getCurrent());
         }
@@ -199,6 +201,7 @@ public class AppCache {
         }
         Firestore.stopListenProfile();
         profile.copy(new Profile()).setCurrent(null).setViewed(null).setContract(null);
+
     }
 
     private static Set<String> ids = new HashSet<>();

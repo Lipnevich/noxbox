@@ -23,8 +23,19 @@ public class BalanceChecker {
     private static RequestQueue requestQueue;
     private static final String TAG = BalanceChecker.class.getName();
 
+    public static void cleanRequestBalanceQueue() {
+        if (requestQueue != null) {
+            requestQueue.cancelAll(TAG);
+            requestQueue = null;
+        }
+
+        if (stringRequest != null) {
+            stringRequest = null;
+        }
+    }
+
     public static void checkBalance(Profile profile, Context context, Task<BigDecimal> afterBalanceCheck) {
-        if(isNullOrEmpty(profile.getWallet().getAddress())) {
+        if (isNullOrEmpty(profile.getWallet().getAddress())) {
             afterBalanceCheck.execute(BigDecimal.ZERO);
             return;
         }

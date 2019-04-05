@@ -250,7 +250,7 @@
     <string name="verifyPhoto">Verify</string>
     <string name="rejectPhoto">Reject</string>
     <string name="complete">Complete</string>
-    <string name="timePassed">Time passed</string>
+    <string name="timePassed">time passed</string>
     <string name="serviceIsPerforming">Service is performing</string>
     <string name="serviceWasCanceled">Service was canceled</string>
     <string name="performed">Performed</string>

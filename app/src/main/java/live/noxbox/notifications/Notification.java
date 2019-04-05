@@ -177,6 +177,8 @@ public abstract class Notification {
             case photoUploadingProgress:
             case photoValidationProgress:
                 return null;
+            case message:
+                return new long[]{0, 100};
         }
 
         return vibration;

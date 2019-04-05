@@ -52,12 +52,9 @@ public class Performing implements State {
 
     private LinearLayout container;
     private LinearLayout rootLayout;
-    private LinearLayout moneyLayout;
     private LinearLayout timeLayout;
     private LinearLayout.LayoutParams textParams;
-    private TextView earnedOrSpent;
-    private TextView currencyText;
-    private TextView moneyToPay;
+    private TextView noxboxTypeNameText;
     private TextView timePassedText;
     private TextView timeView;
     private RelativeLayout proSwipeButtonLayout;
@@ -127,7 +124,7 @@ public class Performing implements State {
         textColorInt = activity.getResources().getColor(R.color.primary);
         textParams = new LinearLayout.LayoutParams(matchParent, wrapContent);
         if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            textParams.setMargins(0, 0, 0, 0);
+            textParams.setMargins(0, 72, 0, 0);
         } else {
             textParams.setMargins(dpToPx(6), 0, 0, 0);
         }
@@ -160,10 +157,10 @@ public class Performing implements State {
         if (rootLayout == null) return;
         timePassedText = new TextView(activity);
         timeView = new TextView(activity);
+        noxboxTypeNameText = new TextView(activity);
 
         timePassedText.setPadding(0, 0, 0, 0);
         timePassedText.setText(R.string.timePassed);
-
         timePassedText.setTextColor(textColorInt);
         timePassedText.setTextSize(defaultTextSize);
 
@@ -171,10 +168,18 @@ public class Performing implements State {
         timeView.setTextColor(textColorInt);
         timeView.setTextSize(titleTextSize);
 
+
+        noxboxTypeNameText.setPadding(0, 0, 0, 0);
+        noxboxTypeNameText.setText(profile.getCurrent().getType().getName());
+        noxboxTypeNameText.setTextColor(textColorInt);
+        noxboxTypeNameText.setTextSize(defaultTextSize);
+
         if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
             timePassedText.setGravity(Gravity.CENTER_HORIZONTAL);
             timeView.setGravity(Gravity.CENTER_HORIZONTAL);
+            noxboxTypeNameText.setGravity(Gravity.CENTER_HORIZONTAL);
 
+            rootLayout.addView(noxboxTypeNameText, textParams);
             rootLayout.addView(timePassedText, textParams);
             rootLayout.addView(timeView, textParams);
         } else {
@@ -183,6 +188,7 @@ public class Performing implements State {
             LinearLayout.LayoutParams timeLayoutParams = new LinearLayout.LayoutParams(wrapContent, wrapContent);
             timeLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
 
+            timeLayout.addView(noxboxTypeNameText, textParams);
             timeLayout.addView(timePassedText, textParams);
             timeLayout.addView(timeView, textParams);
 
