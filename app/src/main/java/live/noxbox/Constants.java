@@ -1,5 +1,7 @@
 package live.noxbox;
 
+import java.math.BigDecimal;
+
 public interface Constants {
     long REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS = 60 * 1000;
     double RADIUS_IN_METERS = 50 * 1000;
@@ -40,4 +42,6 @@ public interface Constants {
 
     int DEFAULT_MARKER_SIZE = 56;
     int BIG_MARKER_SIZE = 64;
+
+    BigDecimal NOXBOX_FEE = new BigDecimal("0.072");
 }

@@ -47,6 +47,7 @@ import live.noxbox.tools.MoneyFormatter;
 import live.noxbox.tools.Task;
 
 import static io.fabric.sdk.android.services.common.CommonUtils.isNullOrEmpty;
+import static live.noxbox.Constants.NOXBOX_FEE;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.menu.history.HistoryActivity.isHistoryEmpty;
@@ -245,8 +246,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         long timeStartPerforming = noxbox.getTimePartyVerified() > noxbox.getTimeOwnerVerified() ? noxbox.getTimePartyVerified() : noxbox.getTimeOwnerVerified();
         viewHolder.noxboxType.setText(activity.getResources().getString(noxbox.getType().getName()).concat(", "
                 .concat(getFormatTimeFromMillis(timeStartPerforming, noxbox.getTimeCompleted(), activity.getResources()))));
-        if(!isNullOrEmpty(noxbox.getPrice())){
-            viewHolder.price.setText(MoneyFormatter.format(new BigDecimal(noxbox.getPrice())).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getPrice())));
+        if (!isNullOrEmpty(noxbox.getPrice())) {
+            BigDecimal price = new BigDecimal(noxbox.getPrice());
+            if (role == MarketRole.supply) {
+                price = new BigDecimal(noxbox.getPrice()).subtract(NOXBOX_FEE);
+            }
+            viewHolder.price.setText(MoneyFormatter.format(price).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), price.toString())));
+
         }
 
         viewHolder.rootHistoryLayout.setOnClickListener(view1 -> onClick(viewHolder, noxbox));
