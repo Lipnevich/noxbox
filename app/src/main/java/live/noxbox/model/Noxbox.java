@@ -43,7 +43,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     private Position position;
     private String price;
-    private String total;
     private NoxboxType type;
     private MarketRole role;
     private WorkSchedule workSchedule;
@@ -83,7 +82,6 @@ public class Noxbox implements Comparable<Noxbox> {
         chat = from.chat;
         position = from.position;
         price = from.price;
-        total = from.total;
         type = from.type;
         role = from.role;
         workSchedule = from.getWorkSchedule();
@@ -120,7 +118,6 @@ public class Noxbox implements Comparable<Noxbox> {
         getChat().setOwnerReadTime(0L);
         getChat().setPartyReadTime(0L);
         // party = new Profile().setId("0");
-        total = "";
         confirmationPhoto = null;
         wasNotificationVerification = false;
         party = null;
@@ -202,18 +199,6 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Noxbox setId(String id) {
         this.id = id;
-        return this;
-    }
-
-    public String getTotal() {
-        if (total == null) {
-            total = "0";
-        }
-        return total;
-    }
-
-    public Noxbox setTotal(String total) {
-        this.total = total;
         return this;
     }
 

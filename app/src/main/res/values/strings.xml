@@ -11,40 +11,11 @@
     <string name="massageDescription">Masseur should help body relax and become more healthy</string>
     <string name="cleaningDescription">Cleaner must has garbage begs</string>
 
-    <!--Service durations -->
-    <string name="nannyDuration">Hour of childcare</string>
-    <string name="photographerDuration">Hour of photographing</string>
-    <string name="waterDuration">Hour of water delivering</string>
-    <string name="meditationDuration">Hour of meditation lesson</string>
-    <string name="plantDuration">Hour of planting sapling</string>
-    <string name="haircutDuration">Hour of haircutting</string>
-    <string name="massageDuration">Hour of massage</string>
-    <string name="cleaningDuration">Hour of cleaning</string>
-
-    <string name="permissionRequired">Permission required</string>
     <string name="completeText">Complete</string>
-    <string name="ratingTitle">Rate</string>
     <string name="requestText">Request</string>
     <string name="requestingPushContent">Waiting for an answer…</string>
-    <string name="goOnlineText">Go online</string>
     <string name="acceptText">Accept</string>
-    <string name="goOfflineText">Go Offline</string>
     <string name="cancelText">Cancel</string>
-    <string name="rateButton">Send</string>
-    <string name="highRatingQuestion">What qualities You want to notification?</string>
-    <string name="lowRatingQuestion">What qualities should be improved?</string>
-    <string name="responsibility">Responsibility</string>
-    <string name="accuracy">Accuracy</string>
-    <string name="politeness">Politeness</string>
-    <string name="kindness">Kindness</string>
-    <string name="sincerity">Sincerity</string>
-    <string name="wisdom">Wisdom</string>
-    <string name="humor">Humor</string>
-    <string name="patience">Patience</string>
-    <string name="logoutText">Logout</string>
-    <string name="myCar">My car</string>
-    <string name="payments">Payments</string>
-    <string name="help">Help</string>
     <string name="settings">Settings</string>
 
     <!--NoxboxType's-->
@@ -63,12 +34,9 @@
     <string name="masseur">Masseur</string>
     <string name="cleaner">Cleaner</string>
 
-    <string name="tirefitting">Tire fitting</string>
-    <string name="sendMessage">Send message</string>
     <string name="history">History</string>
     <string name="wallet">Wallet</string>
     <string name="balance">Balance %s</string>
-    <string name="price">Price %s</string>
     <string name="priceTxt">Price</string>
     <string name="serviceAvailable">service available</string>
     <string name="servicesAvailable">services available</string>

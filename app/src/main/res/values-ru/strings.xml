@@ -11,36 +11,10 @@
     <string name="massageDescription">Массажист должен расслабить тело и сделать его более здоровым</string>
     <string name="cleaningDescription">Уборщик обязан иметь при себе пакеты для мусора</string>
 
-    <!--Service durations-->
-    <string name="nannyDuration">Час присмотра за ребёнком</string>
-    <string name="photographerDuration">Час услуги фотографа</string>
-    <string name="meditationDuration">Час медитации</string>
-    <string name="haircutDuration">Час стрижки</string>
-    <string name="waterDuration">Час доставки воды</string>
-    <string name="plantDuration">Час посадки саженцев</string>
-    <string name="massageDuration">Час массажа</string>
-    <string name="cleaningDuration">Час уборки</string>
-
-
-    <string name="permissionRequired">Необходимо разрешение</string>
     <string name="completeText">Завершить</string>
-    <string name="ratingTitle">Оцените работу</string>
     <string name="requestText">Заказать</string>
-    <string name="goOnlineText">Приступить к работе</string>
-    <string name="goOfflineText">Сделать перерыв</string>
     <string name="acceptText">Принять</string>
     <string name="cancelText">Отменить</string>
-    <string name="rateButton">Отправить</string>
-    <string name="highRatingQuestion">Какие качества Вы хотите отметить?</string>
-    <string name="lowRatingQuestion">Какие качества необходимо улучшить?</string>
-    <string name="responsibility">Ответственность</string>
-    <string name="accuracy">Аккуратность</string>
-    <string name="politeness">Вежливость</string>
-    <string name="kindness">Доброта</string>
-    <string name="sincerity">Искренность</string>
-    <string name="wisdom">Мудрость</string>
-    <string name="humor">Юмор</string>
-    <string name="patience">Терпение</string>
     <!--NoxboxType-->
     <string name="nanny">Няня</string>
     <string name="photographer">Фотограф</string>
@@ -57,17 +31,10 @@
     <string name="masseur">Массажист</string>
     <string name="cleaner">Уборщик</string>
 
-    <string name="logoutText">Выход</string>
-    <string name="myCar">Мой автомобиль</string>
-    <string name="payments">Оплата</string>
-    <string name="help">Помощь</string>
     <string name="settings">Настройки</string>
-    <string name="tirefitting">Шиномонтаж</string>
-    <string name="sendMessage">Отправить сообщение</string>
     <string name="history">История</string>
     <string name="wallet">Кошелек</string>
     <string name="balance">Баланс %s</string>
-    <string name="price">Цена %s</string>
     <string name="priceTxt">Цена</string>
     <string name="serviceAvailable">услуга доступена</string>
     <string name="servicesAvailable">услуг доступно</string>

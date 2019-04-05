@@ -245,8 +245,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         long timeStartPerforming = noxbox.getTimePartyVerified() > noxbox.getTimeOwnerVerified() ? noxbox.getTimePartyVerified() : noxbox.getTimeOwnerVerified();
         viewHolder.noxboxType.setText(activity.getResources().getString(noxbox.getType().getName()).concat(", "
                 .concat(getFormatTimeFromMillis(timeStartPerforming, noxbox.getTimeCompleted(), activity.getResources()))));
-        if(!isNullOrEmpty(noxbox.getTotal())){
-            viewHolder.price.setText(MoneyFormatter.format(new BigDecimal(noxbox.getTotal())).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getTotal())));
+        if(!isNullOrEmpty(noxbox.getPrice())){
+            viewHolder.price.setText(MoneyFormatter.format(new BigDecimal(noxbox.getPrice())).concat(" " + showPriceInUsd(activity.getResources().getString(R.string.currency), noxbox.getPrice())));
         }
 
         viewHolder.rootHistoryLayout.setOnClickListener(view1 -> onClick(viewHolder, noxbox));

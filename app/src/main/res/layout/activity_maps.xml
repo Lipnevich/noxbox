@@ -20,17 +20,6 @@
             android:text="@string/requestText" />
 
         <Button
-            android:id="@+id/goOnlineButton"
-            style="@style/MainButtonStyle"
-            android:text="@string/goOnlineText" />
-
-        <Button
-            android:id="@+id/goOfflineButton"
-            style="@style/MainButtonStyle"
-            android:background="@color/divider"
-            android:text="@string/goOfflineText" />
-
-        <Button
             android:id="@+id/completeButton"
             style="@style/MainButtonStyle"
             android:text="@string/completeText" />

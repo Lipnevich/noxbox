@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 
-import java.math.BigDecimal;
-
 import live.noxbox.Constants;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
@@ -21,19 +19,14 @@ import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
-import live.noxbox.tools.BalanceChecker;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.Task;
 
-import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
-import static live.noxbox.Constants.QUARTER;
 import static live.noxbox.analitics.BusinessEvent.chatting;
 import static live.noxbox.analitics.BusinessEvent.complete;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
-import static live.noxbox.tools.BalanceCalculator.enoughBalanceOnFiveMinutes;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
-import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.SeparateStreamForStopwatch.startHandler;
 import static live.noxbox.tools.SeparateStreamForStopwatch.stopHandler;
 
@@ -44,7 +37,6 @@ public class Performing implements State {
     private final Profile profile = AppCache.profile();
 
     private long seconds = 0;
-    private BigDecimal totalMoney;
     private boolean initiated;
 
     //ui
@@ -89,16 +81,12 @@ public class Performing implements State {
 
         drawContainer();
         drawRootLayout();
-        drawMoneyToPay();
         drawTimeView();
         drawComplete();
 
         container.addView(rootLayout);
 
         seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
-        totalMoney = new BigDecimal(profile.getCurrent().getPrice());
-        totalMoney = totalMoney.multiply(QUARTER);
-
 
         final long timeStartPerforming = profile.getCurrent().getTimeStartPerforming();
         seconds = Math.max((System.currentTimeMillis() - timeStartPerforming) / 1000, 0);
@@ -111,29 +99,9 @@ public class Performing implements State {
 
 
             if (isNullOrZero(profile.getCurrent().getTimeCompleted())) {
-                seconds =  Math.max((System.currentTimeMillis() - timeStartPerforming) / 1000, 0);
+                seconds = Math.max((System.currentTimeMillis() - timeStartPerforming) / 1000, 0);
 
                 timeView.setText(time);
-                if (hasMinimumServiceTimePassed(profile.getCurrent())) {
-                    totalMoney = calculateTotalAmount(profile);
-                    moneyToPay.setText(format(totalMoney));
-                } else {
-                    moneyToPay.setText(format(totalMoney));
-                }
-
-                // TODO (vl) по клику на экран, обновляем баланс и максимальное время из блокчейна
-                if (!enoughBalanceOnFiveMinutes(profile.getCurrent())) {
-                    BalanceChecker.checkBalance(profile, activity, o -> {
-                        // TODO (vl) обновляем максимальное время из блокчейна
-                        // HashMap<String, String> data = new HashMap<>();
-                        //data.put("type", NotificationType.lowBalance.name());
-                        //NotificationFactory.buildNotification(activity, profile, data).show();
-                    });
-
-
-                    stopHandler();
-                    return;
-                }
             }
         };
 
@@ -185,58 +153,6 @@ public class Performing implements State {
             rootParams.setMargins(0, dpToPx(24), 0, 0);
         }
         rootLayout.setLayoutParams(rootParams);
-
-    }
-
-
-    private void drawMoneyToPay() {
-        if (rootLayout == null) return;
-
-        earnedOrSpent = new TextView(activity);
-        currencyText = new TextView(activity);
-        moneyToPay = new TextView(activity);
-
-        if (profile.getCurrent().getPerformer().equals(profile)) {
-            earnedOrSpent.setText(R.string.earned);
-        } else {
-            earnedOrSpent.setText(R.string.spent);
-        }
-        earnedOrSpent.setPadding(0, 0, 0, 0);
-        earnedOrSpent.setTextColor(textColorInt);
-        earnedOrSpent.setTextSize(defaultTextSize);
-
-
-        currencyText.setPadding(0, 0, 0, 0);
-        currencyText.setText(R.string.currency);
-        currencyText.setTextColor(textColorInt);
-        currencyText.setTextSize(defaultTextSize);
-
-
-        moneyToPay.setPadding(0, 0, 0, 0);
-        moneyToPay.setTextColor(textColorInt);
-        moneyToPay.setTextSize(titleTextSize);
-
-        if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            earnedOrSpent.setGravity(Gravity.CENTER_HORIZONTAL);
-            currencyText.setGravity(Gravity.CENTER_HORIZONTAL);
-            moneyToPay.setGravity(Gravity.CENTER_HORIZONTAL);
-
-            rootLayout.addView(earnedOrSpent, textParams);
-            rootLayout.addView(currencyText, textParams);
-            rootLayout.addView(moneyToPay, textParams);
-        } else {
-            moneyLayout = new LinearLayout(activity);
-            moneyLayout.setOrientation(LinearLayout.HORIZONTAL);
-            LinearLayout.LayoutParams moneyLayoutParams = new LinearLayout.LayoutParams(wrapContent, wrapContent);
-            moneyLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
-
-
-            moneyLayout.addView(earnedOrSpent, textParams);
-            moneyLayout.addView(currencyText, textParams);
-            moneyLayout.addView(moneyToPay, textParams);
-
-            rootLayout.addView(moneyLayout, moneyLayoutParams);
-        }
 
     }
 
@@ -292,7 +208,6 @@ public class Performing implements State {
             serviceCompleting.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
             new android.os.Handler().postDelayed(() -> {
                 long timeCompleted = System.currentTimeMillis();
-                profile.getCurrent().setTotal(totalMoney.toString());
                 profile.getCurrent().setTimeCompleted(timeCompleted);
                 profile.getCurrent().setTimeRatingUpdated(timeCompleted);
                 profile.getCurrent().setTimeOwnerLiked(timeCompleted);
@@ -316,12 +231,4 @@ public class Performing implements State {
         return startTime < System.currentTimeMillis() - Constants.MINIMUM_PAYMENT_TIME_MILLIS;
     }
 
-    private BigDecimal calculateTotalAmount(Profile profile) {
-        BigDecimal pricePerHour = new BigDecimal(profile.getCurrent().getPrice());
-        BigDecimal pricePerMinute = pricePerHour.divide(new BigDecimal(profile.getCurrent().getType().getMinutes()), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        BigDecimal pricePerSecond = pricePerMinute.divide(new BigDecimal("60"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        BigDecimal timeFromStartPerformingInMillis = new BigDecimal(String.valueOf(System.currentTimeMillis())).subtract(new BigDecimal(String.valueOf(profile.getCurrent().getTimeStartPerforming())));
-        BigDecimal timeFromStartPerformingInSeconds = timeFromStartPerformingInMillis.divide(new BigDecimal("1000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_HALF_DOWN);
-        return timeFromStartPerformingInSeconds.multiply(pricePerSecond);
-    }
 }

@@ -239,14 +239,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawTextPayment() {
-        switch (contract().getType()) {
-            case water:
-                textPayment.setText(R.string.priceService);
-                break;
-            default:
-                textPayment.setText(R.string.priceOneHourOfService);
-        }
-
+        textPayment.setText(R.string.priceService);
     }
 
 

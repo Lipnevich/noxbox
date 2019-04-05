@@ -452,8 +452,7 @@ public class DetailedActivity extends BaseActivity {
                 + AppCache.showPriceInUsd(getString(R.string.currency), profile.getViewed().getPrice());
 
         priceTitle.setText(priceTitleText);
-        descriptionTextInPrice.setText(profile.getViewed().getType().getDuration());
-        clarificationTextInPrice.setText(getString(R.string.priceClarification));
+        descriptionTextInPrice.setText(profile.getViewed().getType().getName());
         typeImageInPrice.setImageResource(profile.getViewed().getType().getImageDemand());
     }
 

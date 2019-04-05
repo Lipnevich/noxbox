@@ -1,7 +1,5 @@
 package live.noxbox;
 
-import java.math.BigDecimal;
-
 public interface Constants {
     long REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS = 60 * 1000;
     double RADIUS_IN_METERS = 50 * 1000;
@@ -18,9 +16,7 @@ public interface Constants {
     long MINIMUM_PAYMENT_TIME_MILLIS = 15 * 60 * 1000;
     float MINIMUM_FACE_SIZE = 0.05F;
     float MINIMUM_PROBABILITY_FOR_ACCEPTANCE = 0.05F;
-    String FIVE_MINUTES_PART_OF_HOUR = "12";
     int DEFAULT_BALANCE_SCALE = 10;
-    BigDecimal QUARTER = new BigDecimal("0.25");
     double ADDRESS_SEARCH_RADIUS_IN_METERS = 100000D;
     int MAX_ZOOM_LEVEL = 18;
     int MIN_ZOOM_LEVEL = 1;

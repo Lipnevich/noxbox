@@ -44,10 +44,12 @@ import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.analitics.BusinessEvent.outBox;
+import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
 
 public class WalletActivity extends BaseActivity {
+    static boolean active = false;
 
     public static final int CODE = 1003;
 
@@ -58,6 +60,7 @@ public class WalletActivity extends BaseActivity {
     private EditText addressToSendEditor;
     private TextView balanceLabel;
     private TextView balance;
+    private TextView balanceUSD;
     private ImageView progressCat;
     private TextView walletAddress;
     private ImageView copyToClipboard;
@@ -77,6 +80,7 @@ public class WalletActivity extends BaseActivity {
         copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
         sendButton = findViewById(R.id.send_button_id);
         balance = findViewById(R.id.balance);
+        balanceUSD = findViewById(R.id.balanceUSD);
         progressCat = findViewById(R.id.progress);
 
 
@@ -86,6 +90,18 @@ public class WalletActivity extends BaseActivity {
                 .load(R.drawable.progress_cat)
                 .apply(RequestOptions.overrideOf(progressDiameter, progressDiameter))
                 .into(progressCat);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
     }
 
     @Override
@@ -143,6 +159,7 @@ public class WalletActivity extends BaseActivity {
             return;
         }
         balance.setVisibility(View.INVISIBLE);
+        balanceUSD.setVisibility(View.INVISIBLE);
         progressCat.setVisibility(View.VISIBLE);
         enableTransfer(false);
 
@@ -163,6 +180,8 @@ public class WalletActivity extends BaseActivity {
                 Crashlytics.logException(e);
             }
             balance.setVisibility(View.VISIBLE);
+
+            balanceUSD.setVisibility(View.VISIBLE);
             progressCat.setVisibility(View.INVISIBLE);
 
             updateBalance(profile);
@@ -192,6 +211,7 @@ public class WalletActivity extends BaseActivity {
         data.put("addressToTransfer", address);
 
         balance.setVisibility(View.INVISIBLE);
+        balanceUSD.setVisibility(View.INVISIBLE);
         progressCat.setVisibility(View.VISIBLE);
         enableTransfer(false);
 
@@ -203,15 +223,18 @@ public class WalletActivity extends BaseActivity {
                     profile.getWallet().setBalance("0");
                     progressCat.setVisibility(View.INVISIBLE);
                     balance.setVisibility(View.VISIBLE);
-                    draw(profile);
+                    balanceUSD.setVisibility(View.VISIBLE);
+                    if (active) {
+                        draw(profile);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     progressCat.setVisibility(View.INVISIBLE);
                     balance.setVisibility(View.VISIBLE);
+                    balanceUSD.setVisibility(View.VISIBLE);
                     enableTransfer(true);
                 });
     }
-
 
     private void draw(final Profile profile) {
         drawToolbar();
@@ -223,6 +246,7 @@ public class WalletActivity extends BaseActivity {
         BigDecimal balance = scale(wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO);
 
         this.balance.setText(format(balance));
+        this.balanceUSD.setText(showPriceInUsd("", balance.toString()));
 
         walletAddress.setText(wallet.getAddress() != null ? wallet.getAddress() : "Not created yet");
 

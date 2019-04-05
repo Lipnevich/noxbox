@@ -18,7 +18,6 @@ import live.noxbox.notifications.NotificationAccepting;
 import live.noxbox.notifications.NotificationBalance;
 import live.noxbox.notifications.NotificationCancel;
 import live.noxbox.notifications.NotificationComplete;
-import live.noxbox.notifications.NotificationLowBalance;
 import live.noxbox.notifications.NotificationMessage;
 import live.noxbox.notifications.NotificationMoving;
 import live.noxbox.notifications.NotificationPerforming;
@@ -54,8 +53,6 @@ public abstract class NotificationFactory {
                 return new NotificationMoving(context, profile, data);
             case verifyPhoto:
                 return new NotificationPhotoVerification(context, profile, data);
-            case lowBalance:
-                return new NotificationLowBalance(context, profile, data);
             case canceled:
                 return new NotificationCancel(context, profile, data);
             case rejected:
