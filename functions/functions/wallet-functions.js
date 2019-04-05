@@ -7,7 +7,7 @@ const password = functions.config().keys.seedpass ? functions.config().keys.seed
 
 const wavesDecimals = new BigDecimal('100000000');
 const wavesFee = new BigDecimal('0.001');
-const noxboxFee = new BigDecimal('0.1');
+const noxboxFee = new BigDecimal('0.07');
 
 exports.create = async request => {
   	const seed = Waves.Seed.create();
@@ -23,17 +23,26 @@ exports.send = async request => {
     request.seed = Waves.Seed.fromExistingPhrase(Waves.Seed.decryptSeedPhrase(request.encrypted, password));
 
     let response = await Waves.API.Node.v1.addresses.balance(request.seed.address);
-    let balance = new BigDecimal('' + response.balance);
+    let balance = new BigDecimal('' + response.balance).div(wavesDecimals);
     console.log('balance', response.balance);
 
     if(!request.transferable) {
-        if(!response || balance.eq(new BigDecimal('0'))) return;
-        request.transferable = balance.div(wavesDecimals).minus(wavesFee);
+        // transfer money
+        if(!response || balance.le(wavesFee) return;
+        request.transferable = balance.minus(wavesFee);
     } else {
-        if(request.transferable.lt(request.minPayment)) request.transferable = request.minPayment;
+        // pay for service
         if(balance.lt(request.transferable)) request.transferable = balance;
+        request.transferable = request.transferable.minus(wavesFee)
+            .minus(noxboxFee).minus(wavesFee);
 
-        request.transferable = request.transferable.minus(wavesFee);
+        let noxboxFee = {};
+        noxboxFee.addressToTransfer = '3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73';
+        noxboxFee.seed = request.seed;
+        noxboxFee.attachment = "NoxBox Fee";
+        noxboxFee.transferable = noxboxFee;
+
+        await transfer(noxboxFee);
     }
     console.log('Transferable ' + request.transferable);
 
@@ -45,7 +54,7 @@ transfer = async request => {
         assetId: 'WAVES',
         feeAssetId: 'WAVES',
         fee: 100000,
-        attachment: '',
+        attachment: request.attachment,
         timestamp: Date.now()
     };
 
