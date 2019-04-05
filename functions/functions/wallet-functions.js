@@ -6,6 +6,7 @@ const Waves = WavesAPI.create(WavesAPI.MAINNET_CONFIG);
 const password = functions.config().keys.seedpass ? functions.config().keys.seedpass : 'Salt';
 
 const wavesDecimals = new BigDecimal('100000000');
+// real commission is sum of 2*wavesFee+noxboxFee = 0.072
 const wavesFee = new BigDecimal('0.001');
 const noxboxFee = new BigDecimal('0.07');
 
@@ -28,7 +29,7 @@ exports.send = async request => {
 
     if(!request.transferable) {
         // transfer money
-        if(!response || balance.le(wavesFee) return;
+        if(!response || balance.le(wavesFee)) return;
         request.transferable = balance.minus(wavesFee);
     } else {
         // pay for service
@@ -36,13 +37,13 @@ exports.send = async request => {
         request.transferable = request.transferable.minus(wavesFee)
             .minus(noxboxFee).minus(wavesFee);
 
-        let noxboxFee = {};
-        noxboxFee.addressToTransfer = '3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73';
-        noxboxFee.seed = request.seed;
-        noxboxFee.attachment = "NoxBox Fee";
-        noxboxFee.transferable = noxboxFee;
+        let feeRequest = {};
+        feeRequest.addressToTransfer = '3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73';
+        feeRequest.seed = request.seed;
+        feeRequest.attachment = "NoxBox Fee";
+        feeRequest.transferable = noxboxFee;
 
-        await transfer(noxboxFee);
+        await transfer(feeRequest);
     }
     console.log('Transferable ' + request.transferable);
 
