@@ -4,7 +4,7 @@ const BigDecimal = require('big.js');
 admin.initializeApp(functions.config().firebase);
 
 const wallet = require('./wallet-functions');
-const version = 7;
+const version = 8;
 
 const db = admin.firestore();
 db.settings({timestampsInSnapshots: true});
@@ -122,7 +122,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         console.log('payer', payer);
         let performer = noxbox.role === 'demand' ? noxbox.party : noxbox.owner;
         console.log('performer', performer);
-        let moneyToPay = new BigDecimal(noxbox.price));
+        let moneyToPay = new BigDecimal(noxbox.price);
 
         let request = { };
         request.addressToTransfer = performer.wallet.address;
