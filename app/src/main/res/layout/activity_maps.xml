@@ -14,16 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/requestButton"
-            style="@style/MainButtonStyle"
-            android:text="@string/requestText" />
-
-        <Button
-            android:id="@+id/completeButton"
-            style="@style/MainButtonStyle"
-            android:text="@string/completeText" />
-
         <ImageView
             android:id="@+id/pointerImage"
             style="@style/IconButtonStyle"

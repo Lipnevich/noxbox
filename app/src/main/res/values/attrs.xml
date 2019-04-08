@@ -13,4 +13,9 @@
         <attr name="circle_prefix_text" format="string"/>
         <attr name="circle_suffix_text" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="ArrowView">
+        <attr name="start_view" format="integer" />
+        <attr name="end_view" format="integer" />
+    </declare-styleable>
 </resources>
