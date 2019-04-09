@@ -22,6 +22,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -84,6 +85,8 @@ public class MapActivity extends DemonstrationActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.MapTheme);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         super.onCreate(savedInstanceState);
         initCrashReporting();
 
@@ -93,6 +96,7 @@ public class MapActivity extends DemonstrationActivity implements
             finish();
             return;
         }
+
         AppCache.profile().init(user);
 
         Crashlytics.setUserIdentifier(user.getUid());

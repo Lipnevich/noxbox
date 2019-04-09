@@ -2,18 +2,22 @@ package live.noxbox.activities;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import live.noxbox.R;
 import live.noxbox.debug.HackerActivity;
 import live.noxbox.ui.ArrowView;
 
 import static live.noxbox.Constants.FIRST_DEMONSTRATION_KEY;
-import static live.noxbox.ui.ArrowView.FROM_OR_TO_BOTTOM_CENTER;
-import static live.noxbox.ui.ArrowView.FROM_OR_TO_END_CENTER;
-import static live.noxbox.ui.ArrowView.FROM_OR_TO_START_CENTER;
-import static live.noxbox.ui.ArrowView.FROM_OR_TO_TOP_CENTER;
+import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
+import static live.noxbox.ui.ArrowView.BOTTOM_CENTER;
+import static live.noxbox.ui.ArrowView.CENTER_END;
+import static live.noxbox.ui.ArrowView.CENTER_START;
+import static live.noxbox.ui.ArrowView.TOP_CENTER;
 
 /**
  * Created by Vladislaw Kravchenok on 08.04.2019.
@@ -21,7 +25,7 @@ import static live.noxbox.ui.ArrowView.FROM_OR_TO_TOP_CENTER;
 public class DemonstrationActivity extends HackerActivity {
 
     private SharedPreferences demonstrationPreference;
-    private LinearLayout container;
+    private RelativeLayout demonstration;
 
 
     protected boolean isFirstRunDemonstration() {
@@ -30,18 +34,52 @@ public class DemonstrationActivity extends HackerActivity {
         }
 
         if (demonstrationPreference.getBoolean(FIRST_DEMONSTRATION_KEY, true)) {
-            demonstrationPreference.edit().putBoolean(FIRST_DEMONSTRATION_KEY, false).apply();
             return true;
         } else {
             return false;
         }
     }
 
+    private void onScreenClick() {
+        if (demonstration != null) {
+            demonstration.setVisibility(View.GONE);
+        }
+        if (demonstrationPreference != null) {
+            demonstrationPreference.edit().putBoolean(FIRST_DEMONSTRATION_KEY, false).apply();
+        }
+        super.draw(this, profile());
+    }
+
     @Override
     protected void onResume() {
         showDemonstration();
         super.onResume();
+        Log.e("DemonstrationActivity", "onResume");
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("DemonstrationActivity", "onPause");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("DemonstrationActivity", "onStop");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.e("DemonstrationActivity", "onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e("DemonstrationActivity", "onRestart");
     }
 
     @Override
@@ -50,77 +88,159 @@ public class DemonstrationActivity extends HackerActivity {
         showDemonstration();
     }
 
-    static boolean isShown = false;
 
     protected void showDemonstration() {
-
         if (isFirstRunDemonstration()) {
-
-            container = findViewById(R.id.container);
-            View child = getLayoutInflater().inflate(R.layout.activity_demonstration, null);
-            container.addView(child);
-            container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    container.removeAllViews();
-                    container = null;
-                }
-            });
+            demonstration = findViewById(R.id.demonstration);
+            demonstration.setVisibility(View.VISIBLE);
+            demonstration.setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.menuDemonstration).setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.filtersDemonstration).setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.locationDemonstration).setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.contractDemonstration).setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.arrowMenuDemonstration).setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.arrowFiltersDemonstration).setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.arrowLocationDemonstration).setOnClickListener(v -> onScreenClick());
+            findViewById(R.id.arrowContractDemonstration).setOnClickListener(v -> onScreenClick());
 
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                ArrowView arrowView2 = container.findViewById(R.id.arrowView2);
-                arrowView2.setWillNotDraw(false);
-                arrowView2.setStartView(container.findViewById(R.id.textView2));
-                arrowView2.setEndView(container.findViewById(R.id.button));
-                arrowView2.invalidate(FROM_OR_TO_START_CENTER, FROM_OR_TO_BOTTOM_CENTER);
+                RelativeLayout.LayoutParams textMenuParams = new RelativeLayout.LayoutParams(-2, -2);
+                textMenuParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                textMenuParams.setMargins(dpToPx(24), dpToPx(126), 0, 0);
+                TextView textMenuDemonstration = findViewById(R.id.textMenuDemonstration);
+                textMenuDemonstration.setLayoutParams(textMenuParams);
 
-                ArrowView arrowView3 = container.findViewById(R.id.arrowView3);
-                arrowView3.setWillNotDraw(false);
-                arrowView3.setStartView(container.findViewById(R.id.textView3));
-                arrowView3.setEndView(container.findViewById(R.id.button2));
-                arrowView3.invalidate(FROM_OR_TO_END_CENTER, FROM_OR_TO_BOTTOM_CENTER);
+                RelativeLayout.LayoutParams textMenuProfileDemonstrationParams = new RelativeLayout.LayoutParams(-2, -2);
+                textMenuProfileDemonstrationParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstration);
+                textMenuProfileDemonstrationParams.setMargins(dpToPx(24), dpToPx(16), 0, 0);
+                TextView textMenuDemonstrationProfile = findViewById(R.id.textMenuDemonstrationProfile);
+                textMenuDemonstrationProfile.setLayoutParams(textMenuProfileDemonstrationParams);
 
-                ArrowView arrowView4 = container.findViewById(R.id.arrowView4);
-                arrowView4.setWillNotDraw(false);
-                arrowView4.setStartView(container.findViewById(R.id.textView4));
-                arrowView4.setEndView(container.findViewById(R.id.button3));
-                arrowView4.invalidate(FROM_OR_TO_START_CENTER, FROM_OR_TO_TOP_CENTER);
+                RelativeLayout.LayoutParams textMenuDemonstrationWalletParams = new RelativeLayout.LayoutParams(-2, -2);
+                textMenuDemonstrationWalletParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstrationProfile);
+                textMenuDemonstrationWalletParams.setMargins(dpToPx(24), dpToPx(16), 0, 0);
+                TextView textMenuDemonstrationWallet = findViewById(R.id.textMenuDemonstrationWallet);
+                textMenuDemonstrationWallet.setLayoutParams(textMenuDemonstrationWalletParams);
 
-                ArrowView arrowView5 = container.findViewById(R.id.arrowView5);
-                arrowView5.setWillNotDraw(false);
-                arrowView5.setStartView(container.findViewById(R.id.textView5));
-                arrowView5.setEndView(container.findViewById(R.id.button4));
-                arrowView5.invalidate(FROM_OR_TO_END_CENTER, FROM_OR_TO_TOP_CENTER);
+                RelativeLayout.LayoutParams textSettingsParams = new RelativeLayout.LayoutParams(-2, -2);
+                textSettingsParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstrationWallet);
+                textSettingsParams.setMargins(dpToPx(24), dpToPx(16), 0, 0);
+                TextView textMenuDemonstrationSettings = findViewById(R.id.textMenuDemonstrationSettings);
+                textMenuDemonstrationSettings.setLayoutParams(textSettingsParams);
+
+                RelativeLayout.LayoutParams textFiltersParams = new RelativeLayout.LayoutParams(-2, -2);
+                textFiltersParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstrationSettings);
+                textFiltersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                textFiltersParams.setMargins(dpToPx(0), dpToPx(0), dpToPx(80), 0);
+                TextView textFiltersDemonstration = findViewById(R.id.textFiltersDemonstration);
+                textFiltersDemonstration.setLayoutParams(textFiltersParams);
+
+                RelativeLayout.LayoutParams textLocationParams = new RelativeLayout.LayoutParams(-2, -2);
+                textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+                textLocationParams.setMargins(dpToPx(56), 0, dpToPx(0), dpToPx(164));
+                TextView textLocationDemonstration = findViewById(R.id.textLocationDemonstration);
+                textLocationDemonstration.setLayoutParams(textLocationParams);
+
+                RelativeLayout.LayoutParams textContractParams = new RelativeLayout.LayoutParams(-2, -2);
+                textContractParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                textContractParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                textContractParams.setMargins(0, 0, dpToPx(56), dpToPx(146));
+                TextView textContractDemonstration = findViewById(R.id.textContractDemonstration);
+                textContractDemonstration.setLayoutParams(textContractParams);
+
+                ArrowView arrowMenuDemonstration = findViewById(R.id.arrowMenuDemonstration);
+                ArrowView arrowFiltersDemonstration = findViewById(R.id.arrowFiltersDemonstration);
+                ArrowView arrowLocationDemonstration = findViewById(R.id.arrowLocationDemonstration);
+                ArrowView arrowContractDemonstration = findViewById(R.id.arrowContractDemonstration);
+                arrowMenuDemonstration.setWillNotDraw(false);
+                arrowMenuDemonstration.setStartView(findViewById(R.id.textMenuDemonstration));
+                arrowMenuDemonstration.setEndView(findViewById(R.id.menuDemonstration));
+                arrowMenuDemonstration.invalidate(TOP_CENTER, BOTTOM_CENTER);
+
+                arrowFiltersDemonstration.setWillNotDraw(false);
+                arrowFiltersDemonstration.setStartView(findViewById(R.id.textFiltersDemonstration));
+                arrowFiltersDemonstration.setEndView(findViewById(R.id.filtersDemonstration));
+                arrowFiltersDemonstration.invalidate(TOP_CENTER, BOTTOM_CENTER);
+
+                arrowLocationDemonstration.setWillNotDraw(false);
+                arrowLocationDemonstration.setStartView(findViewById(R.id.textLocationDemonstration));
+                arrowLocationDemonstration.setEndView(findViewById(R.id.locationDemonstration));
+                arrowLocationDemonstration.invalidate(BOTTOM_CENTER, TOP_CENTER);
+
+                arrowContractDemonstration.setWillNotDraw(false);
+                arrowContractDemonstration.setStartView(findViewById(R.id.textContractDemonstration));
+                arrowContractDemonstration.setEndView(findViewById(R.id.contractDemonstration));
+                arrowContractDemonstration.invalidate(BOTTOM_CENTER, TOP_CENTER);
 
             } else {
-                ArrowView arrowView2 = container.findViewById(R.id.arrowView2);
-                arrowView2.setWillNotDraw(false);
-                arrowView2.setStartView(container.findViewById(R.id.textView2));
-                arrowView2.setEndView(container.findViewById(R.id.button));
-                arrowView2.invalidate(FROM_OR_TO_START_CENTER, FROM_OR_TO_END_CENTER);
+                RelativeLayout.LayoutParams textMenuParams = new RelativeLayout.LayoutParams(-2, -2);
+                textMenuParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+                textMenuParams.setMargins(dpToPx(126), dpToPx(24), 0, 0);
+                TextView textMenuDemonstration = findViewById(R.id.textMenuDemonstration);
+                textMenuDemonstration.setLayoutParams(textMenuParams);
 
-                ArrowView arrowView3 = container.findViewById(R.id.arrowView3);
-                arrowView3.setWillNotDraw(false);
-                arrowView3.setStartView(container.findViewById(R.id.textView3));
-                arrowView3.setEndView(container.findViewById(R.id.button2));
-                arrowView3.invalidate(FROM_OR_TO_END_CENTER, FROM_OR_TO_START_CENTER);
+                RelativeLayout.LayoutParams textMenuProfileDemonstrationParams = new RelativeLayout.LayoutParams(-2, -2);
+                textMenuProfileDemonstrationParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstration);
+                textMenuProfileDemonstrationParams.setMargins(dpToPx(126), dpToPx(16), 0, 0);
+                TextView textMenuDemonstrationProfile = findViewById(R.id.textMenuDemonstrationProfile);
+                textMenuDemonstrationProfile.setLayoutParams(textMenuProfileDemonstrationParams);
 
-                ArrowView arrowView4 = container.findViewById(R.id.arrowView4);
-                arrowView4.setWillNotDraw(false);
-                arrowView4.setStartView(container.findViewById(R.id.textView4));
-                arrowView4.setEndView(container.findViewById(R.id.button3));
-                arrowView4.invalidate(FROM_OR_TO_START_CENTER, FROM_OR_TO_END_CENTER);
+                RelativeLayout.LayoutParams textMenuDemonstrationWalletParams = new RelativeLayout.LayoutParams(-2, -2);
+                textMenuDemonstrationWalletParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstrationProfile);
+                textMenuDemonstrationWalletParams.setMargins(dpToPx(126), dpToPx(16), 0, 0);
+                TextView textMenuDemonstrationWallet = findViewById(R.id.textMenuDemonstrationWallet);
+                textMenuDemonstrationWallet.setLayoutParams(textMenuDemonstrationWalletParams);
 
-                ArrowView arrowView5 = container.findViewById(R.id.arrowView5);
-                arrowView5.setWillNotDraw(false);
-                arrowView5.setStartView(container.findViewById(R.id.textView5));
-                arrowView5.setEndView(container.findViewById(R.id.button4));
-                arrowView5.invalidate(FROM_OR_TO_END_CENTER, FROM_OR_TO_START_CENTER);
+                RelativeLayout.LayoutParams textSettingsParams = new RelativeLayout.LayoutParams(-2, -2);
+                textSettingsParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstrationWallet);
+                textSettingsParams.setMargins(dpToPx(126), dpToPx(16), 0, 0);
+                TextView textMenuDemonstrationSettings = findViewById(R.id.textMenuDemonstrationSettings);
+                textMenuDemonstrationSettings.setLayoutParams(textSettingsParams);
 
+                RelativeLayout.LayoutParams textFiltersParams = new RelativeLayout.LayoutParams(-2, -2);
+                textFiltersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                textFiltersParams.setMargins(dpToPx(0), dpToPx(44), dpToPx(126), 0);
+                TextView textFiltersDemonstration = findViewById(R.id.textFiltersDemonstration);
+                textFiltersDemonstration.setLayoutParams(textFiltersParams);
+
+                RelativeLayout.LayoutParams textLocationParams = new RelativeLayout.LayoutParams(-2, -2);
+                textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                textLocationParams.setMargins(dpToPx(126), 0, dpToPx(0), dpToPx(44));
+                TextView textLocationDemonstration = findViewById(R.id.textLocationDemonstration);
+                textLocationDemonstration.setLayoutParams(textLocationParams);
+
+                RelativeLayout.LayoutParams textContractParams = new RelativeLayout.LayoutParams(-2, -2);
+                textContractParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                textContractParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                textContractParams.setMargins(0, 0, dpToPx(184), dpToPx(80));
+                TextView textContractDemonstration = findViewById(R.id.textContractDemonstration);
+                textContractDemonstration.setLayoutParams(textContractParams);
+
+                ArrowView arrowMenuDemonstration = findViewById(R.id.arrowMenuDemonstration);
+                ArrowView arrowFiltersDemonstration = findViewById(R.id.arrowFiltersDemonstration);
+                ArrowView arrowLocationDemonstration = findViewById(R.id.arrowLocationDemonstration);
+                ArrowView arrowContractDemonstration = findViewById(R.id.arrowContractDemonstration);
+                arrowMenuDemonstration.setWillNotDraw(false);
+                arrowMenuDemonstration.setStartView(textMenuDemonstration);
+                arrowMenuDemonstration.setEndView(findViewById(R.id.menuDemonstration));
+                arrowMenuDemonstration.invalidate(CENTER_START, CENTER_END);
+
+                arrowFiltersDemonstration.setWillNotDraw(false);
+                arrowFiltersDemonstration.setStartView(textFiltersDemonstration);
+                arrowFiltersDemonstration.setEndView(findViewById(R.id.filtersDemonstration));
+                arrowFiltersDemonstration.invalidate(CENTER_END, CENTER_START);
+
+                arrowLocationDemonstration.setWillNotDraw(false);
+                arrowLocationDemonstration.setStartView(textLocationDemonstration);
+                arrowLocationDemonstration.setEndView(findViewById(R.id.locationDemonstration));
+                arrowLocationDemonstration.invalidate(CENTER_START, CENTER_END);
+
+                arrowContractDemonstration.setWillNotDraw(false);
+                arrowContractDemonstration.setStartView(textContractDemonstration);
+                arrowContractDemonstration.setEndView(findViewById(R.id.contractDemonstration));
+                arrowContractDemonstration.invalidate(CENTER_END, CENTER_START);
             }
-
-
         }
     }
-
 }

@@ -290,6 +290,12 @@
     <string name="pleaseConfirmMember">Please, confirm member</string>
     <string name="showAll">Show all</string>
     <string name="travelType">Travel type</string>
+    <string name="menu">Menu</string>
+    <string name="location">Location</string>
+    <string name="contract">Make service</string>
+    <string name="editProfile">-edit profile</string>
+    <string name="openWallet">-open wallet</string>
+    <string name="appSettings">-application settings</string>
 
 
 </resources>

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/mapId"
@@ -36,16 +35,19 @@
             android:src="@drawable/menu"
             android:visibility="gone" />
 
-        <ImageButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/filter"
-            style="@style/IconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|top"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="12dp"
-            android:background="@color/fui_transparent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/filter"
-            android:tint="@color/primary" />
+            android:scaleType="center"
+            android:src="@drawable/ic_filter"
+            android:tint="@color/secondary"
+            android:visibility="gone"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
 
         <FrameLayout
             android:layout_width="84dp"
@@ -129,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|bottom"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="12dp"
                 android:layout_marginBottom="32dp"
                 android:src="@drawable/my_location"
                 android:tint="@color/secondary"
@@ -142,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:layout_marginBottom="32dp"
                 android:scaleType="center"
                 android:src="@drawable/add"
@@ -245,6 +247,180 @@
 
     </fragment>
 
+    <RelativeLayout
+        android:id="@+id/demonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#83000000"
+        android:visibility="gone">
+
+
+        <ImageView
+            android:id="@+id/menuDemonstration"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/circular_button"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:focusable="true"
+            android:scaleType="center"
+            android:src="@drawable/menu"
+            android:visibility="visible" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/locationDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/my_location"
+            android:tint="@color/secondary"
+            android:visibility="visible"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/contractDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="32dp"
+            android:scaleType="center"
+            android:src="@drawable/add"
+            android:tint="@color/secondary"
+            android:visibility="visible"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/filtersDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_filter"
+            android:tint="@color/secondary"
+            android:visibility="visible"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
+
+        <TextView
+            android:id="@+id/textMenuDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="124dp"
+            android:text="@string/menu"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textMenuDemonstrationProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textMenuDemonstration"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/editProfile"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textMenuDemonstrationWallet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textMenuDemonstrationProfile"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/openWallet"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textMenuDemonstrationSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textMenuDemonstrationWallet"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/appSettings"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/textFiltersDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textMenuDemonstrationSettings"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="80dp"
+            android:text="@string/filters"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textLocationDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="56dp"
+            android:layout_marginBottom="164dp"
+            android:text="@string/location"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textContractDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="56dp"
+            android:layout_marginBottom="146dp"
+            android:text="@string/contract"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:visibility="visible" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowMenuDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowFiltersDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowLocationDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowContractDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="wrap_content"
@@ -259,5 +435,6 @@
         app:itemIconTint="@color/primary"
         app:itemTextColor="@color/primary"
         app:menu="@menu/navigation_body" />
+
 
 </android.support.v4.widget.DrawerLayout>

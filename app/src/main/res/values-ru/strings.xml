@@ -289,5 +289,11 @@
     <string name="pleaseConfirmMember">Пожалуйста, подтвердите участника</string>
     <string name="showAll">Показать все</string>
     <string name="travelType">Способ перемещения</string>
+    <string name="menu">Меню</string>
+    <string name="location">Местоположение</string>
+    <string name="contract">Создание услуги</string>
+    <string name="editProfile">-редактировать профиль</string>
+    <string name="openWallet">-открыть кошелек</string>
+    <string name="appSettings">-настройки приложения</string>
 
 </resources>

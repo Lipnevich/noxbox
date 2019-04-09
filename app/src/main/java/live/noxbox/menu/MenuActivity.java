@@ -85,7 +85,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         isInitiated = false;
     }
 
-    private void draw(final Activity activity, final Profile profile) {
+    protected void draw(final Activity activity, final Profile profile) {
         initializeNavigationHeader(activity, profile);
         drawNavigation(activity, profile);
     }

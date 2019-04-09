@@ -25,14 +25,14 @@ public class ArrowView extends RelativeLayout {
     private final static double ARROW_ANGLE = Math.PI / 6;
     private final static double ARROW_SIZE = 50;
 
-    public static final int FROM_OR_TO_TOP_LEFT = 1;
-    public static final int FROM_OR_TO_TOP_CENTER = 2;
-    public static final int FROM_OR_TO_TOP_RIGHT = 3;
-    public static final int FROM_OR_TO_START_CENTER = 4;
-    public static final int FROM_OR_TO_END_CENTER = 5;
-    public static final int FROM_OR_TO_BOTTOM_LEFT = 6;
-    public static final int FROM_OR_TO_BOTTOM_CENTER = 7;
-    public static final int FROM_OR_TO_BOTTOM_RIGHT = 8;
+    public static final int TOP_START = 1;
+    public static final int TOP_CENTER = 2;
+    public static final int TOP_END = 3;
+    public static final int CENTER_START = 4;
+    public static final int CENTER_END = 5;
+    public static final int BOTTOM_START = 6;
+    public static final int BOTTOM_CENTER = 7;
+    public static final int BOTTOM_END = 8;
 
     private View startView;
     private View endView;
@@ -45,7 +45,7 @@ public class ArrowView extends RelativeLayout {
     float[] startPoint = new float[2];
     float[] endPoint = new float[2];
 
-    int curveRadius = 40;
+    int curveRadius = 35;
 
     private Paint paint;
 
@@ -126,7 +126,8 @@ public class ArrowView extends RelativeLayout {
         fillPaintForTriangle.setAntiAlias(true);
 
         float[] middleAnglePoint = getMiddleAnglePoints(startX, startY, endX, endY);
-        float[] trianglePoint = getTrianglePoint(middleAnglePoint[0], middleAnglePoint[1], endX, endY);
+        //float[] trianglePoint = getTrianglePoint(middleAnglePoint[0], middleAnglePoint[1], endX, endY); //fix point at the end of arrow, but bring another problem
+        float[] trianglePoint = new float[]{endX,endY};
 
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
@@ -317,55 +318,55 @@ public class ArrowView extends RelativeLayout {
 
     private void definePoints() {
         switch (startPointFlag) {
-            case FROM_OR_TO_TOP_LEFT:
+            case TOP_START:
                 startPoint = getTopLeftPointOfView(startView);
                 break;
-            case FROM_OR_TO_TOP_CENTER:
+            case TOP_CENTER:
                 startPoint = getTopCenterPointOfView(startView);
                 break;
-            case FROM_OR_TO_TOP_RIGHT:
+            case TOP_END:
                 startPoint = getTopRightPointOfView(startView);
                 break;
-            case FROM_OR_TO_START_CENTER:
+            case CENTER_START:
                 startPoint = getStartCenterPointOfView(startView);
                 break;
-            case FROM_OR_TO_END_CENTER:
+            case CENTER_END:
                 startPoint = getEndCenterPointOfView(startView);
                 break;
-            case FROM_OR_TO_BOTTOM_LEFT:
+            case BOTTOM_START:
                 startPoint = getBottomLeftPointOfView(startView);
                 break;
-            case FROM_OR_TO_BOTTOM_CENTER:
+            case BOTTOM_CENTER:
                 startPoint = getBottomCenterPointOfView(startView);
                 break;
-            case FROM_OR_TO_BOTTOM_RIGHT:
+            case BOTTOM_END:
                 startPoint = getBottomRightPointOfView(startView);
                 break;
         }
 
         switch (endPointFlag) {
-            case FROM_OR_TO_TOP_LEFT:
+            case TOP_START:
                 endPoint = getTopLeftPointOfView(endView);
                 break;
-            case FROM_OR_TO_TOP_CENTER:
+            case TOP_CENTER:
                 endPoint = getTopCenterPointOfView(endView);
                 break;
-            case FROM_OR_TO_TOP_RIGHT:
+            case TOP_END:
                 endPoint = getTopRightPointOfView(endView);
                 break;
-            case FROM_OR_TO_START_CENTER:
+            case CENTER_START:
                 endPoint = getStartCenterPointOfView(endView);
                 break;
-            case FROM_OR_TO_END_CENTER:
+            case CENTER_END:
                 endPoint = getEndCenterPointOfView(endView);
                 break;
-            case FROM_OR_TO_BOTTOM_LEFT:
+            case BOTTOM_START:
                 endPoint = getBottomLeftPointOfView(endView);
                 break;
-            case FROM_OR_TO_BOTTOM_CENTER:
+            case BOTTOM_CENTER:
                 endPoint = getBottomCenterPointOfView(endView);
                 break;
-            case FROM_OR_TO_BOTTOM_RIGHT:
+            case BOTTOM_END:
                 endPoint = getBottomRightPointOfView(endView);
                 break;
         }
