@@ -38,7 +38,7 @@ exports.send = async request => {
             .minus(noxboxFee).minus(wavesFee);
 
         let feeRequest = {};
-        feeRequest.addressToTransfer = '3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73';
+        feeRequest.addressToTransfer = '3PFqJR4AiBzRBAvki2QGVFUiXQjUasPyXTH';
         feeRequest.seed = request.seed;
         feeRequest.attachment = "NoxBox Fee";
         feeRequest.transferable = noxboxFee;
