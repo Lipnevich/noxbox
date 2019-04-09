@@ -36,8 +36,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
+import live.noxbox.activities.DemonstrationActivity;
 import live.noxbox.database.AppCache;
-import live.noxbox.debug.HackerActivity;
 import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Profile;
@@ -69,7 +69,7 @@ import static live.noxbox.tools.location.LocationOperator.updateLocation;
 import static live.noxbox.tools.location.LocationUpdater.KEY_REQUESTING_LOCATION_UPDATES;
 import static live.noxbox.tools.location.LocationUpdater.REQUEST_CHECK_LOCATION_SETTINGS;
 
-public class MapActivity extends HackerActivity implements
+public class MapActivity extends DemonstrationActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
 
@@ -114,6 +114,7 @@ public class MapActivity extends HackerActivity implements
 
     @Override
     protected void onResume() {
+        super.onResume();
         if (NetworkReceiver.isOnline(this)) {
             AppCache.startListening();
         } else {
@@ -128,8 +129,6 @@ public class MapActivity extends HackerActivity implements
         registerReceiver(locationReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         googleApiClient.connect();
         draw();
-
-        super.onResume();
     }
 
     @Override
@@ -245,8 +244,6 @@ public class MapActivity extends HackerActivity implements
     private void draw() {
         AppCache.listenProfile(this.getClass().getName(), profile -> {
             if (googleMap == null) return;
-
-//            startDemonstration();
 
             State newState = getFragment(profile);
             if (newState instanceof AvailableNoxboxes && requestLocationUpdatesBundle != null) {
