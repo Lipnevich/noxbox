@@ -199,7 +199,7 @@
       android:pathData="M26832,6504l-580,0c-187,0 -220,-62 -179,-124 526,-815 573,-872 759,-1155l0,1279z"
       android:fillColor="#F9AC46"/>
   <path
-      android:fillColor="F9AC46#FF000000"
+      android:fillColor="#F9AC46"
       android:pathData="M26832,6956l-649,0c-210,0 -246,-69 -201,-139 590,-912 643,-976 850,-1292l0,1431z"/>
   <path
       android:pathData="M25886,5428l-101,-182l-113,182l0,1511l214,0z"
