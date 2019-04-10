@@ -29,6 +29,16 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="noxbox.live"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activities.AuthActivity"
@@ -40,7 +50,7 @@
         </activity>
         <activity
             android:name=".menu.settings.MapSettingsActivity"
-            android:parentActivityName=".MapActivity"/>
+            android:parentActivityName=".MapActivity" />
         <activity
             android:name=".menu.profile.ProfileActivity"
             android:parentActivityName=".MapActivity"
@@ -63,9 +73,8 @@
         <activity
             android:name=".activities.detailed.DetailedActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MapActivity"/>
-        <activity
-            android:name=".activities.detailed.CoordinateActivity" />
+            android:parentActivityName=".MapActivity" />
+        <activity android:name=".activities.detailed.CoordinateActivity" />
         <activity
             android:name=".menu.history.HistoryActivity"
             android:parentActivityName=".MapActivity" />
@@ -128,6 +137,14 @@
                 <action android:name="live.noxbox.SupportActionIntent" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".tools.ReferrerCatcher"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

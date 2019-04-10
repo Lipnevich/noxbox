@@ -33,6 +33,7 @@ exports.send = async request => {
         request.transferable = balance.minus(wavesFee);
     } else {
         // pay for service
+        // TODO reward referral
         if(balance.lt(request.transferable)) request.transferable = balance;
         request.transferable = request.transferable.minus(wavesFee)
             .minus(noxboxFee).minus(wavesFee);

@@ -22,7 +22,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.WindowManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -53,6 +52,7 @@ import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.ExchangeRate;
+import live.noxbox.tools.ReferrerCatcher;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.location.LocationException;
 
@@ -85,10 +85,14 @@ public class MapActivity extends DemonstrationActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.MapTheme);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+        // WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         super.onCreate(savedInstanceState);
         initCrashReporting();
+        if (getIntent() != null) {
+            ReferrerCatcher.parseLink(getIntent(), MapActivity.this);
+        }
+
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || isFirstRun(false)) {
@@ -98,6 +102,7 @@ public class MapActivity extends DemonstrationActivity implements
         }
 
         AppCache.profile().init(user);
+
 
         Crashlytics.setUserIdentifier(user.getUid());
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e -> Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid()));
@@ -248,6 +253,11 @@ public class MapActivity extends DemonstrationActivity implements
     private void draw() {
         AppCache.listenProfile(this.getClass().getName(), profile -> {
             if (googleMap == null) return;
+
+
+            if (getIntent() != null) {
+                ReferrerCatcher.parseLink(getIntent(), MapActivity.this);
+            }
 
             State newState = getFragment(profile);
             if (newState instanceof AvailableNoxboxes && requestLocationUpdatesBundle != null) {

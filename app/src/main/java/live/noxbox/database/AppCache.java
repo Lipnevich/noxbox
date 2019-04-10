@@ -38,6 +38,7 @@ import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.database.GeoRealtime.online;
 import static live.noxbox.tools.BalanceChecker.cleanRequestBalanceQueue;
 import static live.noxbox.tools.MoneyFormatter.scale;
+import static live.noxbox.tools.ReferrerCatcher.clearReferrer;
 
 public class AppCache {
 
@@ -188,6 +189,7 @@ public class AppCache {
     }
 
     public static void logout() {
+        clearReferrer();
         clearTasks();
         cleanRequestBalanceQueue();
         if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {

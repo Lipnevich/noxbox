@@ -14,6 +14,7 @@ public class Profile implements Serializable {
 
 
     private String id;
+    private String referral;
 
     private Acceptance acceptance;
     //key is Profile.id
@@ -165,14 +166,14 @@ public class Profile implements Serializable {
     public Profile publicInfo(MarketRole role, NoxboxType type) {
         Map<String, Rating> ratings = new HashMap<>();
         Rating rating = role == MarketRole.supply ? getSuppliesRating().get(type.name()) : getDemandsRating().get(type.name());
-        if(rating == null) {
+        if (rating == null) {
             rating = new Rating();
         }
         ratings.put(type.name(), rating);
 
 
         Map<String, Portfolio> servicePortfolio = new HashMap<>();
-        if(role == MarketRole.supply && portfolio.get(type.name()) != null) {
+        if (role == MarketRole.supply && portfolio.get(type.name()) != null) {
             servicePortfolio.put(type.name(), portfolio.get(type.name()));
         }
 
@@ -186,7 +187,7 @@ public class Profile implements Serializable {
     }
 
     public Profile addPrivateInfo(Profile profile) {
-        return this.setWallet(profile.getWallet()).setName(profile.getName()).setPhoto(profile.getPhoto());
+        return this.setWallet(profile.getWallet()).setName(profile.getName()).setPhoto(profile.getPhoto()).setReferral(profile.getReferral());
     }
 
     public Noxbox getViewed() {
@@ -385,6 +386,18 @@ public class Profile implements Serializable {
 
     public Profile setRatingUpdateTime(long ratingUpdateTime) {
         this.ratingUpdateTime = ratingUpdateTime;
+        return this;
+    }
+
+    public String getReferral() {
+        if (referral == null) {
+            referral = "";
+        }
+        return referral;
+    }
+
+    public Profile setReferral(String referral) {
+        this.referral = referral;
         return this;
     }
 }
