@@ -10,7 +10,8 @@
     <string name="haircutDescription">Hairdresser must has tools for cutting hair</string>
     <string name="massageDescription">Masseur should help body relax and become more healthy</string>
     <string name="cleaningDescription">Cleaner must has garbage begs</string>
-    <string name="lawyerDescription">Must understand the laws of current country, to help the client save time and money</string>
+    <string name="lawyerDescription">Lawyer must understand the laws of current country, to help the client save time and money</string>
+    <string name="rentRoomDescription">Housekeeper must provide a room with a clean place to sleep</string>
 
     <string name="completeText">Complete</string>
     <string name="requestText">Request</string>
@@ -28,6 +29,7 @@
     <string name="massage">Massage</string>
     <string name="cleaning">Cleaning</string>
     <string name="lawyer">Lawyer</string>
+    <string name="rentRoom">Rent room</string>
 
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
@@ -36,6 +38,7 @@
     <string name="hairdresser">Hairdresser</string>
     <string name="masseur">Masseur</string>
     <string name="cleaner">Cleaner</string>
+    <string name="housekeeper">Housekeeper</string>
 
     <string name="history">History</string>
     <string name="wallet">Wallet</string>
@@ -295,13 +298,10 @@
     <string name="travelType">Travel type</string>
     <string name="menu">Menu</string>
     <string name="location">Location</string>
-    <string name="contract">Post service</string>
+    <string name="contract">Post your first service</string>
     <string name="yourProfile">Your profile</string>
     <string name="yourWallet">Your wallet</string>
     <string name="yourHistory">Your history</string>
-    <string name="rentRoomDescription">Must provide a room with a clean place to sleep</string>
-    <string name="rentRoom">Rent room</string>
-    <string name="housekeeper">Housekeeper</string>
-
+    <string name="filterDescription">Filter services on the map</string>
 
 </resources>

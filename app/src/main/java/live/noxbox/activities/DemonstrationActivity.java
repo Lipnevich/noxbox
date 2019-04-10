@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.debug.HackerActivity;
 import live.noxbox.ui.ArrowView;
@@ -91,7 +92,7 @@ public class DemonstrationActivity extends HackerActivity {
 
 
     protected void showDemonstration() {
-        if (isFirstRunDemonstration()) {
+        if (isFirstRunDemonstration() || BuildConfig.DEBUG) {
             demonstration = findViewById(R.id.demonstration);
             demonstration.setVisibility(View.VISIBLE);
             demonstration.setOnClickListener(v -> onScreenClick());
@@ -148,14 +149,14 @@ public class DemonstrationActivity extends HackerActivity {
                 RelativeLayout.LayoutParams textLocationParams = new RelativeLayout.LayoutParams(-2, -2);
                 textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_START);
-                textLocationParams.setMargins(dpToPx(56), 0, dpToPx(0), dpToPx(164));
+                textLocationParams.setMargins(dpToPx(56), 0, dpToPx(0), dpToPx(128));
                 TextView textLocationDemonstration = findViewById(R.id.textLocationDemonstration);
                 textLocationDemonstration.setLayoutParams(textLocationParams);
 
                 RelativeLayout.LayoutParams textContractParams = new RelativeLayout.LayoutParams(-2, -2);
                 textContractParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 textContractParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                textContractParams.setMargins(0, 0, dpToPx(56), dpToPx(146));
+                textContractParams.setMargins(0, 0, dpToPx(56), dpToPx(184));
                 TextView textContractDemonstration = findViewById(R.id.textContractDemonstration);
                 textContractDemonstration.setLayoutParams(textContractParams);
 

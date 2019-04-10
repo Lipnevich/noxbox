@@ -23,10 +23,10 @@
     <string name="water">Питьевая вода</string>
     <string name="plant">Садовник</string>
     <string name="cleaning">Уборка</string>
-    <string name="lawyer">lawyer</string>
+    <string name="lawyer">Адвокат</string>
 
     <!--Professions-->
-    <string name="waterSupplier">Water supplier</string>
+    <string name="waterSupplier">Доставщик воды</string>
     <string name="guru">Учитель</string>
     <string name="gardener">Садовник</string>
     <string name="hairdresser">Парикмахер</string>
@@ -295,7 +295,7 @@
 
     <string name="menu">Меню</string>
     <string name="location">Местоположение</string>
-    <string name="contract">Разместите услугу</string>
+    <string name="contract">Разместите Вашу первую услугу</string>
     <string name="yourProfile">Ваш профиль</string>
     <string name="yourWallet">Ваш кошелек</string>
     <string name="yourHistory">Ваша история</string>
@@ -303,6 +303,7 @@
     <string name="rentRoomDescription">Необходимо предоставить комнату с чистым местом для сна</string>
     <string name="rentRoom">Ночлег</string>
     <string name="housekeeper">Домовой</string>
+    <string name="filterDescription">Отфильтруйте услуги на карте</string>
 
 
 </resources>

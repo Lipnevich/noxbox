@@ -332,7 +332,7 @@
             android:layout_marginTop="124dp"
             android:text="@string/menu"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/textMenuDemonstrationProfile"
@@ -344,7 +344,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/yourProfile"
             android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textMenuDemonstrationWallet"
@@ -356,7 +356,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/yourWallet"
             android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textMenuDemonstrationSettings"
@@ -368,7 +368,7 @@
             android:layout_marginTop="16dp"
             android:text="@string/yourHistory"
             android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textFiltersDemonstration"
@@ -379,7 +379,7 @@
             android:layout_marginEnd="80dp"
             android:text="@string/filters"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/textFiltersDemonstrationDescription"
@@ -388,9 +388,9 @@
             android:layout_below="@+id/textFiltersDemonstration"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="80dp"
-            android:text="Фильтры 2.0"
+            android:text="@string/filterDescription"
             android:textColor="#FFFFFF"
-            android:textSize="12sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/textLocationDemonstration"
@@ -399,10 +399,10 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="56dp"
-            android:layout_marginBottom="164dp"
+            android:layout_marginBottom="146dp"
             android:text="@string/location"
             android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/textContractDemonstration"
@@ -411,11 +411,10 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="56dp"
-            android:layout_marginBottom="146dp"
+            android:layout_marginBottom="186dp"
             android:text="@string/contract"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:visibility="visible" />
+            android:textSize="24sp" />
 
         <live.noxbox.ui.ArrowView
             android:id="@+id/arrowMenuDemonstration"
