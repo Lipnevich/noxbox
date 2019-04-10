@@ -10,6 +10,7 @@ import android.widget.TextView;
 import live.noxbox.R;
 import live.noxbox.debug.HackerActivity;
 import live.noxbox.ui.ArrowView;
+import live.noxbox.ui.RoleSwitcherLayout;
 
 import static live.noxbox.Constants.FIRST_DEMONSTRATION_KEY;
 import static live.noxbox.database.AppCache.profile;
@@ -103,6 +104,8 @@ public class DemonstrationActivity extends HackerActivity {
             findViewById(R.id.arrowLocationDemonstration).setOnClickListener(v -> onScreenClick());
             findViewById(R.id.arrowContractDemonstration).setOnClickListener(v -> onScreenClick());
 
+            ((RoleSwitcherLayout) findViewById(R.id.roleSwitcherDemonstration)).refresh();
+
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 RelativeLayout.LayoutParams textMenuParams = new RelativeLayout.LayoutParams(-2, -2);
                 textMenuParams.addRule(RelativeLayout.ALIGN_PARENT_START);
@@ -135,6 +138,13 @@ public class DemonstrationActivity extends HackerActivity {
                 TextView textFiltersDemonstration = findViewById(R.id.textFiltersDemonstration);
                 textFiltersDemonstration.setLayoutParams(textFiltersParams);
 
+                RelativeLayout.LayoutParams textFiltersDescriptionParams = new RelativeLayout.LayoutParams(-2, -2);
+                textFiltersDescriptionParams.addRule(RelativeLayout.BELOW, R.id.textFiltersDemonstration);
+                textFiltersDescriptionParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                textFiltersDescriptionParams.setMargins(dpToPx(0), dpToPx(0), dpToPx(80), 0);
+                TextView textFiltersDemonstrationDescription = findViewById(R.id.textFiltersDemonstrationDescription);
+                textFiltersDemonstrationDescription.setLayoutParams(textFiltersDescriptionParams);
+
                 RelativeLayout.LayoutParams textLocationParams = new RelativeLayout.LayoutParams(-2, -2);
                 textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_START);
@@ -153,6 +163,7 @@ public class DemonstrationActivity extends HackerActivity {
                 ArrowView arrowFiltersDemonstration = findViewById(R.id.arrowFiltersDemonstration);
                 ArrowView arrowLocationDemonstration = findViewById(R.id.arrowLocationDemonstration);
                 ArrowView arrowContractDemonstration = findViewById(R.id.arrowContractDemonstration);
+                ArrowView arrowRoleSwitcherDemonstration = findViewById(R.id.arrowRoleSwitcherDemonstration);
                 arrowMenuDemonstration.setWillNotDraw(false);
                 arrowMenuDemonstration.setStartView(findViewById(R.id.textMenuDemonstration));
                 arrowMenuDemonstration.setEndView(findViewById(R.id.menuDemonstration));
@@ -161,7 +172,7 @@ public class DemonstrationActivity extends HackerActivity {
                 arrowFiltersDemonstration.setWillNotDraw(false);
                 arrowFiltersDemonstration.setStartView(findViewById(R.id.textFiltersDemonstration));
                 arrowFiltersDemonstration.setEndView(findViewById(R.id.filtersDemonstration));
-                arrowFiltersDemonstration.invalidate(TOP_CENTER, BOTTOM_CENTER);
+                arrowFiltersDemonstration.invalidate(CENTER_END, BOTTOM_CENTER);
 
                 arrowLocationDemonstration.setWillNotDraw(false);
                 arrowLocationDemonstration.setStartView(findViewById(R.id.textLocationDemonstration));
@@ -172,6 +183,11 @@ public class DemonstrationActivity extends HackerActivity {
                 arrowContractDemonstration.setStartView(findViewById(R.id.textContractDemonstration));
                 arrowContractDemonstration.setEndView(findViewById(R.id.contractDemonstration));
                 arrowContractDemonstration.invalidate(BOTTOM_CENTER, TOP_CENTER);
+
+                arrowRoleSwitcherDemonstration.setWillNotDraw(false);
+                arrowRoleSwitcherDemonstration.setStartView(findViewById(R.id.textFiltersDemonstration));
+                arrowRoleSwitcherDemonstration.setEndView(findViewById(R.id.roleSwitcherDemonstration));
+                arrowRoleSwitcherDemonstration.invalidate(CENTER_START, BOTTOM_CENTER);
 
             } else {
                 RelativeLayout.LayoutParams textMenuParams = new RelativeLayout.LayoutParams(-2, -2);
@@ -200,9 +216,16 @@ public class DemonstrationActivity extends HackerActivity {
 
                 RelativeLayout.LayoutParams textFiltersParams = new RelativeLayout.LayoutParams(-2, -2);
                 textFiltersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                textFiltersParams.setMargins(dpToPx(0), dpToPx(44), dpToPx(126), 0);
+                textFiltersParams.setMargins(dpToPx(0), dpToPx(102), dpToPx(134), 0);
                 TextView textFiltersDemonstration = findViewById(R.id.textFiltersDemonstration);
                 textFiltersDemonstration.setLayoutParams(textFiltersParams);
+
+                RelativeLayout.LayoutParams textFiltersDescriptionParams = new RelativeLayout.LayoutParams(-2, -2);
+                textFiltersDescriptionParams.addRule(RelativeLayout.BELOW, R.id.textFiltersDemonstration);
+                textFiltersDescriptionParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+                textFiltersDescriptionParams.setMargins(dpToPx(0), dpToPx(16), dpToPx(134), 0);
+                TextView textFiltersDemonstrationDescription = findViewById(R.id.textFiltersDemonstrationDescription);
+                textFiltersDemonstrationDescription.setLayoutParams(textFiltersDescriptionParams);
 
                 RelativeLayout.LayoutParams textLocationParams = new RelativeLayout.LayoutParams(-2, -2);
                 textLocationParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -221,6 +244,7 @@ public class DemonstrationActivity extends HackerActivity {
                 ArrowView arrowFiltersDemonstration = findViewById(R.id.arrowFiltersDemonstration);
                 ArrowView arrowLocationDemonstration = findViewById(R.id.arrowLocationDemonstration);
                 ArrowView arrowContractDemonstration = findViewById(R.id.arrowContractDemonstration);
+                ArrowView arrowRoleSwitcherDemonstration = findViewById(R.id.arrowRoleSwitcherDemonstration);
                 arrowMenuDemonstration.setWillNotDraw(false);
                 arrowMenuDemonstration.setStartView(textMenuDemonstration);
                 arrowMenuDemonstration.setEndView(findViewById(R.id.menuDemonstration));
@@ -240,6 +264,11 @@ public class DemonstrationActivity extends HackerActivity {
                 arrowContractDemonstration.setStartView(textContractDemonstration);
                 arrowContractDemonstration.setEndView(findViewById(R.id.contractDemonstration));
                 arrowContractDemonstration.invalidate(CENTER_END, CENTER_START);
+
+                arrowRoleSwitcherDemonstration.setWillNotDraw(false);
+                arrowRoleSwitcherDemonstration.setStartView(findViewById(R.id.textFiltersDemonstration));
+                arrowRoleSwitcherDemonstration.setEndView(findViewById(R.id.roleSwitcherDemonstration));
+                arrowRoleSwitcherDemonstration.invalidate(CENTER_START, BOTTOM_CENTER, true);
             }
         }
     }

@@ -34,6 +34,9 @@ public class ArrowView extends RelativeLayout {
     public static final int BOTTOM_CENTER = 7;
     public static final int BOTTOM_END = 8;
 
+
+    public static final int TOP_FIRST_LETTER = 9;
+
     private View startView;
     private View endView;
 
@@ -48,6 +51,8 @@ public class ArrowView extends RelativeLayout {
     int curveRadius = 35;
 
     private Paint paint;
+
+    private boolean strict;
 
     public ArrowView(Context context, TextView startView, View endView) {
         super(context);
@@ -126,8 +131,12 @@ public class ArrowView extends RelativeLayout {
         fillPaintForTriangle.setAntiAlias(true);
 
         float[] middleAnglePoint = getMiddleAnglePoints(startX, startY, endX, endY);
-        //float[] trianglePoint = getTrianglePoint(middleAnglePoint[0], middleAnglePoint[1], endX, endY); //fix point at the end of arrow, but bring another problem
-        float[] trianglePoint = new float[]{endX,endY};
+        float[] trianglePoint;
+        if (strict) {
+            trianglePoint = getTrianglePoint(middleAnglePoint[0], middleAnglePoint[1], endX, endY); //fix point at the end of arrow, but bring another problem
+        } else {
+            trianglePoint = new float[]{endX, endY};
+        }
 
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
@@ -267,51 +276,57 @@ public class ArrowView extends RelativeLayout {
         return this;
     }
 
+    //very rude calculation; use only for short words
+    private float[] getTopFirstLetterPointOfView(View view) {
+        float x = view.getX() + (view.getWidth() / 10f);
+        float y = view.getY()+ (view.getHeight() / 10f);
+        return new float[]{x, y};
+    }
 
-    private float[] getBottomRightPointOfView(View view) {
+    private float[] getBottomEndPointOfView(View view) {
         float x = view.getX() + view.getWidth();
         float y = view.getY() + view.getHeight();
         return new float[]{x, y};
     }
 
-    private float[] getBottomLeftPointOfView(View view) {
+    private float[] getBottomStartPointOfView(View view) {
         float x = view.getX();
         float y = view.getY() + view.getHeight();
         return new float[]{x, y};
     }
 
-    private float[] getTopRightPointOfView(View view) {
+    private float[] getTopEndPointOfView(View view) {
         float x = view.getX() + view.getWidth();
         float y = view.getY();
         return new float[]{x, y};
     }
 
-    private float[] getTopLeftPointOfView(View view) {
+    private float[] getTopStartPointOfView(View view) {
         float x = view.getX();
         float y = view.getY();
         return new float[]{x, y};
     }
 
     private float[] getTopCenterPointOfView(View view) {
-        float x = view.getX() + (view.getWidth() / 2);
+        float x = view.getX() + (view.getWidth() / 2f);
         float y = view.getY();
         return new float[]{x, y};
     }
 
     private float[] getStartCenterPointOfView(View view) {
         float x = view.getX();
-        float y = view.getY() + (view.getHeight() / 2);
+        float y = view.getY() + (view.getHeight() / 2f);
         return new float[]{x, y};
     }
 
     private float[] getEndCenterPointOfView(View view) {
         float x = view.getX() + view.getWidth();
-        float y = view.getY() + (view.getHeight() / 2);
+        float y = view.getY() + (view.getHeight() / 2f);
         return new float[]{x, y};
     }
 
     private float[] getBottomCenterPointOfView(View view) {
-        float x = view.getX() + (view.getWidth() / 2);
+        float x = view.getX() + (view.getWidth() / 2f);
         float y = view.getY() + view.getHeight();
         return new float[]{x, y};
     }
@@ -319,13 +334,13 @@ public class ArrowView extends RelativeLayout {
     private void definePoints() {
         switch (startPointFlag) {
             case TOP_START:
-                startPoint = getTopLeftPointOfView(startView);
+                startPoint = getTopStartPointOfView(startView);
                 break;
             case TOP_CENTER:
                 startPoint = getTopCenterPointOfView(startView);
                 break;
             case TOP_END:
-                startPoint = getTopRightPointOfView(startView);
+                startPoint = getTopEndPointOfView(startView);
                 break;
             case CENTER_START:
                 startPoint = getStartCenterPointOfView(startView);
@@ -334,25 +349,28 @@ public class ArrowView extends RelativeLayout {
                 startPoint = getEndCenterPointOfView(startView);
                 break;
             case BOTTOM_START:
-                startPoint = getBottomLeftPointOfView(startView);
+                startPoint = getBottomStartPointOfView(startView);
                 break;
             case BOTTOM_CENTER:
                 startPoint = getBottomCenterPointOfView(startView);
                 break;
             case BOTTOM_END:
-                startPoint = getBottomRightPointOfView(startView);
+                startPoint = getBottomEndPointOfView(startView);
+                break;
+            case TOP_FIRST_LETTER:
+                startPoint = getTopFirstLetterPointOfView(startView);
                 break;
         }
 
         switch (endPointFlag) {
             case TOP_START:
-                endPoint = getTopLeftPointOfView(endView);
+                endPoint = getTopStartPointOfView(endView);
                 break;
             case TOP_CENTER:
                 endPoint = getTopCenterPointOfView(endView);
                 break;
             case TOP_END:
-                endPoint = getTopRightPointOfView(endView);
+                endPoint = getTopEndPointOfView(endView);
                 break;
             case CENTER_START:
                 endPoint = getStartCenterPointOfView(endView);
@@ -361,19 +379,26 @@ public class ArrowView extends RelativeLayout {
                 endPoint = getEndCenterPointOfView(endView);
                 break;
             case BOTTOM_START:
-                endPoint = getBottomLeftPointOfView(endView);
+                endPoint = getBottomStartPointOfView(endView);
                 break;
             case BOTTOM_CENTER:
                 endPoint = getBottomCenterPointOfView(endView);
                 break;
             case BOTTOM_END:
-                endPoint = getBottomRightPointOfView(endView);
+                endPoint = getBottomEndPointOfView(endView);
                 break;
         }
     }
 
 
     public void invalidate(int startPoint, int endPoint) {
+        startPointFlag = startPoint;
+        endPointFlag = endPoint;
+        invalidate();
+    }
+
+    public void invalidate(int startPoint, int endPoint, boolean strict) {
+        this.strict = strict;
         startPointFlag = startPoint;
         endPointFlag = endPoint;
         invalidate();

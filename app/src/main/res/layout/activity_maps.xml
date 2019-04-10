@@ -316,6 +316,13 @@
             app:fabSize="auto"
             app:maxImageSize="48dp" />
 
+        <live.noxbox.ui.RoleSwitcherLayout
+            android:id="@+id/roleSwitcherDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp" />
+
         <TextView
             android:id="@+id/textMenuDemonstration"
             android:layout_width="wrap_content"
@@ -375,6 +382,17 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/textFiltersDemonstrationDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textFiltersDemonstration"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="80dp"
+            android:text="Фильтры 2.0"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp" />
+
+        <TextView
             android:id="@+id/textLocationDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -416,6 +434,11 @@
 
         <live.noxbox.ui.ArrowView
             android:id="@+id/arrowContractDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowRoleSwitcherDemonstration"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
