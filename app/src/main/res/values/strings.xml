@@ -10,6 +10,7 @@
     <string name="haircutDescription">Hairdresser must has tools for cutting hair</string>
     <string name="massageDescription">Masseur should help body relax and become more healthy</string>
     <string name="cleaningDescription">Cleaner must has garbage begs</string>
+    <string name="lawyerDescription">Must understand the laws of current country, to help the client save time and money</string>
 
     <string name="completeText">Complete</string>
     <string name="requestText">Request</string>
@@ -24,7 +25,9 @@
     <string name="meditation">Meditation lessons</string>
     <string name="water">Drinking water</string>
     <string name="plant">Plant a sapling</string>
+    <string name="massage">Massage</string>
     <string name="cleaning">Cleaning</string>
+    <string name="lawyer">Lawyer</string>
 
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
@@ -261,7 +264,7 @@
     <string name="pleaseUploadNewPhoto">Please update your photo</string>
     <string name="selectPhoto">Select Photo</string>
     <string name="haircut">Haircut</string>
-    <string name="massage">Massage</string>
+
     <string name="skip">SKIP</string>
     <string name="next">NEXT</string>
     <string name="gotIt">GOT IT</string>
@@ -292,10 +295,13 @@
     <string name="travelType">Travel type</string>
     <string name="menu">Menu</string>
     <string name="location">Location</string>
-    <string name="contract">Make service</string>
-    <string name="editProfile">-edit profile</string>
-    <string name="openWallet">-open wallet</string>
-    <string name="appSettings">-application settings</string>
+    <string name="contract">Post service</string>
+    <string name="yourProfile">Your profile</string>
+    <string name="yourWallet">Your wallet</string>
+    <string name="yourHistory">Your history</string>
+    <string name="rentRoomDescription">Must provide a room with a clean place to sleep</string>
+    <string name="rentRoom">Rent room</string>
+    <string name="housekeeper">Housekeeper</string>
 
 
 </resources>

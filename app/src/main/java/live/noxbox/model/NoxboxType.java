@@ -10,8 +10,10 @@ public enum NoxboxType {
     plant(4, R.string.plant, R.string.gardener, R.drawable.ic_plant_supply, R.drawable.ic_plant_demand, R.drawable.illustration_plant, R.string.plantDescription),
     hairdresser(5, R.string.haircut, R.string.hairdresser, R.drawable.ic_hairdresser_supply, R.drawable.ic_hairdresser_demand, R.drawable.illustration_hairdresser, R.string.haircutDescription),
     massage(6, R.string.massage, R.string.masseur, R.drawable.ic_massage_supply, R.drawable.ic_massage_demand, R.drawable.illustration_massage, R.string.massageDescription),
-    cleaning(7, R.string.cleaning, R.string.cleaner, R.drawable.ic_cleaning_demand, R.drawable.ic_cleaning_demand, R.drawable.illustration_cleaning, R.string.cleaningDescription),
-    redirect(8, R.string.redirectToPlayMarket, R.string.none, R.drawable.ic_play_market, R.drawable.ic_play_market, 0, 0);
+    cleaning(7, R.string.cleaning, R.string.cleaner, R.drawable.ic_cleaning_supply, R.drawable.ic_cleaning_demand, R.drawable.illustration_cleaning, R.string.cleaningDescription),
+    lawyer(8, R.string.lawyer, R.string.lawyer, R.drawable.ic_lawyer_supply, R.drawable.ic_lawyer_demand, R.drawable.illustration_lawyer, R.string.lawyerDescription),
+    rentRoom(9, R.string.rentRoom, R.string.housekeeper, R.drawable.ic_rent_room_supply, R.drawable.ic_rent_room_demand, R.drawable.illustration_rent_room, R.string.rentRoomDescription),
+    redirect(10, R.string.redirectToPlayMarket, R.string.none, R.drawable.ic_play_market, R.drawable.ic_play_market, 0, 0);
 
     private int id;
     private int name;

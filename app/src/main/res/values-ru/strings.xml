@@ -10,6 +10,7 @@
     <string name="meditationDescription">Обучение медитации, спокойствию и умиротворению</string>
     <string name="massageDescription">Массажист должен расслабить тело и сделать его более здоровым</string>
     <string name="cleaningDescription">Уборщик обязан иметь при себе пакеты для мусора</string>
+    <string name="lawyerDescription">Обязан разбираться в законах данной страны, помочь клиенту сэкономить время и деньги</string>
 
     <string name="completeText">Завершить</string>
     <string name="requestText">Заказать</string>
@@ -22,6 +23,7 @@
     <string name="water">Питьевая вода</string>
     <string name="plant">Садовник</string>
     <string name="cleaning">Уборка</string>
+    <string name="lawyer">lawyer</string>
 
     <!--Professions-->
     <string name="waterSupplier">Water supplier</string>
@@ -289,11 +291,18 @@
     <string name="pleaseConfirmMember">Пожалуйста, подтвердите участника</string>
     <string name="showAll">Показать все</string>
     <string name="travelType">Способ перемещения</string>
+
+
     <string name="menu">Меню</string>
     <string name="location">Местоположение</string>
-    <string name="contract">Создание услуги</string>
-    <string name="editProfile">-редактировать профиль</string>
-    <string name="openWallet">-открыть кошелек</string>
-    <string name="appSettings">-настройки приложения</string>
+    <string name="contract">Разместите услугу</string>
+    <string name="yourProfile">Ваш профиль</string>
+    <string name="yourWallet">Ваш кошелек</string>
+    <string name="yourHistory">Ваша история</string>
+
+    <string name="rentRoomDescription">Необходимо предоставить комнату с чистым местом для сна</string>
+    <string name="rentRoom">Ночлег</string>
+    <string name="housekeeper">Домовой</string>
+
 
 </resources>
