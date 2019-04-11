@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="material_drawer_item_primary_text">26sp</dimen>
+
+    <dimen name="image_width">120dp</dimen>
+    <dimen name="image_final_width">38dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+
+
+    <!--TEXT-->
+    <dimen name="text_title_large">30sp</dimen>
+    <dimen name="text_title">22sp</dimen>
+    <dimen name="text_search">20sp</dimen>
+    <dimen name="text_size">16sp</dimen>
+
+    <dimen name="text_size_secondary">12sp</dimen>
+    <dimen name="text_warning">10sp</dimen>
+    <dimen name="text_button">14sp</dimen>
+    <!--TEXT TIPS-->
+    <dimen name="small">12sp</dimen>
+    <dimen name="big">16sp</dimen>
+
+    <!--human_profile page dimen's-->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!--cluster-->
+    <dimen name="cluster_stroke_width">1dp</dimen>
+    <dimen name="cluster_text_size">14sp</dimen>
+    <dimen name="cluster_icon_min_size">32dp</dimen>
+    <dimen name="cluster_icon_padding">8dp</dimen>
+
+    <dimen name="default_bar_width">36dp</dimen>
+    <dimen name="default_bar_height">36dp</dimen>
+
+    <dimen name="global_card_view_corner">12dp</dimen>
+    <dimen name="global_elevation">4dp</dimen>
+
+    <!--chat-->
+    <dimen name="default_message_elevation">1dp</dimen>
+</resources>
