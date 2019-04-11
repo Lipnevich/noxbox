@@ -298,6 +298,11 @@ public class Firestore {
                         .get(noxbox.getType().name());
                 if(rating == null) {
                     rating = new Rating();
+                    if (role == MarketRole.demand) {
+                        profile().getDemandsRating().put(noxbox.getType().name(), rating);
+                    } else {
+                        profile().getSuppliesRating().put(noxbox.getType().name(), rating);
+                    }
                 }
                 boolean isOwner = noxbox.getOwner().equals(profile());
                 boolean isRatingUpdated = !noxbox.getTimeCompleted().equals(noxbox.getTimeRatingUpdated())
@@ -332,34 +337,42 @@ public class Firestore {
                         continue;
                     }
 
-                    if(noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
+                    if (noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setSentLikes(rating.getSentLikes() - 1);
+                        if (isRatingUpdated) {
+                            if(rating.getSentLikes() > 0){
+                                rating.setSentLikes(rating.getSentLikes() - 1);
+                            }
                         }
                     }
 
-                    if(noxbox.getTimeOwnerLiked() >= noxbox.getTimeRatingUpdated()) {
+                    if (noxbox.getTimeOwnerLiked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setSentLikes(rating.getSentLikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setSentDislikes(rating.getSentDislikes() - 1);
+                        if (isRatingUpdated) {
+                            if(rating.getSentDislikes() > 0){
+                                rating.setSentDislikes(rating.getSentDislikes() - 1);
+                            }
                         }
                     }
 
-                    if(noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
+                    if (noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setReceivedLikes(rating.getReceivedLikes() - 1);
+                        if (isRatingUpdated) {
+                            if(rating.getReceivedLikes() > 0){
+                                rating.setReceivedLikes(rating.getReceivedLikes() - 1);
+                            }
                         }
                     }
 
-                    if(noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
+                    if (noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setReceivedLikes(rating.getReceivedLikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
+                        if (isRatingUpdated) {
+                            if(rating.getReceivedDislikes() > 0){
+                                rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
+                            }
                         }
                     }
-                // profile is party in the noxbox
+                    // profile is party in the noxbox
                 } else {
                     if(noxbox.getTimeCanceledByParty() > 0) {
                         rating.setCanceled(rating.getCanceled() + 1);
@@ -387,28 +400,36 @@ public class Firestore {
 
                     if(noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setReceivedLikes(rating.getReceivedLikes() - 1);
+                        if (isRatingUpdated) {
+                            if (rating.getReceivedLikes() > 0) {
+                                rating.setReceivedLikes(rating.getReceivedLikes() - 1);
+                            }
                         }
                     }
-                    if(noxbox.getTimeOwnerLiked() >= noxbox.getTimeRatingUpdated()) {
+                    if (noxbox.getTimeOwnerLiked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setReceivedLikes(rating.getReceivedLikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
+                        if (isRatingUpdated) {
+                            if (rating.getReceivedDislikes() > 0) {
+                                rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
+                            }
                         }
                     }
 
-                    if(noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
+                    if (noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setSentDislikes(rating.getSentDislikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setSentLikes(rating.getSentLikes() - 1);
+                        if (isRatingUpdated) {
+                            if (rating.getSentLikes() > 0) {
+                                rating.setSentLikes(rating.getSentLikes() - 1);
+                            }
                         }
                     }
 
-                    if(noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
+                    if (noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
                         rating.setSentLikes(rating.getSentLikes() + 1);
-                        if(isRatingUpdated) {
-                            rating.setSentDislikes(rating.getSentDislikes() - 1);
+                        if (isRatingUpdated) {
+                            if(rating.getSentDislikes() > 0){
+                                rating.setSentDislikes(rating.getSentDislikes() - 1);
+                            }
                         }
                     }
                 }
