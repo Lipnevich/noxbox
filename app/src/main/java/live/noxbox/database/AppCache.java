@@ -158,7 +158,9 @@ public class AppCache {
     }
 
     public static void fireProfile() {
-        if (!isProfileReady()) return;
+        if (!isProfileReady()) {
+            return;
+        }
 
         if (!equal(profile.getCurrent().getId(), profile.getNoxboxId())) {
             profile.setNoxboxId(profile.getCurrent().getId());

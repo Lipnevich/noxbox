@@ -13,6 +13,10 @@ import com.google.common.base.Strings;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
+import live.noxbox.database.Firestore;
+import live.noxbox.debug.DebugMessage;
+
+import static live.noxbox.database.AppCache.NONE;
 import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
 
@@ -31,14 +35,14 @@ public class ReferrerCatcher extends BroadcastReceiver {
     }
 
     public static void createLink(String userId) {
+        Uri link = Uri.parse("https://play.google.com/store/apps/details?id=live.noxbox&" + KEY + "=" + userId);
         DynamicLink dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-                .setLink(Uri.parse("https://play.google.com/store/apps/details?id=live.noxbox&" + KEY + "=" + userId))
                 .setDomainUriPrefix("https://noxbox.page.link")
-                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setFallbackUrl(Uri.parse("https://play.google.com/store/apps/details?id=live.noxbox")).build())
+                .setLink(link)
+                .setAndroidParameters(new DynamicLink.AndroidParameters.Builder().setFallbackUrl(link).build())
                 .buildDynamicLink();
 
-        Uri dynamicLinkUri = dynamicLink.getUri();
-        Log.d("DynamicLink", dynamicLinkUri.toString());
+        Log.d("DynamicLink", dynamicLink.getUri().toString());
     }
 
 
@@ -56,9 +60,13 @@ public class ReferrerCatcher extends BroadcastReceiver {
                     if (pendingDynamicLinkData != null) {
                         deepLink = pendingDynamicLinkData.getLink();
                         referrer = deepLink.getQueryParameter(KEY);
-                        if (!Strings.isNullOrEmpty(referrer) && !profile().getReferral().equals(referrer)) {
+                        DebugMessage.popup(activity, "new:" + referrer
+                                + ";old:" + profile().getReferral());
+
+                        if (!Strings.isNullOrEmpty(referrer) && !profile().getReferral().equals(referrer)
+                                && !profile().getId().equals(referrer)) {
                             profile().setReferral(referrer);
-                            fireProfile();
+                            Firestore.writeProfile(profile(), NONE);
                         }
                     }
                 })

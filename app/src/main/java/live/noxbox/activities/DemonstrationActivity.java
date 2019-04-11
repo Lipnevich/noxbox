@@ -135,14 +135,14 @@ public class DemonstrationActivity extends HackerActivity {
                 RelativeLayout.LayoutParams textFiltersParams = new RelativeLayout.LayoutParams(-2, -2);
                 textFiltersParams.addRule(RelativeLayout.BELOW, R.id.textMenuDemonstrationSettings);
                 textFiltersParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                textFiltersParams.setMargins(dpToPx(0), dpToPx(0), dpToPx(80), 0);
+                textFiltersParams.setMargins(0, dpToPx(24), dpToPx(80), 0);
                 TextView textFiltersDemonstration = findViewById(R.id.textFiltersDemonstration);
                 textFiltersDemonstration.setLayoutParams(textFiltersParams);
 
                 RelativeLayout.LayoutParams textFiltersDescriptionParams = new RelativeLayout.LayoutParams(-2, -2);
                 textFiltersDescriptionParams.addRule(RelativeLayout.BELOW, R.id.textFiltersDemonstration);
                 textFiltersDescriptionParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                textFiltersDescriptionParams.setMargins(dpToPx(0), dpToPx(0), dpToPx(80), 0);
+                textFiltersDescriptionParams.setMargins(0, 0, dpToPx(80), 0);
                 TextView textFiltersDemonstrationDescription = findViewById(R.id.textFiltersDemonstrationDescription);
                 textFiltersDemonstrationDescription.setLayoutParams(textFiltersDescriptionParams);
 
@@ -156,7 +156,7 @@ public class DemonstrationActivity extends HackerActivity {
                 RelativeLayout.LayoutParams textContractParams = new RelativeLayout.LayoutParams(-2, -2);
                 textContractParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
                 textContractParams.addRule(RelativeLayout.ALIGN_PARENT_END);
-                textContractParams.setMargins(0, 0, dpToPx(56), dpToPx(184));
+                textContractParams.setMargins(dpToPx(24), 0, dpToPx(24), dpToPx(208));
                 TextView textContractDemonstration = findViewById(R.id.textContractDemonstration);
                 textContractDemonstration.setLayoutParams(textContractParams);
 
@@ -188,7 +188,7 @@ public class DemonstrationActivity extends HackerActivity {
                 arrowRoleSwitcherDemonstration.setWillNotDraw(false);
                 arrowRoleSwitcherDemonstration.setStartView(findViewById(R.id.textFiltersDemonstration));
                 arrowRoleSwitcherDemonstration.setEndView(findViewById(R.id.roleSwitcherDemonstration));
-                arrowRoleSwitcherDemonstration.invalidate(CENTER_START, BOTTOM_CENTER);
+                arrowRoleSwitcherDemonstration.invalidate(CENTER_END, BOTTOM_CENTER, false);
 
             } else {
                 RelativeLayout.LayoutParams textMenuParams = new RelativeLayout.LayoutParams(-2, -2);
@@ -269,7 +269,7 @@ public class DemonstrationActivity extends HackerActivity {
                 arrowRoleSwitcherDemonstration.setWillNotDraw(false);
                 arrowRoleSwitcherDemonstration.setStartView(findViewById(R.id.textFiltersDemonstration));
                 arrowRoleSwitcherDemonstration.setEndView(findViewById(R.id.roleSwitcherDemonstration));
-                arrowRoleSwitcherDemonstration.invalidate(CENTER_START, BOTTOM_CENTER, true);
+                arrowRoleSwitcherDemonstration.invalidate(CENTER_START, BOTTOM_CENTER, false);
             }
         }
     }
