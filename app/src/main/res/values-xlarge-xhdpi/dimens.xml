@@ -19,7 +19,7 @@
     <dimen name="text_button">14sp</dimen>
     <!--TEXT TIPS-->
     <dimen name="small">20sp</dimen>
-    <dimen name="big">26sp</dimen>
+    <dimen name="big">24sp</dimen>
 
     <!--human_profile page dimen's-->
     <dimen name="activity_horizontal_margin">16dp</dimen>

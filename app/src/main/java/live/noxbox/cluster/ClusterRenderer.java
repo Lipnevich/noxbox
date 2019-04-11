@@ -92,7 +92,7 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
         }
         profile().setViewed(clusterItem.getNoxbox());
         Router.startActivity(activity, DetailedActivity.class);
-        return false;
+        return true;
     }
 
     void render(@NonNull List<Cluster<NoxboxMarker>> clusters) {
