@@ -50,8 +50,8 @@ public class NoxboxExamples {
             rating.getComments().put("2", new Comment("2", "Выносливость бы повысить, слишком быстро выдыхается во время кросса.", System.currentTimeMillis(), false));
 
             noxbox.setType(NoxboxType.values()[ThreadLocalRandom.current().nextInt(NoxboxType.values().length - 1)]);
-            owner.getDemandsRating().put(noxbox.getType().name(), rating);
-            owner.getSuppliesRating().put(noxbox.getType().name(), rating);
+            owner.getRatings().getDemandsRating().put(noxbox.getType().name(), rating);
+            owner.getRatings().getSuppliesRating().put(noxbox.getType().name(), rating);
             noxbox.setOwner(owner);
             noxbox.setId(owner.getNoxboxId());
             noxbox.setPrice(ThreadLocalRandom.current().nextInt(10, 100) + "");

@@ -44,8 +44,8 @@ public class NoxboxFilters {
 
         Rating ownerRating = noxbox.getRole()
                 == demand
-                ? noxbox.getOwner().getDemandsRating().get(noxbox.getType().name())
-                : noxbox.getOwner().getSuppliesRating().get(noxbox.getType().name());
+                ? noxbox.getOwner().getRatings().getDemandsRating().get(noxbox.getType().name())
+                : noxbox.getOwner().getRatings().getSuppliesRating().get(noxbox.getType().name());
         if(ownerRating == null) {
             ownerRating = new Rating();
         }
@@ -54,8 +54,8 @@ public class NoxboxFilters {
 
         Rating myRating = noxbox.getRole()
                 == supply
-                ? profile.getDemandsRating().get(noxbox.getType().name())
-                : profile.getSuppliesRating().get(noxbox.getType().name());
+                ? profile.getRatings().getDemandsRating().get(noxbox.getType().name())
+                : profile.getRatings().getSuppliesRating().get(noxbox.getType().name());
         if(myRating == null) {
             myRating = new Rating();
         }
@@ -63,7 +63,7 @@ public class NoxboxFilters {
         if (!noxbox.getOwner().getFilters().getAllowNovices() && myRating.getReceivedLikes() < NOVICE_LIKES)
             return true;
 
-        if (profile.getDarkList().get(noxbox.getOwner().getId()) != null)
+        if (profile.getRatings().getDarkList().get(noxbox.getOwner().getId()) != null)
             return true;
 
         try {

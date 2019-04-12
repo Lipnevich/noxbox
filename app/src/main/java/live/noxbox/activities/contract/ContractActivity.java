@@ -52,6 +52,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
+import live.noxbox.tools.BalanceChecker;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
@@ -119,6 +120,7 @@ public class ContractActivity extends BaseActivity {
         checkBalance(profile(), this);
 
         contract().copy(profile().getCurrent());
+        BalanceChecker.checkBalance(profile(), getApplicationContext());
         BusinessActivity.businessEvent(contractOpening);
     }
 

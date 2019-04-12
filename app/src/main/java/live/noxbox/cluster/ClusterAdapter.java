@@ -18,7 +18,7 @@ import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
-import live.noxbox.model.Profile;
+import live.noxbox.model.ProfileRatings;
 import live.noxbox.model.Rating;
 import live.noxbox.tools.Router;
 
@@ -64,18 +64,18 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         String rating;
 
         if (noxbox.getRole() == MarketRole.supply) {
-            Rating supplyRating = noxbox.getOwner().getSuppliesRating().get(type.name());
+            Rating supplyRating = noxbox.getOwner().getRatings().getSuppliesRating().get(type.name());
             if (supplyRating == null) {
                 supplyRating = new Rating();
             }
-            rating = String.valueOf(Profile.ratingToPercentage(supplyRating.getReceivedLikes(),
+            rating = String.valueOf(ProfileRatings.ratingToPercentage(supplyRating.getReceivedLikes(),
                     supplyRating.getReceivedDislikes()));
         } else {
-            Rating demandRating = noxbox.getOwner().getDemandsRating().get(type.name());
+            Rating demandRating = noxbox.getOwner().getRatings().getDemandsRating().get(type.name());
             if (demandRating == null) {
                 demandRating = new Rating();
             }
-            rating = String.valueOf(Profile.ratingToPercentage(
+            rating = String.valueOf(ProfileRatings.ratingToPercentage(
                     demandRating.getReceivedLikes(),
                     demandRating.getReceivedDislikes()));
         }

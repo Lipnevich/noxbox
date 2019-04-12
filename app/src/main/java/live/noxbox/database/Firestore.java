@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -21,23 +20,17 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import live.noxbox.BuildConfig;
-import live.noxbox.Constants;
-import live.noxbox.debug.TimeLogger;
-import live.noxbox.model.Comment;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
-import live.noxbox.model.Rating;
+import live.noxbox.model.ProfileRatings;
 import live.noxbox.model.Virtual;
 import live.noxbox.tools.Task;
 
 import static java.lang.reflect.Modifier.isStatic;
-import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
@@ -56,6 +49,10 @@ public class Firestore {
         return db().collection("profiles")
                 .document(userId);
     }
+    private static DocumentReference ratingsReference(String userId) {
+        return db().collection("ratings")
+                .document(userId);
+    }
 
     private static DocumentReference noxboxReference(String noxboxId) {
         return db().collection("noxboxes").document(noxboxId);
@@ -69,6 +66,7 @@ public class Firestore {
             profileListener.remove();
             profileListener = null;
         }
+        stopListenRatings();
     }
 
     public static void listenProfile(@NonNull final Task<Profile> task) {
@@ -76,6 +74,7 @@ public class Firestore {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
+
         profileListener = profileReference(user.getUid()).addSnapshotListener((snapshot, e) -> {
             reads++;
             if (snapshot != null && snapshot.exists()) {
@@ -86,6 +85,7 @@ public class Firestore {
                 task.execute(profile);
             }
         });
+        Firestore.listenRatings();
     }
 
     public static void writeProfile(final Profile profile, Task<Profile> onSuccess) {
@@ -261,194 +261,193 @@ public class Firestore {
         return params;
     }
 
-    public static void ratingsUpdate() {
+//    public static void ratingsUpdate() {
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user == null) return;
+//
+//        if (profile().getRatingUpdateTime() + Constants.RATINGS_UPDATE_MIN_FREQUENCY >
+//                System.currentTimeMillis()) {
+//            return;
+//        }
+//
+//        ratingsUpdate(MarketRole.demand);
+//        ratingsUpdate(MarketRole.supply);
+//    }
+//
+//    private static void ratingsUpdate(MarketRole role) {
+//        ratings(role, profile().getId(), profile().getRatingUpdateTime())
+//                .get().addOnCompleteListener(result -> {
+//            TimeLogger timeLogger = new TimeLogger();
+//            reads++;
+//            Collection<Noxbox> noxboxes = new ArrayList<>();
+//            if (result.isSuccessful() && result.getResult() != null) {
+//                for (QueryDocumentSnapshot document : result.getResult()) {
+//                    noxboxes.add(document.toObject(Noxbox.class));
+//                }
+//            } else {
+//                return;
+//            }
+//            if (noxboxes.isEmpty()) {
+//                return;
+//            }
+//
+//            Set<String> profiles = new HashSet<>();
+//            for (Noxbox noxbox : noxboxes) {
+//                Rating rating = (role == MarketRole.demand
+//                        ? profile().getDemandsRating() : profile().getSuppliesRating())
+//                        .get(noxbox.getType().name());
+//                if (rating == null) {
+//                    rating = new Rating();
+//                    if (role == MarketRole.demand) {
+//                        profile().getDemandsRating().put(noxbox.getType().name(), rating);
+//                    } else {
+//                        profile().getSuppliesRating().put(noxbox.getType().name(), rating);
+//                    }
+//                }
+//                boolean isOwner = noxbox.getOwner().equals(profile());
+//                boolean nonFirstNoxboxProcessing = !noxbox.getTimeCompleted().equals(noxbox.getTimeRatingUpdated())
+//                        && profile().getRatingUpdateTime() > noxbox.getTimeCompleted();
+//
+//                if (isOwner) {
+//                    if (noxbox.getTimeCanceledByOwner() > 0) {
+//                        rating.setCanceled(rating.getCanceled() + 1);
+//                        continue;
+//                    }
+//                    if (noxbox.getTimeTimeout() > 0) {
+//                        rating.setNotResponded(rating.getNotResponded() + 1);
+//                        continue;
+//                    }
+//                    if (noxbox.getTimePartyRejected() > 0) {
+//                        rating.setNotVerified(rating.getNotVerified() + 1);
+//                        continue;
+//                    }
+//                    if (noxbox.getTimeRatingUpdated() == 0 || noxbox.getTimeCompleted() == 0) {
+//                        continue;
+//                    }
+//
+//                    if (!Strings.isNullOrEmpty(noxbox.getPartyComment())) {
+//                        Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
+//                        comment.setLike(noxbox.getTimePartyLiked() >= noxbox.getTimePartyDisliked());
+//                        comment.setText(noxbox.getPartyComment());
+//                        rating.getComments().put(noxbox.getParty().getId(), comment);
+//                    }
+//
+//                    boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
+//                    if (!isUniqueProfile) {
+//                        continue;
+//                    }
+//
+//                    updateSentLikes(noxbox.getTimeOwnerDisliked(), noxbox.getTimeOwnerLiked(), rating, nonFirstNoxboxProcessing);
+//                    updateReceivedLikes(noxbox.getTimePartyDisliked(), noxbox.getTimePartyLiked(), rating, nonFirstNoxboxProcessing);
+//
+//                    // profile is party in the noxbox
+//                } else {
+//                    if (noxbox.getTimeCanceledByParty() > 0) {
+//                        rating.setCanceled(rating.getCanceled() + 1);
+//                        continue;
+//                    }
+//                    if (noxbox.getTimeOwnerRejected() > 0) {
+//                        rating.setNotVerified(rating.getNotVerified() + 1);
+//                        continue;
+//                    }
+//                    if (noxbox.getTimeRatingUpdated() == 0 || noxbox.getTimeCompleted() == 0) {
+//                        continue;
+//                    }
+//
+//                    if (!Strings.isNullOrEmpty(noxbox.getOwnerComment())) {
+//                        Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
+//                        comment.setLike(noxbox.getTimeOwnerLiked() >= noxbox.getTimeOwnerDisliked());
+//                        comment.setText(noxbox.getOwnerComment());
+//                        rating.getComments().put(noxbox.getOwner().getId(), comment);
+//                    }
+//
+//                    boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
+//                    if (!isUniqueProfile) {
+//                        continue;
+//                    }
+//
+//                    updateReceivedLikes(noxbox.getTimeOwnerDisliked(), noxbox.getTimeOwnerLiked(), rating, nonFirstNoxboxProcessing);
+//                    updateSentLikes(noxbox.getTimePartyDisliked(), noxbox.getTimePartyLiked(), rating, nonFirstNoxboxProcessing);
+//
+//                }
+//
+//                // TODO fill blacklist if a least one member disliked
+//            }
+//            profile().setRatingUpdateTime(System.currentTimeMillis());
+//            fireProfile();
+//            timeLogger.makeLog("Update rating time for: " + role.name());
+//        });
+//
+//    }
+//
+//
+//    private static void updateSentLikes(Long timeDislike, Long timeLike, Rating rating, boolean nonFirstNoxboxProcessing) {
+//        if (nonFirstNoxboxProcessing) {
+//            if (timeDislike > profile().getRatingUpdateTime()) {
+//                rating.setSentDislikes(rating.getSentDislikes() + 1);
+//                rating.setSentLikes(rating.getSentLikes() - 1);
+//            }
+//
+//            if (timeLike > profile().getRatingUpdateTime()) {
+//                rating.setSentDislikes(rating.getSentDislikes() - 1);
+//                rating.setSentLikes(rating.getSentLikes() + 1);
+//            }
+//            return;
+//        }
+//
+//        if (timeDislike > timeLike) {
+//            rating.setSentDislikes(rating.getSentDislikes() + 1);
+//        } else {
+//            rating.setSentLikes(rating.getSentLikes() + 1);
+//        }
+//    }
+//
+//    private static void updateReceivedLikes(Long timeDislike, Long timeLike, Rating rating, boolean nonFirstNoxboxProcessing) {
+//        if (nonFirstNoxboxProcessing) {
+//            if (timeDislike > profile().getRatingUpdateTime()) {
+//                rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
+//                rating.setReceivedLikes(rating.getReceivedLikes() - 1);
+//            }
+//
+//            if (timeLike > profile().getRatingUpdateTime()) {
+//                rating.setReceivedLikes(rating.getReceivedLikes() + 1);
+//                rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
+//            }
+//
+//            return;
+//        }
+//
+//        if (timeDislike > timeLike) {
+//            rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
+//        } else {
+//            rating.setReceivedLikes(rating.getReceivedLikes() + 1);
+//        }
+//    }
+
+
+    // Current human_profile
+    private static ListenerRegistration ratingsListener;
+
+    public static void stopListenRatings() {
+        if (ratingsListener != null) {
+            ratingsListener.remove();
+            ratingsListener = null;
+        }
+    }
+    public static void listenRatings() {
+        stopListenRatings();
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
-
-        if(profile().getRatingUpdateTime() + Constants.RATINGS_UPDATE_MIN_FREQUENCY >
-                System.currentTimeMillis()) {
-            return;
-        }
-
-        ratingsUpdate(MarketRole.demand);
-        ratingsUpdate(MarketRole.supply);
-    }
-
-    private static void ratingsUpdate(MarketRole role) {
-        ratings(role, profile().getId(), profile().getRatingUpdateTime())
-                .get().addOnCompleteListener(result -> {
-            TimeLogger timeLogger = new TimeLogger();
+        ratingsListener = ratingsReference(user.getUid()).addSnapshotListener((snapshot, e) -> {
             reads++;
-            Collection<Noxbox> noxboxes = new ArrayList<>();
-            if (result.isSuccessful() && result.getResult() != null) {
-                for (QueryDocumentSnapshot document : result.getResult()) {
-                    noxboxes.add(document.toObject(Noxbox.class));
-                }
-            } else {
-                return;
+            if (snapshot != null && snapshot.exists()) {
+                ProfileRatings profileRatings =  snapshot.toObject(ProfileRatings.class);
+                profile().setRatings(profileRatings);
             }
-            if(noxboxes.isEmpty()) {
-                return;
-            }
-
-            Set<String> profiles = new HashSet<>();
-            for(Noxbox noxbox : noxboxes) {
-                Rating rating = (role == MarketRole.demand
-                        ? profile().getDemandsRating() : profile().getSuppliesRating())
-                        .get(noxbox.getType().name());
-                if(rating == null) {
-                    rating = new Rating();
-                    if (role == MarketRole.demand) {
-                        profile().getDemandsRating().put(noxbox.getType().name(), rating);
-                    } else {
-                        profile().getSuppliesRating().put(noxbox.getType().name(), rating);
-                    }
-                }
-                boolean isOwner = noxbox.getOwner().equals(profile());
-                boolean isRatingUpdated = !noxbox.getTimeCompleted().equals(noxbox.getTimeRatingUpdated())
-                        && profile().getRatingUpdateTime() > noxbox.getTimeCompleted();
-
-                if(isOwner) {
-                    if(noxbox.getTimeCanceledByOwner() > 0) {
-                        rating.setCanceled(rating.getCanceled() + 1);
-                        continue;
-                    }
-                    if(noxbox.getTimeTimeout() > 0) {
-                        rating.setNotResponded(rating.getNotResponded() + 1);
-                        continue;
-                    }
-                    if(noxbox.getTimePartyRejected() > 0) {
-                        rating.setNotVerified(rating.getNotVerified() + 1);
-                        continue;
-                    }
-                    if(noxbox.getTimeRatingUpdated() == 0 || noxbox.getTimeCompleted() == 0) {
-                        continue;
-                    }
-
-                    if(!Strings.isNullOrEmpty(noxbox.getPartyComment())) {
-                        Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
-                        comment.setLike(noxbox.getTimePartyLiked() >= noxbox.getTimePartyDisliked());
-                        comment.setText(noxbox.getPartyComment());
-                        rating.getComments().put(noxbox.getParty().getId(), comment);
-                    }
-
-                    boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
-                    if(!isUniqueProfile) {
-                        continue;
-                    }
-
-                    if (noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setSentDislikes(rating.getSentDislikes() + 1);
-                        if (isRatingUpdated) {
-                            if(rating.getSentLikes() > 0){
-                                rating.setSentLikes(rating.getSentLikes() - 1);
-                            }
-                        }
-                    }
-
-                    if (noxbox.getTimeOwnerLiked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setSentLikes(rating.getSentLikes() + 1);
-                        if (isRatingUpdated) {
-                            if(rating.getSentDislikes() > 0){
-                                rating.setSentDislikes(rating.getSentDislikes() - 1);
-                            }
-                        }
-                    }
-
-                    if (noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
-                        if (isRatingUpdated) {
-                            if(rating.getReceivedLikes() > 0){
-                                rating.setReceivedLikes(rating.getReceivedLikes() - 1);
-                            }
-                        }
-                    }
-
-                    if (noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setReceivedLikes(rating.getReceivedLikes() + 1);
-                        if (isRatingUpdated) {
-                            if(rating.getReceivedDislikes() > 0){
-                                rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
-                            }
-                        }
-                    }
-                    // profile is party in the noxbox
-                } else {
-                    if(noxbox.getTimeCanceledByParty() > 0) {
-                        rating.setCanceled(rating.getCanceled() + 1);
-                        continue;
-                    }
-                    if(noxbox.getTimeOwnerRejected() > 0) {
-                        rating.setNotVerified(rating.getNotVerified() + 1);
-                        continue;
-                    }
-                    if(noxbox.getTimeRatingUpdated() == 0 || noxbox.getTimeCompleted() == 0) {
-                        continue;
-                    }
-
-                    if(!Strings.isNullOrEmpty(noxbox.getOwnerComment())) {
-                        Comment comment = new Comment().setTime(noxbox.getTimeCompleted());
-                        comment.setLike(noxbox.getTimeOwnerLiked() >= noxbox.getTimeOwnerDisliked());
-                        comment.setText(noxbox.getOwnerComment());
-                        rating.getComments().put(noxbox.getOwner().getId(), comment);
-                    }
-
-                    boolean isUniqueProfile = profiles.add(noxbox.getNotMe(profile().getId()).getId());
-                    if(!isUniqueProfile) {
-                        continue;
-                    }
-
-                    if(noxbox.getTimeOwnerDisliked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setReceivedDislikes(rating.getReceivedDislikes() + 1);
-                        if (isRatingUpdated) {
-                            if (rating.getReceivedLikes() > 0) {
-                                rating.setReceivedLikes(rating.getReceivedLikes() - 1);
-                            }
-                        }
-                    }
-                    if (noxbox.getTimeOwnerLiked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setReceivedLikes(rating.getReceivedLikes() + 1);
-                        if (isRatingUpdated) {
-                            if (rating.getReceivedDislikes() > 0) {
-                                rating.setReceivedDislikes(rating.getReceivedDislikes() - 1);
-                            }
-                        }
-                    }
-
-                    if (noxbox.getTimePartyDisliked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setSentDislikes(rating.getSentDislikes() + 1);
-                        if (isRatingUpdated) {
-                            if (rating.getSentLikes() > 0) {
-                                rating.setSentLikes(rating.getSentLikes() - 1);
-                            }
-                        }
-                    }
-
-                    if (noxbox.getTimePartyLiked() >= noxbox.getTimeRatingUpdated()) {
-                        rating.setSentLikes(rating.getSentLikes() + 1);
-                        if (isRatingUpdated) {
-                            if(rating.getSentDislikes() > 0){
-                                rating.setSentDislikes(rating.getSentDislikes() - 1);
-                            }
-                        }
-                    }
-                }
-
-                // TODO fill blacklist if a least one member disliked
-            }
-            profile().setRatingUpdateTime(System.currentTimeMillis());
-            fireProfile();
-            timeLogger.makeLog("Update rating time for: " + role.name());
         });
-
     }
 
-    private static Query ratings(MarketRole role, String userId, long lastUpdate) {
-        return db().collection("noxboxes")
-                .whereEqualTo(role.getOwnerFieldId(), userId)
-                .whereEqualTo("finished", true)
-                .whereGreaterThan("timeRatingUpdated", lastUpdate)
-                .orderBy("timeRatingUpdated", Query.Direction.DESCENDING)
-                .limit(100);
-    }
+
+
 }

@@ -166,8 +166,8 @@ public class ClusterItemsActivity extends BaseActivity {
     }
 
     private Comparator<NoxboxMarker> ratingComparator = (first, second) ->
-            first.getNoxbox().getOwner().ratingToPercentage()
-                    .compareTo(second.getNoxbox().getOwner().ratingToPercentage());
+            first.getNoxbox().getOwner().getRatings().ratingToPercentage()
+                    .compareTo(second.getNoxbox().getOwner().getRatings().ratingToPercentage());
 
     private void executeSortByRating() {
         sort(supplyNoxboxes, ratingComparator);

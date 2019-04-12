@@ -100,7 +100,6 @@ public class AppCache {
                 } else {
                     executeUITasks();
                 }
-                new Thread(Firestore::ratingsUpdate).start();
             });
         }
     }

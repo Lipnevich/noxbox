@@ -61,8 +61,8 @@ public class GeoRealtime {
 
     public static String createKey(Noxbox currentNoxbox, boolean allowNovices) {
         Rating ownerRating = currentNoxbox.getRole() == MarketRole.supply ?
-                currentNoxbox.getOwner().getSuppliesRating().get(currentNoxbox.getType().name()) :
-                currentNoxbox.getOwner().getDemandsRating().get(currentNoxbox.getType().name());
+                currentNoxbox.getOwner().getRatings().getSuppliesRating().get(currentNoxbox.getType().name()) :
+                currentNoxbox.getOwner().getRatings().getDemandsRating().get(currentNoxbox.getType().name());
         if (ownerRating == null) {
             ownerRating = new Rating();
         }
@@ -103,9 +103,9 @@ public class GeoRealtime {
                         .setReceivedLikes(Math.max(0, Integer.valueOf(values[index++])))
                         .setReceivedDislikes(Math.max(0, Integer.valueOf(values[index++])));
                 if (noxbox.getRole() == MarketRole.supply) {
-                    noxbox.getOwner().getSuppliesRating().put(noxbox.getType().name(), rating);
+                    noxbox.getOwner().getRatings().getSuppliesRating().put(noxbox.getType().name(), rating);
                 } else if (noxbox.getRole() == MarketRole.demand) {
-                    noxbox.getOwner().getDemandsRating().put(noxbox.getType().name(), rating);
+                    noxbox.getOwner().getRatings().getDemandsRating().put(noxbox.getType().name(), rating);
                 }
 
                 noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));

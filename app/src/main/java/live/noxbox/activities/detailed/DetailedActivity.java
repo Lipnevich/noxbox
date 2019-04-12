@@ -321,16 +321,16 @@ public class DetailedActivity extends BaseActivity {
         int percentage;
         Rating mateRating;
         if (profile().equals(viewed.getOwner())) {
-            percentage = viewed.getParty().ratingToPercentage(viewed.getRole(), viewed.getType());
+            percentage = viewed.getParty().getRatings().ratingToPercentage(viewed.getRole(), viewed.getType());
             mateRating = viewed.getRole() == MarketRole.demand ?
-                    viewed.getParty().getDemandsRating().get(viewed.getType().name())
-                    : viewed.getParty().getSuppliesRating().get(viewed.getType().name());
+                    viewed.getParty().getRatings().getDemandsRating().get(viewed.getType().name())
+                    : viewed.getParty().getRatings().getSuppliesRating().get(viewed.getType().name());
 
         } else {
-            percentage = viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType());
+            percentage = viewed.getOwner().getRatings().ratingToPercentage(viewed.getRole(), viewed.getType());
             mateRating = viewed.getRole() == MarketRole.demand ?
-                    viewed.getOwner().getDemandsRating().get(viewed.getType().name())
-                    : viewed.getOwner().getSuppliesRating().get(viewed.getType().name());
+                    viewed.getOwner().getRatings().getDemandsRating().get(viewed.getType().name())
+                    : viewed.getOwner().getRatings().getSuppliesRating().get(viewed.getType().name());
         }
 
         if (mateRating == null) {
@@ -346,8 +346,8 @@ public class DetailedActivity extends BaseActivity {
         }
 
 
-        ratingTitle.setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
-        rating.setText(viewed.getOwner().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
+        ratingTitle.setText(getResources().getString(R.string.myRating) + " " + viewed.getOwner().getRatings().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
+        rating.setText(viewed.getOwner().getRatings().ratingToPercentage(viewed.getRole(), viewed.getType()) + "%");
         like.setText(mateRating.getReceivedLikes() + " " + getResources().getString(R.string.like));
         dislike.setText(mateRating.getReceivedDislikes() + " " + getResources().getString(R.string.dislike));
         //TODO (vl) for supply and demand

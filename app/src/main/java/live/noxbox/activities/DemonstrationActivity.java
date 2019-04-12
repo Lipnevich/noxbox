@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import live.noxbox.BuildConfig;
 import live.noxbox.R;
 import live.noxbox.debug.HackerActivity;
 import live.noxbox.ui.ArrowView;
@@ -92,7 +91,7 @@ public class DemonstrationActivity extends HackerActivity {
 
 
     protected void showDemonstration() {
-        if (isFirstRunDemonstration() || BuildConfig.DEBUG) {
+        if (isFirstRunDemonstration()) {
             demonstration = findViewById(R.id.demonstration);
             demonstration.setVisibility(View.VISIBLE);
             demonstration.setOnClickListener(v -> onScreenClick());

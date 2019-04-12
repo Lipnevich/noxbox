@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static live.noxbox.Constants.MIN_RATE_IN_PERCENTAGE;
-
 public class Profile implements Serializable {
 
 
@@ -17,12 +15,8 @@ public class Profile implements Serializable {
     private String referral;
 
     private Acceptance acceptance;
-    //key is Profile.id
-    private long ratingUpdateTime = 0l;
-    private Map<String, Boolean> darkList = new HashMap<>();
-    private Map<String, Rating> suppliesRating = new HashMap<>();
-    private Map<String, Rating> demandsRating = new HashMap<>();
-
+    @Virtual
+    private ProfileRatings ratings = new ProfileRatings();
     private Map<String, Portfolio> portfolio = new HashMap<>();
     private Wallet wallet;
 
@@ -165,7 +159,8 @@ public class Profile implements Serializable {
 
     public Profile publicInfo(MarketRole role, NoxboxType type) {
         Map<String, Rating> ratings = new HashMap<>();
-        Rating rating = role == MarketRole.supply ? getSuppliesRating().get(type.name()) : getDemandsRating().get(type.name());
+
+        Rating rating = role == MarketRole.supply ? getRatings().getSuppliesRating().get(type.name()) : getRatings().getDemandsRating().get(type.name());
         if (rating == null) {
             rating = new Rating();
         }
@@ -176,14 +171,14 @@ public class Profile implements Serializable {
         if (role == MarketRole.supply && portfolio.get(type.name()) != null) {
             servicePortfolio.put(type.name(), portfolio.get(type.name()));
         }
-
-        return new Profile().setId(getId())
+        Profile profile = new Profile().setId(getId())
                 .setPortfolio(servicePortfolio)
                 .setPosition(getPosition())
-                .setSuppliesRating(role == MarketRole.supply ? ratings : null)
-                .setDemandsRating(role == MarketRole.demand ? ratings : null)
                 .setTravelMode(getTravelMode())
                 .setHost(getHost());
+        profile.getRatings().setSuppliesRating(role == MarketRole.supply ? ratings : null);
+        profile.getRatings().setDemandsRating(role == MarketRole.demand ? ratings : null);
+        return profile;
     }
 
     public Profile addPrivateInfo(Profile profile) {
@@ -202,29 +197,6 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public Map<String, Rating> getDemandsRating() {
-        if (demandsRating == null) {
-            demandsRating = new HashMap<>();
-        }
-        return demandsRating;
-    }
-
-    public Profile setDemandsRating(Map<String, Rating> demandsRating) {
-        this.demandsRating = demandsRating;
-        return this;
-    }
-
-    public Map<String, Rating> getSuppliesRating() {
-        if (suppliesRating == null) {
-            suppliesRating = new HashMap<>();
-        }
-        return suppliesRating;
-    }
-
-    public Profile setSuppliesRating(Map<String, Rating> suppliesRating) {
-        this.suppliesRating = suppliesRating;
-        return this;
-    }
 
     public Map<String, Portfolio> getPortfolio() {
         return portfolio;
@@ -235,52 +207,6 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public int ratingToPercentage(MarketRole role, NoxboxType type) {
-        int likes = 0;
-        int dislikes = 0;
-        Rating rating = null;
-
-        if (role == MarketRole.demand) {
-            rating = demandsRating.get(type.name());
-        } else {
-            rating = suppliesRating.get(type.name());
-        }
-
-        if (rating == null) {
-            rating = new Rating();
-        }
-
-        likes = rating.getReceivedLikes();
-        dislikes = rating.getReceivedDislikes();
-        if (dislikes == 0) return 100;
-        return (likes * 100 / (likes + dislikes));
-
-    }
-
-    public static int ratingToPercentage(int likes, int dislikes) {
-        if (dislikes == 0) return 100;
-        return (likes * 100 / (likes + dislikes));
-
-    }
-
-    public Integer ratingToPercentage() {
-        int likes = 0;
-        int dislikes = 0;
-        for (Rating offer : suppliesRating.values()) {
-            likes += offer.getReceivedLikes();
-            dislikes += offer.getReceivedDislikes();
-        }
-        for (Rating demand : demandsRating.values()) {
-            likes += demand.getReceivedLikes();
-            dislikes += demand.getReceivedDislikes();
-        }
-
-        if (likes == 0 && dislikes == 0) return 100;
-        if (likes < 10 && dislikes == 1) return MIN_RATE_IN_PERCENTAGE;
-        if (likes == 0 && dislikes > 1) return 0;
-
-        return (likes * 100 / (likes + dislikes));
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -309,17 +235,6 @@ public class Profile implements Serializable {
         return this;
     }
 
-    public Map<String, Boolean> getDarkList() {
-        if (darkList == null) {
-            darkList = new HashMap<>();
-        }
-        return darkList;
-    }
-
-    public Profile setDarkList(Map<String, Boolean> darkList) {
-        this.darkList = darkList;
-        return this;
-    }
 
     public String getNoxboxId() {
         if (noxboxId == null) {
@@ -358,10 +273,6 @@ public class Profile implements Serializable {
         if (from == null) return null;
         id = from.id;
         acceptance = from.acceptance;
-        darkList = from.darkList;
-        suppliesRating = from.suppliesRating;
-        demandsRating = from.demandsRating;
-        ratingUpdateTime = from.ratingUpdateTime;
         portfolio = from.portfolio;
         wallet = from.wallet;
         name = from.name;
@@ -380,15 +291,6 @@ public class Profile implements Serializable {
         return "id=" + getId() + ",noxboxId=" + getNoxboxId();
     }
 
-    public long getRatingUpdateTime() {
-        return ratingUpdateTime;
-    }
-
-    public Profile setRatingUpdateTime(long ratingUpdateTime) {
-        this.ratingUpdateTime = ratingUpdateTime;
-        return this;
-    }
-
     public String getReferral() {
         if (referral == null) {
             referral = "";
@@ -398,6 +300,18 @@ public class Profile implements Serializable {
 
     public Profile setReferral(String referral) {
         this.referral = referral;
+        return this;
+    }
+
+    public ProfileRatings getRatings() {
+        if (ratings == null) {
+            ratings = new ProfileRatings();
+        }
+        return ratings;
+    }
+
+    public Profile setRatings(ProfileRatings ratings) {
+        this.ratings = ratings;
         return this;
     }
 }
