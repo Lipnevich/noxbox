@@ -31,6 +31,12 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
     console.log('Noxbox updated ' + JSON.stringify(noxbox));
     let operationName = 'unknown';
 
+    try {
+        updateRating(previousNoxbox, noxbox, context.auth.uid);
+    } catch (e) {
+        console.error(JSON.stringify(e));
+    }
+
     if(previousNoxbox.finished) {
         return;
     }
@@ -192,6 +198,43 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
      }
      console.log('Operation ' + operationName + ' v ' + JSON.stringify(version));
 });
+
+function updateRating(previousNoxbox, noxbox, userId) {
+    if(!noxbox.finished) return;
+
+    let isOwner = noxbox.owner.id == userId;
+
+    if (!previousNoxbox.timeCompleted && noxbox.timeCompleted) {
+        // TODO update rating for owner and party with +1 rating
+        return;
+    }
+
+    if(isOwner) {
+        // TODO open transaction or read data from profiles
+        if(!previousNoxbox.timeCanceledByOwner && noxbox.timeCanceledByOwner) {
+            // TODO update rating for owner canceled with +1
+        } else if(!previousNoxbox.timeTimeout && noxbox.timeTimeout) {
+            // TODO update rating for owner notResponded with +1
+        } else if (!previousNoxbox.timePartyRejected && noxbox.timePartyRejected) {
+            // TODO update rating for party notVerified with +1
+        } else if (noxbox.timeCompleted) {
+            if (!previousNoxbox.ownerComment && noxbox.ownerComment) {
+                let comment = { time : Date.now(),
+                                like : (noxbox.timeOwnerLiked >= noxbox.timeOwnerDisliked),
+                                text : noxbox.ownerComment };
+                // TODO update rating for party comment
+            } else if(previousNoxbox.timeOwnerDisliked !== noxbox.timeOwnerDisliked) {
+                // TODO update rating for sent owner dislike with +1 and like with -1
+                // TODO update rating for received party dislike with +1 and like with -1
+            } else if(previousNoxbox.timeOwnerLiked !== noxbox.timeOwnerLiked) {
+                // TODO update rating for sent owner like with +1 and dislike -1
+                // TODO update rating for received party like with +1 and dislike -1
+            }
+        }
+    } else {
+        // TODO party copy from owner
+    }
+}
 
 function latestMessage(messages) {
     let message;
