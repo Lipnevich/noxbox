@@ -211,6 +211,15 @@ async function persistRating(userId, role, type, rate, delta) {
     }
 }
 
+async function persistRatingComment(userWhoGotId, userWhoSentId, role, type, rate, comment){
+    let docRef = db.collection('ratings').doc(userWhoGotId);
+        let doc = await db.runTransaction(t => t.get(docRef));
+        if (doc.exists) {
+            await doc.ref.update({ [role] : { [type] : { [rate] : { [userWhoSentId] : { comment }}}}});
+            console.log('Transaction success!');
+        }
+}
+
 async function updateRating(previousNoxbox, noxbox, userId) {
     if(!noxbox.finished) return;
 
@@ -226,30 +235,103 @@ async function updateRating(previousNoxbox, noxbox, userId) {
             await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'sentLikes', +1);
             await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'receivedLikes', +1);
         }
-
-        return;
-    }
-
-    // TODO open transaction or read data from profiles
-    if(!previousNoxbox.timeCanceledByOwner && noxbox.timeCanceledByOwner) {
-        // TODO update rating for owner canceled with +1
-    } else if(!previousNoxbox.timeTimeout && noxbox.timeTimeout) {
-        // TODO update rating for owner notResponded with +1
-    } else if (!previousNoxbox.timePartyRejected && noxbox.timePartyRejected) {
-        // TODO update rating for party notVerified with +1
-    } else if (noxbox.timeCompleted) {
-        if (!previousNoxbox.ownerComment && noxbox.ownerComment) {
+    }else if(!previousNoxbox.timeCanceledByOwner && noxbox.timeCanceledByOwner){
+        if(noxbox.role === 'supply'){
+            await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'canceled', +1);
+        } else {
+            await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'canceled', +1);
+        }
+    }else if(!previousNoxbox.timeCanceledByParty && noxbox.timeCanceledByParty){
+        if(noxbox.role === 'supply'){
+            await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'canceled', +1);
+        } else {
+            await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'canceled', +1);
+        }
+    }else if(!previousNoxbox.timeTimeout && noxbox.timeTimeout){
+        if(noxbox.role === 'supply'){
+            await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'notResponded', +1);
+        } else {
+            await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'notResponded', +1);
+        }
+    }else if(!previousNoxbox.timeOwnerRejected && noxbox.timeOwnerRejected){
+        if(noxbox.role === 'supply'){
+            await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'notVerified', +1);
+        } else {
+            await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'notVerified', +1);
+        }
+    }else if(!previousNoxbox.timePartyRejected && noxbox.timePartyRejected){
+        if(noxbox.role === 'supply'){
+            await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'notVerified', +1);
+        } else {
+            await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'notVerified', +1);
+        }
+    }else if(noxbox.timeCompleted){
+         if (!previousNoxbox.ownerComment && noxbox.ownerComment) {
             let comment = { time : Date.now(),
                             like : (noxbox.timeOwnerLiked >= noxbox.timeOwnerDisliked),
                             text : noxbox.ownerComment };
             // TODO update rating for party comment
+            await persistRatingComment(noxbox.party.id, noxbox.owner.id, noxbox.role, noxbox.type, 'comments', comment);
+        } else if(!previousNoxbox.partyComment && noxbox.partyComment){
+            let comment = { time : Date.now(),
+                            like : (noxbox.timePartyLiked >= noxbox.timePartyDisliked),
+                            text : noxbox.partyComment };
+            await persistRatingComment(noxbox.owner.id, noxbox.party.id, noxbox.role, noxbox.type, 'comments', comment);
+            // TODO update rating for owner comment
         } else if(previousNoxbox.timeOwnerDisliked !== noxbox.timeOwnerDisliked) {
+            if(noxbox.role === 'supply'){
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedDislikes', +1);
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedLikes', -1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'sentDislikes', +1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'sentLikes', -1);
+            } else {
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'receivedDislikes', +1);
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'receivedLikes', -1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentDislikes', +1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentLikes', -1);
+            }
             // TODO update rating for sent owner dislike with +1 and like with -1
             // TODO update rating for received party dislike with +1 and like with -1
         } else if(previousNoxbox.timeOwnerLiked !== noxbox.timeOwnerLiked) {
+            if(noxbox.role === 'supply'){
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedDislikes', -1);
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedLikes', +1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'sentDislikes', -1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'sentLikes', +1);
+            } else {
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'receivedDislikes', -1);
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'receivedLikes', +1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentDislikes', -1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentLikes', +1);
+            }
             // TODO update rating for sent owner like with +1 and dislike -1
             // TODO update rating for received party like with +1 and dislike -1
+        } else if(previousNoxbox.timePartyDisliked !== noxbox.timePartyDisliked){
+            if(noxbox.role === 'supply'){
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'sentDislikes', +1);
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'sentLikes', -1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'receivedDislikes', +1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'receivedLikes', -1);
+            } else {
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'sentDislikes', +1);
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'sentLikes', -1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedDislikes', +1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedLikes', -1);
+            }
+        } else if(previousNoxbox.timePartyLiked !== noxbox.timePartyLiked){
+            if(noxbox.role === 'supply'){
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'sentDislikes', -1);
+                await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'sentLikes', +1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'receivedDislikes', -1);
+                await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'receivedLikes', +1);
+            } else {
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'sentDislikes', -1);
+                await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'sentLikes', +1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedDislikes', -1);
+                await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedLikes', +1);
+            }
         }
+
     }
 }
 
