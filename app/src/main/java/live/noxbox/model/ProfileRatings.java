@@ -11,6 +11,7 @@ import static live.noxbox.Constants.MIN_RATE_IN_PERCENTAGE;
 public class ProfileRatings {
     //key is Profile.id
     private Map<String, Boolean> darkList = new HashMap<>();
+    //key is NoxboxType.name
     private Map<String, Rating> suppliesRating = new HashMap<>();
     private Map<String, Rating> demandsRating = new HashMap<>();
 

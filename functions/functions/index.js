@@ -199,12 +199,49 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
      console.log('Operation ' + operationName + ' v ' + JSON.stringify(version));
 });
 
+exports.test = functions.https.onRequest(async(req, res) => {
+                    let docId = 'cpTxsUK1MoSeZu87yGSuckuGhk32/suppliesRating/nanny';
+                    let docRef = admin.firestore().collection("ratings").doc(docId);
+                    let doc = await admin.firestore().runTransaction(t => t.get(docRef));
+
+                    if (!doc.exists) {
+                        await docRef.set({
+                          sentLikes: 1,
+                          sentDislikes: 0,
+                          receivedLikes: 1,
+                          receivedDislikes: 0
+                        });
+                        console.log('Rating has been created!');
+                        res.status(200).send('Rating created 2.0');
+                    }else{
+                        let newSentLikes = doc.data().sentLikes + 1;
+                        let newReceivedLikes = doc.data().receivedLikes + 1;
+
+                        await doc.ref.update({ sentLikes: newSentLikes, receivedLikes: newReceivedLikes });
+                        console.log('Transaction success!');
+                        res.status(200).send('Rating updated 2.0');
+                    }
+
+
+});
+
 function updateRating(previousNoxbox, noxbox, userId) {
     if(!noxbox.finished) return;
 
     let isOwner = noxbox.owner.id == userId;
 
     if (!previousNoxbox.timeCompleted && noxbox.timeCompleted) {
+        var ownerRating = db.collection('ratings').doc(noxbox.owner.id);
+        var partyRating = db.collection('ratings').doc(noxbox.party.id);
+
+        if(noxbox.role === 'supply'){
+            //owner supply rating
+            //party demand rating
+        }else{
+            //party supply rating
+            //owner demand rating
+        }
+
         // TODO update rating for owner and party with +1 rating
         return;
     }
