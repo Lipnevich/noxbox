@@ -199,77 +199,57 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
      console.log('Operation ' + operationName + ' v ' + JSON.stringify(version));
 });
 
-exports.test = functions.https.onRequest(async(req, res) => {
-                    let docId = 'cpTxsUK1MoSeZu87yGSuckuGhk32/suppliesRating/nanny';
-                    let docRef = admin.firestore().collection("ratings").doc(docId);
-                    let doc = await admin.firestore().runTransaction(t => t.get(docRef));
+async function persistRating(userId, role, type, rate, delta) {
+    let docRef = db.collection('ratings').doc(userId);
+    let doc = await db.runTransaction(t => t.get(docRef));
+    if (!doc.exists) {
+        await docRef.set({ [role] : { [type] : { [rate] : 1}}});
+        console.log('Rating has been created!');
+    } else {
+        await doc.ref.update({ [role] : { [type] : { [rate] : (doc.data() + delta)}}});
+        console.log('Transaction success!');
+    }
+}
 
-                    if (!doc.exists) {
-                        await docRef.set({
-                          sentLikes: 1,
-                          sentDislikes: 0,
-                          receivedLikes: 1,
-                          receivedDislikes: 0
-                        });
-                        console.log('Rating has been created!');
-                        res.status(200).send('Rating created 2.0');
-                    }else{
-                        let newSentLikes = doc.data().sentLikes + 1;
-                        let newReceivedLikes = doc.data().receivedLikes + 1;
-
-                        await doc.ref.update({ sentLikes: newSentLikes, receivedLikes: newReceivedLikes });
-                        console.log('Transaction success!');
-                        res.status(200).send('Rating updated 2.0');
-                    }
-
-
-});
-
-function updateRating(previousNoxbox, noxbox, userId) {
+async function updateRating(previousNoxbox, noxbox, userId) {
     if(!noxbox.finished) return;
 
-    let isOwner = noxbox.owner.id == userId;
-
     if (!previousNoxbox.timeCompleted && noxbox.timeCompleted) {
-        var ownerRating = db.collection('ratings').doc(noxbox.owner.id);
-        var partyRating = db.collection('ratings').doc(noxbox.party.id);
-
         if(noxbox.role === 'supply'){
-            //owner supply rating
-            //party demand rating
-        }else{
-            //party supply rating
-            //owner demand rating
+            await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'sentLikes', +1);
+            await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'receivedLikes', +1);
+            await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'sentLikes', +1);
+            await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedLikes', +1);
+        } else {
+            await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentLikes', +1);
+            await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedLikes', +1);
+            await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'sentLikes', +1);
+            await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'receivedLikes', +1);
         }
 
-        // TODO update rating for owner and party with +1 rating
         return;
     }
 
-    if(isOwner) {
-        // TODO open transaction or read data from profiles
-        if(!previousNoxbox.timeCanceledByOwner && noxbox.timeCanceledByOwner) {
-            // TODO update rating for owner canceled with +1
-        } else if(!previousNoxbox.timeTimeout && noxbox.timeTimeout) {
-            // TODO update rating for owner notResponded with +1
-        } else if (!previousNoxbox.timePartyRejected && noxbox.timePartyRejected) {
-            // TODO update rating for party notVerified with +1
-        } else if (noxbox.timeCompleted) {
-            if (!previousNoxbox.ownerComment && noxbox.ownerComment) {
-                let comment = { time : Date.now(),
-                                like : (noxbox.timeOwnerLiked >= noxbox.timeOwnerDisliked),
-                                text : noxbox.ownerComment };
-                // TODO update rating for party comment
-            } else if(previousNoxbox.timeOwnerDisliked !== noxbox.timeOwnerDisliked) {
-                // TODO update rating for sent owner dislike with +1 and like with -1
-                // TODO update rating for received party dislike with +1 and like with -1
-            } else if(previousNoxbox.timeOwnerLiked !== noxbox.timeOwnerLiked) {
-                // TODO update rating for sent owner like with +1 and dislike -1
-                // TODO update rating for received party like with +1 and dislike -1
-            }
+    // TODO open transaction or read data from profiles
+    if(!previousNoxbox.timeCanceledByOwner && noxbox.timeCanceledByOwner) {
+        // TODO update rating for owner canceled with +1
+    } else if(!previousNoxbox.timeTimeout && noxbox.timeTimeout) {
+        // TODO update rating for owner notResponded with +1
+    } else if (!previousNoxbox.timePartyRejected && noxbox.timePartyRejected) {
+        // TODO update rating for party notVerified with +1
+    } else if (noxbox.timeCompleted) {
+        if (!previousNoxbox.ownerComment && noxbox.ownerComment) {
+            let comment = { time : Date.now(),
+                            like : (noxbox.timeOwnerLiked >= noxbox.timeOwnerDisliked),
+                            text : noxbox.ownerComment };
+            // TODO update rating for party comment
+        } else if(previousNoxbox.timeOwnerDisliked !== noxbox.timeOwnerDisliked) {
+            // TODO update rating for sent owner dislike with +1 and like with -1
+            // TODO update rating for received party dislike with +1 and like with -1
+        } else if(previousNoxbox.timeOwnerLiked !== noxbox.timeOwnerLiked) {
+            // TODO update rating for sent owner like with +1 and dislike -1
+            // TODO update rating for received party like with +1 and dislike -1
         }
-    } else {
-        // TODO party copy from owner
     }
 }
 
@@ -283,6 +263,7 @@ function latestMessage(messages) {
     return message;
 }
 
+// TODO read available noxboxes from firestore directly
 exports.map = functions.https.onRequest((req, res) => {
     admin.database().ref('geo').once('value').then(allServices => {
         let json = [];
