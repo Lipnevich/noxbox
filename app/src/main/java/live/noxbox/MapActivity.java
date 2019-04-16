@@ -58,6 +58,7 @@ import live.noxbox.tools.location.LocationException;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
+import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
@@ -145,7 +146,12 @@ public class MapActivity extends DemonstrationActivity implements
         super.onPause();
         unregisterReceiver(locationReceiver);
         googleApiClient.disconnect();
-
+        if (googleMap != null) {
+            googleMap.clear();
+        }
+        if(availableNoxboxes != null){
+            availableNoxboxes.clear();
+        }
         AppCache.stopListen(this.getClass().getName());
         if (currentState != null) currentState.clear();
     }
