@@ -211,11 +211,11 @@ async function persistRating(userId, role, type, rate, delta) {
     }
 }
 
-async function persistRatingComment(userWhoGotId, userWhoSentId, role, type, rate, comment){
+async function persistRatingComment(userWhoGotId, userWhoSentId, role, type, comment){
     let docRef = db.collection('ratings').doc(userWhoGotId);
         let doc = await db.runTransaction(t => t.get(docRef));
         if (doc.exists) {
-            await doc.ref.update({ [role] : { [type] : { [rate] : { [userWhoSentId] : { comment }}}}});
+            await doc.ref.update({ [role] : { [type] : { 'comments' : { [userWhoSentId] : { comment }}}}});
             console.log('Transaction success!');
         }
 }
@@ -255,31 +255,30 @@ async function updateRating(previousNoxbox, noxbox, userId) {
         }
     }else if(!previousNoxbox.timeOwnerRejected && noxbox.timeOwnerRejected){
         if(noxbox.role === 'supply'){
-            await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'notVerified', +1);
-        } else {
-            await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'notVerified', +1);
-        }
-    }else if(!previousNoxbox.timePartyRejected && noxbox.timePartyRejected){
-        if(noxbox.role === 'supply'){
             await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'notVerified', +1);
         } else {
             await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'notVerified', +1);
         }
-    }else if(noxbox.timeCompleted){
+    }else if(!previousNoxbox.timePartyRejected && noxbox.timePartyRejected){
+        if(noxbox.role === 'supply'){
+            await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'notVerified', +1);
+        } else {
+            await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'notVerified', +1);
+        }
+    }else if(previousNoxbox.timeCompleted && noxbox.timeCompleted){
          if (!previousNoxbox.ownerComment && noxbox.ownerComment) {
             let comment = { time : Date.now(),
                             like : (noxbox.timeOwnerLiked >= noxbox.timeOwnerDisliked),
                             text : noxbox.ownerComment };
-            // TODO update rating for party comment
-            await persistRatingComment(noxbox.party.id, noxbox.owner.id, noxbox.role, noxbox.type, 'comments', comment);
+            await persistRatingComment(noxbox.party.id, noxbox.owner.id, noxbox.role, noxbox.type, comment);
         } else if(!previousNoxbox.partyComment && noxbox.partyComment){
             let comment = { time : Date.now(),
                             like : (noxbox.timePartyLiked >= noxbox.timePartyDisliked),
                             text : noxbox.partyComment };
-            await persistRatingComment(noxbox.owner.id, noxbox.party.id, noxbox.role, noxbox.type, 'comments', comment);
-            // TODO update rating for owner comment
+            await persistRatingComment(noxbox.owner.id, noxbox.party.id, noxbox.role, noxbox.type, comment);
         } else if(previousNoxbox.timeOwnerDisliked !== noxbox.timeOwnerDisliked) {
             if(noxbox.role === 'supply'){
+                //TODO unite dislikes and likes in single method
                 await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedDislikes', +1);
                 await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedLikes', -1);
                 await persistRating(noxbox.owner.id, 'suppliesRating', noxbox.type, 'sentDislikes', +1);
@@ -290,8 +289,13 @@ async function updateRating(previousNoxbox, noxbox, userId) {
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentDislikes', +1);
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentLikes', -1);
             }
-            // TODO update rating for sent owner dislike with +1 and like with -1
-            // TODO update rating for received party dislike with +1 and like with -1
+
+            if(noxbox.ownerComment){
+                let comment = { time : Date.now(),
+                    like : (noxbox.timeOwnerLiked >= noxbox.timeOwnerDisliked),
+                    text : noxbox.ownerComment };
+                await persistRatingComment(noxbox.party.id, noxbox.owner.id, noxbox.role, noxbox.type, comment);
+            }
         } else if(previousNoxbox.timeOwnerLiked !== noxbox.timeOwnerLiked) {
             if(noxbox.role === 'supply'){
                 await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'receivedDislikes', -1);
@@ -304,8 +308,12 @@ async function updateRating(previousNoxbox, noxbox, userId) {
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentDislikes', -1);
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'sentLikes', +1);
             }
-            // TODO update rating for sent owner like with +1 and dislike -1
-            // TODO update rating for received party like with +1 and dislike -1
+            if(noxbox.ownerComment){
+                let comment = { time : Date.now(),
+                     like : (noxbox.timeOwnerLiked >= noxbox.timeOwnerDisliked),
+                     text : noxbox.ownerComment };
+                await persistRatingComment(noxbox.party.id, noxbox.owner.id, noxbox.role, noxbox.type, comment);
+            }
         } else if(previousNoxbox.timePartyDisliked !== noxbox.timePartyDisliked){
             if(noxbox.role === 'supply'){
                 await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'sentDislikes', +1);
@@ -318,6 +326,12 @@ async function updateRating(previousNoxbox, noxbox, userId) {
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedDislikes', +1);
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedLikes', -1);
             }
+            if(noxbox.partyComment){
+                let comment = { time : Date.now(),
+                    like : (noxbox.timePartyLiked >= noxbox.timePartyDisliked),
+                    text : noxbox.partyComment };
+                await persistRatingComment(noxbox.owner.id, noxbox.party.id, noxbox.role, noxbox.type, comment);
+            }
         } else if(previousNoxbox.timePartyLiked !== noxbox.timePartyLiked){
             if(noxbox.role === 'supply'){
                 await persistRating(noxbox.party.id, 'demandsRating', noxbox.type, 'sentDislikes', -1);
@@ -329,6 +343,12 @@ async function updateRating(previousNoxbox, noxbox, userId) {
                 await persistRating(noxbox.party.id, 'suppliesRating', noxbox.type, 'sentLikes', +1);
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedDislikes', -1);
                 await persistRating(noxbox.owner.id, 'demandsRating', noxbox.type, 'receivedLikes', +1);
+            }
+            if(noxbox.partyComment){
+                let comment = { time : Date.now(),
+                    like : (noxbox.timePartyLiked >= noxbox.timePartyDisliked),
+                    text : noxbox.partyComment };
+                await persistRatingComment(noxbox.owner.id, noxbox.party.id, noxbox.role, noxbox.type, comment);
             }
         }
 
