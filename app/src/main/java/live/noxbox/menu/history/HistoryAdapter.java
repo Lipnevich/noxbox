@@ -1,8 +1,10 @@
 package live.noxbox.menu.history;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,14 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -55,6 +58,7 @@ import static live.noxbox.menu.history.HistoryActivity.isHistoryThere;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.DateTimeFormatter.time;
+import static live.noxbox.tools.ReferrerCatcher.KEY;
 
 /**
  * Created by nicolay.lipnevich on 22/06/2017.
@@ -135,30 +139,27 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 }
             }
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (noxboxes.size() > 0) {
-                        historyItems.addAll(noxboxes);
-                        sortHistoryItems();
-                        executeUiHistoryUpdate();
+            new Thread(() -> {
+                if (noxboxes.size() > 0) {
+                    historyItems.addAll(noxboxes);
+                    sortHistoryItems();
+                    executeUiHistoryUpdate();
 
-                        if (role == MarketRole.supply) {
-                            HistoryActivity.isSupplyHistoryEmpty = false;
-                        } else {
-                            HistoryActivity.isDemandHistoryEmpty = false;
-                        }
-
+                    if (role == MarketRole.supply) {
+                        HistoryActivity.isSupplyHistoryEmpty = false;
                     } else {
-                        if (historyItems.size() == 0) {
-                            if (role == MarketRole.supply) {
-                                HistoryActivity.isSupplyHistoryEmpty = true;
-                            } else {
-                                HistoryActivity.isDemandHistoryEmpty = true;
-                            }
-                            if (HistoryActivity.isSupplyHistoryEmpty && HistoryActivity.isDemandHistoryEmpty) {
-                                executeEmptyUiHistoryUpdate();
-                            }
+                        HistoryActivity.isDemandHistoryEmpty = false;
+                    }
+
+                } else {
+                    if (historyItems.size() == 0) {
+                        if (role == MarketRole.supply) {
+                            HistoryActivity.isSupplyHistoryEmpty = true;
+                        } else {
+                            HistoryActivity.isDemandHistoryEmpty = true;
+                        }
+                        if (HistoryActivity.isSupplyHistoryEmpty && HistoryActivity.isDemandHistoryEmpty) {
+                            executeEmptyUiHistoryUpdate();
                         }
                     }
                 }
@@ -187,12 +188,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     private void readHistory(long startFrom, Task<Collection<Noxbox>> uploadingTask) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask);
-            }
-        }).start();
+        new Thread(() -> Firestore.readHistory(startFrom, AMOUNT_PER_LOAD, role, uploadingTask)).start();
     }
 
     private void sortHistoryItems() {
@@ -264,9 +260,33 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             showExpandableLayout(viewHolder, noxbox);
         }
 
-
+        viewHolder.share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //DebugMessage.popup(activity, historyItems.get(position).getType().name());
+                shareNoxboxToOtherApplications(position);
+            }
+        });
     }
 
+    private void shareNoxboxToOtherApplications(int position) {
+        String noxboxTypeName = activity.getResources().getString(historyItems.get(position).getType().getName());
+        String noxboxMarketUrl = "https://play.google.com/store/apps/details?id=live.noxbox&";
+        String shareMessage = activity.getString(R.string.likeTheService) + " " + noxboxTypeName + ", " + activity.getString(R.string.connect) + "! ";
+        String linkToTheMarket = noxboxMarketUrl + KEY + "=" + profile().getId();
+
+        try {
+            Intent shareIntent = ShareCompat.IntentBuilder.from(activity)
+                    .setType("text/plain")
+                    .setText(shareMessage + linkToTheMarket)
+                    .getIntent();
+
+
+            activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getString(R.string.shareVia)));
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
+    }
 
     private LinearLayout showedExpandableLayout;
     private Noxbox showedNoxbox;
@@ -500,6 +520,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         TextView noxboxType;
         TextView price;
 
+        ImageButton share;
+
         LinearLayout expandableLayout;
         TextView address;
         MapView mapView;
@@ -521,9 +543,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         LinearLayout missingHistoryLayout;
         Button chooseService;
 
-        //ProgressViewHolder
-        ProgressBar progressBar;
-
         public HistoryViewHolder(@NonNull View layout) {
             super(layout);
         }
@@ -540,6 +559,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             time = layout.findViewById(R.id.time);
             noxboxType = layout.findViewById(R.id.noxboxType);
             price = layout.findViewById(R.id.price);
+
+            share = layout.findViewById(R.id.share);
 
             expandableLayout = layout.findViewById(R.id.expandableLayout);
             address = layout.findViewById(R.id.address);

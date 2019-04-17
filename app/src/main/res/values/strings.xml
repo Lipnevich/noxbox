@@ -303,5 +303,8 @@
     <string name="yourWallet">Your wallet</string>
     <string name="yourHistory">Your history</string>
     <string name="filterDescription">Filter services on the map</string>
+    <string name="shareVia">Share via</string>
+    <string name="likeTheService">I liked the service</string>
+    <string name="connect">connect</string>
 
 </resources>

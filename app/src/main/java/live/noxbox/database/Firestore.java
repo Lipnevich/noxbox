@@ -261,7 +261,6 @@ public class Firestore {
         return params;
     }
 
-    // Current human_profile
     private static ListenerRegistration ratingsListener;
 
     public static void stopListenRatings() {

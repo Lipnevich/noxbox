@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="88dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="12dp">
+        android:layout_marginTop="8dp">
 
         <ImageView
             android:id="@+id/noxboxTypeImage"
@@ -65,7 +64,25 @@
                 android:layout_height="wrap_content"
                 android:text="Nanny"
                 android:textSize="@dimen/text_size_secondary" />
+
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="32dp"
+            android:paddingBottom="32dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_share" />
+
     </RelativeLayout>
 
     <LinearLayout
