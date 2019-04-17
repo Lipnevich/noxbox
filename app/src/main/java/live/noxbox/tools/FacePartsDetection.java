@@ -13,6 +13,7 @@ import com.google.firebase.ml.vision.face.FirebaseVisionFaceDetectorOptions;
 import java.util.HashMap;
 import java.util.Map;
 
+import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Acceptance;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
@@ -36,8 +37,10 @@ public class FacePartsDetection {
                         .build();
         FirebaseVisionFaceDetector detector = FirebaseVision.getInstance()
                 .getVisionFaceDetector(options);
+        final TimeLogger detection = new TimeLogger();
         detector.detectInImage(image)
                 .addOnSuccessListener(faces -> {
+                    detection.makeLog(FacePartsDetection.class.getName());
                     Acceptance acceptance = new Acceptance();
                     acceptance.setIncorrectName(profile.getAcceptance().getIncorrectName());
                     acceptance.setMessage(profile.getAcceptance().getMessage());

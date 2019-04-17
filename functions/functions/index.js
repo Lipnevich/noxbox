@@ -56,7 +56,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
 
         let push;
         if(balance.lt(new BigDecimal('' + noxbox.price).div(4))) {
-            console.error('Not enough money for quoter hour', balance);
+            console.error('Not enough money ', balance);
             // TODO (nli) set notEnoughMoneyTime and finished=true
             let push = {
                 data: {
@@ -68,7 +68,7 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
                 topic: noxbox.id
             };
         } else {
-            console.log('Enough money for quoter hour', balance);
+            console.log('Enough money ', balance);
             push = {
                 data: {
                     type: 'moving',
@@ -420,7 +420,7 @@ function latestMessage(messages) {
     return message;
 }
 
-// TODO read available noxboxes from firestore directly
+// TODO read available noxboxes from firestore directly when draw map on site
 exports.map = functions.https.onRequest((req, res) => {
     admin.database().ref('geo').once('value').then(allServices => {
         let json = [];

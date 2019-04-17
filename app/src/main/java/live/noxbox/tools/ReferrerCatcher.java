@@ -9,16 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.common.base.Strings;
 import com.google.firebase.dynamiclinks.DynamicLink;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-
-import live.noxbox.database.Firestore;
-import live.noxbox.debug.DebugMessage;
-
-import static live.noxbox.database.AppCache.NONE;
-import static live.noxbox.database.AppCache.fireProfile;
-import static live.noxbox.database.AppCache.profile;
 
 public class ReferrerCatcher extends BroadcastReceiver {
 
@@ -47,9 +39,7 @@ public class ReferrerCatcher extends BroadcastReceiver {
 
 
     public static void parseLink(Intent intent, Activity activity) {
-        if (!Strings.isNullOrEmpty(referrer) && !profile().getReferral().equals(referrer)) {
-            profile().setReferral(referrer);
-            fireProfile();
+        if(intent == null) {
             return;
         }
 
@@ -60,14 +50,6 @@ public class ReferrerCatcher extends BroadcastReceiver {
                     if (pendingDynamicLinkData != null) {
                         deepLink = pendingDynamicLinkData.getLink();
                         referrer = deepLink.getQueryParameter(KEY);
-                        DebugMessage.popup(activity, "new:" + referrer
-                                + ";old:" + profile().getReferral());
-
-                        if (!Strings.isNullOrEmpty(referrer) && !profile().getReferral().equals(referrer)
-                                && !profile().getId().equals(referrer)) {
-                            profile().setReferral(referrer);
-                            Firestore.writeProfile(profile(), NONE);
-                        }
                     }
                 })
                 .addOnFailureListener(activity, Crashlytics::logException);

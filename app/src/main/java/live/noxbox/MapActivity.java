@@ -52,19 +52,22 @@ import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
 import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.ExchangeRate;
-import live.noxbox.tools.ReferrerCatcher;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.location.LocationException;
 
+import static com.google.common.base.Objects.equal;
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.AppCache.executeUITasks;
+import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
+import static live.noxbox.tools.ReferrerCatcher.referrer;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.location.LocationOperator.updateLocation;
@@ -90,10 +93,8 @@ public class MapActivity extends DemonstrationActivity implements
         // WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         super.onCreate(savedInstanceState);
         initCrashReporting();
-        if (getIntent() != null) {
-            ReferrerCatcher.parseLink(getIntent(), MapActivity.this);
-        }
-
+        // TODO check referrer after play market update and remove dependencies in case it works
+//        parseLink(getIntent(), MapActivity.this);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || isFirstRun(false)) {
@@ -260,9 +261,11 @@ public class MapActivity extends DemonstrationActivity implements
         AppCache.listenProfile(this.getClass().getName(), profile -> {
             if (googleMap == null) return;
 
-
-            if (getIntent() != null) {
-                ReferrerCatcher.parseLink(getIntent(), MapActivity.this);
+            if (!isNullOrEmpty(referrer) && !equal(profile().getReferral(), referrer)
+                    && !equal(profile().getId(), referrer)) {
+                profile().setReferral(referrer);
+                referrer = null;
+                fireProfile();
             }
 
             State newState = getFragment(profile);

@@ -27,8 +27,8 @@
     <string name="water">饮用水</string>
     <string name="plant">种植树苗</string>
     <string name="cleaning">保洁</string>
-    <string name="lawyer">Lawyer</string>
-    <string name="rentRoom">Rent room</string>
+    <string name="lawyer">律师</string>
+    <string name="rentRoom">租房</string>
 
     <!--Professions-->
     <string name="waterSupplier">供水商</string>
@@ -85,9 +85,9 @@
     <string name="agreement">我同意 %1$s and %2$s</string>
     <string name="authRules">服务条款</string>
     <string name="authPrivacyPolicy">隐私政策</string>
-    <string name="rulesLink">https://noxbox.io/规则.pdf</string>
-    <string name="privacyPolicyLink">https://noxbox.io/NoxBox隐私政策.pdf</string>
-    <string name="promoVideoLink">https://www.youtube.com/观看?v=E_Q1wTN27jk</string>
+    <string name="rulesLink">https://noxbox.io/rules.pdf</string>
+    <string name="privacyPolicyLink">https://noxbox.io/NoxBoxPrivacyPolicy.pdf</string>
+    <string name="promoVideoLink">https://www.youtube.com/watch?v=xZl0FvjNYgM</string>
 
     <string name="rules">规则</string>
     <string name="privacyPolicy">政策</string>
