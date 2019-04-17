@@ -110,7 +110,7 @@ public class LocationListenerService extends Service {
                     if (memberWhoMovingPosition != null && googleMap != null) {
                         memberWhoMovingMarker.setPosition(memberWhoMovingPosition.toLatLng());
                         drawPath(getApplicationContext(), googleMap, profile().getCurrent().getPosition(), memberWhoMovingPosition);
-                        DebugMessage.popup(getApplicationContext(), memberWhoMovingPosition.toString());
+                        DebugMessage.popup(getApplicationContext(), "Your location was updated with " + memberWhoMovingPosition.toString());
                     }
                     if (updateTimeView != null) {
                         updateTimeView.execute(profile());

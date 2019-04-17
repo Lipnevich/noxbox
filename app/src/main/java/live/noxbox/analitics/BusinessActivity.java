@@ -18,28 +18,25 @@ import static live.noxbox.database.AppCache.profile;
 
 public class BusinessActivity extends AppCompatActivity {
 
-    public static SharedPreferences writes;
-    public static SharedPreferences reads;
+    public static SharedPreferences analytics;
     private static Context context;
+    private static final String writes = "writes";
+    private static final String reads = "reads";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getApplicationContext();
-
-        writes = getSharedPreferences("writes", Context.MODE_PRIVATE);
-        reads = getSharedPreferences("reads", Context.MODE_PRIVATE);
+        analytics = getSharedPreferences("analytics", Context.MODE_PRIVATE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences writes = getApplicationContext().getSharedPreferences("writes", MODE_PRIVATE);
-        writes.edit().putLong("writes", writes.getLong("writes", 0L) + Firestore.writes).apply();
+        analytics.edit().putLong(writes, analytics.getLong(writes, 0L) + Firestore.writes).apply();
         Firestore.writes = 0L;
 
-        SharedPreferences reads = getApplicationContext().getSharedPreferences("reads", MODE_PRIVATE);
-        reads.edit().putLong("reads", reads.getLong("reads", 0L) + Firestore.reads).apply();
+        analytics.edit().putLong(reads, analytics.getLong(reads, 0L) + Firestore.reads).apply();
         Firestore.reads = 0L;
     }
 
@@ -71,16 +68,16 @@ public class BusinessActivity extends AppCompatActivity {
                 bundle.putDouble("price", new BigDecimal(profile().getCurrent().getPrice()).doubleValue());
                 bundle.putDouble("timeSpent", (profile().getCurrent().getTimeCompleted() - Math.max(profile().getCurrent().getTimeOwnerVerified(), profile().getCurrent().getTimePartyVerified()) / (1000 * 10)));
 
-                long allWrites = writes.getLong("writes", 0L) + Firestore.writes;
-                long allReads = reads.getLong("reads", 0L) + Firestore.reads;
-                bundle.putLong("writes", allWrites);
-                bundle.putLong("reads", allReads);
+                long allWrites = analytics.getLong(writes, 0L) + Firestore.writes;
+                long allReads = analytics.getLong(reads, 0L) + Firestore.reads;
+                bundle.putLong(writes, allWrites);
+                bundle.putLong(reads, allReads);
 
                 DebugMessage.popup(context,
-                        "Reads:" + allReads + "|Writes:" + allWrites, Toast.LENGTH_LONG);
+                        reads + allReads + "|" + writes + allWrites, Toast.LENGTH_LONG);
 
-                writes.edit().putLong("writes", 0L).apply();
-                reads.edit().putLong("writes", 0L).apply();
+                analytics.edit().putLong(writes, 0L).apply();
+                analytics.edit().putLong(reads, 0L).apply();
                 Firestore.writes = 0;
                 Firestore.reads = 0;
                 break;

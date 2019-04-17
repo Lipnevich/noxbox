@@ -3,8 +3,6 @@ package live.noxbox.tools;
 import android.app.ActivityManager;
 import android.content.Context;
 
-import live.noxbox.debug.DebugMessage;
-
 /**
  * Created by Vladislaw Kravchenok on 28.03.2019.
  */
@@ -13,7 +11,6 @@ public class ServiceMonitoring {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
-                DebugMessage.popup(context,"LocationListenerService is running");
                 return true;
             }
         }
