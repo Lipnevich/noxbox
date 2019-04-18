@@ -67,6 +67,7 @@ import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
+import static live.noxbox.tools.ReferrerCatcher.clearReferrer;
 import static live.noxbox.tools.ReferrerCatcher.referrer;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
@@ -264,7 +265,7 @@ public class MapActivity extends DemonstrationActivity implements
             if (!isNullOrEmpty(referrer) && !equal(profile().getReferral(), referrer)
                     && !equal(profile().getId(), referrer)) {
                 profile().setReferral(referrer);
-                referrer = null;
+                clearReferrer();
                 fireProfile();
             }
 

@@ -27,7 +27,6 @@ import live.noxbox.tools.Task;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.debug.DebugMessage.popup;
 import static live.noxbox.model.Noxbox.isNullOrZero;
-import static live.noxbox.tools.ReferrerCatcher.createLink;
 
 public class HackerActivity extends MenuActivity {
 
@@ -62,7 +61,6 @@ public class HackerActivity extends MenuActivity {
                 case initial:
                     HackerActivity.this.findViewById(R.id.debugNotify).setVisibility(View.VISIBLE);
                     setOnClickListener(R.id.debugNotify, o -> {
-                        createLink(profile().getId());
                     });
 
                     findViewById(R.id.debugGenerateNoxboxes).setVisibility(View.VISIBLE);
