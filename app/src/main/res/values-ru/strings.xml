@@ -304,6 +304,9 @@
     <string name="rentRoom">Ночлег</string>
     <string name="housekeeper">Домовой</string>
     <string name="filterDescription">Отфильтруйте услуги на карте</string>
+    <string name="shareVia">Отправить по</string>
+    <string name="likeTheService">Мне понравилась услуга</string>
+    <string name="connect">подключайтесь</string>
 
 
 </resources>

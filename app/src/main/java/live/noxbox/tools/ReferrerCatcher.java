@@ -8,7 +8,7 @@ import android.os.Bundle;
 public class ReferrerCatcher extends BroadcastReceiver {
 
 
-    private final static String KEY = "referrer";
+    public final static String KEY = "referrer";
     public static String referrer;
 
     @Override
