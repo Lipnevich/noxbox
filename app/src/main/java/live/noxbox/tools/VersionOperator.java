@@ -14,6 +14,14 @@ public class VersionOperator {
             return false;
         }
     }
+
+    public static boolean isSdkHighestThan24OrEqual() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public static boolean isSdkHighestThan26OrEqual() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return true;

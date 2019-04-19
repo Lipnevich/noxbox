@@ -14,6 +14,7 @@ public interface Constants {
     int LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS = 914;
     int CAMERA_PERMISSION_REQUEST_CODE = 000;
     int REQUEST_IMAGE_CAPTURE = 001;
+    int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 002;
 
     long MINIMUM_PAYMENT_TIME_MILLIS = 15 * 60 * 1000;
     float MINIMUM_FACE_SIZE = 0.05F;
@@ -44,4 +45,6 @@ public interface Constants {
     int BIG_MARKER_SIZE = 64;
 
     BigDecimal NOXBOX_FEE = new BigDecimal("0.072");
+
+    String AUTHORITY = "live.noxbox.fileprovider";
 }

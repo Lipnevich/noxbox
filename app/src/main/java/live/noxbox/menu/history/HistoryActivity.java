@@ -1,7 +1,9 @@
 package live.noxbox.menu.history;
 
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -17,6 +19,7 @@ import live.noxbox.model.MarketRole;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Constants.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 import static live.noxbox.database.AppCache.profile;
 
 public class HistoryActivity extends BaseActivity {
@@ -26,6 +29,7 @@ public class HistoryActivity extends BaseActivity {
     public static final String KEY_PERFORMER_ID = "lastNoxboxRole";
     public static Task<MarketRole> isHistoryEmpty;
     public static Task<MarketRole> isHistoryThere;
+    public static Task<Boolean> isPermissionWasGranted;
 
     public static boolean isSupplyHistoryEmpty = true;
     public static boolean isDemandHistoryEmpty = true;
@@ -155,6 +159,20 @@ public class HistoryActivity extends BaseActivity {
         });
         missingHistoryMessage.setText(R.string.missingPerformedHistoryMessage);
         chooseService.setText(R.string.chooseSupplyService);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                    isPermissionWasGranted.execute(true);
+                    break;
+                }
+            }
+        }
     }
 
 }

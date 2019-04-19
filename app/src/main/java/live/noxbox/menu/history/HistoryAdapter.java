@@ -1,12 +1,23 @@
 package live.noxbox.menu.history;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ShareCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +41,8 @@ import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,16 +58,20 @@ import live.noxbox.analitics.BusinessEvent;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.NoxboxType;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.MoneyFormatter;
 import live.noxbox.tools.Task;
 
 import static io.fabric.sdk.android.services.common.CommonUtils.isNullOrEmpty;
+import static live.noxbox.Constants.AUTHORITY;
+import static live.noxbox.Constants.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE;
 import static live.noxbox.Constants.NOXBOX_FEE;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.menu.history.HistoryActivity.isHistoryEmpty;
 import static live.noxbox.menu.history.HistoryActivity.isHistoryThere;
+import static live.noxbox.menu.history.HistoryActivity.isPermissionWasGranted;
 import static live.noxbox.tools.DateTimeFormatter.date;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.DateTimeFormatter.time;
@@ -264,28 +281,125 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             @Override
             public void onClick(View v) {
                 //DebugMessage.popup(activity, historyItems.get(position).getType().name());
-                shareNoxboxToOtherApplications(position);
+                isPermissionWasGranted = isGranted -> {
+                    if(isGranted){
+                        shareNoxboxToOtherApplications(noxbox.getType());
+                    }
+                };
+                if (ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(activity,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                } else {
+                    shareNoxboxToOtherApplications(noxbox.getType());
+                }
+
             }
         });
     }
 
-    private void shareNoxboxToOtherApplications(int position) {
-        String noxboxTypeName = activity.getResources().getString(historyItems.get(position).getType().getName());
+    private File rootDir;
+    private final String TAG = HistoryAdapter.class.getSimpleName();
+    private void shareNoxboxToOtherApplications(NoxboxType type) {
+        String albumName = "noxboximages";
+        String noxboxTypeName = activity.getResources().getString(type.getName());
         String noxboxMarketUrl = "https://play.google.com/store/apps/details?id=live.noxbox&";
         String shareMessage = activity.getString(R.string.likeTheService) + " " + noxboxTypeName + ", " + activity.getString(R.string.connect) + "! ";
         String linkToTheMarket = noxboxMarketUrl + KEY + "=" + profile().getId();
+        String textToShare = shareMessage+linkToTheMarket;
 
-        try {
-            Intent shareIntent = ShareCompat.IntentBuilder.from(activity)
-                    .setType("text/plain")
-                    .setText(shareMessage + linkToTheMarket)
-                    .getIntent();
+        if (isExternalStorageWritable() && isExternalStorageReadable()) {
+            rootDir = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), albumName);
+            if (!rootDir.mkdirs()) {
+                Log.d(TAG, "Directory did not create");
+                rootDir.mkdir();
+            }
+            if (rootDir.exists()) {
+                int illustration = type.getIllustration();
+                Drawable drawable = activity.getDrawable(illustration);
+                Bitmap bitmap = getBitmap(illustration);
 
+                String fname = type.name() + ".jpg";
+                File file = new File(rootDir, fname);
+                if (file.exists())
+                    file.delete();
 
-            activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getString(R.string.shareVia)));
-        } catch (Exception e) {
-            Crashlytics.logException(e);
+                try {
+                    FileOutputStream out = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    out.flush();
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Crashlytics.logException(e);
+                }
+
+                Uri uri;
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                    uri = FileProvider.getUriForFile(activity.getApplicationContext(), AUTHORITY, file);
+                }else{
+                    uri = Uri.fromFile(file);
+                }
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                shareIntent.setType("image/jpeg");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
+                //shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getString(R.string.shareVia)));
+            }
         }
+
+//        String noxboxTypeName = activity.getResources().getString(historyItems.get(position).getType().getName());
+//        String noxboxMarketUrl = "https://play.google.com/store/apps/details?id=live.noxbox&";
+//        String shareMessage = activity.getString(R.string.likeTheService) + " " + noxboxTypeName + ", " + activity.getString(R.string.connect) + "! ";
+//        String linkToTheMarket = noxboxMarketUrl + KEY + "=" + profile().getId();
+//
+//        try {
+//            Intent shareIntent = ShareCompat.IntentBuilder.from(activity)
+//                    .setType("text/plain")
+//                    .setText(shareMessage + linkToTheMarket)
+//                    .getIntent();
+//
+//
+//            activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getString(R.string.shareVia)));
+//        } catch (Exception e) {
+//            Crashlytics.logException(e);
+//        }
+    }
+
+
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = activity.getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+
+    /* Checks if external storage is available for read and write */
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
     }
 
     private LinearLayout showedExpandableLayout;
