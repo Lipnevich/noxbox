@@ -9,6 +9,7 @@ const wavesDecimals = new BigDecimal('100000000');
 // real commission is sum of 2*wavesFee+noxboxFee = 0.072
 const wavesFee = new BigDecimal('0.001');
 const noxboxFee = new BigDecimal('0.07');
+const referrerReward = new BigDecimal('0.01');
 
 exports.create = async request => {
   	const seed = Waves.Seed.create();
@@ -33,7 +34,6 @@ exports.send = async request => {
         request.transferable = balance.minus(wavesFee);
     } else {
         // pay for service
-        // TODO reward referrer for performer
         if(balance.lt(request.transferable)) request.transferable = balance;
         request.transferable = request.transferable.minus(wavesFee)
             .minus(noxboxFee).minus(wavesFee);
@@ -41,10 +41,25 @@ exports.send = async request => {
         let feeRequest = {};
         feeRequest.addressToTransfer = '3PFqJR4AiBzRBAvki2QGVFUiXQjUasPyXTH';
         feeRequest.seed = request.seed;
-        feeRequest.attachment = "NoxBox Fee";
+        feeRequest.attachment = "NoxBox " + request.type + " fee";
         feeRequest.transferable = noxboxFee;
+        if(request.referral) {
+            feeRequest.transferable = noxboxFee.minus(wavesFee).minus(referrerReward);
+        }
 
         await transfer(feeRequest);
+
+        // reward referrer
+        if(request.referral) {
+            let rewardRequest = {};
+            rewardRequest.addressToTransfer = request.referral;
+            rewardRequest.seed = request.seed;
+            rewardRequest.attachment = "NoxBox " + request.type + " referrer reward";
+            rewardRequest.transferable = referrerReward;
+
+            await transfer(rewardRequest);
+        }
+
     }
     console.log('Transferable ' + request.transferable);
 
