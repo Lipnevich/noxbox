@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lines="1"
-                android:text="Nenny, 20 минут"
+                android:text="Nanny, 20 минут"
                 android:textColor="@color/google_text"
                 android:textSize="@dimen/text_size" />
 
@@ -74,7 +74,7 @@
             android:paddingStart="32dp"
             android:paddingBottom="32dp"
             android:paddingTop="32dp"
-            android:paddingEnd="12dp"
+            android:paddingEnd="24dp"
             android:clickable="true"
             android:focusable="true"
             android:background="@color/fui_transparent"

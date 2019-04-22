@@ -317,24 +317,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 rootDir.mkdir();
             }
             if (rootDir.exists()) {
-                int illustration = type.getIllustration();
-                Drawable drawable = activity.getDrawable(illustration);
-                Bitmap bitmap = getBitmap(illustration);
-
-                String fname = type.name() + ".jpg";
-                File file = new File(rootDir, fname);
-                if (file.exists())
-                    file.delete();
-
-                try {
-                    FileOutputStream out = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                    out.flush();
-                    out.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Crashlytics.logException(e);
-                }
+                File file = createFileForShare(type);
 
                 Uri uri;
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
@@ -347,27 +330,27 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 shareIntent.setType("image/jpeg");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, textToShare);
-                //shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getString(R.string.shareVia)));
             }
         }
 
-//        String noxboxTypeName = activity.getResources().getString(historyItems.get(position).getType().getName());
-//        String noxboxMarketUrl = "https://play.google.com/store/apps/details?id=live.noxbox&";
-//        String shareMessage = activity.getString(R.string.likeTheService) + " " + noxboxTypeName + ", " + activity.getString(R.string.connect) + "! ";
-//        String linkToTheMarket = noxboxMarketUrl + KEY + "=" + profile().getId();
-//
-//        try {
-//            Intent shareIntent = ShareCompat.IntentBuilder.from(activity)
-//                    .setType("text/plain")
-//                    .setText(shareMessage + linkToTheMarket)
-//                    .getIntent();
-//
-//
-//            activity.startActivity(Intent.createChooser(shareIntent, activity.getResources().getString(R.string.shareVia)));
-//        } catch (Exception e) {
-//            Crashlytics.logException(e);
-//        }
+    }
+
+    private File createFileForShare(NoxboxType type) {
+        Bitmap bitmap = getBitmap(type.getIllustration());
+
+        String fname = activity.getString(R.string.NoxBox) + type.name() + ".jpg";
+        File file = new File(rootDir, fname);
+        if (file.exists())
+            return file;
+
+        try(FileOutputStream out = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
+        return file;
     }
 
 

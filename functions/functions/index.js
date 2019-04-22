@@ -131,6 +131,13 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         request.encrypted = (await db.collection('seeds').doc(noxbox.payerId).get()).data().seed;
         request.attachment = 'Payment for ' + noxbox.type + '. Processed with love by NoxBox';
         request.transferable = moneyToPay;
+        request.type = noxbox.type;
+        if(performer.referral) {
+            let referralProfile = await db.collection('profiles').doc(performer.referral).get();
+            if(referralProfile.exists && referralProfile.data().wallet && referralProfile.data().wallet.address) {
+                request.referral = referralProfile.data().wallet.address;
+            }
+        }
 
         await wallet.send(request);
 
