@@ -561,7 +561,6 @@ public class DetailedActivity extends BaseActivity {
         profile.getCurrent().copy(profile.getViewed());
         profile.setNoxboxId(profile.getCurrent().getId());
         profile.getCurrent().setTimeRequested(System.currentTimeMillis());
-
         profile.getCurrent().getParty().addPrivateInfo(profile);
         Firestore.writeProfile(profile, object -> {
             AppCache.updateNoxbox();

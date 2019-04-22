@@ -132,10 +132,7 @@ public class Accepting implements State {
 
     public static void acceptCurrent() {
         profile().getCurrent().setTimeAccepted(System.currentTimeMillis());
-        profile().getCurrent().getOwner().setPhoto(profile().getPhoto());
-        profile().getCurrent().getOwner().setName(profile().getName());
-        profile().getCurrent().getOwner().setWallet(profile().getWallet());
-        profile().getCurrent().getOwner().setReferral(profile().getReferral());
+        profile().getCurrent().getOwner().addPrivateInfo(profile());
         updateNoxbox();
 
         businessEvent(accept);
