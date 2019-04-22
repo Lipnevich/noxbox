@@ -275,7 +275,6 @@ public class AppCache {
         profile().getContract().setGeoId(createKey(profile().getContract(), profile.getFilters().getAllowNovices()));
 
         profile.getContract().setOwner(profile.publicInfo(profile.getContract().getRole(), profile.getContract().getType()));
-        profile.getContract().getOwner().setReferral(profile.getReferral());
         profile.getCurrent().copy(profile.getContract());
         executeUITasks();
 

@@ -135,6 +135,7 @@ public class Accepting implements State {
         profile().getCurrent().getOwner().setPhoto(profile().getPhoto());
         profile().getCurrent().getOwner().setName(profile().getName());
         profile().getCurrent().getOwner().setWallet(profile().getWallet());
+        profile().getCurrent().getOwner().setReferral(profile().getReferral());
         updateNoxbox();
 
         businessEvent(accept);
