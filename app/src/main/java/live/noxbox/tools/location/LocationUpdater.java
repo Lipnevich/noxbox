@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import live.noxbox.debug.DebugMessage;
+import live.noxbox.tools.exceptions.LocationException;
 
 import static live.noxbox.MapActivity.TAG;
 import static live.noxbox.tools.location.LocationOperator.initLocationProviderClient;

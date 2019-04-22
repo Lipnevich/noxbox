@@ -53,7 +53,7 @@ import live.noxbox.states.State;
 import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.location.LocationException;
+import live.noxbox.tools.exceptions.LocationException;
 
 import static com.google.common.base.Objects.equal;
 import static com.google.common.base.Strings.isNullOrEmpty;

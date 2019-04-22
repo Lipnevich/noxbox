@@ -1,4 +1,4 @@
-package live.noxbox.tools.location;
+package live.noxbox.tools.exceptions;
 
 /**
  * Created by Vladislaw Kravchenok on 19.03.2019.
