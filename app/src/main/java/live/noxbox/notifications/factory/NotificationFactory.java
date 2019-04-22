@@ -38,6 +38,15 @@ import static live.noxbox.tools.VersionOperator.isSdkHighestThan26OrEqual;
 public abstract class NotificationFactory {
 
     public static Notification buildNotification(Context context, Profile profile, Map<String, String> data) {
+
+        if (data == null || data.get("type") == null) {
+            return new Notification(context, profile, data) {
+                @Override
+                public void show() {
+                }
+            };
+        }
+
         NotificationType type = NotificationType.valueOf(data.get("type"));
         createChannel(type, context);
         switch (type) {
@@ -72,11 +81,10 @@ public abstract class NotificationFactory {
             case support:
                 return new NotificationSupport(context, profile, data);
             default:
-                DebugMessage.popup(context, "Unknown notification type " + type);
                 return new Notification(context, profile, data) {
                     @Override
                     public void show() {
-
+                        DebugMessage.popup(context, "Unknown notification type " + type);
                     }
                 };
         }
