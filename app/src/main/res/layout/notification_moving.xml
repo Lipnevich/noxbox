@@ -20,18 +20,6 @@
             android:layout_marginStart="16dp"
             android:textColor="@color/secondary"
             android:textSize="@dimen/text_size" />
-
-        <ProgressBar
-            android:id="@+id/progress"
-            style="@style/HorizontalProgressBarNotificationStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="4dp"
-            android:progressDrawable="@drawable/notification_moving_progress_line" />
     </LinearLayout>
 
     <ImageView

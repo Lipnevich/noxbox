@@ -66,6 +66,7 @@ public enum NotificationType {
             }
             case moving: {
                 data.put("type", NotificationType.moving.name());
+                data.put("profileId",profile.getId());
                 data.put("id", current.getId());
                 break;
             }
