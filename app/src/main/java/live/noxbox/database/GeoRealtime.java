@@ -28,6 +28,8 @@ import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.database.AppCache.profile;
+
 public class GeoRealtime {
 
     public final static String delimiter = ";";
@@ -61,8 +63,8 @@ public class GeoRealtime {
 
     public static String createKey(Noxbox currentNoxbox, boolean allowNovices) {
         Rating ownerRating = currentNoxbox.getRole() == MarketRole.supply ?
-                currentNoxbox.getOwner().getRatings().getSuppliesRating().get(currentNoxbox.getType().name()) :
-                currentNoxbox.getOwner().getRatings().getDemandsRating().get(currentNoxbox.getType().name());
+                profile().getRatings().getSuppliesRating().get(currentNoxbox.getType().name()) :
+                profile().getRatings().getDemandsRating().get(currentNoxbox.getType().name());
         if (ownerRating == null) {
             ownerRating = new Rating();
         }
