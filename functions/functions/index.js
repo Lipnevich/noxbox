@@ -132,11 +132,13 @@ exports.noxboxUpdated = functions.firestore.document('noxboxes/{noxboxId}').onUp
         request.attachment = 'Payment for ' + noxbox.type + '. Processed with love by NoxBox';
         request.transferable = moneyToPay;
         request.type = noxbox.type;
-        if(performer.referral) {
+        if(performer.referral && performer.referral !== payer.id) {
             let referralProfile = await db.collection('profiles').doc(performer.referral).get();
             if(referralProfile.exists && referralProfile.data().wallet && referralProfile.data().wallet.address) {
                 request.referral = referralProfile.data().wallet.address;
             }
+        }else if(performer.referral && performer.referral === payer.id){
+             request.discountFee = true;
         }
 
         await wallet.send(request);

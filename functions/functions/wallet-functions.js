@@ -43,7 +43,8 @@ exports.send = async request => {
         feeRequest.seed = request.seed;
         feeRequest.attachment = "NoxBox " + request.type + " fee";
         feeRequest.transferable = noxboxFee;
-        if(request.referral) {
+
+        if(request.referral || request.discountFee) {
             feeRequest.transferable = noxboxFee.minus(wavesFee).minus(referrerReward);
         }
 
