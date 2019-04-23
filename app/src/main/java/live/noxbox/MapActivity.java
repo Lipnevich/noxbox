@@ -151,7 +151,7 @@ public class MapActivity extends DemonstrationActivity implements
         if (googleMap != null) {
             googleMap.clear();
         }
-        if(availableNoxboxes != null){
+        if (availableNoxboxes != null) {
             availableNoxboxes.clear();
         }
         AppCache.stopListen(this.getClass().getName());
@@ -180,8 +180,16 @@ public class MapActivity extends DemonstrationActivity implements
     @Override
     public void onConfigurationChanged(android.content.res.Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        if (currentState == null) return;
+
+        if (currentState instanceof AvailableNoxboxes) {
+            showAvailableDemonstration();
+        }
+        if (currentState instanceof Moving) {
+            showMovingDemonstration();
+        }
         //TODO (vl) to remove operator if after there're being to add all customs view's
-        if (currentState != null && currentState.getClass().equals(Performing.class)) {
+        if (currentState instanceof Performing) {
             draw();
         }
     }
@@ -272,6 +280,13 @@ public class MapActivity extends DemonstrationActivity implements
             State newState = getFragment(profile);
             if (newState instanceof AvailableNoxboxes && requestLocationUpdatesBundle != null) {
                 ((AvailableNoxboxes) newState).updateRequestingLocationUpdatesFromBundle(requestLocationUpdatesBundle);
+            }
+
+            //if(newState instanceof Moving && wasDemonstrationShowed(AVAILABLE_DEMONSTRATION_KEY) ){
+            if (newState instanceof Moving) {
+                showMovingDemonstration();
+            } else if (newState instanceof AvailableNoxboxes) {
+                showAvailableDemonstration();
             }
 
             if (currentState == null) {

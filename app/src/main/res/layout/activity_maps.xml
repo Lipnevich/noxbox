@@ -248,7 +248,7 @@
     </fragment>
 
     <RelativeLayout
-        android:id="@+id/demonstration"
+        android:id="@+id/demonstrationAvailable"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#83000000"
@@ -256,7 +256,7 @@
 
 
         <ImageView
-            android:id="@+id/menuDemonstration"
+            android:id="@+id/menuAvailableDemonstration"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_alignParentStart="true"
@@ -272,7 +272,7 @@
             android:visibility="visible" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/locationDemonstration"
+            android:id="@+id/locationAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -286,7 +286,7 @@
             app:maxImageSize="48dp" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/contractDemonstration"
+            android:id="@+id/contractAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -302,7 +302,7 @@
             app:maxImageSize="48dp" />
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/filtersDemonstration"
+            android:id="@+id/filtersAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -317,14 +317,14 @@
             app:maxImageSize="48dp" />
 
         <live.noxbox.ui.RoleSwitcherLayout
-            android:id="@+id/roleSwitcherDemonstration"
+            android:id="@+id/roleSwitcherAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp" />
 
         <TextView
-            android:id="@+id/textMenuDemonstration"
+            android:id="@+id/textMenuAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -335,10 +335,10 @@
             android:textSize="@dimen/big" />
 
         <TextView
-            android:id="@+id/textMenuDemonstrationProfile"
+            android:id="@+id/textMenuAvailableDemonstrationProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textMenuDemonstration"
+            android:layout_below="@id/textMenuAvailableDemonstration"
             android:layout_alignParentStart="true"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
@@ -347,10 +347,10 @@
             android:textSize="@dimen/small" />
 
         <TextView
-            android:id="@+id/textMenuDemonstrationWallet"
+            android:id="@+id/textMenuAvailableDemonstrationWallet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textMenuDemonstrationProfile"
+            android:layout_below="@id/textMenuAvailableDemonstrationProfile"
             android:layout_alignParentStart="true"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
@@ -359,10 +359,10 @@
             android:textSize="@dimen/small" />
 
         <TextView
-            android:id="@+id/textMenuDemonstrationSettings"
+            android:id="@+id/textMenuAvailableDemonstrationSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textMenuDemonstrationWallet"
+            android:layout_below="@id/textMenuAvailableDemonstrationWallet"
             android:layout_alignParentStart="true"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
@@ -371,10 +371,10 @@
             android:textSize="@dimen/small" />
 
         <TextView
-            android:id="@+id/textFiltersDemonstration"
+            android:id="@+id/textFiltersAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textMenuDemonstrationSettings"
+            android:layout_below="@+id/textMenuAvailableDemonstrationSettings"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="80dp"
             android:text="@string/filters"
@@ -382,10 +382,10 @@
             android:textSize="@dimen/big" />
 
         <TextView
-            android:id="@+id/textFiltersDemonstrationDescription"
+            android:id="@+id/textFiltersAvailableDemonstrationDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textFiltersDemonstration"
+            android:layout_below="@+id/textFiltersAvailableDemonstration"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="80dp"
             android:text="@string/filterDescription"
@@ -393,7 +393,7 @@
             android:textSize="@dimen/small" />
 
         <TextView
-            android:id="@+id/textLocationDemonstration"
+            android:id="@+id/textLocationAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -405,7 +405,7 @@
             android:textSize="@dimen/big" />
 
         <TextView
-            android:id="@+id/textContractDemonstration"
+            android:id="@+id/textContractAvailableDemonstration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -417,31 +417,138 @@
             android:textSize="@dimen/big" />
 
         <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowMenuDemonstration"
+            android:id="@+id/arrowMenuAvailableDemonstration"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowFiltersDemonstration"
+            android:id="@+id/arrowFiltersAvailableDemonstration"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowLocationDemonstration"
+            android:id="@+id/arrowLocationAvailableDemonstration"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowContractDemonstration"
+            android:id="@+id/arrowContractAvailableDemonstration"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowRoleSwitcherDemonstration"
+            android:id="@+id/arrowRoleSwitcherAvailableDemonstration"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/demonstrationMoving"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#83000000"
+        android:visibility="gone">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/navigatorMovingDemonstration"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="visible"
+            app:cardBackgroundColor="@color/primary"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="8dp">
+
+            <ImageButton
+                android:id="@+id/navigationImageMovingDemonstration"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@color/fui_transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/navigation"
+                android:tint="@color/secondary"
+                android:visibility="visible" />
+        </android.support.v7.widget.CardView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/verificationMovingDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="32dp"
+            android:scaleType="center"
+            android:src="@drawable/edit"
+            android:tint="@color/secondary"
+            android:visibility="visible"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
+
+        <ImageButton
+            android:id="@+id/chatMovingDemonstration"
+            style="@style/IconButtonStyle"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="18dp"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/chat"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/textChatMovingDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/freeChat"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/small" />
+
+        <TextView
+            android:id="@+id/textNavigatorMovingDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textChatMovingDemonstration"
+            android:text="@string/buildRoute"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/small" />
+
+        <TextView
+            android:id="@+id/textVerificationMovingDemonstration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/verifyAppiarance"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/small" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowChatMovingDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowNavigatorMovingDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <live.noxbox.ui.ArrowView
+            android:id="@+id/arrowVerificationMovingDemonstration"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"
