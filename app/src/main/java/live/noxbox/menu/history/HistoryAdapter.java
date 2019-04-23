@@ -213,12 +213,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
     private void executeUiHistoryUpdate() {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                isHistoryThere.execute(null);
-                notifyDataSetChanged();
-            }
+        activity.runOnUiThread(() -> {
+            isHistoryThere.execute(null);
+            notifyDataSetChanged();
         });
     }
 
@@ -277,25 +274,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             showExpandableLayout(viewHolder, noxbox);
         }
 
-        viewHolder.share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //DebugMessage.popup(activity, historyItems.get(position).getType().name());
-                isPermissionWasGranted = isGranted -> {
-                    if(isGranted){
-                        shareNoxboxToOtherApplications(noxbox.getType());
-                    }
-                };
-                if (ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(activity,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-                } else {
+        viewHolder.share.setOnClickListener(v -> {
+            isPermissionWasGranted = isGranted -> {
+                if(isGranted){
                     shareNoxboxToOtherApplications(noxbox.getType());
                 }
-
+            };
+            if (ContextCompat.checkSelfPermission(activity.getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            } else {
+                shareNoxboxToOtherApplications(noxbox.getType());
             }
+
         });
     }
 
@@ -366,7 +359,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
     }
 
 
-    /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -375,7 +367,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return false;
     }
 
-    /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state) ||
