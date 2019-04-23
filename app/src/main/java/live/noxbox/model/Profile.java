@@ -283,6 +283,7 @@ public class Profile implements Serializable {
         position = from.position;
         arriveInSeconds = from.arriveInSeconds;
         filters = from.filters;
+        referral = from.referral;
         return this;
     }
 
