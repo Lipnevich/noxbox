@@ -51,9 +51,10 @@ public class NotificationComplete extends Notification {
                             .addNextIntentWithParentStack(lastNoxboxIntent)
                             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                     final NotificationCompat.Builder builder = getNotificationCompatBuilder();
-                    BigDecimal transferred = MoneyFormatter.scale(data.get("total"));
+                    BigDecimal transferred;
                     if (noxbox.getPerformer().getId().equals(currentUserId)) {
                         message = context.getResources().getString(R.string.earned);
+                        transferred = MoneyFormatter.scale(data.get("total"));
                         contentView.setImageViewResource(R.id.estimate,R.drawable.ic_notification_human_balance);
                     } else {
                         message = context.getResources().getString(R.string.spent);
