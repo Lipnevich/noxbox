@@ -4,9 +4,16 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +66,7 @@ public class WalletActivity extends BaseActivity {
     private TextView title;
     private EditText addressToSendEditor;
     private TextView balanceLabel;
+    private TextView currency;
     private TextView balance;
     private TextView balanceUSD;
     private ImageView progressCat;
@@ -74,7 +82,8 @@ public class WalletActivity extends BaseActivity {
 
         homeButton = findViewById(R.id.homeButton);
         title = findViewById(R.id.title);
-        balanceLabel = findViewById(R.id.balance_label_id);
+        balanceLabel = findViewById(R.id.balanceText);
+        currency = findViewById(R.id.currency);
         addressToSendEditor = findViewById(R.id.address_to_send_id);
         walletAddress = findViewById(R.id.wallet_address_id);
         copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
@@ -130,8 +139,21 @@ public class WalletActivity extends BaseActivity {
                 builder.show();
             };
 
+            balanceLabel.setText(getResources().getString(R.string.balanceText));
+            String currency = getString(R.string.currency);
+            String link = getString(R.string.wavesProductsWalletLink);
+            SpannableStringBuilder currencySpan = new SpannableStringBuilder(currency);
+            currencySpan.setSpan(new ForegroundColorSpan(getColor(R.color.primary)), 0, currency.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            balanceLabel.setText(String.format(getResources().getString(R.string.balance), getString(R.string.currency)));
+            currencySpan.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(View widget) {
+                    startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(link)));
+                }
+            }, 0, currencySpan.length(), 0);
+
+            this.currency.setMovementMethod(LinkMovementMethod.getInstance());
+            this.currency.setText(currencySpan, TextView.BufferType.SPANNABLE);
             walletAddress.setOnClickListener(addressToClipboardListener);
             copyToClipboard.setOnClickListener(addressToClipboardListener);
             sendButton.setOnClickListener(sendButtonOnClickListener);
@@ -266,5 +288,6 @@ public class WalletActivity extends BaseActivity {
         findViewById(R.id.send_button_id).setEnabled(enable);
         findViewById(R.id.address_to_send_id).setEnabled(enable);
     }
+
 
 }

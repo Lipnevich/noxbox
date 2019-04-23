@@ -47,18 +47,33 @@
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
-        <TextView
-            android:id="@+id/balance_label_id"
+        <LinearLayout
+            android:id="@+id/balanceTextLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/yourBalance"
-            android:textSize="24sp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <TextView
+                android:id="@+id/balanceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/yourBalance"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textSize="24sp" />
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/balance"
@@ -73,7 +88,7 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/balance_label_id" />
+            app:layout_constraintTop_toBottomOf="@+id/balanceTextLayout" />
 
         <TextView
             android:id="@+id/balanceUSD"
@@ -102,7 +117,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/balance_label_id" />
+            app:layout_constraintTop_toBottomOf="@+id/balanceTextLayout" />
 
         <TextView
             android:id="@+id/wallet_address_title"
@@ -198,5 +213,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/copy_to_clipboard_id"
             app:layout_constraintVertical_weight="0.3" />
+
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

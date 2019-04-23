@@ -306,5 +306,10 @@
     <string name="shareVia">Share via</string>
     <string name="likeTheService">I liked the service</string>
     <string name="connect">connect</string>
+    <string name="balanceText">Balance</string>
+    <string name="wavesProductsWalletLink">https://wavesplatform.com/products-wallet</string>
+    <string name="freeChat">Free chat</string>
+    <string name="buildRoute">Build route</string>
+    <string name="verifyAppiarance">Confirm appearance of another member</string>
 
 </resources>

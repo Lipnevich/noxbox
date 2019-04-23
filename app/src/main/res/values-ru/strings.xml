@@ -307,6 +307,11 @@
     <string name="shareVia">Отправить по</string>
     <string name="likeTheService">Мне понравилась услуга</string>
     <string name="connect">подключайтесь</string>
+    <string name="balanceText">Баланс</string>
+    <string name="wavesProductsWalletLink">https://wavesplatform.com/products-wallet</string>
+    <string name="freeChat">Бесплатный чат</string>
+    <string name="buildRoute">Построить маршрут</string>
+    <string name="verifyAppiarance">Подтвердите внешность другого участника</string>
 
 
 </resources>
