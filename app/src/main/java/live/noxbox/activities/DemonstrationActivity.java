@@ -16,10 +16,11 @@ import live.noxbox.tools.Router;
 import live.noxbox.ui.ArrowView;
 import live.noxbox.ui.RoleSwitcherLayout;
 
+import static live.noxbox.activities.contract.NoxboxTypeListAdapter.MAP_CODE;
 import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.states.AvailableNoxboxes.createCommonFragmentOfNoxboxTypeList;
 import static live.noxbox.states.AvailableNoxboxes.createContract;
-import static live.noxbox.states.AvailableNoxboxes.createNoxboxTypeListFragmentInTheMap;
 import static live.noxbox.states.AvailableNoxboxes.updateDeviceLocation;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.PlayMarketManager.openApplicationMarketPage;
@@ -69,13 +70,13 @@ public class DemonstrationActivity extends HackerActivity {
             findViewById(R.id.menuAvailableDemonstration).setOnClickListener(v -> {
                 onScreenClick(AVAILABLE_DEMONSTRATION_KEY);
                 if (isProfileReady()) {
-                    openNavigation(profile(),activity);
+                    openNavigation(profile(), activity);
                 }
             });
             findViewById(R.id.filtersAvailableDemonstration).setOnClickListener(v -> {
                 onScreenClick(AVAILABLE_DEMONSTRATION_KEY);
                 if (isProfileReady()) {
-                    createNoxboxTypeListFragmentInTheMap(activity);
+                    createCommonFragmentOfNoxboxTypeList(activity, MAP_CODE);
                 }
             });
             findViewById(R.id.locationAvailableDemonstration).setOnClickListener(v -> {

@@ -10,17 +10,26 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import live.noxbox.Constants;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.contract.ContractActivity;
-import live.noxbox.activities.contract.NoxboxTypeListFragment;
+import live.noxbox.activities.contract.NoxboxTypeListAdapter;
 import live.noxbox.cluster.ClusterManager;
 import live.noxbox.database.AppCache;
+import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.services.AvailableNoxboxesService;
@@ -30,9 +39,11 @@ import live.noxbox.tools.Task;
 import live.noxbox.tools.location.LocationUpdater;
 import live.noxbox.ui.RoleSwitcherLayout;
 
-import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
+import static live.noxbox.activities.contract.NoxboxTypeListAdapter.MAP_CODE;
 import static live.noxbox.database.AppCache.availableNoxboxes;
+import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.isProfileReady;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.GeoRealtime.startListenAvailableNoxboxes;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.MapOperator.getCameraPosition;
@@ -102,7 +113,7 @@ public class AvailableNoxboxes implements State {
         });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
-            createNoxboxTypeListFragmentInTheMap(activity);
+            createCommonFragmentOfNoxboxTypeList(activity, MAP_CODE);
         });
 
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {
@@ -168,7 +179,7 @@ public class AvailableNoxboxes implements State {
         googleMap.setOnCameraIdleListener(() -> {
         });
         googleMap.setOnMarkerClickListener(marker -> true);
-        if(noxboxTypeListFragment != null){
+        if (noxboxTypeListFragment != null) {
             noxboxTypeListFragment.dismiss();
             noxboxTypeListFragment = null;
         }
@@ -220,14 +231,43 @@ public class AvailableNoxboxes implements State {
         getDeviceLocation(profile, googleMap, activity);
     }
 
-    public static void createNoxboxTypeListFragmentInTheMap(FragmentActivity activity) {
-        if (noxboxTypeListFragment == null || !noxboxTypeListFragment.isVisible()) {
-            noxboxTypeListFragment = new NoxboxTypeListFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("key", MAP_CODE);
-            noxboxTypeListFragment.setArguments(bundle);
-            noxboxTypeListFragment.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+    public static void createCommonFragmentOfNoxboxTypeList(FragmentActivity activity, int key) {
+        activity.findViewById(R.id.noxboxTypeListLayout).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.noxboxTypeListLayout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.findViewById(R.id.noxboxTypeListLayout).setVisibility(View.GONE);
+            }
+        });
+
+        if (key == MAP_CODE) {
+            activity.findViewById(R.id.itemLayout).setVisibility(View.VISIBLE);
+            ((ImageView) activity.findViewById(R.id.itemLayout).findViewById(R.id.noxboxTypeImage)).setImageResource(R.drawable.noxbox);
+            ((TextView) activity.findViewById(R.id.itemLayout).findViewById(R.id.noxboxTypeName)).setText(R.string.showAll);
+            activity.findViewById(R.id.itemLayout).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    executeAllInTheMap(activity);
+                }
+            });
+        } else {
+            activity.findViewById(R.id.itemLayout).setVisibility(View.GONE);
         }
+
+        List<NoxboxType> noxboxTypes = new ArrayList<>(Arrays.asList(NoxboxType.values()));
+        RecyclerView noxboxTypeList = activity.findViewById(R.id.listOfServices);
+        noxboxTypeList.setHasFixedSize(true);
+        noxboxTypeList.setLayoutManager(new LinearLayoutManager(activity.getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        noxboxTypeList.setAdapter(new NoxboxTypeListAdapter(noxboxTypes, activity, key));
+
+    }
+
+    private static void executeAllInTheMap(Activity activity) {
+        for (NoxboxType type : NoxboxType.values()) {
+            profile().getFilters().getTypes().put(type.name(), true);
+        }
+        activity.findViewById(R.id.noxboxTypeListLayout).setVisibility(View.GONE);
+        executeUITasks();
     }
 }
 

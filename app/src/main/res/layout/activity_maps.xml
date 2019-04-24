@@ -585,6 +585,7 @@
 
     </RelativeLayout>
 
+    <include layout="@layout/dialog_fragment_noxbox_type_list" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"

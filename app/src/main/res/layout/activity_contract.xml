@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary"
+        android:layout_alignParentTop="true"
         android:elevation="4dp"
         app:contentInsetStart="0dp">
 
@@ -45,6 +45,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
         <LinearLayout
@@ -231,9 +232,9 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
                             android:layout_marginStart="2dp"
-                            android:layout_marginEnd="2dp">
+                            android:layout_marginEnd="2dp"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/or"
@@ -284,48 +285,48 @@
                         </LinearLayout>
 
                         <!--<TextView-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_margin="2dp"-->
-                            <!--android:gravity="center_vertical"-->
-                            <!--android:text="@string/serviceDeliveryTime"-->
-                            <!--android:textSize="18sp" />-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_margin="2dp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/serviceDeliveryTime"-->
+                        <!--android:textSize="18sp" />-->
 
                         <!--<LinearLayout-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:layout_margin="2dp"-->
-                            <!--android:orientation="horizontal">-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_margin="2dp"-->
+                        <!--android:orientation="horizontal">-->
 
-                            <!--<TextView-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:text="@string/from"-->
-                                <!--android:textSize="18sp" />-->
+                        <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="@string/from"-->
+                        <!--android:textSize="18sp" />-->
 
-                            <!--<Spinner-->
-                                <!--android:id="@+id/timeFromView"-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:layout_marginStart="10dp"-->
-                                <!--android:backgroundTint="@color/primary"-->
-                                <!--android:dropDownWidth="72dp"-->
-                                <!--android:overlapAnchor="false" />-->
+                        <!--<Spinner-->
+                        <!--android:id="@+id/timeFromView"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginStart="10dp"-->
+                        <!--android:backgroundTint="@color/primary"-->
+                        <!--android:dropDownWidth="72dp"-->
+                        <!--android:overlapAnchor="false" />-->
 
-                            <!--<TextView-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:text="@string/to"-->
-                                <!--android:textSize="18sp" />-->
+                        <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="@string/to"-->
+                        <!--android:textSize="18sp" />-->
 
-                            <!--<Spinner-->
-                                <!--android:id="@+id/timeToView"-->
-                                <!--android:layout_width="wrap_content"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:layout_marginStart="10dp"-->
-                                <!--android:backgroundTint="@color/primary"-->
-                                <!--android:dropDownWidth="72dp"-->
-                                <!--android:overlapAnchor="false" />-->
+                        <!--<Spinner-->
+                        <!--android:id="@+id/timeToView"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginStart="10dp"-->
+                        <!--android:backgroundTint="@color/primary"-->
+                        <!--android:dropDownWidth="72dp"-->
+                        <!--android:overlapAnchor="false" />-->
                         <!--</LinearLayout>-->
 
 
@@ -424,8 +425,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="12dp"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -446,4 +447,6 @@
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <include layout="@layout/dialog_fragment_noxbox_type_list" />
+</RelativeLayout>

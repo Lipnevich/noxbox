@@ -36,7 +36,6 @@ import java.util.Map;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
-import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.activities.contract.TravelModeListFragment;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.NotificationType;
@@ -44,12 +43,13 @@ import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 import live.noxbox.notifications.factory.NotificationFactory;
+import live.noxbox.states.AvailableNoxboxes;
 import live.noxbox.tools.FacePartsDetection;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.CAMERA_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.REQUEST_IMAGE_CAPTURE;
-import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
+import static live.noxbox.activities.contract.NoxboxTypeListAdapter.PROFILE_CODE;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.tools.ImageManager.createCircleImageFromBitmap;
 import static live.noxbox.tools.ImageManager.createCircleProfilePhotoFromUrl;
@@ -294,11 +294,7 @@ public class ProfileActivity extends BaseActivity {
 
         addPortfolio.setVisibility(View.VISIBLE);
         addPortfolio.setOnClickListener(v -> {
-            DialogFragment dialog = new NoxboxTypeListFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("key", PROFILE_CODE);
-            dialog.setArguments(bundle);
-            dialog.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+            AvailableNoxboxes.createCommonFragmentOfNoxboxTypeList(ProfileActivity.this, PROFILE_CODE);
         });
     }
 

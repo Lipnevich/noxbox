@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false">
+
+    <include layout="@layout/dialog_fragment_noxbox_type_list" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,10 +91,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:background="@color/fui_transparent"
-                        android:scaleType="fitCenter"
                         android:layout_marginTop="-16dp"
+                        android:background="@color/fui_transparent"
                         android:padding="16dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/edit"
                         android:tint="@color/secondary" />
 
@@ -101,10 +103,10 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_below="@+id/editPhoto"
-                        android:background="@color/fui_transparent"
-                        android:scaleType="fitCenter"
                         android:layout_alignParentEnd="true"
+                        android:background="@color/fui_transparent"
                         android:padding="16dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/photo_camera"
                         android:tint="@color/secondary" />
 
@@ -117,10 +119,4 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/expandedImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="invisible" />
-
-</FrameLayout>
+</RelativeLayout>

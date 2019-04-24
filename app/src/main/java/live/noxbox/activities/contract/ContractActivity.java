@@ -57,7 +57,7 @@ import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_PUBLISH;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_ON_UPDATE;
 import static live.noxbox.Constants.MINIMUM_PRICE;
-import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
+import static live.noxbox.activities.contract.NoxboxTypeListAdapter.CONTRACT_CODE;
 import static live.noxbox.activities.detailed.CoordinateActivity.COORDINATE;
 import static live.noxbox.activities.detailed.CoordinateActivity.LAT;
 import static live.noxbox.activities.detailed.CoordinateActivity.LNG;
@@ -73,6 +73,7 @@ import static live.noxbox.database.Firestore.isFinished;
 import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
+import static live.noxbox.states.AvailableNoxboxes.createCommonFragmentOfNoxboxTypeList;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
@@ -378,13 +379,7 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void startNoxboxTypeDialog() {
-        if (noxboxTypeListFragment == null || !noxboxTypeListFragment.isVisible()) {
-            noxboxTypeListFragment = new NoxboxTypeListFragment();
-            Bundle bundle = new Bundle();
-            bundle.putInt("key", CONTRACT_CODE);
-            noxboxTypeListFragment.setArguments(bundle);
-            noxboxTypeListFragment.show(getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
-        }
+        createCommonFragmentOfNoxboxTypeList(this, CONTRACT_CODE);
     }
 
     private void startTravelModeDialog() {

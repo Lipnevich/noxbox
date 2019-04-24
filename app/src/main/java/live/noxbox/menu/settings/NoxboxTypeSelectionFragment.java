@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import live.noxbox.R;
-import live.noxbox.activities.contract.NoxboxTypeListFragment;
 import live.noxbox.model.NoxboxType;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
@@ -20,7 +19,7 @@ import static live.noxbox.database.AppCache.profile;
 
 public class NoxboxTypeSelectionFragment extends DialogFragment {
     public static final int SETTINGS_CODE = 1013;
-    public static final String TAG = NoxboxTypeListFragment.class.getName();
+    public static final String TAG = NoxboxTypeSelectionFragment.class.getName();
 
     private boolean initiated = false;
 

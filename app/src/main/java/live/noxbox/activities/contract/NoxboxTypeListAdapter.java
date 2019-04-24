@@ -2,7 +2,6 @@ package live.noxbox.activities.contract;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,25 +16,22 @@ import live.noxbox.R;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Portfolio;
 
-import static live.noxbox.activities.contract.NoxboxTypeListFragment.CONTRACT_CODE;
-import static live.noxbox.activities.contract.NoxboxTypeListFragment.MAP_CODE;
-import static live.noxbox.activities.contract.NoxboxTypeListFragment.PROFILE_CODE;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.GeoRealtime.stopListenAvailableNoxboxes;
 import static live.noxbox.tools.PlayMarketManager.openApplicationMarketPage;
 
 public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAdapter.ViewHolder> {
-
+    public static final int MAP_CODE = 1010;
+    public static final int CONTRACT_CODE = 1011;
+    public static final int PROFILE_CODE = 1012;
     private List<NoxboxType> noxboxTypes;
     private Activity activity;
-    private DialogFragment rootFragment;
     private int key;
 
-    public NoxboxTypeListAdapter(List<NoxboxType> noxboxTypes, Activity activity, DialogFragment rootFragment, int key) {
+    public NoxboxTypeListAdapter(List<NoxboxType> noxboxTypes, Activity activity, int key) {
         this.noxboxTypes = noxboxTypes;
         this.activity = activity;
-        this.rootFragment = rootFragment;
         this.key = key;
     }
 
@@ -106,7 +102,7 @@ public class NoxboxTypeListAdapter extends RecyclerView.Adapter<NoxboxTypeListAd
        // availableNoxboxes.clear();
         stopListenAvailableNoxboxes();
         executeUITasks();
-        rootFragment.dismiss();
+        activity.findViewById(R.id.noxboxTypeListLayout).setVisibility(View.GONE);
     }
 
     private void executeInTheMap(int position) {
