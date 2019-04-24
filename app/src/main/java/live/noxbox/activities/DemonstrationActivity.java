@@ -373,6 +373,7 @@ public class DemonstrationActivity extends HackerActivity {
 
     protected void showRequestUpdate() {
         findViewById(R.id.requestUpdateLayout).setVisibility(View.VISIBLE);
+        findViewById(R.id.requestUpdateLayout).setOnClickListener(none -> {});
 
         findViewById(R.id.updateApp).setOnClickListener(v -> openApplicationMarketPage(DemonstrationActivity.this));
     }
