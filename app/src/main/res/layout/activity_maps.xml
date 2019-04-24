@@ -549,6 +549,42 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/requestUpdateLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#BA000000"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/requestUpdateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/updateApp"
+            android:layout_centerHorizontal="true"
+            android:text="@string/newVersionAvailable"
+            android:textColor="@color/secondary"
+            android:layout_marginBottom="24dp"
+            android:textSize="@dimen/big" />
+
+        <Button
+            android:id="@+id/updateApp"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/button_corner"
+            android:elevation="@dimen/global_elevation"
+            android:gravity="center"
+            android:minWidth="64dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/update"
+            android:textColor="@color/secondary"
+            android:textSize="14sp"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"

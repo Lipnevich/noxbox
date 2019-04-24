@@ -33,6 +33,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
+import java.util.Collections;
 
 import io.fabric.sdk.android.Fabric;
 import live.noxbox.activities.AuthActivity;
@@ -78,6 +82,7 @@ import static live.noxbox.tools.location.LocationUpdater.REQUEST_CHECK_LOCATION_
 public class MapActivity extends DemonstrationActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks {
+    private static FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
@@ -94,9 +99,6 @@ public class MapActivity extends DemonstrationActivity implements
         // WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         super.onCreate(savedInstanceState);
         initCrashReporting();
-        // TODO check referrer after play market update and remove dependencies in case it works
-//        parseLink(getIntent(), MapActivity.this);
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || isFirstRun(false)) {
             Router.startActivity(this, AuthActivity.class);
@@ -104,8 +106,9 @@ public class MapActivity extends DemonstrationActivity implements
             return;
         }
 
-        AppCache.profile().init(user);
+        fetchConfig();
 
+        AppCache.profile().init(user);
 
         Crashlytics.setUserIdentifier(user.getUid());
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid()).addOnFailureListener(e -> Crashlytics.log(Log.ERROR, "failToSubscribeOnProfile", user.getUid()));
@@ -192,6 +195,26 @@ public class MapActivity extends DemonstrationActivity implements
         if (currentState instanceof Performing) {
             draw();
         }
+    }
+
+    private void fetchConfig() {
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .setMinimumFetchIntervalInSeconds(5)
+                .build();
+        mFirebaseRemoteConfig.setConfigSettings(configSettings);
+        mFirebaseRemoteConfig.setDefaults(Collections.singletonMap("minAllowedVersion", BuildConfig.VERSION_CODE));
+        mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                Long minAllowedVersion = mFirebaseRemoteConfig.getLong("minAllowedVersion");
+                if (minAllowedVersion > BuildConfig.VERSION_CODE) {
+                    showRequestUpdate();
+                }
+            }
+        });
+
+
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {

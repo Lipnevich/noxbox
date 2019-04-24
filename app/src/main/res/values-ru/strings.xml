@@ -312,6 +312,7 @@
     <string name="freeChat">Бесплатный чат</string>
     <string name="buildRoute">Построить маршрут</string>
     <string name="verifyAppiarance">Подтвердите внешность другого участника</string>
+    <string name="newVersionAvailable">Новая версия доступна</string>
 
 
 </resources>

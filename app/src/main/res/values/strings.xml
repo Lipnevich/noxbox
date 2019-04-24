@@ -311,5 +311,6 @@
     <string name="freeChat">Free chat</string>
     <string name="buildRoute">Build route</string>
     <string name="verifyAppiarance">Confirm appearance of another member</string>
+    <string name="newVersionAvailable">New version available</string>
 
 </resources>

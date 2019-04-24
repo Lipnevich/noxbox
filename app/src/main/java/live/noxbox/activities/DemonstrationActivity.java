@@ -13,6 +13,7 @@ import live.noxbox.ui.RoleSwitcherLayout;
 
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
+import static live.noxbox.tools.PlayMarketManager.openApplicationMarketPage;
 import static live.noxbox.ui.ArrowView.BOTTOM_CENTER;
 import static live.noxbox.ui.ArrowView.CENTER_END;
 import static live.noxbox.ui.ArrowView.CENTER_START;
@@ -321,5 +322,12 @@ public class DemonstrationActivity extends HackerActivity {
                 arrowVerificationDemonstration.invalidate(CENTER_END, CENTER_START);
             }
         }
+    }
+
+
+    protected void showRequestUpdate() {
+        findViewById(R.id.requestUpdateLayout).setVisibility(View.VISIBLE);
+
+        findViewById(R.id.updateApp).setOnClickListener(v -> openApplicationMarketPage(DemonstrationActivity.this));
     }
 }
