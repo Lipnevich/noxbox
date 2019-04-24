@@ -17,8 +17,6 @@ import android.text.style.ClickableSpan;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,7 +44,6 @@ import live.noxbox.cluster.NoxboxMarker;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
-import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
@@ -196,7 +193,7 @@ public class ContractActivity extends BaseActivity {
         drawTravelMode(profile());
         drawHost(profile());
         drawAddress();
-        drawTimeSwitch();
+        //drawTimeSwitch();
         drawCommentView();
         drawButtons(profile());
     }
@@ -442,39 +439,39 @@ public class ContractActivity extends BaseActivity {
     }
 
     private void drawTimeSwitch() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(ContractActivity.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        Spinner timeSelectFrom = findViewById(R.id.timeFromView);
-        timeSelectFrom.setAdapter(adapter);
-        timeSelectFrom.setSelection(contract().getWorkSchedule().getStartTime().getId());
-        setHeightForDropdownList(timeSelectFrom);
-        timeSelectFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                contract().getWorkSchedule().setStartTime(NoxboxTime.byId(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-
-        Spinner timeSelectTo = findViewById(R.id.timeToView);
-        timeSelectTo.setAdapter(adapter);
-        timeSelectTo.setSelection(contract().getWorkSchedule().getEndTime().getId());
-        setHeightForDropdownList(timeSelectTo);
-        timeSelectTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                contract().getWorkSchedule().setEndTime(NoxboxTime.byId(position));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(ContractActivity.this, R.layout.item_noxbox_time, NoxboxTime.getAllAsString());
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        Spinner timeSelectFrom = findViewById(R.id.timeFromView);
+//        timeSelectFrom.setAdapter(adapter);
+//        timeSelectFrom.setSelection(contract().getWorkSchedule().getStartTime().getId());
+//        setHeightForDropdownList(timeSelectFrom);
+//        timeSelectFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                contract().getWorkSchedule().setStartTime(NoxboxTime.byId(position));
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
+//
+//
+//        Spinner timeSelectTo = findViewById(R.id.timeToView);
+//        timeSelectTo.setAdapter(adapter);
+//        timeSelectTo.setSelection(contract().getWorkSchedule().getEndTime().getId());
+//        setHeightForDropdownList(timeSelectTo);
+//        timeSelectTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                contract().getWorkSchedule().setEndTime(NoxboxTime.byId(position));
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
     }
 
     private void drawCommentView() {

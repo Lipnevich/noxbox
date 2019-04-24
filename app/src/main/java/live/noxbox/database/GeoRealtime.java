@@ -21,7 +21,6 @@ import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.cluster.ClusterItemsActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
-import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.Position;
 import live.noxbox.model.Rating;
@@ -81,8 +80,9 @@ public class GeoRealtime {
                 + delimiter + allowNovices
                 + delimiter + ownerRating.getReceivedLikes()
                 + delimiter + ownerRating.getReceivedDislikes()
-                + delimiter + currentNoxbox.getWorkSchedule().getStartTime().name()
-                + delimiter + currentNoxbox.getWorkSchedule().getEndTime().name();
+                //+ delimiter + currentNoxbox.getWorkSchedule().getStartTime().name()
+                //+ delimiter + currentNoxbox.getWorkSchedule().getEndTime().name()
+        ;
     }
 
     private static Noxbox parseKey(String key) {
@@ -110,8 +110,8 @@ public class GeoRealtime {
                     noxbox.getOwner().getRatings().getDemandsRating().put(noxbox.getType().name(), rating);
                 }
 
-                noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));
-                noxbox.getWorkSchedule().setEndTime(NoxboxTime.valueOf(values[index++]));
+                //noxbox.getWorkSchedule().setStartTime(NoxboxTime.valueOf(values[index++]));
+                //noxbox.getWorkSchedule().setEndTime(NoxboxTime.valueOf(values[index++]));
                 noxbox.setTimeCreated(1l);
 
                 return noxbox;

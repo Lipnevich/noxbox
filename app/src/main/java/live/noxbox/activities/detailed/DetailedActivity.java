@@ -53,7 +53,6 @@ import live.noxbox.model.Rating;
 import live.noxbox.states.Accepting;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
-import live.noxbox.tools.DateTimeFormatter;
 import live.noxbox.tools.GyroscopeObserver;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.MoneyFormatter;
@@ -116,8 +115,8 @@ public class DetailedActivity extends BaseActivity {
     private ImageView travelTypeImageTitle;
     private ImageView travelTypeImage;
     private TextView address;
-    private TextView offerTime;
-    private TextView time;
+    //private TextView offerTime;
+    //private TextView time;
     private TextView travelTypeTitle;
     private TextView travelModeText;
     private LinearLayout coordinatesSelect;
@@ -177,8 +176,8 @@ public class DetailedActivity extends BaseActivity {
         travelTypeImageTitle = findViewById(R.id.travelTypeImageTitle);
         travelTypeImage = findViewById(R.id.travelTypeImage);
         address = findViewById(R.id.address);
-        offerTime = findViewById(R.id.offerTime);
-        time = findViewById(R.id.time);
+        //offerTime = findViewById(R.id.offerTime);
+        //time = findViewById(R.id.time);
         travelTypeTitle = findViewById(R.id.travelTypeTitle);
         travelModeText = findViewById(R.id.travelModeText);
         coordinatesSelect = findViewById(R.id.coordinatesSelect);
@@ -437,10 +436,10 @@ public class DetailedActivity extends BaseActivity {
 
         }
 
-        String displayTime = DateTimeFormatter.format(viewed.getWorkSchedule().getStartTime().getHourOfDay(), viewed.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
-                DateTimeFormatter.format(viewed.getWorkSchedule().getEndTime().getHourOfDay(), viewed.getWorkSchedule().getEndTime().getMinuteOfHour());
-        offerTime.setText(R.string.validityOfTheOffer);
-        time.setText(displayTime);
+//        String displayTime = DateTimeFormatter.format(viewed.getWorkSchedule().getStartTime().getHourOfDay(), viewed.getWorkSchedule().getStartTime().getMinuteOfHour()) + " - " +
+//                DateTimeFormatter.format(viewed.getWorkSchedule().getEndTime().getHourOfDay(), viewed.getWorkSchedule().getEndTime().getMinuteOfHour());
+        //offerTime.setText(R.string.validityOfTheOffer);
+        //time.setText(displayTime);
     }
 
     private void drawPrice(Profile profile) {

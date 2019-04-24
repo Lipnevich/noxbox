@@ -16,7 +16,6 @@ import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
 import live.noxbox.model.TravelMode;
-import live.noxbox.model.WorkSchedule;
 
 public class NoxboxExamples {
 
@@ -61,7 +60,7 @@ public class NoxboxExamples {
             owner.setPosition(new Position(
                     position.getLatitude() + ThreadLocalRandom.current().nextDouble(-delta, delta),
                     position.getLongitude() + ThreadLocalRandom.current().nextDouble(-delta, delta)));
-            noxbox.setWorkSchedule(new WorkSchedule());
+            //noxbox.setWorkSchedule(new WorkSchedule());
 
             if (noxbox.getRole() == MarketRole.supply) {
                 List<String> certificatesList = new ArrayList<>();
