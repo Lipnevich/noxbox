@@ -1,5 +1,6 @@
 package live.noxbox.states;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -43,7 +45,7 @@ import static live.noxbox.tools.location.LocationUpdater.KEY_REQUESTING_LOCATION
 
 public class AvailableNoxboxes implements State {
 
-    private GoogleMap googleMap;
+    private static GoogleMap googleMap;
     private MapActivity activity;
     private Profile profile = AppCache.profile();
 
@@ -55,7 +57,7 @@ public class AvailableNoxboxes implements State {
     private static boolean serviceIsBound = false;
 
     public static volatile int clusterRenderingFrequency = 400;
-    private DialogFragment noxboxTypeListFragment;
+    private static DialogFragment noxboxTypeListFragment;
 
     private LocationUpdater locationUpdater;
 
@@ -70,7 +72,7 @@ public class AvailableNoxboxes implements State {
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
-        this.googleMap = googleMap;
+        AvailableNoxboxes.googleMap = googleMap;
         this.activity = activity;
         if (locationUpdater == null && isLocationPermissionGranted(activity)) {
             locationUpdater = new LocationUpdater(activity);
@@ -96,25 +98,15 @@ public class AvailableNoxboxes implements State {
                 .findViewById(R.id.roleSwitcherLayout)).refresh();
 
         activity.findViewById(R.id.locationButton).setOnClickListener(v -> {
-            startLocationPermissionRequest(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
-            getDeviceLocation(profile, googleMap, activity);
+            updateDeviceLocation(profile, activity);
         });
 
         activity.findViewById(R.id.filter).setOnClickListener(v -> {
-            if (noxboxTypeListFragment == null || !noxboxTypeListFragment.isVisible()) {
-                noxboxTypeListFragment = new NoxboxTypeListFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt("key", MAP_CODE);
-                noxboxTypeListFragment.setArguments(bundle);
-                noxboxTypeListFragment.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
-            }
+            createNoxboxTypeListFragmentInTheMap(activity);
         });
 
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {
-            profile.setNoxboxId("");
-
-            profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo(profile.getCurrent().getRole(), profile.getCurrent().getType()));
-            startActivity(activity, ContractActivity.class);
+            createContract(profile, activity);
         });
 
         if (!serviceIsBound) {
@@ -153,7 +145,6 @@ public class AvailableNoxboxes implements State {
             locationUpdater.stopLocationUpdates();
             locationUpdater = null;
         }
-        //service clear
         if (serviceIsBound) {
             stopHandler();
             mConnection.onServiceDisconnected(new ComponentName(activity.getApplicationContext().getPackageName(), AvailableNoxboxes.class.getName()));
@@ -173,11 +164,14 @@ public class AvailableNoxboxes implements State {
         clusterManager = null;
 
 
-        //map clear
         googleMap.clear();
         googleMap.setOnCameraIdleListener(() -> {
         });
         googleMap.setOnMarkerClickListener(marker -> true);
+        if(noxboxTypeListFragment != null){
+            noxboxTypeListFragment.dismiss();
+            noxboxTypeListFragment = null;
+        }
         activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);
         activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         activity.findViewById(R.id.filter).setVisibility(View.GONE);
@@ -209,6 +203,31 @@ public class AvailableNoxboxes implements State {
 
     public StatesDecorator getDecorator() {
         return decorator;
+    }
+
+    public static void createContract(Profile profile, Activity activity) {
+        if (googleMap == null) return;
+
+        profile.setNoxboxId("");
+
+        profile.getCurrent().create(Position.from(googleMap.getCameraPosition().target), profile.publicInfo(profile.getCurrent().getRole(), profile.getCurrent().getType()));
+        startActivity(activity, ContractActivity.class);
+    }
+
+    public static void updateDeviceLocation(Profile profile, Activity activity) {
+        if (googleMap == null) return;
+        startLocationPermissionRequest(activity, Constants.LOCATION_PERMISSION_REQUEST_CODE);
+        getDeviceLocation(profile, googleMap, activity);
+    }
+
+    public static void createNoxboxTypeListFragmentInTheMap(FragmentActivity activity) {
+        if (noxboxTypeListFragment == null || !noxboxTypeListFragment.isVisible()) {
+            noxboxTypeListFragment = new NoxboxTypeListFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt("key", MAP_CODE);
+            noxboxTypeListFragment.setArguments(bundle);
+            noxboxTypeListFragment.show((activity).getSupportFragmentManager(), NoxboxTypeListFragment.TAG);
+        }
     }
 }
 

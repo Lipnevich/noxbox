@@ -1,17 +1,26 @@
 package live.noxbox.activities;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import live.noxbox.R;
+import live.noxbox.database.AppCache;
 import live.noxbox.debug.HackerActivity;
+import live.noxbox.tools.NavigatorManager;
+import live.noxbox.tools.Router;
 import live.noxbox.ui.ArrowView;
 import live.noxbox.ui.RoleSwitcherLayout;
 
+import static live.noxbox.database.AppCache.isProfileReady;
 import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.states.AvailableNoxboxes.createContract;
+import static live.noxbox.states.AvailableNoxboxes.createNoxboxTypeListFragmentInTheMap;
+import static live.noxbox.states.AvailableNoxboxes.updateDeviceLocation;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.PlayMarketManager.openApplicationMarketPage;
 import static live.noxbox.ui.ArrowView.BOTTOM_CENTER;
@@ -53,13 +62,35 @@ public class DemonstrationActivity extends HackerActivity {
 
     protected void showAvailableDemonstration() {
         if (wasDemonstrationShowed(AVAILABLE_DEMONSTRATION_KEY)) {
+            FragmentActivity activity = this;
             demonstration = findViewById(R.id.demonstrationAvailable);
             demonstration.setVisibility(View.VISIBLE);
             demonstration.setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
-            findViewById(R.id.menuAvailableDemonstration).setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
-            findViewById(R.id.filtersAvailableDemonstration).setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
-            findViewById(R.id.locationAvailableDemonstration).setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
-            findViewById(R.id.contractAvailableDemonstration).setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
+            findViewById(R.id.menuAvailableDemonstration).setOnClickListener(v -> {
+                onScreenClick(AVAILABLE_DEMONSTRATION_KEY);
+                if (isProfileReady()) {
+                    openNavigation(profile(),activity);
+                }
+            });
+            findViewById(R.id.filtersAvailableDemonstration).setOnClickListener(v -> {
+                onScreenClick(AVAILABLE_DEMONSTRATION_KEY);
+                if (isProfileReady()) {
+                    createNoxboxTypeListFragmentInTheMap(activity);
+                }
+            });
+            findViewById(R.id.locationAvailableDemonstration).setOnClickListener(v -> {
+                onScreenClick(AVAILABLE_DEMONSTRATION_KEY);
+                if (AppCache.isProfileReady()) {
+                    updateDeviceLocation(profile(), activity);
+                }
+            });
+            findViewById(R.id.contractAvailableDemonstration).setOnClickListener(v -> {
+                onScreenClick(AVAILABLE_DEMONSTRATION_KEY);
+                if (AppCache.isProfileReady()) {
+                    createContract(profile(), activity);
+                }
+
+            });
             findViewById(R.id.arrowMenuAvailableDemonstration).setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
             findViewById(R.id.arrowFiltersAvailableDemonstration).setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
             findViewById(R.id.arrowLocationAvailableDemonstration).setOnClickListener(v -> onScreenClick(AVAILABLE_DEMONSTRATION_KEY));
@@ -238,10 +269,24 @@ public class DemonstrationActivity extends HackerActivity {
         if (wasDemonstrationShowed(MOVING_DEMONSTRATION_KEY)) {
             demonstration = findViewById(R.id.demonstrationMoving);
             demonstration.setVisibility(View.VISIBLE);
+            Activity activity = DemonstrationActivity.this;
             demonstration.setOnClickListener(v -> onScreenClick(MOVING_DEMONSTRATION_KEY));
-            findViewById(R.id.chatMovingDemonstration).setOnClickListener(v -> onScreenClick(MOVING_DEMONSTRATION_KEY));
-            findViewById(R.id.navigatorMovingDemonstration).setOnClickListener(v -> onScreenClick(MOVING_DEMONSTRATION_KEY));
-            findViewById(R.id.verificationMovingDemonstration).setOnClickListener(v -> onScreenClick(MOVING_DEMONSTRATION_KEY));
+            findViewById(R.id.chatMovingDemonstration).setOnClickListener(v -> {
+                onScreenClick(MOVING_DEMONSTRATION_KEY);
+                Router.startActivity(activity, ChatActivity.class);
+            });
+            findViewById(R.id.navigatorMovingDemonstration).setOnClickListener(v -> {
+                onScreenClick(MOVING_DEMONSTRATION_KEY);
+                NavigatorManager.openNavigator(activity, profile());
+            });
+            findViewById(R.id.navigationImageMovingDemonstration).setOnClickListener(v -> {
+                onScreenClick(MOVING_DEMONSTRATION_KEY);
+                NavigatorManager.openNavigator(activity, profile());
+            });
+            findViewById(R.id.verificationMovingDemonstration).setOnClickListener(v -> {
+                onScreenClick(MOVING_DEMONSTRATION_KEY);
+                Router.startActivity(activity, ConfirmationActivity.class);
+            });
 
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 RelativeLayout.LayoutParams textChatParams = new RelativeLayout.LayoutParams(-2, -2);

@@ -114,9 +114,14 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         navigationView.setNavigationItemSelectedListener(this);
 
         findViewById(R.id.menu).setOnClickListener(v -> {
-            drawerLayout.openDrawer(GravityCompat.START);
-            initializeNavigationHeader(activity, profile);
+            openNavigation(profile, activity);
         });
+    }
+
+    protected void openNavigation(Profile profile, Activity activity) {
+        if (drawerLayout == null) return;
+        drawerLayout.openDrawer(GravityCompat.START);
+        initializeNavigationHeader(activity, profile);
     }
 
     private Boolean isInitiated = false;
