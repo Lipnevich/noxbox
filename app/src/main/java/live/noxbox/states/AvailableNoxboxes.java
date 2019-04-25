@@ -244,12 +244,7 @@ public class AvailableNoxboxes implements State {
             activity.findViewById(R.id.itemLayout).setVisibility(View.VISIBLE);
             ((ImageView) activity.findViewById(R.id.itemLayout).findViewById(R.id.noxboxTypeImage)).setImageResource(R.drawable.noxbox);
             ((TextView) activity.findViewById(R.id.itemLayout).findViewById(R.id.noxboxTypeName)).setText(R.string.showAll);
-            activity.findViewById(R.id.itemLayout).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    executeAllInTheMap(activity);
-                }
-            });
+            activity.findViewById(R.id.itemLayout).setOnClickListener(v -> executeAllInTheMap(activity));
         } else {
             activity.findViewById(R.id.itemLayout).setVisibility(View.GONE);
         }

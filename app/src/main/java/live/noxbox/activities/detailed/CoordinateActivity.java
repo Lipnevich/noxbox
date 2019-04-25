@@ -33,10 +33,10 @@ import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.tools.Router;
 
-import static live.noxbox.Constants.DEFAULT_ZOOM_LEVEL;
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.initLocationProviderClient;
@@ -112,17 +112,12 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(final GoogleMap readyMap) {
         googleMap = readyMap;
-
+        updateLocation(getApplicationContext(), googleMap);
         setupMap(this, googleMap);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        enterTheMap(googleMap, this);
         getDeviceLocation(profile(), googleMap, CoordinateActivity.this);
-        updateLocation(this, googleMap);
-        if (profile().getViewed().getPosition() != null) {
-            moveCamera(profile().getViewed().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL);
-        } else {
-            moveCamera(profile().getCurrent().getPosition().toLatLng(), DEFAULT_ZOOM_LEVEL);
-        }
 
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         draw();
     }
 
