@@ -21,8 +21,10 @@ import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.model.MarketRole;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxState;
+import live.noxbox.model.NoxboxTime;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
+import live.noxbox.model.WorkSchedule;
 import live.noxbox.tools.LogProperties;
 import live.noxbox.tools.Task;
 import live.noxbox.tools.location.LocationOperator;
@@ -267,6 +269,7 @@ public class AppCache {
         profile.setNoxboxId(getNewNoxboxId());
         profile.getContract().setId(profile.getNoxboxId());
         profile.getContract().setTimeCreated(System.currentTimeMillis());
+        profile().getContract().setWorkSchedule(new WorkSchedule(NoxboxTime._0,NoxboxTime._47));
         if (profile.getContract().getRole() == MarketRole.supply) {
             profile.getContract().getOwner().setPortfolio(profile.getPortfolio());
         } else {

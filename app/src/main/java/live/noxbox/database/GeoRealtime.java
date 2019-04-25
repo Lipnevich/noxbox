@@ -80,8 +80,8 @@ public class GeoRealtime {
                 + delimiter + allowNovices
                 + delimiter + ownerRating.getReceivedLikes()
                 + delimiter + ownerRating.getReceivedDislikes()
-                //+ delimiter + currentNoxbox.getWorkSchedule().getStartTime().name()
-                //+ delimiter + currentNoxbox.getWorkSchedule().getEndTime().name()
+                + delimiter + currentNoxbox.getWorkSchedule().getStartTime().name()
+                + delimiter + currentNoxbox.getWorkSchedule().getEndTime().name()
         ;
     }
 

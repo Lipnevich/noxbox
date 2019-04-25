@@ -45,7 +45,7 @@ public class Noxbox implements Comparable<Noxbox> {
     private String price;
     private NoxboxType type;
     private MarketRole role;
-   // private WorkSchedule workSchedule;
+    private WorkSchedule workSchedule;
     private String contractComment;
 
     // Noxbox specific data
@@ -370,17 +370,17 @@ public class Noxbox implements Comparable<Noxbox> {
         else return party;
     }
 
-//    public WorkSchedule getWorkSchedule() {
-//        if (workSchedule == null) {
-//            workSchedule = new WorkSchedule();
-//        }
-//        return workSchedule;
-//    }
+    public WorkSchedule getWorkSchedule() {
+        if (workSchedule == null) {
+            workSchedule = new WorkSchedule();
+        }
+        return workSchedule;
+    }
 
-//    public Noxbox setWorkSchedule(WorkSchedule workSchedule) {
-//        this.workSchedule = workSchedule;
-//        return this;
-//    }
+    public Noxbox setWorkSchedule(WorkSchedule workSchedule) {
+        this.workSchedule = workSchedule;
+        return this;
+    }
 
     public Long getTimeCreated() {
         return timeCreated;
