@@ -170,7 +170,13 @@ public class Performing implements State {
 
 
         noxboxTypeNameText.setPadding(0, 0, 0, 0);
-        noxboxTypeNameText.setText(profile.getCurrent().getType().getName());
+        switch (profile.getCurrent().getType()) {
+            case nanny:
+                noxboxTypeNameText.setText("");
+                break;
+            default:
+                noxboxTypeNameText.setText(profile.getCurrent().getType().getName());
+        }
         noxboxTypeNameText.setTextColor(textColorInt);
         noxboxTypeNameText.setTextSize(defaultTextSize);
 
