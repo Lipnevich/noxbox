@@ -113,7 +113,7 @@ public class ContractActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contract);
 
-        initializeUiComponents();
+        initializeUi();
 
         checkBalance(profile(), this);
 
@@ -122,7 +122,7 @@ public class ContractActivity extends BaseActivity {
         BusinessActivity.businessEvent(contractOpening);
     }
 
-    private void initializeUiComponents() {
+    private void initializeUi() {
         title = findViewById(R.id.title);
         homeButton = findViewById(R.id.homeButton);
         textProfile = findViewById(R.id.textProfile);

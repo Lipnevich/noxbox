@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -90,19 +91,38 @@ public class AvailableNoxboxes implements State {
             locationUpdater.startLocationUpdates();
         }
 
-
         startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes, null);
         if (clusterManager == null) {
             clusterManager = new ClusterManager(activity, googleMap);
         }
         googleMap.setOnMarkerClickListener(clusterManager.getRenderer());
         googleMap.setOnCameraIdleListener(() -> startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes, null));
+
+        initializeUi(googleMap, activity);
+
+        if (!serviceIsBound) {
+            serviceHandler = new Handler();
+            serviceRunnable = () -> {
+                final Intent intent = new Intent(activity, AvailableNoxboxesService.class);
+                activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            };
+            serviceHandler.post(serviceRunnable);
+        }
+
+
+    }
+
+    @Override
+    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+        activity.hideUi();
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.filter).setVisibility(View.VISIBLE);
         if (isProfileReady()) {
             activity.findViewById(R.id.customFloatingView).setVisibility(View.VISIBLE);
+            ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add
+            );
         }
         activity.findViewById(R.id.switcherLayout).setVisibility(View.VISIBLE);
         ((RoleSwitcherLayout) activity.findViewById(R.id.switcherLayout)
@@ -119,15 +139,6 @@ public class AvailableNoxboxes implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> {
             createContract(profile, activity);
         });
-
-        if (!serviceIsBound) {
-            serviceHandler = new Handler();
-            serviceRunnable = () -> {
-                final Intent intent = new Intent(activity, AvailableNoxboxesService.class);
-                activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            };
-            serviceHandler.post(serviceRunnable);
-        }
 
         if (decorator != null) {
             decorator.draw(googleMap, activity);
@@ -148,9 +159,35 @@ public class AvailableNoxboxes implements State {
 
     @Override
     public void clear() {
+        clearHandlers();
+        clearUi();
+        //stopListenAvailableNoxboxes();
+
+    }
+
+    @Override
+    public void clearUi() {
         if (decorator != null) {
             decorator.clear();
             decorator = null;
+        }
+        activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);
+        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
+        activity.findViewById(R.id.filter).setVisibility(View.GONE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        activity.findViewById(R.id.switcherLayout).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void clearHandlers() {
+        googleMap.clear();
+        googleMap.setOnCameraIdleListener(() -> {
+        });
+        googleMap.setOnMarkerClickListener(marker -> true);
+        if (noxboxTypeListFragment != null) {
+            noxboxTypeListFragment.dismiss();
+            noxboxTypeListFragment = null;
         }
         if (locationUpdater != null) {
             locationUpdater.stopLocationUpdates();
@@ -173,22 +210,6 @@ public class AvailableNoxboxes implements State {
             clusterManager.clear();
         }
         clusterManager = null;
-
-
-        googleMap.clear();
-        googleMap.setOnCameraIdleListener(() -> {
-        });
-        googleMap.setOnMarkerClickListener(marker -> true);
-        if (noxboxTypeListFragment != null) {
-            noxboxTypeListFragment.dismiss();
-            noxboxTypeListFragment = null;
-        }
-        activity.findViewById(R.id.pointerImage).setVisibility(View.GONE);
-        activity.findViewById(R.id.customFloatingView).setVisibility(View.GONE);
-        activity.findViewById(R.id.filter).setVisibility(View.GONE);
-        activity.findViewById(R.id.locationButton).setVisibility(View.GONE);
-        activity.findViewById(R.id.menu).setVisibility(View.GONE);
-        activity.findViewById(R.id.switcherLayout).setVisibility(View.GONE);
         stopListenAvailableNoxboxes();
     }
 

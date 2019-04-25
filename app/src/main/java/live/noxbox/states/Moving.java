@@ -78,7 +78,7 @@ public class Moving implements State {
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
-        this.googleMap = googleMap;
+        Moving.googleMap = googleMap;
         this.activity = activity;
 
         if (profile.getCurrent().getConfirmationPhoto() == null) {
@@ -98,7 +98,7 @@ public class Moving implements State {
             }
         }
 
-        if(memberWhoMovingPosition == null){
+        if (memberWhoMovingPosition == null) {
             memberWhoMovingPosition = profile.getCurrent().getProfileWhoComes().getPosition();
         }
 
@@ -110,6 +110,41 @@ public class Moving implements State {
         if (!defineProfileLocationListener(profile)) {
             provideNotification(NotificationType.moving, profile, activity.getApplicationContext());
         }
+
+        initializeUi(googleMap, activity);
+
+        drawPath(activity, googleMap, profile.getCurrent().getPosition(), memberWhoMovingPosition);
+        createCustomMarker(profile.getCurrent(), googleMap, activity.getResources(), DEFAULT_MARKER_SIZE);
+        if (memberWhoMovingMarker == null) {
+            memberWhoMovingMarker = drawMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
+                    memberWhoMovingPosition, googleMap, activity.getResources());
+        } else {
+            memberWhoMovingMarker.setPosition(memberWhoMovingPosition.toLatLng());
+        }
+
+        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
+
+        if (defineProfileLocationListener(profile) && locationListenerService == null) {
+            locationListenerService = new LocationListenerService(activity, googleMap, memberWhoMovingPosition, memberWhoMovingMarker, profile -> updateTimeView(profile, activity.getApplicationContext()));
+            if (!isMyServiceRunning(locationListenerService.getClass(), activity)) {
+                activity.startService(new Intent(activity, locationListenerService.getClass()));
+            }
+        } else if (positionListener == null) {
+            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
+                memberWhoMovingPosition = position;
+                draw(googleMap, activity);
+            });
+        }
+    }
+
+    @Override
+    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+        activity.hideUi();
+        activity.findViewById(R.id.container).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
 
         movingView = activity.findViewById(R.id.container);
         movingView.removeAllViews();
@@ -123,21 +158,6 @@ public class Moving implements State {
         } else {
             drawUnreadMessagesIndicator(profile.getCurrent().getChat().getOwnerMessages(), profile.getCurrent().getChat().getPartyReadTime());
         }
-
-
-        drawPath(activity, googleMap, profile.getCurrent().getPosition(), memberWhoMovingPosition);
-        createCustomMarker(profile.getCurrent(), googleMap, activity.getResources(),DEFAULT_MARKER_SIZE);
-        if (memberWhoMovingMarker == null) {
-            memberWhoMovingMarker = drawMovingMemberMarker(profile.getCurrent().getProfileWhoComes().getTravelMode(),
-                    memberWhoMovingPosition, googleMap, activity.getResources());
-        } else {
-            memberWhoMovingMarker.setPosition(memberWhoMovingPosition.toLatLng());
-        }
-
-        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.chat).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.navigation).setVisibility(View.VISIBLE);
-        activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
 
         if (profile.getCurrent().getOwner().equals(profile)) {
             if (!isNullOrZero(profile.getCurrent().getTimeOwnerVerified())) {
@@ -165,31 +185,18 @@ public class Moving implements State {
         activity.findViewById(R.id.customFloatingView).setOnClickListener(v -> Router.startActivity(activity, ConfirmationActivity.class));
 
         activity.findViewById(R.id.chat).setOnClickListener(v -> startActivity(activity, ChatActivity.class));
-
-        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
-
-        if (defineProfileLocationListener(profile) && locationListenerService == null) {
-            locationListenerService = new LocationListenerService(activity, googleMap, memberWhoMovingPosition, memberWhoMovingMarker, profile -> updateTimeView(profile, activity.getApplicationContext()));
-            if (!isMyServiceRunning(locationListenerService.getClass(), activity)) {
-                activity.startService(new Intent(activity, locationListenerService.getClass()));
-            }
-        } else if (positionListener == null) {
-            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
-                memberWhoMovingPosition = position;
-                draw(googleMap, activity);
-            });
-        }
     }
 
 
     @Override
     public void clear() {
-        stopListenPosition(profile().getCurrent().getId());
-        if (movingView != null) {
-            movingView.removeAllViews();
-            movingView = null;
-        }
-        MapOperator.clearMapMarkerListener(googleMap);
+        clearHandlers();
+        clearUi();
+    }
+
+    @Override
+    public void clearUi() {
+        clearContainer();
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         activity.findViewById(R.id.chat).setVisibility(View.GONE);
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
@@ -199,6 +206,14 @@ public class Moving implements State {
             totalUnreadView.setVisibility(View.GONE);
         }
         ((FloatingActionButton) activity.findViewById(R.id.customFloatingView)).setImageResource(R.drawable.add);
+    }
+
+    @Override
+    public void clearHandlers() {
+        clearContainer();
+        stopListenPosition(profile().getCurrent().getId());
+
+        MapOperator.clearMapMarkerListener(googleMap);
 
         if (positionListener != null) {
             stopListenPosition(profile.getNoxboxId());
@@ -217,6 +232,13 @@ public class Moving implements State {
             }
         }
         MessagingService.removeNotifications(activity);
+    }
+
+    private void clearContainer() {
+        if (movingView != null) {
+            movingView.removeAllViews();
+            movingView = null;
+        }
     }
 
     private void drawUnreadMessagesIndicator(Map<String, Message> messages, Long readTime) {

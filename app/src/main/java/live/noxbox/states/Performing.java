@@ -69,19 +69,8 @@ public class Performing implements State {
             GeoRealtime.removePosition(profile.getCurrent().getId());
             initiated = true;
         }
-        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
-        if (container != null) {
-            container.removeAllViews();
-        }
-        initializeUiVariables();
-
-        drawContainer();
-        drawRootLayout();
-        drawTimeView();
-        drawComplete();
-
-        container.addView(rootLayout);
+        initializeUi(googleMap, activity);
 
         seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
 
@@ -106,17 +95,50 @@ public class Performing implements State {
 
     }
 
+    @Override
+    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+        activity.hideUi();
+        activity.findViewById(R.id.container).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
+        if (container != null) {
+            container.removeAllViews();
+        }
+        initializeUiVariables();
+
+        drawContainer();
+        drawRootLayout();
+        drawTimeView();
+        drawComplete();
+
+        container.addView(rootLayout);
+    }
+
 
     @Override
     public void clear() {
+        clearHandlers();
+        clearUi();
+    }
+
+    @Override
+    public void clearUi() {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        clearContainer();
+    }
+
+    @Override
+    public void clearHandlers() {
+        clearContainer();
         googleMap.clear();
         stopHandler();
+        MessagingService.removeNotifications(activity);
+    }
+    private void clearContainer(){
         if (container != null) {
             container.removeAllViews();
             container = null;
         }
-        MessagingService.removeNotifications(activity);
     }
 
     private void initializeUiVariables() {

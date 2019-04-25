@@ -38,6 +38,7 @@ public class Requesting implements State {
     private LinearLayout requestingView;
     private CountDownTimer countDownTimer;
     private Marker memberWhoMoving;
+    private long requestTimePassed;
 
     private boolean initiated;
 
@@ -46,14 +47,13 @@ public class Requesting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
 
-        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
 
         if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
             initiated = true;
         }
 
-        long requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
+        requestTimePassed = System.currentTimeMillis() - profile.getCurrent().getTimeRequested();
         if (requestTimePassed > REQUESTING_AND_ACCEPTING_TIMEOUT_IN_MILLIS) {
             timeoutCurrent();
             return;
@@ -64,7 +64,7 @@ public class Requesting implements State {
         NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();
 
         drawPath(activity, googleMap, profile);
-        createCustomMarker(profile.getCurrent(), googleMap, activity.getResources(),DEFAULT_MARKER_SIZE);
+        createCustomMarker(profile.getCurrent(), googleMap, activity.getResources(), DEFAULT_MARKER_SIZE);
         Profile profileWhoComes = profile.getCurrent().getProfileWhoComes();
         if (profileWhoComes == null) return;
 
@@ -72,6 +72,16 @@ public class Requesting implements State {
         memberWhoMoving = MarkerCreator.drawMovingMemberMarker(profileWhoComes.getTravelMode(),
                 memberWhoMovingPosition, googleMap, activity.getResources());
 
+        initializeUi(googleMap, activity);
+
+        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
+    }
+
+    @Override
+    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+        activity.hideUi();
+        activity.findViewById(R.id.container).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         requestingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_requesting, null);
         requestingView.addView(child);
@@ -104,21 +114,35 @@ public class Requesting implements State {
             }
 
         }.start();
-
-        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
     }
 
     @Override
     public void clear() {
-        MapOperator.clearMapMarkerListener(googleMap);
-        googleMap.clear();
+        clearHandlers();
+        clearUi();
+    }
+
+    @Override
+    public void clearUi() {
+        clearContainer();
         activity.findViewById(R.id.navigation).setVisibility(View.GONE);
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void clearHandlers() {
+        clearContainer();
+        MapOperator.clearMapMarkerListener(googleMap);
+        googleMap.clear();
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
         MessagingService.removeNotifications(activity);
+
+    }
+
+    private void clearContainer(){
         if (requestingView != null) {
             requestingView.removeAllViews();
             requestingView = null;

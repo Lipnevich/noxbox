@@ -51,7 +51,7 @@ public class Accepting implements State {
         this.googleMap = googleMap;
         this.activity = activity;
 
-        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
+
 
         if (!initiated) {
             MapOperator.buildMapPosition(googleMap, activity.getApplicationContext());
@@ -83,6 +83,16 @@ public class Accepting implements State {
         memberWhoMoving = MarkerCreator.drawMovingMemberMarker(profileWhoComes.getTravelMode(),
                 memberWhoMovingPosition, googleMap, activity.getResources());
 
+        initializeUi(googleMap, activity);
+
+        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
+    }
+
+    @Override
+    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+        activity.hideUi();
+        activity.findViewById(R.id.container).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
         acceptingView = activity.findViewById(R.id.container);
         View child = activity.getLayoutInflater().inflate(R.layout.state_accepting, null);
         acceptingView.addView(child);
@@ -110,8 +120,6 @@ public class Accepting implements State {
                 timeoutCurrent();
             }
         }.start();
-
-        MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
     }
 
     public static void timeoutCurrent() {
@@ -149,14 +157,30 @@ public class Accepting implements State {
 
     @Override
     public void clear() {
+
+        clearHandlers();
+        clearUi();
+    }
+
+    @Override
+    public void clearUi() {
+        activity.findViewById(R.id.menu).setVisibility(View.GONE);
+        clearContainer();
+    }
+
+    @Override
+    public void clearHandlers() {
+        clearContainer();
         MapOperator.clearMapMarkerListener(googleMap);
         googleMap.clear();
-        activity.findViewById(R.id.menu).setVisibility(View.GONE);
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
         MessagingService.removeNotifications(activity);
+
+    }
+    private void clearContainer(){
         if (acceptingView != null) {
             acceptingView.removeAllViews();
             acceptingView = null;
