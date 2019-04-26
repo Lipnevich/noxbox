@@ -237,7 +237,7 @@
     <string name="withComission">с учётом комиссии</string>
     <string name="worker">Работник</string>
     <string name="costumer">Заказчик</string>
-    <string name="movementWait">Ожидайте участника через ~%1$s</string>
+    <string name="movementWait">Ожидайте ещё ~%1$s</string>
     <string name="movementMove">Двигайтесь ещё ~%1$s</string>
     <string name="uploadingComplete">Загрузка завершена</string>
     <string name="aboutApp">Информация</string>

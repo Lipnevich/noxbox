@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:textColor="@color/secondary"
-            android:textSize="@dimen/text_warning" />
+            android:textSize="@dimen/text_size" />
 
         <ProgressBar
             android:id="@+id/progress"
