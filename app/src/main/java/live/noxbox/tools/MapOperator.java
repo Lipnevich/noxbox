@@ -53,7 +53,6 @@ public class MapOperator {
                         context.getResources().getDisplayMetrics().heightPixels,
                         dpToPx(68)));
                 break;
-
             case created:
             case performing:
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getCurrent().getPosition().toLatLng(),

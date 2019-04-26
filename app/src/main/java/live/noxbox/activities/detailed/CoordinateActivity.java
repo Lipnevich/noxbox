@@ -14,7 +14,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -55,8 +54,6 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
 
     private GoogleMap googleMap;
 
-    private FusedLocationProviderClient providerClient;
-
     private List<Place.Field> placeField = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
 
     @Override
@@ -65,7 +62,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         setContentView(R.layout.activity_coordinate);
         initializeUi();
 
-        providerClient = initLocationProviderClient(getApplicationContext());
+        initLocationProviderClient(getApplicationContext());
 
         ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
