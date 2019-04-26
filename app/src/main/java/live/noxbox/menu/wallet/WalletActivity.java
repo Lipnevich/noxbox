@@ -143,7 +143,7 @@ public class WalletActivity extends BaseActivity {
             String currency = getString(R.string.currency);
             String link = getString(R.string.wavesProductsWalletLink);
             SpannableStringBuilder currencySpan = new SpannableStringBuilder(currency);
-            currencySpan.setSpan(new ForegroundColorSpan(getColor(R.color.primary)), 0, currency.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            currencySpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.primary)), 0, currency.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             currencySpan.setSpan(new ClickableSpan() {
                 @Override
