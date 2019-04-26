@@ -153,7 +153,7 @@
     <string name="choosePlace">Choose place</string>
     <string name="validityOfTheOffer">Validity of the offer</string>
     <string name="waitingByAddress">I\'m waiting on the address:</string>
-    <string name="across">Across</string>
+    <string name="across">Across ~%1$s</string>
     <string name="willArriveAtTheAddress">I will arrive at the address:</string>
     <string name="connectionWithInitiator">Connecting, please wait</string>
     <string name="acceptingConfirmation">Request incoming, please confirm..</string>
@@ -256,7 +256,7 @@
     <string name="verifyPhoto">Verify</string>
     <string name="rejectPhoto">Reject</string>
     <string name="complete">Complete</string>
-    <string name="timePassed">time passed</string>
+    <string name="timePassed">Time passed</string>
     <string name="serviceIsPerforming">Service is performing</string>
     <string name="serviceWasCanceled">Service was canceled</string>
     <string name="performed">Performed</string>

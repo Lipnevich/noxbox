@@ -395,14 +395,12 @@ public class DetailedActivity extends BaseActivity {
                     travelModeText.setText(R.string.waitingByAddress);
                 } else {
                     long minutes = getTimeInMinutesBetweenUsers(
-                            viewed.getOwner().getPosition(),
-                            viewed.getParty().getPosition(),
-                            viewed.getOwner().getTravelMode() == none
-                                    ? viewed.getParty().getTravelMode()
-                                    : viewed.getOwner().getTravelMode());
+                            viewed.getPosition(),
+                            viewed.getProfileWhoComes().getPosition(),
+                            viewed.getProfileWhoComes().getTravelMode());
 
                     String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
-                    travelTypeTitle.setText(getString(R.string.across) + " " + timeTxt);
+                    travelTypeTitle.setText(getString(R.string.across, timeTxt));
                     travelModeText.setText(R.string.willArriveAtTheAddress);
                 }
                 break;
@@ -418,14 +416,12 @@ public class DetailedActivity extends BaseActivity {
                     travelModeText.setText(R.string.waitingByAddress);
                 } else {
                     long minutes = getTimeInMinutesBetweenUsers(
-                            viewed.getOwner().getPosition(),
-                            viewed.getParty().getPosition(),
-                            viewed.getOwner().getTravelMode() == none
-                                    ? viewed.getParty().getTravelMode()
-                                    : viewed.getOwner().getTravelMode());
+                            viewed.getPosition(),
+                            viewed.getProfileWhoComes().getPosition(),
+                            viewed.getProfileWhoComes().getTravelMode());
 
                     String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
-                    travelTypeTitle.setText(getString(R.string.across) + " " + timeTxt);
+                    travelTypeTitle.setText(getString(R.string.across, timeTxt));
                     travelModeText.setText(R.string.willArriveAtTheAddress);
                 }
                 break;

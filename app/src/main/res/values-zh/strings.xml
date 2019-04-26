@@ -152,7 +152,7 @@
     <string name="choosePlace">选择地点</string>
     <string name="validityOfTheOffer">请求有效</string>
     <string name="waitingByAddress">我在指定地址等待:</string>
-    <string name="across">穿过</string>
+    <string name="across">穿过~%1$s</string>
     <string name="willArriveAtTheAddress">我即将到达指定地点:</string>
     <string name="connectionWithInitiator">连接中，请稍候</string>
     <string name="acceptingConfirmation">请求进入，请确认..</string>
