@@ -77,6 +77,7 @@ import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.ReferrerCatcher.clearReferrer;
 import static live.noxbox.tools.ReferrerCatcher.referrer;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
+import static live.noxbox.tools.location.LocationOperator.initLocationProviderClient;
 import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.location.LocationOperator.updateLocation;
 import static live.noxbox.tools.location.LocationUpdater.KEY_REQUESTING_LOCATION_UPDATES;
@@ -126,8 +127,7 @@ public class MapActivity extends DemonstrationActivity implements
 
         updateValuesFromBundle(savedInstanceState);
         new Thread(() -> checkBalance(profile(), MapActivity.this)).start();
-
-
+        initLocationProviderClient(getApplicationContext());
         ExchangeRate.wavesToUSD(rate -> AppCache.wavesToUsd = rate);
     }
 
@@ -211,7 +211,7 @@ public class MapActivity extends DemonstrationActivity implements
         mFirebaseRemoteConfig.setDefaults(Collections.singletonMap("minAllowedVersion", BuildConfig.VERSION_CODE));
         mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, task -> {
             if (task.isSuccessful()) {
-                Long minAllowedVersion = mFirebaseRemoteConfig.getLong("minAllowedVersion");
+                long minAllowedVersion = mFirebaseRemoteConfig.getLong("minAllowedVersion");
                 if (minAllowedVersion > BuildConfig.VERSION_CODE) {
                     showRequestUpdate();
                 }
