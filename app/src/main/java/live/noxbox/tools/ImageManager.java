@@ -2,7 +2,10 @@ package live.noxbox.tools;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -76,7 +79,7 @@ public class ImageManager {
                     uri -> {
                         AppCache.profile().getPortfolio().get(type.name()).getImages().get(imageType.name()).add(uri.toString());
                         AppCache.fireProfile();
-            });
+                    });
         });
 
     }
@@ -169,36 +172,57 @@ public class ImageManager {
 
 
     public static void createCircleProfilePhotoFromUrl(Activity activity, String url, ImageView image) {
-        if(activity.isFinishing()) return;
+        if (activity.isFinishing()) return;
         if (url != null)
             Glide.with(activity)
                     .asDrawable()
                     .load(url)
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.DATA))
                     .apply(RequestOptions.circleCropTransform())
-                    .into(image);
+                    .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                            if (!activity.isFinishing()) {
+                                image.setImageDrawable(drawable);
+                            }
+                        }
+                    });
         else
             createPlaceholderForProfilePhoto(activity, image);
     }
 
     public static void createCircleImageFromBitmap(Activity activity, Bitmap bitmap, ImageView image) {
-        if(activity.isFinishing()) return;
+        if (activity.isFinishing()) return;
         Glide.with(activity)
                 .asDrawable()
                 .load(bitmap)
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                 .apply(RequestOptions.circleCropTransform())
-                .into(image);
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                        if (!activity.isFinishing()) {
+                            image.setImageDrawable(drawable);
+                        }
+                    }
+                });
     }
 
     private static void createPlaceholderForProfilePhoto(Activity activity, ImageView image) {
-        if(activity.isFinishing()) return;
+        if (activity.isFinishing()) return;
         Glide.with(activity)
                 .asDrawable()
                 .load(R.drawable.human_profile)
                 .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL))
                 .apply(RequestOptions.circleCropTransform())
-                .into(image);
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                        if (!activity.isFinishing()) {
+                            image.setImageDrawable(drawable);
+                        }
+                    }
+                });
     }
 
 }
