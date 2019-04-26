@@ -70,7 +70,7 @@ public class Performing implements State {
             initiated = true;
         }
 
-        initializeUi(googleMap, activity);
+        drawUi(googleMap, activity);
 
         seconds = Math.max(0, (System.currentTimeMillis() - profile.getCurrent().getTimeStartPerforming()) / 1000);
 
@@ -95,8 +95,7 @@ public class Performing implements State {
 
     }
 
-    @Override
-    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+    public void drawUi(GoogleMap googleMap, MapActivity activity) {
         activity.hideUi();
         activity.findViewById(R.id.container).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
@@ -121,7 +120,6 @@ public class Performing implements State {
         clearUi();
     }
 
-    @Override
     public void clearUi() {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         clearContainer();

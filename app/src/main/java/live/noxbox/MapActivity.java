@@ -22,6 +22,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -158,12 +159,10 @@ public class MapActivity extends DemonstrationActivity implements
             availableNoxboxes.clear();
         }
         AppCache.stopListen(this.getClass().getName());
-        if (currentState != null) currentState.clear();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+        if (currentState != null) {
+            currentState.clearHandlers();
+            currentState = null;
+        }
     }
 
 
@@ -392,5 +391,18 @@ public class MapActivity extends DemonstrationActivity implements
                 .disabled(BuildConfig.DEBUG)
                 .build();
         Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
+    }
+
+    public void hideUi(){
+        findViewById(R.id.pointerImage).setVisibility(View.GONE);
+        findViewById(R.id.menu).setVisibility(View.GONE);
+        findViewById(R.id.filter).setVisibility(View.GONE);
+        findViewById(R.id.chat).setVisibility(View.GONE);
+        findViewById(R.id.totalUnread).setVisibility(View.GONE);
+        findViewById(R.id.navigation).setVisibility(View.GONE);
+        findViewById(R.id.switcherLayout).setVisibility(View.GONE);
+        findViewById(R.id.locationButton).setVisibility(View.GONE);
+        findViewById(R.id.customFloatingView).setVisibility(View.GONE);
+        findViewById(R.id.container).setVisibility(View.GONE);
     }
 }

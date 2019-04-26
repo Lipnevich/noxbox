@@ -98,7 +98,7 @@ public class AvailableNoxboxes implements State {
         googleMap.setOnMarkerClickListener(clusterManager.getRenderer());
         googleMap.setOnCameraIdleListener(() -> startListenAvailableNoxboxes(getCameraPosition(googleMap).toGeoLocation(), availableNoxboxes, null));
 
-        initializeUi(googleMap, activity);
+        drawUi(googleMap, activity);
 
         if (!serviceIsBound) {
             serviceHandler = new Handler();
@@ -112,8 +112,7 @@ public class AvailableNoxboxes implements State {
 
     }
 
-    @Override
-    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+    public void drawUi(GoogleMap googleMap, MapActivity activity) {
         activity.hideUi();
         activity.findViewById(R.id.locationButton).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.pointerImage).setVisibility(View.VISIBLE);
@@ -165,7 +164,6 @@ public class AvailableNoxboxes implements State {
 
     }
 
-    @Override
     public void clearUi() {
         if (decorator != null) {
             decorator.clear();

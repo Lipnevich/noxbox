@@ -115,7 +115,6 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         updateLocation(getApplicationContext(), googleMap);
         setupMap(this, googleMap);
         enterTheMap(googleMap, this);
-        getDeviceLocation(profile(), googleMap, CoordinateActivity.this);
 
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         draw();

@@ -111,7 +111,7 @@ public class Moving implements State {
             provideNotification(NotificationType.moving, profile, activity.getApplicationContext());
         }
 
-        initializeUi(googleMap, activity);
+        drawUi(googleMap, activity);
 
         drawPath(activity, googleMap, profile.getCurrent().getPosition(), memberWhoMovingPosition);
         createCustomMarker(profile.getCurrent(), googleMap, activity.getResources(), DEFAULT_MARKER_SIZE);
@@ -137,8 +137,7 @@ public class Moving implements State {
         }
     }
 
-    @Override
-    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+    public void drawUi(GoogleMap googleMap, MapActivity activity) {
         activity.hideUi();
         activity.findViewById(R.id.container).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
@@ -194,7 +193,6 @@ public class Moving implements State {
         clearUi();
     }
 
-    @Override
     public void clearUi() {
         clearContainer();
         activity.findViewById(R.id.menu).setVisibility(View.GONE);

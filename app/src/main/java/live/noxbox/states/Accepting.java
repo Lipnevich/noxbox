@@ -83,13 +83,12 @@ public class Accepting implements State {
         memberWhoMoving = MarkerCreator.drawMovingMemberMarker(profileWhoComes.getTravelMode(),
                 memberWhoMovingPosition, googleMap, activity.getResources());
 
-        initializeUi(googleMap, activity);
+        drawUi(googleMap, activity);
 
         MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
     }
 
-    @Override
-    public void initializeUi(GoogleMap googleMap, MapActivity activity) {
+    public void drawUi(GoogleMap googleMap, MapActivity activity) {
         activity.hideUi();
         activity.findViewById(R.id.container).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.menu).setVisibility(View.VISIBLE);
@@ -162,7 +161,6 @@ public class Accepting implements State {
         clearUi();
     }
 
-    @Override
     public void clearUi() {
         activity.findViewById(R.id.menu).setVisibility(View.GONE);
         clearContainer();
