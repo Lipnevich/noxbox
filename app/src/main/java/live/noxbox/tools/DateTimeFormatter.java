@@ -76,7 +76,7 @@ public class DateTimeFormatter {
                     .toFormatter();
         }
 
-        return periodFormatter.print(new Period(millis));
+        return periodFormatter.print(new Period(Math.max(60000, millis)));
 
     }
 }

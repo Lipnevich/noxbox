@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
-import com.google.common.base.Strings;
-
 import java.util.Map;
 
 import live.noxbox.MapActivity;
@@ -18,7 +16,9 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
+import static live.noxbox.Constants.MAX_MINUTES;
 import static live.noxbox.model.Noxbox.isNullOrZero;
+import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.Events.inForeground;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
@@ -54,31 +54,26 @@ public class NotificationMoving extends Notification {
                 removeNotificationByGroup(context, type.getGroup());
                 return;
             }
-            String myProfile = data.get("profileId");
-            if (Strings.isNullOrEmpty(myProfile)) return;
 
             removeNotificationByGroup(context, type.getGroup());
-            progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
-                    noxbox.getPosition(),
-                    noxbox.getProfileWhoComes().getPosition(),
-                    noxbox.getProfileWhoComes().getTravelMode()));
+            String myId = data.get("profileId");
+            if (myId == null) return;
 
-            if (noxbox.getProfileWhoComes().getId().equals(myProfile)) {
-                contentView.setTextViewText(R.id.time, context.getResources().getString(R.string.movementMove, progressInMinutes + ""));
-            } else {
-                contentView.setTextViewText(R.id.time, context.getResources().getString(R.string.movementWait, progressInMinutes + ""));
+            if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {
+                progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
+                        noxbox.getPosition(),
+                        noxbox.getProfileWhoComes().getPosition(),
+                        noxbox.getProfileWhoComes().getTravelMode()));
+                String timeTxt = getFormatTimeFromMillis(progressInMinutes * 60000, context.getResources());
+                if (noxbox.getProfileWhoComes().getId().equals(myId)) {
+                    contentView.setTextViewText(R.id.time, context.getResources().getString(R.string.movementMove, timeTxt));
+                } else {
+                    contentView.setTextViewText(R.id.time, context.getResources().getString(R.string.movementWait, timeTxt));
+                }
+
+                contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImageDemand());
+                contentView.setProgressBar(R.id.progress, MAX_MINUTES, Math.max(MAX_MINUTES - progressInMinutes, 1), false);
             }
-
-//            if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {
-//                progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
-//                        noxbox.getPosition(),
-//                        noxbox.getProfileWhoComes().getPosition(),
-//                        noxbox.getProfileWhoComes().getTravelMode()));
-//                progressInMinutes = Math.max(1, Math.min(progressInMinutes, MAX_MINUTES - 1));
-//                contentView.setImageViewResource(R.id.noxboxTypeImage, noxbox.getType().getImageDemand());
-//                contentView.setTextViewText(R.id.time, String.valueOf(context.getResources().getString(R.string.movementWait, "" + progressInMinutes)));
-//                contentView.setProgressBar(R.id.progress, MAX_MINUTES, Math.max(MAX_MINUTES - progressInMinutes, 1), false);
-//            }
             final NotificationCompat.Builder builder = getNotificationCompatBuilder();
             getNotificationService(context).notify(type.getGroup(), builder.build());
         };
