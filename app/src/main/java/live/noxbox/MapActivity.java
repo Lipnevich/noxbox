@@ -72,6 +72,7 @@ import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
+import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.ReferrerCatcher.clearReferrer;
 import static live.noxbox.tools.ReferrerCatcher.referrer;
@@ -93,7 +94,6 @@ public class MapActivity extends DemonstrationActivity implements
     private LocationReceiver locationReceiver;
 
     private Boolean requestLocationUpdatesBundle;
-
 
 
     @Override
@@ -297,7 +297,7 @@ public class MapActivity extends DemonstrationActivity implements
         AppCache.listenProfile(this.getClass().getName(), profile -> {
             if (googleMap == null) return;
 
-
+            enterTheMap(googleMap, this);
 
             if (!isNullOrEmpty(referrer) && !equal(profile().getReferral(), referrer)
                     && !equal(profile().getId(), referrer)) {
@@ -399,7 +399,7 @@ public class MapActivity extends DemonstrationActivity implements
         Fabric.with(this, new Crashlytics.Builder().core(crashlyticsCore).build());
     }
 
-    public void hideUi(){
+    public void hideUi() {
         findViewById(R.id.pointerImage).setVisibility(View.GONE);
         findViewById(R.id.menu).setVisibility(View.GONE);
         findViewById(R.id.filter).setVisibility(View.GONE);
