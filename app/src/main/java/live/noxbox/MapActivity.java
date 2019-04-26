@@ -28,6 +28,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -59,6 +60,7 @@ import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.exceptions.LocationException;
+import live.noxbox.tools.location.LocationOperator;
 
 import static com.google.common.base.Objects.equal;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -70,7 +72,6 @@ import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
-import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.ReferrerCatcher.clearReferrer;
 import static live.noxbox.tools.ReferrerCatcher.referrer;
@@ -92,6 +93,8 @@ public class MapActivity extends DemonstrationActivity implements
     private LocationReceiver locationReceiver;
 
     private Boolean requestLocationUpdatesBundle;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +155,9 @@ public class MapActivity extends DemonstrationActivity implements
         super.onPause();
         unregisterReceiver(locationReceiver);
         googleApiClient.disconnect();
+
         if (googleMap != null) {
+            LocationOperator.actualMapTarget = CameraUpdateFactory.newLatLngZoom(googleMap.getCameraPosition().target, googleMap.getCameraPosition().zoom);
             googleMap.clear();
         }
         if (availableNoxboxes != null) {
@@ -173,7 +178,7 @@ public class MapActivity extends DemonstrationActivity implements
         updateLocation(this, googleMap);
 
         setupMap(this, googleMap);
-        enterTheMap(googleMap, this);
+
 
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         draw();
@@ -292,6 +297,8 @@ public class MapActivity extends DemonstrationActivity implements
         AppCache.listenProfile(this.getClass().getName(), profile -> {
             if (googleMap == null) return;
 
+
+
             if (!isNullOrEmpty(referrer) && !equal(profile().getReferral(), referrer)
                     && !equal(profile().getId(), referrer)) {
                 profile().setReferral(referrer);
@@ -304,7 +311,6 @@ public class MapActivity extends DemonstrationActivity implements
                 ((AvailableNoxboxes) newState).updateRequestingLocationUpdatesFromBundle(requestLocationUpdatesBundle);
             }
 
-            //if(newState instanceof Moving && wasDemonstrationShowed(AVAILABLE_DEMONSTRATION_KEY) ){
             if (newState instanceof Moving) {
                 showMovingDemonstration();
             } else if (newState instanceof AvailableNoxboxes) {

@@ -65,12 +65,17 @@ public class MapOperator {
         }
     }
 
+    private volatile static boolean wasMapPositionUpdated = false;
     public static void enterTheMap(GoogleMap googleMap, Activity activity) {
+        if(wasMapPositionUpdated) return;
+
         if (isLocationPermissionGranted(activity.getApplicationContext())) {
             getDeviceLocation(profile(), googleMap, activity);
         } else {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(profile().getPosition().toLatLng(), MIN_ZOOM_LEVEL));
         }
+
+        wasMapPositionUpdated = true;
     }
 
 

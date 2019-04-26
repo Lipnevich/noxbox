@@ -32,11 +32,11 @@ import live.noxbox.Constants;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.location.LocationOperator;
 
 import static live.noxbox.Constants.LOCATION_PERMISSION_REQUEST_CODE_OTHER_SITUATIONS;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.profile;
-import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.initLocationProviderClient;
@@ -114,7 +114,11 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         googleMap = readyMap;
         updateLocation(getApplicationContext(), googleMap);
         setupMap(this, googleMap);
-        enterTheMap(googleMap, this);
+        
+        if(LocationOperator.actualMapTarget != null){
+            googleMap.moveCamera(LocationOperator.actualMapTarget);
+        }
+
 
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         draw();

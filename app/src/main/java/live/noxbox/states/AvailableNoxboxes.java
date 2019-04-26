@@ -160,8 +160,6 @@ public class AvailableNoxboxes implements State {
     public void clear() {
         clearHandlers();
         clearUi();
-        //stopListenAvailableNoxboxes();
-
     }
 
     public void clearUi() {

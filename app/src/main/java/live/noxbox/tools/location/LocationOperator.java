@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -29,6 +30,8 @@ public class LocationOperator {
 
     private static FusedLocationProviderClient fusedLocationProviderClient;
     private static Location lastLocation;
+
+    public static CameraUpdate actualMapTarget;
 
     public static Location location() {
         if (lastLocation == null) {
