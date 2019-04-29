@@ -148,7 +148,7 @@
     <string name="choosePlace">Выберите место</string>
     <string name="validityOfTheOffer">Срок действия предложения</string>
     <string name="waitingByAddress">Ожидаю по адресу:</string>
-    <string name="across">Через</string>
+    <string name="across">Через ~%1$s</string>
     <string name="willArriveAtTheAddress">Прибуду по адресу:</string>
     <string name="connectionWithInitiator">Идёт соединение, пожалуйста ожидайте</string>
     <string name="acceptingConfirmation">Вашу заявку приняли, необходимо ваше подтверждение..</string>
@@ -244,7 +244,7 @@
     <string name="start_promo_video">Видео</string>
     <string name="tutorial">Обучение</string>
     <string name="address">Адрес</string>
-    <string name="timePassed">времени прошло</string>
+    <string name="timePassed">Времени прошло</string>
     <string name="serviceIsPerforming">Услуга выполняется</string>
     <string name="serviceWasCanceled">Услуга была отменена</string>
     <string name="generatePush">Оповести</string>
