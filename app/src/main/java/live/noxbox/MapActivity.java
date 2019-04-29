@@ -72,6 +72,7 @@ import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.ConfirmationMessage.messageGps;
+import static live.noxbox.tools.MapOperator.animateCameraToCurrentCountry;
 import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
 import static live.noxbox.tools.ReferrerCatcher.clearReferrer;
@@ -296,6 +297,8 @@ public class MapActivity extends DemonstrationActivity implements
     private void draw() {
         AppCache.listenProfile(this.getClass().getName(), profile -> {
             if (googleMap == null) return;
+
+            animateCameraToCurrentCountry(profile, googleMap);
 
             enterTheMap(googleMap, this);
 
