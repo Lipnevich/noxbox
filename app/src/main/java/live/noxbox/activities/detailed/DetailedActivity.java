@@ -363,6 +363,10 @@ public class DetailedActivity extends BaseActivity {
 //        }
 
         Noxbox viewed = profile.getViewed();
+        String noxboxPosition = viewed.getPosition().getLatitude() + ", " + viewed.getPosition().getLongitude();
+        if (address.getText().length() < 1) {
+            address.setText(noxboxPosition);
+        }
 
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -373,7 +377,9 @@ public class DetailedActivity extends BaseActivity {
 
             @Override
             protected void onPostExecute(String resultAddress) {
-                address.setText(resultAddress);
+                if (!resultAddress.contains("Unnamed")) {
+                    address.setText(resultAddress);
+                }
             }
         }.execute();
         drawDropdownElement(travelTypeTitleLayout.getId(), travelTypeLayout.getId());
