@@ -66,8 +66,9 @@ public class MapOperator {
     }
 
     private volatile static boolean wasMapPositionUpdated = false;
+
     public static void enterTheMap(GoogleMap googleMap, Activity activity) {
-        if(wasMapPositionUpdated) return;
+        if (wasMapPositionUpdated) return;
 
         if (isLocationPermissionGranted(activity.getApplicationContext())) {
             getDeviceLocation(profile(), googleMap, activity);
@@ -211,7 +212,7 @@ public class MapOperator {
         return Position.from(latLng);
     }
 
-    public static void animateCameraToCurrentCountry(Profile profile, GoogleMap googleMap){
+    public static void animateCameraToCurrentCountry(Profile profile, GoogleMap googleMap) {
         if (profile.getPosition().getLatitude() == 0.0 && profile.getPosition().getLongitude() == 0.0) {
             if (AuthActivity.countryForStart != null) {
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(AuthActivity.countryForStart, googleMap.getCameraPosition().zoom));
