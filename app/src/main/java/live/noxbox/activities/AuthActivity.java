@@ -77,6 +77,7 @@ public class AuthActivity extends BaseActivity {
                             countryForStart = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
                         } catch (JSONException e) {
                             Log.e(TAG, e.getMessage());
+                            Crashlytics.logException(e);
                             e.printStackTrace();
                         }
                     }, error -> {
