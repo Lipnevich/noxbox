@@ -80,7 +80,7 @@
     <string name="chat">Chat</string>
     <string name="isOffline">无网络连接</string>
     <string name="enable">连接</string>
-    <string name="isGps">没有GPS信号</string>
+    <string name="isNotGps">没有GPS信号</string>
     <!--line agreement-->
     <string name="agreement">我同意 %1$s and %2$s</string>
     <string name="authRules">服务条款</string>

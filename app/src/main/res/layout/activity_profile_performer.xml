@@ -1,202 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <include layout="@layout/fragment_offline" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
-        android:elevation="4dp"
-        app:contentInsetStart="0dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            android:elevation="4dp"
+            app:contentInsetStart="0dp">
 
-            <ImageButton
-                android:id="@+id/homeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/fui_transparent"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="16dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/arrow_back" />
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/secondary"
-                android:textSize="@dimen/text_size" />
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/deleteSection"
+                    android:id="@+id/homeButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:background="@color/fui_transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:padding="16dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/delete" />
-            </RelativeLayout>
+                    android:src="@drawable/arrow_back" />
 
-
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
-    <!--cetrificates-->
-
-    <RelativeLayout
-        android:id="@+id/certificateLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_horizontal_margin">
-
-        <ImageView
-            android:id="@+id/certificateImage"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:src="@drawable/certificate"
-            android:tint="@color/primary" />
-
-        <LinearLayout
-            android:id="@+id/certificateTopLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_toEndOf="@id/certificateImage"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/certificate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/certificates"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/addCertificate"
+                <TextView
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/fui_transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/add_circle"
-                    android:visibility="visible" />
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/text_size" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/deleteSection"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:background="@color/fui_transparent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:padding="16dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/delete" />
+                </RelativeLayout>
+
+
             </LinearLayout>
-        </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+        <!--cetrificates-->
 
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/certificateTopLayout"
-            android:layout_marginStart="32dp"
-            android:paddingStart="8dp">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/certificatesList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </FrameLayout>
-    </RelativeLayout>
-
-    <!--work samples-->
-    <RelativeLayout
-        android:id="@+id/workSampleLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_horizontal_margin">
-
-        <ImageButton
-            android:id="@+id/photoCameraImage"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@color/fui_transparent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/photo_camera"
-            android:tint="@color/primary" />
-
-        <LinearLayout
-            android:id="@+id/workSampleTopLayout"
+        <RelativeLayout
+            android:id="@+id/certificateLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_toEndOf="@id/photoCameraImage"
-            android:orientation="horizontal">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin">
 
-            <TextView
-                android:id="@+id/workSamples"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/workSamples"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/text_color_secondary" />
+            <ImageView
+                android:id="@+id/certificateImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:src="@drawable/certificate"
+                android:tint="@color/primary" />
 
             <LinearLayout
+                android:id="@+id/certificateTopLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/certificateImage"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/addWorkSample"
+                <TextView
+                    android:id="@+id/certificate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/add_circle"
-                    android:visibility="visible" />
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/certificates"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/text_color_secondary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/addCertificate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:background="@color/fui_transparent"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/add_circle"
+                        android:visibility="visible" />
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <FrameLayout
-            android:layout_width="wrap_content"
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/certificateTopLayout"
+                android:layout_marginStart="32dp"
+                android:paddingStart="8dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/certificatesList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+        </RelativeLayout>
+
+        <!--work samples-->
+        <RelativeLayout
+            android:id="@+id/workSampleLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/workSampleTopLayout"
-            android:layout_marginStart="32dp"
-            android:paddingStart="8dp">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/workSampleList"
+            <ImageButton
+                android:id="@+id/photoCameraImage"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:background="@color/fui_transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/photo_camera"
+                android:tint="@color/primary" />
+
+            <LinearLayout
+                android:id="@+id/workSampleTopLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/workSampleTopLayout" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@id/photoCameraImage"
+                android:orientation="horizontal">
 
-        </FrameLayout>
-    </RelativeLayout>
-</LinearLayout>
+                <TextView
+                    android:id="@+id/workSamples"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/workSamples"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/text_color_secondary" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/addWorkSample"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="16dp"
+                        android:src="@drawable/add_circle"
+                        android:visibility="visible" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/workSampleTopLayout"
+                android:layout_marginStart="32dp"
+                android:paddingStart="8dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/workSampleList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/workSampleTopLayout" />
+
+            </FrameLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

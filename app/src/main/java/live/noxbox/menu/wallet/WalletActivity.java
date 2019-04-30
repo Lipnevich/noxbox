@@ -51,6 +51,7 @@ import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.analitics.BusinessEvent.outBox;
+import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
@@ -91,7 +92,6 @@ public class WalletActivity extends BaseActivity {
         balance = findViewById(R.id.balance);
         balanceUSD = findViewById(R.id.balanceUSD);
         progressCat = findViewById(R.id.progress);
-
 
         int progressDiameter = DisplayMetricsConservations.pxToDp(balance.getHeight(), getApplicationContext());
         Glide.with(this)
@@ -165,6 +165,13 @@ public class WalletActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);
+        AppCache.stopListen(WalletActivity.class.getName());
+    }
+
     private StringRequest stringRequest;
     private RequestQueue requestQueue;
     private Handler handler = new Handler();
@@ -174,18 +181,17 @@ public class WalletActivity extends BaseActivity {
             requestQueue.add(stringRequest);
         }
     };
+    private static Boolean transferInProgress;
+    private static long delayMillis = 4000;
 
     private void updateBalance(Profile profile) {
         if (requestQueue != null && stringRequest != null) {
-            handler.postDelayed(runnable, 3000);
+            handler.postDelayed(runnable, delayMillis);
             return;
         }
-        balance.setVisibility(View.INVISIBLE);
-        balanceUSD.setVisibility(View.INVISIBLE);
-        progressCat.setVisibility(View.VISIBLE);
         enableTransfer(false);
 
-        requestQueue = Volley.newRequestQueue(WalletActivity.this);
+        requestQueue = Volley.newRequestQueue(this);
         String url = "https://nodes.wavesplatform.com/addresses/balance/";
         url = url.concat(profile.getWallet().getAddress());
 
@@ -197,27 +203,20 @@ public class WalletActivity extends BaseActivity {
                 walletBalance = jObject.getString("balance");
                 BigDecimal balance = new BigDecimal(walletBalance).divide(new BigDecimal("100000000"), DEFAULT_BALANCE_SCALE, BigDecimal.ROUND_DOWN);
                 profile.getWallet().setBalance(balance.toString());
-                draw(profile);
+                delayMillis = 30000;
+                fireProfile();
+                hideProgress();
+
             } catch (JSONException e) {
                 Crashlytics.logException(e);
             }
-            balance.setVisibility(View.VISIBLE);
-
-            balanceUSD.setVisibility(View.VISIBLE);
-            progressCat.setVisibility(View.INVISIBLE);
-
-            updateBalance(profile);
-        }, Crashlytics::logException);
+        }, error -> {
+            Crashlytics.logException(error);
+        });
         stringRequest.setTag(TAG);
         requestQueue.add(stringRequest);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        handler.removeCallbacks(runnable);
-        AppCache.stopListen(WalletActivity.class.getName());
-    }
 
     private void transfer(Profile profile, String address) {
         if (TextUtils.isEmpty(address)) {
@@ -232,37 +231,53 @@ public class WalletActivity extends BaseActivity {
         Map<String, Object> data = new HashMap<>();
         data.put("addressToTransfer", address);
 
-        balance.setVisibility(View.INVISIBLE);
-        balanceUSD.setVisibility(View.INVISIBLE);
-        progressCat.setVisibility(View.VISIBLE);
+        showProgress();
         enableTransfer(false);
 
+        transferInProgress = true;
         FirebaseFunctions.getInstance()
                 .getHttpsCallable("transfer")
                 .call(data)
                 .addOnSuccessListener(httpsCallableResult -> {
                     BusinessActivity.businessEvent(outBox);
+                    requestQueue.cancelAll(TAG);
+
                     profile.getWallet().setBalance("0");
-                    progressCat.setVisibility(View.INVISIBLE);
-                    balance.setVisibility(View.VISIBLE);
-                    balanceUSD.setVisibility(View.VISIBLE);
-                    if (active) {
-                        draw(profile);
-                    }
+                    fireProfile();
+                    balance.setText(profile.getWallet().getBalance());
+
+                    enableTransfer(false);
+                    transferInProgress = false;
+                    hideProgress();
                 })
                 .addOnFailureListener(e -> {
-                    progressCat.setVisibility(View.INVISIBLE);
-                    balance.setVisibility(View.VISIBLE);
-                    balanceUSD.setVisibility(View.VISIBLE);
+                    transferInProgress = false;
+                    hideProgress();
                     enableTransfer(true);
                 });
     }
 
+    private void showProgress() {
+        if (!isFinishing() && progressCat != null && balance != null && balanceUSD != null) {
+            balance.setVisibility(View.INVISIBLE);
+            balanceUSD.setVisibility(View.INVISIBLE);
+            progressCat.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideProgress() {
+        if (!isFinishing() && progressCat != null && balance != null && balanceUSD != null
+                && (transferInProgress == null || !transferInProgress)) {
+            progressCat.setVisibility(View.INVISIBLE);
+            balance.setVisibility(View.VISIBLE);
+            balanceUSD.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void draw(final Profile profile) {
         drawToolbar();
-        if (profile.getWallet().getAddressToRefund() != null)
-            addressToSendEditor.setText(profile.getWallet().getAddressToRefund());
-
+        //if (profile.getWallet().getAddressToRefund() != null)
+        //   addressToSendEditor.setText(profile.getWallet().getAddressToRefund());
 
         final Wallet wallet = profile.getWallet();
         BigDecimal balance = scale(wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO);

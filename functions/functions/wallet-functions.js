@@ -30,7 +30,7 @@ exports.send = async request => {
 
     if(!request.transferable) {
         // transfer money
-        if(!response || balance.le(wavesFee)) return;
+        if(!response || balance.lt(wavesFee)) return;
         request.transferable = balance.minus(wavesFee);
     } else {
         // pay for service

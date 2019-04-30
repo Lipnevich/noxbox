@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/demonstrationMoving"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#83000000"
+    android:visibility="gone">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/navigatorMovingDemonstration"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/primary"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="8dp">
+
+        <ImageButton
+            android:id="@+id/navigationImageMovingDemonstration"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/fui_transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/navigation"
+            android:tint="@color/secondary"
+            android:visibility="visible" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/verificationMovingDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="32dp"
+        android:scaleType="center"
+        android:src="@drawable/eye"
+        android:tint="@color/secondary"
+        android:visibility="visible"
+        app:fabSize="auto"
+        app:maxImageSize="48dp" />
+
+    <ImageButton
+        android:id="@+id/chatMovingDemonstration"
+        style="@style/IconButtonStyle"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="18dp"
+        android:background="@color/fui_transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/chat"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/textChatMovingDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/freeChat"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/small" />
+
+    <TextView
+        android:id="@+id/textNavigatorMovingDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textChatMovingDemonstration"
+        android:text="@string/buildRoute"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/small" />
+
+    <TextView
+        android:id="@+id/textVerificationMovingDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/verifyAppiarance"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/small" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowChatMovingDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowNavigatorMovingDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowVerificationMovingDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>

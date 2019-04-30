@@ -1,111 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <include layout="@layout/fragment_offline" />
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
-        android:elevation="4dp"
-        app:contentInsetStart="0dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            android:elevation="4dp"
+            app:contentInsetStart="0dp">
 
-            <ImageButton
-                android:id="@+id/homeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/fui_transparent"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="16dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/arrow_back" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/secondary"
-                android:textSize="@dimen/text_size" />
+                <ImageButton
+                    android:id="@+id/homeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/fui_transparent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="16dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/arrow_back" />
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/text_size" />
 
 
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/tutorialViewPager"
-                style="@style/TextButtonStyle"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="56dp"
-                android:text="@string/tutorial" />
-
-            <include layout="@layout/item_divider_about_application" />
-
-            <Button
-                android:id="@+id/promoVideoView"
-                style="@style/TextButtonStyle"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/start_promo_video" />
-
-            <include layout="@layout/item_divider_about_application" />
-
-            <Button
-                android:id="@+id/rules"
-                style="@style/TextButtonStyle"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/rules" />
-
-            <include layout="@layout/item_divider_about_application" />
-
-            <Button
-                android:id="@+id/privacyPolicy"
-                style="@style/TextButtonStyle"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/privacyPolicy" />
-
-        </LinearLayout>
-
-
-    </ScrollView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/version"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/primary"
-                android:textSize="@dimen/text_size"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:orientation="vertical">
 
-    </RelativeLayout>
-</LinearLayout>
+                <Button
+                    android:id="@+id/tutorialViewPager"
+                    style="@style/TextButtonStyle"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="56dp"
+                    android:text="@string/tutorial" />
+
+                <include layout="@layout/item_divider_about_application" />
+
+                <Button
+                    android:id="@+id/promoVideoView"
+                    style="@style/TextButtonStyle"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/start_promo_video" />
+
+                <include layout="@layout/item_divider_about_application" />
+
+                <Button
+                    android:id="@+id/rules"
+                    style="@style/TextButtonStyle"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/rules" />
+
+                <include layout="@layout/item_divider_about_application" />
+
+                <Button
+                    android:id="@+id/privacyPolicy"
+                    style="@style/TextButtonStyle"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/privacyPolicy" />
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/primary"
+                    android:textSize="@dimen/text_size"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+</RelativeLayout>

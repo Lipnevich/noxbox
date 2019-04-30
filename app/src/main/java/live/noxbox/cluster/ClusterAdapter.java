@@ -20,9 +20,12 @@ import live.noxbox.model.Noxbox;
 import live.noxbox.model.NoxboxType;
 import live.noxbox.model.ProfileRatings;
 import live.noxbox.model.Rating;
+import live.noxbox.model.TravelMode;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
+import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 
 public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterViewHolder> {
 
@@ -39,7 +42,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         notifyItemInserted(position);
     }
 
-    public void remove(int position){
+    public void remove(int position) {
         clusterItems.remove(position);
         notifyItemRemoved(position);
     }
@@ -95,6 +98,19 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         clusterViewHolder.travelModeImage.setImageResource(travelModeImage);
         clusterViewHolder.role.setText(role);
 
+
+        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
+                    noxbox.getPosition(),
+                    profile().getPosition(),
+                    profile().getTravelMode()));
+            String timeTxt = getFormatTimeFromMillis(progressInMinutes * 60000, activity.getResources
+                    ());
+            clusterViewHolder.timeToTravel.setText(timeTxt);
+        } else {
+            clusterViewHolder.timeToTravel.setText("");
+        }
+
         clusterViewHolder.rootView.setOnClickListener(v -> {
             profile().setViewed(noxbox);
             Router.startActivity(activity, DetailedActivity.class);
@@ -113,6 +129,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
         TextView price;
         TextView rating;
 
+        TextView timeToTravel;
         ImageView travelModeImage;
         TextView role;
 
@@ -124,6 +141,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
             price = layout.findViewById(R.id.price);
             rating = layout.findViewById(R.id.rating);
 
+            timeToTravel = layout.findViewById(R.id.timeToTravel);
             travelModeImage = layout.findViewById(R.id.travelModeImage);
             role = layout.findViewById(R.id.role);
 

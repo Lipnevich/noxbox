@@ -7,7 +7,7 @@
     android:clipToPadding="false">
 
     <include layout="@layout/dialog_fragment_noxbox_type_list" />
-
+    <include layout="@layout/fragment_offline" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

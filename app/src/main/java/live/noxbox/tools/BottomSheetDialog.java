@@ -52,7 +52,7 @@ public class BottomSheetDialog {
     }
 
 
-    public static void openNameNotVerifySheetDialog(final Activity activity){
+    public static void openNameNotVerifySheetDialog(final Activity activity) {
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_not_verify_name, null);
         final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
         dialog.setContentView(view);

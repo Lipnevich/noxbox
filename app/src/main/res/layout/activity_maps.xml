@@ -121,39 +121,32 @@
         </RelativeLayout>
 
 
-        <android.support.design.widget.CoordinatorLayout
-            android:id="@+id/coordinatorLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/locationButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|bottom"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/my_location"
+            android:tint="@color/secondary"
+            android:visibility="gone"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/locationButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|bottom"
-                android:layout_marginStart="12dp"
-                android:layout_marginBottom="32dp"
-                android:src="@drawable/my_location"
-                android:tint="@color/secondary"
-                android:visibility="gone"
-                app:fabSize="auto"
-                app:maxImageSize="48dp" />
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/customFloatingView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="32dp"
-                android:scaleType="center"
-                android:src="@drawable/add"
-                android:tint="@color/secondary"
-                android:visibility="gone"
-                app:fabSize="auto"
-                app:maxImageSize="48dp" />
-
-        </android.support.design.widget.CoordinatorLayout>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/customFloatingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="32dp"
+            android:scaleType="center"
+            android:src="@drawable/add"
+            android:tint="@color/secondary"
+            android:visibility="gone"
+            app:fabSize="auto"
+            app:maxImageSize="48dp" />
 
         <LinearLayout
             android:id="@+id/container"
@@ -247,307 +240,13 @@
 
     </fragment>
 
-    <RelativeLayout
-        android:id="@+id/demonstrationAvailable"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#83000000"
-        android:visibility="gone">
+    <include layout="@layout/demonstration_available" />
 
+    <include layout="@layout/demonstration_moving" />
 
-        <ImageView
-            android:id="@+id/menuAvailableDemonstration"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/circular_button"
-            android:clickable="true"
-            android:elevation="8dp"
-            android:focusable="true"
-            android:scaleType="center"
-            android:src="@drawable/menu"
-            android:visibility="visible" />
+    <include layout="@layout/fragment_offline" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/locationAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginBottom="32dp"
-            android:src="@drawable/my_location"
-            android:tint="@color/secondary"
-            android:visibility="visible"
-            app:fabSize="auto"
-            app:maxImageSize="48dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/contractAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="32dp"
-            android:scaleType="center"
-            android:src="@drawable/add"
-            android:tint="@color/secondary"
-            android:visibility="visible"
-            app:fabSize="auto"
-            app:maxImageSize="48dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/filtersAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_filter"
-            android:tint="@color/secondary"
-            android:visibility="visible"
-            app:fabSize="auto"
-            app:maxImageSize="48dp" />
-
-        <live.noxbox.ui.RoleSwitcherLayout
-            android:id="@+id/roleSwitcherAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp" />
-
-        <TextView
-            android:id="@+id/textMenuAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="124dp"
-            android:text="@string/menu"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/big" />
-
-        <TextView
-            android:id="@+id/textMenuAvailableDemonstrationProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textMenuAvailableDemonstration"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/yourProfile"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small" />
-
-        <TextView
-            android:id="@+id/textMenuAvailableDemonstrationWallet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textMenuAvailableDemonstrationProfile"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/yourWallet"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small" />
-
-        <TextView
-            android:id="@+id/textMenuAvailableDemonstrationSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textMenuAvailableDemonstrationWallet"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/yourHistory"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small" />
-
-        <TextView
-            android:id="@+id/textFiltersAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textMenuAvailableDemonstrationSettings"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="80dp"
-            android:text="@string/filters"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/big" />
-
-        <TextView
-            android:id="@+id/textFiltersAvailableDemonstrationDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textFiltersAvailableDemonstration"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="80dp"
-            android:text="@string/filterDescription"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small" />
-
-        <TextView
-            android:id="@+id/textLocationAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="56dp"
-            android:layout_marginBottom="146dp"
-            android:text="@string/location"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/big" />
-
-        <TextView
-            android:id="@+id/textContractAvailableDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="56dp"
-            android:layout_marginBottom="186dp"
-            android:text="@string/contract"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/big" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowMenuAvailableDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowFiltersAvailableDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowLocationAvailableDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowContractAvailableDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowRoleSwitcherAvailableDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/demonstrationMoving"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#83000000"
-        android:visibility="gone">
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/navigatorMovingDemonstration"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:visibility="visible"
-            app:cardBackgroundColor="@color/primary"
-            app:cardCornerRadius="28dp"
-            app:cardElevation="8dp">
-
-            <ImageButton
-                android:id="@+id/navigationImageMovingDemonstration"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="4dp"
-                android:background="@color/fui_transparent"
-                android:scaleType="fitCenter"
-                android:src="@drawable/navigation"
-                android:tint="@color/secondary"
-                android:visibility="visible" />
-        </android.support.v7.widget.CardView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/verificationMovingDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="12dp"
-            android:layout_marginBottom="32dp"
-            android:scaleType="center"
-            android:src="@drawable/eye"
-            android:tint="@color/secondary"
-            android:visibility="visible"
-            app:fabSize="auto"
-            app:maxImageSize="48dp" />
-
-        <ImageButton
-            android:id="@+id/chatMovingDemonstration"
-            style="@style/IconButtonStyle"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="18dp"
-            android:background="@color/fui_transparent"
-            android:scaleType="fitCenter"
-            android:src="@drawable/chat"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/textChatMovingDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/freeChat"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small" />
-
-        <TextView
-            android:id="@+id/textNavigatorMovingDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/textChatMovingDemonstration"
-            android:text="@string/buildRoute"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small" />
-
-        <TextView
-            android:id="@+id/textVerificationMovingDemonstration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/verifyAppiarance"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/small" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowChatMovingDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowNavigatorMovingDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <live.noxbox.ui.ArrowView
-            android:id="@+id/arrowVerificationMovingDemonstration"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </RelativeLayout>
+    <include layout="@layout/fragment_off_gps" />
 
     <RelativeLayout
         android:id="@+id/requestUpdateLayout"
@@ -562,9 +261,9 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/updateApp"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
             android:text="@string/newVersionAvailable"
             android:textColor="@color/secondary"
-            android:layout_marginBottom="24dp"
             android:textSize="@dimen/big" />
 
         <Button

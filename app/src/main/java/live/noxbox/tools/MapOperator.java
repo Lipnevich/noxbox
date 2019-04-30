@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import live.noxbox.R;
+import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.detailed.DetailedActivity;
 import live.noxbox.cluster.NoxboxMarker;
@@ -65,8 +66,9 @@ public class MapOperator {
     }
 
     private volatile static boolean wasMapPositionUpdated = false;
+
     public static void enterTheMap(GoogleMap googleMap, Activity activity) {
-        if(wasMapPositionUpdated) return;
+        if (wasMapPositionUpdated) return;
 
         if (isLocationPermissionGranted(activity.getApplicationContext())) {
             getDeviceLocation(profile(), googleMap, activity);
@@ -208,6 +210,14 @@ public class MapOperator {
         LatLng latLng = googleMap.getCameraPosition().target;
 
         return Position.from(latLng);
+    }
+
+    public static void animateCameraToCurrentCountry(Profile profile, GoogleMap googleMap) {
+        if (profile.getPosition().getLatitude() == 0.0 && profile.getPosition().getLongitude() == 0.0) {
+            if (AuthActivity.countryForStart != null) {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(AuthActivity.countryForStart, googleMap.getCameraPosition().zoom));
+            }
+        }
     }
 
 }
