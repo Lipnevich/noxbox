@@ -1,98 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    android:layout_height="match_parent">
+    <include layout="@layout/fragment_offline" />
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/primary"
-        app:contentInsetStart="0dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
+            app:contentInsetStart="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/homeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:padding="16dp"
+                    android:src="@drawable/arrow_back" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/services"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/text_size" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/sort"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:padding="16dp"
+                        android:src="@drawable/sort"
+                        android:tint="@color/secondary" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/homeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:padding="16dp"
-                android:src="@drawable/arrow_back" />
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            tools:context=".ClusterItemsActivity">
 
             <TextView
+                android:id="@+id/supplyTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/services"
-                android:textColor="@color/secondary"
-                android:textSize="@dimen/text_size" />
+                android:text="@string/supplyServices"
+                android:textColor="@color/google_text"
+                android:textSize="@dimen/text_title" />
 
-            <RelativeLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/supplyList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical" />
 
-                <ImageView
-                    android:id="@+id/sort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:padding="16dp"
-                    android:src="@drawable/sort"
-                    android:tint="@color/secondary" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/demandTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/demandServices"
+                android:textColor="@color/google_text"
+                android:textSize="@dimen/text_title" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/demandList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical" />
 
         </LinearLayout>
-    </android.support.v7.widget.Toolbar>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp"
-        tools:context=".ClusterItemsActivity">
-
-        <TextView
-            android:id="@+id/supplyTitle"
-            android:text="@string/supplyServices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/google_text"
-            android:textSize="@dimen/text_title" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/supplyList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical" />
-
-        <TextView
-            android:id="@+id/demandTitle"
-            android:text="@string/demandServices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/google_text"
-            android:textSize="@dimen/text_title" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/demandList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="vertical" />
-
     </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

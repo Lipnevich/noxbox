@@ -130,4 +130,6 @@
             android:layout_gravity="center"
             android:layout_margin="8dp" />
     </LinearLayout>
+
+    <include layout="@layout/fragment_offline" />
 </android.support.design.widget.CoordinatorLayout>

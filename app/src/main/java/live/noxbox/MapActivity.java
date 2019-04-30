@@ -14,7 +14,6 @@
 package live.noxbox;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -23,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -56,7 +56,6 @@ import live.noxbox.states.Moving;
 import live.noxbox.states.Performing;
 import live.noxbox.states.Requesting;
 import live.noxbox.states.State;
-import live.noxbox.tools.ConfirmationMessage;
 import live.noxbox.tools.ExchangeRate;
 import live.noxbox.tools.Router;
 import live.noxbox.tools.exceptions.LocationException;
@@ -70,8 +69,8 @@ import static live.noxbox.database.AppCache.availableNoxboxes;
 import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.fireProfile;
 import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.services.ConnectivityManager.checkGpsEnabled;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
-import static live.noxbox.tools.ConfirmationMessage.messageGps;
 import static live.noxbox.tools.MapOperator.animateCameraToCurrentCountry;
 import static live.noxbox.tools.MapOperator.enterTheMap;
 import static live.noxbox.tools.MapOperator.setupMap;
@@ -79,7 +78,6 @@ import static live.noxbox.tools.ReferrerCatcher.clearReferrer;
 import static live.noxbox.tools.ReferrerCatcher.referrer;
 import static live.noxbox.tools.location.LocationOperator.getDeviceLocation;
 import static live.noxbox.tools.location.LocationOperator.initLocationProviderClient;
-import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGranted;
 import static live.noxbox.tools.location.LocationOperator.updateLocation;
 import static live.noxbox.tools.location.LocationUpdater.KEY_REQUESTING_LOCATION_UPDATES;
 import static live.noxbox.tools.location.LocationUpdater.REQUEST_CHECK_LOCATION_SETTINGS;
@@ -101,8 +99,7 @@ public class MapActivity extends DemonstrationActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.MapTheme);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-        // WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         super.onCreate(savedInstanceState);
         initCrashReporting();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -135,16 +132,11 @@ public class MapActivity extends DemonstrationActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        checkGpsEnabled(this);
         if (NetworkReceiver.isOnline(this)) {
             AppCache.startListening();
-        } else {
-            ConfirmationMessage.messageOffline(this);
         }
-        if (isLocationPermissionGranted(this)) {
-            if (!isGpsEnabled()) {
-                messageGps(this);
-            }
-        }
+
         locationReceiver = new LocationReceiver(this);
         registerReceiver(locationReceiver, new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION));
         googleApiClient.connect();
@@ -242,13 +234,6 @@ public class MapActivity extends DemonstrationActivity implements
             }
         }
     }
-
-
-    protected boolean isGpsEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -414,4 +399,5 @@ public class MapActivity extends DemonstrationActivity implements
         findViewById(R.id.customFloatingView).setVisibility(View.GONE);
         findViewById(R.id.container).setVisibility(View.GONE);
     }
+
 }

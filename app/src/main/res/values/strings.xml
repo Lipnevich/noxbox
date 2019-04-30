@@ -81,7 +81,7 @@
     <string name="chat">Chat</string>
     <string name="isOffline">No network connection</string>
     <string name="enable">Connect</string>
-    <string name="isGps">No GPS signal</string>
+    <string name="isNotGps">No GPS signal</string>
     <!--line agreement-->
     <string name="agreement">I agree to the %1$s and %2$s</string>
     <string name="authRules">Term of services</string>

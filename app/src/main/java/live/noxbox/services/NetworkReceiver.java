@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 
 import live.noxbox.database.AppCache;
-import live.noxbox.tools.ConfirmationMessage;
+
+import static live.noxbox.services.ConnectivityManager.hideOffline;
+import static live.noxbox.services.ConnectivityManager.showOffline;
 
 public class NetworkReceiver extends BroadcastReceiver {
 
@@ -20,10 +22,10 @@ public class NetworkReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(isOnline(activity)){
-            ConfirmationMessage.dismissOfflineMessage();
+            hideOffline();
             AppCache.startListening();
         }else{
-            ConfirmationMessage.messageOffline(activity);
+            showOffline(activity);
         }
     }
     public static boolean isOnline(Activity activity) {

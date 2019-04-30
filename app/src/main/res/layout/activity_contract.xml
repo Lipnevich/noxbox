@@ -447,6 +447,6 @@
 
         </LinearLayout>
     </ScrollView>
-
+    <include layout="@layout/fragment_offline" />
     <include layout="@layout/dialog_fragment_noxbox_type_list" />
 </RelativeLayout>

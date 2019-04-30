@@ -76,7 +76,7 @@
     <string name="chat">Чат</string>
     <string name="isOffline">Нет подключения к сети</string>
     <string name="enable">Включить</string>
-    <string name="isGps">Нет сигнала GPS</string>
+    <string name="isNotGps">Нет сигнала GPS</string>
     <!--строка соглашения-->
     <string name="agreement">Я прочел и согласен с %1$s и %2$s</string>
     <string name="authRules">Правилами</string>

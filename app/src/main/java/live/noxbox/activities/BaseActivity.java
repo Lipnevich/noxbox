@@ -14,6 +14,8 @@ import live.noxbox.tools.ProgressDialogFragment;
 import live.noxbox.tools.Router;
 
 import static live.noxbox.Constants.FIRST_RUN_KEY;
+import static live.noxbox.services.ConnectivityManager.checkInternetConnection;
+import static live.noxbox.services.ConnectivityManager.hideConnectivityMessages;
 import static live.noxbox.tools.BalanceChecker.cancelBalanceUpdate;
 
 public abstract class BaseActivity extends NotificationActivity {
@@ -26,6 +28,18 @@ public abstract class BaseActivity extends NotificationActivity {
         super.onResume();
         networkReceiver = new NetworkReceiver(this);
         registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        checkInternetConnection(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        hideConnectivityMessages();
+        try {
+            unregisterReceiver(networkReceiver);
+        } catch (IllegalArgumentException e) {
+            Crashlytics.logException(e);
+        }
     }
 
     @Override
@@ -34,17 +48,6 @@ public abstract class BaseActivity extends NotificationActivity {
         cancelBalanceUpdate();
         clearProgressDialog();
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            unregisterReceiver(networkReceiver);
-        } catch (IllegalArgumentException e) {
-            Crashlytics.logException(e);
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();

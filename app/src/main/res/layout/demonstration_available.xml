@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/demonstrationAvailable"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#83000000"
+    android:visibility="gone">
+
+
+    <ImageView
+        android:id="@+id/menuAvailableDemonstration"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/circular_button"
+        android:clickable="true"
+        android:elevation="8dp"
+        android:focusable="true"
+        android:scaleType="center"
+        android:src="@drawable/menu"
+        android:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/locationAvailableDemonstration"
+        app:fabSize="auto"
+        app:maxImageSize="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginBottom="32dp"
+        android:src="@drawable/my_location"
+        android:tint="@color/secondary"
+        android:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/contractAvailableDemonstration"
+        app:fabSize="auto"
+        app:maxImageSize="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="32dp"
+        android:scaleType="center"
+        android:src="@drawable/add"
+        android:tint="@color/secondary"
+        android:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/filtersAvailableDemonstration"
+        app:fabSize="auto"
+        app:maxImageSize="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="center"
+        android:src="@drawable/ic_filter"
+        android:tint="@color/secondary"
+        android:visibility="visible" />
+
+    <live.noxbox.ui.RoleSwitcherLayout
+        android:id="@+id/roleSwitcherAvailableDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp" />
+
+    <TextView
+        android:id="@+id/textMenuAvailableDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="124dp"
+        android:text="@string/menu"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/big" />
+
+    <TextView
+        android:id="@+id/textMenuAvailableDemonstrationProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textMenuAvailableDemonstration"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/yourProfile"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/small" />
+
+    <TextView
+        android:id="@+id/textMenuAvailableDemonstrationWallet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textMenuAvailableDemonstrationProfile"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/yourWallet"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/small" />
+
+    <TextView
+        android:id="@+id/textMenuAvailableDemonstrationSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textMenuAvailableDemonstrationWallet"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/yourHistory"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/small" />
+
+    <TextView
+        android:id="@+id/textFiltersAvailableDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textMenuAvailableDemonstrationSettings"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="80dp"
+        android:text="@string/filters"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/big" />
+
+    <TextView
+        android:id="@+id/textFiltersAvailableDemonstrationDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textFiltersAvailableDemonstration"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="80dp"
+        android:text="@string/filterDescription"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/small" />
+
+    <TextView
+        android:id="@+id/textLocationAvailableDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="56dp"
+        android:layout_marginBottom="146dp"
+        android:text="@string/location"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/big" />
+
+    <TextView
+        android:id="@+id/textContractAvailableDemonstration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="186dp"
+        android:text="@string/contract"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/big" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowMenuAvailableDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowFiltersAvailableDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowLocationAvailableDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowContractAvailableDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <live.noxbox.ui.ArrowView
+        android:id="@+id/arrowRoleSwitcherAvailableDemonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</RelativeLayout>
