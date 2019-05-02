@@ -93,4 +93,8 @@ public class BusinessActivity extends AppCompatActivity {
         FirebaseAnalytics.getInstance(context).logEvent(event.name(), bundle);
     }
 
+    public static void businessEvent(String promotionEvent) {
+        FirebaseAnalytics.getInstance(context).logEvent(promotionEvent, new Bundle());
+    }
+
 }

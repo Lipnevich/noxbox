@@ -52,6 +52,7 @@ import live.noxbox.tools.Router;
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.analitics.BusinessEvent.outBox;
 import static live.noxbox.database.AppCache.fireProfile;
+import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.AppCache.showPriceInUsd;
 import static live.noxbox.tools.MoneyFormatter.format;
 import static live.noxbox.tools.MoneyFormatter.scale;
@@ -99,6 +100,10 @@ public class WalletActivity extends BaseActivity {
                 .load(R.drawable.progress_cat)
                 .apply(RequestOptions.overrideOf(progressDiameter, progressDiameter))
                 .into(progressCat);
+
+        if (profile().getWallet().getAddressToRefund() != null)
+            addressToSendEditor.setText(profile().getWallet().getAddressToRefund());
+
     }
 
     @Override
@@ -276,8 +281,6 @@ public class WalletActivity extends BaseActivity {
 
     private void draw(final Profile profile) {
         drawToolbar();
-        //if (profile.getWallet().getAddressToRefund() != null)
-        //   addressToSendEditor.setText(profile.getWallet().getAddressToRefund());
 
         final Wallet wallet = profile.getWallet();
         BigDecimal balance = scale(wallet.getBalance() != null ? new BigDecimal(wallet.getBalance()) : BigDecimal.ZERO);
