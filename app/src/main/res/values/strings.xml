@@ -312,5 +312,8 @@
     <string name="buildRoute">Build route</string>
     <string name="verifyAppiarance">Confirm appearance of another member</string>
     <string name="newVersionAvailable">New version available</string>
+    <string name="flowers">Flowers</string>
+    <string name="flowersDelivery">Flowers deliverer</string>
+    <string name="flowersDescription">Beautiful bouquet of fresh flowers</string>
 
 </resources>

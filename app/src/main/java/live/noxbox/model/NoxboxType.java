@@ -13,7 +13,8 @@ public enum NoxboxType {
     cleaning(7, R.string.cleaning, R.string.cleaner, R.drawable.ic_cleaning_supply, R.drawable.ic_cleaning_demand, R.drawable.illustration_cleaning, R.string.cleaningDescription),
     lawyer(8, R.string.lawyer, R.string.lawyer, R.drawable.ic_lawyer_supply, R.drawable.ic_lawyer_demand, R.drawable.illustration_lawyer, R.string.lawyerDescription),
     rentRoom(9, R.string.rentRoom, R.string.housekeeper, R.drawable.ic_rent_room_supply, R.drawable.ic_rent_room_demand, R.drawable.illustration_rent_room, R.string.rentRoomDescription),
-    redirect(10, R.string.redirectToPlayMarket, R.string.none, R.drawable.ic_play_market, R.drawable.ic_play_market, 0, 0);
+    flowers(10, R.string.flowers, R.string.flowersDelivery, R.drawable.ic_flowers_supply, R.drawable.ic_flowers_demand, R.drawable.illustration_flowers, R.string.flowersDescription),
+    redirect(11, R.string.redirectToPlayMarket, R.string.none, R.drawable.ic_play_market, R.drawable.ic_play_market, 0, 0);
 
     private int id;
     private int name;

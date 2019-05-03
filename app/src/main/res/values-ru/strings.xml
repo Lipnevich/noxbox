@@ -313,6 +313,9 @@
     <string name="buildRoute">Построить маршрут</string>
     <string name="verifyAppiarance">Подтвердите внешность другого участника</string>
     <string name="newVersionAvailable">Новая версия доступна</string>
+    <string name="flowers">Цветы</string>
+    <string name="flowersDelivery">Доставщик цветов</string>
+    <string name="flowersDescription">Красивый букет свежих цветов</string>
 
 
 </resources>
