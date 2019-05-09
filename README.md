@@ -1,6 +1,6 @@
-# Noxbox <img src="https://noxbox.io/img/logo.png" align="right" width="100">
+# Noxbox <img src="https://noxbox.live/img/logo.png" align="right" width="100">
 
-Mobile applications for [Payer][4] and [Performer][5], site and crypto payments of Noxbox platform <br/>
+Mobile application [4], site and crypto payments of Noxbox platform <br/>
 Site [noxbox.io][2] <br/>
 Promo [video][3]
 
@@ -67,7 +67,6 @@ Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73 <br/>
 
 
 [1]: http://www.apache.org/licenses/LICENSE-2.0
-[2]: https://noxbox.io/
+[2]: https://noxbox.live/
 [3]: https://youtu.be/E_Q1wTN27jk
-[4]: https://play.google.com/store/apps/details?id=by.nicolay.lipnevich.noxbox.payer.massage
-[5]: https://play.google.com/store/apps/details?id=by.nicolay.lipnevich.noxbox.performer.massage
+[4]: https://play.google.com/store/apps/details?id=live.noxbox
