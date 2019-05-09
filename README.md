@@ -1,4 +1,4 @@
-# Noxbox <img src="https://noxbox.live/img/logo.png" align="right" width="100">
+# NoxBox <img src="https://noxbox.live/img/logo.png" align="right" width="100">
 
 Mobile application [NoxBox][4] <br/>
 Site [noxbox.live][2] <br/>
@@ -60,7 +60,7 @@ Licensed under the [Apache License 2.0][1]
 	See the License for the specific language governing permissions and
 	limitations under the License.
 
-## Donate Noxbox
+## Donate NoxBox
 BTC : 36Gk11Sd7FwCCWbRMA2n8SvzYHrPAfXm7v <br/>
 ETH : 0x3e14acf74b9492e5abf02691754fda64d6283b8d <br/>
 Waves : 3PHEArHiPsE8Yq32UagdewzrupY6Ycw8M73 <br/>
