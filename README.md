@@ -1,7 +1,7 @@
 # Noxbox <img src="https://noxbox.live/img/logo.png" align="right" width="100">
 
-Mobile application [4], site and crypto payments of Noxbox platform <br/>
-Site [noxbox.io][2] <br/>
+Mobile application [NoxBox][4] <br/>
+Site [noxbox.live][2] <br/>
 Promo [video][3]
 
 ## On board
