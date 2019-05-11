@@ -190,6 +190,10 @@ public class Noxbox implements Comparable<Noxbox> {
         return party;
     }
 
+    public Profile getProfileWhoWait() {
+        return getProfileWhoComes().equals(owner) ? party : owner;
+    }
+
     public String getId() {
         if (id == null) {
             id = "";

@@ -402,7 +402,7 @@ public class DetailedActivity extends BaseActivity {
                     travelModeText.setText(R.string.waitingByAddress);
                 } else {
                     long minutes = getTimeInMinutesBetweenUsers(
-                            viewed.getPosition(),
+                            viewed.getProfileWhoWait().getPosition(),
                             viewed.getProfileWhoComes().getPosition(),
                             viewed.getProfileWhoComes().getTravelMode());
 
