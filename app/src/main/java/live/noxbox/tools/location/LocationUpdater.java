@@ -4,9 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.IntentSender;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.ApiException;

@@ -1,8 +1,9 @@
 package live.noxbox.notifications;
 
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import com.google.common.base.MoreObjects;
 

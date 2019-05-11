@@ -1,13 +1,14 @@
 package live.noxbox.menu.settings;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;

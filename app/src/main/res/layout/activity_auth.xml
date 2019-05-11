@@ -39,7 +39,7 @@
             android:padding="24dp">
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/googleAuth"
                 style="@style/CardViewAuthStyle">
 
@@ -62,9 +62,9 @@
                         android:text="@string/fui_sign_in_with_google" />
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:id="@+id/phoneAuth"
                 style="@style/CardViewAuthStyle">
 
@@ -87,7 +87,7 @@
                         android:text="@string/fui_sign_in_with_phone" />
                 </LinearLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"

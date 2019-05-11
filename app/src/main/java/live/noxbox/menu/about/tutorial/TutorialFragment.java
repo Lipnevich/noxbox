@@ -6,9 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import live.noxbox.R;
 
-public class TutorialFragment extends android.support.v4.app.Fragment {
+public class TutorialFragment extends Fragment {
 
     private static final String PAGE = "page";
 

@@ -3,8 +3,9 @@ package live.noxbox.menu.about;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import live.noxbox.BuildConfig;
 import live.noxbox.R;

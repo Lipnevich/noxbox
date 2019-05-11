@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.inputmethod.EditorInfo;
@@ -16,6 +14,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -111,7 +112,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void drawToolbar(Profile profile) {
-        ImageManager.createCircleProfilePhotoFromUrl(this, current().getNotMe(profile.getId()).getPhoto(), (ImageView) findViewById(R.id.photo));
+        ImageManager.createCircleProfilePhotoFromUrl(getApplicationContext(), current().getNotMe(profile.getId()).getPhoto(), (ImageView) findViewById(R.id.photo));
         findViewById(R.id.homeButton).setOnClickListener(v -> Router.finishActivity(ChatActivity.this));
         chatOpponentName.setText(profile.getCurrent().getNotMe(profile.getId()).getName());
     }

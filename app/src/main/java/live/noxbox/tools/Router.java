@@ -2,8 +2,9 @@ package live.noxbox.tools;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 
 import live.noxbox.R;
 

@@ -1,7 +1,8 @@
 package live.noxbox.menu.about.tutorial;
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 public class TutorialAdapter extends FragmentPagerAdapter {
 
@@ -10,7 +11,7 @@ public class TutorialAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public android.support.v4.app.Fragment getItem(int position) {
+    public Fragment getItem(int position) {
         return TutorialFragment.newInstance(++position);
     }
 

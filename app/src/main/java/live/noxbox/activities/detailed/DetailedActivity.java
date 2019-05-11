@@ -6,11 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -24,6 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
@@ -273,7 +274,7 @@ public class DetailedActivity extends BaseActivity {
         Profile other = me.getViewed().getNotMe(me.getId());
         if (!other.getName().isEmpty() && !other.getPhoto().isEmpty()) {
             profileLayout.setVisibility(View.VISIBLE);
-            ImageManager.createCircleProfilePhotoFromUrl(this, other.getPhoto(), profilePhoto);
+            ImageManager.createCircleProfilePhotoFromUrl(getApplicationContext(), other.getPhoto(), profilePhoto);
             profileName.setText(other.getName());
         } else {
             profileLayout.setVisibility(View.GONE);

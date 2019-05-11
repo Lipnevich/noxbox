@@ -5,7 +5,8 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 public class AvailableNoxboxesService extends Service {
     private final IBinder binder = new LocalBinder();

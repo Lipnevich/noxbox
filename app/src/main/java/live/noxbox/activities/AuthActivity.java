@@ -3,8 +3,6 @@ package live.noxbox.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
@@ -12,6 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,7 +27,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import live.noxbox.MapActivity;
@@ -75,14 +75,11 @@ public class AuthActivity extends BaseActivity {
                             Log.d(TAG, "lat " + lat);
                             Log.d(TAG, "lon " + lon);
                             countryForStart = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             Log.e(TAG, e.getMessage());
                             Crashlytics.logException(e);
-                            e.printStackTrace();
                         }
-                    }, error -> {
-                Log.e(TAG, error.getMessage());
-            });
+                    }, error -> Log.e(TAG, error.getMessage()));
 
             queue.add(stringRequest);
         }).start();

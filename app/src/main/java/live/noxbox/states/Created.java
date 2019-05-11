@@ -1,9 +1,9 @@
 package live.noxbox.states;
 
-import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import live.noxbox.MapActivity;
 import live.noxbox.R;

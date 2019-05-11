@@ -3,8 +3,9 @@ package live.noxbox.tools;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 import static android.content.res.Configuration.ORIENTATION_PORTRAIT;
 

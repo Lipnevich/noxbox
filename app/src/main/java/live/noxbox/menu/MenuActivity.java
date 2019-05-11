@@ -18,17 +18,18 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.material.navigation.NavigationView;
 import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -134,9 +135,9 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
 
 
             if (profile.getPhoto() == null) {
-                ImageManager.createCircleImageFromBitmap(activity, BitmapFactory.decodeResource(getResources(), R.drawable.human_profile), photoView);
+                ImageManager.createCircleImageFromBitmap(getApplicationContext(), BitmapFactory.decodeResource(getResources(), R.drawable.human_profile), photoView);
             } else {
-                ImageManager.createCircleProfilePhotoFromUrl(activity, profile.getPhoto(), photoView);
+                ImageManager.createCircleProfilePhotoFromUrl(getApplicationContext(), profile.getPhoto(), photoView);
             }
             if (!Strings.isNullOrEmpty(profile.getName())) {
                 nameView.setText(profile.getName());

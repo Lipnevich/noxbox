@@ -13,9 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.RemoteInput;
 import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.RemoteInput;
 
 import java.util.Map;
 
@@ -27,7 +28,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.services.MessagingService;
 
 import static android.content.Context.VIBRATOR_SERVICE;
-import static android.support.v4.app.NotificationCompat.VISIBILITY_PUBLIC;
+import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.NotificationType.message;
 

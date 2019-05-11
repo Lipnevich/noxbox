@@ -7,7 +7,7 @@
     <include layout="@layout/fragment_offline" />
 
     <include layout="@layout/fragment_off_gps" />
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -34,7 +34,7 @@
                 "com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             />
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/locationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

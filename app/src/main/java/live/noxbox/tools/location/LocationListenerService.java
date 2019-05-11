@@ -11,8 +11,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -191,6 +192,12 @@ public class LocationListenerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (locationManager != null && locationListener != null) {
+            locationManager.removeUpdates(locationListener);
+            locationListener = null;
+            locationManager = null;
+        }
+
         stopTimer();
     }
 

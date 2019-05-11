@@ -2,22 +2,22 @@ package live.noxbox.states;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +37,7 @@ import live.noxbox.services.MessagingService;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.location.ForegroundLocationListenerWorker;
 import live.noxbox.tools.location.LocationListenerService;
 
 import static live.noxbox.Constants.DEFAULT_MARKER_SIZE;
@@ -53,7 +54,8 @@ import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MarkerCreator.createCustomMarker;
 import static live.noxbox.tools.MarkerCreator.drawMovingMemberMarker;
 import static live.noxbox.tools.Router.startActivity;
-import static live.noxbox.tools.ServiceMonitoring.isMyServiceRunning;
+import static live.noxbox.tools.location.BackgroundLocationListenerWorker.startBackgroundLocationListenerWorker;
+import static live.noxbox.tools.location.ForegroundLocationListenerWorker.stopForegroundLocationListenerWorker;
 
 public class Moving implements State {
 
@@ -68,8 +70,8 @@ public class Moving implements State {
     private static View childMovingView;
     private static TextView timeView;
 
-    private static Position memberWhoMovingPosition;
-    private static Marker memberWhoMovingMarker;
+    public static Position memberWhoMovingPosition;
+    public static Marker memberWhoMovingMarker;
 
     private TextView totalUnreadView;
     private boolean initiated;
@@ -126,9 +128,12 @@ public class Moving implements State {
 
         if (defineProfileLocationListener(profile) && locationListenerService == null) {
             locationListenerService = new LocationListenerService(activity, googleMap, memberWhoMovingPosition, memberWhoMovingMarker, profile -> updateTimeView(profile, activity.getApplicationContext()));
-            if (!isMyServiceRunning(locationListenerService.getClass(), activity)) {
-                activity.startService(new Intent(activity, locationListenerService.getClass()));
-            }
+//            if (!isMyServiceRunning(locationListenerService.getClass(), activity)) {
+//                activity.startService(new Intent(activity, locationListenerService.getClass()));
+//            }
+            ForegroundLocationListenerWorker.provideMapComponentsForUpdating(activity, googleMap);
+            ForegroundLocationListenerWorker.startForegroundLocationListenerWorker(activity);
+
         } else if (positionListener == null) {
             GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
                 memberWhoMovingPosition = position;
@@ -210,7 +215,7 @@ public class Moving implements State {
     public void clearHandlers() {
         clearContainer();
         stopListenPosition(profile().getCurrent().getId());
-
+        //  activity.stopService(new Intent(activity, locationListenerService.getClass()));
         MapOperator.clearMapMarkerListener(googleMap);
 
         if (positionListener != null) {
@@ -230,6 +235,16 @@ public class Moving implements State {
             }
         }
         MessagingService.removeNotifications(activity);
+
+
+        stopForegroundLocationListenerWorker(activity);
+        if ((isNullOrZero(profile().getCurrent().getTimeOwnerVerified()) || isNullOrZero(profile().getCurrent().getTimePartyVerified()))
+                && isNullOrZero(profile().getCurrent().getTimeCanceledByOwner())
+                && isNullOrZero(profile().getCurrent().getTimeCanceledByParty())
+                && isNullOrZero(profile().getCurrent().getTimeOwnerRejected())
+                && isNullOrZero(profile().getCurrent().getTimePartyRejected())) {
+            startBackgroundLocationListenerWorker(activity.getApplicationContext());
+        }
     }
 
     private void clearContainer() {

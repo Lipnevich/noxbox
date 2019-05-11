@@ -24,7 +24,7 @@
         android:src="@drawable/menu"
         android:visibility="visible" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/locationAvailableDemonstration"
         app:fabSize="auto"
         app:maxImageSize="48dp"
@@ -38,7 +38,7 @@
         android:tint="@color/secondary"
         android:visibility="visible" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/contractAvailableDemonstration"
         app:fabSize="auto"
         app:maxImageSize="48dp"
@@ -54,7 +54,7 @@
         android:tint="@color/secondary"
         android:visibility="visible" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/filtersAvailableDemonstration"
         app:fabSize="auto"
         app:maxImageSize="48dp"

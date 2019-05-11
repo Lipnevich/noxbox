@@ -22,7 +22,7 @@ public class BottomSheetDialog {
     public static void openWalletAddressSheetDialog(final Activity activity, final Profile profile) {
         BusinessActivity.businessEvent(notEnoughMoney);
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_wallet_address, null);
-        final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
+        final com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(activity);
         dialog.setContentView(view);
         final TextView address = view.findViewById(R.id.walletAddress);
         address.setText(profile.getWallet().getAddress());
@@ -41,7 +41,7 @@ public class BottomSheetDialog {
     public static void openPhotoNotVerifySheetDialog(final Activity activity) {
         BusinessActivity.businessEvent(invalidPhoto);
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_not_verify_photo, null);
-        final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
+        final com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(activity);
         dialog.setContentView(view);
 
         view.findViewById(R.id.profilePhoto).setOnClickListener(v -> {
@@ -54,7 +54,7 @@ public class BottomSheetDialog {
 
     public static void openNameNotVerifySheetDialog(final Activity activity) {
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_sheet_not_verify_name, null);
-        final android.support.design.widget.BottomSheetDialog dialog = new android.support.design.widget.BottomSheetDialog(activity);
+        final com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(activity);
         dialog.setContentView(view);
 
         view.findViewById(R.id.profilePhoto).setOnClickListener(v -> {
