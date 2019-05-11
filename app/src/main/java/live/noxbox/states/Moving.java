@@ -9,9 +9,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -23,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.ChatActivity;
@@ -44,10 +43,7 @@ import static live.noxbox.Constants.DEFAULT_MARKER_SIZE;
 import static live.noxbox.database.AppCache.profile;
 import static live.noxbox.database.GeoRealtime.positionListener;
 import static live.noxbox.database.GeoRealtime.stopListenPosition;
-import static live.noxbox.model.MarketRole.demand;
-import static live.noxbox.model.MarketRole.supply;
 import static live.noxbox.model.Noxbox.isNullOrZero;
-import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.DateTimeFormatter.getFormatTimeFromMillis;
 import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 import static live.noxbox.tools.MapOperator.drawPath;
@@ -109,7 +105,7 @@ public class Moving implements State {
             initiated = true;
         }
 
-        if (!defineProfileLocationListener(profile)) {
+        if (!profile.getCurrent().getProfileWhoComes().equals(profile)) {
             provideNotification(NotificationType.moving, profile, activity.getApplicationContext());
         }
 
@@ -126,7 +122,7 @@ public class Moving implements State {
 
         MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
 
-        if (defineProfileLocationListener(profile) && locationListenerService == null) {
+        if (profile.getCurrent().getProfileWhoComes().equals(profile) && locationListenerService == null) {
             locationListenerService = new LocationListenerService(activity, googleMap, memberWhoMovingPosition, memberWhoMovingMarker, profile -> updateTimeView(profile, activity.getApplicationContext()));
 //            if (!isMyServiceRunning(locationListenerService.getClass(), activity)) {
 //                activity.startService(new Intent(activity, locationListenerService.getClass()));
@@ -280,28 +276,6 @@ public class Moving implements State {
         }
 
     }
-
-    private boolean defineProfileLocationListener(Profile profile) {
-        if (profile.equals(profile.getCurrent().getOwner())) {
-            if (profile.getCurrent().getOwner().getTravelMode() != none) {
-                if (profile.getCurrent().getRole() == supply) {
-                    return true;
-                } else {
-                    return profile.getCurrent().getParty().getTravelMode() == none;
-                }
-            }
-        } else {
-            if (profile.getCurrent().getParty().getTravelMode() != none) {
-                if (profile.getCurrent().getRole() == demand) {
-                    return true;
-                } else {
-                    return profile.getCurrent().getOwner().getTravelMode() == none;
-                }
-            }
-        }
-        return false;
-    }
-
 
     public static void updateTimeView(Profile profile, Context context) {
         if (movingView != null && childMovingView != null && timeView != null) {
