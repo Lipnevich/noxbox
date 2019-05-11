@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -26,8 +29,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
 
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
