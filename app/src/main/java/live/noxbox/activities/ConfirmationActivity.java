@@ -107,7 +107,7 @@ public class ConfirmationActivity extends BaseActivity {
                     profile.getCurrent().setTimePartyVerified(null);
                 } else {
                     profile.getCurrent().setTimePartyVerified(timeVerified);
-                    profile.getCurrent().setTimePartyVerified(null);
+                    profile.getCurrent().setTimeOwnerVerified(null);
                 }
                 updateNoxbox(onSuccess -> {
                     businessEvent(verification);
@@ -135,9 +135,11 @@ public class ConfirmationActivity extends BaseActivity {
                 long timeRejected = System.currentTimeMillis();
                 if (profile.getCurrent().getOwner().equals(profile)) {
                     profile.getCurrent().setTimeOwnerRejected(timeRejected);
+                    profile.getCurrent().setTimePartyVerified(null);
                     profile.getCurrent().setTimeRatingUpdated(timeRejected);
                 } else {
                     profile.getCurrent().setTimePartyRejected(timeRejected);
+                    profile.getCurrent().setTimeOwnerVerified(null);
                     profile.getCurrent().setTimeRatingUpdated(timeRejected);
                 }
 
