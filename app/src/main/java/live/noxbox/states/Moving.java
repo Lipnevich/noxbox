@@ -221,7 +221,6 @@ public class Moving implements State {
 
         googleMap.clear();
         memberWhoMovingMarker = null;
-        memberWhoMovingPosition = null;
         if (profile.getCurrent().getFinished()
                 || (!isNullOrZero(profile.getCurrent().getTimePartyVerified()) && !isNullOrZero(profile.getCurrent().getTimeOwnerVerified()))) {
             if (locationManager != null && locationListener != null) {

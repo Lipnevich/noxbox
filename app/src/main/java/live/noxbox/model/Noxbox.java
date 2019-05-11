@@ -56,8 +56,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private long timeAccepted;
     private long timeCanceledByOwner;
     private long timeCanceledByParty;
-    private long timeOwnerVerified;
-    private long timePartyVerified;
+    private Long timeOwnerVerified;
+    private Long timePartyVerified;
     private long timeOwnerRejected;
     private long timePartyRejected;
     private long timeOwnerDisliked;

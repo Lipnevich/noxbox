@@ -321,8 +321,14 @@ public class AppCache {
     }
 
     public static void updateNoxbox() {
+        updateNoxbox(NONE, NONE);
+    }
+    public static void updateNoxbox(Task onSuccess, Task onFailure) {
         if (!isProfileReady()) return;
-        Firestore.updateNoxbox(profile.getCurrent(), noxboxId -> executeUITasks(), NONE);
+        Firestore.updateNoxbox(profile.getCurrent(), noxboxId -> {
+            executeUITasks();
+            onSuccess.execute(noxboxId);
+        }, onFailure);
     }
 
     public static String showPriceInUsd(String currency, String price) {

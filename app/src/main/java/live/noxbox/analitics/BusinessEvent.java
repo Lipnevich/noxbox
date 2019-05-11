@@ -15,6 +15,7 @@ public enum BusinessEvent {
     accept,
     chatting,
     verification,
+    rejectPhoto,
     cancel,
     complete,
     tutorialLikes,

@@ -8,19 +8,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 
+import androidx.annotation.Nullable;
 import in.shadowfax.proswipebutton.ProSwipeButton;
 import live.noxbox.R;
-import live.noxbox.analitics.BusinessActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Router;
 
+import static live.noxbox.analitics.BusinessEvent.rejectPhoto;
 import static live.noxbox.analitics.BusinessEvent.verification;
+import static live.noxbox.database.AppCache.executeUITasks;
 import static live.noxbox.database.AppCache.updateNoxbox;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 
@@ -102,15 +102,25 @@ public class ConfirmationActivity extends BaseActivity {
             confirm.setArrowColor(getResources().getColor(R.color.fullTranslucent));
             new Handler().postDelayed(() -> {
                 long timeVerified = System.currentTimeMillis();
-                BusinessActivity.businessEvent(verification);
                 if (profile.equals(profile.getCurrent().getOwner())) {
                     profile.getCurrent().setTimeOwnerVerified(timeVerified);
+                    profile.getCurrent().setTimePartyVerified(null);
                 } else {
                     profile.getCurrent().setTimePartyVerified(timeVerified);
+                    profile.getCurrent().setTimePartyVerified(null);
                 }
-                profile.getCurrent().setConfirmationPhoto(null);
-                profile.getCurrent().setWasNotificationVerification(false);
-                updateNoxbox();
+                updateNoxbox(onSuccess -> {
+                    businessEvent(verification);
+                    profile.getCurrent().setConfirmationPhoto(null);
+                    profile.getCurrent().setWasNotificationVerification(false);
+                }, onFailure -> {
+                    if (profile.equals(profile.getCurrent().getOwner())) {
+                        profile.getCurrent().setTimeOwnerVerified(0l);
+                    } else {
+                        profile.getCurrent().setTimePartyVerified(0l);
+                    }
+                    executeUITasks();
+                });
                 Router.finishActivity(ConfirmationActivity.this);
             }, 0);
         });
@@ -123,16 +133,26 @@ public class ConfirmationActivity extends BaseActivity {
             confirm.setVisibility(View.GONE);
             new Handler().postDelayed(() -> {
                 long timeRejected = System.currentTimeMillis();
-                if (profile.getCurrent().getOwner().getId().equals(profile.getId())) {
+                if (profile.getCurrent().getOwner().equals(profile)) {
                     profile.getCurrent().setTimeOwnerRejected(timeRejected);
                     profile.getCurrent().setTimeRatingUpdated(timeRejected);
                 } else {
                     profile.getCurrent().setTimePartyRejected(timeRejected);
                     profile.getCurrent().setTimeRatingUpdated(timeRejected);
                 }
-                profile.getCurrent().setConfirmationPhoto(null);
-                profile.getCurrent().setWasNotificationVerification(false);
-                updateNoxbox();
+
+                updateNoxbox(onSuccess -> {
+                    businessEvent(rejectPhoto);
+                    profile.getCurrent().setConfirmationPhoto(null);
+                    profile.getCurrent().setWasNotificationVerification(false);
+                }, onFailure -> {
+                    if (profile.getCurrent().getOwner().equals(profile)) {
+                        profile.getCurrent().setTimeOwnerRejected(1l);
+                    } else {
+                        profile.getCurrent().setTimePartyRejected(1l);
+                    }
+                    executeUITasks();
+                });
                 Router.finishActivity(ConfirmationActivity.this);
             }, 0);
         });

@@ -12,11 +12,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,6 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import live.noxbox.Constants;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
@@ -85,6 +84,7 @@ public class AvailableNoxboxes implements State {
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
+        Moving.memberWhoMovingPosition = null;
         AvailableNoxboxes.googleMap = googleMap;
         this.activity = activity;
         if (locationUpdater == null && isLocationPermissionGranted(activity)) {
