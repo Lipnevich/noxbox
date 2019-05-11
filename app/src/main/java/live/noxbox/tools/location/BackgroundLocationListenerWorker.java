@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import java.util.concurrent.TimeUnit;
+
 import androidx.annotation.NonNull;
 import androidx.work.Constraints;
 import androidx.work.ExistingWorkPolicy;
@@ -18,16 +20,9 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import com.crashlytics.android.Crashlytics;
-
-import java.util.concurrent.TimeUnit;
-
-import live.noxbox.database.Firestore;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
-import live.noxbox.tools.Task;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static android.location.LocationManager.NETWORK_PROVIDER;
@@ -46,7 +41,7 @@ public class BackgroundLocationListenerWorker extends Worker {
         super(context, workerParams);
     }
 
-    public static final String TAG = "BackgroundLocationListenerWorker";
+    public static final String TAG = "BackgroundWorker";
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -67,17 +62,17 @@ public class BackgroundLocationListenerWorker extends Worker {
         noxboxId = profile().getNoxboxId();
         current = profile().getCurrent();
 
-        Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
-            @Override
-            public void execute(Noxbox noxbox) {
-                current = noxbox;
-            }
-        }, new Task<Exception>() {
-            @Override
-            public void execute(Exception exception) {
-                Crashlytics.logException(exception);
-            }
-        });
+//        Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
+//            @Override
+//            public void execute(Noxbox noxbox) {
+//                current.copy(noxbox);
+//            }
+//        }, new Task<Exception>() {
+//            @Override
+//            public void execute(Exception exception) {
+//                Crashlytics.logException(exception);
+//            }
+//        });
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {

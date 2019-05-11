@@ -11,6 +11,10 @@ import android.os.Bundle;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
+
+import java.util.concurrent.TimeUnit;
+
 import androidx.annotation.NonNull;
 import androidx.work.Constraints;
 import androidx.work.ExistingWorkPolicy;
@@ -19,11 +23,6 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import com.google.android.gms.maps.GoogleMap;
-
-import java.util.concurrent.TimeUnit;
-
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Position;
@@ -54,7 +53,7 @@ public class ForegroundLocationListenerWorker extends Worker {
         super(context, workerParams);
     }
 
-    public static final String TAG = "ForegroundLocationListenerWorker";
+    public static final String TAG = "ForegroundWorker";
 
     private LocationManager locationManager;
     private LocationListener locationListener;
