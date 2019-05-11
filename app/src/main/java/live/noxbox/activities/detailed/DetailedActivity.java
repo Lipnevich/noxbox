@@ -51,6 +51,7 @@ import live.noxbox.model.NoxboxState;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.Rating;
+import live.noxbox.model.TravelMode;
 import live.noxbox.states.Accepting;
 import live.noxbox.tools.AddressManager;
 import live.noxbox.tools.BalanceCalculator;
@@ -133,6 +134,7 @@ public class DetailedActivity extends BaseActivity {
     private Button cancelButton;
     private RelativeLayout certificateLayout;
     private RelativeLayout workSampleLayout;
+    private Position noxboxPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,6 +197,7 @@ public class DetailedActivity extends BaseActivity {
         certificateLayout = findViewById(R.id.certificateLayout);
         workSampleLayout = findViewById(R.id.workSampleLayout);
         gyroscopeObserver.addPanoramaImageView(illustration);
+        noxboxPosition = null;
 
         if (profile().getCurrent().getTimeRequested() == 0) {
             BusinessActivity.businessEvent(read);
@@ -215,8 +218,8 @@ public class DetailedActivity extends BaseActivity {
             if (profile.getViewed().getParty() == null) {
                 profile.getViewed().setParty(profile.publicInfo(profile.getViewed().getRole() == MarketRole.demand ? MarketRole.supply : MarketRole.demand, profile.getViewed().getType()));
             }
-            if (resultPosition != null && profile.getViewed() != null) {
-                profile.getViewed().setPosition(resultPosition);
+            if (noxboxPosition != null && profile.getViewed() != null) {
+                profile.getViewed().setPosition(noxboxPosition);
             }
             draw(profile);
             checkBalance(profile, DetailedActivity.this);
@@ -358,21 +361,21 @@ public class DetailedActivity extends BaseActivity {
     }
 
     private void drawWaitingTime(final Profile profile) {
-//        if (ContextCompat.checkSelfPermission(DetailedActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            return;
-//        }
-
         Noxbox viewed = profile.getViewed();
-        String noxboxPosition = viewed.getPosition().getLatitude() + ", " + viewed.getPosition().getLongitude();
+        String prePosition = viewed.getPosition().getLatitude() + ", " + viewed.getPosition().getLongitude();
         if (address.getText().length() < 1) {
-            address.setText(noxboxPosition);
+            address.setText(prePosition);
         }
 
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... voids) {
-                String address = AddressManager.provideAddressByPosition(getApplicationContext(), viewed.getPosition());
+                if(noxboxPosition == null) {
+                    noxboxPosition = NoxboxState.getState(viewed, profile) == NoxboxState.created ? viewed.getProfileWhoWait().getPosition() :
+                            viewed.getPosition();
+                }
+
+                String address = AddressManager.provideAddressByPosition(getApplicationContext(), noxboxPosition);
                 return address;
             }
 
@@ -388,21 +391,19 @@ public class DetailedActivity extends BaseActivity {
 
         switch (NoxboxState.getState(viewed, profile)) {
             case created: {
-                travelTypeImageTitle.setImageResource(viewed.getOwner().getTravelMode().getImage());
-                travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
-                if (viewed.getOwner().getHost() && viewed.getOwner().getTravelMode() == none) {
+                if (viewed.getProfileWhoWait().equals(viewed.getOwner())) {
+                    travelTypeImageTitle.setImageResource(TravelMode.none.getImage());
+                    travelTypeImage.setImageResource(TravelMode.none.getImage());
                     coordinatesSelect.setVisibility(View.GONE);
-                } else {
-                    coordinatesSelect.setVisibility(View.VISIBLE);
-                    coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
-                }
-
-                if (viewed.getOwner().getTravelMode() == none) {
                     travelTypeTitle.setText(R.string.byAddress);
                     travelModeText.setText(R.string.waitingByAddress);
                 } else {
+                    travelTypeImageTitle.setImageResource(viewed.getOwner().getTravelMode().getImage());
+                    travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
+                    coordinatesSelect.setVisibility(View.VISIBLE);
+                    coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
                     long minutes = getTimeInMinutesBetweenUsers(
-                            viewed.getProfileWhoWait().getPosition(),
+                            noxboxPosition != null ? noxboxPosition : viewed.getProfileWhoWait().getPosition(),
                             viewed.getProfileWhoComes().getPosition(),
                             viewed.getProfileWhoComes().getTravelMode());
 
@@ -410,18 +411,23 @@ public class DetailedActivity extends BaseActivity {
                     travelTypeTitle.setText(getString(R.string.across, timeTxt));
                     travelModeText.setText(R.string.willArriveAtTheAddress);
                 }
+
                 break;
             }
             case requesting:
             case accepting:
             case moving:
-                travelTypeImageTitle.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
-                travelTypeImage.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
+
                 coordinatesSelect.setVisibility(View.GONE);
-                if (viewed.getNotMe(profile.getId()).getTravelMode() == none) {
+                if (viewed.getMe(profile.getId()).equals(viewed.getProfileWhoComes())) {
+                    travelTypeImageTitle.setImageResource(TravelMode.none.getImage());
+                    travelTypeImage.setImageResource(TravelMode.none.getImage());
                     travelTypeTitle.setText(R.string.byAddress);
                     travelModeText.setText(R.string.waitingByAddress);
                 } else {
+                    travelTypeImageTitle.setImageResource(viewed.getMe(profile.getId()).getTravelMode().getImage());
+                    travelTypeImage.setImageResource(viewed.getMe(profile.getId()).getTravelMode().getImage());
+
                     long minutes = getTimeInMinutesBetweenUsers(
                             viewed.getPosition(),
                             viewed.getProfileWhoComes().getPosition(),
@@ -732,14 +738,13 @@ public class DetailedActivity extends BaseActivity {
         return true;
     }
 
-    private Position resultPosition;
-
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
-            resultPosition = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
-            profile().getViewed().setPosition(resultPosition);
+            noxboxPosition = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
+            profile().getViewed().setPosition(noxboxPosition);
+            drawWaitingTime(profile());
         }
 
     }

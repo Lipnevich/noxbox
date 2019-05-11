@@ -163,6 +163,7 @@ public class CoordinateActivity extends BaseActivity implements OnMapReadyCallba
         intent.putExtra(LAT, latLng.latitude);
         intent.putExtra(LNG, latLng.longitude);
         setResult(RESULT_OK, intent);
+        LocationOperator.actualMapTarget = CameraUpdateFactory.newLatLngZoom(latLng, googleMap.getCameraPosition().zoom);
         Router.finishActivity(CoordinateActivity.this);
     }
 
