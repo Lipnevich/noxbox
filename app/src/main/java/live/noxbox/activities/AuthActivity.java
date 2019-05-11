@@ -11,9 +11,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -29,6 +26,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.json.JSONObject;
 
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.database.AppCache;
@@ -76,10 +75,9 @@ public class AuthActivity extends BaseActivity {
                             Log.d(TAG, "lon " + lon);
                             countryForStart = new LatLng(Double.parseDouble(lat), Double.parseDouble(lon));
                         } catch (Exception e) {
-                            Log.e(TAG, e.getMessage());
                             Crashlytics.logException(e);
                         }
-                    }, error -> Log.e(TAG, error.getMessage()));
+                    }, error -> Crashlytics.log(Log.WARN, "locationByIP", "Failed to get IP"));
 
             queue.add(stringRequest);
         }).start();
