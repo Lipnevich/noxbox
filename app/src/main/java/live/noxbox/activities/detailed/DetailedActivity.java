@@ -20,12 +20,6 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.android.gms.maps.model.LatLng;
@@ -35,6 +29,11 @@ import com.google.firebase.auth.FirebaseUser;
 import java.math.BigDecimal;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.analitics.BusinessActivity;
@@ -74,7 +73,6 @@ import static live.noxbox.database.AppCache.stopListenNoxbox;
 import static live.noxbox.database.Firestore.isFinished;
 import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.model.Noxbox.isNullOrZero;
-import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
@@ -425,8 +423,8 @@ public class DetailedActivity extends BaseActivity {
                     travelTypeTitle.setText(R.string.byAddress);
                     travelModeText.setText(R.string.waitingByAddress);
                 } else {
-                    travelTypeImageTitle.setImageResource(viewed.getMe(profile.getId()).getTravelMode().getImage());
-                    travelTypeImage.setImageResource(viewed.getMe(profile.getId()).getTravelMode().getImage());
+                    travelTypeImageTitle.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
+                    travelTypeImage.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
 
                     long minutes = getTimeInMinutesBetweenUsers(
                             viewed.getPosition(),
