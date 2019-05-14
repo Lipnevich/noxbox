@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -20,13 +23,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.activities.ChatActivity;
 import live.noxbox.activities.ConfirmationActivity;
-import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.Message;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Position;
@@ -36,8 +36,7 @@ import live.noxbox.services.MessagingService;
 import live.noxbox.tools.MapOperator;
 import live.noxbox.tools.NavigatorManager;
 import live.noxbox.tools.Router;
-import live.noxbox.tools.location.ForegroundLocationListenerWorker;
-import live.noxbox.tools.location.LocationListenerService;
+import live.noxbox.tools.location.moving.ForegroundLocationListener;
 
 import static live.noxbox.Constants.DEFAULT_MARKER_SIZE;
 import static live.noxbox.database.AppCache.profile;
@@ -50,29 +49,27 @@ import static live.noxbox.tools.MapOperator.drawPath;
 import static live.noxbox.tools.MarkerCreator.createCustomMarker;
 import static live.noxbox.tools.MarkerCreator.drawMovingMemberMarker;
 import static live.noxbox.tools.Router.startActivity;
-import static live.noxbox.tools.location.BackgroundLocationListenerWorker.startBackgroundLocationListenerWorker;
-import static live.noxbox.tools.location.ForegroundLocationListenerWorker.stopForegroundLocationListenerWorker;
+import static live.noxbox.tools.location.moving.MovingWorker.cancelWorkerByTag;
+import static live.noxbox.tools.location.moving.MovingWorker.runBackgroundLocationWorker;
+import static live.noxbox.tools.location.moving.MovingWorker.runForegroundLocationWorker;
 
 public class Moving implements State {
 
-    private static GoogleMap googleMap;
     private Activity activity;
     private Profile profile = profile();
+    private TextView totalUnreadView;
+    private boolean initiated;
+    private boolean foregroundWorkerWasRan;
 
+    private static GoogleMap googleMap;
+    public static Position memberWhoMovingPosition;
+    public static Marker memberWhoMovingMarker;
     private static LocationManager locationManager;
     private static LocationListener locationListener;
 
     private static LinearLayout movingView;
     private static View childMovingView;
     private static TextView timeView;
-
-    public static Position memberWhoMovingPosition;
-    public static Marker memberWhoMovingMarker;
-
-    private TextView totalUnreadView;
-    private boolean initiated;
-
-    private LocationListenerService locationListenerService;
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
@@ -122,19 +119,9 @@ public class Moving implements State {
 
         MapOperator.setNoxboxMarkerListener(googleMap, profile, activity);
 
-        if (profile.getCurrent().getProfileWhoComes().equals(profile) && locationListenerService == null) {
-            locationListenerService = new LocationListenerService(activity, googleMap, memberWhoMovingPosition, memberWhoMovingMarker, profile -> updateTimeView(profile, activity.getApplicationContext()));
-//            if (!isMyServiceRunning(locationListenerService.getClass(), activity)) {
-//                activity.startService(new Intent(activity, locationListenerService.getClass()));
-//            }
-            ForegroundLocationListenerWorker.provideMapComponentsForUpdating(activity, googleMap);
-            ForegroundLocationListenerWorker.startForegroundLocationListenerWorker(activity);
-
-        } else if (positionListener == null) {
-            GeoRealtime.listenPosition(profile.getCurrent().getId(), position -> {
-                memberWhoMovingPosition = position;
-                draw(googleMap, activity);
-            });
+        if(!foregroundWorkerWasRan){
+            runForegroundLocationWorker(activity, googleMap, profile, object -> draw(googleMap, activity));
+            foregroundWorkerWasRan = true;
         }
     }
 
@@ -210,14 +197,13 @@ public class Moving implements State {
     @Override
     public void clearHandlers() {
         clearContainer();
-        stopListenPosition(profile().getCurrent().getId());
-        //  activity.stopService(new Intent(activity, locationListenerService.getClass()));
         MapOperator.clearMapMarkerListener(googleMap);
 
         if (positionListener != null) {
             stopListenPosition(profile.getNoxboxId());
             positionListener = null;
         }
+        cancelWorkerByTag(activity, ForegroundLocationListener.TAG);
 
         googleMap.clear();
         memberWhoMovingMarker = null;
@@ -231,15 +217,7 @@ public class Moving implements State {
         }
         MessagingService.removeNotifications(activity);
 
-
-        stopForegroundLocationListenerWorker(activity);
-        if ((isNullOrZero(profile().getCurrent().getTimeOwnerVerified()) || isNullOrZero(profile().getCurrent().getTimePartyVerified()))
-                && isNullOrZero(profile().getCurrent().getTimeCanceledByOwner())
-                && isNullOrZero(profile().getCurrent().getTimeCanceledByParty())
-                && isNullOrZero(profile().getCurrent().getTimeOwnerRejected())
-                && isNullOrZero(profile().getCurrent().getTimePartyRejected())) {
-            startBackgroundLocationListenerWorker(activity.getApplicationContext());
-        }
+        runBackgroundLocationWorker(activity.getApplicationContext());
     }
 
     private void clearContainer() {

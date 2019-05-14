@@ -14,7 +14,6 @@ public class ServiceMonitoring {
                 return true;
             }
         }
-        //DebugMessage.popup(context,"LocationListenerService isn't running", Toast.LENGTH_LONG);
         return false;
     }
 }

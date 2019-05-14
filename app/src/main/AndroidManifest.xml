@@ -113,9 +113,6 @@
         </service>
         <service android:name=".services.AvailableNoxboxesService" />
         <service
-            android:name=".tools.location.LocationListenerService"
-            android:enabled="true" />
-        <service
             android:name=".services.NotificationService"
             android:enabled="true" />
 

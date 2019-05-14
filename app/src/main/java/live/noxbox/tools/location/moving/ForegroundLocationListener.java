@@ -1,4 +1,4 @@
-package live.noxbox.tools.location;
+package live.noxbox.tools.location.moving;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,18 +11,14 @@ import android.os.Bundle;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.work.WorkManager;
+import androidx.work.WorkerParameters;
+
 import com.google.android.gms.maps.GoogleMap;
 
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
-import androidx.work.Constraints;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.debug.DebugMessage;
 import live.noxbox.model.Position;
@@ -48,21 +44,12 @@ import static live.noxbox.tools.location.LocationOperator.startLocationPermissio
 /**
  * Created by Vladislaw Kravchenok on 03.05.2019.
  */
-public class ForegroundLocationListenerWorker extends Worker {
-    public ForegroundLocationListenerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+public class ForegroundLocationListener extends MovingWorker {
+    public ForegroundLocationListener(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
 
-    public static final String TAG = "ForegroundWorker";
-
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private boolean isMovingFinished;
-
-    private Criteria criteria;
-
-    private static Activity activity;
-    private static GoogleMap googleMap;
+    public static final String TAG = "ForegroundLocationListener";
 
     @SuppressLint("MissingPermission")
     @NonNull
@@ -92,19 +79,15 @@ public class ForegroundLocationListenerWorker extends Worker {
                 memberWhoMovingPosition = Position.from(location);
 
                 if (activity != null) {
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            googleMap.clear();
-                            memberWhoMovingMarker = drawMovingMemberMarker(profile().getCurrent().getProfileWhoComes().getTravelMode(), memberWhoMovingPosition, googleMap, getApplicationContext().getResources());
-                            memberWhoMovingMarker.setPosition(memberWhoMovingPosition.toLatLng());
-                            drawPath(getApplicationContext(), googleMap, profile().getCurrent().getPosition(), memberWhoMovingPosition);
-                            createCustomMarker(profile().getCurrent(), googleMap, activity.getResources(), DEFAULT_MARKER_SIZE);
-                            DebugMessage.popup(getApplicationContext(), "Your location was updated with " + memberWhoMovingPosition.toString());
+                    activity.runOnUiThread(() -> {
+                        googleMap.clear();
+                        memberWhoMovingMarker = drawMovingMemberMarker(profile().getCurrent().getProfileWhoComes().getTravelMode(), memberWhoMovingPosition, googleMap, getApplicationContext().getResources());
+                        memberWhoMovingMarker.setPosition(memberWhoMovingPosition.toLatLng());
+                        drawPath(getApplicationContext(), googleMap, profile().getCurrent().getPosition(), memberWhoMovingPosition);
+                        createCustomMarker(profile().getCurrent(), googleMap, activity.getResources(), DEFAULT_MARKER_SIZE);
+                        DebugMessage.popup(getApplicationContext(), "Your location was updated with " + memberWhoMovingPosition.toString());
 
-
-                            Moving.updateTimeView(profile(), getApplicationContext());
-                        }
+                        Moving.updateTimeView(profile(), getApplicationContext());
                     });
 
                 }
@@ -169,18 +152,15 @@ public class ForegroundLocationListenerWorker extends Worker {
         WorkManager.getInstance(getApplicationContext()).cancelAllWorkByTag(TAG);
     }
 
-    public static void provideMapComponentsForUpdating(Activity activity, GoogleMap googleMap) {
-        ForegroundLocationListenerWorker.activity = activity;
-        ForegroundLocationListenerWorker.googleMap = googleMap;
+    public static void provideContextLinks(Activity activity, GoogleMap googleMap) {
+        ForegroundLocationListener.activity = activity;
+        ForegroundLocationListener.googleMap = googleMap;
     }
 
-    public static void stopForegroundLocationListenerWorker(Context context) {
-        WorkManager.getInstance(context).cancelAllWorkByTag(TAG);
+    public static void removeContextLinks(){
+        activity = null;
+        googleMap = null;
     }
 
-    public static void startForegroundLocationListenerWorker(Context context) {
-        Constraints constraints = new Constraints.Builder().setRequiresBatteryNotLow(true).setRequiredNetworkType(NetworkType.CONNECTED).build();
-        OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(ForegroundLocationListenerWorker.class).setInitialDelay(2, TimeUnit.SECONDS).setConstraints(constraints).addTag(TAG).build();
-        WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, oneTimeWorkRequest);
-    }
+
 }

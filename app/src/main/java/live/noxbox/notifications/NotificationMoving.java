@@ -14,6 +14,7 @@ import live.noxbox.MapActivity;
 import live.noxbox.R;
 import live.noxbox.database.Firestore;
 import live.noxbox.model.Noxbox;
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.tools.Task;
 
@@ -26,6 +27,8 @@ import static live.noxbox.tools.LocationCalculator.getTimeInMinutesBetweenUsers;
 public class NotificationMoving extends Notification {
 
     private int progressInMinutes;
+    private Position profileWhoComesPosition;
+    private Position profileWhoWaitPosition;
 
 
     public NotificationMoving(Context context, Profile profile, Map<String, String> data) {
@@ -39,6 +42,7 @@ public class NotificationMoving extends Notification {
 
         deleteIntent = createOnDeleteIntent(context, type.getGroup());
     }
+
 
     @Override
     public void show() {
@@ -60,10 +64,11 @@ public class NotificationMoving extends Notification {
             String myId = data.get("profileId");
             if (myId == null) return;
 
-            if (noxbox != null && noxbox.getOwner() != null && noxbox.getParty() != null) {
+            if (noxbox != null) {
+                providePositions(noxbox);
                 progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
-                        noxbox.getPosition(),
-                        noxbox.getProfileWhoComes().getPosition(),
+                        profileWhoWaitPosition,
+                        profileWhoComesPosition,
                         noxbox.getProfileWhoComes().getTravelMode()));
                 String timeTxt = getFormatTimeFromMillis(progressInMinutes * 60000, context.getResources());
                 if (noxbox.getProfileWhoComes().getId().equals(myId)) {
@@ -86,5 +91,16 @@ public class NotificationMoving extends Notification {
             task.execute(profile.getCurrent());
         }
 
+    }
+
+    private void providePositions(Noxbox noxbox) {
+        profileWhoWaitPosition = noxbox.getProfileWhoWait().getPosition();
+        profileWhoComesPosition = getProfileWhoComesPositionFromData();
+    }
+
+    private Position getProfileWhoComesPositionFromData() {
+        double lat = Double.valueOf(data.get("lat"));
+        double lon = Double.valueOf(data.get("lon"));
+        return new Position(lat, lon);
     }
 }

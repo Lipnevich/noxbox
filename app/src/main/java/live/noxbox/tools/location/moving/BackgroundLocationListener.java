@@ -1,4 +1,4 @@
-package live.noxbox.tools.location;
+package live.noxbox.tools.location.moving;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,18 +10,13 @@ import android.os.Bundle;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.work.WorkManager;
+import androidx.work.WorkerParameters;
+
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.NonNull;
-import androidx.work.Constraints;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 import live.noxbox.database.GeoRealtime;
-import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -36,20 +31,13 @@ import static live.noxbox.tools.location.LocationOperator.isLocationPermissionGr
 /**
  * Created by Vladislaw Kravchenok on 03.05.2019.
  */
-public class BackgroundLocationListenerWorker extends Worker {
-    public BackgroundLocationListenerWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+public class BackgroundLocationListener extends MovingWorker {
+    public BackgroundLocationListener(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
 
-    public static final String TAG = "BackgroundWorker";
+    public static final String TAG = "BackgroundLocationListener";
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private boolean isMovingFinished;
-
-    private Criteria criteria;
-    private String noxboxId;
-    private volatile Noxbox current;
 
     @SuppressLint("MissingPermission")
     @NonNull
@@ -57,26 +45,10 @@ public class BackgroundLocationListenerWorker extends Worker {
     public Result doWork() {
         criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
-
         isMovingFinished = false;
-        noxboxId = profile().getNoxboxId();
-        current = profile().getCurrent();
-
-//        Firestore.listenNoxbox(noxboxId, new Task<Noxbox>() {
-//            @Override
-//            public void execute(Noxbox noxbox) {
-//                current.copy(noxbox);
-//            }
-//        }, new Task<Exception>() {
-//            @Override
-//            public void execute(Exception exception) {
-//                Crashlytics.logException(exception);
-//            }
-//        });
 
         locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
-            @SuppressLint("MissingPermission")
             @Override
             public void onLocationChanged(final Location location) {
                 if ((!isNullOrZero(profile().getCurrent().getTimeOwnerVerified()) && !isNullOrZero(profile().getCurrent().getTimePartyVerified()))
@@ -92,7 +64,8 @@ public class BackgroundLocationListenerWorker extends Worker {
                     return;
                 }
 
-                GeoRealtime.updatePosition(profile().getCurrent().getId(), Position.from(location));
+                GeoRealtime.updatePosition(noxboxId, Position.from(location));
+                showMovingNotification(Position.from(location));
             }
 
             @Override
@@ -115,8 +88,12 @@ public class BackgroundLocationListenerWorker extends Worker {
         HandlerThread t = new HandlerThread("singleupdatethread");
         t.start();
         while (true) {
-            if (isStopped())
+            if (isStopped()) {
+                if (inForeground()) {
+                    return Result.failure();
+                }
                 return Result.retry();
+            }
 
             if (isLocationPermissionGranted(getApplicationContext())
                     && locationListener != null
@@ -130,7 +107,6 @@ public class BackgroundLocationListenerWorker extends Worker {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
 
             if (isMovingFinished)
                 return Result.success();
@@ -146,11 +122,5 @@ public class BackgroundLocationListenerWorker extends Worker {
 
     private void stopThisWorker() {
         WorkManager.getInstance(getApplicationContext()).cancelAllWorkByTag(TAG);
-    }
-
-    public static void startBackgroundLocationListenerWorker(Context context) {
-        Constraints constraints = new Constraints.Builder().setRequiresBatteryNotLow(true).setRequiredNetworkType(NetworkType.CONNECTED).build();
-        OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(BackgroundLocationListenerWorker.class).setInitialDelay(2, TimeUnit.SECONDS).setConstraints(constraints).addTag(TAG).build();
-        WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, oneTimeWorkRequest);
     }
 }
