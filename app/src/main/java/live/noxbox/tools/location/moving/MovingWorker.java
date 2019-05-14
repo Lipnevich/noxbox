@@ -5,6 +5,8 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.HandlerThread;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.work.Constraints;
@@ -26,6 +28,7 @@ import live.noxbox.model.NotificationType;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
+import live.noxbox.notifications.Notification;
 import live.noxbox.notifications.factory.NotificationFactory;
 import live.noxbox.states.Moving;
 import live.noxbox.tools.Task;
@@ -45,6 +48,8 @@ public abstract class MovingWorker extends Worker {
         profileId = profile().getId();
     }
 
+    protected HandlerThread handlerThread;
+    protected Looper looper;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     protected boolean isMovingFinished;
@@ -55,6 +60,7 @@ public abstract class MovingWorker extends Worker {
 
     protected HashMap<String, String> movingNotificationData;
     protected Long lastNotificationUpdateTime;
+    protected Notification movingNotification;
 
     protected static Activity activity;
     protected static GoogleMap googleMap;
@@ -63,6 +69,24 @@ public abstract class MovingWorker extends Worker {
     @Override
     public Result doWork() {
         return null;
+    }
+
+    @Override
+    public void onStopped() {
+        super.onStopped();
+        removeHandlerThread();
+    }
+
+    protected void createHandlerThread(String name) {
+        handlerThread = new HandlerThread(name);
+        handlerThread.start();
+        looper = handlerThread.getLooper();
+    }
+
+    protected void removeHandlerThread() {
+        handlerThread.quit();
+        looper.quit();
+        handlerThread.quit();
     }
 
     protected void showMovingNotification(Position lastKnownPosition) {
@@ -74,7 +98,18 @@ public abstract class MovingWorker extends Worker {
             movingNotificationData.put("profileId", profileId);
             movingNotificationData.put("lat", lastKnownPosition.getLatitude() + "");
             movingNotificationData.put("lon", lastKnownPosition.getLongitude() + "");
-            NotificationFactory.buildNotification(getApplicationContext(), null, movingNotificationData).setSilent(true).show();
+            movingNotification = NotificationFactory.buildNotification(getApplicationContext(), null, movingNotificationData).setSilent(true);
+            movingNotification.show();
+        }
+    }
+
+    protected void updateMovingNotification(Position position) {
+        if (lastNotificationUpdateTime == null || lastNotificationUpdateTime + Constants.TIME_BETWEEN_NOTIFICATION_MOVING_UPDATES <= System.currentTimeMillis()) {
+            lastNotificationUpdateTime = System.currentTimeMillis();
+            HashMap<String, String> lastKnownPositionData = new HashMap<>();
+            lastKnownPositionData.put("lat", position.getLatitude() + "");
+            lastKnownPositionData.put("lon", position.getLongitude() + "");
+            movingNotification.update(lastKnownPositionData);
         }
     }
 

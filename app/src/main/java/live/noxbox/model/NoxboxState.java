@@ -32,7 +32,7 @@ public enum NoxboxState {
                 && isNullOrZero(noxbox.getTimeAccepted())
                 && isNullOrZero(noxbox.getTimeCanceledByParty())
                 && isNullOrZero(noxbox.getTimeCanceledByOwner())) {
-            if (profile.equals(noxbox.getOwner())) {
+            if (profile != null && profile.equals(noxbox.getOwner())) {
                 return accepting;
             }
             return requesting;
@@ -40,7 +40,11 @@ public enum NoxboxState {
         if (!isNullOrZero(noxbox.getTimeAccepted())
                 && !isNullOrZero(noxbox.getTimeRequested())
                 && (isNullOrZero(noxbox.getTimeOwnerVerified()) || isNullOrZero(noxbox.getTimePartyVerified()))
-                && (isNullOrZero(noxbox.getTimeOwnerRejected()) && isNullOrZero(noxbox.getTimePartyRejected()))) {
+                && isNullOrZero(noxbox.getTimeOwnerRejected())
+                && isNullOrZero(noxbox.getTimePartyRejected())
+                && isNullOrZero(noxbox.getTimeCanceledByParty())
+                && isNullOrZero(noxbox.getTimeCanceledByOwner())
+                && isNullOrZero(noxbox.getTimeCompleted())) {
             return moving;
         }
 
@@ -52,4 +56,5 @@ public enum NoxboxState {
         }
         return initial;
     }
+
 }
