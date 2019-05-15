@@ -48,6 +48,7 @@ import live.noxbox.model.Profile;
 import live.noxbox.model.Wallet;
 import live.noxbox.tools.DisplayMetricsConservations;
 import live.noxbox.tools.Router;
+import live.noxbox.tools.Task;
 
 import static live.noxbox.Constants.DEFAULT_BALANCE_SCALE;
 import static live.noxbox.analitics.BusinessEvent.outBox;
@@ -87,7 +88,7 @@ public class WalletActivity extends BaseActivity {
         balanceLabel = findViewById(R.id.balanceText);
         currency = findViewById(R.id.currency);
         addressToSendEditor = findViewById(R.id.address_to_send_id);
-        walletAddress = findViewById(R.id.wallet_address_id);
+        walletAddress = findViewById(R.id.walletAddress);
         copyToClipboard = findViewById(R.id.copy_to_clipboard_id);
         sendButton = findViewById(R.id.send_button_id);
         balance = findViewById(R.id.balance);
@@ -147,18 +148,11 @@ public class WalletActivity extends BaseActivity {
             balanceLabel.setText(getResources().getString(R.string.balanceText));
             String currency = getString(R.string.currency);
             String link = getString(R.string.wavesProductsWalletLink);
-            SpannableStringBuilder currencySpan = new SpannableStringBuilder(currency);
-            currencySpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.primary)), 0, currency.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-            currencySpan.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(link)));
-                }
-            }, 0, currencySpan.length(), 0);
+            showSpannableText(currency, object -> startActivity(new Intent(Intent.ACTION_VIEW).setData(Uri.parse(link))), this.currency);
 
-            this.currency.setMovementMethod(LinkMovementMethod.getInstance());
-            this.currency.setText(currencySpan, TextView.BufferType.SPANNABLE);
+            showSpannableText(getResources().getString(R.string.walletAddress), 4, object -> openWavesExplorerForWallet(profile.getWallet().getAddress()), findViewById(R.id.walletAddressTitle));
+
             walletAddress.setOnClickListener(addressToClipboardListener);
             copyToClipboard.setOnClickListener(addressToClipboardListener);
             sendButton.setOnClickListener(sendButtonOnClickListener);
@@ -168,6 +162,25 @@ public class WalletActivity extends BaseActivity {
                 updateBalance(profile);
             }
         });
+    }
+
+    private void showSpannableText(String text, Task<Object> click, TextView spanView) {
+        showSpannableText(text, 0, click, spanView);
+    }
+
+    private void showSpannableText(String text, final int startPosition, Task<Object> click, TextView spanView) {
+        SpannableStringBuilder currencySpan = new SpannableStringBuilder(text);
+        currencySpan.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.primary)), startPosition, currency.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        currencySpan.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                click.execute(null);
+            }
+        }, startPosition, currencySpan.length(), 0);
+
+        spanView.setMovementMethod(LinkMovementMethod.getInstance());
+        spanView.setText(currencySpan, TextView.BufferType.SPANNABLE);
     }
 
     @Override
@@ -307,5 +320,11 @@ public class WalletActivity extends BaseActivity {
         findViewById(R.id.address_to_send_id).setEnabled(enable);
     }
 
+    private void openWavesExplorerForWallet(String walletAddress) {
+        String url = "https://wavesexplorer.com/address/" + walletAddress;
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
+    }
 
 }
