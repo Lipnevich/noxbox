@@ -18,6 +18,7 @@ import live.noxbox.model.Acceptance;
 import live.noxbox.model.NotificationType;
 import live.noxbox.model.Profile;
 import live.noxbox.notifications.factory.NotificationFactory;
+import live.noxbox.tools.exceptions.AcceptanceException;
 
 import static live.noxbox.Constants.MINIMUM_FACE_SIZE;
 import static live.noxbox.analitics.BusinessActivity.businessEvent;
@@ -64,6 +65,7 @@ public class FacePartsDetection {
                         Map<String, String> data = new HashMap<>();
                         data.put("type", NotificationType.photoInvalid.name());
                         NotificationFactory.buildNotification(activity.getApplicationContext(), new Profile().setAcceptance(acceptance), data).show();
+                        Crashlytics.logException(new AcceptanceException(acceptance.toString() + activity.getResources().getString(acceptance.getInvalidAcceptance().getContent())));
                         businessEvent(invalidPhoto);
                     }
 
@@ -71,7 +73,6 @@ public class FacePartsDetection {
                 .addOnFailureListener(e -> {
                     Crashlytics.logException(e);
                     profile.getAcceptance().setFailToRecognizeFace(true);
-
                     Map<String, String> data = new HashMap<>();
                     data.put("type", NotificationType.photoInvalid.name());
                     NotificationFactory.buildNotification(activity.getApplicationContext(), profile, data).show();

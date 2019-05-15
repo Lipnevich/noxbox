@@ -1,5 +1,7 @@
 package live.noxbox.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.Exclude;
 
 import static live.noxbox.Constants.MINIMUM_FACE_SIZE;
@@ -16,6 +18,18 @@ public class Acceptance {
     private String message = "";
 
     public Acceptance() {
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "failToRecognizeFace: " + failToRecognizeFace + ", "
+                + "incorrectName: " + incorrectName + ", "
+                + "smileProbability: " + smileProbability + ", "
+                + "rightEyeOpenProbability: " + rightEyeOpenProbability + ", "
+                + "leftEyeOpenProbability: " + leftEyeOpenProbability + ", "
+                + "faceSize: " + faceSize + ", "
+                + "message: " + message + ".";
     }
 
     @Exclude
@@ -105,4 +119,6 @@ public class Acceptance {
         this.message = message;
         return this;
     }
+
+
 }
