@@ -20,6 +20,12 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,11 +35,6 @@ import com.google.firebase.auth.FirebaseUser;
 import java.math.BigDecimal;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import live.noxbox.R;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.analitics.BusinessActivity;
@@ -368,7 +369,7 @@ public class DetailedActivity extends BaseActivity {
         new AsyncTask<Void, Void, String>() {
             @Override
             protected String doInBackground(Void... voids) {
-                if(noxboxPosition == null) {
+                if (noxboxPosition == null) {
                     noxboxPosition = NoxboxState.getState(viewed, profile) == NoxboxState.created ? viewed.getProfileWhoWait().getPosition() :
                             viewed.getPosition();
                 }
@@ -690,24 +691,32 @@ public class DetailedActivity extends BaseActivity {
     private void drawCertificate(Noxbox noxbox) {
         if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
 
-        certificateLayout.setVisibility(View.VISIBLE);
+
         List<String> certificateUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.certificates.name());
-
-
-        RecyclerView certificateList = findViewById(R.id.certificatesList);
-        certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, noxbox.getType(), false));
+        if (certificateUrlList != null && certificateUrlList.size() > 0) {
+            certificateLayout.setVisibility(View.VISIBLE);
+            RecyclerView certificateList = findViewById(R.id.certificatesList);
+            certificateList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            certificateList.setAdapter(new ImageListAdapter(certificateUrlList, this, ImageType.certificates, noxbox.getType(), false));
+        } else {
+            certificateLayout.setVisibility(View.GONE);
+        }
     }
 
     private void drawWorkSample(Noxbox noxbox) {
         if (noxbox.getOwner().getPortfolio().get(noxbox.getType().name()) == null) return;
 
-        workSampleLayout.setVisibility(View.VISIBLE);
-        List<String> workSampleUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.samples.name());
 
-        RecyclerView workSampleList = findViewById(R.id.workSampleList);
-        workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, noxbox.getType(), false));
+        List<String> workSampleUrlList = noxbox.getOwner().getPortfolio().get(noxbox.getType().name()).getImages().get(ImageType.samples.name());
+        if (workSampleUrlList != null && workSampleUrlList.size() > 0) {
+            workSampleLayout.setVisibility(View.VISIBLE);
+            RecyclerView workSampleList = findViewById(R.id.workSampleList);
+            workSampleList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            workSampleList.setAdapter(new ImageListAdapter(workSampleUrlList, this, ImageType.samples, noxbox.getType(), false));
+        } else {
+            workSampleLayout.setVisibility(View.GONE);
+        }
+
     }
 
     private void changeArrowVector(int layout, final int element) {
