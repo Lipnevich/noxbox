@@ -4,21 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import live.noxbox.model.Position;
 import live.noxbox.model.Profile;
 import live.noxbox.model.TravelMode;
 
 public class NavigatorManager {
 
     public static void openNavigator(Context context, Profile profile) {
+        Position to = profile.getCurrent().getPosition();
         String uri = "yandexnavi://build_route_on_map?"
-                + "lat_from="
-                + profile.getPosition().getLatitude()
-                + "&lon_from="
-                + profile.getPosition().getLongitude()
                 + "&lat_to="
-                + profile.getCurrent().getPosition().getLatitude()
+                + to.getLatitude()
                 + "&lon_to="
-                + profile.getCurrent().getPosition().getLongitude();
+                + to.getLongitude();
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri)).setPackage("ru.yandex.yandexnavi");
 
         if (intent.resolveActivity(context.getPackageManager()) != null) {
@@ -26,9 +24,9 @@ public class NavigatorManager {
         } else {
             uri = "google.navigation:"
                     + "q="
-                    + profile.getCurrent().getPosition().getLatitude()
+                    + to.getLatitude()
                     + ", "
-                    + profile.getCurrent().getPosition().getLongitude();
+                    + to.getLongitude();
             if (profile.getTravelMode() == TravelMode.bicycling) {
                 uri = uri.concat("&mode=b");
             }
