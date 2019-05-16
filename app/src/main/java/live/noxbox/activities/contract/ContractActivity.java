@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import live.noxbox.R;
+import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.activities.detailed.CoordinateActivity;
 import live.noxbox.analitics.BusinessActivity;
@@ -75,6 +76,7 @@ import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.states.AvailableNoxboxes.createCommonFragmentOfNoxboxTypeList;
+import static live.noxbox.tools.AddressManager.addressIsReal;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
@@ -343,40 +345,56 @@ public class ContractActivity extends BaseActivity {
 
     }
 
+
+    private String address;
+
     private void drawAddress() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... voids) {
-                String address;
-                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost()) {
-                    address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition());
-                } else {
-                    address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition()) + " " + getResources().getString(R.string.change);
+        if (!Strings.isNullOrEmpty(contract().getAddress())) {
+            address = contract().getAddress();
+            createSpannableTextView();
+            return;
+        }
+        new Thread(() -> {
+            address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition());
+
+            if (!addressIsReal(address, getApplicationContext())) {
+                address = AddressManager.provideAddressByPosition(getApplicationContext(), profile().getPosition());
+                if (!addressIsReal(address, getApplicationContext())) {
+                    if (AuthActivity.countryForStart != null) {
+                        address = AddressManager.provideAddressByPosition(getApplicationContext(), Position.from(AuthActivity.countryForStart));
+                    } else {
+                        address = getApplicationContext().getResources().getString(R.string.unknownAddress);
+                    }
+                    if (!addressIsReal(address, getApplicationContext())) {
+                        address = getApplicationContext().getResources().getString(R.string.unknownAddress);
+                    }
                 }
-
-                return address;
             }
-
-            @Override
-            protected void onPostExecute(String address) {
-                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost()) {
-                    SpannableStringBuilder spanTxt =
-                            new SpannableStringBuilder(address);
-                    spanTxt.append(" ");
-                    spanTxt.append(getString(R.string.change));
-                    spanTxt.setSpan(new ClickableSpan() {
-                        @Override
-                        public void onClick(View widget) {
-                            ContractActivity.this.startActivityForResult(new Intent(ContractActivity.this, CoordinateActivity.class), COORDINATE);
-                        }
-                    }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
-                    addressView.setMovementMethod(LinkMovementMethod.getInstance());
-                    addressView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+            runOnUiThread(() -> {
+                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost() || address.equals(getApplicationContext().getResources().getString(R.string.unknownAddress))) {
+                    createSpannableTextView();
                 } else {
                     addressView.setText(address);
                 }
+                contract().setAddress(address);
+            });
+
+        }).start();
+    }
+
+    private void createSpannableTextView() {
+        SpannableStringBuilder spanTxt =
+                new SpannableStringBuilder(address);
+        spanTxt.append(" ");
+        spanTxt.append(getString(R.string.change));
+        spanTxt.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                ContractActivity.this.startActivityForResult(new Intent(ContractActivity.this, CoordinateActivity.class), COORDINATE);
             }
-        }.execute();
+        }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
+        addressView.setMovementMethod(LinkMovementMethod.getInstance());
+        addressView.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
 
     private void startNoxboxTypeDialog() {
@@ -639,6 +657,8 @@ public class ContractActivity extends BaseActivity {
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
             contract().setPosition(position);
+            contract().setAddress("");
+            drawAddress();
         }
     }
 

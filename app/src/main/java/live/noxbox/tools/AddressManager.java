@@ -9,6 +9,7 @@ import com.crashlytics.android.Crashlytics;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,5 +54,22 @@ public class AddressManager {
         } else {
             return address;
         }
+    }
+
+    private static Geocoder geocoder;
+    private static List<Address> existingAdresses;
+
+    public static boolean addressIsReal(String address, Context context) {
+        if (geocoder == null) geocoder = new Geocoder(context);
+        if (existingAdresses == null) existingAdresses = new ArrayList<Address>();
+        try {
+            existingAdresses = geocoder.getFromLocationName(address, 2);
+        } catch (IOException e) {
+            Crashlytics.logException(e);
+        }
+        if (existingAdresses == null || existingAdresses.size() < 1) {
+            return false;
+        }
+        return true;
     }
 }

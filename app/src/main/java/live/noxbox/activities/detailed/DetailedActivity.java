@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -115,7 +115,7 @@ public class DetailedActivity extends BaseActivity {
     private ImageView travelTypeArrow;
     private ImageView travelTypeImageTitle;
     private ImageView travelTypeImage;
-    private TextView address;
+    private TextView addressTextView;
     //private TextView offerTime;
     //private TextView time;
     private TextView travelTypeTitle;
@@ -177,7 +177,7 @@ public class DetailedActivity extends BaseActivity {
         travelTypeArrow = findViewById(R.id.travelTypeArrow);
         travelTypeImageTitle = findViewById(R.id.travelTypeImageTitle);
         travelTypeImage = findViewById(R.id.travelTypeImage);
-        address = findViewById(R.id.address);
+        addressTextView = findViewById(R.id.address);
         //offerTime = findViewById(R.id.offerTime);
         //time = findViewById(R.id.time);
         travelTypeTitle = findViewById(R.id.travelTypeTitle);
@@ -360,28 +360,39 @@ public class DetailedActivity extends BaseActivity {
     private void drawWaitingTime(final Profile profile) {
         Noxbox viewed = profile.getViewed();
         String prePosition = viewed.getPosition().getLatitude() + ", " + viewed.getPosition().getLongitude();
-        if (address.getText().length() < 1) {
-            address.setText(prePosition);
+
+        if (addressTextView.getText().length() < 1) {
+            addressTextView.setText(prePosition);
         }
 
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... voids) {
-                if (noxboxPosition == null) {
-                    noxboxPosition = viewed.getPosition();
-                }
+        if (!Strings.isNullOrEmpty(viewed.getAddress())) {
+            addressTextView.setText(viewed.getAddress());
+        } else {
+            if (!Strings.isNullOrEmpty(viewed.getAddress())) {
+                addressTextView.setText(viewed.getAddress());
+            } else {
+                new Thread(new Runnable() {
+                    private String address;
 
-                String address = AddressManager.provideAddressByPosition(getApplicationContext(), noxboxPosition);
-                return address;
+                    @Override
+                    public void run() {
+                        if (noxboxPosition == null) {
+                            noxboxPosition = viewed.getPosition();
+                        }
+
+                        address = AddressManager.provideAddressByPosition(getApplicationContext(), noxboxPosition);
+                        if (!AddressManager.addressIsReal(address, getApplicationContext())) {
+                            address = getResources().getString(R.string.unknownAddress);
+                        } else {
+                            viewed.setAddress(address);
+                        }
+                        runOnUiThread(() -> addressTextView.setText(Strings.isNullOrEmpty(address) ? getResources().getString(R.string.unknownAddress) : address));
+                    }
+                }).start();
+
             }
 
-            @Override
-            protected void onPostExecute(String resultAddress) {
-                if (!resultAddress.contains("Unnamed")) {
-                    address.setText(resultAddress);
-                }
-            }
-        }.execute();
+        }
         drawDropdownElement(travelTypeTitleLayout.getId(), travelTypeLayout.getId());
         changeArrowVector(travelTypeLayout.getId(), travelTypeArrow.getId());
 
@@ -757,6 +768,7 @@ public class DetailedActivity extends BaseActivity {
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             noxboxPosition = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
             profile().getViewed().setPosition(noxboxPosition);
+            profile().getViewed().setAddress("");
             drawWaitingTime(profile());
         }
 
