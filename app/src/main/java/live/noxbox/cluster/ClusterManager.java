@@ -204,9 +204,7 @@ public class ClusterManager implements GoogleMap.OnCameraIdleListener {
 
         @Override
         protected List<live.noxbox.cluster.Cluster<NoxboxMarker>> doInBackground(Void... params) {
-            TimeLogger timeLogger = new TimeLogger();
             List<Cluster<NoxboxMarker>> clusters = getClusters(mLatLngBounds, mZoomLevel);
-            timeLogger.makeLog("Get clusters " + clusters.size());
             return clusters;
         }
 

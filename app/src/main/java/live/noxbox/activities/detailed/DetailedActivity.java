@@ -206,7 +206,7 @@ public class DetailedActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        gyroscopeObserver.register(this);
+        new Thread(() -> gyroscopeObserver.register(DetailedActivity.this)).start();
         AppCache.listenProfile(DetailedActivity.class.getName(), profile -> {
             if (!isFinished(profile.getCurrent())
                     && profile.getNoxboxId().equals(profile.getCurrent().getId())
@@ -258,8 +258,6 @@ public class DetailedActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noxbox.getType().getName());
-
-        //illustration.setImageResource(noxbox.getType().getIllustration());
 
         Glide.with(this)
                 .asDrawable()
@@ -370,8 +368,7 @@ public class DetailedActivity extends BaseActivity {
             @Override
             protected String doInBackground(Void... voids) {
                 if (noxboxPosition == null) {
-                    noxboxPosition = NoxboxState.getState(viewed, profile) == NoxboxState.created ? viewed.getProfileWhoWait().getPosition() :
-                            viewed.getPosition();
+                    noxboxPosition = viewed.getPosition();
                 }
 
                 String address = AddressManager.provideAddressByPosition(getApplicationContext(), noxboxPosition);
@@ -401,14 +398,18 @@ public class DetailedActivity extends BaseActivity {
                     travelTypeImage.setImageResource(viewed.getOwner().getTravelMode().getImage());
                     coordinatesSelect.setVisibility(View.VISIBLE);
                     coordinatesSelect.setOnClickListener(v -> startCoordinateActivity());
-                    long minutes = getTimeInMinutesBetweenUsers(
-                            noxboxPosition != null ? noxboxPosition : viewed.getProfileWhoWait().getPosition(),
-                            viewed.getProfileWhoComes().getPosition(),
-                            viewed.getProfileWhoComes().getTravelMode());
+                    new Thread(() -> {
+                        long minutes = getTimeInMinutesBetweenUsers(
+                                noxboxPosition != null ? noxboxPosition : viewed.getProfileWhoWait().getPosition(),
+                                viewed.getProfileWhoComes().getPosition(),
+                                viewed.getProfileWhoComes().getTravelMode());
+                        String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
+                        runOnUiThread(() -> {
+                            travelTypeTitle.setText(getString(R.string.across, timeTxt));
+                            travelModeText.setText(R.string.willArriveAtTheAddress);
+                        });
+                    }).start();
 
-                    String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
-                    travelTypeTitle.setText(getString(R.string.across, timeTxt));
-                    travelModeText.setText(R.string.willArriveAtTheAddress);
                 }
 
                 break;
@@ -427,14 +428,19 @@ public class DetailedActivity extends BaseActivity {
                     travelTypeImageTitle.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
                     travelTypeImage.setImageResource(viewed.getNotMe(profile.getId()).getTravelMode().getImage());
 
-                    long minutes = getTimeInMinutesBetweenUsers(
-                            viewed.getPosition(),
-                            viewed.getProfileWhoComes().getPosition(),
-                            viewed.getProfileWhoComes().getTravelMode());
+                    new Thread(() -> {
+                        long minutes = getTimeInMinutesBetweenUsers(
+                                viewed.getPosition(),
+                                viewed.getProfileWhoComes().getPosition(),
+                                viewed.getProfileWhoComes().getTravelMode());
 
-                    String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
-                    travelTypeTitle.setText(getString(R.string.across, timeTxt));
-                    travelModeText.setText(R.string.willArriveAtTheAddress);
+                        String timeTxt = getFormatTimeFromMillis(minutes * 60000, getResources());
+                        runOnUiThread(() -> {
+                            travelTypeTitle.setText(getString(R.string.across, timeTxt));
+                            travelModeText.setText(R.string.willArriveAtTheAddress);
+                        });
+                    }).start();
+
                 }
                 break;
             default: {

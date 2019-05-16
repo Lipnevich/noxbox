@@ -178,26 +178,32 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_settings: {
+                closeDrawer();
                 Router.startActivityForResult(this, MapSettingsActivity.class, MapSettingsActivity.CODE);
                 break;
             }
             case R.id.navigation_history: {
+                closeDrawer();
                 Router.startActivityForResult(this, HistoryActivity.class, HistoryActivity.CODE);
                 break;
             }
             case R.id.navigation_profile: {
+                closeDrawer();
                 Router.startActivityForResult(this, ProfileActivity.class, ProfileActivity.CODE);
                 break;
             }
             case R.id.navigation_wallet: {
+                closeDrawer();
                 Router.startActivityForResult(this, WalletActivity.class, WalletActivity.CODE);
                 break;
             }
             case R.id.navigation_about_app: {
+                closeDrawer();
                 Router.startActivity(this, AboutApplicationActivity.class);
                 break;
             }
             case R.id.navigation_logout: {
+                closeDrawer();
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
                 if (currentUser == null) return true;
@@ -212,12 +218,13 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
                 Router.finishActivity(MenuActivity.this);
             }
         }
-
+        return true;
+    }
+    private void closeDrawer(){
         if (drawerLayout != null) {
             drawerLayout.closeDrawers();
         }
         isInitiated = false;
-        return true;
     }
 
 

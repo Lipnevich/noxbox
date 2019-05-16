@@ -11,17 +11,17 @@ import live.noxbox.R;
 public class Router {
     public static void startActivity(Activity activity, Class<?> cls) {
         activity.startActivity(new Intent(activity, cls));
-        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        //activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public static void startActivityForResult(Activity activity, Class<?> cls, int code) {
         activity.startActivityForResult(new Intent(activity, cls), code);
-        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        //activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public static void startActivityForResult(Activity activity, Intent intent, int code) {
         activity.startActivityForResult(intent, code);
-        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        //activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public static void finishActivity(Activity activity) {
@@ -30,6 +30,7 @@ public class Router {
     }
 
     private static final String TAG = "fullScreenDialog";
+
     public static void showFullScreenDialog(DialogFragment dialogFragment, FragmentActivity activity) {
         dialogFragment.show(activity.getSupportFragmentManager(), TAG);
     }
