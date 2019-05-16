@@ -34,8 +34,8 @@ public interface Constants {
     int MINIMUM_CHANGE_DISTANCE_BETWEEN_RECEIVE_IN_METERS = 12;
     int TIME_BETWEEN_NOTIFICATION_MOVING_UPDATES = 60000;
 
-    String DEFAULT_PRICE = "5";
-    String MINIMUM_PRICE = "0.5";
+    String DEFAULT_PRICE = "1";
+    String MINIMUM_PRICE = "0.1";
 
     String FIRST_RUN_KEY = "FIRSTRUN";
     int MAX_MINUTES =  60;
