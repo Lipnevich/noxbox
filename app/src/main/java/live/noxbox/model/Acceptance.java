@@ -29,7 +29,7 @@ public class Acceptance {
                 + "rightEyeOpenProbability: " + rightEyeOpenProbability + ", "
                 + "leftEyeOpenProbability: " + leftEyeOpenProbability + ", "
                 + "faceSize: " + faceSize + ", "
-                + "message: " + message + ".";
+                + "message: " + message;
     }
 
     @Exclude

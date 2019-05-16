@@ -17,7 +17,6 @@ android {
         debug {
             shrinkResources false
             minifyEnabled false
-            ext.enableCrashlytics = false
         }
         release {
             shrinkResources true
