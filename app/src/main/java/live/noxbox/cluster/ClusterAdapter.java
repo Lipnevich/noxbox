@@ -62,11 +62,51 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
             return;
 
         NoxboxType type = noxbox.getType();
+        String rating = getOwnerRating(noxbox);
+        int travelModeImage = noxbox.getOwner().getTravelMode().getImage();
+        String role = getOwnerRole(noxbox);
 
         clusterViewHolder.icon.setImageResource(noxbox.getIcon());
+        clusterViewHolder.rating.setText(rating.concat("% ").concat(activity.getResources().getString(R.string.rating)));
+        clusterViewHolder.type.setText(type.getName());
+        clusterViewHolder.price.setText(noxbox.getPrice());
+        clusterViewHolder.travelModeImage.setImageResource(travelModeImage);
+        clusterViewHolder.role.setText(role);
+        clusterViewHolder.timeToTravel.setText(getTripTime(noxbox));
 
+        clusterViewHolder.rootView.setOnClickListener(v -> {
+            profile().setViewed(noxbox);
+            Router.startActivity(activity, DetailedActivity.class);
+        });
+    }
+
+    private String getTripTime(Noxbox noxbox) {
+        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
+            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
+                    noxbox.getPosition(),
+                    profile().getPosition(),
+                    profile().getTravelMode()));
+            String timeTxt = getFormatTimeFromMillis(progressInMinutes * 60000, activity.getResources
+                    ());
+            return timeTxt;
+        } else {
+           return "";
+        }
+    }
+
+    private String getOwnerRole(Noxbox noxbox) {
+        String role;
+        if (noxbox.getRole() == MarketRole.supply) {
+            role = activity.getResources().getString(R.string.worker);
+        } else {
+            role = activity.getResources().getString(R.string.costumer);
+        }
+        return role;
+    }
+
+    private String getOwnerRating(Noxbox noxbox) {
+        NoxboxType type = noxbox.getType();
         String rating;
-
         if (noxbox.getRole() == MarketRole.supply) {
             Rating supplyRating = noxbox.getOwner().getRatings().getSuppliesRating().get(type.name());
             if (supplyRating == null) {
@@ -83,39 +123,7 @@ public class ClusterAdapter extends RecyclerView.Adapter<ClusterAdapter.ClusterV
                     demandRating.getReceivedLikes(),
                     demandRating.getReceivedDislikes()));
         }
-
-        int travelModeImage = noxbox.getOwner().getTravelMode().getImage();
-
-        String role;
-        if (noxbox.getRole() == MarketRole.supply) {
-            role = activity.getResources().getString(R.string.worker);
-        } else {
-            role = activity.getResources().getString(R.string.costumer);
-        }
-
-        clusterViewHolder.rating.setText(rating.concat("% ").concat(activity.getResources().getString(R.string.rating)));
-        clusterViewHolder.type.setText(type.getName());
-        clusterViewHolder.price.setText(noxbox.getPrice());
-        clusterViewHolder.travelModeImage.setImageResource(travelModeImage);
-        clusterViewHolder.role.setText(role);
-
-
-        if (noxbox.getOwner().getTravelMode() == TravelMode.none) {
-            int progressInMinutes = ((int) getTimeInMinutesBetweenUsers(
-                    noxbox.getPosition(),
-                    profile().getPosition(),
-                    profile().getTravelMode()));
-            String timeTxt = getFormatTimeFromMillis(progressInMinutes * 60000, activity.getResources
-                    ());
-            clusterViewHolder.timeToTravel.setText(timeTxt);
-        } else {
-            clusterViewHolder.timeToTravel.setText("");
-        }
-
-        clusterViewHolder.rootView.setOnClickListener(v -> {
-            profile().setViewed(noxbox);
-            Router.startActivity(activity, DetailedActivity.class);
-        });
+        return rating;
     }
 
     @Override

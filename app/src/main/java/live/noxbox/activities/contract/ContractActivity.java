@@ -1,7 +1,6 @@
 package live.noxbox.activities.contract;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -32,6 +31,7 @@ import com.google.common.base.Strings;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -351,7 +351,7 @@ public class ContractActivity extends BaseActivity {
     private void drawAddress() {
         if (!Strings.isNullOrEmpty(contract().getAddress())) {
             address = contract().getAddress();
-            createSpannableTextView();
+            createSpannableAddressTextView();
             return;
         }
         new Thread(() -> {
@@ -372,7 +372,7 @@ public class ContractActivity extends BaseActivity {
             }
             runOnUiThread(() -> {
                 if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost() || address.equals(getApplicationContext().getResources().getString(R.string.unknownAddress))) {
-                    createSpannableTextView();
+                    createSpannableAddressTextView();
                 } else {
                     addressView.setText(address);
                 }
@@ -382,7 +382,7 @@ public class ContractActivity extends BaseActivity {
         }).start();
     }
 
-    private void createSpannableTextView() {
+    private void createSpannableAddressTextView() {
         SpannableStringBuilder spanTxt =
                 new SpannableStringBuilder(address);
         spanTxt.append(" ");
@@ -667,55 +667,106 @@ public class ContractActivity extends BaseActivity {
     private RecyclerView similarNoxboxesList;
 
     private void drawSimilarNoxboxList(Profile profile) {
-        new AsyncTask<Void, Void, List<NoxboxMarker>>() {
-            @Override
-            protected List<NoxboxMarker> doInBackground(Void... voids) {
-                List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
-                noxboxes = new ArrayList<>();
-                for (Noxbox item : AppCache.availableNoxboxes.values()) {
-                    if (item.getOwner().equals(profile)) {
-                        offline(item);
-                        continue;
-                    }
-                    noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
+        new Thread(() -> {
+            List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
+            noxboxes = new ArrayList<>();
+            for (Noxbox noxbox : AppCache.availableNoxboxes.values()) {
+                if (noxbox.getOwner().equals(profile)) {
+                    offline(noxbox);
+                    continue;
                 }
-
-
-                for (NoxboxMarker item : noxboxes) {
-                    //type
-                    if (item.getNoxbox().getType() != contract().getType()) {
-                        continue;
-                    }
-
-                    //role
-                    if (item.getNoxbox().getRole() == contract().getRole()) {
-                        continue;
-                    }
-
-                    //travelmode
-                    if (contract().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
-                        continue;
-                    }
-
-                    similarNoxboxes.add(item);
-                }
-                return similarNoxboxes;
+                noxboxes.add(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             }
 
-            @Override
-            protected void onPostExecute(List<NoxboxMarker> similarNoxboxes) {
-                if (similarNoxboxes.size() > 0) {
-                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
 
-                    similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
-                    similarNoxboxesList.setHasFixedSize(true);
-                    similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
-                    similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this));
-                } else {
-                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+            for (NoxboxMarker item : noxboxes) {
+                //type
+                if (item.getNoxbox().getType() != contract().getType()) {
+                    continue;
                 }
+
+                //role
+                if (item.getNoxbox().getRole() == contract().getRole()) {
+                    continue;
+                }
+
+                //travelmode
+                if (contract().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
+                    continue;
+                }
+
+                similarNoxboxes.add(item);
             }
-        }.execute();
+
+            if (similarNoxboxes.size() == 0) {
+                findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+                return;
+            }
+
+            Collections.sort(similarNoxboxes, (o1, o2) -> {
+                BigDecimal price1 = new BigDecimal(o1.getNoxbox().getPrice());
+                BigDecimal price2 = new BigDecimal(o2.getNoxbox().getPrice());
+                return price1.compareTo(price2);
+            });
+
+            runOnUiThread(() -> {
+                findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
+
+                similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
+                similarNoxboxesList.setHasFixedSize(true);
+                similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
+                similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this));
+            });
+        }).start();
+//        new AsyncTask<Void, Void, List<NoxboxMarker>>() {
+//            @Override
+//            protected List<NoxboxMarker> doInBackground(Void... voids) {
+//                List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
+//                noxboxes = new ArrayList<>();
+//                for (Noxbox item : AppCache.availableNoxboxes.values()) {
+//                    if (item.getOwner().equals(profile)) {
+//                        offline(item);
+//                        continue;
+//                    }
+//                    noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
+//                }
+//
+//
+//                for (NoxboxMarker item : noxboxes) {
+//                    //type
+//                    if (item.getNoxbox().getType() != contract().getType()) {
+//                        continue;
+//                    }
+//
+//                    //role
+//                    if (item.getNoxbox().getRole() == contract().getRole()) {
+//                        continue;
+//                    }
+//
+//                    //travelmode
+//                    if (contract().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
+//                        continue;
+//                    }
+//
+//                    similarNoxboxes.add(item);
+//                }
+//                return similarNoxboxes;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(List<NoxboxMarker> similarNoxboxes) {
+//                if (similarNoxboxes.size() > 0) {
+//                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
+//
+//                    similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
+//                    similarNoxboxesList.setHasFixedSize(true);
+//                    similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
+//                    similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this));
+//                } else {
+//                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+//                }
+//            }
+//        }.execute();
     }
 
 }
