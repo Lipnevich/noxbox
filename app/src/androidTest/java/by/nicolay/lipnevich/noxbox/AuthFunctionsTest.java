@@ -58,14 +58,14 @@ public class AuthFunctionsTest {
     public void signInWithGoogle_mapActivityAsExpected() throws Exception {
         onView(withId(R.id.checkbox)).perform(click());
         onView(withId(R.id.googleAuth)).perform(ViewActions.click());
-        Thread.sleep(8000);//bad way
+        Thread.sleep(10000);//bad way
         UiObject account = getItemByText("testnoxbox2018@Gmail.com");
         if (account.exists()) {
             account.clickAndWaitForNewWindow();
         }
-        Thread.sleep(8000);//bad way
+        Thread.sleep(10000);//bad way
         assertEquals(getActivityInstance().getClass().getName(), MapActivity.class.getName());
-        Thread.sleep(8000);//bad way
+        Thread.sleep(10000);//bad way
         closeMapActivity();
     }
 
