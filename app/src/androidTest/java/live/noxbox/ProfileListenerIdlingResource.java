@@ -1,4 +1,4 @@
-package by.nicolay.lipnevich.noxbox;
+package live.noxbox;
 
 import androidx.test.espresso.IdlingResource;
 

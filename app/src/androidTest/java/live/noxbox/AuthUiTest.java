@@ -1,4 +1,4 @@
-package by.nicolay.lipnevich.noxbox;
+package live.noxbox;
 
 import android.view.View;
 import android.widget.CheckBox;
@@ -10,27 +10,20 @@ import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
-import androidx.test.rule.ActivityTestRule;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import live.noxbox.MapActivity;
-import live.noxbox.R;
+import org.junit.runners.MethodSorters;
 
 import static org.hamcrest.Matchers.equalTo;
 
 /**
  * Created by Vladislaw Kravchenok on 21.05.2019.
  */
-@RunWith(AndroidJUnit4ClassRunner.class)
-public class AuthUiTest {
-    @Rule
-    public ActivityTestRule<MapActivity> authActivityActivityTestRule = new ActivityTestRule<MapActivity>(MapActivity.class);
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class AuthUiTest extends BaseTestRunner{
     private int visible;
     private int invisible;
 
@@ -39,6 +32,7 @@ public class AuthUiTest {
         visible = View.VISIBLE;
         invisible = View.INVISIBLE;
     }
+
 
     @Test
     public void checkAgreement_hasVisible() {

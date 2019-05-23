@@ -41,6 +41,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/googleAuth"
+                android:contentDescription="googleAuthView"
                 style="@style/CardViewAuthStyle">
 
                 <LinearLayout

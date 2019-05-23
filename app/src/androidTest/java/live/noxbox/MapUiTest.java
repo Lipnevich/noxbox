@@ -1,25 +1,28 @@
-package by.nicolay.lipnevich.noxbox;
+package live.noxbox;
 
 import android.view.View;
 
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.ViewAssertion;
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import live.noxbox.R;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static live.noxbox.Utils.login;
 
 /**
  * Created by Vladislaw Kravchenok on 22.05.2019.
  */
-@RunWith(AndroidJUnit4ClassRunner.class)
-public class MapUiTest {
+public class MapUiTest extends BaseTestRunner {
+
+
+    @Before
+    public void signIn() throws Exception {
+        login();
+    }
 
     @Test
     public void checkContractButton_hasVisible() {
@@ -30,4 +33,5 @@ public class MapUiTest {
             }
         });
     }
+
 }
