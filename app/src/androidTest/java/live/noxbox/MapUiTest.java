@@ -12,6 +12,7 @@ import org.junit.Test;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static live.noxbox.Utils.login;
+import static live.noxbox.Utils.logout;
 
 /**
  * Created by Vladislaw Kravchenok on 22.05.2019.
@@ -32,6 +33,10 @@ public class MapUiTest extends BaseTestRunner {
                 Assert.assertEquals(view.getVisibility(), View.VISIBLE);
             }
         });
+
+        logout();
     }
+
+
 
 }

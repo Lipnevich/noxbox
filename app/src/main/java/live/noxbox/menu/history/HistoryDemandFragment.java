@@ -37,7 +37,7 @@ public class HistoryDemandFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
-        RecyclerView listItems = view.findViewById(R.id.recyclerView);
+        RecyclerView listItems = view.findViewById(R.id.historyList);
         listItems.setLayoutManager(linearLayoutManager);
         HistoryAdapter adapter = new HistoryAdapter((HistoryActivity) getActivity(), listItems, MarketRole.demand, lastNoxboxTimeCompleted);
         listItems.setAdapter(adapter);

@@ -191,11 +191,12 @@ public class AppCache {
         profileReaders.clear();
     }
 
+    public static boolean hasNoxboxTestProcessing;
     public static void logout() {
         clearReferrer();
         clearTasks();
         cleanRequestBalanceQueue();
-        if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created) {
+        if (NoxboxState.getState(profile.getCurrent(), profile) == NoxboxState.created && !hasNoxboxTestProcessing) {
             offline(profile.getCurrent());
         }
         Iterator<String> iterator = ids.iterator();

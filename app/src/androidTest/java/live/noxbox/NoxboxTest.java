@@ -28,12 +28,15 @@ import static live.noxbox.database.AppCache.profile;
  */
 
 public class NoxboxTest extends BaseTestRunner {
-    private Position noxboxPosition = Position.from(new LatLng(79.874390D, 23.463329D));
-    private NoxboxType noxboxType = NoxboxType.rentRoom;
-    private MarketRole role = MarketRole.supply;
-    private String price = "0.5";
-    private TravelMode travelMode = TravelMode.none;
-    private Boolean host = true;
+    protected Position noxboxPosition = Position.from(new LatLng(79.874390D, 23.463329D));
+    protected NoxboxType noxboxType = NoxboxType.rentRoom;
+    protected MarketRole role = MarketRole.supply;
+    protected String price = "0.5";
+    protected TravelMode travelMode = TravelMode.none;
+    protected Boolean host = true;
+
+    protected String chatMessage = "What is nice today? You!";
+    protected String commentMessage = "Amazing person! isn't it?";
 
     protected ProfileListenerIdlingResource idlingResource;
 
@@ -45,7 +48,7 @@ public class NoxboxTest extends BaseTestRunner {
         onView(withId(R.id.customFloatingView)).perform(ViewActions.click());
     }
 
-    protected void fillNoxbox(){
+    protected void fillNoxbox() {
         updateNoxboxTypeView();
         updateRoleView();
         updatePriceView();
@@ -106,21 +109,4 @@ public class NoxboxTest extends BaseTestRunner {
 
         }
     }
-
-    // @Test
-    //public void testCommonRequested() {
-    // open constructor COMPLETE
-    // update fields on it
-    // post Noxbox
-    // become requested
-    // open detailed view
-    // accept
-    // open activity_chat and send message
-    // verify
-    // become verified
-    // complete
-    // check balance
-    // check activity_history
-    // comment in activity_history
-    //}
 }

@@ -59,6 +59,7 @@ public class Performing implements State {
     private TextView timeView;
     private RelativeLayout proSwipeButtonLayout;
     private ProSwipeButton serviceCompleting;
+    public static final int SERVICE_COMPLETING_BUTTON_ID = 18263749;
 
     @Override
     public void draw(GoogleMap googleMap, MapActivity activity) {
@@ -236,6 +237,7 @@ public class Performing implements State {
 
 
         serviceCompleting = new live.noxbox.states.ProSwipeButton(activity, btnTextColorInt, btnBackgroundColorInt, btnText);
+        serviceCompleting.setId(SERVICE_COMPLETING_BUTTON_ID);
         serviceCompleting.setOnSwipeListener(() -> {
             serviceCompleting.setArrowColor(activity.getResources().getColor(R.color.fullTranslucent));
             new android.os.Handler().postDelayed(() -> {

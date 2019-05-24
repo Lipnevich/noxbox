@@ -154,6 +154,7 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
                 animateMarkerAppearance(markerToAdd);
             }
             markerToAdd.setTag(clusterToAdd);
+            markerToAdd.setTitle(clusterToAdd.getLatitude() + "" + clusterToAdd.getLongitude());
 
             markers.put(clusterToAdd, markerToAdd);
         }

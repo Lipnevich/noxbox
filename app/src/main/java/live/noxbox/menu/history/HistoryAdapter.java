@@ -83,8 +83,8 @@ import static live.noxbox.tools.ReferrerCatcher.KEY;
  */
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder> {
-    private static Set<Noxbox> historyDemandCache = new HashSet<>();
-    private static Set<Noxbox> historySupplyCache = new HashSet<>();
+    public static Set<Noxbox> historyDemandCache = new HashSet<>();
+    public static Set<Noxbox> historySupplyCache = new HashSet<>();
 
     private HistoryActivity activity;
     private String profileId;
