@@ -48,6 +48,9 @@ import live.noxbox.model.Profile;
 import live.noxbox.tools.ImageManager;
 import live.noxbox.tools.Router;
 
+import static live.noxbox.database.AppCache.profile;
+import static live.noxbox.menu.history.HistoryActivity.KEY_COMPLETE;
+import static live.noxbox.menu.history.HistoryActivity.KEY_PERFORMER_ID;
 import static live.noxbox.tools.DisplayMetricsConservations.dpToPx;
 import static live.noxbox.tools.DisplayMetricsConservations.getStatusBarHeight;
 
@@ -70,7 +73,7 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
     @Override
     protected void onResume() {
         super.onResume();
-        AppCache.profile().init(FirebaseAuth.getInstance().getCurrentUser());
+        profile().init(FirebaseAuth.getInstance().getCurrentUser());
         AppCache.listenProfile(MenuActivity.class.getName(), profile -> draw(MenuActivity.this, profile));
     }
 
@@ -184,7 +187,14 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
             }
             case R.id.navigation_history: {
                 closeDrawer();
-                Router.startActivityForResult(this, HistoryActivity.class, HistoryActivity.CODE);
+                if (profile().getCurrent().getFinished()) {
+                    Intent lastNoxboxIntent = new Intent(getApplicationContext(), HistoryActivity.class);
+                    lastNoxboxIntent.putExtra(KEY_COMPLETE, profile().getCurrent().getTimeCompleted());
+                    lastNoxboxIntent.putExtra(KEY_PERFORMER_ID, profile().getCurrent().getId());
+                    startActivityForResult(lastNoxboxIntent, HistoryActivity.CODE);
+                } else {
+                    Router.startActivityForResult(this, HistoryActivity.class, HistoryActivity.CODE);
+                }
                 break;
             }
             case R.id.navigation_profile: {
@@ -220,7 +230,8 @@ public abstract class MenuActivity extends BaseActivity implements NavigationVie
         }
         return true;
     }
-    private void closeDrawer(){
+
+    private void closeDrawer() {
         if (drawerLayout != null) {
             drawerLayout.closeDrawers();
         }

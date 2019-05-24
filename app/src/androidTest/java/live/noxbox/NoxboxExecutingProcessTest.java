@@ -4,15 +4,12 @@ import android.content.Context;
 
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
-
-import com.google.common.base.Strings;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -22,6 +19,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import live.noxbox.activities.ConfirmationActivity;
 import live.noxbox.database.AppCache;
 import live.noxbox.database.GeoRealtime;
 import live.noxbox.model.MarketRole;
@@ -30,9 +28,10 @@ import live.noxbox.model.NoxboxState;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static live.noxbox.Utils.getActivityInstance;
 import static live.noxbox.Utils.getItemByText;
 import static live.noxbox.Utils.login;
 import static live.noxbox.Utils.logout;
@@ -145,9 +144,15 @@ public class NoxboxExecutingProcessTest extends NoxboxTest {
     @Test
     public void eVerifyPartyPhoto_partyHasVerified() {
         onView(ViewMatchers.withId(R.id.customFloatingView)).perform(click());
-        sleep(3000L);
-        onView(ViewMatchers.withId(R.id.swipeButtonConfirm)).perform(ViewActions.swipeRight());
-        sleep(3000L);
+        sleep(4000L);
+        boolean isSwiped = false;
+        while (!isSwiped) {
+            onView(ViewMatchers.withId(R.id.swipeButtonConfirm)).perform(ViewActions.swipeRight());
+            sleep(4000L);
+            if (!getActivityInstance().getClass().getName().equals(ConfirmationActivity.class.getName())) {
+                isSwiped = true;
+            }
+        }
         Assert.assertThat(profile().getCurrent().getTimeOwnerVerified(), allOf(is(not(0)), is(not(nullValue()))));
         hasPartyVerified = true;
         logout();
@@ -156,16 +161,32 @@ public class NoxboxExecutingProcessTest extends NoxboxTest {
     @Test
     public void fVerifyOwnerPhoto_ownerHasVerified() {
         onView(ViewMatchers.withId(R.id.customFloatingView)).perform(click());
-        sleep(3000L);
-        onView(ViewMatchers.withId(R.id.swipeButtonConfirm)).perform(ViewActions.swipeRight());
-        sleep(3000L);
+        sleep(4000L);
+
+        boolean isSwiped = false;
+        while (!isSwiped) {
+            onView(ViewMatchers.withId(R.id.swipeButtonConfirm)).perform(ViewActions.swipeRight());
+            sleep(4000L);
+            if (!getActivityInstance().getClass().getName().equals(ConfirmationActivity.class.getName())) {
+                isSwiped = true;
+            }
+        }
+
+
         Assert.assertThat(profile().getCurrent().getTimePartyVerified(), allOf(is(not(0)), is(not(nullValue()))));
         nextState = NoxboxState.performing;
     }
 
     @Test
     public void gPartyWillFinish_noxboxHasFinished() {
-        onView(withId(SERVICE_COMPLETING_BUTTON_ID)).perform(ViewActions.swipeRight());
+        boolean isSwiped = false;
+        while (!isSwiped) {
+            onView(withId(SERVICE_COMPLETING_BUTTON_ID)).perform(ViewActions.swipeRight());
+            sleep(4000L);
+            if (profile().getCurrent().getFinished()) {
+                isSwiped = true;
+            }
+        }
         sleep(30000L);
         Assert.assertTrue(profile().getCurrent().getFinished());
     }
@@ -181,14 +202,6 @@ public class NoxboxExecutingProcessTest extends NoxboxTest {
         Espresso.onView(ViewMatchers.withId(R.id.menu)).perform(ViewActions.click());
         getItemByText("History").click();
         sleep(10000L);
-        if (role == MarketRole.supply) {
-            onView(withText("Received")).perform(click());
-        } else {
-            onView(withText("Performed")).perform(click());
-        }
-        sleep(10000L);
-        onView(withId(R.id.historyList)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-
         boolean noxboxIsThere = false;
         if (role == MarketRole.supply) {
             for (Noxbox noxbox : historyDemandCache) {
@@ -212,24 +225,10 @@ public class NoxboxExecutingProcessTest extends NoxboxTest {
         Espresso.onView(ViewMatchers.withId(R.id.menu)).perform(ViewActions.click());
         getItemByText("History").click();
         sleep(10000L);
-        if (role == MarketRole.supply) {
-            onView(withText("Received")).perform(click());
-        } else {
-            onView(withText("Performed")).perform(click());
-        }
-        sleep(10000L);
-        onView(withId(R.id.historyList)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        sleep(500L);
-        onView(withId(R.id.comment)).perform(ViewActions.replaceText(commentMessage));
-        onView(withId(R.id.send)).perform(ViewActions.click());
+        onView(allOf(withId(R.id.comment), isDisplayed())).perform(ViewActions.replaceText(commentMessage));
+        onView(allOf(withId(R.id.send), isDisplayed())).perform(ViewActions.click());
         sleep(4000L);
-        boolean partyCommentHasSent = false;
-        for (Noxbox noxbox : historyDemandCache) {
-            if (noxbox.getId().equals(noxboxId) && !Strings.isNullOrEmpty(noxbox.getPartyComment())) {
-                partyCommentHasSent = true;
-            }
-        }
-        Assert.assertTrue(partyCommentHasSent);
+        Assert.assertThat(profile().getCurrent().getPartyComment(), is(not(nullValue())));
         onView(withId(R.id.homeButton)).perform(click());
         sleep(5000L);
         logout();

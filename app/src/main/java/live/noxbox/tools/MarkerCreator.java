@@ -30,6 +30,7 @@ public class MarkerCreator {
         Marker marker = googleMap.addMarker(markerOptions);
 
         marker.setTag(noxbox);
+        marker.setTitle(noxbox.getPosition().getLatitude() + "" + noxbox.getPosition().getLongitude());
 
         return marker;
     }
