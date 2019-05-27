@@ -190,6 +190,8 @@ public abstract class Notification {
             case photoUploadingProgress:
             case photoValidationProgress:
                 return null;
+            case message:
+                return new int[]{0, 255};
         }
 
         return amplitude;
