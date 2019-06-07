@@ -1,15 +1,13 @@
 package live.noxbox.debug;
 
-import android.os.Build;
-import android.util.Log;
-
-import androidx.annotation.RequiresApi;
+import java.math.BigDecimal;
 
 public class SandBox {
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void main(String[] args) {
-        Log.i("log", "");
+        BigDecimal smallBigDecimal = new BigDecimal(1);
+        BigDecimal bigBigDecimal = new BigDecimal(5);
+        System.out.println(smallBigDecimal.compareTo(bigBigDecimal) > 0);
     }
 }

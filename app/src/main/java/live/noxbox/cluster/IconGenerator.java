@@ -46,7 +46,7 @@ public class IconGenerator {
             Drawable dr = context.getResources().getDrawable(R.drawable.noxbox);
             Bitmap bitmap = ((BitmapDrawable) dr).getBitmap();
             mClusterItemIcon = new BitmapDrawable(context.getResources(),
-                    Bitmap.createScaledBitmap(bitmap, dpToPx(64), dpToPx(64), true));
+                    Bitmap.createScaledBitmap(bitmap, dpToPx(48), dpToPx(48), true));
         }
 
         clusterIconView.setBackground(mClusterItemIcon);

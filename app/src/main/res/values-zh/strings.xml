@@ -314,5 +314,6 @@
     <string name="flowers">Flowers</string>
     <string name="flowersDelivery">Flowers deliverer</string>
     <string name="flowersDescription">Beautiful bouquet of fresh flowers</string>
+    <string name="unknownAddress">Unknown address</string>
 
 </resources>

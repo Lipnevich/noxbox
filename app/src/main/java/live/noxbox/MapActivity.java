@@ -96,7 +96,6 @@ public class MapActivity extends DemonstrationActivity implements
 
     private Boolean requestLocationUpdatesBundle;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.MapTheme);

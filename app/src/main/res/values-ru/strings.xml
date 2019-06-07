@@ -316,6 +316,7 @@
     <string name="flowers">Цветы</string>
     <string name="flowersDelivery">Доставщик цветов</string>
     <string name="flowersDescription">Красивый букет свежих цветов</string>
+    <string name="unknownAddress">Неизвестный адрес</string>
 
 
 </resources>

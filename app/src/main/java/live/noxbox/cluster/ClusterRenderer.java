@@ -25,7 +25,6 @@ import java.util.Map;
 
 import live.noxbox.activities.contract.ContractActivity;
 import live.noxbox.activities.detailed.DetailedActivity;
-import live.noxbox.debug.TimeLogger;
 import live.noxbox.model.Noxbox;
 import live.noxbox.model.Position;
 import live.noxbox.tools.MapOperator;
@@ -97,7 +96,6 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
     }
 
     void render(@NonNull List<Cluster<NoxboxMarker>> clusters) {
-        TimeLogger logger = new TimeLogger();
         List<Cluster<NoxboxMarker>> clustersToAdd = new ArrayList<>();
         List<Cluster<NoxboxMarker>> clustersToRemove = new ArrayList<>();
 
@@ -156,10 +154,10 @@ public class ClusterRenderer implements GoogleMap.OnMarkerClickListener {
                 animateMarkerAppearance(markerToAdd);
             }
             markerToAdd.setTag(clusterToAdd);
+            markerToAdd.setTitle(clusterToAdd.getLatitude() + "" + clusterToAdd.getLongitude());
 
             markers.put(clusterToAdd, markerToAdd);
         }
-        logger.makeLog("render");
     }
 
     @NonNull

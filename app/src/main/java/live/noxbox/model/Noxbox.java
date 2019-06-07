@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static live.noxbox.Constants.DEFAULT_PRICE;
 import static live.noxbox.model.MarketRole.demand;
 import static live.noxbox.model.MarketRole.supply;
@@ -42,6 +43,8 @@ public class Noxbox implements Comparable<Noxbox> {
     private Chat chat;
 
     private Position position;
+    @Virtual
+    private String address;
     private String price;
     private NoxboxType type;
     private MarketRole role;
@@ -81,6 +84,7 @@ public class Noxbox implements Comparable<Noxbox> {
         payerId = from.payerId;
         chat = from.chat;
         position = from.position;
+        address = isNullOrEmpty(from.address) ? "" : from.address;
         price = from.price;
         type = from.type;
         role = from.role;
@@ -113,6 +117,7 @@ public class Noxbox implements Comparable<Noxbox> {
     public Noxbox clean() {
         id = "";
         geoId = null;
+        address = "";
         getChat().getOwnerMessages().clear();
         getChat().getPartyMessages().clear();
         getChat().setOwnerReadTime(0L);
@@ -192,6 +197,18 @@ public class Noxbox implements Comparable<Noxbox> {
 
     public Profile getProfileWhoWait() {
         return getProfileWhoComes().equals(owner) ? party : owner;
+    }
+
+    public String getAddress() {
+        if (address == null) {
+            address = "";
+        }
+        return address;
+    }
+
+    public Noxbox setAddress(String address) {
+        this.address = address;
+        return this;
     }
 
     public String getId() {

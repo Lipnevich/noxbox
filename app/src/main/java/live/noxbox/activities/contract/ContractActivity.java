@@ -1,7 +1,6 @@
 package live.noxbox.activities.contract;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -32,10 +31,12 @@ import com.google.common.base.Strings;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import live.noxbox.R;
+import live.noxbox.activities.AuthActivity;
 import live.noxbox.activities.BaseActivity;
 import live.noxbox.activities.detailed.CoordinateActivity;
 import live.noxbox.analitics.BusinessActivity;
@@ -75,6 +76,7 @@ import static live.noxbox.database.GeoRealtime.offline;
 import static live.noxbox.model.Noxbox.isNullOrZero;
 import static live.noxbox.model.TravelMode.none;
 import static live.noxbox.states.AvailableNoxboxes.createCommonFragmentOfNoxboxTypeList;
+import static live.noxbox.tools.AddressManager.addressIsReal;
 import static live.noxbox.tools.BalanceChecker.checkBalance;
 import static live.noxbox.tools.BottomSheetDialog.openNameNotVerifySheetDialog;
 import static live.noxbox.tools.BottomSheetDialog.openPhotoNotVerifySheetDialog;
@@ -343,40 +345,56 @@ public class ContractActivity extends BaseActivity {
 
     }
 
+
+    private String address;
+
     private void drawAddress() {
-        new AsyncTask<Void, Void, String>() {
-            @Override
-            protected String doInBackground(Void... voids) {
-                String address;
-                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost()) {
-                    address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition());
-                } else {
-                    address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition()) + " " + getResources().getString(R.string.change);
+        if (!Strings.isNullOrEmpty(contract().getAddress())) {
+            address = contract().getAddress();
+            createSpannableAddressTextView();
+            return;
+        }
+        new Thread(() -> {
+            address = AddressManager.provideAddressByPosition(getApplicationContext(), contract().getPosition());
+
+            if (!addressIsReal(address, getApplicationContext())) {
+                address = AddressManager.provideAddressByPosition(getApplicationContext(), profile().getPosition());
+                if (!addressIsReal(address, getApplicationContext())) {
+                    if (AuthActivity.countryForStart != null) {
+                        address = AddressManager.provideAddressByPosition(getApplicationContext(), Position.from(AuthActivity.countryForStart));
+                    } else {
+                        address = getApplicationContext().getResources().getString(R.string.unknownAddress);
+                    }
+                    if (!addressIsReal(address, getApplicationContext())) {
+                        address = getApplicationContext().getResources().getString(R.string.unknownAddress);
+                    }
                 }
-
-                return address;
             }
-
-            @Override
-            protected void onPostExecute(String address) {
-                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost()) {
-                    SpannableStringBuilder spanTxt =
-                            new SpannableStringBuilder(address);
-                    spanTxt.append(" ");
-                    spanTxt.append(getString(R.string.change));
-                    spanTxt.setSpan(new ClickableSpan() {
-                        @Override
-                        public void onClick(View widget) {
-                            ContractActivity.this.startActivityForResult(new Intent(ContractActivity.this, CoordinateActivity.class), COORDINATE);
-                        }
-                    }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
-                    addressView.setMovementMethod(LinkMovementMethod.getInstance());
-                    addressView.setText(spanTxt, TextView.BufferType.SPANNABLE);
+            runOnUiThread(() -> {
+                if (contract().getOwner().getTravelMode() == none || contract().getOwner().getHost() || address.equals(getApplicationContext().getResources().getString(R.string.unknownAddress))) {
+                    createSpannableAddressTextView();
                 } else {
                     addressView.setText(address);
                 }
+                contract().setAddress(address);
+            });
+
+        }).start();
+    }
+
+    private void createSpannableAddressTextView() {
+        SpannableStringBuilder spanTxt =
+                new SpannableStringBuilder(address);
+        spanTxt.append(" ");
+        spanTxt.append(getString(R.string.change));
+        spanTxt.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                ContractActivity.this.startActivityForResult(new Intent(ContractActivity.this, CoordinateActivity.class), COORDINATE);
             }
-        }.execute();
+        }, spanTxt.length() - (getString(R.string.change).length()), spanTxt.length(), 0);
+        addressView.setMovementMethod(LinkMovementMethod.getInstance());
+        addressView.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
 
     private void startNoxboxTypeDialog() {
@@ -639,6 +657,8 @@ public class ContractActivity extends BaseActivity {
         if (requestCode == COORDINATE && resultCode == RESULT_OK) {
             final Position position = new Position(data.getExtras().getDouble(LAT), data.getExtras().getDouble(LNG));
             contract().setPosition(position);
+            contract().setAddress("");
+            drawAddress();
         }
     }
 
@@ -647,55 +667,106 @@ public class ContractActivity extends BaseActivity {
     private RecyclerView similarNoxboxesList;
 
     private void drawSimilarNoxboxList(Profile profile) {
-        new AsyncTask<Void, Void, List<NoxboxMarker>>() {
-            @Override
-            protected List<NoxboxMarker> doInBackground(Void... voids) {
-                List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
-                noxboxes = new ArrayList<>();
-                for (Noxbox item : AppCache.availableNoxboxes.values()) {
-                    if (item.getOwner().equals(profile)) {
-                        offline(item);
-                        continue;
-                    }
-                    noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
+        new Thread(() -> {
+            List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
+            noxboxes = new ArrayList<>();
+            for (Noxbox noxbox : AppCache.availableNoxboxes.values()) {
+                if (noxbox.getOwner().equals(profile)) {
+                    offline(noxbox);
+                    continue;
                 }
-
-
-                for (NoxboxMarker item : noxboxes) {
-                    //type
-                    if (item.getNoxbox().getType() != contract().getType()) {
-                        continue;
-                    }
-
-                    //role
-                    if (item.getNoxbox().getRole() == contract().getRole()) {
-                        continue;
-                    }
-
-                    //travelmode
-                    if (contract().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
-                        continue;
-                    }
-
-                    similarNoxboxes.add(item);
-                }
-                return similarNoxboxes;
+                noxboxes.add(new NoxboxMarker(noxbox.getPosition().toLatLng(), noxbox));
             }
 
-            @Override
-            protected void onPostExecute(List<NoxboxMarker> similarNoxboxes) {
-                if (similarNoxboxes.size() > 0) {
-                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
 
-                    similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
-                    similarNoxboxesList.setHasFixedSize(true);
-                    similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
-                    similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this));
-                } else {
-                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+            for (NoxboxMarker item : noxboxes) {
+                //type
+                if (item.getNoxbox().getType() != contract().getType()) {
+                    continue;
                 }
+
+                //role
+                if (item.getNoxbox().getRole() == contract().getRole()) {
+                    continue;
+                }
+
+                //travelmode
+                if (contract().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
+                    continue;
+                }
+
+                similarNoxboxes.add(item);
             }
-        }.execute();
+
+            if (similarNoxboxes.size() == 0) {
+                findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+                return;
+            }
+
+            Collections.sort(similarNoxboxes, (o1, o2) -> {
+                BigDecimal price1 = new BigDecimal(o1.getNoxbox().getPrice());
+                BigDecimal price2 = new BigDecimal(o2.getNoxbox().getPrice());
+                return price1.compareTo(price2);
+            });
+
+            runOnUiThread(() -> {
+                findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
+
+                similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
+                similarNoxboxesList.setHasFixedSize(true);
+                similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
+                similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this));
+            });
+        }).start();
+//        new AsyncTask<Void, Void, List<NoxboxMarker>>() {
+//            @Override
+//            protected List<NoxboxMarker> doInBackground(Void... voids) {
+//                List<NoxboxMarker> similarNoxboxes = new ArrayList<>();
+//                noxboxes = new ArrayList<>();
+//                for (Noxbox item : AppCache.availableNoxboxes.values()) {
+//                    if (item.getOwner().equals(profile)) {
+//                        offline(item);
+//                        continue;
+//                    }
+//                    noxboxes.add(new NoxboxMarker(item.getPosition().toLatLng(), item));
+//                }
+//
+//
+//                for (NoxboxMarker item : noxboxes) {
+//                    //type
+//                    if (item.getNoxbox().getType() != contract().getType()) {
+//                        continue;
+//                    }
+//
+//                    //role
+//                    if (item.getNoxbox().getRole() == contract().getRole()) {
+//                        continue;
+//                    }
+//
+//                    //travelmode
+//                    if (contract().getOwner().getTravelMode() == none && item.getNoxbox().getOwner().getTravelMode() == none) {
+//                        continue;
+//                    }
+//
+//                    similarNoxboxes.add(item);
+//                }
+//                return similarNoxboxes;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(List<NoxboxMarker> similarNoxboxes) {
+//                if (similarNoxboxes.size() > 0) {
+//                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.VISIBLE);
+//
+//                    similarNoxboxesList = findViewById(R.id.similarNoxboxesList);
+//                    similarNoxboxesList.setHasFixedSize(true);
+//                    similarNoxboxesList.setLayoutManager(new LinearLayoutManager(ContractActivity.this, LinearLayout.VERTICAL, false));
+//                    similarNoxboxesList.setAdapter(new ClusterAdapter(similarNoxboxes, ContractActivity.this));
+//                } else {
+//                    findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+//                }
+//            }
+//        }.execute();
     }
 
 }
