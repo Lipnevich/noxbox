@@ -300,7 +300,7 @@
     <string name="yourWallet">Ваш кошелек</string>
     <string name="yourHistory">Ваша история</string>
 
-    <string name="rentRoomDescription">Необходимо предоставить комнату с чистым местом для сна</string>
+    <string name="rentRoomDescription">Необходимо предоставить комнату с душем и чистым местом для сна</string>
     <string name="rentRoom">Ночлег</string>
     <string name="housekeeper">Домовой</string>
     <string name="filterDescription">Отфильтруйте услуги на карте</string>

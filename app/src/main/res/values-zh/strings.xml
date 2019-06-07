@@ -11,7 +11,7 @@
     <string name="massageDescription">按摩师应该帮助顾客放松身体并且能促进健康</string>
     <string name="cleaningDescription">清洁工必须带有垃圾袋</string>
     <string name="lawyerDescription">Lawyer must understand the laws of current country, to help the client save time and money</string>
-    <string name="rentRoomDescription">Housekeeper must provide a room with a clean place to sleep</string>
+    <string name="rentRoomDescription">Housekeeper must provide a room with shower and a clean place to sleep</string>
 
     <string name="completeText">完成</string>
     <string name="requestText">请求</string>
