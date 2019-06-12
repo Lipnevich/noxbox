@@ -699,7 +699,7 @@ public class ContractActivity extends BaseActivity {
             }
 
             if (similarNoxboxes.size() == 0) {
-                findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE);
+                runOnUiThread(() -> findViewById(R.id.similarNoxboxesLayout).setVisibility(View.GONE));
                 return;
             }
 
