@@ -40,6 +40,12 @@ function getUiConfig() {
     'signInFlow': 'popup',
     'signInOptions': [
       {
+        provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+        recaptchaParameters: {
+          size: 'invisible'
+        }
+      },
+      {
         provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         // Required to enable ID token credentials for this provider.
         clientId: CLIENT_ID,
@@ -58,12 +64,6 @@ function getUiConfig() {
         ]
       },
       firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-      {
-        provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-        recaptchaParameters: {
-          size: 'invisible'
-        }
-      },
     ],
     // Terms of service url.
     'tosUrl': 'https://noxbox.io/rules.pdf',
