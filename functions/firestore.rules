@@ -1,11 +1,200 @@
 service cloud.firestore {
   match /databases/{database}/documents {
+  
+   	match /ratings/{profileId} {
+         	allow get: if request.auth.uid != null;
+    }
+  	
     match /profiles/{profileId} {
-          allow read, update, delete: if request.auth.uid == profileId;
-          allow create: if false;
+          allow get: if request.auth.uid == profileId;
+          allow create, update: if allowToProfileUpdate()
+          	&& request.auth.uid == profileId;
+    }
+        
+    function allowToProfileUpdate(){
+    	return resource.data.wallet.address == request.resource.data.wallet.address
+      	&& request.resource.data.id == request.auth.uid
+        // allow to add or remove link to new noxbox 
+        // in case current noxbox is finished
+      	&& (resource.data.noxboxId == '' 
+        	|| resource.data.noxboxId == request.resource.data.noxboxId
+          || !exists(/databases/$(database)/documents/noxboxes/$(resource.data.noxboxId))
+    			|| get(/databases/$(database)/documents/noxboxes/$(resource.data.noxboxId)).data.finished == true);
+    }
+    
+
+    match /noxboxes/{noxboxId} {
+          allow create: if allowToCreateNoxbox() && request.resource.data.id == noxboxId;
+          allow update: if allowToNoxboxUpdate();
+          
+          allow get: if allowToGetNoxbox();
+          allow list: if request.query.limit <= 100 &&
+                     allowToListNoxboxes();
+    }
+    
+   
+    
+    function allowToGetNoxbox() {
+    	return request.auth.uid != null
+      && (resource.data.timeRequested == 0
+      		|| resource.data.owner.id == request.auth.uid 
+      		|| resource.data.party.id == request.auth.uid);
+    }
+    
+    function allowToListNoxboxes() {
+    	return request.auth.uid != null
+      && resource.data.finished
+      && (resource.data.payerId == request.auth.uid 
+      		|| resource.data.performerId == request.auth.uid);
+    }
+      
+    function allowToCreateNoxbox(){
+    	return request.auth.uid != null 
+      && request.resource.data.owner.id == request.auth.uid
+      && request.resource.data.timeCreated > 0
+      && request.resource.data.timeRemoved == 0
+      && request.resource.data.timeRequested == 0
+      && request.resource.data.timeCompleted == 0
+      && request.resource.data.timeAccepted == 0
+      && request.resource.data.timeCanceledByOwner == 0
+      && request.resource.data.timeCanceledByParty == 0
+      && request.resource.data.timeOwnerVerified == 0
+      && request.resource.data.timePartyVerified == 0
+      && request.resource.data.timeOwnerDisliked == 0
+      && request.resource.data.timeOwnerLiked == 0
+      && request.resource.data.timePartyDisliked == 0
+      && request.resource.data.timePartyLiked == 0
+      && request.resource.data.timeTimeout == 0
+ 			&& request.resource.data.finished == false
+ 			&& request.resource.data.role != null
+      && request.resource.data.type != null
+      && request.resource.data.price != null
+      && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.noxboxId == request.resource.data.id;
     }
 
-
-
+    
+    function allowToNoxboxUpdate(){
+      return request.auth.uid != null
+      // Constants
+    	&& request.resource.data.id == resource.data.id
+    	&& request.resource.data.role == resource.data.role
+      && request.resource.data.type == resource.data.type
+      && request.resource.data.price == resource.data.price
+      && request.resource.data.owner.id == resource.data.owner.id
+      // Only owner or party can update 
+      && ((request.resource.data.owner.id == request.auth.uid 
+      			&& (resource.data.timeRequested == 0 
+            		|| request.resource.data.party.id == resource.data.party.id))
+      	|| (request.resource.data.party.id == request.auth.uid
+        		&&  (resource.data.timeRequested == 0 
+        				|| request.resource.data.party.id == resource.data.party.id))) 
+        	//Protect supply roles
+      && ((request.resource.data.owner.id == request.resource.data.performerId
+      		&& (request.resource.data.payerId == ''
+              || request.resource.data.party.id == request.resource.data.payerId)
+      		&& request.resource.data.role == 'supply')
+          //Protect demand roles
+        || (request.resource.data.owner.id == request.resource.data.payerId
+       		&& (request.resource.data.performerId == '' 
+          		|| request.resource.data.party.id == request.resource.data.performerId)
+        	&& request.resource.data.role == 'demand'))
+      // Operations order
+      && request.resource.data.timeRatingUpdated >= resource.data.timeRatingUpdated
+      && request.resource.data.timeOwnerDisliked >= resource.data.timeOwnerDisliked
+      && request.resource.data.timeOwnerLiked >= resource.data.timeOwnerLiked
+      && request.resource.data.timePartyDisliked >= resource.data.timePartyDisliked
+      && request.resource.data.timePartyLiked >= resource.data.timePartyLiked
+      && (request.resource.data.timeRequested == resource.data.timeRequested
+      	|| (resource.data.timeRequested == 0
+        		&& request.resource.data.party.name != ''
+            && request.resource.data.party.photo != ''
+            && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.wallet.address == request.resource.data.party.wallet.address))
+    	&& (request.resource.data.timeAccepted == resource.data.timeAccepted
+      	|| (resource.data.timeAccepted == 0 
+        		&& resource.data.timeRequested > 0
+            && request.resource.data.owner.name != ''
+            && request.resource.data.owner.photo != ''
+            && get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.wallet.address == request.resource.data.owner.wallet.address))
+      && (request.resource.data.timeTimeout == resource.data.timeTimeout
+      	|| (resource.data.timeTimeout == 0 && resource.data.timeAccepted == 0))
+      && (request.resource.data.timeCanceledByOwner == resource.data.timeCanceledByOwner
+      	|| (resource.data.timeCanceledByOwner == 0 
+        	&& (resource.data.timeOwnerVerified == 0 || resource.data.timePartyVerified == 0)))
+      && (request.resource.data.timeCanceledByParty == resource.data.timeCanceledByParty
+      	|| (resource.data.timeCanceledByParty == 0 
+        	&& (resource.data.timeOwnerVerified == 0 || resource.data.timePartyVerified == 0)))
+      && (request.resource.data.timeOwnerRejected == resource.data.timeOwnerRejected
+      	|| (resource.data.timeOwnerRejected == 0 
+        	&& resource.data.timeOwnerVerified == 0))
+      && (request.resource.data.timePartyRejected == resource.data.timePartyRejected
+      	|| (resource.data.timePartyRejected == 0 
+        	&& resource.data.timePartyVerified == 0))
+      && (request.resource.data.timeOwnerVerified == resource.data.timeOwnerVerified
+      	|| (resource.data.timeOwnerVerified == 0 
+        	&& resource.data.timeAccepted > 0 
+          && resource.data.timeOwnerRejected == 0))
+      && (request.resource.data.timePartyVerified == resource.data.timePartyVerified
+      	|| (resource.data.timePartyVerified == 0 
+        	&& resource.data.timeAccepted > 0
+          && resource.data.timePartyRejected == 0))
+      && (request.resource.data.timeCompleted == resource.data.timeCompleted
+      	|| (resource.data.timeCompleted == 0 
+        	&& resource.data.timeOwnerVerified > 0
+        	&& resource.data.timePartyVerified > 0))
+      //Photo replacement owner
+      && (request.resource.data.owner.photo == resource.data.owner.photo
+      		|| (request.auth.uid == resource.data.owner.id 
+              && resource.data.timePartyRejected == 0
+              && resource.data.timePartyVerified == 0))
+      //Photo replacement party        
+      && (resource.data.timeRequested == 0
+      		|| (request.resource.data.party.photo == resource.data.party.photo
+              || (request.auth.uid == resource.data.party.id 
+              		&& resource.data.timeOwnerRejected == 0
+                  && resource.data.timeOwnerVerified == 0)))
+    	// Allow finish service once
+      && (request.resource.data.finished == resource.data.finished
+      	|| resource.data.finished == false)
+      // Party specific actions
+      && ((request.resource.data.timeRequested == resource.data.timeRequested
+      		 && request.resource.data.timeCanceledByParty == resource.data.timeCanceledByParty
+      		 && request.resource.data.timePartyRejected == resource.data.timePartyRejected
+      		 && request.resource.data.timePartyVerified == resource.data.timePartyVerified
+      		 && request.resource.data.timePartyDisliked == resource.data.timePartyDisliked
+      		 && (request.resource.data.timePartyLiked == resource.data.timePartyLiked 
+           		// on complete
+          		|| resource.data.timePartyLiked == 0))
+      	|| request.resource.data.party.id == request.auth.uid)
+      // Owner specific actions
+      && ((request.resource.data.timeAccepted == resource.data.timeAccepted
+      		 && request.resource.data.timeRemoved == resource.data.timeRemoved
+           && request.resource.data.timeCanceledByOwner == resource.data.timeCanceledByOwner
+      		 && request.resource.data.timeOwnerRejected == resource.data.timeOwnerRejected
+      		 && request.resource.data.timeOwnerVerified == resource.data.timeOwnerVerified
+      		 && request.resource.data.timeOwnerDisliked == resource.data.timeOwnerDisliked
+      		 && (request.resource.data.timeOwnerLiked == resource.data.timeOwnerLiked
+           		// on complete
+          		|| resource.data.timeOwnerLiked == 0))
+      	|| request.resource.data.owner.id == request.auth.uid)
+    			 	//When noxbox active NONE of termination times must be set
+      && ((request.resource.data.finished == false 
+      		&& request.resource.data.timeCanceledByOwner == 0
+          && request.resource.data.timeCanceledByParty == 0
+          && request.resource.data.timeOwnerRejected == 0
+          && request.resource.data.timePartyRejected == 0
+          && request.resource.data.timeCompleted == 0
+          && request.resource.data.timeRemoved == 0
+          && request.resource.data.timeTimeout == 0)
+          	//When noxbox was finished ONE of termination time must be set 
+      	|| (request.resource.data.finished == true 
+      		&& (request.resource.data.timeCanceledByOwner > 0
+          || request.resource.data.timeCanceledByParty > 0
+          || request.resource.data.timeOwnerRejected > 0
+          || request.resource.data.timePartyRejected > 0
+          || request.resource.data.timeCompleted > 0
+          || request.resource.data.timeRemoved > 0
+          || request.resource.data.timeTimeout > 0)));
+    }
+    
   }
 }
