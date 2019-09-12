@@ -3,6 +3,7 @@
 }
 
 html, body {
+  font: 16px Roboto,arial,sans-serif;
   background: white;
   color: black;
   height: 100%;
@@ -20,17 +21,17 @@ html, body {
 }
 
 .popup {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
 }
 
 .popup-content {
@@ -63,15 +64,15 @@ html, body {
 #logoutBtn {
   z-index: 10;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 16px;
+  left: 16px;
 }
 
 #loginBtn {
   z-index: 10;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 16px;
+  left: 16px;
 }
 
 button {
@@ -101,15 +102,10 @@ button:focus {
   display: none;
 }
 
-html {
-    content: '';
-}
-
 @media (prefers-color-scheme: dark) {
   html, body {
-    background: black;
+    background: #242F3E;
     color: white;
-    content: 'dark';
   }
   .firebaseui-tos {
     color : white;
@@ -118,6 +114,6 @@ html {
     color : #42f4ad;
   }
   .popup-content {
-    background-color: black;
+    background-color: #242F3E;
   }
 }

@@ -3,18 +3,18 @@ let authConfig = {
   'credentialHelper': firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
   'signInOptions': [
     {
-      provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-      recaptchaParameters: {
-        size: 'invisible'
-      }
-    },
-    {
       provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
       clientId: CLIENT_ID,
       authMethod: 'https://accounts.google.com',
       customParameters: {
         // Forces account selection even when one account is available.
         prompt: 'select_account'
+      }
+    },
+    {
+      provider: firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+      recaptchaParameters: {
+        size: 'invisible'
       }
     },
     {
@@ -53,9 +53,6 @@ function handleSignedInUser (user) {
   document.getElementById('loginBtn').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'block';
   document.getElementById('logoutIcon').src = user.photoURL;
-
-
-  // document.getElementById('user-info').textContent = user.displayName + ' ' + user.email;
 };
 
 /**
@@ -72,7 +69,7 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 2,
     center: new google.maps.LatLng(0, 0),
-    mapTypeControlOptions: { mapTypeIds: [] },
+    disableDefaultUI: true
   });
 
   let lightMapType = new google.maps.StyledMapType(
@@ -379,10 +376,6 @@ window.map_callback = results => {
 
   let markerCluster = new MarkerClusterer(map, markers, mcOptions);
 }
-
-
-
-
 
 /**
  * Initializes the app.
