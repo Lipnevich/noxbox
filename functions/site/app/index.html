@@ -23,12 +23,14 @@
         <h3>NoxBox Sign In</h3>
         <div id="auth-providers-loading">Loading...</div>
         <div id="auth-providers"></div>
-        <a id="privacyPolicyLink" target="_blank" href="doc/NoxBoxPrivacyPolicyRu.pdf" class="hidden">Privacy Policy</a>
-        <a id="rulesLink" target="_blank" href="doc/rulesRu.pdf" class="hidden">Rules</a>
       </div>
     </div>
+    <div id="map"></div>
 
     <script src="web-config.js"></script>
     <script src="app.js"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBOLbh195XChpWflKJw-xl1iXW0Rez-Dro&callback=initMap"></script>
+    <script src="cluster.js"></script>
   </body>
 </html>
