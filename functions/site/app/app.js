@@ -1,4 +1,4 @@
-let authConfig = {
+const authConfig = {
   'signInFlow': 'popup',
   'credentialHelper': firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
   'signInOptions': [
@@ -27,21 +27,22 @@ let authConfig = {
     firebase.auth.TwitterAuthProvider.PROVIDER_ID,
   ],
   'tosUrl': 'doc/rules.pdf',
-  'privacyPolicyUrl': 'doc/NoxBoxPrivacyPolicy.pdf',
+  'privacyPolicyUrl': 'doc/privacyPolicy.pdf',
   'callbacks': {
     // Called when the user has been successfully signed in.
     'signInSuccessWithAuthResult': function(authResult, redirectUrl) {
       if (authResult.user) {
-        // TODO (nli) close auth popup here
         handleSignedInUser(authResult.user);
       }
       return false;
     },
-    'uiShown': function() {
-      document.getElementById('auth-providers-loading').style.display = 'none';
-    },
   },
 };
+
+const database = firebase.database();
+const firestore = firebase.firestore();
+
+let profile;
 
 /**
  * Displays the UI for a signed in user.
@@ -53,13 +54,17 @@ function handleSignedInUser (user) {
   document.getElementById('loginBtn').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'block';
   document.getElementById('logoutIcon').src = user.photoURL;
+
+  firestore.collection("profiles").doc(user.uid)
+    .onSnapshot(doc => {
+      profile = doc.data();
+  });
 };
 
 /**
  * Displays the UI for a signed out user.
  */
 function handleSignedOutUser () {
-  // TODO (nli) show auth ui in separate popup after click on auth button
   document.getElementById('loginBtn').style.display = 'block';
   document.getElementById('logoutBtn').style.display = 'none';
 };
@@ -67,8 +72,8 @@ function handleSignedOutUser () {
 let map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 2,
-    center: new google.maps.LatLng(0, 0),
+    zoom: 2.7,
+    center: new google.maps.LatLng(24, 0),
     disableDefaultUI: true
   });
 
@@ -333,35 +338,33 @@ function initMap() {
   }
   map.setMapTypeId('styled_map');
 
-  let script = document.createElement('script');
-  script.src = 'https://us-central1-noxbox-project.cloudfunctions.net/map';
-  document.getElementsByTagName('head')[0].appendChild(script);
+  database.ref('geo').once('value', services => showServices(services));
 }
 
-window.map_callback = results => {
+function showServices(services) {
   let markers = [];
-  for (let i = 0; i < results.length; i++) {
-    let latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
-    let serviceRole = results[i].key.split(';')[2];
-    let serviceType = results[i].key.split(';')[3];
+  services.forEach(function(service) {
+    let latLng = new google.maps.LatLng(service.val().l[0], service.val().l[1]);
+    let serviceRole = service.key.split(';')[2];
+    let serviceType = service.key.split(';')[3];
+
     let marker = new google.maps.Marker({
       position: latLng,
       map: map,
       icon: {
-          url: '../img/services/ic_' + serviceType + '_' + serviceRole + '.png',
+          url: 'img/services/' + serviceType + '_' + serviceRole + '.png',
           scaledSize: new google.maps.Size(36, 36),
           origin: new google.maps.Point(0,0),
           anchor: new google.maps.Point(0, 36)
       }
     });
     markers.push(marker);
-  }
+  });
 
-  let url = 'img/logo.png';
   let clusterStyles = [
     {
       textColor: 'white',
-      url: url,
+      url: 'img/logo.png',
       height: 48,
       width: 48,
       textSize: 36
@@ -381,7 +384,7 @@ window.map_callback = results => {
  * Initializes the app.
  */
 function initApp () {
-  // TODO (nli) init map, read and draw available services on map, sign-in button, filter button and add button
+  // TODO (nli) filter button and add button
   document.getElementById('logoutBtn').onclick = () => firebase.auth().signOut();
 
   let loginPopup = document.getElementById('loginPopup');
@@ -394,7 +397,7 @@ function initApp () {
 };
 
 // Initialize the FirebaseUI Widget using Firebase.
-let ui = new firebaseui.auth.AuthUI(firebase.auth());
+const ui = new firebaseui.auth.AuthUI(firebase.auth());
 // Disable auto-sign in.
 ui.disableAutoSignIn();
 
