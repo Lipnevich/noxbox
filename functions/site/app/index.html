@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>NoxBox</title>
+    <link rel="icon" href="img/logo.png">
+    <meta property="og:image" content="img/logo.png" />
+
+    <script src="https://www.gstatic.com/firebasejs/6.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.1.0/firebase-ui-auth__en.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.1.0/firebase-ui-auth.css" />
+    <link href="style.css" rel="stylesheet" type="text/css" media="screen" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <button id="logoutBtn" class="hidden"><img id="logoutIcon" class="buttonIcon" src="img/logo.png"></img></button>
+    <button id="loginBtn" class="hidden"><img class="buttonIcon" src="img/logo.png"></button>
+    <div id="loginPopup" class="popup">
+      <div class="popup-content">
+        <span id="closeLoginPopup" class="close">&times;</span>
+        <h3>NoxBox Sign In</h3>
+        <div id="auth-providers-loading">Loading...</div>
+        <div id="auth-providers"></div>
+        <a id="privacyPolicyLink" target="_blank" href="doc/NoxBoxPrivacyPolicyRu.pdf" class="hidden">Privacy Policy</a>
+        <a id="rulesLink" target="_blank" href="doc/rulesRu.pdf" class="hidden">Rules</a>
+      </div>
+    </div>
+
+    <script src="web-config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
