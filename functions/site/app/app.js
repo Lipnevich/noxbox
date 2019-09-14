@@ -424,12 +424,12 @@ function initApp () {
 
   let popup = document.getElementById('popup');
   document.getElementById('loginBtn').onclick = () => {
-    document.getElementById('authProviders').style.display = 'flex';
     document.getElementById('serviceDetails').style.display = 'none';
+    document.getElementById('authProviders').style.display = 'flex';
     let contentStyle = document.getElementById('popupContent').style;
     contentStyle.backgroundImage = '';
     contentStyle.backgroundColor = window.matchMedia("(prefers-color-scheme: dark)").matches ?
-      '#242F3E' : 'white';
+      '#242F3E80' : '#FFFFFF';
     contentStyle.width = '10vmin';
     contentStyle.height = '10vmin';
 
