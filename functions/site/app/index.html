@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <title>NoxBox</title>
     <link rel="icon" href="img/logo.png">
-    <meta property="og:image" content="img/logo.png" />
+    <meta property="og:image" content="img/share.jpg" />
+    <meta property="og:site_name" content="NoxBox">
+    <meta property="og:url" content="NoxBox" />
+    <meta property="og:type" content="services" />
+    <meta property="og:title" content="World Labour Exchange" />
+    <meta property="og:description" content="Crypto platform for living" />
 
-    <script src="https://www.gstatic.com/firebasejs/6.0.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/6.0.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.1.0/firebase-ui-auth__en.js"></script>
 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.1.0/firebase-ui-auth.css" />
@@ -17,12 +24,13 @@
   <body>
     <button id="logoutBtn" class="hidden"><img id="logoutIcon" class="buttonIcon" src="img/logo.png"></img></button>
     <button id="loginBtn" class="hidden"><img class="buttonIcon" src="img/logo.png"></button>
-    <div id="loginPopup" class="popup">
-      <div class="popup-content">
-        <span id="closeLoginPopup" class="close">&times;</span>
-        <h3>Sign In</h3>
-        <div id="auth-providers-loading">Loading...</div>
-        <div id="auth-providers"></div>
+    <div id="popup" class="popup">
+      <div id="popupContent" class="popupContent">
+        <span id="closePopup" class="close">&times;</span>
+        <div id="authProviders"></div>
+        <div id="serviceDetails">
+
+        </div>
       </div>
     </div>
     <div id="map"></div>

@@ -1,4 +1,4 @@
-let authConfig = {
+const authConfig = {
   'signInFlow': 'popup',
   'credentialHelper': firebaseui.auth.CredentialHelper.ACCOUNT_CHOOSER_COM,
   'signInOptions': [
@@ -27,21 +27,22 @@ let authConfig = {
     firebase.auth.TwitterAuthProvider.PROVIDER_ID,
   ],
   'tosUrl': 'doc/rules.pdf',
-  'privacyPolicyUrl': 'doc/NoxBoxPrivacyPolicy.pdf',
+  'privacyPolicyUrl': 'doc/privacyPolicy.pdf',
   'callbacks': {
     // Called when the user has been successfully signed in.
     'signInSuccessWithAuthResult': function(authResult, redirectUrl) {
       if (authResult.user) {
-        // TODO (nli) close auth popup here
         handleSignedInUser(authResult.user);
       }
       return false;
     },
-    'uiShown': function() {
-      document.getElementById('auth-providers-loading').style.display = 'none';
-    },
   },
 };
+
+const database = firebase.database();
+const firestore = firebase.firestore();
+
+let profile;
 
 /**
  * Displays the UI for a signed in user.
@@ -49,17 +50,21 @@ let authConfig = {
  */
 function handleSignedInUser (user) {
   // TODO (nli) show menu instead of logout button
-  document.getElementById('loginPopup').style.display = 'none';
+  document.getElementById('popup').style.display = 'none';
   document.getElementById('loginBtn').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'block';
   document.getElementById('logoutIcon').src = user.photoURL;
+
+  firestore.collection("profiles").doc(user.uid)
+    .onSnapshot(doc => {
+      profile = doc.data();
+  });
 };
 
 /**
  * Displays the UI for a signed out user.
  */
 function handleSignedOutUser () {
-  // TODO (nli) show auth ui in separate popup after click on auth button
   document.getElementById('loginBtn').style.display = 'block';
   document.getElementById('logoutBtn').style.display = 'none';
 };
@@ -67,8 +72,8 @@ function handleSignedOutUser () {
 let map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 2,
-    center: new google.maps.LatLng(0, 0),
+    zoom: 2.7,
+    center: new google.maps.LatLng(24, 0),
     disableDefaultUI: true
   });
 
@@ -326,42 +331,42 @@ function initMap() {
     }],
     {name: 'Dark Map'});
 
-  if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    map.mapTypes.set('styled_map', darkMapType);
-  } else {
+  window.matchMedia("(prefers-color-scheme: dark)").matches ?
+    map.mapTypes.set('styled_map', darkMapType) :
     map.mapTypes.set('styled_map', lightMapType);
-  }
   map.setMapTypeId('styled_map');
 
-  let script = document.createElement('script');
-  script.src = 'https://us-central1-noxbox-project.cloudfunctions.net/map';
-  document.getElementsByTagName('head')[0].appendChild(script);
+  database.ref('geo').once('value', services => showServices(services));
 }
 
-window.map_callback = results => {
+function showServices(services) {
   let markers = [];
-  for (let i = 0; i < results.length; i++) {
-    let latLng = new google.maps.LatLng(results[i].latitude, results[i].longitude);
-    let serviceRole = results[i].key.split(';')[2];
-    let serviceType = results[i].key.split(';')[3];
+  services.forEach(service => {
+    let values = service.key.split(';');
+    if(values.length !== 12) return;
+
+    let latLng = new google.maps.LatLng(service.val().l[0], service.val().l[1]);
+    let noxbox = parseService(values);
+
     let marker = new google.maps.Marker({
       position: latLng,
       map: map,
       icon: {
-          url: '../img/services/ic_' + serviceType + '_' + serviceRole + '.png',
+          url: 'img/services/' + noxbox.type + '_' + noxbox.role + '.png',
           scaledSize: new google.maps.Size(36, 36),
           origin: new google.maps.Point(0,0),
           anchor: new google.maps.Point(0, 36)
       }
     });
+    marker.addListener('click', () =>
+      showNoxboxDetails(noxbox, service.val().l[0], service.val().l[1]));
     markers.push(marker);
-  }
+  });
 
-  let url = 'img/logo.png';
   let clusterStyles = [
     {
       textColor: 'white',
-      url: url,
+      url: 'img/logo.png',
       height: 48,
       width: 48,
       textSize: 36
@@ -377,24 +382,66 @@ window.map_callback = results => {
   let markerCluster = new MarkerClusterer(map, markers, mcOptions);
 }
 
+function parseService(values) {
+  let service = {};
+  let index = 0;
+  service.id = values[index++];
+  service.owner = {id : values[index++]};
+  service.role = values[index++];
+  service.type = values[index++];
+  service.price = values[index++].replace(",", ".");
+  service.owner.travelMode = values[index++];
+  service.owner.host = values[index++];
+  service.owner.filters = { allowNovices : values[index++] };
+  let rating = { receivedLikes : Math.max(0, values[index++]),
+                    receivedDislikes : Math.max(0, values[index++]) };
+
+  service.owner.ratings = { suppliesRating : {}, demandRating : {}};
+  service.role === 'supply' ? service.owner.ratings.suppliesRating[service.type] = rating :
+    service.owner.ratings.demandRating[service.type] = rating;
+
+  return service;
+}
+
+function showNoxboxDetails(noxbox, lat, lng) {
+  document.getElementById('authProviders').style.display = 'none';
+  document.getElementById('popupContent').style.backgroundImage =
+    "url('img/services/" + noxbox.type + ".svg')";
+  document.getElementById('popupContent').style.width = '90%';
+  document.getElementById('popupContent').style.height = '90%';
+
+  // TODO set address, price, rating, sertificates
+  document.getElementById('serviceDetails').style.display = 'block';
+  document.getElementById('popup').style.display = 'block';
+}
+
 /**
  * Initializes the app.
  */
 function initApp () {
-  // TODO (nli) init map, read and draw available services on map, sign-in button, filter button and add button
+  // TODO (nli) filter button and add button
   document.getElementById('logoutBtn').onclick = () => firebase.auth().signOut();
 
-  let loginPopup = document.getElementById('loginPopup');
+  let popup = document.getElementById('popup');
   document.getElementById('loginBtn').onclick = () => {
-    loginPopup.style.display = 'block';
-    ui.start('#auth-providers', authConfig);
+    document.getElementById('authProviders').style.display = 'flex';
+    document.getElementById('serviceDetails').style.display = 'none';
+    let contentStyle = document.getElementById('popupContent').style;
+    contentStyle.backgroundImage = '';
+    contentStyle.backgroundColor = window.matchMedia("(prefers-color-scheme: dark)").matches ?
+      '#242F3E' : 'white';
+    contentStyle.width = '10vmin';
+    contentStyle.height = '10vmin';
+
+    popup.style.display = 'block';
+    ui.start('#authProviders', authConfig);
   };
-  document.getElementById("closeLoginPopup").onclick = () => loginPopup.style.display = 'none';
-  window.onclick = event => event.target == loginPopup ? loginPopup.style.display = 'none' : '';
+  document.getElementById("closePopup").onclick = () => popup.style.display = 'none';
+  window.onclick = event => event.target == popup ? popup.style.display = 'none' : '';
 };
 
 // Initialize the FirebaseUI Widget using Firebase.
-let ui = new firebaseui.auth.AuthUI(firebase.auth());
+const ui = new firebaseui.auth.AuthUI(firebase.auth());
 // Disable auto-sign in.
 ui.disableAutoSignIn();
 
